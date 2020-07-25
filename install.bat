@@ -1,0 +1,2 @@
+call nasher install
+PAUSE
