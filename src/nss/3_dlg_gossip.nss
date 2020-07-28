@@ -14,6 +14,41 @@ int StartingConditional()
     string sResRef = GetResRef(OBJECT_SELF);
     object oArea = GetArea(OBJECT_SELF);
     string sAreaResRef = GetResRef(oArea);
+
+
+
+// ====================================
+// HIGHCLIFF VILLAGER
+// ====================================
+   if (GetStringLeft(sResRef, 8) == "villager")
+   {
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "It's been a good harvest this season.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "At least I still have land to farm.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "All the carousing the sailors are doing, I'm surprised the elder hasn't had a talk with their captain.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Good day to be outside, isn't it?");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "More visitors. Just what this village needs.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Bandits, lizardfolk, people going missing... it's been an interesting year.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Only blacksmith in town is Edorio. A timid man, but he is skilled in his craft.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Branson has some good wares, though I'm sure he overcharges the travellers. And you didn't hear that from me!");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "The High Road's not safe these days. Lots of travelers just... disappear, south of Neverwinter. Can't find a trace of them.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Don't go into the Mere of Dead Men. It's named so for a reason.");
+   }
+// ====================================
+// HIGHCLIFF GUARD
+// ====================================
+   if (GetStringLeft(sResRef, 5) == "guard")
+   {
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Yes yes, I'm quite busy.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Don't go starting any trouble.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I've got my eye on you.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Sorry, but I'm on a duty.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "This blade seems quite stout, doesn't it? It's recently forged by Edorio.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "When the's next lizardmen raid, I wonder.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "This village is peaceful enough. And it best stay that way.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "If you need some general goods or are looking for a place to sell things, Branson is the only guy who will offer that in this village.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I'd steer clear of the High Road if I were you. Lots of bandit activity, lately.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "My friend was sent on patrol to the Mere of Dead Men, once... never to be seen again.");
+   }
 // ====================================
 // COURTESAN
 // ====================================

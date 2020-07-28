@@ -212,6 +212,21 @@
           "type": "dword",
           "value": 1
         }
+      },
+      {
+        "__struct_id": 14,
+        "FactionGlobal": {
+          "type": "word",
+          "value": 0
+        },
+        "FactionName": {
+          "type": "cexostring",
+          "value": "Lizardfolk"
+        },
+        "FactionParentID": {
+          "type": "dword",
+          "value": 1
+        }
       }
     ]
   },
@@ -417,15 +432,15 @@
         "__struct_id": 13,
         "FactionID1": {
           "type": "dword",
-          "value": 1
+          "value": 0
         },
         "FactionID2": {
           "type": "dword",
-          "value": 0
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",
-          "value": 100
+          "value": 0
         }
       },
       {
@@ -436,7 +451,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 1
+          "value": 0
         },
         "FactionRep": {
           "type": "dword",
@@ -451,6 +466,21 @@
         },
         "FactionID2": {
           "type": "dword",
+          "value": 1
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 16,
+        "FactionID1": {
+          "type": "dword",
+          "value": 1
+        },
+        "FactionID2": {
+          "type": "dword",
           "value": 2
         },
         "FactionRep": {
@@ -459,7 +489,7 @@
         }
       },
       {
-        "__struct_id": 16,
+        "__struct_id": 17,
         "FactionID1": {
           "type": "dword",
           "value": 1
@@ -474,7 +504,7 @@
         }
       },
       {
-        "__struct_id": 17,
+        "__struct_id": 18,
         "FactionID1": {
           "type": "dword",
           "value": 1
@@ -489,21 +519,6 @@
         }
       },
       {
-        "__struct_id": 18,
-        "FactionID1": {
-          "type": "dword",
-          "value": 1
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 5
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 100
-        }
-      },
-      {
         "__struct_id": 19,
         "FactionID1": {
           "type": "dword",
@@ -511,7 +526,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 6
+          "value": 5
         },
         "FactionRep": {
           "type": "dword",
@@ -526,7 +541,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 7
+          "value": 6
         },
         "FactionRep": {
           "type": "dword",
@@ -541,7 +556,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 8
+          "value": 7
         },
         "FactionRep": {
           "type": "dword",
@@ -556,7 +571,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 9
+          "value": 8
         },
         "FactionRep": {
           "type": "dword",
@@ -571,7 +586,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 10
+          "value": 9
         },
         "FactionRep": {
           "type": "dword",
@@ -586,7 +601,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 11
+          "value": 10
         },
         "FactionRep": {
           "type": "dword",
@@ -601,7 +616,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 12
+          "value": 11
         },
         "FactionRep": {
           "type": "dword",
@@ -616,7 +631,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 13
+          "value": 12
         },
         "FactionRep": {
           "type": "dword",
@@ -625,6 +640,36 @@
       },
       {
         "__struct_id": 27,
+        "FactionID1": {
+          "type": "dword",
+          "value": 1
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 28,
+        "FactionID1": {
+          "type": "dword",
+          "value": 1
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 29,
         "FactionID1": {
           "type": "dword",
           "value": 2
@@ -639,7 +684,7 @@
         }
       },
       {
-        "__struct_id": 28,
+        "__struct_id": 30,
         "FactionID1": {
           "type": "dword",
           "value": 2
@@ -654,7 +699,7 @@
         }
       },
       {
-        "__struct_id": 29,
+        "__struct_id": 31,
         "FactionID1": {
           "type": "dword",
           "value": 2
@@ -669,7 +714,7 @@
         }
       },
       {
-        "__struct_id": 30,
+        "__struct_id": 32,
         "FactionID1": {
           "type": "dword",
           "value": 2
@@ -684,36 +729,6 @@
         }
       },
       {
-        "__struct_id": 31,
-        "FactionID1": {
-          "type": "dword",
-          "value": 2
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 5
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 32,
-        "FactionID1": {
-          "type": "dword",
-          "value": 2
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 6
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
         "__struct_id": 33,
         "FactionID1": {
           "type": "dword",
@@ -721,7 +736,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 7
+          "value": 5
         },
         "FactionRep": {
           "type": "dword",
@@ -736,7 +751,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 8
+          "value": 6
         },
         "FactionRep": {
           "type": "dword",
@@ -751,7 +766,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 9
+          "value": 7
         },
         "FactionRep": {
           "type": "dword",
@@ -766,7 +781,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 10
+          "value": 8
         },
         "FactionRep": {
           "type": "dword",
@@ -781,7 +796,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 11
+          "value": 9
         },
         "FactionRep": {
           "type": "dword",
@@ -796,7 +811,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 12
+          "value": 10
         },
         "FactionRep": {
           "type": "dword",
@@ -811,7 +826,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 13
+          "value": 11
         },
         "FactionRep": {
           "type": "dword",
@@ -822,45 +837,45 @@
         "__struct_id": 40,
         "FactionID1": {
           "type": "dword",
-          "value": 3
+          "value": 2
         },
         "FactionID2": {
           "type": "dword",
-          "value": 1
+          "value": 12
         },
         "FactionRep": {
           "type": "dword",
-          "value": 50
+          "value": 0
         }
       },
       {
         "__struct_id": 41,
         "FactionID1": {
           "type": "dword",
-          "value": 3
+          "value": 2
         },
         "FactionID2": {
           "type": "dword",
-          "value": 2
+          "value": 13
         },
         "FactionRep": {
           "type": "dword",
-          "value": 50
+          "value": 0
         }
       },
       {
         "__struct_id": 42,
         "FactionID1": {
           "type": "dword",
-          "value": 3
+          "value": 2
         },
         "FactionID2": {
           "type": "dword",
-          "value": 3
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",
-          "value": 50
+          "value": 0
         }
       },
       {
@@ -871,7 +886,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 4
+          "value": 1
         },
         "FactionRep": {
           "type": "dword",
@@ -886,7 +901,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 5
+          "value": 2
         },
         "FactionRep": {
           "type": "dword",
@@ -901,7 +916,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 6
+          "value": 3
         },
         "FactionRep": {
           "type": "dword",
@@ -916,7 +931,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 7
+          "value": 4
         },
         "FactionRep": {
           "type": "dword",
@@ -931,7 +946,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 8
+          "value": 5
         },
         "FactionRep": {
           "type": "dword",
@@ -946,7 +961,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 9
+          "value": 6
         },
         "FactionRep": {
           "type": "dword",
@@ -961,7 +976,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 10
+          "value": 7
         },
         "FactionRep": {
           "type": "dword",
@@ -976,7 +991,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 11
+          "value": 8
         },
         "FactionRep": {
           "type": "dword",
@@ -991,7 +1006,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 12
+          "value": 9
         },
         "FactionRep": {
           "type": "dword",
@@ -1006,7 +1021,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 13
+          "value": 10
         },
         "FactionRep": {
           "type": "dword",
@@ -1017,26 +1032,26 @@
         "__struct_id": 53,
         "FactionID1": {
           "type": "dword",
-          "value": 4
+          "value": 3
         },
         "FactionID2": {
           "type": "dword",
-          "value": 1
+          "value": 11
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 50
         }
       },
       {
         "__struct_id": 54,
         "FactionID1": {
           "type": "dword",
-          "value": 4
+          "value": 3
         },
         "FactionID2": {
           "type": "dword",
-          "value": 2
+          "value": 12
         },
         "FactionRep": {
           "type": "dword",
@@ -1047,11 +1062,11 @@
         "__struct_id": 55,
         "FactionID1": {
           "type": "dword",
-          "value": 4
+          "value": 3
         },
         "FactionID2": {
           "type": "dword",
-          "value": 3
+          "value": 13
         },
         "FactionRep": {
           "type": "dword",
@@ -1062,15 +1077,15 @@
         "__struct_id": 56,
         "FactionID1": {
           "type": "dword",
-          "value": 4
+          "value": 3
         },
         "FactionID2": {
           "type": "dword",
-          "value": 4
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",
-          "value": 100
+          "value": 50
         }
       },
       {
@@ -1081,7 +1096,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 5
+          "value": 1
         },
         "FactionRep": {
           "type": "dword",
@@ -1096,11 +1111,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 6
+          "value": 2
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 50
         }
       },
       {
@@ -1111,11 +1126,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 7
+          "value": 3
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 50
         }
       },
       {
@@ -1126,11 +1141,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 8
+          "value": 4
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 100
         }
       },
       {
@@ -1141,7 +1156,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 9
+          "value": 5
         },
         "FactionRep": {
           "type": "dword",
@@ -1156,7 +1171,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 10
+          "value": 6
         },
         "FactionRep": {
           "type": "dword",
@@ -1171,7 +1186,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 11
+          "value": 7
         },
         "FactionRep": {
           "type": "dword",
@@ -1186,7 +1201,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 12
+          "value": 8
         },
         "FactionRep": {
           "type": "dword",
@@ -1201,7 +1216,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 13
+          "value": 9
         },
         "FactionRep": {
           "type": "dword",
@@ -1212,41 +1227,41 @@
         "__struct_id": 66,
         "FactionID1": {
           "type": "dword",
-          "value": 5
+          "value": 4
         },
         "FactionID2": {
           "type": "dword",
-          "value": 0
+          "value": 10
         },
         "FactionRep": {
           "type": "dword",
-          "value": 100
+          "value": 0
         }
       },
       {
         "__struct_id": 67,
         "FactionID1": {
           "type": "dword",
-          "value": 5
+          "value": 4
         },
         "FactionID2": {
           "type": "dword",
-          "value": 1
+          "value": 11
         },
         "FactionRep": {
           "type": "dword",
-          "value": 100
+          "value": 0
         }
       },
       {
         "__struct_id": 68,
         "FactionID1": {
           "type": "dword",
-          "value": 5
+          "value": 4
         },
         "FactionID2": {
           "type": "dword",
-          "value": 2
+          "value": 12
         },
         "FactionRep": {
           "type": "dword",
@@ -1257,26 +1272,26 @@
         "__struct_id": 69,
         "FactionID1": {
           "type": "dword",
-          "value": 5
+          "value": 4
         },
         "FactionID2": {
           "type": "dword",
-          "value": 3
+          "value": 13
         },
         "FactionRep": {
           "type": "dword",
-          "value": 50
+          "value": 0
         }
       },
       {
         "__struct_id": 70,
         "FactionID1": {
           "type": "dword",
-          "value": 5
+          "value": 4
         },
         "FactionID2": {
           "type": "dword",
-          "value": 4
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",
@@ -1291,7 +1306,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 5
+          "value": 0
         },
         "FactionRep": {
           "type": "dword",
@@ -1306,11 +1321,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 6
+          "value": 1
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 100
         }
       },
       {
@@ -1321,7 +1336,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 7
+          "value": 2
         },
         "FactionRep": {
           "type": "dword",
@@ -1336,11 +1351,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 8
+          "value": 3
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 50
         }
       },
       {
@@ -1351,7 +1366,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 9
+          "value": 4
         },
         "FactionRep": {
           "type": "dword",
@@ -1366,11 +1381,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 10
+          "value": 5
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 100
         }
       },
       {
@@ -1381,7 +1396,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 11
+          "value": 6
         },
         "FactionRep": {
           "type": "dword",
@@ -1396,7 +1411,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 12
+          "value": 7
         },
         "FactionRep": {
           "type": "dword",
@@ -1411,7 +1426,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 13
+          "value": 8
         },
         "FactionRep": {
           "type": "dword",
@@ -1422,41 +1437,41 @@
         "__struct_id": 80,
         "FactionID1": {
           "type": "dword",
-          "value": 6
+          "value": 5
         },
         "FactionID2": {
           "type": "dword",
-          "value": 0
+          "value": 9
         },
         "FactionRep": {
           "type": "dword",
-          "value": 100
+          "value": 0
         }
       },
       {
         "__struct_id": 81,
         "FactionID1": {
           "type": "dword",
-          "value": 6
+          "value": 5
         },
         "FactionID2": {
           "type": "dword",
-          "value": 1
+          "value": 10
         },
         "FactionRep": {
           "type": "dword",
-          "value": 100
+          "value": 0
         }
       },
       {
         "__struct_id": 82,
         "FactionID1": {
           "type": "dword",
-          "value": 6
+          "value": 5
         },
         "FactionID2": {
           "type": "dword",
-          "value": 2
+          "value": 11
         },
         "FactionRep": {
           "type": "dword",
@@ -1467,26 +1482,26 @@
         "__struct_id": 83,
         "FactionID1": {
           "type": "dword",
-          "value": 6
+          "value": 5
         },
         "FactionID2": {
           "type": "dword",
-          "value": 3
+          "value": 12
         },
         "FactionRep": {
           "type": "dword",
-          "value": 50
+          "value": 0
         }
       },
       {
         "__struct_id": 84,
         "FactionID1": {
           "type": "dword",
-          "value": 6
+          "value": 5
         },
         "FactionID2": {
           "type": "dword",
-          "value": 4
+          "value": 13
         },
         "FactionRep": {
           "type": "dword",
@@ -1497,11 +1512,11 @@
         "__struct_id": 85,
         "FactionID1": {
           "type": "dword",
-          "value": 6
+          "value": 5
         },
         "FactionID2": {
           "type": "dword",
-          "value": 5
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",
@@ -1516,7 +1531,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 6
+          "value": 0
         },
         "FactionRep": {
           "type": "dword",
@@ -1531,11 +1546,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 7
+          "value": 1
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 100
         }
       },
       {
@@ -1546,7 +1561,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 8
+          "value": 2
         },
         "FactionRep": {
           "type": "dword",
@@ -1561,11 +1576,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 9
+          "value": 3
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 50
         }
       },
       {
@@ -1576,7 +1591,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 10
+          "value": 4
         },
         "FactionRep": {
           "type": "dword",
@@ -1591,7 +1606,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 11
+          "value": 5
         },
         "FactionRep": {
           "type": "dword",
@@ -1606,6 +1621,96 @@
         },
         "FactionID2": {
           "type": "dword",
+          "value": 6
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 93,
+        "FactionID1": {
+          "type": "dword",
+          "value": 6
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 7
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 94,
+        "FactionID1": {
+          "type": "dword",
+          "value": 6
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 8
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 95,
+        "FactionID1": {
+          "type": "dword",
+          "value": 6
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 96,
+        "FactionID1": {
+          "type": "dword",
+          "value": 6
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 10
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 97,
+        "FactionID1": {
+          "type": "dword",
+          "value": 6
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 98,
+        "FactionID1": {
+          "type": "dword",
+          "value": 6
+        },
+        "FactionID2": {
+          "type": "dword",
           "value": 12
         },
         "FactionRep": {
@@ -1614,7 +1719,7 @@
         }
       },
       {
-        "__struct_id": 93,
+        "__struct_id": 99,
         "FactionID1": {
           "type": "dword",
           "value": 6
@@ -1629,104 +1734,14 @@
         }
       },
       {
-        "__struct_id": 94,
-        "FactionID1": {
-          "type": "dword",
-          "value": 7
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 0
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 100
-        }
-      },
-      {
-        "__struct_id": 95,
-        "FactionID1": {
-          "type": "dword",
-          "value": 7
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 1
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 100
-        }
-      },
-      {
-        "__struct_id": 96,
-        "FactionID1": {
-          "type": "dword",
-          "value": 7
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 2
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 97,
-        "FactionID1": {
-          "type": "dword",
-          "value": 7
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 3
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 50
-        }
-      },
-      {
-        "__struct_id": 98,
-        "FactionID1": {
-          "type": "dword",
-          "value": 7
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 4
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 99,
-        "FactionID1": {
-          "type": "dword",
-          "value": 7
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 5
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
         "__struct_id": 100,
         "FactionID1": {
           "type": "dword",
-          "value": 7
+          "value": 6
         },
         "FactionID2": {
           "type": "dword",
-          "value": 6
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",
@@ -1741,7 +1756,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 7
+          "value": 0
         },
         "FactionRep": {
           "type": "dword",
@@ -1756,11 +1771,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 8
+          "value": 1
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 100
         }
       },
       {
@@ -1771,7 +1786,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 9
+          "value": 2
         },
         "FactionRep": {
           "type": "dword",
@@ -1786,11 +1801,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 10
+          "value": 3
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 50
         }
       },
       {
@@ -1801,7 +1816,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 11
+          "value": 4
         },
         "FactionRep": {
           "type": "dword",
@@ -1816,7 +1831,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 12
+          "value": 5
         },
         "FactionRep": {
           "type": "dword",
@@ -1831,7 +1846,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 13
+          "value": 6
         },
         "FactionRep": {
           "type": "dword",
@@ -1842,11 +1857,11 @@
         "__struct_id": 108,
         "FactionID1": {
           "type": "dword",
-          "value": 8
+          "value": 7
         },
         "FactionID2": {
           "type": "dword",
-          "value": 0
+          "value": 7
         },
         "FactionRep": {
           "type": "dword",
@@ -1857,26 +1872,26 @@
         "__struct_id": 109,
         "FactionID1": {
           "type": "dword",
-          "value": 8
+          "value": 7
         },
         "FactionID2": {
           "type": "dword",
-          "value": 1
+          "value": 8
         },
         "FactionRep": {
           "type": "dword",
-          "value": 100
+          "value": 0
         }
       },
       {
         "__struct_id": 110,
         "FactionID1": {
           "type": "dword",
-          "value": 8
+          "value": 7
         },
         "FactionID2": {
           "type": "dword",
-          "value": 2
+          "value": 9
         },
         "FactionRep": {
           "type": "dword",
@@ -1887,26 +1902,26 @@
         "__struct_id": 111,
         "FactionID1": {
           "type": "dword",
-          "value": 8
+          "value": 7
         },
         "FactionID2": {
           "type": "dword",
-          "value": 3
+          "value": 10
         },
         "FactionRep": {
           "type": "dword",
-          "value": 50
+          "value": 0
         }
       },
       {
         "__struct_id": 112,
         "FactionID1": {
           "type": "dword",
-          "value": 8
+          "value": 7
         },
         "FactionID2": {
           "type": "dword",
-          "value": 4
+          "value": 11
         },
         "FactionRep": {
           "type": "dword",
@@ -1917,11 +1932,11 @@
         "__struct_id": 113,
         "FactionID1": {
           "type": "dword",
-          "value": 8
+          "value": 7
         },
         "FactionID2": {
           "type": "dword",
-          "value": 5
+          "value": 12
         },
         "FactionRep": {
           "type": "dword",
@@ -1932,11 +1947,11 @@
         "__struct_id": 114,
         "FactionID1": {
           "type": "dword",
-          "value": 8
+          "value": 7
         },
         "FactionID2": {
           "type": "dword",
-          "value": 6
+          "value": 13
         },
         "FactionRep": {
           "type": "dword",
@@ -1947,11 +1962,11 @@
         "__struct_id": 115,
         "FactionID1": {
           "type": "dword",
-          "value": 8
+          "value": 7
         },
         "FactionID2": {
           "type": "dword",
-          "value": 7
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",
@@ -1966,11 +1981,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 8
+          "value": 0
         },
         "FactionRep": {
           "type": "dword",
-          "value": 50
+          "value": 100
         }
       },
       {
@@ -1981,11 +1996,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 9
+          "value": 1
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 100
         }
       },
       {
@@ -1996,7 +2011,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 10
+          "value": 2
         },
         "FactionRep": {
           "type": "dword",
@@ -2011,11 +2026,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 11
+          "value": 3
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 50
         }
       },
       {
@@ -2026,7 +2041,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 12
+          "value": 4
         },
         "FactionRep": {
           "type": "dword",
@@ -2041,7 +2056,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 13
+          "value": 5
         },
         "FactionRep": {
           "type": "dword",
@@ -2052,97 +2067,7 @@
         "__struct_id": 122,
         "FactionID1": {
           "type": "dword",
-          "value": 9
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 0
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 100
-        }
-      },
-      {
-        "__struct_id": 123,
-        "FactionID1": {
-          "type": "dword",
-          "value": 9
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 1
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 100
-        }
-      },
-      {
-        "__struct_id": 124,
-        "FactionID1": {
-          "type": "dword",
-          "value": 9
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 2
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 125,
-        "FactionID1": {
-          "type": "dword",
-          "value": 9
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 3
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 50
-        }
-      },
-      {
-        "__struct_id": 126,
-        "FactionID1": {
-          "type": "dword",
-          "value": 9
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 4
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 127,
-        "FactionID1": {
-          "type": "dword",
-          "value": 9
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 5
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 128,
-        "FactionID1": {
-          "type": "dword",
-          "value": 9
+          "value": 8
         },
         "FactionID2": {
           "type": "dword",
@@ -2154,10 +2079,10 @@
         }
       },
       {
-        "__struct_id": 129,
+        "__struct_id": 123,
         "FactionID1": {
           "type": "dword",
-          "value": 9
+          "value": 8
         },
         "FactionID2": {
           "type": "dword",
@@ -2169,14 +2094,104 @@
         }
       },
       {
-        "__struct_id": 130,
+        "__struct_id": 124,
         "FactionID1": {
           "type": "dword",
-          "value": 9
+          "value": 8
         },
         "FactionID2": {
           "type": "dword",
           "value": 8
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 50
+        }
+      },
+      {
+        "__struct_id": 125,
+        "FactionID1": {
+          "type": "dword",
+          "value": 8
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 126,
+        "FactionID1": {
+          "type": "dword",
+          "value": 8
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 10
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 127,
+        "FactionID1": {
+          "type": "dword",
+          "value": 8
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 128,
+        "FactionID1": {
+          "type": "dword",
+          "value": 8
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 12
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 129,
+        "FactionID1": {
+          "type": "dword",
+          "value": 8
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 130,
+        "FactionID1": {
+          "type": "dword",
+          "value": 8
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",
@@ -2191,7 +2206,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 9
+          "value": 0
         },
         "FactionRep": {
           "type": "dword",
@@ -2206,11 +2221,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 10
+          "value": 1
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 100
         }
       },
       {
@@ -2221,7 +2236,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 11
+          "value": 2
         },
         "FactionRep": {
           "type": "dword",
@@ -2236,6 +2251,141 @@
         },
         "FactionID2": {
           "type": "dword",
+          "value": 3
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 50
+        }
+      },
+      {
+        "__struct_id": 135,
+        "FactionID1": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 4
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 136,
+        "FactionID1": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 5
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 137,
+        "FactionID1": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 6
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 138,
+        "FactionID1": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 7
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 139,
+        "FactionID1": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 8
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 140,
+        "FactionID1": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 141,
+        "FactionID1": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 10
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 142,
+        "FactionID1": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 143,
+        "FactionID1": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionID2": {
+          "type": "dword",
           "value": 12
         },
         "FactionRep": {
@@ -2244,7 +2394,7 @@
         }
       },
       {
-        "__struct_id": 135,
+        "__struct_id": 144,
         "FactionID1": {
           "type": "dword",
           "value": 9
@@ -2259,149 +2409,14 @@
         }
       },
       {
-        "__struct_id": 136,
-        "FactionID1": {
-          "type": "dword",
-          "value": 10
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 0
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 100
-        }
-      },
-      {
-        "__struct_id": 137,
-        "FactionID1": {
-          "type": "dword",
-          "value": 10
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 1
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 100
-        }
-      },
-      {
-        "__struct_id": 138,
-        "FactionID1": {
-          "type": "dword",
-          "value": 10
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 2
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 139,
-        "FactionID1": {
-          "type": "dword",
-          "value": 10
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 3
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 50
-        }
-      },
-      {
-        "__struct_id": 140,
-        "FactionID1": {
-          "type": "dword",
-          "value": 10
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 4
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 141,
-        "FactionID1": {
-          "type": "dword",
-          "value": 10
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 5
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 142,
-        "FactionID1": {
-          "type": "dword",
-          "value": 10
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 6
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 143,
-        "FactionID1": {
-          "type": "dword",
-          "value": 10
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 7
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 144,
-        "FactionID1": {
-          "type": "dword",
-          "value": 10
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 8
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
         "__struct_id": 145,
         "FactionID1": {
           "type": "dword",
-          "value": 10
+          "value": 9
         },
         "FactionID2": {
           "type": "dword",
-          "value": 9
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",
@@ -2416,7 +2431,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 10
+          "value": 0
         },
         "FactionRep": {
           "type": "dword",
@@ -2431,11 +2446,11 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 11
+          "value": 1
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 100
         }
       },
       {
@@ -2446,7 +2461,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 12
+          "value": 2
         },
         "FactionRep": {
           "type": "dword",
@@ -2461,66 +2476,6 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 13
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 150,
-        "FactionID1": {
-          "type": "dword",
-          "value": 11
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 0
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 100
-        }
-      },
-      {
-        "__struct_id": 151,
-        "FactionID1": {
-          "type": "dword",
-          "value": 11
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 1
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 100
-        }
-      },
-      {
-        "__struct_id": 152,
-        "FactionID1": {
-          "type": "dword",
-          "value": 11
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 2
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 153,
-        "FactionID1": {
-          "type": "dword",
-          "value": 11
-        },
-        "FactionID2": {
-          "type": "dword",
           "value": 3
         },
         "FactionRep": {
@@ -2529,10 +2484,10 @@
         }
       },
       {
-        "__struct_id": 154,
+        "__struct_id": 150,
         "FactionID1": {
           "type": "dword",
-          "value": 11
+          "value": 10
         },
         "FactionID2": {
           "type": "dword",
@@ -2544,10 +2499,10 @@
         }
       },
       {
-        "__struct_id": 155,
+        "__struct_id": 151,
         "FactionID1": {
           "type": "dword",
-          "value": 11
+          "value": 10
         },
         "FactionID2": {
           "type": "dword",
@@ -2559,10 +2514,10 @@
         }
       },
       {
-        "__struct_id": 156,
+        "__struct_id": 152,
         "FactionID1": {
           "type": "dword",
-          "value": 11
+          "value": 10
         },
         "FactionID2": {
           "type": "dword",
@@ -2574,10 +2529,10 @@
         }
       },
       {
-        "__struct_id": 157,
+        "__struct_id": 153,
         "FactionID1": {
           "type": "dword",
-          "value": 11
+          "value": 10
         },
         "FactionID2": {
           "type": "dword",
@@ -2589,10 +2544,10 @@
         }
       },
       {
-        "__struct_id": 158,
+        "__struct_id": 154,
         "FactionID1": {
           "type": "dword",
-          "value": 11
+          "value": 10
         },
         "FactionID2": {
           "type": "dword",
@@ -2604,10 +2559,10 @@
         }
       },
       {
-        "__struct_id": 159,
+        "__struct_id": 155,
         "FactionID1": {
           "type": "dword",
-          "value": 11
+          "value": 10
         },
         "FactionID2": {
           "type": "dword",
@@ -2619,14 +2574,74 @@
         }
       },
       {
-        "__struct_id": 160,
+        "__struct_id": 156,
         "FactionID1": {
           "type": "dword",
-          "value": 11
+          "value": 10
         },
         "FactionID2": {
           "type": "dword",
           "value": 10
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 157,
+        "FactionID1": {
+          "type": "dword",
+          "value": 10
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 158,
+        "FactionID1": {
+          "type": "dword",
+          "value": 10
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 12
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 159,
+        "FactionID1": {
+          "type": "dword",
+          "value": 10
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 160,
+        "FactionID1": {
+          "type": "dword",
+          "value": 10
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",
@@ -2641,7 +2656,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 11
+          "value": 0
         },
         "FactionRep": {
           "type": "dword",
@@ -2656,6 +2671,171 @@
         },
         "FactionID2": {
           "type": "dword",
+          "value": 1
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 163,
+        "FactionID1": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 2
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 164,
+        "FactionID1": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 3
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 50
+        }
+      },
+      {
+        "__struct_id": 165,
+        "FactionID1": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 4
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 166,
+        "FactionID1": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 5
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 167,
+        "FactionID1": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 6
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 168,
+        "FactionID1": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 7
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 169,
+        "FactionID1": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 8
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 170,
+        "FactionID1": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 171,
+        "FactionID1": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 10
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 172,
+        "FactionID1": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 173,
+        "FactionID1": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionID2": {
+          "type": "dword",
           "value": 12
         },
         "FactionRep": {
@@ -2664,7 +2844,7 @@
         }
       },
       {
-        "__struct_id": 163,
+        "__struct_id": 174,
         "FactionID1": {
           "type": "dword",
           "value": 11
@@ -2679,179 +2859,14 @@
         }
       },
       {
-        "__struct_id": 164,
-        "FactionID1": {
-          "type": "dword",
-          "value": 12
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 0
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 100
-        }
-      },
-      {
-        "__struct_id": 165,
-        "FactionID1": {
-          "type": "dword",
-          "value": 12
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 1
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 100
-        }
-      },
-      {
-        "__struct_id": 166,
-        "FactionID1": {
-          "type": "dword",
-          "value": 12
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 2
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 167,
-        "FactionID1": {
-          "type": "dword",
-          "value": 12
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 3
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 50
-        }
-      },
-      {
-        "__struct_id": 168,
-        "FactionID1": {
-          "type": "dword",
-          "value": 12
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 4
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 169,
-        "FactionID1": {
-          "type": "dword",
-          "value": 12
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 5
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 170,
-        "FactionID1": {
-          "type": "dword",
-          "value": 12
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 6
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 171,
-        "FactionID1": {
-          "type": "dword",
-          "value": 12
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 7
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 172,
-        "FactionID1": {
-          "type": "dword",
-          "value": 12
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 8
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 173,
-        "FactionID1": {
-          "type": "dword",
-          "value": 12
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 9
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 174,
-        "FactionID1": {
-          "type": "dword",
-          "value": 12
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 10
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
         "__struct_id": 175,
         "FactionID1": {
           "type": "dword",
-          "value": 12
+          "value": 11
         },
         "FactionID2": {
           "type": "dword",
-          "value": 11
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",
@@ -2866,7 +2881,7 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 12
+          "value": 0
         },
         "FactionRep": {
           "type": "dword",
@@ -2881,36 +2896,6 @@
         },
         "FactionID2": {
           "type": "dword",
-          "value": 13
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 178,
-        "FactionID1": {
-          "type": "dword",
-          "value": 13
-        },
-        "FactionID2": {
-          "type": "dword",
-          "value": 0
-        },
-        "FactionRep": {
-          "type": "dword",
-          "value": 100
-        }
-      },
-      {
-        "__struct_id": 179,
-        "FactionID1": {
-          "type": "dword",
-          "value": 13
-        },
-        "FactionID2": {
-          "type": "dword",
           "value": 1
         },
         "FactionRep": {
@@ -2919,10 +2904,10 @@
         }
       },
       {
-        "__struct_id": 180,
+        "__struct_id": 178,
         "FactionID1": {
           "type": "dword",
-          "value": 13
+          "value": 12
         },
         "FactionID2": {
           "type": "dword",
@@ -2934,10 +2919,10 @@
         }
       },
       {
-        "__struct_id": 181,
+        "__struct_id": 179,
         "FactionID1": {
           "type": "dword",
-          "value": 13
+          "value": 12
         },
         "FactionID2": {
           "type": "dword",
@@ -2949,10 +2934,10 @@
         }
       },
       {
-        "__struct_id": 182,
+        "__struct_id": 180,
         "FactionID1": {
           "type": "dword",
-          "value": 13
+          "value": 12
         },
         "FactionID2": {
           "type": "dword",
@@ -2964,10 +2949,10 @@
         }
       },
       {
-        "__struct_id": 183,
+        "__struct_id": 181,
         "FactionID1": {
           "type": "dword",
-          "value": 13
+          "value": 12
         },
         "FactionID2": {
           "type": "dword",
@@ -2979,10 +2964,10 @@
         }
       },
       {
-        "__struct_id": 184,
+        "__struct_id": 182,
         "FactionID1": {
           "type": "dword",
-          "value": 13
+          "value": 12
         },
         "FactionID2": {
           "type": "dword",
@@ -2994,10 +2979,10 @@
         }
       },
       {
-        "__struct_id": 185,
+        "__struct_id": 183,
         "FactionID1": {
           "type": "dword",
-          "value": 13
+          "value": 12
         },
         "FactionID2": {
           "type": "dword",
@@ -3005,14 +2990,14 @@
         },
         "FactionRep": {
           "type": "dword",
-          "value": 0
+          "value": 1
         }
       },
       {
-        "__struct_id": 186,
+        "__struct_id": 184,
         "FactionID1": {
           "type": "dword",
-          "value": 13
+          "value": 12
         },
         "FactionID2": {
           "type": "dword",
@@ -3024,10 +3009,10 @@
         }
       },
       {
-        "__struct_id": 187,
+        "__struct_id": 185,
         "FactionID1": {
           "type": "dword",
-          "value": 13
+          "value": 12
         },
         "FactionID2": {
           "type": "dword",
@@ -3039,10 +3024,10 @@
         }
       },
       {
-        "__struct_id": 188,
+        "__struct_id": 186,
         "FactionID1": {
           "type": "dword",
-          "value": 13
+          "value": 12
         },
         "FactionID2": {
           "type": "dword",
@@ -3054,10 +3039,10 @@
         }
       },
       {
-        "__struct_id": 189,
+        "__struct_id": 187,
         "FactionID1": {
           "type": "dword",
-          "value": 13
+          "value": 12
         },
         "FactionID2": {
           "type": "dword",
@@ -3069,14 +3054,44 @@
         }
       },
       {
-        "__struct_id": 190,
+        "__struct_id": 188,
         "FactionID1": {
           "type": "dword",
-          "value": 13
+          "value": 12
         },
         "FactionID2": {
           "type": "dword",
           "value": 12
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 189,
+        "FactionID1": {
+          "type": "dword",
+          "value": 12
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 190,
+        "FactionID1": {
+          "type": "dword",
+          "value": 12
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",
@@ -3091,7 +3106,442 @@
         },
         "FactionID2": {
           "type": "dword",
+          "value": 0
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 192,
+        "FactionID1": {
+          "type": "dword",
           "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 1
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 193,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 2
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 194,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 3
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 50
+        }
+      },
+      {
+        "__struct_id": 195,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 4
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 196,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 5
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 197,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 6
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 198,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 7
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 199,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 8
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 200,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 201,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 10
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 202,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 203,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 12
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 204,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 205,
+        "FactionID1": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 206,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 0
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 207,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 1
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 208,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 2
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 209,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 3
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 50
+        }
+      },
+      {
+        "__struct_id": 210,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 4
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 211,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 5
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 212,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 6
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 213,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 7
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 214,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 8
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 215,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 9
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 216,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 10
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 217,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 11
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 218,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 12
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 219,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 13
+        },
+        "FactionRep": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 220,
+        "FactionID1": {
+          "type": "dword",
+          "value": 14
+        },
+        "FactionID2": {
+          "type": "dword",
+          "value": 14
         },
         "FactionRep": {
           "type": "dword",

@@ -27,11 +27,11 @@
       },
       "MusicBattle": {
         "type": "int",
-        "value": 34
+        "value": 91
       },
       "MusicDay": {
         "type": "int",
-        "value": 1
+        "value": 83
       },
       "MusicDelay": {
         "type": "int",
@@ -39,7 +39,7 @@
       },
       "MusicNight": {
         "type": "int",
-        "value": 3
+        "value": 83
       }
     }
   },
@@ -274,6 +274,222 @@
         },
         "Appearance": {
           "type": "dword",
+          "value": 2
+        },
+        "AutoRemoveKey": {
+          "type": "byte",
+          "value": 0
+        },
+        "Bearing": {
+          "type": "float",
+          "value": -3.1416
+        },
+        "CloseLockDC": {
+          "type": "byte",
+          "value": 0
+        },
+        "Conversation": {
+          "type": "resref",
+          "value": ""
+        },
+        "CurrentHP": {
+          "type": "short",
+          "value": 80
+        },
+        "Description": {
+          "type": "cexolocstring",
+          "value": {}
+        },
+        "DisarmDC": {
+          "type": "byte",
+          "value": 15
+        },
+        "Faction": {
+          "type": "dword",
+          "value": 1
+        },
+        "Fort": {
+          "type": "byte",
+          "value": 16
+        },
+        "GenericType_New": {
+          "type": "dword",
+          "value": 0
+        },
+        "Hardness": {
+          "type": "byte",
+          "value": 5
+        },
+        "HP": {
+          "type": "short",
+          "value": 80
+        },
+        "Interruptable": {
+          "type": "byte",
+          "value": 1
+        },
+        "KeyName": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "KeyRequired": {
+          "type": "byte",
+          "value": 0
+        },
+        "LinkedTo": {
+          "type": "cexostring",
+          "value": "HighcliffToHighRoadSouth"
+        },
+        "LinkedToFlags": {
+          "type": "byte",
+          "value": 1
+        },
+        "LoadScreenID": {
+          "type": "word",
+          "value": 0
+        },
+        "Lockable": {
+          "type": "byte",
+          "value": 0
+        },
+        "Locked": {
+          "type": "byte",
+          "value": 0
+        },
+        "LocName": {
+          "id": 5349,
+          "type": "cexolocstring",
+          "value": {}
+        },
+        "OnClick": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnClosed": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnDamaged": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnDeath": {
+          "type": "resref",
+          "value": "x2_door_death"
+        },
+        "OnDisarm": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnFailToOpen": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnHeartbeat": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnLock": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnMeleeAttacked": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnOpen": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnSpellCastAt": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnTrapTriggered": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnUnlock": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnUserDefined": {
+          "type": "resref",
+          "value": ""
+        },
+        "OpenLockDC": {
+          "type": "byte",
+          "value": 18
+        },
+        "Plot": {
+          "type": "byte",
+          "value": 0
+        },
+        "PortraitId": {
+          "type": "word",
+          "value": 0
+        },
+        "Ref": {
+          "type": "byte",
+          "value": 0
+        },
+        "Tag": {
+          "type": "cexostring",
+          "value": "HighRoadSouthToHighcliff"
+        },
+        "TemplateResRef": {
+          "type": "resref",
+          "value": "nw_door_ttr_02"
+        },
+        "TrapDetectable": {
+          "type": "byte",
+          "value": 1
+        },
+        "TrapDetectDC": {
+          "type": "byte",
+          "value": 0
+        },
+        "TrapDisarmable": {
+          "type": "byte",
+          "value": 1
+        },
+        "TrapFlag": {
+          "type": "byte",
+          "value": 0
+        },
+        "TrapOneShot": {
+          "type": "byte",
+          "value": 1
+        },
+        "TrapType": {
+          "type": "byte",
+          "value": 0
+        },
+        "Will": {
+          "type": "byte",
+          "value": 0
+        },
+        "X": {
+          "type": "float",
+          "value": 35.0
+        },
+        "Y": {
+          "type": "float",
+          "value": 5.0
+        },
+        "Z": {
+          "type": "float",
+          "value": 0.0
+        }
+      },
+      {
+        "__struct_id": 8,
+        "AnimationState": {
+          "type": "byte",
+          "value": 1
+        },
+        "Appearance": {
+          "type": "dword",
           "value": 65
         },
         "AutoRemoveKey": {
@@ -475,7 +691,7 @@
         },
         "Y": {
           "type": "float",
-          "value": 15.0
+          "value": 35.0
         },
         "Z": {
           "type": "float",
@@ -532,180 +748,165 @@
               "__struct_id": 3,
               "PointX": {
                 "type": "float",
-                "value": -154.6292
-              },
-              "PointY": {
-                "type": "float",
-                "value": -313.0927
-              },
-              "PointZ": {
-                "type": "float",
-                "value": 4.025
-              }
-            },
-            {
-              "__struct_id": 3,
-              "PointX": {
-                "type": "float",
-                "value": -85.8069
-              },
-              "PointY": {
-                "type": "float",
-                "value": -314.7092
-              },
-              "PointZ": {
-                "type": "float",
-                "value": 4.029
-              }
-            },
-            {
-              "__struct_id": 3,
-              "PointX": {
-                "type": "float",
-                "value": -76.03749999999999
-              },
-              "PointY": {
-                "type": "float",
-                "value": -266.1054
-              },
-              "PointZ": {
-                "type": "float",
-                "value": 4.0278
-              }
-            },
-            {
-              "__struct_id": 3,
-              "PointX": {
-                "type": "float",
-                "value": -61.8984
-              },
-              "PointY": {
-                "type": "float",
-                "value": -257.4285
-              },
-              "PointZ": {
-                "type": "float",
-                "value": 0.025
-              }
-            },
-            {
-              "__struct_id": 3,
-              "PointX": {
-                "type": "float",
-                "value": -43.6157
-              },
-              "PointY": {
-                "type": "float",
-                "value": -243.6564
-              },
-              "PointZ": {
-                "type": "float",
-                "value": 0.0212
-              }
-            },
-            {
-              "__struct_id": 3,
-              "PointX": {
-                "type": "float",
-                "value": -15.1355
-              },
-              "PointY": {
-                "type": "float",
-                "value": -239.6225
-              },
-              "PointZ": {
-                "type": "float",
-                "value": 0.025
-              }
-            },
-            {
-              "__struct_id": 3,
-              "PointX": {
-                "type": "float",
-                "value": -17.2368
-              },
-              "PointY": {
-                "type": "float",
-                "value": -226.1793
-              },
-              "PointZ": {
-                "type": "float",
-                "value": 0.025
-              }
-            },
-            {
-              "__struct_id": 3,
-              "PointX": {
-                "type": "float",
-                "value": -28.0827
-              },
-              "PointY": {
-                "type": "float",
-                "value": -225.124
-              },
-              "PointZ": {
-                "type": "float",
-                "value": 0.025
-              }
-            },
-            {
-              "__struct_id": 3,
-              "PointX": {
-                "type": "float",
-                "value": -25.4645
-              },
-              "PointY": {
-                "type": "float",
-                "value": -197.7857
-              },
-              "PointZ": {
-                "type": "float",
-                "value": 0.1537
-              }
-            },
-            {
-              "__struct_id": 3,
-              "PointX": {
-                "type": "float",
-                "value": -2.2692
-              },
-              "PointY": {
-                "type": "float",
-                "value": -198.1566
-              },
-              "PointZ": {
-                "type": "float",
-                "value": 4.0209
-              }
-            },
-            {
-              "__struct_id": 3,
-              "PointX": {
-                "type": "float",
                 "value": 0.0
               },
               "PointY": {
                 "type": "float",
                 "value": 0.0
-              },
-              "PointZ": {
-                "type": "float",
-                "value": 4.025
-              }
-            },
-            {
-              "__struct_id": 3,
-              "PointX": {
-                "type": "float",
-                "value": -153.6559
-              },
-              "PointY": {
-                "type": "float",
-                "value": 2.032
               },
               "PointZ": {
                 "type": "float",
                 "value": 4.8063
+              }
+            },
+            {
+              "__struct_id": 3,
+              "PointX": {
+                "type": "float",
+                "value": 0.903
+              },
+              "PointY": {
+                "type": "float",
+                "value": -297.2658
+              },
+              "PointZ": {
+                "type": "float",
+                "value": 0.0256
+              }
+            },
+            {
+              "__struct_id": 3,
+              "PointX": {
+                "type": "float",
+                "value": 82.639
+              },
+              "PointY": {
+                "type": "float",
+                "value": -287.9777
+              },
+              "PointZ": {
+                "type": "float",
+                "value": 0.025
+              }
+            },
+            {
+              "__struct_id": 3,
+              "PointX": {
+                "type": "float",
+                "value": 79.7762
+              },
+              "PointY": {
+                "type": "float",
+                "value": -263.9586
+              },
+              "PointZ": {
+                "type": "float",
+                "value": 5.025
+              }
+            },
+            {
+              "__struct_id": 3,
+              "PointX": {
+                "type": "float",
+                "value": 89.5727
+              },
+              "PointY": {
+                "type": "float",
+                "value": -256.7054
+              },
+              "PointZ": {
+                "type": "float",
+                "value": 0.025
+              }
+            },
+            {
+              "__struct_id": 3,
+              "PointX": {
+                "type": "float",
+                "value": 140.6437
+              },
+              "PointY": {
+                "type": "float",
+                "value": -242.6424
+              },
+              "PointZ": {
+                "type": "float",
+                "value": 4.3973
+              }
+            },
+            {
+              "__struct_id": 3,
+              "PointX": {
+                "type": "float",
+                "value": 138.8093
+              },
+              "PointY": {
+                "type": "float",
+                "value": -226.9624
+              },
+              "PointZ": {
+                "type": "float",
+                "value": 0.025
+              }
+            },
+            {
+              "__struct_id": 3,
+              "PointX": {
+                "type": "float",
+                "value": 131.6734
+              },
+              "PointY": {
+                "type": "float",
+                "value": -228.0926
+              },
+              "PointZ": {
+                "type": "float",
+                "value": 0.025
+              }
+            },
+            {
+              "__struct_id": 3,
+              "PointX": {
+                "type": "float",
+                "value": 132.787
+              },
+              "PointY": {
+                "type": "float",
+                "value": -200.4853
+              },
+              "PointZ": {
+                "type": "float",
+                "value": 0.025
+              }
+            },
+            {
+              "__struct_id": 3,
+              "PointX": {
+                "type": "float",
+                "value": 155.9199
+              },
+              "PointY": {
+                "type": "float",
+                "value": -196.7851
+              },
+              "PointZ": {
+                "type": "float",
+                "value": 4.8063
+              }
+            },
+            {
+              "__struct_id": 3,
+              "PointX": {
+                "type": "float",
+                "value": 153.6767
+              },
+              "PointY": {
+                "type": "float",
+                "value": -5.82
+              },
+              "PointZ": {
+                "type": "float",
+                "value": 4.025
               }
             }
           ]
@@ -811,7 +1012,7 @@
         },
         "XPosition": {
           "type": "float",
-          "value": 157.2925
+          "value": 3.5204
         },
         "YOrientation": {
           "type": "float",
@@ -819,7 +1020,7 @@
         },
         "YPosition": {
           "type": "float",
-          "value": 315.1748
+          "value": 318.6025
         },
         "ZOrientation": {
           "type": "float",
@@ -1051,6 +1252,69 @@
         "ZPosition": {
           "type": "float",
           "value": 0.02
+        }
+      },
+      {
+        "__struct_id": 5,
+        "Appearance": {
+          "type": "byte",
+          "value": 1
+        },
+        "Description": {
+          "type": "cexolocstring",
+          "value": {}
+        },
+        "HasMapNote": {
+          "type": "byte",
+          "value": 1
+        },
+        "LinkedTo": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "LocalizedName": {
+          "id": 14814,
+          "type": "cexolocstring",
+          "value": {}
+        },
+        "MapNote": {
+          "id": 14815,
+          "type": "cexolocstring",
+          "value": {
+            "0": "Highcliff"
+          }
+        },
+        "MapNoteEnabled": {
+          "type": "byte",
+          "value": 1
+        },
+        "Tag": {
+          "type": "cexostring",
+          "value": "NW_MAPNOTE001"
+        },
+        "TemplateResRef": {
+          "type": "resref",
+          "value": "nw_mapnote001"
+        },
+        "XOrientation": {
+          "type": "float",
+          "value": 0.0
+        },
+        "XPosition": {
+          "type": "float",
+          "value": 35.1561
+        },
+        "YOrientation": {
+          "type": "float",
+          "value": 1.0
+        },
+        "YPosition": {
+          "type": "float",
+          "value": 7.222
+        },
+        "ZPosition": {
+          "type": "float",
+          "value": 0.01
         }
       }
     ]
