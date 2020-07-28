@@ -17,6 +17,8 @@ void main()
 {
     object oRespawner = GetLastRespawnButtonPresser();
 
+    object oArea = GetArea(oRespawner);
+
     WriteTimestampedLogEntry(PlayerDetailedName(oRespawner)+" respawned.");
 
     //1.70: double respawn protection: if player isn't dead, dying or petrified, cancel respawn
@@ -39,7 +41,10 @@ void main()
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oRespawner);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(GetMaxHitPoints(oRespawner)), oRespawner);
 
-    location lRespawnLocation = GetLocation(GetObjectByTag("NW_DEATH_TEMPLE"));
+    location lRespawnLocation = GetLocation(GetObjectByTag("RESPAWN_NEVERWINTER"));
+
+    object oNearestRespawn = GetObjectByTag(GetLocalString(oArea, "respawn"));
+    if (GetIsObjectValid(oNearestRespawn)) lRespawnLocation = GetLocation(oNearestRespawn);
 
 // Apply a visual effect
     effect eVisual = EffectVisualEffect(VFX_IMP_RESTORATION);

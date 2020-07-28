@@ -29,7 +29,7 @@ void main()
     effect eEffect;
 
     object oKiller = GetLastHostileActor(oPlayer);
-    string sDeathMessage = "You will be automatically revived if there is a friend nearby, there are no enemies, and you are out of combat, or you can respawn at the Temple of Tyr in Neverwinter.";
+    string sDeathMessage = "You will be automatically revived if there is a friend nearby, there are no enemies, and you are out of combat, or you can respawn at the nearest Temple of Tyr.";
 
     RemoveMount(oPlayer);
 
