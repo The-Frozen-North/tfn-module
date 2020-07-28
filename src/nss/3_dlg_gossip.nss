@@ -43,7 +43,7 @@ int StartingConditional()
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I've got my eye on you.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Sorry, but I'm on a duty.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "This blade seems quite stout, doesn't it? It's recently forged by Edorio.");
-        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "When the's next lizardmen raid, I wonder.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "When's the next lizardmen raid, I wonder?");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "This village is peaceful enough. And it best stay that way.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "If you need some general goods or are looking for a place to sell things, Branson is the only guy who will offer that in this village.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I'd steer clear of the High Road if I were you. Lots of bandit activity, lately.");
