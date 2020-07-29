@@ -17,7 +17,7 @@ void main()
 
             location lLocation = GetLocation(oPC);
 
-            float fSize = 60.0;
+            float fSize = 50.0;
 
             object oCreature = GetFirstObjectInShape(SHAPE_SPHERE, fSize, lLocation, TRUE, OBJECT_TYPE_CREATURE);
 
