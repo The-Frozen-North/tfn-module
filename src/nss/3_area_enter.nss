@@ -18,6 +18,9 @@ void main()
 
        if (GetLocalInt(OBJECT_SELF, "explored") == 1) ExploreAreaForPlayer(OBJECT_SELF, GetEnteringObject());
 
+       string sScript = GetLocalString(OBJECT_SELF, "enter_script");
+       if (sScript != "") ExecuteScript(sScript, OBJECT_SELF);
+
        if (GetLocalInt(OBJECT_SELF, "instance") == 1)
        {
            string sResRef = GetResRef(OBJECT_SELF);
