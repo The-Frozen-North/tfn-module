@@ -2,6 +2,6 @@ void main()
 {
      object oItem = GetItemActivated();
 
-     ExecuteScript(""+GetResRef(oItem), GetItemActivator());
+     ExecuteScript(GetResRef(oItem), GetItemActivator());
 
 }

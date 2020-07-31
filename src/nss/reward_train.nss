@@ -11,7 +11,7 @@ void main()
 
         SetXP(OBJECT_SELF, 1000);
         FadeToBlack(OBJECT_SELF);
-        DelayCommand(2.5, AssignCommand(OBJECT_SELF, ActionJumpToObject(GetObjectByTag("qst_training"))));
+        DelayCommand(2.5, AssignCommand(OBJECT_SELF, ActionJumpToObject(GetObjectByTag("WP_TRAINING"))));
         DelayCommand(5.0, FadeFromBlack(OBJECT_SELF));
 
         DelayCommand(6.0, TurnToFaceObject(OBJECT_SELF, oPavel));
