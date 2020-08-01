@@ -87,6 +87,9 @@ int GetLevelFromXP(int nXP)
 
 void GiveXPToPC(object oPC, float fXpAmount)
 {
+// Dead PCs do not get any XP
+   if (GetIsDead(oPC)) return;
+
 // Calculate wisdom bonus
    int nWisdomMod = GetAbilityScore(oPC, ABILITY_WISDOM) - 10;
    float fXpPercent = 1.0 + (IntToFloat(nWisdomMod) * WISDOM_BONUS);
