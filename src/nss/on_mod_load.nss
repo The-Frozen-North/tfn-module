@@ -126,7 +126,7 @@ void main()
    // * every polymorph shape in game even Tenser's transformation. This automatically enables
    // * the "merge arms" switch.
    // * Note: for unarmed shapes only defensive properties from weapon will merge.
-   // SetModuleSwitch (MODULE_SWITCH_POLYMORPH_MERGE_EVERYTHING, TRUE);
+   SetModuleSwitch (MODULE_SWITCH_POLYMORPH_MERGE_EVERYTHING, TRUE);
 
    // * 1.72: Activating this switch below will allow to merge intelligence, charisma and wisdom from
    // * all items no matter if the shape merges them or not. The reason for this is when you want to
@@ -224,7 +224,7 @@ void main()
         SetModuleSwitch (MODULE_SWITCH_ENABLE_UMD_SCROLLS, TRUE);
 
        // * Activating the switch below will make AOE spells hurt neutral NPCS by default
-       // SetModuleSwitch (MODULE_SWITCH_AOE_HURT_NEUTRAL_NPCS, TRUE);
+       SetModuleSwitch (MODULE_SWITCH_AOE_HURT_NEUTRAL_NPCS, TRUE);
    }
 
    // * AI: Activating the switch below will make the creaures using the WalkWaypoint function
