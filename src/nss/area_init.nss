@@ -3,6 +3,18 @@
 #include "inc_debug"
 #include "nwnx_object"
 
+float GetMaxHeight(object oTrigger)
+{
+    float fMaxHeight = 3.5;
+    switch (GetLocalInt(oTrigger, "elevation"))
+    {
+        case 1: fMaxHeight = 7.0; break;
+        case 2: fMaxHeight = 10.5; break;
+    }
+
+    return fMaxHeight;
+}
+
 string ChooseSpawnRef(object oArea, int nTarget)
 {
     string sTarget = "random"+IntToString(nTarget)+"_spawn";
@@ -112,7 +124,7 @@ void main()
                            SetLocalString(oObject, "TRANSITION_TARGET", GetTag(oTransitionTarget));
                        }
 // add the resref to a spawn trigger tag
-                       else if (GetStringLeft(sTag, 6) == "random")
+                       else if (GetStringLeft(GetResRef(oObject), 11) == "trig_random")
                        {
                            SetTag(oObject, sResRef+sTag);
                        }
@@ -264,11 +276,35 @@ void main()
                     bCreatureSpawnNotFound = TRUE;
 
 // check if this is within a proper spawn trigger, and if so increment the count for that particular spawn
-// if we already found a spawn point, we won't dothe others, in order of 1, 2, and 3
+// if we already found a spawn point, we won't do the others, in order of 1, 2, and 3
                     for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
                     {
-                        oTrigger = GetObjectByTag(sResRef+"random1_spawn", i);
-                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile))
+                        oTrigger = GetObjectByTag(sResRef+"e0_random1_spawn", i);
+                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
+                        {
+                            bCreatureSpawnNotFound = FALSE;
+                            nCreatureSpawns1 = nCreatureSpawns1 + 1;
+                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random1_spawn_point"+IntToString(nCreatureSpawns1));
+                            break;
+                        }
+                    }
+
+                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    {
+                        oTrigger = GetObjectByTag(sResRef+"e1_random1_spawn", i);
+                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
+                        {
+                            bCreatureSpawnNotFound = FALSE;
+                            nCreatureSpawns1 = nCreatureSpawns1 + 1;
+                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random1_spawn_point"+IntToString(nCreatureSpawns1));
+                            break;
+                        }
+                    }
+
+                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    {
+                        oTrigger = GetObjectByTag(sResRef+"e2_random1_spawn", i);
+                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
                         {
                             bCreatureSpawnNotFound = FALSE;
                             nCreatureSpawns1 = nCreatureSpawns1 + 1;
@@ -279,8 +315,32 @@ void main()
 // same for spawn 2
                     for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
                     {
-                        oTrigger = GetObjectByTag(sResRef+"random2_spawn", i);
-                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile))
+                        oTrigger = GetObjectByTag(sResRef+"e0_random2_spawn", i);
+                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
+                        {
+                            bCreatureSpawnNotFound = FALSE;
+                            nCreatureSpawns2 = nCreatureSpawns2 + 1;
+                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random2_spawn_point"+IntToString(nCreatureSpawns2));
+                            break;
+                        }
+                    }
+
+                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    {
+                        oTrigger = GetObjectByTag(sResRef+"e1_random2_spawn", i);
+                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
+                        {
+                            bCreatureSpawnNotFound = FALSE;
+                            nCreatureSpawns2 = nCreatureSpawns2 + 1;
+                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random2_spawn_point"+IntToString(nCreatureSpawns2));
+                            break;
+                        }
+                    }
+
+                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    {
+                        oTrigger = GetObjectByTag(sResRef+"e2_random2_spawn", i);
+                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
                         {
                             bCreatureSpawnNotFound = FALSE;
                             nCreatureSpawns2 = nCreatureSpawns2 + 1;
@@ -291,8 +351,32 @@ void main()
 // same for spawn 3
                     for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
                     {
-                        oTrigger = GetObjectByTag(sResRef+"random3_spawn", i);
-                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile))
+                        oTrigger = GetObjectByTag(sResRef+"e0_random3_spawn", i);
+                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
+                        {
+                            bCreatureSpawnNotFound = FALSE;
+                            nCreatureSpawns3 = nCreatureSpawns3 + 1;
+                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random3_spawn_point"+IntToString(nCreatureSpawns3));
+                            break;
+                        }
+                    }
+
+                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    {
+                        oTrigger = GetObjectByTag(sResRef+"e1_random3_spawn", i);
+                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
+                        {
+                            bCreatureSpawnNotFound = FALSE;
+                            nCreatureSpawns3 = nCreatureSpawns3 + 1;
+                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random3_spawn_point"+IntToString(nCreatureSpawns3));
+                            break;
+                        }
+                    }
+
+                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    {
+                        oTrigger = GetObjectByTag(sResRef+"e2_random3_spawn", i);
+                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
                         {
                             bCreatureSpawnNotFound = FALSE;
                             nCreatureSpawns3 = nCreatureSpawns3 + 1;
