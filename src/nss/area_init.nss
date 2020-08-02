@@ -223,6 +223,8 @@ void main()
        int nCreatureSpawns3 = 0;
        int nSpawns = 0;
 
+       int nMaxTriggers = 1;
+
 // cap the density
        if (nTrapChance >= 40) nTrapChance = 30;
 
@@ -277,7 +279,7 @@ void main()
 
 // check if this is within a proper spawn trigger, and if so increment the count for that particular spawn
 // if we already found a spawn point, we won't do the others, in order of 1, 2, and 3
-                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
                     {
                         oTrigger = GetObjectByTag(sResRef+"e0_random1_spawn", i);
                         if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
@@ -289,7 +291,7 @@ void main()
                         }
                     }
 
-                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
                     {
                         oTrigger = GetObjectByTag(sResRef+"e1_random1_spawn", i);
                         if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
@@ -301,7 +303,7 @@ void main()
                         }
                     }
 
-                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
                     {
                         oTrigger = GetObjectByTag(sResRef+"e2_random1_spawn", i);
                         if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
@@ -313,7 +315,7 @@ void main()
                         }
                     }
 // same for spawn 2
-                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
                     {
                         oTrigger = GetObjectByTag(sResRef+"e0_random2_spawn", i);
                         if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
@@ -325,7 +327,7 @@ void main()
                         }
                     }
 
-                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
                     {
                         oTrigger = GetObjectByTag(sResRef+"e1_random2_spawn", i);
                         if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
@@ -337,7 +339,7 @@ void main()
                         }
                     }
 
-                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
                     {
                         oTrigger = GetObjectByTag(sResRef+"e2_random2_spawn", i);
                         if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
@@ -349,7 +351,7 @@ void main()
                         }
                     }
 // same for spawn 3
-                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
                     {
                         oTrigger = GetObjectByTag(sResRef+"e0_random3_spawn", i);
                         if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
@@ -361,7 +363,7 @@ void main()
                         }
                     }
 
-                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
                     {
                         oTrigger = GetObjectByTag(sResRef+"e1_random3_spawn", i);
                         if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
@@ -373,7 +375,7 @@ void main()
                         }
                     }
 
-                    for (i = 0; bCreatureSpawnNotFound && i < 5; i++)
+                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
                     {
                         oTrigger = GetObjectByTag(sResRef+"e2_random3_spawn", i);
                         if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
