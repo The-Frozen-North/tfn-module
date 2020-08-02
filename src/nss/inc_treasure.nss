@@ -54,7 +54,12 @@ void AddEnchantedWeightReduction(object oItem)
        case BASE_ITEM_MISCSMALL:
        case BASE_ITEM_MISCTALL:
        case BASE_ITEM_MISCTHIN:
+       case BASE_ITEM_TRAPKIT:
+       case BASE_ITEM_THIEVESTOOLS:
+       case BASE_ITEM_HEALERSKIT:
        case BASE_ITEM_MISCWIDE:
+       case BASE_ITEM_ENCHANTED_POTION:
+       case BASE_ITEM_POTIONS:
        case BASE_ITEM_GEM:
        case BASE_ITEM_LARGEBOX:
            return;
