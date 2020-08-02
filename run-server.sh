@@ -68,6 +68,7 @@ export NWNX_TRACKING_SKIP=y
 export NWNX_TWEAKS_DEAD_CREATURES_TRIGGER_ON_AREA_EXIT=true
 export NWNX_ELC_ENFORCE_DEFAULT_EVENT_SCRIPTS=true
 export NWNX_ELC_ENFORCE_EMPTY_DIALOG_RESREF=true
+export NWNX_CORE_SHUTDOWN_SCRIPT=on_mod_shutdown
 
 LD_PRELOAD=~/unified/Binaries/NWNX_Core.so \
  ./nwserver-linux \
