@@ -8,6 +8,9 @@ const int CHARISMA_MODIFIER = 2;
 // Returns the gold, modifed by charisma.
 int CharismaModifiedGold(object oPC, int nGold);
 
+// Returns the gold, modifed by charisma and discounted by persuade.
+int CharismaModifiedPersuadeGold(object oPC, int nGold);
+
 // Returns the gold, discounted by charisma.
 int CharismaDiscountedGold(object oPC, int nGold);
 
@@ -25,6 +28,11 @@ int CharismaModifiedGold(object oPC, int nGold)
     float fModifier = 1.0 + (IntToFloat(nModifier)/100);
 
     return FloatToInt(IntToFloat(nGold) * fModifier);
+}
+
+int CharismaModifiedPersuadeGold(object oPC, int nGold)
+{
+    return FloatToInt(CharismaModifiedGold(oPC, nGold) * PERSUADE_DISCOUNT_MODIFIER);
 }
 
 int CharismaDiscountedGold(object oPC, int nGold)

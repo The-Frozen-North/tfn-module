@@ -1,8 +1,6 @@
 #include "inc_gold"
 #include "nwnx_object"
 
-const float SHIP_DISCOUNT_MODIFIER = 0.5;
-
 // Get the cost of the ship, modified by charisma.
 // Requires ship#_cost, where # is the nTarget variable.
 // To retrieve the variable, it's 4500+nTarget.
@@ -27,7 +25,7 @@ int GetShipCost(object oSpeaker, object oPlayer, int nTarget)
 
 int GetShipCostPersuade(object oSpeaker, object oPlayer, int nTarget)
 {
-    int nCost = FloatToInt(IntToFloat(GetShipCost(oSpeaker, oPlayer, nTarget)) * SHIP_DISCOUNT_MODIFIER);
+    int nCost = CharismaModifiedPersuadeGold(oPlayer, GetShipCost(oSpeaker, oPlayer, nTarget));
     SetCustomToken(4502, IntToString(nCost));
 
     return nCost;
