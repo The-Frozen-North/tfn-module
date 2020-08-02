@@ -2,7 +2,7 @@
 
 void main()
 {
-     int nRand = 50;
+     int nRand = 60;
 
      switch (Random(nRand))
      {
