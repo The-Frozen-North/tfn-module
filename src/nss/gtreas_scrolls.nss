@@ -306,5 +306,5 @@ void main()
     CreateStagingScroll("x2_it_spdvscr903");
 
     SendDebugMessage("Treasure scrolls generated", TRUE);
-    DelayCommand(TREASURE_CREATION_DELAY, ExecuteScript("gtreas_weapons", OBJECT_SELF));
+    DelayCommand(TREASURE_CREATION_DELAY, ExecuteScript("gtreas_other", OBJECT_SELF));
 }

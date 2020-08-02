@@ -58,6 +58,7 @@ void DistributeTreasureToStores(object oItem)
        case BASE_ITEM_SPELLSCROLL:
           nValue = nValue * 4;
        break;
+       case BASE_ITEM_TRAPKIT:
        case BASE_ITEM_SHURIKEN:
        case BASE_ITEM_THROWINGAXE:
        case BASE_ITEM_DART:
@@ -119,7 +120,7 @@ void DistributeTreasureToStores(object oItem)
            else {sTier = "T1";}
        }
 
-       if (GetStringLeft(sResRef, 4) == "misc") {sType = "Misc";}
+       if (nBaseType == BASE_ITEM_TRAPKIT || GetStringLeft(sResRef, 4) == "misc") {sType = "Misc";}
        else if (nBaseType == BASE_ITEM_SPELLSCROLL) {sType = "Scrolls";}
        else if (GetStringLeft(sResRef, 7) == "apparel")
        {
