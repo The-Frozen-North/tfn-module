@@ -13,6 +13,13 @@
 //:://////////////////////////////////////////////
 #include "x0_inc_henai"
 
+void DoBanter()
+{
+    if (GetIsDead(OBJECT_SELF) || GetIsInCombat(OBJECT_SELF) || IsInConversation(OBJECT_SELF) || GetIsFighting(OBJECT_SELF) || GetIsResting(OBJECT_SELF)) return;
+
+    ExecuteScript("hen_banter", OBJECT_SELF);
+}
+
 void main()
 {
 
@@ -21,6 +28,21 @@ void main()
 
     //1.72: this happens when the henchman is not hired and there is no pc in his area
     if (GetAILevel() == AI_LEVEL_VERY_LOW) return;
+
+    if (GetIsObjectValid(GetMaster(OBJECT_SELF)) && GetStringLeft(GetResRef(OBJECT_SELF), 3) == "hen")
+    {
+        int nBanter = GetLocalInt(OBJECT_SELF, "banter");
+
+        if (nBanter >= 100)
+        {
+            DelayCommand(IntToFloat(d20())+IntToFloat(d10())/10.0, DoBanter());
+            DeleteLocalInt(OBJECT_SELF, "banter");
+        }
+        else
+        {
+            SetLocalInt(OBJECT_SELF, "banter", nBanter+d4());
+        }
+    }
 
     //1.72: Check to see if should re-enter stealth mode
     if (!GetIsInCombat())
