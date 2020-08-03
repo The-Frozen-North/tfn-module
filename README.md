@@ -1,4 +1,4 @@
-https://img.shields.io/discord/589592256072253460?color=%232e9ee8&label=Discord&logo=discord
+[![Discord](https://img.shields.io/discord/589592256072253460?color=%232e9ee8&label=Discord&logo=discord)](https://discord.gg/qKqRUDZ)
 
 # The Frozen North
 
