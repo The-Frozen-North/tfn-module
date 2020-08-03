@@ -53,6 +53,7 @@ void main()
     if (!GetIsPC(oPC)) return;
 
     NWNX_Damage_SetAttackEventScript("pc_attack", oPC);
+    SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_DAMAGED, "on_pc_damaged");
 
     DeleteLocalInt(oPC,"70_applied_darkvision");
     DeleteLocalInt(oPC,"70_applied_lowlightvision");

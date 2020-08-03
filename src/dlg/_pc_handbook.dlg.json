@@ -52,7 +52,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 17
+                "value": 18
               },
               "IsChild": {
                 "type": "byte",
@@ -67,7 +67,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 16
+                "value": 17
               },
               "IsChild": {
                 "type": "byte",
@@ -82,7 +82,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 14
+                "value": 15
               },
               "IsChild": {
                 "type": "byte",
@@ -97,7 +97,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 13
+                "value": 14
               },
               "IsChild": {
                 "type": "byte",
@@ -248,7 +248,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
@@ -313,7 +313,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
@@ -378,7 +378,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
@@ -443,7 +443,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 12
+                "value": 13
               },
               "IsChild": {
                 "type": "byte",
@@ -458,7 +458,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 11
+                "value": 12
               },
               "IsChild": {
                 "type": "byte",
@@ -473,7 +473,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 10
+                "value": 11
               },
               "IsChild": {
                 "type": "byte",
@@ -488,7 +488,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 9
+                "value": 10
               },
               "IsChild": {
                 "type": "byte",
@@ -503,7 +503,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 8
+                "value": 9
               },
               "IsChild": {
                 "type": "byte",
@@ -518,7 +518,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 7
+                "value": 8
               },
               "IsChild": {
                 "type": "byte",
@@ -533,7 +533,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 6
+                "value": 7
               },
               "IsChild": {
                 "type": "byte",
@@ -548,7 +548,22 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 6
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 8,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
@@ -613,7 +628,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
@@ -678,7 +693,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
@@ -706,7 +721,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Items can only be identified by Eltoora in the Cloaktower. Items can be sold to Olgerd in the Dock's district."
+            "0": "Mounted Combat is required to attack while mounted.\n\nMounted Archery is required to use range attacks while mounted.\n\nWhenever you take damage while mounted, you must make a ride check vs 10 + damage/3 or be knocked down."
           }
         }
       },
@@ -743,7 +758,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
@@ -771,7 +786,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Healing kits cannot be used in combat."
+            "0": "Items can only be identified by Eltoora in the Cloaktower. Items can be sold to Olgerd in the Dock's district."
           }
         }
       },
@@ -808,7 +823,72 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 16
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Healing kits cannot be used in combat."
+          }
+        }
+      },
+      {
+        "__struct_id": 9,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
@@ -841,7 +921,7 @@
         }
       },
       {
-        "__struct_id": 9,
+        "__struct_id": 10,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -886,71 +966,6 @@
         }
       },
       {
-        "__struct_id": 10,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 15
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Henchman can be hired from the \"Trade of Blades\" in the city core. They automatically scale to your level, and will respawn there when killed or dismissed. They will take some share of the loot and gold, however."
-          }
-        }
-      },
-      {
         "__struct_id": 11,
         "Animation": {
           "type": "dword",
@@ -983,7 +998,72 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 16
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Henchman can be hired from the \"Trade of Blades\" in the city core. They automatically scale to your level, and will respawn there when killed or dismissed. They will take some share of the loot and gold, however."
+          }
+        }
+      },
+      {
+        "__struct_id": 12,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
@@ -1016,7 +1096,7 @@
         }
       },
       {
-        "__struct_id": 12,
+        "__struct_id": 13,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -1048,7 +1128,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
@@ -1077,67 +1157,6 @@
           "type": "cexolocstring",
           "value": {
             "0": "Area of effect spells do not stack.\n\nWeapon buff spells do not stack.\n\nSummon Creature spells have been rebalanced. As an example dire wolves (Summon Creature III) are much better than dire boars (Summon Creature II). Their hitdice has been matched to when they can first be cast i.e. dire badgers are level 1, dire wolves are level 5.\n\nEvil clerics and blackguards can dominate undead instead of destroying them. They can only control a total number of undead with a combined HD equal to or less than the clerics level.\n\nInvisibility spells now last in rounds instead of turns and can only be used once per rest. However, the concealment from improved invisibility effects will still apply. \n\nInvisibility sphere ignores this rule, but only lasts 1 round for every 3 caster levels."
-          }
-        }
-      },
-      {
-        "__struct_id": 13,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 15
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Level 12 cap.\n\nHeavy emphasis on quest and story based on the original campaign, roleplay not enforced.\n\nMax HP rolls.\nChallenging encounters.\n\nClose to vanilla with minimal class/spell changes.\n\n+3 item enhancement cap, no permanent \"True Seeing\", \"Haste\", \"Freedom of Movement\" etc. item properties.\n\nHenchman available.\n\n"
           }
         }
       },
@@ -1174,15 +1193,11 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+                "value": 0
               }
             }
           ]
@@ -1202,7 +1217,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "https://discord.gg/qKqRUDZ"
+            "0": "Level 12 cap.\n\nHeavy emphasis on quest and story based on the original campaign, roleplay not enforced.\n\nMax HP rolls.\nChallenging encounters.\n\nClose to vanilla with minimal class/spell changes.\n\n+3 item enhancement cap, no permanent \"True Seeing\", \"Haste\", \"Freedom of Movement\" etc. item properties.\n\nHenchman available.\n\n"
           }
         }
       },
@@ -1239,71 +1254,15 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 31
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
                 "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 25
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 23
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 19
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 4,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 18
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
               }
             }
           ]
@@ -1323,7 +1282,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Choose an option"
+            "0": "https://discord.gg/qKqRUDZ"
           }
         }
       },
@@ -1360,7 +1319,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 22
+                "value": 32
               },
               "IsChild": {
                 "type": "byte",
@@ -1375,7 +1334,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 21
+                "value": 26
               },
               "IsChild": {
                 "type": "byte",
@@ -1390,7 +1349,37 @@
               },
               "Index": {
                 "type": "dword",
+                "value": 24
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
                 "value": 20
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 4,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 19
               },
               "IsChild": {
                 "type": "byte",
@@ -1451,7 +1440,37 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 24
+                "value": 23
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 22
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 21
               },
               "IsChild": {
                 "type": "byte",
@@ -1512,7 +1531,68 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 30
+                "value": 25
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Choose an option"
+          }
+        }
+      },
+      {
+        "__struct_id": 19,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 31
               },
               "IsChild": {
                 "type": "byte",
@@ -1527,7 +1607,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 29
+                "value": 30
               },
               "IsChild": {
                 "type": "byte",
@@ -1542,7 +1622,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 28
+                "value": 29
               },
               "IsChild": {
                 "type": "byte",
@@ -1557,7 +1637,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 27
+                "value": 28
               },
               "IsChild": {
                 "type": "byte",
@@ -1572,7 +1652,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 26
+                "value": 27
               },
               "IsChild": {
                 "type": "byte",
@@ -1604,7 +1684,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 603
+    "value": 642
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -2033,7 +2113,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Stores."
+            "0": "Horses."
           }
         }
       },
@@ -2090,7 +2170,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Healing kits."
+            "0": "Stores."
           }
         }
       },
@@ -2147,7 +2227,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Loot."
+            "0": "Healing kits."
           }
         }
       },
@@ -2204,7 +2284,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Experience changes."
+            "0": "Loot."
           }
         }
       },
@@ -2261,7 +2341,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Henchman."
+            "0": "Experience changes."
           }
         }
       },
@@ -2318,7 +2398,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Resting encounters."
+            "0": "Henchman."
           }
         }
       },
@@ -2375,7 +2455,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>Spell Changes."
+            "0": "Resting encounters."
           }
         }
       },
@@ -2432,12 +2512,69 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>General Information.</Start>"
+            "0": "<StartAction>Spell Changes."
           }
         }
       },
       {
         "__struct_id": 15,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 14
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartAction>General Information.</Start>"
+          }
+        }
+      },
+      {
+        "__struct_id": 16,
         "Animation": {
           "type": "dword",
           "value": 71
@@ -2498,63 +2635,6 @@
         }
       },
       {
-        "__struct_id": 16,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 14
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "<StartAction>Discord.</Start>"
-          }
-        }
-      },
-      {
         "__struct_id": 17,
         "Animation": {
           "type": "dword",
@@ -2607,53 +2687,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Developer"
+            "0": "<StartAction>Discord.</Start>"
           }
         }
       },
       {
         "__struct_id": 18,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": []
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": "dlg_buff"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Buff"
-          }
-        }
-      },
-      {
-        "__struct_id": 19,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -2705,135 +2744,53 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Quest"
+            "0": "Developer"
+          }
+        }
+      },
+      {
+        "__struct_id": 19,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_buff"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Buff"
           }
         }
       },
       {
         "__struct_id": 20,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": []
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": "dlg_qst_temple"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "After Investigating Temple of Helm"
-          }
-        }
-      },
-      {
-        "__struct_id": 21,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": []
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": "dlg_qst_restor"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "After Restoring Order"
-          }
-        }
-      },
-      {
-        "__struct_id": 22,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": []
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": "dlg_qst_restob"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Restoring Order (before Sedos)"
-          }
-        }
-      },
-      {
-        "__struct_id": 23,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -2885,12 +2842,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Treasure"
+            "0": "Quest"
           }
         }
       },
       {
-        "__struct_id": 24,
+        "__struct_id": 21,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -2917,7 +2874,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_treas_dist"
+          "value": "dlg_qst_temple"
         },
         "Sound": {
           "type": "resref",
@@ -2926,12 +2883,94 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Distribution"
+            "0": "After Investigating Temple of Helm"
           }
         }
       },
       {
-        "__struct_id": 25,
+        "__struct_id": 22,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_qst_restor"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "After Restoring Order"
+          }
+        }
+      },
+      {
+        "__struct_id": 23,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_qst_restob"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Restoring Order (before Sedos)"
+          }
+        }
+      },
+      {
+        "__struct_id": 24,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -2983,12 +3022,110 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Teleport"
+            "0": "Treasure"
+          }
+        }
+      },
+      {
+        "__struct_id": 25,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_treas_dist"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Distribution"
           }
         }
       },
       {
         "__struct_id": 26,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 19
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Teleport"
+          }
+        }
+      },
+      {
+        "__struct_id": 27,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -3029,7 +3166,7 @@
         }
       },
       {
-        "__struct_id": 27,
+        "__struct_id": 28,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -3070,7 +3207,7 @@
         }
       },
       {
-        "__struct_id": 28,
+        "__struct_id": 29,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -3111,7 +3248,7 @@
         }
       },
       {
-        "__struct_id": 29,
+        "__struct_id": 30,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -3152,7 +3289,7 @@
         }
       },
       {
-        "__struct_id": 30,
+        "__struct_id": 31,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -3193,7 +3330,7 @@
         }
       },
       {
-        "__struct_id": 31,
+        "__struct_id": 32,
         "Animation": {
           "type": "dword",
           "value": 0
