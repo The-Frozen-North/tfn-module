@@ -2,6 +2,7 @@
 #include "inc_henchman"
 #include "x3_inc_string"
 #include "inc_nwnx"
+#include "nwnx_damage"
 
 void StripItems(object oPC)
 {
@@ -50,6 +51,8 @@ void main()
 
 // Do this only for PCs
     if (!GetIsPC(oPC)) return;
+
+    NWNX_Damage_SetAttackEventScript("pc_attack", oPC);
 
     DeleteLocalInt(oPC,"70_applied_darkvision");
     DeleteLocalInt(oPC,"70_applied_lowlightvision");
