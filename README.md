@@ -1,5 +1,3 @@
-[![Discord](https://img.shields.io/discord/382306806866771978.svg?colorB=7289DA&label=Discord&logo=Discord&logoColor=7289DA&style=flat-square)](https://discord.gg/qKqRUDZ)
-
 # The Frozen North
 
 This repository contains all the module content and associated files for The Frozen North, a Neverwinter Nights: Enhanced Edition persistent world.
