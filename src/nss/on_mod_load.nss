@@ -84,6 +84,10 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_ITEM_PAY_TO_IDENTIFY_AFTER", "mer_identify");
 
+    //NWNX_Events_SubscribeEvent("NWNX_ON_CAST_SPELL_BEFORE", "on_pc_spcastb");
+    NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_CAST_SPELL_BEFORE", "on_pc_spcastb");
+    NWNX_Events_SubscribeEvent("NWNX_ON_BROADCAST_CAST_SPELL_BEFORE", "on_pc_spcastb");
+
     if (FindSubString(NWNX_Administration_GetServerName(), "DEV") > -1) SetLocalInt(OBJECT_SELF, "dev", 1);
 
     SetLocalInt(OBJECT_SELF, "debug", 1);
