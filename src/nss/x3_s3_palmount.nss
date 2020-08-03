@@ -14,4 +14,6 @@ void main()
     {
         ApplyMount(OBJECT_SELF, 24);
     }
+
+    IncrementRemainingFeatUses(OBJECT_SELF, FEAT_PALADIN_SUMMON_MOUNT);
 }
