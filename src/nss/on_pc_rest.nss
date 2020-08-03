@@ -198,6 +198,7 @@ void main()
             DelayCommand(2.6, FadeFromBlack(oPC, FADE_SPEED_MEDIUM));
         break;
         case REST_EVENTTYPE_REST_FINISHED:
+            DeleteLocalInt(oPC, "invis");
         case REST_EVENTTYPE_REST_CANCELLED:
             StopFade(oPC);
             SavePCInfo(oPC);
