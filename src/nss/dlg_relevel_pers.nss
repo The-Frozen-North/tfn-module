@@ -26,7 +26,7 @@ int StartingConditional()
         SetXP(oPC, nXP);
 
         FadeToBlack(oPC);
-        DelayCommand(5.0, AssignCommand(oPC, ClearAllActions()));
+        DelayCommand(5.0, AssignCommand(oPC, ActionStartConversation(oPC, "", TRUE, FALSE))); // tinygiant98
         DelayCommand(5.0, FadeFromBlack(oPC));
 
         return TRUE;
