@@ -89,7 +89,18 @@ void main()
 // store the count. this will be used to pull random types of spawns
            SetLocalInt(oArea, sTarget+"_total", nCount);
         }
-       string sTag;
+
+//==========================================
+// COUNT RANDOM EVENT TYPES IN AREA
+//==========================================
+
+// up to 9 supported
+       int nEventCount = 0;
+       while (nEventCount < 9)
+       {
+           if (GetLocalString(oArea, "event"+IntToString(nEventCount+1)) == "") break;
+           nEventCount = nEventCount + 1;
+       }
 
 //==========================================
 // DEFAULT AREA SCRIPTS
@@ -104,7 +115,9 @@ void main()
 //==========================================
 
 // Define the variables we need for the loop.
+       string sTag;
        int nTreasures = 0;
+       int nEventSpawns = 0;
        object oObject = GetFirstObjectInArea(oArea);
        int nType;
        object oTransitionTarget;
@@ -115,6 +128,14 @@ void main()
 
                switch (nType)
                {
+               // the transition target must be stored as a variable or it might break
+                 case OBJECT_TYPE_WAYPOINT:
+                       if (GetResRef(oObject) == "_wp_event")
+                       {
+                           nEventSpawns = nEventSpawns + 1;
+                           SetTag(oObject, sResRef+"WP_EVENT"+IntToString(nEventSpawns));
+                       }
+                 break;
 // the transition target must be stored as a variable or it might break
                  case OBJECT_TYPE_TRIGGER:
                        oTransitionTarget = GetTransitionTarget(oObject);
@@ -410,6 +431,28 @@ void main()
         CreateSpawns(oArea, nCreatureSpawns1, 1);
         CreateSpawns(oArea, nCreatureSpawns2, 2);
         CreateSpawns(oArea, nCreatureSpawns3, 3);
+
+//==========================================
+// CREATE EVENT
+//==========================================
+
+// 25% chance of an event
+        SendDebugMessage(sResRef+" event spawns : "+IntToString(nEventSpawns), TRUE);
+        if (nEventSpawns > 0 && d3() == 1)
+        {
+            int nEventNum = Random(nEventCount)+1;
+            string sEvent = GetLocalString(oArea, "event"+IntToString(nEventNum));
+            string sEventWP = sResRef+"WP_EVENT"+IntToString(Random(nEventSpawns)+1);
+            object oEventWP = GetObjectByTag(sEventWP);
+
+            SendDebugMessage(sResRef+" chosen event num : "+IntToString(nEventNum), TRUE);
+            SendDebugMessage(sResRef+" chosen event : "+sEvent, TRUE);
+            SendDebugMessage(sResRef+" event WP : "+sEventWP, TRUE);
+            SendDebugMessage(sResRef+" event WP exists : "+IntToString(GetIsObjectValid(oEventWP)), TRUE);
+
+
+            ExecuteScript(sEvent, oEventWP);
+        }
 
 //==========================================
 // SET AREA AS INITIALIZED
