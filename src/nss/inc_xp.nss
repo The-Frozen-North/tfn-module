@@ -226,6 +226,17 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
    else if (fCR > 17.0) {fXP = BASE_XP + 144.0;}
    else {return 0.0;}
 
+   float fXPPenaltyMod = 1.0;
+
+   float fDifference = fAverageLevel - fCR;
+
+   if (fDifference > 0.0) fXPPenaltyMod = fXPPenaltyMod - (fDifference*0.15);
+
+   if (fXPPenaltyMod < 0.1) fXPPenaltyMod = 0.1;
+
+// penalty should never be higher than 1.0 otherwise that's a bonus
+   if (fXPPenaltyMod > 1.0) fXPPenaltyMod = 1.0;
+
    if (fXP > 0.0)
    {
 // ambushes only give 1/3 xp
@@ -238,7 +249,10 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
 
        float fPartyMod = PARTY_SIZE_BASE_MOD/(PARTY_SIZE+(fTotalSize*PARTY_SIZE));
 
+       fXP = fXP*fXPPenaltyMod;
+
        SendDebugMessage("Party XP mod: "+FloatToString(fPartyMod));
+       SendDebugMessage("fXP penalty mod: "+FloatToString(fXPPenaltyMod));
        SendDebugMessage("fCR: "+FloatToString(fCR));
        SendDebugMessage("fXP: "+FloatToString(fXP));
 
@@ -247,7 +261,7 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
        iRoundedXP = Round(fXP);
 
     // Cap the xp
-       if (fXP > XP_MAX) fXP = XP_MAX;
+       if ((fXP*fXPPenaltyMod) > XP_MAX) fXP = XP_MAX;
    }
 
    if (iRoundedXP == 0) fXP = 0.0;
