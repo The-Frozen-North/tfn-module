@@ -14,4 +14,4 @@ Feel free to hop in to the [Discord](https://discord.gg/qKqRUDZ) if you have any
 
 # License
 
-Licensed under [CC BY-NC_SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Please [read this](https://github.com/b5635/the-frozen-north/wiki/License) for additional information.
+Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Please [read this](https://github.com/b5635/the-frozen-north/wiki/License) for additional information.
