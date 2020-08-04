@@ -138,11 +138,13 @@ void main()
                  break;
 // the transition target must be stored as a variable or it might break
                  case OBJECT_TYPE_TRIGGER:
-                       oTransitionTarget = GetTransitionTarget(oObject);
                        sTag = GetTag(oObject);
+
+                       oTransitionTarget = GetTransitionTarget(oObject);
                        if (GetIsObjectValid(oTransitionTarget))
                        {
                            SetLocalString(oObject, "TRANSITION_TARGET", GetTag(oTransitionTarget));
+                           SetEventScript(oObject, EVENT_SCRIPT_TRIGGER_ON_HEARTBEAT, "at_hb");
                        }
 // add the resref to a spawn trigger tag
                        else if (GetStringLeft(GetResRef(oObject), 11) == "trig_random")
@@ -152,6 +154,13 @@ void main()
 
                  break;
                  case OBJECT_TYPE_DOOR:
+                    oTransitionTarget = GetTransitionTarget(oObject);
+                    if (GetIsObjectValid(oTransitionTarget))
+                    {
+                        SetLocalString(oObject, "TRANSITION_TARGET", GetTag(oTransitionTarget));
+                        SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_HEARTBEAT, "at_hb");
+                    }
+
                     SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_UNLOCK, "unlock");
 // plot doors with an un-openable key cannot be bashed
                     if (GetLocked(oObject) && !(GetPlotFlag(oObject) && GetLockKeyRequired(oObject) && GetLockKeyTag(oObject) == ""))
