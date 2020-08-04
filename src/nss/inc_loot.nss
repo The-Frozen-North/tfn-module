@@ -34,15 +34,15 @@ const int CHANCE_TWO = 15;
 const int CHANCE_THREE = 5;
 
 // Lower these to decrease the base chance of getting certain tiers.
-const int BASE_T1_WEIGHT = 24000;
-const int BASE_T2_WEIGHT = 6000;
+const int BASE_T1_WEIGHT = 40000;
+const int BASE_T2_WEIGHT = 8000;
 const int BASE_T3_WEIGHT = 500;
 const int BASE_T4_WEIGHT = 50;
 const int BASE_T5_WEIGHT = 1;
 
 // increase this to increase weight of better loot
 // in correlation to CR
-const float BASE_CR_MULTIPLIER = 2.5;
+const float BASE_CR_MULTIPLIER = 3.0;
 
 // The string to play when there isn't loot available
 const string NO_LOOT = "This container doesn't have any items.";
