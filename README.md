@@ -11,3 +11,7 @@ There's a little more information in the [wiki](https://github.com/b5635/the-fro
 You will also need NWNX:EE to host the server. I used [Daz's guide](https://github.com/Daztek/NWNX-WSL) for the development server.
 
 Feel free to hop in to the [Discord](https://discord.gg/qKqRUDZ) if you have any questions.
+
+# License
+
+Licensed under [CC BY-NC_SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Please [read this](https://github.com/b5635/the-frozen-north/wiki/License) for additional information.
