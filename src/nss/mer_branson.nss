@@ -2,10 +2,10 @@
 
 void main()
 {
-    int nItems = d12(10);
+    int nItems = d20(10);
     int i;
     for (i = 0; i < nItems; i++)
     {
-        GenerateTierItem(3, OBJECT_SELF);
+        GenerateTierItem(6, OBJECT_SELF);
     }
 }

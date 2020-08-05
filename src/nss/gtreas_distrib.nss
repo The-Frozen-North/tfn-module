@@ -92,32 +92,18 @@ void DistributeTreasureToStores(object oItem)
        {
            CopyItemToExistingTarget(oItem, GetObjectByTag("_overvalue"));
        }
+
+// Sort by item value
+       if (nValue >= MIN_VALUE_T5) {sTier = "T5";}
+       else if (nValue >= MIN_VALUE_T4) {sTier = "T4";}
+       else if (nValue >= MIN_VALUE_T3) {sTier = "T3";}
+       else if (nValue >= MIN_VALUE_T2) {sTier = "T2";}
+       else {sTier = "T1";}
+
 // High quality/composite range items are always T2
-       else if (nEnchantValue == 0 && (GetStringLeft(sName, 12) == "High Quality" || GetStringLeft(sName, 9) == "Composite"))
+       if (nEnchantValue == 0 && (GetStringLeft(sName, 12) == "High Quality" || GetStringLeft(sName, 9) == "Composite"))
        {
            sTier = "T2";
-       }
-// Next we will check what tier the item goes to by the enchant value.
-       else if (nEnchantValue >= 3)
-       {
-           sTier = "T5";
-       }
-       else if (nEnchantValue == 2)
-       {
-           sTier = "T4";
-       }
-       else if (nEnchantValue == 1)
-       {
-           sTier = "T3";
-       }
-// If none of those match, then we will sort to tier by actual item value
-       else
-       {
-           if (nValue >= MIN_VALUE_T5) {sTier = "T5";}
-           else if (nValue >= MIN_VALUE_T4) {sTier = "T4";}
-           else if (nValue >= MIN_VALUE_T3) {sTier = "T3";}
-           else if (nValue >= MIN_VALUE_T2) {sTier = "T2";}
-           else {sTier = "T1";}
        }
 
        if (nBaseType == BASE_ITEM_TRAPKIT || GetStringLeft(sResRef, 4) == "misc") {sType = "Misc";}

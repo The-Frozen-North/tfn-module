@@ -21,13 +21,15 @@ void main()
 
     object oPC = GetLastSpeaker();
 
-    int nCap = GOLD_MODIFIER_CAP;
+    int nCap = MERCHANT_MODIFIER_CAP;
 
     int nPCAppraise = GetSkillRank(SKILL_APPRAISE, oPC);
     int nPCCharisma = GetAbilityScore(oPC, ABILITY_CHARISMA) - 10;
 
     int nAdjust = 0;
     nAdjust = nPCAppraise + nPCCharisma;
+
+    if (nAdjust != 0) nAdjust = nAdjust/2;
 
     if (nAdjust > nCap) nAdjust = nCap;
     if (nAdjust < -nCap) nAdjust = -nCap;
