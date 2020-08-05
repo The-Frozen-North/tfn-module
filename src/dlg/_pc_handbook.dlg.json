@@ -1156,7 +1156,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Area of effect spells do not stack.\n\nWeapon buff spells do not stack.\n\nSummon Creature spells have been rebalanced. As an example dire wolves (Summon Creature III) are much better than dire boars (Summon Creature II). Their hitdice has been matched to when they can first be cast i.e. dire badgers are level 1, dire wolves are level 5.\n\nEvil clerics and blackguards can dominate undead instead of destroying them. They can only control a total number of undead with a combined HD equal to or less than the clerics level.\n\nInvisibility spells now last in rounds instead of turns and can only be used once per rest. However, the concealment from improved invisibility effects will still apply. \n\nInvisibility sphere ignores this rule, but only lasts 1 round for every 3 caster levels."
+            "0": "Area of effect spells do not stack.\n\nWeapon buff spells do not stack.\n\nSummon Creature spells have been rebalanced. As an example dire wolves (Summon Creature III) are much better than dire boars (Summon Creature II). Their hitdice has been matched to when they can first be cast i.e. dire badgers are level 1, dire wolves are level 5.\n\nEvil clerics and blackguards can dominate undead instead of destroying them. They can only control a total number of undead with a combined HD equal to or less than the clerics level.\n\nInvisibility spells now last in rounds and have a diminishing return, capped at 25%. This is cleared on rest. However, the concealment from improved invisibility will still last in turns and will always apply. \n\nInvisibility sphere ignores this rule, but only lasts 1 round for every 3 caster levels."
           }
         }
       },
@@ -1684,7 +1684,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 642
+    "value": 649
   },
   "PreventZoomIn": {
     "type": "byte",

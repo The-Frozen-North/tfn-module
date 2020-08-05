@@ -44,15 +44,24 @@ void main()
         nDuration = nDuration *2; //Duration is +100%
     }
 
-    if (GetLocalInt(spell.Target, "invis") == 1)
-    {
-        FloatingTextStringOnCreature("*You can only be affected by invisibility once per rest.*", spell.Target);
-    }
-    else
-    {
-        SetLocalInt(spell.Target, "invis", 1);
+    int nInvis = GetLocalInt(spell.Target, "invis");
 
-        //Apply the VFX impact and effects
-        ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nDuration));
+    float fDuration = DurationToSeconds(nDuration);
+
+    if (nInvis == 1)
+    {
+        FloatingTextStringOnCreature("*Your invisibility has 50% duration.*", spell.Target);
+        fDuration = fDuration * 0.50;
     }
+    else if (nInvis >= 2)
+    {
+        FloatingTextStringOnCreature("*Your invisibility has 25% duration.*", spell.Target);
+        fDuration = fDuration * 0.25;
+    }
+
+
+    SetLocalInt(spell.Target, "invis", nInvis+1);
+
+    //Apply the VFX impact and effects
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, fDuration);
 }
