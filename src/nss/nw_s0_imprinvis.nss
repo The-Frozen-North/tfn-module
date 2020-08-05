@@ -53,7 +53,7 @@ void main()
     }
     else if (nInvis >= 2)
     {
-        FloatingTextStringOnCreature("*Your invisibility has 25% duration, but your conealment will still have full duration.*", spell.Target);
+        FloatingTextStringOnCreature("*Your invisibility has 25% duration, but your concealment will still have full duration.*", spell.Target);
         fDuration = fDuration * 0.25;
     }
 

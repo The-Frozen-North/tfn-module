@@ -16,7 +16,7 @@ void main()
     CopyChest(OBJECT_SELF, "_MeleeCommonT4NonUnique", 256, "", TRUE);
 
     CopyChest(OBJECT_SELF, "_ArmorCommonT1NonUnique", 256, "", TRUE);
-    CopyChest(OBJECT_SELF, "_ArmorUncommoT1NonUnique", 256, "", TRUE);
+    CopyChest(OBJECT_SELF, "_ArmorUncommonT1NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_ArmorRareT1NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_ArmorCommonT2NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_ArmorUncommonT2NonUnique", 256, "", TRUE);
