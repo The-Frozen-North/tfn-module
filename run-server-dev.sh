@@ -26,7 +26,7 @@ export NWNX_REDIS_HOST=localhost
 # https://github.com/nwnxee/unified/tree/master/Plugins
 export NWNX_ADMINISTRATION_SKIP=n
 export NWNX_APPEARANCE_SKIP=y
-export NWNX_AREA_SKIP=y
+export NWNX_AREA_SKIP=n
 export NWNX_CHAT_SKIP=y
 export NWNX_COMBATMODES_SKIP=n
 export NWNX_CREATURE_SKIP=n
