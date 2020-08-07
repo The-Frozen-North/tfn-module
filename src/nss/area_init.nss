@@ -1,57 +1,4 @@
-#include "inc_trap"
-#include "inc_loot"
 #include "inc_debug"
-#include "nwnx_object"
-
-float GetMaxHeight(object oTrigger)
-{
-    float fMaxHeight = 3.5;
-    switch (GetLocalInt(oTrigger, "elevation"))
-    {
-        case 1: fMaxHeight = 7.0; break;
-        case 2: fMaxHeight = 10.5; break;
-    }
-
-    return fMaxHeight;
-}
-
-string ChooseSpawnRef(object oArea, int nTarget)
-{
-    string sTarget = "random"+IntToString(nTarget)+"_spawn";
-
-    int nRandom = GetLocalInt(oArea, sTarget+"_total");
-
-// choose a random a random spawn
-    return GetLocalString(oArea, sTarget+IntToString(Random(nRandom)+1));
-}
-
-void CreateSpawns(object oArea, int nSpawnPoints, int nTarget)
-{
-      if (nSpawnPoints == 0) return;
-
-      string sResRef = GetResRef(oArea);
-
-      int nTotalSpawns = (nSpawnPoints/5) + (Random(nSpawnPoints/8));
-
-      float fDensityMod = GetLocalFloat(oArea, "creature_density_mod");
-      if (fDensityMod > 0.0) nTotalSpawns = FloatToInt(IntToFloat(nTotalSpawns)*fDensityMod);
-
-      float fTargetDensityMod = GetLocalFloat(oArea, "random"+IntToString(nTarget)+"_density_mod");
-      if (fTargetDensityMod > 0.0) nTotalSpawns = FloatToInt(IntToFloat(nTotalSpawns)*fTargetDensityMod);
-
-      location lSpawnLocation;
-      object oSpawn;
-      int nSpawn;
-      string sSpawnPoint;
-
-      for (nSpawn = 0; nSpawn <= nTotalSpawns; nSpawn++)
-      {
-           sSpawnPoint = sResRef+"random"+IntToString(nTarget)+"_spawn_point"+IntToString(Random(nSpawnPoints)+1);
-           oSpawn = GetObjectByTag(sSpawnPoint);
-
-           CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), Location(oArea, GetPosition(oSpawn), IntToFloat(Random(360)+1)));
-      }
-}
 
 void main()
 {
@@ -75,7 +22,7 @@ void main()
        int nCount, nTarget;
        string sTarget;
 // get the total amount of random spawns in the area
-       for (nTarget = 1; nTarget < 4; nTarget++)
+       for (nTarget = 1; nTarget < 10; nTarget++)
        {
            nCount = 0;
            sTarget = "random"+IntToString(nTarget)+"_spawn";
@@ -237,210 +184,6 @@ void main()
            oObject = GetNextObjectInArea(oArea);
        }
 
-//===========================================================
-// LOOP THROUGH EACH TILE, CREATING TRAPS AND SPAWN POINTS
-//===========================================================
-
-       int iCR = GetLocalInt(oArea, "cr");
-       int bTrapped = GetLocalInt(oArea, "trapped");
-
-       int iRows = GetAreaSize(AREA_WIDTH, oArea);
-       int iColumns = GetAreaSize(AREA_HEIGHT, oArea);
-
-       int nTrapChance = (iRows*iColumns)/12;
-       int nCreatureSpawns1 = 0;
-       int nCreatureSpawns2 = 0;
-       int nCreatureSpawns3 = 0;
-       int nSpawns = 0;
-
-       int nMaxTriggers = 1;
-
-// cap the density
-       if (nTrapChance >= 40) nTrapChance = 30;
-
-       int iXAxis;
-       int iYAxis;
-       float fYAxis, fXAxis, fDistanceFromDoor;
-       location lTile;
-       object oValidator, oTrap, oDoor;
-       vector vTile, vValidator;
-
-       int bCreatureSpawnNotFound = TRUE;
-
-       object oTrigger;
-       int i;
-
-// use this to get the center of a tile
-       float fMultiplier = 5.0;
-
-       for (iXAxis = 0; iXAxis < iRows; iXAxis++)
-       {
-            float fXAxis = fMultiplier+(IntToFloat(iXAxis)*fMultiplier*2.0);
-            for (iYAxis = 0; iYAxis < iColumns; iYAxis++)
-            {
-                fYAxis = fMultiplier+(IntToFloat(iYAxis)*fMultiplier*2.0);
-
-                lTile = Location(oArea, Vector(fXAxis, fYAxis, 0.0), 0.0);
-
-// we will spawn a creature at the exact location to check if it is in the proper spot
-                oValidator = CreateObject(OBJECT_TYPE_CREATURE, "_area_validator", lTile);
-
-                vTile = GetPositionFromLocation(lTile);
-                vValidator = GetPosition(oValidator);
-
-                oDoor = GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile);
-                if (GetIsObjectValid(oDoor))
-                {
-                    fDistanceFromDoor = GetDistanceBetweenLocations(GetLocation(GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile)), lTile);
-                }
-                else
-                {
-                    fDistanceFromDoor = 999.0;
-                }
-
-// we don't want spawns too close to a door. also, make sure the spot and creature position matches
-                if (fDistanceFromDoor >= 3.0 && vTile.x == vValidator.x && vTile.y == vValidator.y)
-                {
-                    if (GetLocalInt(GetModule(), "debug_verbose") == 1) CreateObject(OBJECT_TYPE_PLACEABLE, "plc_magicred", lTile);
-
-                    nSpawns = nSpawns + 1;
-
-                    bCreatureSpawnNotFound = TRUE;
-
-// check if this is within a proper spawn trigger, and if so increment the count for that particular spawn
-// if we already found a spawn point, we won't do the others, in order of 1, 2, and 3
-                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
-                    {
-                        oTrigger = GetObjectByTag(sResRef+"e0_random1_spawn", i);
-                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
-                        {
-                            bCreatureSpawnNotFound = FALSE;
-                            nCreatureSpawns1 = nCreatureSpawns1 + 1;
-                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random1_spawn_point"+IntToString(nCreatureSpawns1));
-                            break;
-                        }
-                    }
-
-                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
-                    {
-                        oTrigger = GetObjectByTag(sResRef+"e1_random1_spawn", i);
-                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
-                        {
-                            bCreatureSpawnNotFound = FALSE;
-                            nCreatureSpawns1 = nCreatureSpawns1 + 1;
-                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random1_spawn_point"+IntToString(nCreatureSpawns1));
-                            break;
-                        }
-                    }
-
-                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
-                    {
-                        oTrigger = GetObjectByTag(sResRef+"e2_random1_spawn", i);
-                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
-                        {
-                            bCreatureSpawnNotFound = FALSE;
-                            nCreatureSpawns1 = nCreatureSpawns1 + 1;
-                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random1_spawn_point"+IntToString(nCreatureSpawns1));
-                            break;
-                        }
-                    }
-// same for spawn 2
-                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
-                    {
-                        oTrigger = GetObjectByTag(sResRef+"e0_random2_spawn", i);
-                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
-                        {
-                            bCreatureSpawnNotFound = FALSE;
-                            nCreatureSpawns2 = nCreatureSpawns2 + 1;
-                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random2_spawn_point"+IntToString(nCreatureSpawns2));
-                            break;
-                        }
-                    }
-
-                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
-                    {
-                        oTrigger = GetObjectByTag(sResRef+"e1_random2_spawn", i);
-                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
-                        {
-                            bCreatureSpawnNotFound = FALSE;
-                            nCreatureSpawns2 = nCreatureSpawns2 + 1;
-                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random2_spawn_point"+IntToString(nCreatureSpawns2));
-                            break;
-                        }
-                    }
-
-                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
-                    {
-                        oTrigger = GetObjectByTag(sResRef+"e2_random2_spawn", i);
-                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
-                        {
-                            bCreatureSpawnNotFound = FALSE;
-                            nCreatureSpawns2 = nCreatureSpawns2 + 1;
-                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random2_spawn_point"+IntToString(nCreatureSpawns2));
-                            break;
-                        }
-                    }
-// same for spawn 3
-                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
-                    {
-                        oTrigger = GetObjectByTag(sResRef+"e0_random3_spawn", i);
-                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
-                        {
-                            bCreatureSpawnNotFound = FALSE;
-                            nCreatureSpawns3 = nCreatureSpawns3 + 1;
-                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random3_spawn_point"+IntToString(nCreatureSpawns3));
-                            break;
-                        }
-                    }
-
-                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
-                    {
-                        oTrigger = GetObjectByTag(sResRef+"e1_random3_spawn", i);
-                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
-                        {
-                            bCreatureSpawnNotFound = FALSE;
-                            nCreatureSpawns3 = nCreatureSpawns3 + 1;
-                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random3_spawn_point"+IntToString(nCreatureSpawns3));
-                            break;
-                        }
-                    }
-
-                    for (i = 0; bCreatureSpawnNotFound && i <= nMaxTriggers; i++)
-                    {
-                        oTrigger = GetObjectByTag(sResRef+"e2_random3_spawn", i);
-                        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vTile) && (vValidator.z <= GetMaxHeight(oTrigger)))
-                        {
-                            bCreatureSpawnNotFound = FALSE;
-                            nCreatureSpawns3 = nCreatureSpawns3 + 1;
-                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"random3_spawn_point"+IntToString(nCreatureSpawns3));
-                            break;
-                        }
-                    }
-
-// determine if there should be a trap
-                    if (bTrapped == 1 && d100() <= nTrapChance)
-                    {
-                        oTrap = CreateTrapAtLocation(DetermineTrap(iCR), lTile, 2.5+(IntToFloat(Random(10)+1)/10.0));
-                        TrapLogic(oTrap);
-                    }
-                }
-// destroy the object we used to see if it is a valid location
-                DestroyObject(oValidator);
-            }
-        }
-
-//==========================================
-// CREATE CREATURE SPAWNS
-//==========================================
-        SendDebugMessage(sResRef+" total spawns : "+IntToString(nSpawns), TRUE);
-        SendDebugMessage(sResRef+" total spawns1 : "+IntToString(nCreatureSpawns1), TRUE);
-        SendDebugMessage(sResRef+" total spawns2 : "+IntToString(nCreatureSpawns2), TRUE);
-        SendDebugMessage(sResRef+" total spawns3 : "+IntToString(nCreatureSpawns3), TRUE);
-
-        CreateSpawns(oArea, nCreatureSpawns1, 1);
-        CreateSpawns(oArea, nCreatureSpawns2, 2);
-        CreateSpawns(oArea, nCreatureSpawns3, 3);
-
 //==========================================
 // CREATE EVENT
 //==========================================
@@ -468,6 +211,12 @@ void main()
 //==========================================
        string sScript = GetLocalString(oArea, "init_script");
        if (sScript != "") ExecuteScript(sScript, oArea);
+
+       if (!GetIsObjectValid(GetObjectByTag(sResRef+"+_spawn_table")))
+       {
+           SendDebugMessage(sResRef+" table not found, initializing spawns", TRUE);
+           ExecuteScript("area_init_spawns", oArea);
+       }
 
        SendDebugMessage("initialized "+sResRef, TRUE);
        SetLocalInt(oArea, "initialized", 1);

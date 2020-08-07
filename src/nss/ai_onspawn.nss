@@ -32,6 +32,7 @@
 #include "nwnx_creature"
 #include "x2_inc_switches"
 #include "inc_loot"
+#include "NW_I0_GENERIC"
 
 void main()
 {
@@ -137,6 +138,12 @@ void main()
     // * and use social ones to any other nearby friendly NPCs.
     // *
     // SetSpawnInCondition(NW_FLAG_IMMOBILE_AMBIENT_ANIMATIONS);
+
+    if (GetLocalInt(OBJECT_SELF, "herbivore") == 1)
+    {
+        SetBehaviorState(NW_FLAG_BEHAVIOR_SPECIAL);
+        SetBehaviorState(NW_FLAG_BEHAVIOR_HERBIVORE_172);
+    }
 
 
     //--------------------------------------------------------------------------

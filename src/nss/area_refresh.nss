@@ -51,7 +51,7 @@ void main()
     {
         SetLocalInt(OBJECT_SELF, "refresh", nRefresh+1);
 
-        if (nRefresh >= 300)
+        if (nRefresh >= 3)
         {
              int nStatus = CheckLinkThenDestroyArea(oArea);
              SendDebugMessage("destroying area "+sResRef+": "+IntToString(nStatus), TRUE);
@@ -66,7 +66,7 @@ void main()
              }
              else if (nStatus == -2)
              {
-                SetLocalInt(OBJECT_SELF, "refresh", 200);
+                SetLocalInt(OBJECT_SELF, "refresh", 2);
              }
         }
     }

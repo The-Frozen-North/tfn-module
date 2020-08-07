@@ -66,7 +66,8 @@ void main()
 // START REST AMBUSH CODE
 // =======================================
 
-            for (i = 1; i < 10; i++)
+// only the first 5
+            for (i = 1; i < 6; i++)
             {
                 if (GetLocalString(oArea, "random"+IntToString(i)+"_spawn1") != "") nEnemyGroups++;
             }
