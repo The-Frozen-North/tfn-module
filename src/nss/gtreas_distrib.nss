@@ -100,6 +100,9 @@ void DistributeTreasureToStores(object oItem)
        else if (nValue >= MIN_VALUE_T2) {sTier = "T2";}
        else {sTier = "T1";}
 
+// special rule to bump up unidentified items to the next tier, too much magic gear encountered at low level
+       if (sTier == "T1" && nIdentified == 0) sTier = "T2";
+
 // High quality/composite range items are always T2
        if (nEnchantValue == 0 && (GetStringLeft(sName, 12) == "High Quality" || GetStringLeft(sName, 9) == "Composite"))
        {

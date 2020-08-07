@@ -212,6 +212,12 @@ object GenerateTierItem(int iCR, object oContainer, string sType = "", int nTier
 
     object oChest = GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique);
 
+// we'll use the non-unique chest if the unique container, if applicable simply don't exist
+    if (!GetIsObjectValid(oChest)) oChest = GetObjectByTag("_"+sType+sRarity+sTier+"NonUnique");
+
+// chest still invalid at that point? return
+    if (!GetIsObjectValid(oChest)) return OBJECT_INVALID;
+
     int nRandom = Random(GetLocalInt(oChest, "item_count"));
     object oItem = GetFirstItemInInventory(oChest);
     while (nRandom)
