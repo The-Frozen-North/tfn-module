@@ -51,6 +51,9 @@ void main()
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVisual, oRespawner);
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eVisual, lRespawnLocation);
 
+// for sergol
+    SetLocalInt(oRespawner, "NW_L_I_DIED", 1);
+
 // Teleport back to the respawn location
     AssignCommand(oRespawner, JumpToLocation(lRespawnLocation));
 
