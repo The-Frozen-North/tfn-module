@@ -144,6 +144,11 @@ void main()
         SetBehaviorState(NW_FLAG_BEHAVIOR_SPECIAL);
         SetBehaviorState(NW_FLAG_BEHAVIOR_HERBIVORE_172);
     }
+    else if (GetLocalInt(OBJECT_SELF, "omnivore") == 1)
+    {
+        SetBehaviorState(NW_FLAG_BEHAVIOR_SPECIAL);
+        SetBehaviorState(NW_FLAG_BEHAVIOR_OMNIVORE_172);
+    }
 
 
     //--------------------------------------------------------------------------

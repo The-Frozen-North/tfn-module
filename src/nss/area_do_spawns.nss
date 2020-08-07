@@ -50,6 +50,7 @@ void main()
      if (GetLocalInt(oArea, "spawned") == 1) return;
 
      SetLocalInt(oArea, "spawned", 1);
+     SetEventScript(OBJECT_SELF, EVENT_SCRIPT_AREA_ON_ENTER, "area_enter");
 
      string sResRef = GetResRef(oArea);
 
@@ -73,6 +74,8 @@ void main()
 
         int nTrapSpawns = GetLocalInt(oTable, "trap_spawns");
 
+        SendDebugMessage(sResRef+" trap spawns: "+IntToString(nTrapSpawns), TRUE);
+
 // cap the density of traps
         if (nTrapChance >= 30) nTrapChance = 30;
 
@@ -86,6 +89,7 @@ void main()
                 fTrapZ = GetLocalFloat(oTable, "spawn"+IntToString(i)+"z");
 
                 lTrapLocation = Location(oArea, Vector(fTrapX, fTrapY, fTrapZ), 0.0);
+                //SendDebugMessage(sResRef+" trap created", TRUE);
 
                 oTrap = CreateTrapAtLocation(DetermineTrap(iCR), lTrapLocation, 2.5+(IntToFloat(Random(10)+1)/10.0));
                 TrapLogic(oTrap);

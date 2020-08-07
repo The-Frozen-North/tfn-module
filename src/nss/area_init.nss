@@ -55,7 +55,7 @@ void main()
 
 // Set some special area scripts
        SetEventScript(oArea, EVENT_SCRIPT_AREA_ON_HEARTBEAT, "area_hb");
-       SetEventScript(oArea, EVENT_SCRIPT_AREA_ON_ENTER, "area_enter");
+       SetEventScript(oArea, EVENT_SCRIPT_AREA_ON_ENTER, "area_enter_spawn");
 
 //==========================================
 // OBJECT LOOP

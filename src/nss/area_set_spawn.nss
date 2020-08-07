@@ -27,8 +27,8 @@ void SetSpawn(string sResRef, object oTable, string sTargetSpawn, int nTarget, v
               SetLocalInt(oTable, "random"+IntToString(nTarget)+"_spawn_point_total", nSpawns+1);
               SetLocalString(oTable, "random"+IntToString(nTarget)+"_spawn_point"+IntToString(nSpawns+1), sTargetSpawn);
 
-              SendDebugMessage(sResRef+" random"+IntToString(nTarget)+"_spawn_point_total: "+IntToString(nSpawns+1), TRUE);
-              SendDebugMessage(sResRef+" random"+IntToString(nTarget)+"_spawn_point"+IntToString(nSpawns+1)+": "+sTargetSpawn, TRUE);
+              //SendDebugMessage(sResRef+" random"+IntToString(nTarget)+"_spawn_point_total: "+IntToString(nSpawns+1), TRUE);
+              //SendDebugMessage(sResRef+" random"+IntToString(nTarget)+"_spawn_point"+IntToString(nSpawns+1)+": "+sTargetSpawn, TRUE);
               break;
         }
     }

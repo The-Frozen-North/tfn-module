@@ -33,7 +33,5 @@ void main()
                 SetLocalInt(oCounter, "refresh", 1);
            }
        }
-
-       ExecuteScript("area_do_spawns", OBJECT_SELF);
 }
 
