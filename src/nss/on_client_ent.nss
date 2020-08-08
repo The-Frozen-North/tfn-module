@@ -4,24 +4,6 @@
 #include "inc_nwnx"
 #include "nwnx_damage"
 
-void StripItems(object oPC)
-{
-    int nSlot;
-
-    // Destroy the items in the main inventory.
-    object oItem = GetFirstItemInInventory(oPC);
-    while ( oItem != OBJECT_INVALID ) {
-        DestroyObject(oItem);
-        oItem = GetNextItemInInventory(oPC);
-    }
-    // Destroy equipped items.
-    for ( nSlot = 0; nSlot < NUM_INVENTORY_SLOTS; ++nSlot )
-        DestroyObject(GetItemInSlot(nSlot, oPC));
-
-    // Remove all gold.
-    AssignCommand(oPC, TakeGoldFromCreature(GetGold(oPC), oPC, TRUE));
-}
-
 void CreateBook(object oPC)
 {
     object oBook = GetItemPossessedBy(oPC, "_pc_handbook");
@@ -104,7 +86,6 @@ void main()
 // otherwise, assume they're new and do the whole new PC routine
     else
     {
-        StripItems(oPC);
         DelayCommand(0.01, ExecuteScript("new_character", oPC));
     }
 
