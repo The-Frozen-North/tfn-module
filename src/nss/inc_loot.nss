@@ -29,7 +29,7 @@ const int BASE_ADJUST_CHANCE = 25;
 
 // The chance for one, two or three items to drop, specifically. This is out of 100.
 
-const int CHANCE_ONE = 30;
+const int CHANCE_ONE = 40;
 const int CHANCE_TWO = 15;
 const int CHANCE_THREE = 5;
 
