@@ -1,2 +1,2 @@
-call nasher install
+call nasher install --nssFlags:"-i override"
 PAUSE
