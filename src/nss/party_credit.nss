@@ -136,6 +136,8 @@ void main()
 // we shall roll to see if treasure even drops at that point.
     int bDestroyed = GetCurrentHitPoints(OBJECT_SELF) <= 0;
 
+    int bBoss = GetLocalInt(OBJECT_SELF, "boss");
+
     int iCR = GetLocalInt(OBJECT_SELF, "cr");
 
     if (bDestroyed)
@@ -143,6 +145,8 @@ void main()
         int nTreasureChance = TREASURE_CHANCE;
 
         if (GetLocalInt(OBJECT_SELF, "half_loot") == 1) nTreasureChance = nTreasureChance/2;
+
+        if (bBoss == 1) nTreasureChance = nTreasureChance*3;
 
         if (d100() > nTreasureChance) bNoTreasure = TRUE;
 
@@ -209,6 +213,9 @@ void main()
     if (!bNoTreasure)
     {
         nGold = DetermineGoldFromCR(iCR);
+
+        if (bBoss == 1) nGold = nGold*3;
+
         nGoldToDistribute = nGold/nTotalSize;
 // remove henchman gold now, if they exist
         if (Party.HenchmanSize > 0) nGold = nGold - Party.HenchmanSize*nGoldToDistribute;
@@ -219,7 +226,7 @@ void main()
 
    int nItemsRoll = d100();
 
-   if (nItemsRoll <= CHANCE_THREE)
+   if ((nItemsRoll <= CHANCE_THREE) || (bBoss == 1))
    {
        nItem3 = Random(nTotalSize)+1;
        nItem2 = Random(nTotalSize)+1;
