@@ -146,9 +146,7 @@ void main()
 
         if (GetLocalInt(OBJECT_SELF, "half_loot") == 1) nTreasureChance = nTreasureChance/2;
 
-        if (bBoss == 1) nTreasureChance = nTreasureChance*3;
-
-        if (d100() > nTreasureChance) bNoTreasure = TRUE;
+        if ((bBoss != 1) && (d100() > nTreasureChance)) bNoTreasure = TRUE;
 
 // any of these races will never drop treasure
         int nRace = GetRacialType(OBJECT_SELF);

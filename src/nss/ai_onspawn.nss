@@ -34,6 +34,26 @@
 #include "inc_loot"
 #include "NW_I0_GENERIC"
 
+void CopyKey()
+{
+// duplicate the key but make it unpickpocketable/undroppable
+    object oItem = GetFirstItemInInventory();
+    object oNewItem;
+
+    while (GetIsObjectValid(oItem))
+    {
+        if (GetBaseItemType(oItem) == BASE_ITEM_KEY)
+        {
+            oNewItem = CopyItem(oItem, OBJECT_SELF, TRUE);
+            SetDroppableFlag(oNewItem, FALSE);
+            SetPickpocketableFlag(oNewItem, FALSE);
+            break;
+        }
+
+        oItem = GetNextItemInInventory();
+    }
+}
+
 void main()
 {
 
@@ -330,18 +350,7 @@ void main()
     object oItem = GetFirstItemInInventory();
     object oNewItem;
 
-// duplicate the key but make it unpickpocketable/undroppable
-    while (GetIsObjectValid(oItem))
-    {
-        if (GetBaseItemType(oItem) == BASE_ITEM_KEY)
-        {
-            oNewItem = CopyItem(oItem);
-            SetDroppableFlag(oNewItem, FALSE);
-            SetPickpocketableFlag(oNewItem, FALSE);
-        }
-
-        oItem = GetNextItemInInventory();
-    }
+    DelayCommand(3.0, CopyKey());
 
     //int nRace = GetRacialType(oCreature);
 
