@@ -165,13 +165,11 @@ void main()
 // determine if there is a key
     object oItem = GetFirstItemInInventory(OBJECT_SELF);
     object oKey;
-    int nPlayerNumKey;
     while (GetIsObjectValid(oItem))
     {
         if (GetBaseItemType(oItem) == BASE_ITEM_KEY)
         {
             oKey = oItem;
-            nPlayerNumKey = Random(Party.PlayerSize)+1;
             break;
         }
 
@@ -286,16 +284,13 @@ void main()
             nGold = nGold - nGoldToDistribute;
         }
 
-        if (nPlayerNumKey == nNth)
-        {
-            CopyItem(oKey, oPersonalLoot);
-            DestroyObject(oKey);
-        }
+        if (GetIsObjectValid(oKey)) CopyItem(oKey, oPersonalLoot);
 
         DestroyObject(oPersonalLoot, LOOT_DESTRUCTION_TIME); // Personal loot will no longer be accessible after awhile
 
       }
    }
+   DestroyObject(oKey);
 
 // =========================
 // END LOOP

@@ -327,6 +327,22 @@ void main()
 // Set cr integer on self. This is used for determining treasure.
     SetLocalInt(OBJECT_SELF, "cr", FloatToInt(GetChallengeRating(OBJECT_SELF)));
 
+    object oItem = GetFirstItemInInventory();
+    object oNewItem;
+
+// duplicate the key but make it unpickpocketable/undroppable
+    while (GetIsObjectValid(oItem))
+    {
+        if (GetBaseItemType(oItem) == BASE_ITEM_KEY)
+        {
+            oNewItem = CopyItem(oItem);
+            SetDroppableFlag(oNewItem, FALSE);
+            SetPickpocketableFlag(oNewItem, FALSE);
+        }
+
+        oItem = GetNextItemInInventory();
+    }
+
     //int nRace = GetRacialType(oCreature);
 
     SetSpawn();
