@@ -4,9 +4,7 @@ void main()
 {
     object oMerchant = OBJECT_SELF;
 
-    string sMerchantTag = GetLocalString(OBJECT_SELF, "merchant");
-
-    object oStore = GetObjectByTag(sMerchantTag);
+    object oStore = GetLocalObject(OBJECT_SELF, "store");
 
     OpenMerchant(oMerchant, oStore, GetPCSpeaker());
 }

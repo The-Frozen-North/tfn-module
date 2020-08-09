@@ -52,7 +52,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 1
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
@@ -61,6 +61,21 @@
             },
             {
               "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 1
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 2,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -168,7 +183,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_remove_disea"
         },
         "Sound": {
           "type": "resref",
@@ -181,7 +196,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Failure]</Start> I am sorry, but I think it will be better if we vanquish evil... seperately. Farewell."
+            "0": "Of course. I shall cleanse you of whatever illnesses you may have."
           }
         }
       },
@@ -226,12 +241,57 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Success]</Start> Of course. Together, I believe we can achieve much good."
+            "0": "<StartCheck>[Failure]</Start> I am sorry, but I think it will be better if we vanquish evil... seperately. Farewell."
           }
         }
       },
       {
         "__struct_id": 4,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartCheck>[Success]</Start> Of course. Together, I believe we can achieve much good."
+          }
+        }
+      },
+      {
+        "__struct_id": 5,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -263,7 +323,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 3
+                "value": 4
               },
               "IsChild": {
                 "type": "byte",
@@ -278,7 +338,26 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 1
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -307,7 +386,7 @@
         }
       },
       {
-        "__struct_id": 5,
+        "__struct_id": 6,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -352,7 +431,7 @@
         }
       },
       {
-        "__struct_id": 6,
+        "__struct_id": 7,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -397,7 +476,7 @@
         }
       },
       {
-        "__struct_id": 7,
+        "__struct_id": 8,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -445,7 +524,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 106
+    "value": 123
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -536,21 +615,6 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "fol_hirepe"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 3
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
                 "value": ""
               },
               "Index": {
@@ -579,7 +643,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Persuade]</Start> So am I. What say we team up?"
+            "0": "Can you cure my disease?"
           }
         }
       },
@@ -608,11 +672,26 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
+                "value": "fol_hirepe"
+              },
+              "Index": {
+                "type": "dword",
+                "value": 4
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
                 "value": ""
               },
               "Index": {
                 "type": "dword",
-                "value": 5
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -636,7 +715,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Nevermind."
+            "0": "<StartCheck>[Persuade]</Start> So am I. What say we team up?"
           }
         }
       },
@@ -693,6 +772,63 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
+            "0": "Nevermind."
+          }
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 7
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
             "0": "I think I'll do better by myself."
           }
         }
@@ -710,7 +846,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 7
+          "value": 8
         }
       },
       {
@@ -721,7 +857,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 4
+          "value": 5
         }
       },
       {
