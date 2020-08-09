@@ -56,7 +56,7 @@ void main()
 
     SetStandardFactionReputation(STANDARD_FACTION_COMMONER, 50, oPlayer);
     SetStandardFactionReputation(STANDARD_FACTION_MERCHANT, 50, oPlayer);
-    SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 100, oPlayer);
+    SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 50, oPlayer);
 
 
 // Give a gore animation if the PC took a lot of damage.

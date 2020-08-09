@@ -15,8 +15,8 @@
 //  CONSTANTS
 // -----------------------------------------------------------------------------
 
-const int SECONDS_TO_RESPAWN = 1200;
-const int RANDOM_SECONDS_TO_RESPAWN = 600;
+const int SECONDS_TO_RESPAWN = 600;
+const int RANDOM_SECONDS_TO_RESPAWN = 300;
 
 // -----------------------------------------------------------------------------
 //  PROTOTYPES

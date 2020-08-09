@@ -12,7 +12,7 @@ void main()
 
        SetStandardFactionReputation(STANDARD_FACTION_COMMONER, 50, oPC);
        SetStandardFactionReputation(STANDARD_FACTION_MERCHANT, 50, oPC);
-       SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 100, oPC);
+       SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 50, oPC);
 
        ValidateMount(oPC);
 
