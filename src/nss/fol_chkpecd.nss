@@ -4,7 +4,7 @@ int StartingConditional()
 {
     object oPC = GetPCSpeaker();
 
-    if (GetTemporaryInt(GetPCPublicCDKey(oPC, TRUE)+GetName(oPC)+"_militia_pers") == 1) return FALSE;
+    if (GetTemporaryInt(GetObjectUUID(oPC)+"_"+GetObjectUUID(OBJECT_SELF)+"_pers") == 1) return FALSE;
 
     return TRUE;
 }

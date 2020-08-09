@@ -41,7 +41,7 @@ int GetFollowerCount(object oPlayer)
 
         while (GetIsObjectValid(oParty))
         {
-            if (GetResRef(oParty) == "militia" && GetMaster(oParty) == oPlayer) nCount = nCount + 1;
+            if ((GetLocalInt(oParty, "follower") == 1) && GetMaster(oParty) == oPlayer) nCount = nCount + 1;
             oParty = GetNextFactionMember(oPlayer, FALSE);
         }
     }
@@ -68,8 +68,7 @@ int CheckFollowerMaster(object oFollower, object oPlayer)
 
 void SetFollowerMaster(object oFollower, object oPlayer)
 {
-// Only miltia for now
-    if (GetResRef(oFollower)!= "militia") return;
+    if (GetLocalInt(oFollower, "follower") != 1) return;
 
     SetAssociateState(NW_ASC_DISTANCE_2_METERS, TRUE, oFollower);
 

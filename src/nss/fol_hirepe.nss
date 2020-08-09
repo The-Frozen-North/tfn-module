@@ -7,9 +7,9 @@ int StartingConditional()
 {
     object oPC = GetPCSpeaker();
     int nSkill = SKILL_PERSUADE;
-    int nDC = 10 + GetFollowerCount(oPC)*6;
+    int nDC = GetLocalInt(OBJECT_SELF, "persuade_dc");
 
-    SetTemporaryInt(GetPCPublicCDKey(oPC, TRUE)+GetName(oPC)+"_militia_pers", 1, 900.0);
+    SetTemporaryInt(GetObjectUUID(oPC)+"_"+GetObjectUUID(OBJECT_SELF)+"_pers", 1, 900.0);
 
     if(!(GetIsSkillSuccessful(oPC, nSkill, nDC)))
     {
