@@ -4,7 +4,7 @@
 
 This repository contains all the module content and associated files for The Frozen North, a Neverwinter Nights: Enhanced Edition persistent world.
 
-There's a little more information in the [wiki](https://github.com/b5635/the-frozen-north/wiki), so please check it out for some additional information, including a [Player's Guide](https://github.com/b5635/the-frozen-north/wiki/New-Players) and a [Builder's Guide](https://github.com/b5635/the-frozen-north/wiki/Building-the-Module).
+There's a detailed [wiki](https://github.com/b5635/the-frozen-north/wiki), so please check it out for some additional information, including a [Player's Guide](https://github.com/b5635/the-frozen-north/wiki/New-Players) and a [Builder's Guide](https://github.com/b5635/the-frozen-north/wiki/Building-the-Module).
 
 If you are interested in what features the server has to offer, check it out [here](https://github.com/b5635/the-frozen-north/wiki/Features).
 
