@@ -1,5 +1,16 @@
 #include "inc_debug"
 #include "nwnx_area"
+#include "nwnx_player"
+
+// thanks for the fix, BlakBat
+void AREA_FIXME(object oPC)
+{
+  object oArea = GetArea(oPC);
+  string sData = NWNX_Player_GetAreaExplorationState(oPC, oArea);
+
+  ExploreAreaForPlayer(oArea, oPC, FALSE);
+  NWNX_Player_SetAreaExplorationState(oPC, oArea, sData);
+}
 
 int CheckLinkThenDestroyArea(object oArea)
 {
@@ -35,7 +46,16 @@ int CheckLinkThenDestroyArea(object oArea)
     }
     else
     {
-        return DestroyArea(oArea);
+        int nDestroy = DestroyArea(oArea);
+
+        object oPCFix = GetFirstPC();
+        while (oPCFix != OBJECT_INVALID)
+        {
+           DelayCommand(0.0f, AREA_FIXME(oPCFix));
+           oPCFix = GetNextPC();
+        }
+
+        return nDestroy;
     }
 }
 
