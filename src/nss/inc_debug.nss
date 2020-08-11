@@ -27,17 +27,7 @@ void SendDebugMessage(string sMessage, int bLog = FALSE)
 {
     if (bLog) WriteTimestampedLogEntry(sMessage);
 
-    if (GetLocalInt(GetModule(), "debug") == 1)
-    {
-        if (GetLocalInt(GetModule(), "debug_verbose") == 1) SendMessageToPC(GetFirstPC(), "** DEBUG: "+sMessage+" **");
-        object oDebug = GetObjectByTag("_debug");
-
-        string sDescription = GetStringLeft(GetDescription(oDebug), 9000);
-
-        SetDescription(oDebug, "["+NWNX_Time_GetSystemDate()+" "+NWNX_Time_GetSystemTime()+"] "+sMessage+"\n"+sDescription);
-
-        sDescription = GetDescription(oDebug);
-    }
+    if (GetLocalInt(GetModule(), "debug_verbose") == 1) SendMessageToPC(GetFirstPC(), "** DEBUG: "+sMessage+" **");
 }
 
 int GetIsDeveloper(object oPC)

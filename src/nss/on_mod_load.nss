@@ -1,39 +1,3 @@
-//::///////////////////////////////////////////////
-//:: Example XP2 OnLoad Script
-//:: x2_mod_def_load
-//:: (c) 2003 Bioware Corp.
-//:://////////////////////////////////////////////
-/*
-    Put into: OnModuleLoad Event
-
-    This example script demonstrates how to tweak the
-    behavior of several subsystems in your module.
-
-    For more information, please check x2_inc_switches
-    which holds definitions for several variables that
-    can be set on modules, creatures, doors or waypoints
-    to change the default behavior of Bioware scripts.
-
-    Warning:
-    Using some of these switches may change your games
-    balancing and may introduce bugs or instabilities. We
-    recommend that you only use these switches if you
-    know what you are doing. Consider these features
-    unsupported!
-
-    Please do NOT report any bugs you experience while
-    these switches have been changed from their default
-    positions.
-
-    Make sure you visit the forums at nwn.bioware.com
-    to find out more about these scripts.
-
-*/
-//:://////////////////////////////////////////////
-//:: Created By: Georg Zoeller
-//:: Created On: 2003-07-16
-//:://////////////////////////////////////////////
-
 #include "x2_inc_switches"
 #include "x2_inc_restsys"
 #include "inc_treasure"
@@ -45,7 +9,7 @@
 
 void main()
 {
-
+// Set up some server options
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_ENFORCE_LEGAL_CHARACTERS, TRUE);
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_ITEM_LEVEL_RESTRICTIONS, TRUE);
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_AUTO_FAIL_SAVE_ON_1, TRUE);
@@ -59,10 +23,11 @@ void main()
 // Set a password until everything is initialized and ready
     NWNX_Administration_SetPlayerPassword(GetRandomUUID());
 
+// Initialize monk weapons
     NWNX_Weapon_SetWeaponIsMonkWeapon(BASE_ITEM_QUARTERSTAFF);
     NWNX_Weapon_SetWeaponIsMonkWeapon(BASE_ITEM_SHURIKEN);
 
-
+// Events.
     NWNX_Events_SubscribeEvent("NWNX_ON_QUICKCHAT_BEFORE", "on_pc_voiceb");
     NWNX_Events_SubscribeEvent("NWNX_ON_CLIENT_CONNECT_AFTER", "on_pc_connect");
     NWNX_Events_SubscribeEvent("NWNX_ON_CLIENT_DISCONNECT_AFTER", "on_pc_dconnect");
@@ -84,14 +49,18 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_ITEM_PAY_TO_IDENTIFY_AFTER", "mer_identify");
 
-    //NWNX_Events_SubscribeEvent("NWNX_ON_CAST_SPELL_BEFORE", "on_pc_spcastb");
     NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_CAST_SPELL_BEFORE", "on_pc_spcastb");
     NWNX_Events_SubscribeEvent("NWNX_ON_BROADCAST_CAST_SPELL_BEFORE", "on_pc_spcastb");
 
-    if (FindSubString(NWNX_Administration_GetServerName(), "DEV") > -1) SetLocalInt(OBJECT_SELF, "dev", 1);
+// We do some things different on DEV and local (without NWNX), such as ignoring webhooks and having verbose debug messages
+    if ((NWNX_Time_GetTimeStamp() == 0) || FindSubString(NWNX_Administration_GetServerName(), "DEV") > -1)
+    {
+        SetLocalInt(OBJECT_SELF, "dev", 1);
+        SetLocalInt(OBJECT_SELF, "debug_verbose", 1);
+    }
 
-    SetLocalInt(OBJECT_SELF, "debug", 1);
-    if (NWNX_Time_GetTimeStamp() == 0) SetLocalInt(OBJECT_SELF, "debug_verbose", 1);
+   // Multiple henchmen on the server, so let's set a high limit.
+   SetMaxHenchmen(999);
 
    // * 1.72: Activating this switch below will allow to use only one damage shield spell at once.
    // * Affected spells: elemental shield, mestil's acid sheat, aura vs alignment, death armor
@@ -187,7 +156,7 @@ void main()
    // * 1.71: By default creature affected by the poison effect itself is virtually
    // * immune to other poisons until this effect wears off. This switch changes this
    // * behavior and adds greater effect to the poisons.
-   // SetModuleSwitch (MODULE_SWITCH_ALLOW_POISON_STACKING, TRUE);
+   SetModuleSwitch (MODULE_SWITCH_ALLOW_POISON_STACKING, TRUE);
 
    // * 1.71: Activating one of the switches below will enable to various weapon boost spells to
    // * affect additional weapons. Of course the spells still apply other rules such as slashing only
@@ -217,19 +186,15 @@ void main()
    // SetModuleSwitch (MODULE_SWITCH_DUSTYROSE_IOUNSTONE_169_AC_TYPE, TRUE);
 
    // * 1.70: Activating the switch below will disable the 1.70's feature that mark item as stolen
+   // This was already modifed personally so don't use it.
    // SetModuleSwitch (MODULE_SWITCH_CONTINUAL_FLAME_ALLOW_EXPLOIT, TRUE);
 
-   SetMaxHenchmen(999);
+   // * Setting the switch below will enable a seperate Use Magic Device Skillcheck for
+   // * rogues when playing on Hardcore+ difficulty. This only applies to scrolls
+   SetModuleSwitch (MODULE_SWITCH_ENABLE_UMD_SCROLLS, TRUE);
 
-   if (GetGameDifficulty() ==  GAME_DIFFICULTY_CORE_RULES || GetGameDifficulty() ==  GAME_DIFFICULTY_DIFFICULT)
-   {
-        // * Setting the switch below will enable a seperate Use Magic Device Skillcheck for
-        // * rogues when playing on Hardcore+ difficulty. This only applies to scrolls
-        SetModuleSwitch (MODULE_SWITCH_ENABLE_UMD_SCROLLS, TRUE);
-
-       // * Activating the switch below will make AOE spells hurt neutral NPCS by default
-       SetModuleSwitch (MODULE_SWITCH_AOE_HURT_NEUTRAL_NPCS, TRUE);
-   }
+   // * Activating the switch below will make AOE spells hurt neutral NPCS by default
+   SetModuleSwitch (MODULE_SWITCH_AOE_HURT_NEUTRAL_NPCS, TRUE);
 
    // * AI: Activating the switch below will make the creaures using the WalkWaypoint function
    // * able to walk across areas
@@ -255,13 +220,11 @@ void main()
    // * did not fit into NWNs spell system and was confusing, so we took it out...
    // SetModuleSwitch (MODULE_SWITCH_EPIC_SPELLS_HURT_CASTER, TRUE);
 
-   // * Epic Spellcasting: Some Epic spells feed on the liveforce of the caster. However this
-   // * did not fit into NWNs spell system and was confusing, so we took it out...
-   // SetModuleSwitch (MODULE_SWITCH_RESTRICT_USE_POISON_TO_FEAT, TRUE);
+    // SetModuleSwitch (MODULE_SWITCH_RESTRICT_USE_POISON_TO_FEAT, TRUE);
 
     // * Spellcasting: Some people don't like caster's abusing expertise to raise their AC
     // * Uncommenting this line will drop expertise mode whenever a spell is cast by a player
-    // SetModuleSwitch (MODULE_VAR_AI_STOP_EXPERTISE_ABUSE, TRUE);
+    SetModuleSwitch (MODULE_VAR_AI_STOP_EXPERTISE_ABUSE, TRUE);
 
 
     // * Item Event Scripts: The game's default event scripts allow routing of all item related events
@@ -271,31 +234,16 @@ void main()
     // * This feature is disabled by default.
    SetModuleSwitch (MODULE_SWITCH_ENABLE_TAGBASED_SCRIPTS, TRUE);
 
-   if (GetModuleSwitchValue (MODULE_SWITCH_ENABLE_TAGBASED_SCRIPTS) == TRUE)
-   {
-        // * If Tagbased scripts are enabled, and you are running a Local Vault Server
-        // * you should use the line below to add a layer of security to your server, preventing
-        // * people to execute script you don't want them to. If you use the feature below,
-        // * all called item scrips will be the prefix + the Tag of the item you want to execute, up to a
-        // * maximum of 16 chars, instead of the pure tag of the object.
-        // * i.e. without the line below a user activating an item with the tag "test",
-        // * will result in the execution of a script called "test". If you uncomment the line below
-        // * the script called will be "test.nss"
-        // SetUserDefinedItemEventPrefix("");
-
-   }
-
    object oArea = GetFirstArea();
    string sAreaResRef;
    location lBaseLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
    object oAreaRefresher;
 
 // Loop through all objects in the module.
-
    while (GetIsObjectValid(oArea))
    {
        sAreaResRef = GetResRef(oArea);
-// Skip the system areas or copied areas.
+// Skip the system areas or copied areas. They are prepended with an underscore.
        if (GetStringLeft(sAreaResRef, 1) == "_")
        {
            oArea = GetNextArea();
