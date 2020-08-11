@@ -29,6 +29,7 @@ void main()
     effect eEffect;
 
     object oKiller = GetLastHostileActor(oPlayer);
+    string sPenalty = "";
     string sDeathMessage = "You will be automatically revived if there is a friend nearby, there are no enemies, and you are out of combat, or you can respawn at the nearest Temple of Tyr.";
 
     RemoveMount(oPlayer);
@@ -39,6 +40,8 @@ void main()
         location lDeathSpot = GetLocation(oPlayer);
         float fFacing = GetFacing(oPlayer);
 
+        sPenalty = "You have lost some XP and gold. ";
+
         ExecuteScript("pc_dth_penalty", oPlayer);
 
 // Create a blood spot on dying.
@@ -47,7 +50,7 @@ void main()
 
      }
 
-     DelayCommand(4.5, PopUpDeathGUIPanel(oPlayer, TRUE, TRUE, 0, sDeathMessage));
+     DelayCommand(4.5, PopUpDeathGUIPanel(oPlayer, TRUE, TRUE, 0, sPenalty+sDeathMessage));
 
      NWNX_Object_SetInt(oPlayer, "DEAD", 1, TRUE);
 
