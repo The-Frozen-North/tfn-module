@@ -1,38 +1,39 @@
 #include "inc_persist"
 #include "inc_debug"
+#include "inc_henchman"
 
-void main()
+void DoRevive(object oDead)
 {
-    object oPC = GetFirstPC();
-
-    //ExportAllCharacters();
-
-    while(GetIsObjectValid(oPC))
-    {
-        if (GetIsDead(oPC))
+        if (GetIsDead(oDead))
         {
-            SendDebugMessage(GetName(oPC)+" is dead, start revive loop");
+            SendDebugMessage(GetName(oDead)+" is dead, start revive loop");
             int bEnemy = FALSE;
             int bFriend = FALSE;
+            int bMasterFound = FALSE;
 
-            location lLocation = GetLocation(oPC);
+            object oMaster = GetMasterByUUID(oDead);
+
+            location lLocation = GetLocation(oDead);
 
             float fSize = 50.0;
+
+            float fMasterDistance = GetDistanceBetween(oDead, oMaster);
+            if (fMasterDistance > 0.0 && fMasterDistance <= 50.0) bMasterFound = TRUE;
 
             object oCreature = GetFirstObjectInShape(SHAPE_SPHERE, fSize, lLocation, TRUE, OBJECT_TYPE_CREATURE);
 
             while (GetIsObjectValid(oCreature))
             {
 // do not count self and count only if alive
-                if (!GetIsDead(oCreature) && (oCreature != oPC))
+                if (!GetIsDead(oCreature) && (oCreature != oDead))
                 {
-                    if (GetIsEnemy(oCreature, oPC))
+                    if (GetIsEnemy(oCreature, oDead))
                     {
                         bEnemy = TRUE;
                         SendDebugMessage("Enemy detected, breaking from revive loop: "+GetName(oCreature));
                         break;
                     }
-                    else if (!bFriend && GetIsFriend(oCreature, oPC))
+                    else if (!bFriend && GetIsFriend(oCreature, oDead))
                     {
                         bFriend = TRUE;
                         SendDebugMessage("Friend detected: "+GetName(oCreature));
@@ -43,16 +44,44 @@ void main()
                 oCreature = GetNextObjectInShape(SHAPE_SPHERE, fSize, lLocation, TRUE, OBJECT_TYPE_CREATURE);
             }
 
+            if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound) bFriend = TRUE;
+
             if (!bEnemy && bFriend)
             {
-                NWNX_Object_DeleteInt(oPC, "DEAD");
-                ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oPC);
-                WriteTimestampedLogEntry(PlayerDetailedName(oPC)+" was revived by friendly "+GetName(oCreature)+".");
+                NWNX_Object_DeleteInt(oDead, "DEAD");
+                ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oDead);
+                if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound) SetMaster(oDead, oMaster);
+                WriteTimestampedLogEntry(GetName(oDead)+" was revived by friendly "+GetName(oCreature)+".");
+            }
+
+// destroy henchman if still not alive and master isn't found
+            if (!GetIsPC(oDead) && GetIsDead(oDead) && GetStringLeft(GetResRef(oDead), 3) == "hen" && !bMasterFound)
+            {
+                 ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_RESTORATION), lLocation);
+                 ClearMaster(oDead);
+                 DestroyObject(oDead);
             }
         }
+}
+
+
+void main()
+{
+    object oPC = GetFirstPC();
+
+    //ExportAllCharacters();
+
+    while(GetIsObjectValid(oPC))
+    {
+        DoRevive(oPC);
 
         SavePCInfo(oPC);
 
         oPC = GetNextPC();
     }
+
+    DoRevive(GetObjectByTag("hen_tomi"));
+    DoRevive(GetObjectByTag("hen_daelan"));
+    DoRevive(GetObjectByTag("hen_sharwyn"));
+    DoRevive(GetObjectByTag("hen_linu"));
 }

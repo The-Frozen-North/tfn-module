@@ -64,11 +64,15 @@ void PlayVoiceByStrRef(int nStrRef)
     PlaySoundByStrRef(nStrRef, FALSE);
 }
 
+object GetMasterByUUID(object oHench)
+{
+    return GetObjectByUUID(GetLocalString(GetModule(), GetResRef(oHench)+"_master"));
+}
+
 void RehireHenchman(object oPlayer)
 {
     string sUUID = GetObjectUUID(oPlayer);
     object oModule = GetModule();
-    string sHenchTag;
 
     if (GetLocalString(oModule, "hen_daelan_master") == sUUID) SetMaster(GetObjectByTag("hen_daelan"), oPlayer);
     if (GetLocalString(oModule, "hen_linu_master") == sUUID) SetMaster(GetObjectByTag("hen_linu"), oPlayer);
