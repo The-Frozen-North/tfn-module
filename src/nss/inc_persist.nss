@@ -1,5 +1,6 @@
 #include "inc_debug"
 #include "nwnx_object"
+#include "nwnx_player"
 
 // -------------------------------------------------------------------------
 // PROTOTYPES
@@ -15,6 +16,12 @@ void SetTemporaryInt(string sName, int nValue, float fSeconds = 60.0);
 // Get a temporary integer from the module.
 int GetTemporaryInt(string sName);
 
+// Saves the current area's minimap data for the PC.
+// Stored as map_AREA_RESREF
+void ExportMinimap(object oPC);
+
+// Loads the PC's current area minimap data.
+void ImportMinimap(object oPC);
 // -------------------------------------------------------------------------
 // FUNCTIONS
 // -------------------------------------------------------------------------
@@ -41,6 +48,50 @@ int GetTemporaryInt(string sName)
 // PC FUNCTIONS
 // -------------------------------------------------------------------------
 
+void ExportMinimap(object oPC)
+{
+    if (!GetIsPC(oPC)) return;
+
+    object oArea = GetArea(oPC);
+
+    if (GetIsAreaNatural(oArea) == AREA_INVALID) return;
+
+// don't export areas that are set to explored
+    if (GetLocalInt(oArea, "explored") == 1) return;
+
+    string sData = NWNX_Player_GetAreaExplorationState(oPC, oArea);
+    string sDataTarget = "map_"+GetResRef(oArea);
+
+    SendDebugMessage("exporting minimap "+sDataTarget+": "+sData);
+    NWNX_Object_SetString(oPC, sDataTarget, sData, TRUE);
+}
+
+void ImportMinimap(object oPC)
+{
+  if (!GetIsPC(oPC)) return;
+
+  object oArea = GetArea(oPC);
+
+  if (GetIsAreaNatural(oArea) == AREA_INVALID) return;
+
+  if (GetLocalInt(oArea, "explored") == 1)
+  {
+    ExploreAreaForPlayer(oArea, oPC, FALSE);
+    ExploreAreaForPlayer(oArea, oPC, TRUE);
+  }
+  else
+  {
+    string sDataTarget = "map_"+GetResRef(oArea);
+    string sData = NWNX_Object_GetString(oPC, sDataTarget);
+    SendDebugMessage("importing minimap "+sDataTarget+": "+sData);
+
+    if (sData == "") return;
+
+    ExploreAreaForPlayer(oArea, oPC, FALSE);
+    NWNX_Player_SetAreaExplorationState(oPC, oArea, sData);
+  }
+}
+
 void SavePCInfo(object oPC)
 {
     object oArea = GetArea(oPC);
@@ -55,6 +106,8 @@ void SavePCInfo(object oPC)
          NWNX_Object_SetFloat(oPC, "LOC_O", GetFacing(oPC), TRUE);
          NWNX_Object_SetString(oPC, "LOC_A", GetTag(oArea), TRUE);
     }
+
+    ExportMinimap(oPC);
 
     NWNX_Object_SetInt(oPC, "CURRENT_HP", GetCurrentHitPoints(oPC), TRUE);
 }

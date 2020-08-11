@@ -1,5 +1,6 @@
 #include "inc_debug"
 #include "inc_horse"
+#include "inc_persist"
 
 void main()
 {
@@ -8,7 +9,7 @@ void main()
 // only trigger this for PCs
        if (!GetIsPC(oPC)) return;
 
-       WriteTimestampedLogEntry(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+".");
+       SendDebugMessage(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+".", TRUE);
 
        SetStandardFactionReputation(STANDARD_FACTION_COMMONER, 50, oPC);
        SetStandardFactionReputation(STANDARD_FACTION_MERCHANT, 50, oPC);
@@ -16,7 +17,14 @@ void main()
 
        ValidateMount(oPC);
 
-       if (GetLocalInt(OBJECT_SELF, "explored") == 1) ExploreAreaForPlayer(OBJECT_SELF, GetEnteringObject());
+       if (GetLocalInt(OBJECT_SELF, "explored") == 1)
+       {
+            ExploreAreaForPlayer(OBJECT_SELF, oPC);
+       }
+       else
+       {
+            ImportMinimap(oPC);
+       }
 
        string sScript = GetLocalString(OBJECT_SELF, "enter_script");
        if (sScript != "") ExecuteScript(sScript, OBJECT_SELF);

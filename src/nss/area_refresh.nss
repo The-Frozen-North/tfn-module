@@ -1,16 +1,6 @@
 #include "inc_debug"
+#include "inc_persist"
 #include "nwnx_area"
-#include "nwnx_player"
-
-// thanks for the fix, BlakBat
-void AREA_FIXME(object oPC)
-{
-  object oArea = GetArea(oPC);
-  string sData = NWNX_Player_GetAreaExplorationState(oPC, oArea);
-
-  ExploreAreaForPlayer(oArea, oPC, FALSE);
-  NWNX_Player_SetAreaExplorationState(oPC, oArea, sData);
-}
 
 int CheckLinkThenDestroyArea(object oArea)
 {
@@ -46,13 +36,26 @@ int CheckLinkThenDestroyArea(object oArea)
     }
     else
     {
+// thanks for the fix, BlakBat
+// here I modified it to be persistent, and save the PC's area before destroy
+        object oPCExport = GetFirstPC();
+        while (oPCExport != OBJECT_INVALID)
+        {
+           ExportMinimap(oPCExport);
+           oPCExport = GetNextPC();
+        }
+
+
         int nDestroy = DestroyArea(oArea);
 
-        object oPCFix = GetFirstPC();
-        while (oPCFix != OBJECT_INVALID)
+        if (nDestroy == 1)
         {
-           DelayCommand(0.0f, AREA_FIXME(oPCFix));
-           oPCFix = GetNextPC();
+            object oPCImport = GetFirstPC();
+            while (oPCImport != OBJECT_INVALID)
+            {
+               DelayCommand(0.0f, ImportMinimap(oPCImport));
+               oPCImport = GetNextPC();
+            }
         }
 
         return nDestroy;
