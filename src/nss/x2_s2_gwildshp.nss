@@ -42,8 +42,7 @@ the ability to walk through other creatures)
 #include "70_inc_shifter"
 #include "x2_inc_itemprop"
 #include "x2_inc_shifter"
-#include "x3_inc_horse"
-
+#include "nw_i0_spells"
 
 void main()
 {

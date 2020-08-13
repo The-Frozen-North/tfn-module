@@ -24,17 +24,4 @@ Patch 1.72
 - speed increase fixed
 */
 
-#include "x3_inc_horse"
-
-void main()
-{
-    object oRider=OBJECT_SELF;
-    string sScript=GetLocalString(GetModule(),"X3_EXTEND_PALMOUNT");
-    SetLocalObject(oRider,"oX3_PALADIN_MOUNT",oRider);
-    HORSE_SupportIncreaseSpeed(oRider,GetSpellTargetObject());
-    HORSE_SupportAdjustMountedArcheryPenalty(oRider);
-    DelayCommand(0.5,HORSE_SupportApplyMountedSkillDecreases(oRider));
-    SetLocalInt(oRider,"bX3_HORSE_MODIFIERS",TRUE);
-    HORSE_SupportMonitorPaladinUnsummon(oRider);
-    if (GetStringLength(sScript)>0) ExecuteScript(sScript,oRider);
-}
+void main() {}

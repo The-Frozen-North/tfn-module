@@ -9,51 +9,12 @@
 //:: Created By: Georg Zoeller
 //:: Created On: June 9/03
 //:://////////////////////////////////////////////
-//:: Modified By: Deva Winblood
-//:: Modified Date: January 28th, 2008
-//:://////////////////////////////////////////////
 
 #include "x2_inc_restsys"
 #include "x2_inc_switches"
-#include "x3_inc_horse"
-
 void main()
 {
     object oPC = GetLastPCRested();
-    object oMount;
-
-    if (!GetLocalInt(GetModule(),"X3_MOUNT_NO_REST_DISMOUNT"))
-    { // make sure not mounted
-        /*  Deva, Jan 17, 2008
-            Do not allow a mounted PC to rest
-        */
-        if (HorseGetIsMounted(oPC))
-        { // cannot mount
-            if (GetLocalInt(oPC,"X3_REST_CANCEL_MESSAGE_SENT"))
-            { // cancel message already played
-                DeleteLocalInt(oPC,"X3_REST_CANCEL_MESSAGE_SENT");
-            } // cancel message already played
-            else
-            { // play cancel message
-                FloatingTextStrRefOnCreature(112006,oPC,FALSE);
-                SetLocalInt(oPC,"X3_REST_CANCEL_MESSAGE_SENT",TRUE); // sentinel
-                // value to prevent message played a 2nd time on canceled rest
-            } // play cancel message
-            AssignCommand(oPC,ClearAllActions(TRUE));
-            return;
-        } // cannot mount
-    } // make sure not mounted
-
-    if (!GetLocalInt(GetModule(),"X3_MOUNT_NO_REST_DESPAWN"))
-    { // if there is a paladin mount despawn it
-        oMount=HorseGetPaladinMount(oPC);
-        if (!GetIsObjectValid(oMount)) oMount=GetLocalObject(oPC,"oX3PaladinMount");
-        if (GetIsObjectValid(oMount))
-        { // paladin mount exists
-            if (oMount==oPC||!GetIsObjectValid(GetMaster(oMount))) AssignCommand(oPC,HorseUnsummonPaladinMount());
-            else { AssignCommand(GetMaster(oMount),HorseUnsummonPaladinMount()); }
-        } // paladin mount exists
-    } // if there is a paladin mount despawn it
 
     if (GetModuleSwitchValue(MODULE_SWITCH_USE_XP2_RESTSYSTEM) == TRUE)
     {
@@ -123,4 +84,5 @@ void main()
         }
     }
 }
+
 

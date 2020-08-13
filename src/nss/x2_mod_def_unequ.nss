@@ -17,7 +17,6 @@
 
 #include "x2_inc_switches"
 #include "x2_inc_intweapon"
-#include "x3_inc_horse"
 #include "70_inc_itemprop"
 
 void main()
@@ -41,15 +40,6 @@ void main()
     {
             IWSetIntelligentWeaponEquipped(oPC,OBJECT_INVALID);
             IWPlayRandomUnequipComment(oPC,oItem);
-    }
-
-    // -------------------------------------------------------------------------
-    // Mounted benefits control
-    // -------------------------------------------------------------------------
-    if (GetWeaponRanged(oItem))
-    {
-        DeleteLocalInt(oPC,"bX3_M_ARCHERY");
-        HORSE_SupportAdjustMountedArcheryPenalty(oPC);
     }
 
     // -------------------------------------------------------------------------
