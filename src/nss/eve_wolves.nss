@@ -1,16 +1,14 @@
-#include "inc_debug"
+#include "inc_event"
 
 void main()
 {
-    int iMax = d4(2);
+    int iMax = d3(2);
 
     object oEventCreature;
 
     int i;
     for (i = 0; i < iMax; i++)
     {
-        oEventCreature = CreateObject(OBJECT_TYPE_CREATURE, "wolf", GetLocation(OBJECT_SELF));
+        CreateEventCreature("wolf");
     }
-
-    SendDebugMessage("event creature created: "+GetName(oEventCreature), TRUE);
 }

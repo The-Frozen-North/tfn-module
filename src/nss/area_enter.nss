@@ -9,7 +9,7 @@ void main()
 // only trigger this for PCs
        if (!GetIsPC(oPC)) return;
 
-       SendDebugMessage(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+".", TRUE);
+       SendDebugMessage(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+", tag: "+GetTag(OBJECT_SELF)+", resref: "+GetResRef(OBJECT_SELF), TRUE);
 
        SetStandardFactionReputation(STANDARD_FACTION_COMMONER, 50, oPC);
        SetStandardFactionReputation(STANDARD_FACTION_MERCHANT, 50, oPC);
@@ -33,12 +33,11 @@ void main()
        {
            string sResRef = GetResRef(OBJECT_SELF);
 
-           object oCounter = GetObjectByTag(sResRef+"_counter");
-           int nRefresh = GetLocalInt(oCounter, "refresh");
+           int nRefresh = GetLocalInt(OBJECT_SELF, "refresh");
            if (nRefresh == 0)
            {
                 SendDebugMessage(sResRef+" refresh started", TRUE);
-                SetLocalInt(oCounter, "refresh", 1);
+                SetLocalInt(OBJECT_SELF, "refresh", 1);
            }
        }
 }

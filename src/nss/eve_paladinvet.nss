@@ -1,8 +1,9 @@
 #include "inc_debug"
+#include "inc_event"
 
 void main()
 {
-    object oEventCreature = CreateObject(OBJECT_TYPE_CREATURE, "paladin_vet", GetLocation(OBJECT_SELF));
+    object oEventCreature = CreateEventCreature("paladin_vet");
 
     SendDebugMessage("event creature created: "+GetName(oEventCreature), TRUE);
 }

@@ -9,7 +9,7 @@ void DestroyUndeadByArea(object oPedestal, string sAreaTag)
     object oArea = GetObjectByTag(sAreaTag);
     object oCreature = GetFirstObjectInArea(oArea);
 
-    DeleteLocalInt(oArea, "ambush");
+    //DeleteLocalInt(oArea, "ambush");
 
     string sResRef;
     effect eBeam = EffectBeam(VFX_BEAM_EVIL, oPedestal, BODY_NODE_CHEST);

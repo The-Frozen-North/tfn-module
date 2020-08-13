@@ -1,4 +1,35 @@
 #include "inc_debug"
+#include "nwnx_object"
+
+void SetSpawnPoint(string sResRef, object oTable, int nTarget, location lLocation)
+{
+    object oTrigger;
+    float fMaxHeight;
+    vector vVector = GetPositionFromLocation(lLocation);
+// loop through elevation 0, 1, and 2
+    int i;
+    for (i = 0; i < 3; i++)
+    {
+        oTrigger = GetObjectByTag(sResRef+"e"+IntToString(i)+"_random"+IntToString(nTarget)+"_spawn");
+
+        fMaxHeight = 3.5;
+
+        switch (GetLocalInt(oTrigger, "elevation"))
+        {
+            case 1: fMaxHeight = 7.0; break;
+            case 2: fMaxHeight = 10.5; break;
+        }
+
+        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vVector) && (vVector.z <= fMaxHeight))
+        {
+              int nSpawns = GetLocalInt(oTable, "random"+IntToString(nTarget)+"_spawn_point_total")+1;
+
+              CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lLocation, FALSE, sResRef+"_random"+IntToString(nTarget)+"_spawn_point"+IntToString(nSpawns));
+              SetLocalInt(oTable, "random"+IntToString(nTarget)+"_spawn_point_total", nSpawns);
+              break;
+        }
+    }
+}
 
 void main()
 {
@@ -48,6 +79,7 @@ void main()
            if (GetLocalString(oArea, "event"+IntToString(nEventCount+1)) == "") break;
            nEventCount = nEventCount + 1;
        }
+       SetLocalInt(oArea, "events", nEventCount);
 
 //==========================================
 // DEFAULT AREA SCRIPTS
@@ -55,7 +87,7 @@ void main()
 
 // Set some special area scripts
        SetEventScript(oArea, EVENT_SCRIPT_AREA_ON_HEARTBEAT, "area_hb");
-       SetEventScript(oArea, EVENT_SCRIPT_AREA_ON_ENTER, "area_enter_spawn");
+       SetEventScript(oArea, EVENT_SCRIPT_AREA_ON_ENTER, "area_enter");
        SetEventScript(oArea, EVENT_SCRIPT_AREA_ON_EXIT, "area_exit");
 
 //==========================================
@@ -66,9 +98,13 @@ void main()
        string sTag;
        int nTreasures = 0;
        int nEventSpawns = 0;
+       int nCreatures = 0;
+       int nDoors = 0;
        object oObject = GetFirstObjectInArea(oArea);
        int nType;
-       object oTransitionTarget;
+       int bInstance = GetLocalInt(oArea, "instance");
+       vector vTreasureVector, vCreatureVector;
+       float fTreasureOrientation;
 // Loop through all objects in the area and do something special with them
        while (GetIsObjectValid(oObject))
        {
@@ -76,7 +112,7 @@ void main()
 
                switch (nType)
                {
-               // the transition target must be stored as a variable or it might break
+// Count event waypoints for use later.
                  case OBJECT_TYPE_WAYPOINT:
                        if (GetResRef(oObject) == "_wp_event")
                        {
@@ -84,38 +120,42 @@ void main()
                            SetTag(oObject, sResRef+"WP_EVENT"+IntToString(nEventSpawns));
                        }
                  break;
-// the transition target must be stored as a variable or it might break
                  case OBJECT_TYPE_TRIGGER:
-                       sTag = GetTag(oObject);
-
-                       oTransitionTarget = GetTransitionTarget(oObject);
-                       if (GetIsObjectValid(oTransitionTarget))
-                       {
-                           SetLocalString(oObject, "TRANSITION_TARGET", GetTag(oTransitionTarget));
-                           SetEventScript(oObject, EVENT_SCRIPT_TRIGGER_ON_HEARTBEAT, "at_hb");
-                       }
-// add the resref to a spawn trigger tag
-                       else if (GetStringLeft(GetResRef(oObject), 11) == "trig_random")
-                       {
-                           SetTag(oObject, sResRef+sTag);
-                       }
-
+// add the resref to a spawn trigger tag to work with the spawn system
+                       if (GetStringLeft(GetResRef(oObject), 11) == "trig_random") SetTag(oObject, sResRef+GetTag(oObject));
                  break;
                  case OBJECT_TYPE_DOOR:
-                    oTransitionTarget = GetTransitionTarget(oObject);
-                    if (GetIsObjectValid(oTransitionTarget))
-                    {
-                        SetLocalString(oObject, "TRANSITION_TARGET", GetTag(oTransitionTarget));
-                        SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_HEARTBEAT, "at_hb");
-                    }
-
-                    SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_UNLOCK, "unlock");
-// plot doors with an un-openable key cannot be bashed
-                    if (GetLocked(oObject) && !(GetPlotFlag(oObject) && GetLockKeyRequired(oObject) && GetLockKeyTag(oObject) == ""))
-                    {
-                        SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_MELEE_ATTACKED, "bash_lock");
-                    }
+// nullify this, doors with an on click script do not function
                    SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLICKED, "");
+
+// all doors are plot
+                    SetPlotFlag(oObject, TRUE);
+
+// instance doors get new scriptz and added to collection of doors
+                    if (bInstance == 1)
+                    {
+                        SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_UNLOCK, "unlock");
+                        SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_MELEE_ATTACKED, "bash_lock");
+                        nDoors = nDoors + 1;
+                        SetLocalObject(oArea, "door"+IntToString(nDoors), oObject);
+                        if (GetLocked(oObject)) SetLocalInt(oArea, "door_locked"+IntToString(nDoors), 1);
+                    }
+                 break;
+                 case OBJECT_TYPE_CREATURE:
+                     if (bInstance == 1)
+                     {
+                          nCreatures = nCreatures + 1;
+
+                          vCreatureVector = GetPosition(oObject);
+
+                          SetLocalString(oArea, "creature_resref"+IntToString(nCreatures), GetResRef(oObject));
+                          SetLocalFloat(oArea, "creature_x"+IntToString(nCreatures), vCreatureVector.x);
+                          SetLocalFloat(oArea, "creature_y"+IntToString(nCreatures), vCreatureVector.y);
+                          SetLocalFloat(oArea, "creature_z"+IntToString(nCreatures), vCreatureVector.z);
+                          SetLocalFloat(oArea, "creature_o"+IntToString(nCreatures), GetFacing(oObject));
+
+                          DestroyObject(oObject);
+                     }
                  break;
                  case OBJECT_TYPE_PLACEABLE:
                    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_UNLOCK, "unlock");
@@ -132,10 +172,22 @@ void main()
                              }
                              DestroyObject(oObject);
                        }
-// If it is a treasure, count it for the formula.
-                       else if (GetStringLeft(GetResRef(oObject), 6) == "treas_")
+// If it is a treasure, count it, create the treasure WP, store the resref on it, then delete the treasure
+                       else if (bInstance == 1 && GetStringLeft(GetResRef(oObject), 6) == "treas_")
                        {
                             nTreasures = nTreasures + 1;
+
+                            vTreasureVector = GetPosition(oObject);
+
+                            SetLocalString(oArea, "treasure_resref"+IntToString(nTreasures), GetResRef(oObject));
+                            SetLocalFloat(oArea, "treasure_x"+IntToString(nTreasures), vTreasureVector.x);
+                            SetLocalFloat(oArea, "treasure_y"+IntToString(nTreasures), vTreasureVector.y);
+                            SetLocalFloat(oArea, "treasure_z"+IntToString(nTreasures), vTreasureVector.z);
+                            SetLocalFloat(oArea, "treasure_o"+IntToString(nTreasures), GetFacing(oObject));
+// treasures tagged with keep is always guaranteed
+                            if (GetLocalInt(oObject, "keep") == 1) SetLocalInt(oArea, "treasure_keep"+IntToString(nTreasures), 1);
+
+                            DestroyObject(oObject);
                        }
 // Otherwise, make it plot. It's likely a sign or a static item.
                        else
@@ -148,64 +200,82 @@ void main()
            oObject = GetNextObjectInArea(oArea);
        }
 
-//==========================================
-// TREASURE LOOP
-//==========================================
+       SetLocalInt(oArea, "event_spawn_points", nEventSpawns);
+       SetLocalInt(oArea, "treasures", nTreasures);
+       SetLocalInt(oArea, "creatures", nCreatures);
+       SetLocalInt(oArea, "doors", nDoors);
 
-// We need to loop through all the objects again
-// And apply the correct density of treasures
+//===========================================================
+// LOOP THROUGH EACH TILE, CREATING SPAWN POINTS
+//===========================================================
 
+       int iRows = GetAreaSize(AREA_WIDTH, oArea);
+       int iColumns = GetAreaSize(AREA_HEIGHT, oArea);
 
-// determine how dense an area should be in regards to treasures
-       float fAreaSize = IntToFloat(GetAreaSize(AREA_HEIGHT, oArea)*GetAreaSize(AREA_WIDTH, oArea));
+       int nSpawns = 0;
 
-// increase these to DECREASE the proportion of creatures/treasure to the area
-// higher number = less
-       float fTreasureFactor = 175.0;
+       int iXAxis, iYAxis;
+       float fYAxis, fXAxis, fDistanceFromDoor;
+       location lTile;
+       object oValidator, oDoor;
+       vector vTile, vValidator;
 
-       float fNoTreasureMod = GetLocalFloat(oArea, "no_treasure_mod");
-       if (fNoTreasureMod > 0.0) fTreasureFactor = fTreasureFactor*fNoTreasureMod;
+       int i;
 
-       int nNoTreasureChance;
-       if (nTreasures == 0 || fAreaSize == 0.0)
+       int bTrapped = GetLocalInt(oArea, "trapped");
+
+// use this to get the center of a tile
+       float fMultiplier = 5.0;
+
+// Loop through the X axis of an area
+       for (iXAxis = 0; iXAxis < iRows; iXAxis++)
        {
-           nNoTreasureChance = 0;
-       }
-       else
-       {
-           nNoTreasureChance = FloatToInt((IntToFloat(nTreasures)/fAreaSize)*fTreasureFactor);
-       }
+            float fXAxis = fMultiplier+(IntToFloat(iXAxis)*fMultiplier*2.0);
 
-       oObject = GetFirstObjectInArea(oArea);
+// Loop through the Y axis of an area, following the previous X location
+            for (iYAxis = 0; iYAxis < iColumns; iYAxis++)
+            {
+                fYAxis = fMultiplier+(IntToFloat(iYAxis)*fMultiplier*2.0);
 
-       while (GetIsObjectValid(oObject))
-       {
-           if (GetLocalInt(oObject, "skip") != 1 && GetObjectType(oObject) == OBJECT_TYPE_PLACEABLE && GetStringLeft(GetResRef(oObject), 6) == "treas_" && d100() <= nNoTreasureChance) DestroyObject(oObject);
+                lTile = Location(oArea, Vector(fXAxis, fYAxis, 0.0), 0.0);
 
-           oObject = GetNextObjectInArea(oArea);
-       }
+// we will spawn a creature at the exact location to check if it is in the proper spot
+                oValidator = CreateObject(OBJECT_TYPE_CREATURE, "_area_validator", lTile);
 
-//==========================================
-// CREATE EVENT
-//==========================================
+                vTile = GetPositionFromLocation(lTile);
+                vValidator = GetPosition(oValidator);
 
-// 25% chance of an event
-        SendDebugMessage(sResRef+" event spawns : "+IntToString(nEventSpawns), TRUE);
-        if (nEventSpawns > 0 && d3() == 1)
-        {
-            int nEventNum = Random(nEventCount)+1;
-            string sEvent = GetLocalString(oArea, "event"+IntToString(nEventNum));
-            string sEventWP = sResRef+"WP_EVENT"+IntToString(Random(nEventSpawns)+1);
-            object oEventWP = GetObjectByTag(sEventWP);
+                oDoor = GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile);
+                if (GetIsObjectValid(oDoor))
+                {
+                    fDistanceFromDoor = GetDistanceBetweenLocations(GetLocation(GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile)), lTile);
+                }
+                else
+                {
+// in cases of a door not existing, just set the distance to a high number so it emulates not being close to a door
+                    fDistanceFromDoor = 999.0;
+                }
 
-            SendDebugMessage(sResRef+" chosen event num : "+IntToString(nEventNum), TRUE);
-            SendDebugMessage(sResRef+" chosen event : "+sEvent, TRUE);
-            SendDebugMessage(sResRef+" event WP : "+sEventWP, TRUE);
-            SendDebugMessage(sResRef+" event WP exists : "+IntToString(GetIsObjectValid(oEventWP)), TRUE);
+// we don't want spawns too close to a door. also, make sure the spot and creature position matches
+                if (fDistanceFromDoor >= 3.0 && vTile.x == vValidator.x && vTile.y == vValidator.y)
+                {
+                    if (bTrapped)
+                    {
+                        nSpawns = nSpawns + 1;
+                        CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"_trap_spawn_point"+IntToString(nSpawns));
+                    }
 
+                    for (i = 1; i < 10; i++)
+                    {
+                        SetSpawnPoint(sResRef, oArea, i, lTile);
+                    }
+                }
 
-            ExecuteScript(sEvent, oEventWP);
+                DestroyObject(oValidator);
+            }
         }
+
+        SetLocalInt(oArea, "trap_spawns", nSpawns);
 
 //==========================================
 // SET AREA AS INITIALIZED
@@ -213,11 +283,18 @@ void main()
        string sScript = GetLocalString(oArea, "init_script");
        if (sScript != "") ExecuteScript(sScript, oArea);
 
-       if (!GetIsObjectValid(GetObjectByTag(sResRef+"+_spawn_table")))
+
+       if (nEventSpawns > 0) SendDebugMessage(sResRef+" event spawn points: "+IntToString(nEventSpawns), TRUE);
+       if (nSpawns > 0) SendDebugMessage(sResRef+" trap spawn points: "+IntToString(nSpawns), TRUE);
+       int nRandomSpawnPoints;
+       for (i = 1; i < 10; i++)
        {
-           SendDebugMessage(sResRef+" table not found, initializing spawns", TRUE);
-           ExecuteScript("area_init_spawns", oArea);
+            nRandomSpawnPoints = GetLocalInt(oArea, "random"+IntToString(i)+"_spawn_point_total");
+            if (nRandomSpawnPoints > 0) SendDebugMessage(sResRef+" random1 spawn points: "+IntToString(nRandomSpawnPoints), TRUE);
        }
+
+// we will refresh it once so there's spawns
+       ExecuteScript("area_refresh", oArea);
 
        SendDebugMessage("initialized "+sResRef, TRUE);
        SetLocalInt(oArea, "initialized", 1);

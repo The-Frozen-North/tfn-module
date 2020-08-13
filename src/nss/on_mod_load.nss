@@ -4,11 +4,15 @@
 #include "nwnx_admin"
 #include "nwnx_weapon"
 #include "nwnx_events"
+#include "nwnx_util"
 
 #include "70_inc_switches"
 
 void main()
 {
+// Set a very high instruction limit so we can run the initialization scripts without TMI
+    NWNX_Util_SetInstructionLimit(52428888);
+
 // Set up some server options
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_ENFORCE_LEGAL_CHARACTERS, TRUE);
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_ITEM_LEVEL_RESTRICTIONS, TRUE);
@@ -250,17 +254,7 @@ void main()
            continue;
        }
 
-// create an area refresher if this is an instanced area.
-// this object will occasionally check when an area needs to be destroyed
-// and then re-create the area
-       if (GetLocalInt(oArea, "instance") == 1)
-       {
-           object oAreaRefresher = CreateObject(OBJECT_TYPE_CREATURE, "_area_refresher", lBaseLocation, FALSE, sAreaResRef+"+_counter");
-           SetLocalString(oAreaRefresher, "resref", sAreaResRef);
-           SetName(oAreaRefresher, sAreaResRef);
-       }
-
-       DelayCommand(0.001, ExecuteScript("area_init", oArea));
+       ExecuteScript("area_init", oArea);
 
        oArea = GetNextArea();
    }

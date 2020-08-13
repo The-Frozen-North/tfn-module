@@ -3,7 +3,7 @@ void SpawnAttacker(int nTarget, int nTargetKey)
     location lLocation = GetLocation(GetObjectByTag("WP_HELM_AMBUSH"+IntToString(nTarget)));
 
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_SUMMON_MONSTER_1), lLocation);
-    object oCreature = CreateObject(OBJECT_TYPE_CREATURE, "helm_grunt", lLocation);
+    object oCreature = CreateObject(OBJECT_TYPE_CREATURE, "helm_grunt", lLocation, FALSE, "helm_ambush");
 
     if (nTarget == nTargetKey)
     {

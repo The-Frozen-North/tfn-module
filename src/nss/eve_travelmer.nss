@@ -1,9 +1,10 @@
 #include "inc_debug"
 #include "inc_loot"
+#include "inc_event"
 
 void main()
 {
-    object oMerchant = CreateObject(OBJECT_TYPE_CREATURE, "travel_merchant", GetLocation(OBJECT_SELF));
+    object oMerchant = CreateEventCreature("travel_merchant");
 
     object oStore = CreateObject(OBJECT_TYPE_STORE, "mer_travel", GetLocation(OBJECT_SELF));
 
@@ -14,7 +15,7 @@ void main()
     int i;
     for (i = 1; i < 4; i++)
     {
-        oBodyguard = CreateObject(OBJECT_TYPE_CREATURE, "mer_bodyguard", GetLocation(OBJECT_SELF));
+        oBodyguard = CreateEventCreature("mer_bodyguard");
         SetLocalObject(oBodyguard, "travel_merchant", oMerchant);
     }
 

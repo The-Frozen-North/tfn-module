@@ -62,7 +62,9 @@ void main()
 
         location lLocation = Location(GetObjectByTag(fLocA), Vector(fLocX, fLocY, fLocZ), fLocO);
 
-        DelayCommand(2.0, AssignCommand(oPC, JumpToLocation(lLocation)));
+        SendDebugMessage("Stored Location: "+LocationToString(lLocation));
+
+        DelayCommand(3.0, AssignCommand(oPC, JumpToLocation(lLocation)));
 
         int nCurrentHP = GetCurrentHitPoints(oPC);
         int nStoredHP = NWNX_Object_GetInt(oPC, "CURRENT_HP");

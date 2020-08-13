@@ -1,4 +1,5 @@
 #include "inc_debug"
+#include "inc_event"
 
 void main()
 {
@@ -7,10 +8,10 @@ void main()
     switch (d2())
     {
         case 1:
-            oEventCreature = CreateObject(OBJECT_TYPE_CREATURE, "bear_black", GetLocation(OBJECT_SELF));
-            oEventCreature = CreateObject(OBJECT_TYPE_CREATURE, "bear_black", GetLocation(OBJECT_SELF));
+            oEventCreature = CreateEventCreature("bear_black");
+            oEventCreature = CreateEventCreature("bear_black");
         case 2:
-            oEventCreature = CreateObject(OBJECT_TYPE_CREATURE, "bear_brown", GetLocation(OBJECT_SELF));
+            oEventCreature = CreateEventCreature("bear_brown");
         break;
     }
 
