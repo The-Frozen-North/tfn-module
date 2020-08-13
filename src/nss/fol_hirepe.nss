@@ -17,6 +17,8 @@ int StartingConditional()
     }
     else
     {
+        SetTag(OBJECT_SELF, "follower");
+
         SetFollowerMaster(OBJECT_SELF, oPC);
         SetAssociateState(NW_ASC_USE_RANGED_WEAPON, FALSE);
         ClearAllActions();

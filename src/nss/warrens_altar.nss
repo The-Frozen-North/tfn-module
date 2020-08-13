@@ -37,5 +37,5 @@ void main()
 
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_HARM), GetLocation(oPedestal));
 
-    DestroyObject(GetNearestObjectByTag("M1Q5AltarLight"));
+    DestroyObject(GetNearestObjectByTag("pedestal_light"));
 }

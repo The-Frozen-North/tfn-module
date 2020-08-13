@@ -32,11 +32,11 @@ void main()
     if (GetLocalInt(OBJECT_SELF, "instance") != 1) return;
 
 // This is the number to fall back to if a refresh was to be started, but there were players
-    int nRefreshRestart = 2;
+    int nRefreshRestart = 200;
 
 // only start counting if the refresh counter is there
     int nRefresh = GetLocalInt(OBJECT_SELF, "refresh");
-    if (nRefresh >= 3)
+    if (nRefresh >= 300)
     {
         int bPlayersInLinkedArea = FALSE;
         int bPlayersInArea = FALSE;

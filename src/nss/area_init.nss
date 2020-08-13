@@ -105,6 +105,7 @@ void main()
        int bInstance = GetLocalInt(oArea, "instance");
        vector vTreasureVector, vCreatureVector;
        float fTreasureOrientation;
+
 // Loop through all objects in the area and do something special with them
        while (GetIsObjectValid(oObject))
        {
@@ -292,6 +293,11 @@ void main()
             nRandomSpawnPoints = GetLocalInt(oArea, "random"+IntToString(i)+"_spawn_point_total");
             if (nRandomSpawnPoints > 0) SendDebugMessage(sResRef+" random1 spawn points: "+IntToString(nRandomSpawnPoints), TRUE);
        }
+
+       if (nDoors > 0) SendDebugMessage(sResRef+" doors: "+IntToString(nDoors), TRUE);
+       if (nTreasures > 0) SendDebugMessage(sResRef+" treasures found: "+IntToString(nTreasures), TRUE);
+       if (nCreatures > 0) SendDebugMessage(sResRef+" creatures: "+IntToString(nCreatures), TRUE);
+       if (nSpawns > 0) SendDebugMessage(sResRef+" trap spawns: "+IntToString(nSpawns), TRUE);
 
 // we will refresh it once so there's spawns
        ExecuteScript("area_refresh", oArea);

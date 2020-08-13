@@ -207,7 +207,7 @@ void main()
 
          int nCreatures = GetLocalInt(OBJECT_SELF, "creatures");
 
-         if (nTreasures > 0)
+         if (nCreatures > 0)
          {
             object oCreature;
             vector vCreaturePosition;
