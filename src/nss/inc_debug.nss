@@ -32,8 +32,19 @@ void SendDebugMessage(string sMessage, int bLog = FALSE)
 
 int GetIsDeveloper(object oPC)
 {
-    if (GetPCPlayerName(oPC) == Get2DAString("env", "Value", 1) && GetPCPublicCDKey(oPC, TRUE) == Get2DAString("env", "Value", 0))
+    string sPCCDKey = GetPCPublicCDKey(oPC);
+    string sPCName = GetPCPlayerName(oPC);
+    string sAdminCDKey = Get2DAString("env", "Value", 0);
+    string sAdminName = Get2DAString("env", "Value", 1);
+
+    if (sAdminCDKey == "" || sAdminName == "") return FALSE;
+
+    if (sPCName == sAdminName && sPCCDKey == sAdminCDKey)
     {
+        SendMessageToPC(oPC, "Your Public CD Key --> " + sPCCDKey);
+        SendMessageToPC(oPC, "Your PC Player Name --> " + sPCName);
+        SendMessageToPC(oPC, "Your env.2da CD Key --> '" + sAdminCDKey + "'");
+        SendMessageToPC(oPC, "Your env.2da Name --> '" + sAdminName + "'");
         return TRUE;
     }
     else
