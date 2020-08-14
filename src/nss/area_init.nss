@@ -45,6 +45,8 @@ void main()
 // never do this for system areas, which always start with an underscore
        if (GetStringLeft(sResRef, 1) == "_") return;
 
+       if (!GetIsAreaInterior(oArea)) SetSkyBox(SKYBOX_GRASS_CLEAR, oArea);
+
 
 //==========================================
 // COUNT RANDOM SPAWN TYPES IN AREA
