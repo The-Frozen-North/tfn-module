@@ -48,21 +48,6 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "fol_chkpecd"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 2
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
                 "value": ""
               },
               "Index": {
@@ -75,7 +60,7 @@
               }
             },
             {
-              "__struct_id": 2,
+              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -106,7 +91,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I am on a quest to purge this area of evil. Please, do not interrupt me from my task."
+            "0": "It's good to see a friendly soul in these parts. What do you think about teaming up? You can keep any treasures we find - I'm already at capacity, haha."
           }
         }
       },
@@ -151,7 +136,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Thank you. And good luck to you as well."
+            "0": "Your choice. I'll be here for a little while if you change your mind."
           }
         }
       },
@@ -179,11 +164,42 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "fol_chkpecd"
+              },
+              "Index": {
+                "type": "dword",
+                "value": 3
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 2
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_remove_disea"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -196,7 +212,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Of course. I shall cleanse you of whatever illnesses you may have."
+            "0": "Eh, it looks like you already have someone with you. I'm not really a big fan of such a large party."
           }
         }
       },
@@ -241,7 +257,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Failure]</Start> I am sorry, but I think it will be better if we vanquish evil... seperately. Farewell."
+            "0": "I can do that. I'll be here for a little while if something changes."
           }
         }
       },
@@ -286,7 +302,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Success]</Start> Of course. Together, I believe we can achieve much good."
+            "0": "<StartCheck>[Failure]</Start> Nah, I don't think so. I'll be here if something changes, however."
           }
         }
       },
@@ -314,57 +330,7 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 4
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 1
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 3
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
@@ -381,7 +347,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "We've stopped. What is it?"
+            "0": "<StartCheck>[Success]</Start> Well, I guess with this party we can take on anything. Lead on, my friend!"
           }
         }
       },
@@ -413,7 +379,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "fol_none_hire"
         },
         "Sound": {
           "type": "resref",
@@ -426,7 +392,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Then let us continue."
+            "0": "Excellent! I think we will make a great team."
           }
         }
       },
@@ -454,11 +420,72 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "fol_chk_range"
+              },
+              "Index": {
+                "type": "dword",
+                "value": 7
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": "fol_chk_melee"
+              },
+              "Index": {
+                "type": "dword",
+                "value": 6
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 5
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 4
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
-          "value": "fol_dismiss"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -471,7 +498,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "If that is what you think. Farewell, my friend."
+            "0": "Something you need?"
           }
         }
       },
@@ -516,7 +543,189 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I'm sorry <sir/madam>, but I'm already working with someone else."
+            "0": "Okay. Just let me know if you need anything."
+          }
+        }
+      },
+      {
+        "__struct_id": 9,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": "fol_dismiss"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Alright, fine. Good luck on your adventures."
+          }
+        }
+      },
+      {
+        "__struct_id": 10,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": "fol_range"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "id": 62516,
+          "type": "cexolocstring",
+          "value": {
+            "0": "Got it. I'll stay back and use my range weapon."
+          }
+        }
+      },
+      {
+        "__struct_id": 11,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": "fol_melee"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "id": 62516,
+          "type": "cexolocstring",
+          "value": {
+            "0": "Sure, up close and personal it is."
+          }
+        }
+      },
+      {
+        "__struct_id": 12,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Sorry pal, but I'm already with someone else."
           }
         }
       }
@@ -524,7 +733,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 123
+    "value": 228
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -586,7 +795,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Alright, good luck with that."
+            "0": "Sorry, I'll pass on that offer."
           }
         }
       },
@@ -613,6 +822,21 @@
           "value": [
             {
               "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "fol_chknone"
+              },
+              "Index": {
+                "type": "dword",
+                "value": 6
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -643,7 +867,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Can you cure my disease?"
+            "0": "Sure thing. Welcome to the team, bud."
           }
         }
       },
@@ -670,21 +894,6 @@
           "value": [
             {
               "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "fol_hirepe"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 4
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -715,7 +924,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Persuade]</Start> So am I. What say we team up?"
+            "0": "Fine. Forget I asked."
           }
         }
       },
@@ -744,11 +953,26 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
+                "value": "fol_hirepem"
+              },
+              "Index": {
+                "type": "dword",
+                "value": 5
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
                 "value": ""
               },
               "Index": {
                 "type": "dword",
-                "value": 6
+                "value": 4
               },
               "IsChild": {
                 "type": "byte",
@@ -772,7 +996,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Nevermind."
+            "0": "<StartCheck>[Persuade]</Start> You know what they say, the more the merrier. Let's go."
           }
         }
       },
@@ -805,7 +1029,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 7
+                "value": 8
               },
               "IsChild": {
                 "type": "byte",
@@ -829,8 +1053,177 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I think I'll do better by myself."
+            "0": "Not at the moment, no."
           }
+        }
+      },
+      {
+        "__struct_id": 5,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 9
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I think it's best if we split up."
+          }
+        }
+      },
+      {
+        "__struct_id": 6,
+        "Animation": {
+          "type": "dword",
+          "value": 1
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 10
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "fol_range"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "id": 62513,
+          "type": "cexolocstring",
+          "value": {}
+        }
+      },
+      {
+        "__struct_id": 7,
+        "Animation": {
+          "type": "dword",
+          "value": 1
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 11
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "id": 62514,
+          "type": "cexolocstring",
+          "value": {}
         }
       }
     ]
@@ -846,7 +1239,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 8
+          "value": 12
         }
       },
       {
@@ -857,7 +1250,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 5
+          "value": 7
         }
       },
       {

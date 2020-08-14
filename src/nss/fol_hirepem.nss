@@ -9,10 +9,9 @@ int StartingConditional()
     int nSkill = SKILL_PERSUADE;
     int nDC = 10 + GetFollowerCount(oPC)*6;
 
-    SetTemporaryInt(GetObjectUUID(oPC)+"_"+GetObjectUUID(OBJECT_SELF)+"_pers", 1, 900.0);
-
     if(!(GetIsSkillSuccessful(oPC, nSkill, nDC)))
     {
+        SetTemporaryInt(GetObjectUUID(oPC)+"_"+GetObjectUUID(OBJECT_SELF)+"_pers", 1, 900.0);
         return FALSE;
     }
     else

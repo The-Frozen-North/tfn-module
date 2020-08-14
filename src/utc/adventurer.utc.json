@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 262
+    "value": 272
   },
   "BodyBag": {
     "type": "byte",
@@ -10,7 +10,7 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 13
+    "value": 10
   },
   "ChallengeRating": {
     "type": "float",
@@ -23,11 +23,22 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 6
+          "value": 4
         },
         "ClassLevel": {
           "type": "short",
-          "value": 3
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 2,
+        "Class": {
+          "type": "int",
+          "value": 8
+        },
+        "ClassLevel": {
+          "type": "short",
+          "value": 2
         }
       }
     ]
@@ -38,11 +49,11 @@
   },
   "Con": {
     "type": "byte",
-    "value": 12
+    "value": 11
   },
   "Conversation": {
     "type": "resref",
-    "value": "paladin"
+    "value": "adventurer"
   },
   "CRAdjust": {
     "type": "int",
@@ -50,7 +61,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 30
+    "value": 22
   },
   "DecayTime": {
     "type": "dword",
@@ -64,12 +75,12 @@
     "id": 57347,
     "type": "cexolocstring",
     "value": {
-      "0": "This paladin scans her surroundings with a watchful eye for evil."
+      "0": "An adventurer is someone who conducts dangerous expeditions as a profession. Adventurers typically travel a great deal and explore monster-infested dungeons in search of treasure."
     }
   },
   "Dex": {
     "type": "byte",
-    "value": 9
+    "value": 13
   },
   "Disarmable": {
     "type": "byte",
@@ -82,14 +93,28 @@
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_aarcl005"
+          "value": "nw_aarcl012"
         }
       },
       {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wblfl001"
+          "value": "nw_wswls001"
+        }
+      },
+      {
+        "__struct_id": 32,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "nw_it_torch001"
+        }
+      },
+      {
+        "__struct_id": 8192,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "nw_wambo001"
         }
       }
     ]
@@ -126,28 +151,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 300
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 217
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 219
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 299
+          "value": 206
         }
       },
       {
@@ -161,13 +165,6 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 302
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
           "value": 32
         }
       },
@@ -175,14 +172,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 301
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 294
+          "value": 221
         }
       },
       {
@@ -203,6 +193,13 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 50
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 46
         }
       }
@@ -212,7 +209,7 @@
     "id": 24697,
     "type": "cexolocstring",
     "value": {
-      "0": "Paladin"
+      "0": "Adventurer"
     }
   },
   "fortbonus": {
@@ -221,15 +218,15 @@
   },
   "Gender": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "GoodEvil": {
     "type": "byte",
-    "value": 100
+    "value": 50
   },
   "HitPoints": {
     "type": "short",
-    "value": 30
+    "value": 22
   },
   "Int": {
     "type": "byte",
@@ -247,6 +244,26 @@
     "type": "byte",
     "value": 0
   },
+  "ItemList": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "InventoryRes": {
+          "type": "resref",
+          "value": "nw_wbwxl001"
+        },
+        "Repos_PosX": {
+          "type": "word",
+          "value": 0
+        },
+        "Repos_Posy": {
+          "type": "word",
+          "value": 0
+        }
+      }
+    ]
+  },
   "LastName": {
     "id": 24585,
     "type": "cexolocstring",
@@ -256,7 +273,7 @@
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 100
+    "value": 50
   },
   "Lootable": {
     "type": "byte",
@@ -264,7 +281,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 33
+    "value": 22
   },
   "NaturalAC": {
     "type": "byte",
@@ -292,7 +309,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 77
+    "value": 119
   },
   "Race": {
     "type": "byte",
@@ -375,35 +392,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 6
         }
       },
       {
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 7
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 3
+          "value": 4
         }
       },
       {
@@ -424,7 +420,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 6
         }
       },
       {
@@ -439,6 +435,13 @@
         "Rank": {
           "type": "byte",
           "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 6
         }
       },
       {
@@ -473,14 +476,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 3
+          "value": 6
         }
       },
       {
@@ -501,6 +497,13 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
+          "value": 6
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
           "value": 0
         }
       },
@@ -509,6 +512,20 @@
         "Rank": {
           "type": "byte",
           "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 5
         }
       },
       {
@@ -557,7 +574,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 154
+    "value": 186
   },
   "SpecAbilityList": {
     "type": "list",
@@ -565,11 +582,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 6
+    "value": 4
   },
   "Str": {
     "type": "byte",
-    "value": 15
+    "value": 13
   },
   "Subrace": {
     "type": "cexostring",
@@ -589,7 +606,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "paladin"
+    "value": "adventurer"
   },
   "VarTable": {
     "type": "list",
@@ -670,6 +687,6 @@
   },
   "Wis": {
     "type": "byte",
-    "value": 10
+    "value": 11
   }
 }

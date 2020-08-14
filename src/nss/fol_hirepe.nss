@@ -9,10 +9,9 @@ int StartingConditional()
     int nSkill = SKILL_PERSUADE;
     int nDC = GetLocalInt(OBJECT_SELF, "persuade_dc");
 
-    SetTemporaryInt(GetObjectUUID(oPC)+"_"+GetObjectUUID(OBJECT_SELF)+"_pers", 1, 900.0);
-
     if(!(GetIsSkillSuccessful(oPC, nSkill, nDC)))
     {
+        SetTemporaryInt(GetObjectUUID(oPC)+"_"+GetObjectUUID(OBJECT_SELF)+"_pers", 1, 900.0);
         return FALSE;
     }
     else
