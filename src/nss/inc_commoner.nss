@@ -138,14 +138,14 @@ const string COMMONER_DEFAULT_WAYPOINT_TAG = "WP_COMMONER";
 // The default delay to use between spawning commoners if the values in the settings
 // are invalid. The values are considered invalid if both of them are zero or the max
 // delay is less than the min delay.
-const float COMMONER_DEFAULT_MIN_SPAWN_DELAY = 2.0;
-const float COMMONER_DEFAULT_MAX_SPAWN_DELAY = 30.0;
+const float COMMONER_DEFAULT_MIN_SPAWN_DELAY = 15.0;
+const float COMMONER_DEFAULT_MAX_SPAWN_DELAY = 60.0;
 
-const float COMMONER_MIN_SPAWN_DELAY = 3.0;
-const float COMMONER_MAX_SPAWN_DELAY = 30.0;
+const float COMMONER_MIN_SPAWN_DELAY = 20.0;
+const float COMMONER_MAX_SPAWN_DELAY = 60.0;
 
-const float MILITIA_MIN_SPAWN_DELAY = 10.0;
-const float MILITIA_MAX_SPAWN_DELAY = 40.0;
+const float MILITIA_MIN_SPAWN_DELAY = 15.0;
+const float MILITIA_MAX_SPAWN_DELAY = 80.0;
 
 const float GUARD_MIN_SPAWN_DELAY = 15.0;
 const float GUARD_MAX_SPAWN_DELAY = 60.0;
