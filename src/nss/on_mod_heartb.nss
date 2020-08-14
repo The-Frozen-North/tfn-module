@@ -70,6 +70,12 @@ void main()
 {
     object oPC = GetFirstPC();
 
+    if (GetIsObjectValid(oPC))
+    {
+        int nTickCount = NWNX_Util_GetServerTicksPerSecond();
+        if (nTickCount <= 50) SendDebugMessage("Low tick count detected: "+IntToString(nTickCount), TRUE);
+    }
+
     //ExportAllCharacters();
 
     while(GetIsObjectValid(oPC))
@@ -85,7 +91,4 @@ void main()
     DoRevive(GetObjectByTag("hen_daelan"));
     DoRevive(GetObjectByTag("hen_sharwyn"));
     DoRevive(GetObjectByTag("hen_linu"));
-
-    int nTickCount = NWNX_Util_GetServerTicksPerSecond();
-    if (nTickCount <= 50) SendDebugMessage("Low tick count detected: "+IntToString(nTickCount), TRUE);
 }
