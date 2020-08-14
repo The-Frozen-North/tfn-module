@@ -4,9 +4,9 @@ void main()
 {
     struct CommonerSettings sSettings;
 
-    sSettings.NumberOfCommonersDuringDay = 2;
-    sSettings.NumberOfCommonersDuringNight = 2;
-    sSettings.NumberOfCommonersDuringRain = 2;
+    sSettings.NumberOfCommonersDuringDay = 1;
+    sSettings.NumberOfCommonersDuringNight = 1;
+    sSettings.NumberOfCommonersDuringRain = 1;
     sSettings.CommonerResRef = "student";
     sSettings.CommonerTag = "AMBIENT_STUDENT";
     sSettings.WaypointTag = "WP_STUDENT";

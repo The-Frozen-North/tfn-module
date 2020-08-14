@@ -1,6 +1,7 @@
 #include "inc_persist"
 #include "inc_debug"
 #include "inc_henchman"
+#include "nwnx_util"
 
 void DoRevive(object oDead)
 {
@@ -84,4 +85,7 @@ void main()
     DoRevive(GetObjectByTag("hen_daelan"));
     DoRevive(GetObjectByTag("hen_sharwyn"));
     DoRevive(GetObjectByTag("hen_linu"));
+
+    int nTickCount = NWNX_Util_GetServerTicksPerSecond();
+    if (nTickCount <= 50) SendDebugMessage("Low tick count detected: "+IntToString(nTickCount), TRUE);
 }

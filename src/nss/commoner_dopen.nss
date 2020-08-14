@@ -15,16 +15,16 @@ void main()
     SpawnAndUpdateCommoners(sSettings);
 
     sSettings.NumberOfCommonersDuringDay = 3;
-    sSettings.NumberOfCommonersDuringNight = 3;
-    sSettings.NumberOfCommonersDuringRain = 2;
+    sSettings.NumberOfCommonersDuringNight = 2;
+    sSettings.NumberOfCommonersDuringRain = 1;
     sSettings.CommonerResRef = "sailor";
     sSettings.CommonerTag = "AMBIENT_SAILOR";
     sSettings.WaypointTag = "WP_SAILOR";
     SpawnAndUpdateCommoners(sSettings);
 
     sSettings.NumberOfCommonersDuringDay = 2;
-    sSettings.NumberOfCommonersDuringNight = 2;
-    sSettings.NumberOfCommonersDuringRain = 2;
+    sSettings.NumberOfCommonersDuringNight = 1;
+    sSettings.NumberOfCommonersDuringRain = 1;
     sSettings.CommonerResRef = "nwguard";
     sSettings.CommonerTag = "AMBIENT_NWGUARD";
     sSettings.WaypointTag = "WP_NWGUARD";

@@ -25,8 +25,8 @@ void main()
 
 
     sSettings.NumberOfCommonersDuringDay = 2;
-    sSettings.NumberOfCommonersDuringNight = 2;
-    sSettings.NumberOfCommonersDuringRain = 2;
+    sSettings.NumberOfCommonersDuringNight = 1;
+    sSettings.NumberOfCommonersDuringRain = 1;
     sSettings.CommonerResRef = "guard";
     sSettings.CommonerTag = "AMBIENT_GUARD";
     sSettings.WaypointTag = "WP_GUARD";

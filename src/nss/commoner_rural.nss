@@ -3,9 +3,9 @@
 void main()
 {
     struct CommonerSettings sSettings;
-    sSettings.NumberOfCommonersDuringDay = 5;
-    sSettings.NumberOfCommonersDuringNight = 3;
-    sSettings.NumberOfCommonersDuringRain = 2;
+    sSettings.NumberOfCommonersDuringDay = 3;
+    sSettings.NumberOfCommonersDuringNight = 2;
+    sSettings.NumberOfCommonersDuringRain = 1;
     sSettings.CommonerResRef = "peasant";
     sSettings.CommonerTag = "AMBIENT_PEASANT";
     sSettings.WaypointTag = "WP_PEASANT";
@@ -15,8 +15,8 @@ void main()
 
 
     sSettings.NumberOfCommonersDuringDay = 3;
-    sSettings.NumberOfCommonersDuringNight = 3;
-    sSettings.NumberOfCommonersDuringRain = 3;
+    sSettings.NumberOfCommonersDuringNight = 2;
+    sSettings.NumberOfCommonersDuringRain = 1;
     sSettings.CommonerResRef = "nwguard";
     sSettings.CommonerTag = "AMBIENT_NWGUARD";
     sSettings.WaypointTag = "WP_NWGUARD";
