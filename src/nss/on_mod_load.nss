@@ -265,7 +265,7 @@ void main()
 // For testing purposes, we shall skip creating treasures if local/no NWNX.
    if (NWNX_Time_GetTimeStamp() > 0)
    {
-        DelayCommand(0.0, ExecuteScript("gtreas_start", OBJECT_SELF));
+        ExecuteScript("gen_treasure", OBJECT_SELF);
    }
    else
    {

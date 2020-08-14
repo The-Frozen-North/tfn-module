@@ -1319,7 +1319,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 33
+                "value": 34
               },
               "IsChild": {
                 "type": "byte",
@@ -1334,7 +1334,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 27
+                "value": 33
               },
               "IsChild": {
                 "type": "byte",
@@ -1349,7 +1349,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 24
+                "value": 27
               },
               "IsChild": {
                 "type": "byte",
@@ -1364,7 +1364,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 20
+                "value": 24
               },
               "IsChild": {
                 "type": "byte",
@@ -1373,6 +1373,21 @@
             },
             {
               "__struct_id": 4,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 20
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 5,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -1694,12 +1709,77 @@
             "0": "Choose an option"
           }
         }
+      },
+      {
+        "__struct_id": 20,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 33
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Tick count sent to window"
+          }
+        }
       }
     ]
   },
   "NumWords": {
     "type": "dword",
-    "value": 679
+    "value": 686
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -3387,6 +3467,63 @@
       },
       {
         "__struct_id": 33,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 20
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_view_tick"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Tick count"
+          }
+        }
+      },
+      {
+        "__struct_id": 34,
         "Animation": {
           "type": "dword",
           "value": 0
