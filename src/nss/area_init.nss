@@ -164,42 +164,38 @@ void main()
                         SetLocalInt(oObject, "dm_immune", 1);
                  break;
                  case OBJECT_TYPE_PLACEABLE:
-                   SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_UNLOCK, "unlock");
-                   if (GetLocalInt(oObject, "skip") != 1)
-                   {
 // any object with an inventory is removed, including it's items
-                       if (GetHasInventory(oObject))
-                       {
-                             object oItem = GetFirstItemInInventory(oObject);
-                             while (GetIsObjectValid(oItem))
-                             {
-                                 DestroyObject(oItem);
-                                 oItem = GetNextItemInInventory(oObject);
-                             }
-                             DestroyObject(oObject);
-                       }
+                   if (GetHasInventory(oObject))
+                   {
+                          object oItem = GetFirstItemInInventory(oObject);
+                          while (GetIsObjectValid(oItem))
+                          {
+                              DestroyObject(oItem);
+                              oItem = GetNextItemInInventory(oObject);
+                          }
+                          DestroyObject(oObject);
+                   }
 // If it is a treasure, count it, create the treasure WP, store the resref on it, then delete the treasure
-                       else if (bInstance == 1 && GetStringLeft(GetResRef(oObject), 6) == "treas_")
-                       {
-                            nTreasures = nTreasures + 1;
+                   else if (bInstance == 1 && GetStringLeft(GetResRef(oObject), 6) == "treas_")
+                   {
+                       nTreasures = nTreasures + 1;
 
-                            vTreasureVector = GetPosition(oObject);
+                       vTreasureVector = GetPosition(oObject);
 
-                            SetLocalString(oArea, "treasure_resref"+IntToString(nTreasures), GetResRef(oObject));
-                            SetLocalFloat(oArea, "treasure_x"+IntToString(nTreasures), vTreasureVector.x);
-                            SetLocalFloat(oArea, "treasure_y"+IntToString(nTreasures), vTreasureVector.y);
-                            SetLocalFloat(oArea, "treasure_z"+IntToString(nTreasures), vTreasureVector.z);
-                            SetLocalFloat(oArea, "treasure_o"+IntToString(nTreasures), GetFacing(oObject));
+                       SetLocalString(oArea, "treasure_resref"+IntToString(nTreasures), GetResRef(oObject));
+                       SetLocalFloat(oArea, "treasure_x"+IntToString(nTreasures), vTreasureVector.x);
+                       SetLocalFloat(oArea, "treasure_y"+IntToString(nTreasures), vTreasureVector.y);
+                       SetLocalFloat(oArea, "treasure_z"+IntToString(nTreasures), vTreasureVector.z);
+                       SetLocalFloat(oArea, "treasure_o"+IntToString(nTreasures), GetFacing(oObject));
 // treasures tagged with keep is always guaranteed
-                            if (GetLocalInt(oObject, "keep") == 1) SetLocalInt(oArea, "treasure_keep"+IntToString(nTreasures), 1);
+                       if (GetLocalInt(oObject, "keep") == 1) SetLocalInt(oArea, "treasure_keep"+IntToString(nTreasures), 1);
 
-                            DestroyObject(oObject);
-                       }
+                        DestroyObject(oObject);
+                   }
 // Otherwise, make it plot. It's likely a sign or a static item.
-                       else
-                       {
-                           SetPlotFlag(oObject, TRUE);
-                       }
+                   else
+                   {
+                        SetPlotFlag(oObject, TRUE);
                    }
                  break;
                }

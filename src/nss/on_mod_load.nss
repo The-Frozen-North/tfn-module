@@ -11,7 +11,6 @@
 
 void main()
 {
-    SendDiscordLogMessage("Starting the server. This may take a few minutes.");
 // Set a very high instruction limit so we can run the initialization scripts without TMI
     NWNX_Util_SetInstructionLimit(52428888);
 
@@ -103,6 +102,8 @@ void main()
         SetLocalInt(OBJECT_SELF, "dev", 1);
         SetLocalInt(OBJECT_SELF, "debug_verbose", 1);
     }
+
+    SendDiscordLogMessage("Starting the server. This may take a few minutes.");
 
    // Multiple henchmen on the server, so let's set a high limit.
    SetMaxHenchmen(999);

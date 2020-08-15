@@ -18,7 +18,7 @@ void main()
         int i;
         for (i = 0; i < 6; i++)
         {
-            sTargetKey = Get2DAString("env", "Value", i);
+            sTargetKey = Get2DAString("env_dm", "Value", i);
             if (sTargetKey != "" && sTargetKey == sKey)
             {
                 nSkip = FALSE;

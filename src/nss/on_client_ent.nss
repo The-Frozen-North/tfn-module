@@ -4,17 +4,17 @@
 #include "inc_nwnx"
 #include "nwnx_damage"
 
-void CreateBook(object oPC)
+void CreateItemIfBlank(object oPC, string sItem)
 {
-    object oBook = GetItemPossessedBy(oPC, "_pc_handbook");
+    object oItem = GetItemPossessedBy(oPC, sItem);
 
-    if (!GetIsObjectValid(oBook))
+    if (!GetIsObjectValid(oItem))
     {
-        oBook = CreateItemOnObject("_pc_handbook", oPC, 1);
-        SetItemCursedFlag(oBook, TRUE);
-        SetDroppableFlag(oBook, FALSE);
-        SetPickpocketableFlag(oBook, FALSE);
-        SetPlotFlag(oBook, TRUE);
+        oItem = CreateItemOnObject(sItem, oPC, 1);
+        SetItemCursedFlag(oItem, TRUE);
+        SetDroppableFlag(oItem, FALSE);
+        SetPickpocketableFlag(oItem, FALSE);
+        SetPlotFlag(oItem, TRUE);
     }
 }
 
@@ -106,7 +106,8 @@ void main()
 
     SetQuestEntry(oPC, "q_wailing", 1);
 
-    DelayCommand(4.0, CreateBook(oPC));
+    DelayCommand(4.0, CreateItemIfBlank(oPC, "_pc_handbook"));
+    DelayCommand(4.5, CreateItemIfBlank(oPC, "_dev_tool"));
     DelayCommand(5.0, FloatingTextStringOnCreature("Welcome to The Frozen North!", oPC, FALSE));
     DelayCommand(6.0, FloatingTextStringOnCreature("Please read your \"Adventurer's Handbook\" for rules and information.", oPC, FALSE));
     DelayCommand(7.0, FloatingTextStringOnCreature("https://discord.gg/qKqRUDZ", oPC, FALSE));
