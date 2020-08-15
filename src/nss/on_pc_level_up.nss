@@ -57,6 +57,7 @@ const int MIN_CLASS_LEVEL_FOR_EPIC_FIEND = 15;
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "inc_debug"
+#include "inc_nwnx"
 
 /*
 Patch 1.72
@@ -133,6 +134,8 @@ void main()
     ExecuteScript("70_featfix",oPC);
 
    WriteTimestampedLogEntry(PlayerDetailedName(oPC)+" leveled up.");
+
+   SendDiscordLogMessage(GetName(oPC)+" has leveled up to level "+IntToString(GetHitDice(oPC))+"!");
 
 // Don't do any of this if leveling from level 2
 

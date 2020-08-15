@@ -1,6 +1,7 @@
 #include "x2_inc_switches"
 #include "x2_inc_restsys"
 #include "inc_treasure"
+#include "inc_nwnx"
 #include "nwnx_admin"
 #include "nwnx_weapon"
 #include "nwnx_events"
@@ -10,6 +11,7 @@
 
 void main()
 {
+    SendDiscordLogMessage("Starting the server. This may take a few minutes.");
 // Set a very high instruction limit so we can run the initialization scripts without TMI
     NWNX_Util_SetInstructionLimit(52428888);
 

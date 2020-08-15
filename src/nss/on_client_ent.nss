@@ -26,11 +26,20 @@ void main()
 
     if (GetIsDM(oPC)) sType = "dungeon master";
 
-    string sMessage = PlayerDetailedName(oPC)+" has entered the game as a "+sType+".";
+    object oPCCount = GetFirstPC();
+    int nPCs = 0;
+
+    while (GetIsObjectValid(oPCCount))
+    {
+        nPCs = nPCs + 1;
+        oPCCount = GetNextPC();
+    }
+
+    string sMessage = PlayerDetailedName(oPC)+" has entered the game as a "+sType;
 
     WriteTimestampedLogEntry(sMessage);
 
-    SendDiscordLogMessage(sMessage);
+    SendDiscordLogMessage(sMessage+" - there is now "+IntToString(nPCs)+" player(s) online.");
 
 // assign the PC a UUID if it doesn't have one
     GetObjectUUID(oPC);
