@@ -12,6 +12,7 @@ void main()
     {
         NWNX_Util_SetInstructionLimit(-1);
         NWNX_Administration_ClearPlayerPassword();
+        NWNX_Administration_SetDMPassword(Get2DAString("env", "Value", 3));
         SetEventScript(oModule, EVENT_SCRIPT_MODULE_ON_HEARTBEAT, "on_mod_heartb");
         SendDiscordLogMessage("The server is now online.");
     }

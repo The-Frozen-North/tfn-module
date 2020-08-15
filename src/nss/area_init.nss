@@ -159,6 +159,9 @@ void main()
 
                           DestroyObject(oObject);
                      }
+// tag merchants/quest NPCs that are plot/immortal as dm_immune
+                     if ( (GetLocalString(oObject, "quest1") != "" || GetLocalString(oObject, "merchant") != "") && (GetPlotFlag(oObject) || GetImmortal(oObject)) )
+                        SetLocalInt(oObject, "dm_immune", 1);
                  break;
                  case OBJECT_TYPE_PLACEABLE:
                    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_UNLOCK, "unlock");

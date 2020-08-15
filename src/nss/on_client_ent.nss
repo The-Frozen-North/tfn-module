@@ -22,7 +22,11 @@ void main()
 {
     object oPC = GetEnteringObject();
 
-    string sMessage = PlayerDetailedName(oPC)+" has entered the game.";
+    string sType = "player";
+
+    if (GetIsDM(oPC)) sType = "dungeon master";
+
+    string sMessage = PlayerDetailedName(oPC)+" has entered the game as a "+sType+".";
 
     WriteTimestampedLogEntry(sMessage);
 
