@@ -18,7 +18,7 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
       int nMax = 100;
 
 // there's a variable amount of enemies, based on how many spawn points there are in the area
-      int nTotalSpawns = (nSpawnPoints/5) + (Random(nSpawnPoints/8));
+      int nTotalSpawns = (nSpawnPoints/4) + (Random(nSpawnPoints/6));
       if (nTotalSpawns > nMax) nMax = 100;
 
 // Overall density mod
