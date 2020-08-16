@@ -1,0 +1,1 @@
+CD server & docker-compose up --no-recreate
