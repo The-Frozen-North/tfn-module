@@ -1,2 +1,2 @@
-void main(){}
+void DoNothingAtAll(){}
 
