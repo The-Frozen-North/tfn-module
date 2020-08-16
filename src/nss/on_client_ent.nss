@@ -39,7 +39,7 @@ void main()
 
     WriteTimestampedLogEntry(sMessage);
 
-    SendDiscordLogMessage(sMessage+" - there is now "+IntToString(nPCs)+" player(s) online.");
+    SendDiscordLogMessage(sMessage+" - there " + (nPCs == 1 ? "is" : "are") + " now " + IntToString(nPCs) + " player" + (nPCs == 1 ? "" : "s") + " online.");
 
 // assign the PC a UUID if it doesn't have one
     GetObjectUUID(oPC);

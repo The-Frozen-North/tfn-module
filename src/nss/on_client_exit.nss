@@ -1,9 +1,11 @@
 #include "inc_persist"
 #include "inc_nwnx"
+#include "inc_debug"
 
 void main()
 {
-    SavePCInfo(GetExitingObject());
+    object oPC = GetExitingObject();
+    SavePCInfo(oPC);
 
     object oPCCount = GetFirstPC();
     int nPCs = -1;
@@ -16,5 +18,9 @@ void main()
 
     if (nPCs < 0) nPCs = 0;
 
-    SendDiscordLogMessage("There is now "+IntToString(nPCs)+" player(s) online.");
+    string sMessage = PlayerDetailedName(oPC)+" has left the game.";
+
+    WriteTimestampedLogEntry(sMessage);
+
+    SendDiscordLogMessage(sMessage+" - there " + (nPCs == 1 ? "is" : "are") + " now " + IntToString(nPCs) + " player" + (nPCs == 1 ? "" : "s") + " online.");
 }
