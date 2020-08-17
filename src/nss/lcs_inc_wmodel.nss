@@ -15,6 +15,9 @@ const int SHIELD_MODEL_VAL_MAX = 260;
 const int HELMET_MODEL_VAL_MIN = 0;
 const int HELMET_MODEL_VAL_MAX = 105;
 
+const int CLOAK_MODEL_VAL_MIN = 0;
+const int CLOAK_MODEL_VAL_MAX = 15;
+
 //==========================================/
 //use for:
 //- weapons (top, middle, bottom)

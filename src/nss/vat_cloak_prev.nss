@@ -1,10 +1,8 @@
-#include "lcs_helm_include"
+#include "lcs_inc_wmodel"
 
 void main()
 {
     object oPC = GetPCSpeaker();
     object oItem = GetItemInSlot(INVENTORY_SLOT_CLOAK, oPC);
-    int nNewLine = lcs_GetPreviousValidHelmModel(oItem);
-
-    lcs_ModifyandEquipNewHelm(oItem, nNewLine);
+    set_model_prev(oItem, ITEM_APPR_TYPE_SIMPLE_MODEL, 0, oPC, CLOAK_MODEL_VAL_MIN, CLOAK_MODEL_VAL_MAX);
 }
