@@ -305,12 +305,12 @@ void main()
 // It can be skipped, but it will cause merchants to lose most of their inventory
 // As well as cause no treasure to be generated.
 // For testing purposes, we shall skip creating treasures if local/no NWNX.
-   if (NWNX_Time_GetTimeStamp() > 0)
+   if (FindSubString(NWNX_Administration_GetServerName(), "NT") == -1)
    {
         ExecuteScript("gen_treasure", OBJECT_SELF);
    }
    else
    {
-        SetEventScript(GetModule(), EVENT_SCRIPT_MODULE_ON_HEARTBEAT, "on_mod_heartb");
+        SetLocalInt(GetModule(), "treasure_ready", 1);
    }
 }

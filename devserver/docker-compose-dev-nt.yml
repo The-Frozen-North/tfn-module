@@ -8,7 +8,6 @@ services:
         env_file: 
             - ${PWD-.}/config/common.env
             - ${PWD-.}/config/nwserver_dev_nt.env
-        restart: unless-stopped
         stdin_open: true
         tty: true
         volumes:
