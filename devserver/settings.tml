@@ -48,12 +48,12 @@
 			max-files = 1000
 			max-megabytes = 3
 [ruleset]
-	always-roll-max-hitpoints-on-levelup = true
-	difficulty = 3
+	always-roll-max-hitpoints-on-levelup = false
+	difficulty = 1
 	enforce-legal-characters = true
 	hide-hitpoints-gained-on-levelup = false
-	item-level-restrictions = true
-	max-character-level = 12
+	item-level-restrictions = false
+	max-character-level = 40
 	min-character-level = 1
 	natural-ones-fail-saving-throws = true
 	show-active-effects = true
@@ -66,15 +66,15 @@
 		max-damage-bonus = 100
 		max-saving-throw-bonus = 20
 		max-skill-bonus = 50
-		sticky-modes = true
+		sticky-modes = false
 	[ruleset.encounters]
 		always-reset = false
 [server]
 	allow-player-pausing = false
 	disallow-shouting = false
 	one-party-only = true
-	pvp-mode = 2
-	reload-when-empty = false
+	pvp-mode = 1
+	reload-when-empty = true
 	restore-spell-uses-on-login = false
 	savegames-store-characters = true
 	savegames-vault-characters-only = false
@@ -86,8 +86,8 @@
 		enhanced-pathfinding = true
 	[server.identity]
 		game-region = 0
-		game-type = 9
-		name = "The Frozen North BETA"
+		game-type = 0
+		name = "Server"
 		public = true
 	[server.log]
 		[server.log.creature-deaths]
@@ -99,7 +99,7 @@
 	[server.login]
 		admin-password = ""
 		dm-password = ""
-		max-players = 12
+		max-players = 6
 		player-password = ""
 	[server.net]
 		accept-relayed-connections = true

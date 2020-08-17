@@ -1,11 +1,13 @@
 version: "3.7"
 
 services:
-    tfn-server:
+    tfn-server-dev:
         hostname: tfn_server_dev
         container_name: tfn_server_dev
-        image:  nwnxee/unified:latest
-        env_file: ${PWD-.}/config/nwserver_dev.env
+        image:  nwnxee/unified:build8193.13
+        env_file: 
+            - ${PWD-.}/config/common.env
+            - ${PWD-.}/config/nwserver_dev_nt.env
         restart: unless-stopped
         stdin_open: true
         tty: true
