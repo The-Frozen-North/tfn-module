@@ -11,10 +11,10 @@
 //:: Created By: Don Moar
 //:: Created On: April 28, 2002
 //:://////////////////////////////////////////////
+#include "nw_i0_generic"
+
 void main()
 {
-    // enter desired behaviour here
-
-    return;
-
+     SetSpawnInCondition(NW_FLAG_FAST_BUFF_ENEMY, TRUE);
+     DeleteLocalInt(OBJECT_SELF, "rest");
 }

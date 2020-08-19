@@ -23,7 +23,7 @@
 
 #include "70_inc_ai"
 #include "x0_inc_generic"
-
+//void main(){}
 /**********************************************************************
  * CONSTANTS
  **********************************************************************/
@@ -1952,13 +1952,13 @@ int TalentPersistentAbilities()
 int TalentAdvancedBuff(float fDistance, int bInstant = TRUE)
 {
     //MyPrintString("TalentAdvancedBuff Enter");
-    object oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC, OBJECT_SELF, 1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY);
-    if(GetIsObjectValid(oPC))
-    {
-        if(GetDistanceToObject(oPC) <= fDistance)
-        {
-            if(!GetIsFighting(OBJECT_SELF))
-            {
+    //object oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC, OBJECT_SELF, 1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY);
+    //if(GetIsObjectValid(oPC))
+    //{
+        //if(GetDistanceToObject(oPC) <= fDistance)
+        //{
+            //if(!GetIsFighting(OBJECT_SELF))
+            //{
                 ClearActions(CLEAR_X0_I0_TALENT_AdvancedBuff);
 
                 // General Protections and misc buffs
@@ -2212,11 +2212,11 @@ int TalentAdvancedBuff(float fDistance, int bInstant = TRUE)
 
                 //MyPrintString("TalentAdvancedBuff Successful Exit");
                 return TRUE;
-            }
-        }
-    }
+            //}
+        //}
+    //}
     //MyPrintString("TalentAdvancedBuff Failed Exit");
-    return FALSE;
+    //return FALSE;
 }
 
 // USE POTIONS

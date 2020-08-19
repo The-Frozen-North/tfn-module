@@ -21,6 +21,21 @@
 
 void main()
 {
+    int nCombat = GetIsInCombat(OBJECT_SELF);
+
+    int nRest = GetLocalInt(OBJECT_SELF, "rest");
+    if (nCombat && GetLocalInt(OBJECT_SELF, "rest") < 1) SetLocalInt(OBJECT_SELF, "rest", 1);
+
+    if (nRest > 20 && !nCombat)
+    {
+        ClearAllActions();
+        ActionRest();
+    }
+    else if (nRest > 0)
+    {
+        SetLocalInt(OBJECT_SELF, "rest", nRest+1);
+    }
+
     // * if not runnning normal or better Ai then exit for performance reasons
     if (GetAILevel() == AI_LEVEL_VERY_LOW) return;
 
@@ -35,6 +50,7 @@ void main()
         {
             // This is a one-shot deal
             SetSpawnInCondition(NW_FLAG_FAST_BUFF_ENEMY, FALSE);
+            if (GetLocalInt(OBJECT_SELF, "rest") < 1) SetLocalInt(OBJECT_SELF, "rest", 1);
 
             // This return means we skip sending the user-defined
             // heartbeat signal in this one case.
@@ -66,9 +82,13 @@ void main()
     location lSpawn = GetLocalLocation(OBJECT_SELF, "spawn");
     float fDistanceFromSpawn = GetDistanceBetweenLocations(GetLocation(OBJECT_SELF), lSpawn);
     float fMaxDistance = 5.0;
+
+// enemies have a much farther distance before they need to reset
+    if (GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) <= 10) fMaxDistance = fMaxDistance*10.0;
+
     if (GetLocalInt(OBJECT_SELF, "no_wander") == 1) fMaxDistance = 0.0;
-// Combat? Different/Invalid area? Too far from spawn?
-    if (GetLocalInt(OBJECT_SELF, "ambient") != 1 && !GetIsInCombat(OBJECT_SELF) && ((fDistanceFromSpawn == -1.0) || (fDistanceFromSpawn > fMaxDistance)))
+// Not in combat? Different/Invalid area? Too far from spawn?
+    if (GetLocalInt(OBJECT_SELF, "ambient") != 1 && !nCombat && ((fDistanceFromSpawn == -1.0) || (fDistanceFromSpawn > fMaxDistance)))
     {
         AssignCommand(OBJECT_SELF, ClearAllActions());
         MoveToNewLocation(lSpawn, OBJECT_SELF);
