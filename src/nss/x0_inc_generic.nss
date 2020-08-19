@@ -476,6 +476,7 @@ int bkTalentFilter(talent tUse, object oTarget, int bJustTest=FALSE)
     }
 
     //1.72: high AI and henchman casters will try to use defensive casting when appropriate
+    /*
     if(nType == TALENT_TYPE_SPELL && (GetAILevel() >= AI_LEVEL_HIGH || GetAssociateType(OBJECT_SELF) == ASSOCIATE_TYPE_HENCHMAN) && !GetHasFeat(FEAT_EPIC_IMPROVED_COMBAT_CASTING))
     {
         //do not go into defensive casting when already in (improved) expertise action mode
@@ -508,6 +509,7 @@ int bkTalentFilter(talent tUse, object oTarget, int bJustTest=FALSE)
             }
         }
     }
+    */
     // *
     // * STAY STILL!!  (return condition)
     // * September 5 2003

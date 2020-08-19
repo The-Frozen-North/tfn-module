@@ -154,6 +154,7 @@ int bkTalentFilterLoc(talent tUse, location lTarget, int bJustTest=FALSE)
     }
 
     //1.72: high AI and henchman casters will try to use defensive casting when appropriate
+    /*
     if(nType == TALENT_TYPE_SPELL && (GetAILevel() >= AI_LEVEL_HIGH || GetAssociateType(OBJECT_SELF) == ASSOCIATE_TYPE_HENCHMAN) && !GetHasFeat(FEAT_EPIC_IMPROVED_COMBAT_CASTING))
     {
         //do not go into defensive casting when already in (improved) expertise action mode
@@ -186,6 +187,7 @@ int bkTalentFilterLoc(talent tUse, location lTarget, int bJustTest=FALSE)
             }
         }
     }
+    */
 
     //1.72: no more attacking when *this* talent is not valid, there still might be other valid talent that creature can use
     if(!nNotValid)
@@ -256,6 +258,7 @@ int bkTalentFilterSpell(int nSpell, object oTarget, int bJustTest=FALSE)
     }
 
     //1.72: high AI and henchman casters will try to use defensive casting when appropriate
+    /*
     if((GetAILevel() >= AI_LEVEL_HIGH || GetAssociateType(OBJECT_SELF) == ASSOCIATE_TYPE_HENCHMAN) && !GetHasFeat(FEAT_EPIC_IMPROVED_COMBAT_CASTING))
     {
         //do not go into defensive casting when already in (improved) expertise action mode
@@ -288,6 +291,7 @@ int bkTalentFilterSpell(int nSpell, object oTarget, int bJustTest=FALSE)
             }
         }
     }
+    */
 
     //1.72: no more attacking when *this* talent is not valid, there still might be other valid talent that creature can use
     if(!nNotValid)
