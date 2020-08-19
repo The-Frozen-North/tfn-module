@@ -12,6 +12,9 @@
 !config/nwserver_dev_nt.env
 !settings.tml
 
+# This file should be ignored always
+server/settings.tml
+
 # Whitelist the override folder but make sure these 2das never get committed
 !override/
 !override/**
@@ -38,3 +41,4 @@ override/env_dm.2da
 # Never commit these file types
 *.mod
 *.ncs
+
