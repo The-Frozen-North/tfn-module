@@ -24,6 +24,7 @@ void SetSpawnPoint(string sResRef, object oTable, int nTarget, location lLocatio
         {
               int nSpawns = GetLocalInt(oTable, "random"+IntToString(nTarget)+"_spawn_point_total")+1;
 
+              if (GetLocalInt(GetModule(), "dev") == 1) CreateObject(OBJECT_TYPE_PLACEABLE, "plc_solblue", lLocation);
               CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lLocation, FALSE, sResRef+"_random"+IntToString(nTarget)+"_spawn_point"+IntToString(nSpawns));
               SetLocalInt(oTable, "random"+IntToString(nTarget)+"_spawn_point_total", nSpawns);
               break;
@@ -217,8 +218,8 @@ void main()
        int nSpawns = 0;
 
        int iXAxis, iYAxis;
-       float fYAxis, fXAxis, fDistanceFromDoor;
-       location lTile;
+       float fYAxis, fXAxis, fDistanceFromDoor, fDistanceBetweenPoints, fX, fY;
+       location lTile, lValidator;
        object oValidator, oDoor;
        vector vTile, vValidator;
 
@@ -247,6 +248,8 @@ void main()
                 vTile = GetPositionFromLocation(lTile);
                 vValidator = GetPosition(oValidator);
 
+                lValidator = GetLocation(oValidator);
+
                 oDoor = GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile);
                 if (GetIsObjectValid(oDoor))
                 {
@@ -258,8 +261,14 @@ void main()
                     fDistanceFromDoor = 999.0;
                 }
 
-// we don't want spawns too close to a door. also, make sure the spot and creature position matches
-                if (fDistanceFromDoor >= 3.0 && vTile.x == vValidator.x && vTile.y == vValidator.y)
+// we don't want spawns too close to a door. also, make sure the spot and the creature are around the same position
+// using the Distance Between Two Points Formula:
+                fX = vTile.x - vValidator.x;
+                fY = vTile.y - vValidator.y;
+                fDistanceBetweenPoints = sqrt((fX*fX) + (fY*fY));
+                if (fDistanceBetweenPoints < 0.0) fDistanceBetweenPoints = 999.0;
+
+                if (fDistanceFromDoor >= 3.0 && fDistanceBetweenPoints <= 2.0 && vValidator.z > -2.0)
                 {
                     if (bTrapped)
                     {
@@ -269,7 +278,7 @@ void main()
 
                     for (i = 1; i < 10; i++)
                     {
-                        SetSpawnPoint(sResRef, oArea, i, lTile);
+                        SetSpawnPoint(sResRef, oArea, i, lValidator);
                     }
                 }
 
