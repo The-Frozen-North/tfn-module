@@ -116,7 +116,7 @@ void main()
     // * If the NPC has the Hide skill they will go into stealth mode
     // * while doing WalkWayPoints().
     // *
-    // SetSpawnInCondition(NW_FLAG_STEALTH);
+    if (GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0) SetSpawnInCondition(NW_FLAG_STEALTH);
 
     //--------------------------------------------------------------------------
     // Enable stealth mode by setting a variable on the creature
