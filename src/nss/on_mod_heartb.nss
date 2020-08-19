@@ -13,6 +13,7 @@ void DoRevive(object oDead)
             int bMasterFound = FALSE;
 
             object oMaster = GetMasterByUUID(oDead);
+            int bMasterDead = GetIsDead(oMaster);
 
             location lLocation = GetLocation(oDead);
 
@@ -45,7 +46,7 @@ void DoRevive(object oDead)
                 oCreature = GetNextObjectInShape(SHAPE_SPHERE, fSize, lLocation, TRUE, OBJECT_TYPE_CREATURE);
             }
 
-            if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound) bFriend = TRUE;
+            if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound && !bMasterDead) bFriend = TRUE;
 
             if (!bEnemy && bFriend)
             {
