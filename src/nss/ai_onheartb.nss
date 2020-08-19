@@ -40,7 +40,8 @@ void main()
     if (GetAILevel() == AI_LEVEL_VERY_LOW) return;
 
     // Buff ourselves up right away if we should
-    if(GetSpawnInCondition(NW_FLAG_FAST_BUFF_ENEMY))
+    // Only enemies will buff themselves.
+    if(GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) <= 10 && GetSpawnInCondition(NW_FLAG_FAST_BUFF_ENEMY))
     {
         // This will return TRUE if an enemy was within 40.0 m
         // and we buffed ourselves up instantly to respond --
