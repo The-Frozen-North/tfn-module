@@ -71,6 +71,8 @@ void main()
 {
     object oPC = GetFirstPC();
 
+    ExportAllCharacters();
+
     if (GetIsObjectValid(oPC))
     {
         int nTickCount = NWNX_Util_GetServerTicksPerSecond();
