@@ -20,7 +20,29 @@ int StartingConditional()
 // ====================================
 // HIGHCLIFF VILLAGER
 // ====================================
-   if (GetStringLeft(sResRef, 8) == "villager")
+   if (sResRef == "guard_thunder")
+   {
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "The people of Thundertree are under my protection, so you best watch yourself.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Move along. I'm currently on duty.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Don't cause any trouble here, or Ansal will hunt you down.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "There's no stores in this village, so you best head on out.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "This place is a safe haven. Let's keep it that way for the sake of us both.");
+   }
+// ====================================
+// HIGHCLIFF VILLAGER
+// ====================================
+   else if (sResRef == "villager_thunder")
+   {
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Ain't much in this town for the likes of you.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Don't see much visitors 'round here. Best it stay that way.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "On your way Neverwinter Woods, are ya? Not the safest place in the North.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "There's no pawnshop here. We're too small to have one.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "More visitors. Just what this village needs.");
+   }
+// ====================================
+// HIGHCLIFF VILLAGER
+// ====================================
+   else if (sResRef == "villager")
    {
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "It's been a good harvest this season.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "At least I still have land to farm.");
@@ -36,7 +58,7 @@ int StartingConditional()
 // ====================================
 // HIGHCLIFF GUARD
 // ====================================
-   if (GetStringLeft(sResRef, 5) == "guard")
+   else if (sResRef == "guard")
    {
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Yes yes, I'm quite busy.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Don't go starting any trouble.");
@@ -52,7 +74,7 @@ int StartingConditional()
 // ====================================
 // COURTESAN
 // ====================================
-   if (GetStringLeft(sResRef, 9) == "courtesan")
+   if (sResRef == "courtesan")
    {
         if (GetItemInSlot(INVENTORY_SLOT_CHEST, oPC) == OBJECT_INVALID) // naked
         {
@@ -119,7 +141,7 @@ int StartingConditional()
 // ====================================
 // COMMONER
 // ====================================
-    else if (GetStringLeft(sResRef, 8) == "commoner")
+    else if (sResRef == "commoner")
     {
         if (GetItemInSlot(INVENTORY_SLOT_CHEST, oPC) == OBJECT_INVALID) // naked
         {
@@ -165,7 +187,7 @@ int StartingConditional()
 // ====================================
 // PEASANT
 // ====================================
-    else if (GetStringLeft(sResRef, 7) == "peasant")
+    else if (sResRef == "peasant")
     {
         if (GetItemInSlot(INVENTORY_SLOT_CHEST, oPC) == OBJECT_INVALID) // naked
         {
@@ -254,7 +276,7 @@ int StartingConditional()
 // ====================================
 // SAILOR
 // ====================================
-    else if (GetStringLeft(sResRef, 6) == "sailor")
+    else if (sResRef == "sailor")
     {
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Hope I can get a pint or two of ale tonight.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I miss the roll and pitch of the gentle waves. Back to sea for me, if they ever let us.");
@@ -266,7 +288,7 @@ int StartingConditional()
 // ====================================
 // CHILD
 // ====================================
-    else if (GetStringLeft(sResRef, 5) == "child")
+    else if (sResRef == "child")
     {
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "You funny looking.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Mother said not to talk to strangers!");
@@ -345,7 +367,7 @@ int StartingConditional()
 // ====================================
 // BEGGAR
 // ====================================
-    else if (GetStringLeft(sResRef, 6) == "beggar")
+    else if (sResRef == "beggar")
     {
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Please... can you spare a coin?");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "A few gold pieces ain't nothing. You can spare that, can't you?");
@@ -359,7 +381,7 @@ int StartingConditional()
 // ====================================
 // STUDENT
 // ====================================
-    else if (GetStringLeft(sResRef, 7) == "student")
+    else if (sResRef == "student")
     {
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I have a lot to learn still, before Sedos will put me in the field.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I'm one of the new recruits. Are you one as well?");
@@ -371,7 +393,7 @@ int StartingConditional()
 // ====================================
 // MERCENARY
 // ====================================
-    else if (GetStringLeft(sResRef, 9) == "mercenary")
+    else if (sResRef == "mercenary")
     {
         if (GetItemInSlot(INVENTORY_SLOT_CHEST, oPC) == OBJECT_INVALID) // naked
         {
