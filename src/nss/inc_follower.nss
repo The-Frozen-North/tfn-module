@@ -70,6 +70,8 @@ void SetFollowerMaster(object oFollower, object oPlayer)
 {
     if (GetLocalInt(oFollower, "follower") != 1) return;
 
+    SetTag(oFollower, "follower");
+
     SetAssociateState(NW_ASC_DISTANCE_2_METERS, TRUE, oFollower);
 
 // Make sure oPlayer is actually a player
