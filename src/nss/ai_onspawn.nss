@@ -342,7 +342,7 @@ void main()
 
     // ***** ADD ANY SPECIAL ON-SPAWN CODE HERE ***** //
 
-    NWNX_Creature_SetCorpseDecayTime(OBJECT_SELF, 600000);
+    NWNX_Creature_SetCorpseDecayTime(OBJECT_SELF, 1200000);
 
 // Set cr integer on self. This is used for determining treasure.
     SetLocalInt(OBJECT_SELF, "cr", FloatToInt(GetChallengeRating(OBJECT_SELF)));

@@ -20,7 +20,7 @@ void DoRevive(object oDead)
             float fSize = 50.0;
 
             float fMasterDistance = GetDistanceBetween(oDead, oMaster);
-            if (fMasterDistance > 0.0 && fMasterDistance <= 50.0) bMasterFound = TRUE;
+            if (fMasterDistance > 0.0 && fMasterDistance <= 100.0) bMasterFound = TRUE;
 
             object oCreature = GetFirstObjectInShape(SHAPE_SPHERE, fSize, lLocation, TRUE, OBJECT_TYPE_CREATURE);
 
