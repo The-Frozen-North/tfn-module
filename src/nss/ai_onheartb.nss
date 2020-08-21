@@ -31,7 +31,7 @@ void main()
         ClearAllActions();
         ActionRest();
     }
-    else if (nRest > 0)
+    else if (nCombat || nRest > 0)
     {
         SetLocalInt(OBJECT_SELF, "rest", nRest+1);
     }
