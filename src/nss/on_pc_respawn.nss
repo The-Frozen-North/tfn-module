@@ -57,6 +57,8 @@ void main()
 // Teleport back to the respawn location
     AssignCommand(oRespawner, JumpToLocation(lRespawnLocation));
 
+    ExecuteScript("pc_dth_penalty", oRespawner);
+
     DelayCommand(1.0, SavePCInfo(oRespawner));
     if (GetPCPublicCDKey(oRespawner) != "") DelayCommand(1.1, ExportSingleCharacter(oRespawner));
 }
