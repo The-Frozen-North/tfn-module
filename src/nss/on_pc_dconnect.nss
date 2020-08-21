@@ -3,14 +3,16 @@
 
 void main()
 {
-    object oPC = GetFirstPC();
-
     string sName = GetPCPlayerName(OBJECT_SELF);
-    if (sName == "") sName = "A player from login";
-    string sMessage = sName+" has disconnected ..";
+
+// Only care about people from login, because we already have a webhook for characters (client leave)
+    if (sName != "") return;
+
+    string sMessage = "A player from login has disconnected ..";
 
     SendDiscordLogMessage(sMessage);
 
+    object oPC = GetFirstPC();
     while (GetIsObjectValid(oPC))
     {
         SendMessageToPC(oPC, sMessage);
