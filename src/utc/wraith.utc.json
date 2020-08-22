@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 159
+    "value": 187
   },
   "BodyBag": {
     "type": "byte",
@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 3
+    "value": 15
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 3.0
+    "value": 6.0
   },
   "ClassList": {
     "type": "list",
@@ -23,11 +23,11 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 26
+          "value": 19
         },
         "ClassLevel": {
           "type": "short",
-          "value": 3
+          "value": 6
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 9
+    "value": 10
   },
   "Conversation": {
     "type": "resref",
@@ -50,24 +50,24 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 21
+    "value": 48
   },
   "DecayTime": {
     "type": "dword",
-    "value": 300000
+    "value": 5000
   },
   "Deity": {
     "type": "cexostring",
     "value": ""
   },
   "Description": {
-    "id": 12719,
+    "id": 12821,
     "type": "cexolocstring",
     "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 17
+    "value": 16
   },
   "Disarmable": {
     "type": "byte",
@@ -80,39 +80,39 @@
         "__struct_id": 16384,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewps018"
+          "value": "cre_wraithclaw"
         }
       },
       {
         "__struct_id": 32768,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewps018"
-        }
-      },
-      {
-        "__struct_id": 65536,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_it_crewps018"
+          "value": "cre_wraithclaw"
         }
       },
       {
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_creitem007"
+          "value": "nw_it_creitemun4"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 9
+    "value": 1
   },
   "FeatList": {
     "type": "list",
     "value": [
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 0
+        }
+      },
       {
         "__struct_id": 1,
         "Feat": {
@@ -137,10 +137,10 @@
     ]
   },
   "FirstName": {
-    "id": 12720,
+    "id": 12822,
     "type": "cexolocstring",
     "value": {
-      "0": "Giant Spider"
+      "0": "Wraith"
     }
   },
   "fortbonus": {
@@ -149,19 +149,19 @@
   },
   "Gender": {
     "type": "byte",
-    "value": 1
+    "value": 4
   },
   "GoodEvil": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "HitPoints": {
     "type": "short",
-    "value": 21
+    "value": 48
   },
   "Int": {
     "type": "byte",
-    "value": 10
+    "value": 14
   },
   "Interruptable": {
     "type": "byte",
@@ -181,7 +181,7 @@
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "Lootable": {
     "type": "byte",
@@ -189,11 +189,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 18
+    "value": 48
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 2
+    "value": 0
   },
   "NoPermDeath": {
     "type": "byte",
@@ -201,7 +201,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 11
+    "value": 32
   },
   "PerceptionRange": {
     "type": "byte",
@@ -217,11 +217,11 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 301
+    "value": 322
   },
   "Race": {
     "type": "byte",
-    "value": 25
+    "value": 24
   },
   "refbonus": {
     "type": "short",
@@ -321,28 +321,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 6
+          "value": 11
         }
       },
       {
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 6
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 6
+          "value": 12
         }
       },
       {
@@ -398,6 +384,13 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
+          "value": 10
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
           "value": 0
         }
       },
@@ -405,7 +398,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 6
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 12
         }
       },
       {
@@ -482,7 +482,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 85
+    "value": 107
   },
   "SpecAbilityList": {
     "type": "list",
@@ -491,11 +491,11 @@
         "__struct_id": 4,
         "Spell": {
           "type": "word",
-          "value": 192
+          "value": 204
         },
         "SpellCasterLevel": {
           "type": "byte",
-          "value": 3
+          "value": 5
         },
         "SpellFlags": {
           "type": "byte",
@@ -510,7 +510,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 12
+    "value": 10
   },
   "Subrace": {
     "type": "cexostring",
@@ -518,7 +518,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_SPIDGIANT"
+    "value": "NW_WRAITH"
   },
   "Tail_New": {
     "type": "dword",
@@ -530,7 +530,27 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "spider"
+    "value": "wraith"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "X2_L_IS_INCORPOREAL"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
@@ -546,6 +566,6 @@
   },
   "Wis": {
     "type": "byte",
-    "value": 10
+    "value": 14
   }
 }

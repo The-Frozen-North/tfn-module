@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 159
+    "value": 77
   },
   "BodyBag": {
     "type": "byte",
@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 3
+    "value": 16
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 3.0
+    "value": 6.0
   },
   "ClassList": {
     "type": "list",
@@ -23,11 +23,11 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 26
+          "value": 19
         },
         "ClassLevel": {
           "type": "short",
-          "value": 3
+          "value": 6
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 9
+    "value": 10
   },
   "Conversation": {
     "type": "resref",
@@ -50,24 +50,24 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 21
+    "value": 56
   },
   "DecayTime": {
     "type": "dword",
-    "value": 300000
+    "value": 5000
   },
   "Deity": {
     "type": "cexostring",
     "value": ""
   },
   "Description": {
-    "id": 12719,
+    "id": 12555,
     "type": "cexolocstring",
     "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 17
+    "value": 16
   },
   "Disarmable": {
     "type": "byte",
@@ -80,35 +80,35 @@
         "__struct_id": 16384,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewps018"
+          "value": "nw_it_crewpsp025"
         }
       },
       {
         "__struct_id": 32768,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewps018"
+          "value": "nw_it_crewpsp025"
         }
       },
       {
         "__struct_id": 65536,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewps018"
+          "value": "nw_it_crewps027"
         }
       },
       {
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_creitem007"
+          "value": "nw_it_creitemunc"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 9
+    "value": 5
   },
   "FeatList": {
     "type": "list",
@@ -118,6 +118,13 @@
         "Feat": {
           "type": "word",
           "value": 228
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 292
         }
       },
       {
@@ -137,10 +144,10 @@
     ]
   },
   "FirstName": {
-    "id": 12720,
+    "id": 12556,
     "type": "cexolocstring",
     "value": {
-      "0": "Giant Spider"
+      "0": "Ghoul Lord"
     }
   },
   "fortbonus": {
@@ -149,19 +156,19 @@
   },
   "Gender": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "GoodEvil": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "HitPoints": {
     "type": "short",
-    "value": 21
+    "value": 56
   },
   "Int": {
     "type": "byte",
-    "value": 10
+    "value": 13
   },
   "Interruptable": {
     "type": "byte",
@@ -181,7 +188,7 @@
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "Lootable": {
     "type": "byte",
@@ -189,11 +196,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 18
+    "value": 56
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 2
+    "value": 3
   },
   "NoPermDeath": {
     "type": "byte",
@@ -201,7 +208,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 11
+    "value": 27
   },
   "PerceptionRange": {
     "type": "byte",
@@ -217,11 +224,11 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 301
+    "value": 214
   },
   "Race": {
     "type": "byte",
-    "value": 25
+    "value": 24
   },
   "refbonus": {
     "type": "short",
@@ -307,7 +314,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 7
         }
       },
       {
@@ -321,20 +328,6 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 6
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 6
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
           "value": 0
         }
       },
@@ -342,14 +335,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 6
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 7
         }
       },
       {
@@ -406,6 +392,27 @@
         "Rank": {
           "type": "byte",
           "value": 6
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 7
         }
       },
       {
@@ -482,7 +489,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 85
+    "value": 41
   },
   "SpecAbilityList": {
     "type": "list",
@@ -491,11 +498,11 @@
         "__struct_id": 4,
         "Spell": {
           "type": "word",
-          "value": 192
+          "value": 200
         },
         "SpellCasterLevel": {
           "type": "byte",
-          "value": 3
+          "value": 1
         },
         "SpellFlags": {
           "type": "byte",
@@ -510,7 +517,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 12
+    "value": 14
   },
   "Subrace": {
     "type": "cexostring",
@@ -518,11 +525,11 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_SPIDGIANT"
+    "value": "NW_GHOULLORD"
   },
   "Tail_New": {
     "type": "dword",
-    "value": 0
+    "value": 205
   },
   "TemplateList": {
     "type": "list",
@@ -530,7 +537,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "spider"
+    "value": "ghoul_lord"
   },
   "WalkRate": {
     "type": "int",
@@ -542,10 +549,10 @@
   },
   "Wings_New": {
     "type": "dword",
-    "value": 0
+    "value": 205
   },
   "Wis": {
     "type": "byte",
-    "value": 10
+    "value": 14
   }
 }

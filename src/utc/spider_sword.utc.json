@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 159
+    "value": 161
   },
   "BodyBag": {
     "type": "byte",
@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 3.0
+    "value": 6.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 3
+          "value": 6
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 9
+    "value": 14
   },
   "Conversation": {
     "type": "resref",
@@ -46,28 +46,28 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 0
+    "value": 1
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 21
+    "value": 56
   },
   "DecayTime": {
     "type": "dword",
-    "value": 300000
+    "value": 5000
   },
   "Deity": {
     "type": "cexostring",
     "value": ""
   },
   "Description": {
-    "id": 12719,
+    "id": 12723,
     "type": "cexolocstring",
     "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 17
+    "value": 18
   },
   "Disarmable": {
     "type": "byte",
@@ -80,14 +80,14 @@
         "__struct_id": 16384,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewps018"
+          "value": "nw_it_crewpsp010"
         }
       },
       {
         "__struct_id": 32768,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewps018"
+          "value": "nw_it_crewpsp010"
         }
       },
       {
@@ -101,7 +101,7 @@
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_creitem007"
+          "value": "cre_spidsword"
         }
       }
     ]
@@ -137,10 +137,10 @@
     ]
   },
   "FirstName": {
-    "id": 12720,
+    "id": 12724,
     "type": "cexolocstring",
     "value": {
-      "0": "Giant Spider"
+      "0": "Sword Spider"
     }
   },
   "fortbonus": {
@@ -157,11 +157,11 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 21
+    "value": 56
   },
   "Int": {
     "type": "byte",
-    "value": 10
+    "value": 3
   },
   "Interruptable": {
     "type": "byte",
@@ -189,11 +189,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 18
+    "value": 68
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 2
+    "value": 0
   },
   "NoPermDeath": {
     "type": "byte",
@@ -217,7 +217,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 301
+    "value": 303
   },
   "Race": {
     "type": "byte",
@@ -321,28 +321,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 6
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 6
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 6
+          "value": 7
         }
       },
       {
@@ -357,6 +336,13 @@
         "Rank": {
           "type": "byte",
           "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 7
         }
       },
       {
@@ -405,7 +391,21 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 6
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 15
         }
       },
       {
@@ -482,27 +482,11 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 85
+    "value": 88
   },
   "SpecAbilityList": {
     "type": "list",
-    "value": [
-      {
-        "__struct_id": 4,
-        "Spell": {
-          "type": "word",
-          "value": 192
-        },
-        "SpellCasterLevel": {
-          "type": "byte",
-          "value": 3
-        },
-        "SpellFlags": {
-          "type": "byte",
-          "value": 1
-        }
-      }
-    ]
+    "value": []
   },
   "StartingPackage": {
     "type": "byte",
@@ -510,7 +494,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 12
+    "value": 14
   },
   "Subrace": {
     "type": "cexostring",
@@ -518,7 +502,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_SPIDGIANT"
+    "value": "NW_SPIDSWRD"
   },
   "Tail_New": {
     "type": "dword",
@@ -530,7 +514,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "spider"
+    "value": "spider_sword"
   },
   "WalkRate": {
     "type": "int",
@@ -546,6 +530,6 @@
   },
   "Wis": {
     "type": "byte",
-    "value": 10
+    "value": 11
   }
 }
