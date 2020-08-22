@@ -17,7 +17,7 @@ void DoRevive(object oDead)
 
             location lLocation = GetLocation(oDead);
 
-            float fSize = 50.0;
+            float fSize = 45.0;
 
             float fMasterDistance = GetDistanceBetween(oDead, oMaster);
             if (fMasterDistance > 0.0 && fMasterDistance <= 100.0) bMasterFound = TRUE;
