@@ -61,6 +61,9 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_CAST_SPELL_BEFORE", "on_pc_spcastb");
     NWNX_Events_SubscribeEvent("NWNX_ON_BROADCAST_CAST_SPELL_BEFORE", "on_pc_spcastb");
 
+// We must skip this if polymorphed or bartering.
+    NWNX_Events_SubscribeEvent("NWNX_ON_SERVER_CHARACTER_SAVE_BEFORE", "on_pc_save");
+
 // Following actions are not allowed under any circumstance
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_CHANGE_DIFFICULTY_BEFORE", "dm_never");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SET_FACTION_BEFORE", "dm_never");
@@ -95,6 +98,7 @@ void main()
 // Check and do certain logic on spawning of objects.
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SPAWN_OBJECT_BEFORE", "dm_spawnb");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SPAWN_OBJECT_AFTER", "dm_spawna");
+
 
 // We do some things different on DEV and local (without NWNX), such as ignoring webhooks and having verbose debug messages
     if ((NWNX_Time_GetTimeStamp() == 0) || FindSubString(NWNX_Administration_GetServerName(), "DEV") > -1)
