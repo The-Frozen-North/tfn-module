@@ -549,6 +549,7 @@ void DistributeTreasureToStores(object oItem)
                case BASE_ITEM_ARROW:
                   sRarity = "Common";
                break;
+               case BASE_ITEM_GLOVES:
                case BASE_ITEM_LIGHTFLAIL:
                case BASE_ITEM_LIGHTHAMMER:
                case BASE_ITEM_HALBERD:
@@ -564,7 +565,6 @@ void DistributeTreasureToStores(object oItem)
                case BASE_ITEM_BOLT:
                   sRarity = "Uncommon";
                break;
-               case BASE_ITEM_GLOVES:
                case BASE_ITEM_DIREMACE:
                case BASE_ITEM_DOUBLEAXE:
                case BASE_ITEM_RAPIER:
