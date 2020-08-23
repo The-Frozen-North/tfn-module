@@ -200,6 +200,10 @@ void main()
         break;
         case REST_EVENTTYPE_REST_FINISHED:
             DeleteLocalInt(oPC, "invis");
+
+            if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_FAMILIAR, oPC))) DecrementRemainingFeatUses(oPC, FEAT_SUMMON_FAMILIAR);
+            if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION, oPC)))  DecrementRemainingFeatUses(oPC, FEAT_ANIMAL_COMPANION);
+
         case REST_EVENTTYPE_REST_CANCELLED:
             StopFade(oPC);
             SavePCInfo(oPC);
