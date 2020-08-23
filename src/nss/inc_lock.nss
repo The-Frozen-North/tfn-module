@@ -13,7 +13,7 @@ void GenerateLockOnObject(object oObject = OBJECT_SELF)
    {
        int nLockDC = BASE_LOCK_DC + iCR + d4();
 
-       SetLockLockDC(oObject, nLockDC);
+       SetLockUnlockDC(oObject, nLockDC);
        SetLocked(oObject, TRUE);
    }
 }
