@@ -435,6 +435,8 @@ void DistributeTreasureToStores(object oItem)
        if (nValue > 22000)
        {
            CopyItemToExistingTarget(oItem, GetObjectByTag("_overvalue"));
+           DestroyObject(oItem);
+           return;
        }
 
 // Sort by item value
@@ -451,6 +453,14 @@ void DistributeTreasureToStores(object oItem)
        if (nEnchantValue == 0 && (GetStringLeft(sName, 12) == "High Quality" || GetStringLeft(sName, 9) == "Composite"))
        {
            sTier = "T2";
+       }
+
+// Bump up items to the right tier for non-uniques
+       if (sNonUnique == "NonUnique")
+       {
+           if (FindSubString(sName, "+1") > -1 && sTier == "T2") sTier = "T3";
+           if (FindSubString(sName, "+2") > -1 && sTier == "T3") sTier = "T4";
+           if (FindSubString(sName, "+3") > -1 && sTier == "T4") sTier = "T5";
        }
 
        if (nBaseType == BASE_ITEM_TRAPKIT || GetStringLeft(sResRef, 4) == "misc") {sType = "Misc";}
