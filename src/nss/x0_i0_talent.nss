@@ -1959,7 +1959,8 @@ int TalentAdvancedBuff(float fDistance, int bInstant = TRUE)
         //{
             //if(!GetIsFighting(OBJECT_SELF))
             //{
-                ClearActions(CLEAR_X0_I0_TALENT_AdvancedBuff);
+                //ClearActions(CLEAR_X0_I0_TALENT_AdvancedBuff);
+                ClearAllActions(TRUE);
 
                 // General Protections and misc buffs
                 BuffIfNotBuffed(SPELL_NEGATIVE_ENERGY_PROTECTION, bInstant);

@@ -91,7 +91,8 @@ void main()
     // ***** Spawn-In Conditions ***** //
 
 // cast defensive buffs instantly
-    SetSpawnInCondition(NW_FLAG_FAST_BUFF_ENEMY);
+    if (GetLevelByClass(CLASS_TYPE_SORCERER, OBJECT_SELF) > 0 || GetLevelByClass(CLASS_TYPE_WIZARD, OBJECT_SELF) > 0 || GetLevelByClass(CLASS_TYPE_BARD, OBJECT_SELF) > 0 ||  GetLevelByClass(CLASS_TYPE_DRUID, OBJECT_SELF) > 0 ||  GetLevelByClass(CLASS_TYPE_CLERIC, OBJECT_SELF) > 0)
+        SetSpawnInCondition(NW_FLAG_FAST_BUFF_ENEMY);
 
     // * REMOVE COMMENTS (// ) before the "Set..." functions to activate
     // * them. Do NOT touch lines commented out with // *, those are
