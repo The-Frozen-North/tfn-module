@@ -795,6 +795,67 @@
         },
         "Script": {
           "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Good. I wanted to hang that man myself but this will have to do. Hopefully the rest of the prisoners lose their drive, or we'll have to kill them all."
+          }
+        }
+      },
+      {
+        "__struct_id": 13,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 12
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
           "value": "dlg_q_adv2"
         },
         "Sound": {
@@ -808,12 +869,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Good. I wanted to hang that man myself but this will have to do. Hopefully the rest of the prisoners lose their drive, or we'll have to kill them all. Ain't such a bad thing if it comes to that. Now then, here is your reward. Don't spend it all on in the Moonstone Mask."
+            "0": "Ain't such a bad thing if it comes to that. Now then, here is your reward. Don't spend it all on in the Moonstone Mask."
           }
         }
       },
       {
-        "__struct_id": 13,
+        "__struct_id": 14,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -861,7 +922,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 406
+    "value": 407
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -1521,7 +1582,23 @@
         },
         "EntriesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 13
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Quest": {
           "type": "cexostring",
@@ -1541,6 +1618,47 @@
             "0": ""
           }
         }
+      },
+      {
+        "__struct_id": 12,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Goodbye."
+          }
+        }
       }
     ]
   },
@@ -1555,7 +1673,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 13
+          "value": 14
         }
       },
       {
