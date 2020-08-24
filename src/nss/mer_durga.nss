@@ -13,6 +13,7 @@ void main()
     CopyChest(OBJECT_SELF, "_MeleeRareT1NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_MeleeCommonT2NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_MeleeUncommonT2NonUnique", 256, "", TRUE);
+    CopyChest(OBJECT_SELF, "_MeleeUncommonT3NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_MeleeCommonT3NonUnique", 256, "", TRUE);
 
     CopyChest(OBJECT_SELF, "_ArmorCommonT1NonUnique", 256, "", TRUE);

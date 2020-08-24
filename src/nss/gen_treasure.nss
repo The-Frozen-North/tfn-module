@@ -455,6 +455,10 @@ void DistributeTreasureToStores(object oItem)
            sTier = "T2";
        }
 
+// Boost some full plates to next tier
+       if (sName == "Full Plate +1") sTier = "T4";
+       if (sName == "Full Plate +2") sTier = "T5";
+
 // Bump up items to the right tier for non-uniques
        if (sNonUnique == "NonUnique")
        {
