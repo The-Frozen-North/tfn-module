@@ -4,8 +4,7 @@
 #include "util_i_csvlists"
 #include "util_i_varlists"
 #include "util_i_debug"
-
-const string sDMEAreas = "myfirstdmearea,someotherdmearea,whatodyouknownaotherdmearea";
+#include "dme_area_list"
 
 void main()
 {
