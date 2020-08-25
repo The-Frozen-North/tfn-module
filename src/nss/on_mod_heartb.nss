@@ -1,6 +1,7 @@
 #include "inc_persist"
 #include "inc_debug"
 #include "inc_henchman"
+#include "inc_quest"
 #include "nwnx_util"
 
 void DoRevive(object oDead)
@@ -79,11 +80,13 @@ void main()
         if (nTickCount <= 50) SendDebugMessage("Low tick count detected: "+IntToString(nTickCount), TRUE);
     }
 
-    //ExportAllCharacters();
+    int nTime = NWNX_Time_GetTimeStamp();
 
     while(GetIsObjectValid(oPC))
     {
         DoRevive(oPC);
+
+        RefreshCompletedBounties(oPC, nTime);
 
         SavePCInfo(oPC);
 

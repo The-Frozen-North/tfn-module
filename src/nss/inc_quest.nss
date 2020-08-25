@@ -4,9 +4,9 @@
 #include "inc_treasure"
 #include "inc_persist"
 
-const string BOUNTY_FOOTER = "[NOTE: Bounty quests are reset on a server restart.]";
-
 const float AOE_QUEST_SIZE = 75.0;
+
+const int BOUNTY_RESET_TIME =  21600; // 6 hours
 
 // Set a player's quest entry.
 void SetQuestEntry(object oPC, string sQuestEntry, int nValue);
@@ -33,6 +33,9 @@ int GetIsCurrentlyAtQuestStage(object oQuestObject, object oPC, int nTarget);
 // Get the PC's quest entry by string. Returns quest stage.
 int GetQuestEntry(object oPC, string sQuestEntry);
 
+// Refreshes the PC's completed bounties
+void RefreshCompletedBounties(object oPC, int nTime);
+
 // -------------------------------------------------------------------------
 // FUNCTIONS
 // -------------------------------------------------------------------------
@@ -40,7 +43,9 @@ int GetQuestEntry(object oPC, string sQuestEntry);
 int GetQuestEntry(object oPC, string sQuestEntry)
 {
     int nQuestInt = NWNX_Object_GetInt(oPC, sQuestEntry);
+
     if (nQuestInt > 0) AddJournalQuestEntry(sQuestEntry, nQuestInt, oPC, FALSE);
+
     return nQuestInt;
 }
 
@@ -62,6 +67,28 @@ void GetQuestEntries(object oPC)
     GetQuestEntry(oPC, "q_dryad");
     GetQuestEntry(oPC, "q_pureblood");
     GetQuestEntry(oPC, "q_intellect");
+}
+
+void RefreshCompletedBounty(object oPC, string sQuest, int nTime)
+{
+// Failsafe to do this for bounties only
+    if (GetStringLeft(sQuest, 2) != "b_") return;
+
+    string sReset = sQuest+"_reset";
+    int nReset = NWNX_Object_GetInt(oPC, sReset);
+
+    if (nReset > 0 && nTime >= nReset)
+    {
+        NWNX_Object_DeleteInt(oPC, sReset);
+        NWNX_Object_DeleteInt(oPC, sQuest);
+        RemoveJournalQuestEntry(sQuest, oPC, FALSE);
+        FloatingTextStringOnCreature("*One of your completed bounties is available again.*", oPC, FALSE);
+    }
+}
+
+void RefreshCompletedBounties(object oPC, int nTime)
+{
+    RefreshCompletedBounty(oPC, "b_mummy", nTime);
 }
 
 void SetQuestEntry(object oPC, string sQuestEntry, int nValue)
@@ -182,6 +209,13 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bPersuadeBon
 // alter the amount of bonus gold if present. typically used for persuade
         if (bPersuadeBonusGold == TRUE) nRewardGold = FloatToInt(IntToFloat(nRewardGold) * PERSUADE_BONUS_MODIFIER);
         GiveGoldToCreature(oPC, nRewardGold);
+    }
+
+    if (GetStringLeft(sQuestName, 2) == "b_" && NWNX_Player_GetQuestCompleted(oPC, sQuestName))
+    {
+        string sVar = sQuestName+"_reset";
+
+        if (NWNX_Object_GetInt(oPC, sVar) == 0) NWNX_Object_SetInt(oPC, sVar, NWNX_Time_GetTimeStamp()+BOUNTY_RESET_TIME, TRUE);
     }
 
     FloatingTextStringOnCreature("*Your journal has been updated*", oPC, FALSE);

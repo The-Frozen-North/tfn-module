@@ -62,6 +62,7 @@ void main()
     if (GetXP(oPC) > 0)
     {
         GetQuestEntries(oPC);
+        RefreshCompletedBounties(oPC, NWNX_Time_GetTimeStamp());
 
 // henchman need to be rehired as they are "fired" when logging out
         RehireHenchman(oPC);
