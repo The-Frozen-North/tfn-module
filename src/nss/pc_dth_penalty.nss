@@ -21,7 +21,7 @@ void main()
         int nGold = GetGold(oPlayer);
         int nGoldLoss = 0;
 
-        if (nGold > 1) nGoldLoss = nGold/10;
+        if (nGold > 1) nGoldLoss = nGold/5;
 
         SetXP(oPlayer, nNewXP);
         TakeGoldFromCreature(nGoldLoss, oPlayer, TRUE);
