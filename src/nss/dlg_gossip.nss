@@ -25,7 +25,6 @@ int StartingConditional()
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "The people of Thundertree are under my protection, so you best watch yourself.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Move along. I'm currently on duty.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Don't cause any trouble here, or Ansal will hunt you down.");
-        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "There's no stores in this village, so you best head on out.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "This place is a safe haven. Let's keep it that way for the sake of us both.");
    }
 // ====================================
@@ -36,7 +35,7 @@ int StartingConditional()
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Ain't much in this town for the likes of you.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Don't see much visitors 'round here. Best it stay that way.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "On your way Neverwinter Woods, are ya? Not the safest place in the North.");
-        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "There's no pawnshop here. We're too small to have one.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Camilla's the only shopkeep here. She does most of her business with strangers such as yourself, though.");
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "More visitors. Just what this village needs.");
    }
 // ====================================
