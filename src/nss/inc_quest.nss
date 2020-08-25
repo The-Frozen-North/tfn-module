@@ -53,6 +53,7 @@ void GetQuestEntries(object oPC)
 {
     GetQuestEntry(oPC, "b_mummy");
     GetQuestEntry(oPC, "b_wererat");
+    GetQuestEntry(oPC, "b_goblin");
 
     GetQuestEntry(oPC, "q_rescue");
     GetQuestEntry(oPC, "q_brother");
@@ -93,6 +94,7 @@ void RefreshCompletedBounties(object oPC, int nTime)
 {
     RefreshCompletedBounty(oPC, "b_mummy", nTime);
     RefreshCompletedBounty(oPC, "b_wererat", nTime);
+    RefreshCompletedBounty(oPC, "b_goblin", nTime);
 }
 
 void SetQuestEntry(object oPC, string sQuestEntry, int nValue)
