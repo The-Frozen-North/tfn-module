@@ -52,7 +52,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 35
+                "value": 27
               },
               "IsChild": {
                 "type": "byte",
@@ -67,7 +67,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 34
+                "value": 26
               },
               "IsChild": {
                 "type": "byte",
@@ -82,7 +82,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 33
+                "value": 25
               },
               "IsChild": {
                 "type": "byte",
@@ -93,11 +93,11 @@
               "__struct_id": 3,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_q_chk_eli2"
               },
               "Index": {
                 "type": "dword",
-                "value": 25
+                "value": 23
               },
               "IsChild": {
                 "type": "byte",
@@ -108,11 +108,11 @@
               "__struct_id": 4,
               "Active": {
                 "type": "resref",
-                "value": "false"
+                "value": "dlg_q_chk_eli1"
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 9
               },
               "IsChild": {
                 "type": "byte",
@@ -123,7 +123,7 @@
               "__struct_id": 5,
               "Active": {
                 "type": "resref",
-                "value": "false"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
@@ -250,11 +250,183 @@
               },
               "Index": {
                 "type": "dword",
+                "value": 8
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
                 "value": 3
               },
               "IsChild": {
                 "type": "byte",
                 "value": 0
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 2
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": "mq1a05nyatslg01"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "id": 17059,
+          "type": "cexolocstring",
+          "value": {
+            "0": "Ask what you will."
+          }
+        }
+      },
+      {
+        "__struct_id": 3,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 27
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": "Intelligence greater than 8\r\n\r\nAttach a druid store here."
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 26
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 25
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 1
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": "Charisma greater than 8\r\nIntelligence greater than 8"
+              }
+            },
+            {
+              "__struct_id": 4,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 0
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": "Intelligence greater than 8"
               }
             }
           ]
@@ -272,13 +444,14 @@
           "value": ""
         },
         "Text": {
-          "id": 17089,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Very well. What is it that you need?"
+          }
         }
       },
       {
-        "__struct_id": 3,
+        "__struct_id": 4,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -289,7 +462,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": ""
+          "value": "Charisma greater than 8\r\nOR\r\nPlayer IS a druid or ranger"
         },
         "Delay": {
           "type": "dword",
@@ -332,51 +505,7 @@
           "value": ""
         },
         "Text": {
-          "id": 17117,
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 4,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": []
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "id": 17124,
+          "id": 17063,
           "type": "cexolocstring",
           "value": {}
         }
@@ -436,7 +565,7 @@
           "value": ""
         },
         "Text": {
-          "id": 17115,
+          "id": 17065,
           "type": "cexolocstring",
           "value": {}
         }
@@ -485,7 +614,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "m1s5nyatslg01"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -496,7 +625,7 @@
           "value": ""
         },
         "Text": {
-          "id": 17126,
+          "id": 17062,
           "type": "cexolocstring",
           "value": {}
         }
@@ -513,7 +642,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "****WHAT CAN WE GIVE AWAY \r\n\r\nhave to check with Brent"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -530,102 +659,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 16
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 15
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 10
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 9
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
-              }
-            },
-            {
-              "__struct_id": 4,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 8
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 5,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
@@ -633,18 +667,14 @@
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
+                "value": 0
               }
             }
           ]
         },
         "Script": {
           "type": "resref",
-          "value": "m1q0_nytar_gold"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -655,7 +685,7 @@
           "value": ""
         },
         "Text": {
-          "id": 17128,
+          "id": 17066,
           "type": "cexolocstring",
           "value": {}
         }
@@ -672,7 +702,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "****WHAT CAN WE GIVE AWAY \r\n\r\nhave to check with Brent"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -689,83 +719,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 16
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 15
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 10
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 9
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
-              }
-            },
-            {
-              "__struct_id": 4,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intn"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
@@ -777,18 +731,18 @@
               },
               "LinkComment": {
                 "type": "cexostring",
-                "value": "intelligence greater than 8"
+                "value": "Intelligence greater than 8\r\n\r\nSet <CUSTOM> token to the person he is currently talking to."
               }
             },
             {
-              "__struct_id": 5,
+              "__struct_id": 1,
               "Active": {
                 "type": "resref",
-                "value": "nw_d2_intl"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
-                "value": 7
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
@@ -796,14 +750,14 @@
               },
               "LinkComment": {
                 "type": "cexostring",
-                "value": "intelligence less than 9"
+                "value": ""
               }
             }
           ]
         },
         "Script": {
           "type": "resref",
-          "value": "m1q0_nytar_gold"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -814,7 +768,7 @@
           "value": ""
         },
         "Text": {
-          "id": 17127,
+          "id": 17101,
           "type": "cexolocstring",
           "value": {}
         }
@@ -831,7 +785,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "plot is now considered done\r\n\r\nadditional reward detailed by Brent****WHAT CAN WE GIVE AWAY \r\n\r\nhave to check with Brent"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -848,112 +802,45 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "nw_d2_intn"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
-                "value": 16
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": "Intelligence greater than 8"
               }
             },
             {
               "__struct_id": 1,
               "Active": {
                 "type": "resref",
-                "value": "nw_d2_intl"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": "m1q1a05nyatclg06"
+                "value": 1
               },
-              "Index": {
-                "type": "dword",
-                "value": 14
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 10
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 4,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 9
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 5,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 8
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 6,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
             }
           ]
         },
         "Script": {
           "type": "resref",
-          "value": "m1q0_nytar_gold"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -964,7 +851,7 @@
           "value": ""
         },
         "Text": {
-          "id": 17090,
+          "id": 17067,
           "type": "cexolocstring",
           "value": {}
         }
@@ -993,11 +880,27 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 10
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
-          "value": "m1q1a05nyatslg06"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -1008,9 +911,10 @@
           "value": ""
         },
         "Text": {
-          "id": 17096,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Many people are falling to plague, but animals suffer as well. They suffer in cages, in a Blacklake district lodge. There is a zoo in Neverwinter."
+          }
         }
       },
       {
@@ -1042,7 +946,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "nw_d2_intn"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
@@ -1057,7 +961,7 @@
               "__struct_id": 1,
               "Active": {
                 "type": "resref",
-                "value": "nw_d2_intl"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
@@ -1066,44 +970,6 @@
               "IsChild": {
                 "type": "byte",
                 "value": 0
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 8
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
               }
             }
           ]
@@ -1121,13 +987,79 @@
           "value": ""
         },
         "Text": {
-          "id": 17098,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "It is operated by a hunter and his \"noble\" entourage. It is not clean, it is not compassionate, and it is not right. The animals within are mistreated."
+          }
         }
       },
       {
         "__struct_id": 12,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 13
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Your attitude is the majority. I was working to have it closed, but the plague has delayed that indefinitely. The officials I spoke with are hidden inside Blacklake."
+          }
+        }
+      },
+      {
+        "__struct_id": 13,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -1181,53 +1113,10 @@
           "value": ""
         },
         "Text": {
-          "id": 17099,
           "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 13,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": "Another reward... just gold, probably.\r\n\r\n\r\nNyatar leaves. close whatever this place down. tleport all players outside if they are in the building. (is there an interior? I don't know)"
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": []
-        },
-        "Script": {
-          "type": "resref",
-          "value": "m1q1a05nyatslg07"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "id": 17131,
-          "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "It is not new. I was working to have it closed, but the plague has delayed that indefinitely. The officials I spoke with have barricaded themselves in Blacklake."
+          }
         }
       },
       {
@@ -1242,7 +1131,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "give additional reward as dictated by Brent.\r\n\r\nPerhaps just a bless of some sort, or something non-monetary."
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -1259,83 +1148,22 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "nw_d2_intn"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
-                "value": 10
+                "value": 14
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 9
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 8
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
+                "value": 0
               }
             }
           ]
         },
         "Script": {
           "type": "resref",
-          "value": "m1q0_nytar_gold2"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -1346,9 +1174,10 @@
           "value": ""
         },
         "Text": {
-          "id": 17130,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "It has given the zoo a reprieve. They know the law was turning against them, but now they have time to cover their actions. With the blockade, even I cannot enter."
+          }
         }
       },
       {
@@ -1380,19 +1209,15 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "m1q1a05nyatclg06"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
-                "value": 14
+                "value": 20
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "player a druid"
+                "value": 0
               }
             },
             {
@@ -1403,15 +1228,11 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 9
+                "value": 17
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+                "value": 0
               }
             },
             {
@@ -1422,15 +1243,26 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 7
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Active": {
+                "type": "resref",
                 "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 15
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
               }
             }
           ]
@@ -1448,9 +1280,10 @@
           "value": ""
         },
         "Text": {
-          "id": 17093,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "I fear the animals will simply be killed and made into trophies. I ask you to put a stop to this hunter by whatever means necessary, and I will gladly compensate you for your help."
+          }
         }
       },
       {
@@ -1477,65 +1310,7 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "m1q1a05nyatclg06"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 14
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "player a druid"
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 10
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 8
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
@@ -1550,9 +1325,10 @@
           "value": ""
         },
         "Text": {
-          "id": 17092,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "I understand your reluctance in this troublesome time, but these little things make a difference too. Please, find it in your heart to reconsider."
+          }
         }
       },
       {
@@ -1579,27 +1355,11 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 17
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_q_adv1"
         },
         "Sound": {
           "type": "resref",
@@ -1610,134 +1370,14 @@
           "value": ""
         },
         "Text": {
-          "id": 17091,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "I was hoping you would say that. A word of caution, however - my animal spies report that he has entourage of armed guards at his side, so be prepared for a fight. Good luck."
+          }
         }
       },
       {
         "__struct_id": 18,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": "give additional reward as dictated by Brent.\r\n\r\nPerhaps just a bless of some sort, or something non-monetary."
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 10
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 9
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 8
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": "m1q1a05nyatslg09"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "id": 17097,
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 19,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -1791,13 +1431,14 @@
           "value": ""
         },
         "Text": {
-          "id": 17112,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "They claim they want common people to see the beauty of nature but, in truth, only the families of certain nobles are allowed in."
+          }
         }
       },
       {
-        "__struct_id": 20,
+        "__struct_id": 19,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -1851,9 +1492,113 @@
           "value": ""
         },
         "Text": {
-          "id": 17120,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "There are humane ways to do such things, but I suspect this zoo is more intended to show their superiority over the creatures held there."
+          }
+        }
+      },
+      {
+        "__struct_id": 20,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 20
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 16
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 15
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "For all the care they give to the animals held within, they may as well have simply placed their heads on the walls."
+          }
         }
       },
       {
@@ -1885,41 +1630,11 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "nw_d2_chrh"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 22
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_chrm"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
                 "value": 21
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_chrl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 20
               },
               "IsChild": {
                 "type": "byte",
@@ -1930,7 +1645,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "m1s5nyatslg02"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -1941,9 +1656,10 @@
           "value": ""
         },
         "Text": {
-          "id": 17125,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Montgomery \"Sureshot\" Weatherson. His family has been a great advocate of animal rights, but Montgomery abandoned that philosophy when his father died."
+          }
         }
       },
       {
@@ -1958,7 +1674,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "****WHAT CAN WE GIVE AWAY? \r\n\r\n\r\ncheck with BRent"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -1975,114 +1691,15 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "nw_d2_intn"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
-                "value": 16
+                "value": 22
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 15
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 10
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 9
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
-              }
-            },
-            {
-              "__struct_id": 4,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intn"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 8
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 5,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_intl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "intelligence less than 9"
+                "value": 0
               }
             }
           ]
@@ -2100,9 +1717,10 @@
           "value": ""
         },
         "Text": {
-          "id": 17129,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "He gauges his progress as a man by what he has mastered, his family and business, and nature, creature by creature. He is out of balance."
+          }
         }
       },
       {
@@ -2138,11 +1756,53 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 23
+                "value": 17
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 16
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 15
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
             }
           ]
@@ -2160,9 +1820,10 @@
           "value": ""
         },
         "Text": {
-          "id": 17119,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Several nobles live vicariously through him. Their influence protects him from what little pressure I have been able to apply thorugh the law."
+          }
         }
       },
       {
@@ -2220,9 +1881,11 @@
           "value": ""
         },
         "Text": {
-          "id": 17118,
+          "id": 17089,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "I know. Truth be told, my animal spies have kept me informed. I have felt it necessary to carefully monitor the situation."
+          }
         }
       },
       {
@@ -2237,7 +1900,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "Set local to SAD END"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -2253,7 +1916,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "m1q1a05nyatslg05"
+          "value": "dlg_q_adv2"
         },
         "Sound": {
           "type": "resref",
@@ -2264,9 +1927,11 @@
           "value": ""
         },
         "Text": {
-          "id": 17121,
+          "id": 17117,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "A pity about the deaths among their captors. All life deserves a chance... but perhaps that was their chance. In any case, here is your reward: some gold and a magic ring that may help you be attuned with animals. Be with nature, my friend."
+          }
         }
       },
       {
@@ -2302,99 +1967,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 32
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
                 "value": 27
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 26
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": "mq1a05nyatslg01"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "id": 17059,
-          "type": "cexolocstring",
-          "value": {
-            "0": "Ask what you will."
-          }
-        }
-      },
-      {
-        "__struct_id": 27,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 35
               },
               "IsChild": {
                 "type": "byte",
@@ -2413,516 +1986,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 25
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "Charisma greater than 8\r\nIntelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 0
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "Intelligence greater than 8"
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Very well. What is it that you need?"
-          }
-        }
-      },
-      {
-        "__struct_id": 28,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": "Charisma greater than 8\r\nOR\r\nPlayer IS a druid or ranger"
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 28
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "id": 17063,
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 29,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 29
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "id": 17065,
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 30,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 30
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "id": 17062,
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 31,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 31
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "id": 17066,
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 32,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 32
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "Intelligence greater than 8\r\n\r\nSet <CUSTOM> token to the person he is currently talking to."
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
                 "value": 26
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "id": 17101,
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 33,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 27
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "Intelligence greater than 8"
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 26
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "id": 17067,
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 34,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 35
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "Intelligence greater than 8\r\n\r\nAttach a druid store here."
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 34
               },
               "IsChild": {
                 "type": "byte",
@@ -2941,7 +2005,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 25
+                "value": 1
               },
               "IsChild": {
                 "type": "byte",
@@ -2993,7 +2057,7 @@
         }
       },
       {
-        "__struct_id": 35,
+        "__struct_id": 27,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -3025,7 +2089,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 35
+                "value": 27
               },
               "IsChild": {
                 "type": "byte",
@@ -3044,7 +2108,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 33
+                "value": 25
               },
               "IsChild": {
                 "type": "byte",
@@ -3063,7 +2127,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 25
+                "value": 1
               },
               "IsChild": {
                 "type": "byte",
@@ -3118,7 +2182,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 879
+    "value": 808
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -3197,47 +2261,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "Intelligence greater than 8\r\n\r\nHas already told the player about the plot."
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": []
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "id": 17029,
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 2,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": "Intelligence greater than 8\r\n\r\nat least one of the animals has been freed"
+          "value": "Charisma greater than 8\r\nIntelligence greater than 8"
         },
         "Delay": {
           "type": "dword",
@@ -3276,13 +2300,15 @@
           "value": ""
         },
         "Text": {
-          "id": 17034,
+          "id": 17001,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Could I ask some questions?"
+          }
         }
       },
       {
-        "__struct_id": 3,
+        "__struct_id": 2,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -3293,7 +2319,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "Animals freed. Some animals killed\r\nNo one hurt\r\n"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -3304,36 +2330,6 @@
           "value": [
             {
               "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "m1q1a05nyatclg25"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 19
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "m1q1a05nyatclg28"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 5
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 2,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -3362,6 +2358,64 @@
           "value": ""
         },
         "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I'd like to talk about something else."
+          }
+        }
+      },
+      {
+        "__struct_id": 3,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": "Intelligence greater than 8"
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 4
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "id": 17010,
           "type": "cexolocstring",
           "value": {}
         }
@@ -3395,7 +2449,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
+                "value": 5
               },
               "IsChild": {
                 "type": "byte",
@@ -3488,7 +2542,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "high charisma"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -3501,37 +2555,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "nw_d2_chrh"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 9
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_chrm"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 8
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_chrl"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
@@ -3557,8 +2581,11 @@
           "value": ""
         },
         "Text": {
+          "id": 17012,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Why are you so sure this plague is not natural?"
+          }
         }
       },
       {
@@ -3573,7 +2600,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "intelligence less than 9"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -3590,15 +2617,11 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 10
+                "value": 8
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+                "value": 0
               }
             }
           ]
@@ -3616,7 +2639,6 @@
           "value": ""
         },
         "Text": {
-          "id": 17043,
           "type": "cexolocstring",
           "value": {}
         }
@@ -3633,7 +2655,63 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "intelligence greater than 8"
+          "value": "Intelligence greater than 8\r\n\r\nSet <CUSTOM> token to the person he is currently talking to."
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 9
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "id": 17008,
+          "type": "cexolocstring",
+          "value": {}
+        }
+      },
+      {
+        "__struct_id": 9,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -3672,69 +2750,10 @@
           "value": ""
         },
         "Text": {
-          "id": 17042,
           "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 9,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": "intelligence less than 9"
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 11
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "id": 17041,
-          "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Was there something you needed?"
+          }
         }
       },
       {
@@ -3749,7 +2768,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "intelligence greater than 8"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -3788,9 +2807,10 @@
           "value": ""
         },
         "Text": {
-          "id": 17040,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": ""
+          }
         }
       },
       {
@@ -3805,67 +2825,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "intelligence less than 9\r\nevil adjustment"
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 12
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "he goes hostile in 15 seconds, but should not follow the player out into the street. He should spawn allies to help him, or they should emerge from elsewhere."
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
           "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": "m1q0_nyatar_evil"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "id": 17027,
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 12,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": "intelligence greater than 8\r\nevil adjustment"
         },
         "Delay": {
           "type": "dword",
@@ -3897,20 +2857,21 @@
         },
         "Script": {
           "type": "resref",
-          "value": "m1q0_nyatar_evil"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
           "value": ""
         },
         "Text": {
-          "id": 17044,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "This zoo seems small next to the plague."
+          }
         }
       },
       {
-        "__struct_id": 13,
+        "__struct_id": 12,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -3953,7 +2914,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "m1q0_nytar_gold2"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -3961,11 +2922,13 @@
         },
         "Text": {
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "It can't be new. Not during the plague."
+          }
         }
       },
       {
-        "__struct_id": 14,
+        "__struct_id": 13,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -3976,7 +2939,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "player a druid"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -4015,13 +2978,14 @@
           "value": ""
         },
         "Text": {
-          "id": 17054,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": ""
+          }
         }
       },
       {
-        "__struct_id": 15,
+        "__struct_id": 14,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -4032,7 +2996,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "intelligence less than 9"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -4043,25 +3007,6 @@
           "value": [
             {
               "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 17
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -4090,13 +3035,14 @@
           "value": ""
         },
         "Text": {
-          "id": 17039,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": ""
+          }
         }
       },
       {
-        "__struct_id": 16,
+        "__struct_id": 15,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -4107,7 +3053,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "intelligence greater than 8"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -4118,21 +3064,6 @@
           "value": [
             {
               "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 17
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -4161,9 +3092,67 @@
           "value": ""
         },
         "Text": {
-          "id": 17038,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "I have no interest in helping."
+          }
+        }
+      },
+      {
+        "__struct_id": 16,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 17
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I will help you stop this hunter."
+          }
         }
       },
       {
@@ -4218,7 +3207,9 @@
         },
         "Text": {
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "What is the purpose of the zoo?"
+          }
         }
       },
       {
@@ -4233,7 +3224,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "all creatures dead"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -4246,37 +3237,64 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "m1q1a05nyatclg30"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
-                "value": 24
+                "value": 19
               },
               "IsChild": {
                 "type": "byte",
                 "value": 0
               }
-            },
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
+          }
+        }
+      },
+      {
+        "__struct_id": 19,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
             {
-              "__struct_id": 1,
+              "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "m1q1a05nyatclg31"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 23
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": "m1q1a05nyatclg32"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
@@ -4303,11 +3321,13 @@
         },
         "Text": {
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": ""
+          }
         }
       },
       {
-        "__struct_id": 19,
+        "__struct_id": 20,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -4358,11 +3378,13 @@
         },
         "Text": {
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "What do you know of this hunter?"
+          }
         }
       },
       {
-        "__struct_id": 20,
+        "__struct_id": 21,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -4373,7 +3395,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "poor reaction"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -4413,66 +3435,9 @@
         },
         "Text": {
           "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 21,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": "modertate reaction"
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "nw_d2_chrl"
-              },
-              "Index": {
-                "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "****WHAT CAN WE GIVE AWAY \r\n\r\nhave to check with Brent"
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": ""
+          }
         }
       },
       {
@@ -4487,7 +3452,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "high charisma"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -4500,19 +3465,15 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "nw_d2_chrm"
+                "value": ""
               },
               "Index": {
                 "type": "dword",
-                "value": 8
+                "value": 23
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": "****WHAT CAN WE GIVE AWAY \r\n\r\nhave to check with Brent"
+                "value": 0
               }
             }
           ]
@@ -4531,7 +3492,9 @@
         },
         "Text": {
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": ""
+          }
         }
       },
       {
@@ -4546,7 +3509,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": ""
+          "value": "Intelligence greater than 8\r\n\r\nat least one of the animals has been freed"
         },
         "Delay": {
           "type": "dword",
@@ -4563,15 +3526,11 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 21
+                "value": 24
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+                "value": 0
               }
             }
           ]
@@ -4589,8 +3548,11 @@
           "value": ""
         },
         "Text": {
+          "id": 17034,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "I have eliminated the hunter. The animals in the Blacklake Zoo should be safe now."
+          }
         }
       },
       {
@@ -4605,7 +3567,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": ""
+          "value": "Animals freed. Some animals killed\r\nNo one hurt\r\n"
         },
         "Delay": {
           "type": "dword",
@@ -4660,7 +3622,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "Charisma greater than 8\r\nIntelligence greater than 8"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -4699,10 +3661,9 @@
           "value": ""
         },
         "Text": {
-          "id": 17001,
           "type": "cexolocstring",
           "value": {
-            "0": "Could I ask some questions?"
+            "0": "I have some things you may be interested in. Let's barter."
           }
         }
       },
@@ -4759,461 +3720,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I'd like to talk about something else."
-          }
-        }
-      },
-      {
-        "__struct_id": 27,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": "Intelligence greater than 8"
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 28
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "id": 17010,
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 28,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 29
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 29,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 30
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 30,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 31
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "id": 17012,
-          "type": "cexolocstring",
-          "value": {
-            "0": "Why are you so sure this plague is not natural?"
-          }
-        }
-      },
-      {
-        "__struct_id": 31,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 32
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 32,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": "Intelligence greater than 8\r\n\r\nSet <CUSTOM> token to the person he is currently talking to."
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 33
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "id": 17008,
-          "type": "cexolocstring",
-          "value": {}
-        }
-      },
-      {
-        "__struct_id": 33,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 34
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "I have some things you may be interested in. Let's barter."
-          }
-        }
-      },
-      {
-        "__struct_id": 34,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 35
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
             "0": "Can you identify my items?"
           }
         }
       },
       {
-        "__struct_id": 35,
+        "__struct_id": 27,
         "Animation": {
           "type": "dword",
           "value": 0

@@ -49,6 +49,7 @@ void GetQuestEntries(object oPC)
     GetQuestEntry(oPC, "q_rescue");
     GetQuestEntry(oPC, "q_brother");
     GetQuestEntry(oPC, "q_kidnapped");
+    GetQuestEntry(oPC, "q_animal_rescue");
 
     GetQuestEntry(oPC, "q_undead_infestation");
     GetQuestEntry(oPC, "q_combat_training");

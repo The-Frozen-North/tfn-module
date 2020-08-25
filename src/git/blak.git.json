@@ -18699,7 +18699,7 @@
         },
         "Bearing": {
           "type": "float",
-          "value": -3.1416
+          "value": 3.1416
         },
         "CloseLockDC": {
           "type": "byte",
@@ -19141,7 +19141,7 @@
         },
         "Conversation": {
           "type": "resref",
-          "value": "m1q1a05s1g1"
+          "value": ""
         },
         "CurrentHP": {
           "type": "short",
@@ -19149,7 +19149,9 @@
         },
         "Description": {
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": ""
+          }
         },
         "DisarmDC": {
           "type": "byte",
@@ -19181,15 +19183,15 @@
         },
         "KeyName": {
           "type": "cexostring",
-          "value": ""
+          "value": "key_zoo"
         },
         "KeyRequired": {
           "type": "byte",
-          "value": 1
+          "value": 0
         },
         "LinkedTo": {
           "type": "cexostring",
-          "value": "M1S5A_M1Q3A"
+          "value": "ZooToBlacklake"
         },
         "LinkedToFlags": {
           "type": "byte",
@@ -19210,7 +19212,9 @@
         "LocName": {
           "id": 25157,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Door"
+          }
         },
         "OnClick": {
           "type": "resref",
@@ -19234,7 +19238,7 @@
         },
         "OnFailToOpen": {
           "type": "resref",
-          "value": "m1s5amaindoor"
+          "value": ""
         },
         "OnHeartbeat": {
           "type": "resref",
@@ -19270,7 +19274,7 @@
         },
         "OpenLockDC": {
           "type": "byte",
-          "value": 100
+          "value": 22
         },
         "Plot": {
           "type": "byte",
@@ -19286,7 +19290,7 @@
         },
         "Tag": {
           "type": "cexostring",
-          "value": "M1Q3A_M1S5A"
+          "value": "BlacklakeToZoo"
         },
         "TemplateResRef": {
           "type": "resref",
@@ -19565,7 +19569,7 @@
         },
         "Bearing": {
           "type": "float",
-          "value": -3.1416
+          "value": 3.1416
         },
         "CloseLockDC": {
           "type": "byte",
@@ -19781,7 +19785,7 @@
         },
         "Bearing": {
           "type": "float",
-          "value": -3.1416
+          "value": 3.1416
         },
         "CloseLockDC": {
           "type": "byte",
@@ -20453,7 +20457,7 @@
         },
         "Bearing": {
           "type": "float",
-          "value": -3.1416
+          "value": 3.1416
         },
         "CloseLockDC": {
           "type": "byte",
@@ -20670,7 +20674,7 @@
         },
         "Bearing": {
           "type": "float",
-          "value": -3.1416
+          "value": 3.1416
         },
         "CloseLockDC": {
           "type": "byte",
@@ -26306,7 +26310,9 @@
         "Description": {
           "id": 63196,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Neverwinter Zoo - CLOSED UNTIL FURTHER NOTICE! KEEP OUT!"
+          }
         },
         "DisarmDC": {
           "type": "byte",
@@ -26355,7 +26361,9 @@
         "LocName": {
           "id": 14561,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Neverwinter Zoo - CLOSED UNTIL FURTHER NOTICE! KEEP OUT!"
+          }
         },
         "OnClick": {
           "type": "resref",
@@ -26439,7 +26447,7 @@
         },
         "Tag": {
           "type": "cexostring",
-          "value": "Merchants Shingle - 1"
+          "value": "MerchantsShingle1"
         },
         "TemplateResRef": {
           "type": "resref",
@@ -34734,6 +34742,69 @@
         "ZPosition": {
           "type": "float",
           "value": 4.2
+        }
+      },
+      {
+        "__struct_id": 5,
+        "Appearance": {
+          "type": "byte",
+          "value": 1
+        },
+        "Description": {
+          "type": "cexolocstring",
+          "value": {}
+        },
+        "HasMapNote": {
+          "type": "byte",
+          "value": 1
+        },
+        "LinkedTo": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "LocalizedName": {
+          "id": 14814,
+          "type": "cexolocstring",
+          "value": {}
+        },
+        "MapNote": {
+          "id": 14815,
+          "type": "cexolocstring",
+          "value": {
+            "0": "Zoo"
+          }
+        },
+        "MapNoteEnabled": {
+          "type": "byte",
+          "value": 1
+        },
+        "Tag": {
+          "type": "cexostring",
+          "value": "WP_MapNote"
+        },
+        "TemplateResRef": {
+          "type": "resref",
+          "value": "nw_mapnote001"
+        },
+        "XOrientation": {
+          "type": "float",
+          "value": 1.0
+        },
+        "XPosition": {
+          "type": "float",
+          "value": 7.4067
+        },
+        "YOrientation": {
+          "type": "float",
+          "value": 0.0
+        },
+        "YPosition": {
+          "type": "float",
+          "value": 85.0316
+        },
+        "ZPosition": {
+          "type": "float",
+          "value": 4.0
         }
       }
     ]

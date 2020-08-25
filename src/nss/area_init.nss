@@ -112,7 +112,13 @@ void main()
 // Loop through all objects in the area and do something special with them
        while (GetIsObjectValid(oObject))
        {
-           nType = GetObjectType(oObject);
+               nType = GetObjectType(oObject);
+
+               if (GetLocalInt(oObject, "skip") == 1)
+               {
+                   oObject = GetNextObjectInArea(oArea);
+                   continue;
+               }
 
                switch (nType)
                {
@@ -134,6 +140,7 @@ void main()
 
 // all doors are plot
                     SetPlotFlag(oObject, TRUE);
+                    if (GetLocked(oObject)) SetLocalInt(oArea, "door_locked"+IntToString(nDoors), 1);
 
 // instance doors get new scriptz and added to collection of doors
                     if (bInstance == 1)
@@ -142,7 +149,6 @@ void main()
                         SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_MELEE_ATTACKED, "bash_lock");
                         nDoors = nDoors + 1;
                         SetLocalObject(oArea, "door"+IntToString(nDoors), oObject);
-                        if (GetLocked(oObject)) SetLocalInt(oArea, "door_locked"+IntToString(nDoors), 1);
                     }
                  break;
                  case OBJECT_TYPE_CREATURE:
