@@ -187,7 +187,7 @@ void main()
                 SetLocked(oDoor, TRUE);
             }
 // 50% chance the door will be already open
-            else if (d2() == 1)
+            else if (!GetLocked(oDoor) && d2() == 1)
             {
                 AssignCommand(oDoor, ActionOpenDoor(oDoor));
             }
