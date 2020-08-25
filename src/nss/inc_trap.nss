@@ -182,9 +182,11 @@ int DetermineTrap(int iCR = 0)
 void TrapLogic(object oTrap)
 {
    SetTrapDetectable(oTrap, TRUE);
-   SetTrapRecoverable(oTrap, TRUE);
    SetTrapDisarmable(oTrap, TRUE);
    SetTrapActive(oTrap, TRUE);
+
+// Only non-deadly traps are recoverable
+   if (GetStringLeft(GetName(oTrap), 6) != "Deadly") SetTrapRecoverable(oTrap, TRUE);
 }
 
 void GenerateTrapOnObject(object oObject = OBJECT_SELF)
