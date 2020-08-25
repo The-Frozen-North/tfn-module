@@ -61,6 +61,8 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_CAST_SPELL_BEFORE", "on_pc_spcastb");
     NWNX_Events_SubscribeEvent("NWNX_ON_BROADCAST_CAST_SPELL_BEFORE", "on_pc_spcastb");
 
+    NWNX_Events_SubscribeEvent("NWNX_ON_ELC_VALIDATE_CHARACTER_AFTER", "on_validatea");
+
 // We must skip this if polymorphed or bartering.
     NWNX_Events_SubscribeEvent("NWNX_ON_SERVER_CHARACTER_SAVE_BEFORE", "on_pc_save");
 

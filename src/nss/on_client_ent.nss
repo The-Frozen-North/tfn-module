@@ -66,19 +66,6 @@ void main()
 // henchman need to be rehired as they are "fired" when logging out
         RehireHenchman(oPC);
 
-// retrieve their saved location
-        float fLocX = NWNX_Object_GetFloat(oPC, "LOC_X");
-        float fLocY = NWNX_Object_GetFloat(oPC, "LOC_Y");
-        float fLocZ = NWNX_Object_GetFloat(oPC, "LOC_Z");
-        float fLocO = NWNX_Object_GetFloat(oPC, "LOC_O");
-        string fLocA = NWNX_Object_GetString(oPC, "LOC_A");
-
-        location lLocation = Location(GetObjectByTag(fLocA), Vector(fLocX, fLocY, fLocZ), fLocO);
-
-        SendDebugMessage("Stored Location: "+LocationToString(lLocation));
-
-        DelayCommand(3.0, AssignCommand(oPC, JumpToLocation(lLocation)));
-
         int nCurrentHP = GetCurrentHitPoints(oPC);
         int nStoredHP = NWNX_Object_GetInt(oPC, "CURRENT_HP");
 
@@ -90,12 +77,12 @@ void main()
 // kill player if marked as dead
         if (NWNX_Object_GetInt(oPC, "DEAD") == 1)
         {
-            DelayCommand(4.5, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDeath(), oPC));
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDeath(), oPC);
         }
 // otherwise, handle hp
         else
         {
-            DelayCommand(4.5, NWNX_Object_SetCurrentHitPoints(oPC, nStoredHP));
+            NWNX_Object_SetCurrentHitPoints(oPC, nStoredHP);
         }
     }
 // otherwise, assume they're new and do the whole new PC routine
