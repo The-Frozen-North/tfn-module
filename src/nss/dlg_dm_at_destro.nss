@@ -9,10 +9,12 @@
 
 void main()
 {
+    if (!GetIsDM(GetPCSpeaker())) return;
+
     object oDMEArea, oModule = GetModule();
     int i, nCount;
     string e, sDMEArea;
-    
+
     while (i < CountObjectList(oModule, "DME_AREAS"))
     {
         oDMEArea = GetListObject(oModule, i);

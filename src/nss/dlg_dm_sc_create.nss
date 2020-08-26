@@ -9,5 +9,7 @@
 
 int StartingConditional()
 {
+    if (!GetIsDM(GetPCSpeaker())) return FALSE;
+
     return (!CountObjectList(GetModule(), "DME_AREAS") && CountList(sDMEAreas));
 }

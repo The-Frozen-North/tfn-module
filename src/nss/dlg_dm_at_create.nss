@@ -8,6 +8,8 @@
 
 void main()
 {
+    if (!GetIsDM(GetPCSpeaker())) return;
+
     string e, sDMEArea;
     object oDMEArea;
 

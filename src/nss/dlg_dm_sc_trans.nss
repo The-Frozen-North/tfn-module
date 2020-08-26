@@ -5,5 +5,7 @@
 
 int StartingConditional()
 {
+    if (!GetIsDM(GetPCSpeaker())) return FALSE;
+
     return GetIsObjectValid(GetWaypointByTag("DME_Entry"));
 }
