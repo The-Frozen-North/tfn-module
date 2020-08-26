@@ -6,6 +6,7 @@
 #include "nwnx_weapon"
 #include "nwnx_events"
 #include "nwnx_util"
+#include "util_i_csvlists"
 
 #include "70_inc_switches"
 
@@ -306,6 +307,16 @@ void main()
 
        oArea = GetNextArea();
    }
+
+   string sQuests = GetLocalString(OBJECT_SELF, "quests");
+   string sBounties = GetLocalString(OBJECT_SELF, "bounties");
+
+
+   WriteTimestampedLogEntry("Total Quests: "+IntToString(CountList(sQuests)));
+   WriteTimestampedLogEntry("Quests: "+sQuests);
+
+   WriteTimestampedLogEntry("Total Bounties: "+IntToString(CountList(sBounties)));
+   WriteTimestampedLogEntry("Bounties: "+sBounties);
 
 // Treasures cause heavy delay on starting a module
 // It can be skipped, but it will cause merchants to lose most of their inventory

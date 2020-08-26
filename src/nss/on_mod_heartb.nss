@@ -74,6 +74,8 @@ void main()
 
     ExportAllCharacters();
 
+    string sBounties = GetLocalString(GetModule(), "bounties");
+
     if (GetIsObjectValid(oPC))
     {
         int nTickCount = NWNX_Util_GetServerTicksPerSecond();
@@ -86,7 +88,7 @@ void main()
     {
         DoRevive(oPC);
 
-        RefreshCompletedBounties(oPC, nTime);
+        RefreshCompletedBounties(oPC, nTime, sBounties);
 
         SavePCInfo(oPC);
 

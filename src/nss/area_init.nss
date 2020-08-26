@@ -1,5 +1,6 @@
 #include "inc_debug"
 #include "nwnx_object"
+#include "util_i_csvlists"
 
 void SetSpawnPoint(string sResRef, object oTable, int nTarget, location lLocation)
 {
@@ -98,16 +99,17 @@ void main()
 //==========================================
 
 // Define the variables we need for the loop.
-       string sTag;
+       string sTag, sQuest, sQuestName;
        int nTreasures = 0;
        int nEventSpawns = 0;
        int nCreatures = 0;
        int nDoors = 0;
        object oObject = GetFirstObjectInArea(oArea);
-       int nType;
+       int nType, nQuestLoop;
        int bInstance = GetLocalInt(oArea, "instance");
        vector vTreasureVector, vCreatureVector;
        float fTreasureOrientation;
+       object oModule = GetModule();
 
 // Loop through all objects in the area and do something special with them
        while (GetIsObjectValid(oObject))
@@ -152,6 +154,22 @@ void main()
                     }
                  break;
                  case OBJECT_TYPE_CREATURE:
+
+                     for (nQuestLoop = 1; nQuestLoop < 10; nQuestLoop++)
+                     {
+                        sQuest = GetLocalString(oObject, "quest"+IntToString(nQuestLoop));
+                        sQuestName = GetSubString(sQuest, 3, 27);
+
+                        if (GetStringLeft(sQuestName, 2) == "q_")
+                        {
+                            SetLocalString(oModule, "quests", AddListItem(GetLocalString(oModule, "quests"), sQuestName, TRUE));
+                        }
+                        else if (GetStringLeft(sQuestName, 2) == "b_")
+                        {
+                            SetLocalString(oModule, "bounties", AddListItem(GetLocalString(oModule, "bounties"), sQuestName, TRUE));
+                        }
+                     }
+
                      if (bInstance == 1)
                      {
                           nCreatures = nCreatures + 1;

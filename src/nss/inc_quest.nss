@@ -3,6 +3,7 @@
 #include "inc_loot"
 #include "inc_treasure"
 #include "inc_persist"
+#include "util_i_csvlists"
 
 const float AOE_QUEST_SIZE = 75.0;
 
@@ -34,7 +35,7 @@ int GetIsCurrentlyAtQuestStage(object oQuestObject, object oPC, int nTarget);
 int GetQuestEntry(object oPC, string sQuestEntry);
 
 // Refreshes the PC's completed bounties
-void RefreshCompletedBounties(object oPC, int nTime);
+void RefreshCompletedBounties(object oPC, int nTime, string sList);
 
 // -------------------------------------------------------------------------
 // FUNCTIONS
@@ -51,26 +52,16 @@ int GetQuestEntry(object oPC, string sQuestEntry)
 
 void GetQuestEntries(object oPC)
 {
-    GetQuestEntry(oPC, "b_mummy");
-    GetQuestEntry(oPC, "b_wererat");
-    GetQuestEntry(oPC, "b_goblin");
+    string sList = GetLocalString(GetModule(), "quests");
 
-    GetQuestEntry(oPC, "q_rescue");
-    GetQuestEntry(oPC, "q_brother");
-    GetQuestEntry(oPC, "q_kidnapped");
-    GetQuestEntry(oPC, "q_animal_rescue");
+    int i;
+    for (i = 0; i < CountList(sList); i++)
+        GetQuestEntry(oPC, GetListItem(sList, i));
 
-    GetQuestEntry(oPC, "q_undead_infestation");
-    GetQuestEntry(oPC, "q_combat_training");
-    GetQuestEntry(oPC, "q_sword_coast_boys");
-    GetQuestEntry(oPC, "q_wailing");
-    GetQuestEntry(oPC, "q_maze");
-    GetQuestEntry(oPC, "q_prison_riot");
+    sList = GetLocalString(GetModule(), "bounties");
 
-    GetQuestEntry(oPC, "q_cockatrice");
-    GetQuestEntry(oPC, "q_dryad");
-    GetQuestEntry(oPC, "q_pureblood");
-    GetQuestEntry(oPC, "q_intellect");
+    for (i = 0; i < CountList(sList); i++)
+        GetQuestEntry(oPC, GetListItem(sList, i));
 }
 
 void RefreshCompletedBounty(object oPC, string sQuest, int nTime)
@@ -90,11 +81,11 @@ void RefreshCompletedBounty(object oPC, string sQuest, int nTime)
     }
 }
 
-void RefreshCompletedBounties(object oPC, int nTime)
+void RefreshCompletedBounties(object oPC, int nTime, string sList)
 {
-    RefreshCompletedBounty(oPC, "b_mummy", nTime);
-    RefreshCompletedBounty(oPC, "b_wererat", nTime);
-    RefreshCompletedBounty(oPC, "b_goblin", nTime);
+    int i;
+    for (i = 0; i < CountList(sList); i++)
+        RefreshCompletedBounty(oPC, GetListItem(sList, i), nTime);
 }
 
 void SetQuestEntry(object oPC, string sQuestEntry, int nValue)
