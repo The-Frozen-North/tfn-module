@@ -1,5 +1,6 @@
 #include "x3_inc_string"
 #include "inc_debug"
+#include "util_i_color"
 
 int CheckDeadSpeak(object oPC)
 {
@@ -23,19 +24,24 @@ void main()
   }
 
   string sVolume;
+  int nColor;
   switch (GetPCChatVolume())
   {
      case TALKVOLUME_TALK:
         if (CheckDeadSpeak(oPC)) return;
         sVolume = "TALK";
-     break;
+        nColor = COLOR_BLUE;
+        break;
      case TALKVOLUME_WHISPER:
         if (CheckDeadSpeak(oPC)) return;
         sVolume = "WHISPER";
-     break;
+        nColor = COLOR_BLUE_LIGHT;
+        break;
      case TALKVOLUME_SHOUT: sVolume = "SHOUT"; break;
      case TALKVOLUME_SILENT_SHOUT: sVolume = "SILENT_SHOUT"; break;
-     case TALKVOLUME_PARTY: sVolume = "PARTY"; break;
+     case TALKVOLUME_PARTY:
+            sVolume = "PARTY"; 
+            nColor = COLOR_BLUE_LIGHT;
   }
 
   string sMessage = GetPCChatMessage();
@@ -121,5 +127,6 @@ void main()
     AssignCommand(oPC, ActionPlayAnimation(ANIMATION_LOOPING_TALK_LAUGHING));
   }
 
-
+  if (nColor)
+    SetPCChatMessage(HexColorString(sMessage, nColor));
 }
