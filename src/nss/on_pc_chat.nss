@@ -30,18 +30,17 @@ void main()
      case TALKVOLUME_TALK:
         if (CheckDeadSpeak(oPC)) return;
         sVolume = "TALK";
-        nColor = COLOR_BLUE;
+        nColor = COLOR_BLUE_LIGHT;
         break;
      case TALKVOLUME_WHISPER:
         if (CheckDeadSpeak(oPC)) return;
         sVolume = "WHISPER";
-        nColor = COLOR_BLUE_LIGHT;
         break;
      case TALKVOLUME_SHOUT: sVolume = "SHOUT"; break;
      case TALKVOLUME_SILENT_SHOUT: sVolume = "SILENT_SHOUT"; break;
      case TALKVOLUME_PARTY:
-            sVolume = "PARTY"; 
-            nColor = COLOR_BLUE_LIGHT;
+            sVolume = "PARTY";
+            nColor = COLOR_CYAN;
   }
 
   string sMessage = GetPCChatMessage();
