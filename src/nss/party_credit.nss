@@ -137,6 +137,7 @@ void main()
     int bDestroyed = GetCurrentHitPoints(OBJECT_SELF) <= 0;
 
     int bBoss = GetLocalInt(OBJECT_SELF, "boss");
+    int bSemiBoss = GetLocalInt(OBJECT_SELF, "semiboss");
 
     int iCR = GetLocalInt(OBJECT_SELF, "cr");
 
@@ -146,7 +147,7 @@ void main()
 
         if (GetLocalInt(OBJECT_SELF, "half_loot") == 1) nTreasureChance = nTreasureChance/2;
 
-        if ((bBoss != 1) && (d100() > nTreasureChance)) bNoTreasure = TRUE;
+        if ((bBoss != 1) && (bSemiBoss != 1) && (d100() > nTreasureChance)) bNoTreasure = TRUE;
 
 // any of these races will never drop treasure
         int nRace = GetRacialType(OBJECT_SELF);
@@ -213,6 +214,7 @@ void main()
         nGold = DetermineGoldFromCR(iCR);
 
         if (bBoss == 1) nGold = nGold*3;
+        else if (bSemiBoss == 1) nGold = nGold*2;
 
         nGoldToDistribute = nGold/nTotalSize;
 // remove henchman gold now, if they exist
@@ -235,7 +237,7 @@ void main()
        nItem2 = Random(nTotalSize)+1;
        nItem1 = Random(nTotalSize)+1;
    }
-   else if (nItemsRoll <= CHANCE_ONE)
+   else if ((nItemsRoll <= CHANCE_ONE) || (bSemiBoss == 1))
    {
        nItem1 = Random(nTotalSize)+1;
    }
