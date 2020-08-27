@@ -46,7 +46,7 @@ const int MIN_T5_AREA_CR = 10;
 
 // increase this to increase weight of better loot
 // in correlation to CR
-const float BASE_CR_MULTIPLIER = 1.2;
+const float BASE_CR_MULTIPLIER = 1.1;
 
 // The string to play when there isn't loot available
 const string NO_LOOT = "This container doesn't have any items.";
