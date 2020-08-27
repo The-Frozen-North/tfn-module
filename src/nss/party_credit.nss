@@ -146,6 +146,9 @@ void main()
     {
         int nTreasureChance = TREASURE_CHANCE;
 
+// destroyed treasures have double the chance of still dropping treasure
+        if (GetStringLeft(GetResRef(OBJECT_SELF), 6) == "treas_") nTreasureChance = TREASURE_CHANCE*2;
+
         if (GetLocalInt(OBJECT_SELF, "half_loot") == 1) nTreasureChance = nTreasureChance/2;
 
         if ((bBoss != 1) && (bSemiBoss != 1) && (d100() > nTreasureChance)) bNoTreasure = TRUE;
