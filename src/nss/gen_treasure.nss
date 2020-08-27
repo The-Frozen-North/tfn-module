@@ -337,13 +337,6 @@ void CreateStagingScroll(string sResRef)
    SetIdentified(oItem, TRUE);
 }
 
-void CreateTrap(string sResRef, object oContainer)
-{
-    object oItem = CreateItemOnObject(sResRef, oContainer);
-    SetIdentified(oItem, TRUE);
-    SetLocalInt(oItem, "identified", 1);
-}
-
 // This function determines the AC from the armor given
 int GetBaseArmorAC(object oArmor)
 {
@@ -402,7 +395,6 @@ void DistributeTreasureToStores(object oItem)
        case BASE_ITEM_SPELLSCROLL:
           nValue = nValue * 4;
        break;
-       case BASE_ITEM_TRAPKIT:
        case BASE_ITEM_SHURIKEN:
        case BASE_ITEM_THROWINGAXE:
        case BASE_ITEM_DART:
@@ -455,8 +447,9 @@ void DistributeTreasureToStores(object oItem)
            sTier = "T2";
        }
 
-// Boost some full plates to next tier
-       if (sName == "Full Plate +1") sTier = "T4";
+// Boost some full plates and tower shields to next tier
+       if (sName == "Tower Shield +1") sTier = "T4";
+       if (sName == "Tower Shield +2") sTier = "T5";
        if (sName == "Full Plate +2") sTier = "T5";
 
 // Bump up items to the right tier for non-uniques
@@ -467,7 +460,7 @@ void DistributeTreasureToStores(object oItem)
            if (FindSubString(sName, "+3") > -1 && sTier == "T4") sTier = "T5";
        }
 
-       if (nBaseType == BASE_ITEM_TRAPKIT || GetStringLeft(sResRef, 4) == "misc") {sType = "Misc";}
+       if (GetStringLeft(sResRef, 4) == "misc") {sType = "Misc";}
        else if (nBaseType == BASE_ITEM_SPELLSCROLL) {sType = "Scrolls";}
        else if (GetStringLeft(sResRef, 7) == "apparel")
        {
@@ -726,10 +719,10 @@ void main()
 
        int nValue = GetGoldPieceValue(oItem);
 
-       if (nValue >= 400)      {sTier = "T5";}
-       else if (nValue >= 200) {sTier = "T4";}
-       else if (nValue >= 100) {sTier = "T3";}
-       else if (nValue >= 50) {sTier = "T2";}
+       if (nValue >= 700)      {sTier = "T5";}
+       else if (nValue >= 400) {sTier = "T4";}
+       else if (nValue >= 200) {sTier = "T3";}
+       else if (nValue >= 100) {sTier = "T2";}
        else {sTier = "T1";}
        CopyItemToExistingTarget(oItem, GetObjectByTag("_Potions"+sTier));
        DestroyObject(oItem);
@@ -740,6 +733,11 @@ void main()
     CreateItemOnObject("cure_potion3", GetObjectByTag("_PotionsT3NonUnique"));
     CreateItemOnObject("cure_potion2", GetObjectByTag("_PotionsT2NonUnique"));
     CreateItemOnObject("cure_potion1", GetObjectByTag("_PotionsT1NonUnique"));
+
+    CreateItemOnObject("potion_antidote", GetObjectByTag("_PotionsT2"));
+    CreateItemOnObject("potion_rmdisease", GetObjectByTag("_PotionsT2"));
+    CreateItemOnObject("potion_restorel", GetObjectByTag("_PotionsT2"));
+    CreateItemOnObject("potion_restorem", GetObjectByTag("_PotionsT3"));
 
     SendDebugMessage("Treasure potions seeded", TRUE);
 
@@ -1040,51 +1038,35 @@ void main()
 // ==============================================
 //  TRAPS
 // ==============================================
+    int nSetDC;
+    string sTrapTier;
 
-    CreateTrap("nw_it_trap034", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap014", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap022", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap018", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap030", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap026", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap006", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap042", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap038", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap002", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap010", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap036", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap016", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap024", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap020", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap032", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap028", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap008", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap044", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap040", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap004", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap012", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap033", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap013", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap021", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap017", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap029", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap025", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap005", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap041", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap037", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap001", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap009", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap035", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap015", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap023", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap019", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap031", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap027", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap007", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap043", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap039", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap003", GetObjectByTag(TREASURE_DISTRIBUTION));
-    CreateTrap("nw_it_trap011", GetObjectByTag(TREASURE_DISTRIBUTION));
+    for (i = 0; i < 44; i++)
+    {
+        nSetDC = StringToInt(Get2DAString("traps", "SetDC", i));
+
+        if (nSetDC >= 35)
+        {
+            sTrapTier = "T5";
+        }
+        else if (nSetDC >= 30)
+        {
+            sTrapTier = "T4";
+        }
+        else if (nSetDC >= 25)
+        {
+            sTrapTier = "T3";
+        }
+        else if (nSetDC >= 15)
+        {
+            sTrapTier = "T2";
+        }
+        else
+        {
+            sTrapTier = "T1";
+        }
+        CreateItemOnObject(Get2DAString("traps", "ResRef", i),GetObjectByTag("_Misc"+sTrapTier));
+    }
 
     SendDebugMessage("Treasure traps generated", TRUE);
 

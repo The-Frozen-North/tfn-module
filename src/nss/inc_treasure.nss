@@ -3,9 +3,9 @@
 #include "inc_general"
 
 // Based on item value, they will be sorted on these constants
-const int MIN_VALUE_T2 = 600;
-const int MIN_VALUE_T3 = 3200;
-const int MIN_VALUE_T4 = 8000;
+const int MIN_VALUE_T2 = 175;
+const int MIN_VALUE_T3 = 2000;
+const int MIN_VALUE_T4 = 7000;
 const int MIN_VALUE_T5 = 16000;
 
 const string TREASURE_MELEE_SEED_CHEST = "_MeleeSeed";
