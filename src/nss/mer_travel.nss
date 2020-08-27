@@ -6,7 +6,7 @@ void main()
     int iStore;
     for (iStore = 0; iStore < nItems; iStore++)
     {
-        GenerateTierItem(8, OBJECT_SELF);
+        GenerateTierItem(10, 10, OBJECT_SELF);
     }
 
     SetEventScript(OBJECT_SELF, EVENT_SCRIPT_STORE_ON_OPEN, "");

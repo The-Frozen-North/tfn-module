@@ -56,6 +56,7 @@ void CopyKey()
 
 void main()
 {
+    int iAreaCR = GetLocalInt(GetArea(OBJECT_SELF), "cr");
 
     switch (GetRacialType(OBJECT_SELF))
     {
@@ -75,7 +76,7 @@ void main()
 
             if (d10() == 1)
             {
-                object oItem = GenerateTierItem(GetHitDice(OBJECT_SELF), OBJECT_SELF, "Misc");
+                object oItem = GenerateTierItem(GetHitDice(OBJECT_SELF), iAreaCR, OBJECT_SELF, "Misc");
                 SetDroppableFlag(oItem, FALSE);
                 SetPickpocketableFlag(oItem, TRUE);
             }
@@ -347,6 +348,7 @@ void main()
 
 // Set cr integer on self. This is used for determining treasure.
     SetLocalInt(OBJECT_SELF, "cr", FloatToInt(GetChallengeRating(OBJECT_SELF)));
+    SetLocalInt(OBJECT_SELF, "area_cr", iAreaCR);
 
     object oItem = GetFirstItemInInventory();
     object oNewItem;

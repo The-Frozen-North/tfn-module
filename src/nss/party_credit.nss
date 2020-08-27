@@ -140,6 +140,7 @@ void main()
     int bSemiBoss = GetLocalInt(OBJECT_SELF, "semiboss");
 
     int iCR = GetLocalInt(OBJECT_SELF, "cr");
+    int iAreaCR = GetLocalInt(OBJECT_SELF, "area_cr");
 
     if (bDestroyed)
     {
@@ -187,6 +188,7 @@ void main()
         {
             oContainer = CreateObject(OBJECT_TYPE_PLACEABLE, "_loot_container", GetLocation(OBJECT_SELF));
             SetLocalInt(oContainer, "cr", iCR);
+            SetLocalInt(oContainer, "area_cr", iAreaCR);
             DestroyObject(oContainer, LOOT_DESTRUCTION_TIME); // destroy loot bag after awhile
         }
 // otherwise, the container is itself
@@ -277,6 +279,8 @@ void main()
         if (bNoTreasure == FALSE)
         {
            SetLocalInt(oPersonalLoot, "cr", GetLocalInt(oContainer, "cr"));
+           SetLocalInt(oPersonalLoot, "area_cr", GetLocalInt(oContainer, "area_cr"));
+
            if (nNth == nItem1) GenerateLoot(oPersonalLoot);
            if (nNth == nItem2) GenerateLoot(oPersonalLoot);
            if (nNth == nItem3) GenerateLoot(oPersonalLoot);

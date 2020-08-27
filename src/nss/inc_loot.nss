@@ -40,13 +40,13 @@ const int BASE_T3_WEIGHT = 40;
 const int BASE_T4_WEIGHT = 20;
 const int BASE_T5_WEIGHT = 5;
 
-const int MIN_T3_CR = 3;
-const int MIN_T4_CR = 6;
-const int MIN_T5_CR = 10;
+const int MIN_T3_AREA_CR = 3;
+const int MIN_T4_AREA_CR = 6;
+const int MIN_T5_AREA_CR = 10;
 
 // increase this to increase weight of better loot
 // in correlation to CR
-const float BASE_CR_MULTIPLIER = 1.0;
+const float BASE_CR_MULTIPLIER = 1.2;
 
 // The string to play when there isn't loot available
 const string NO_LOOT = "This container doesn't have any items.";
@@ -59,7 +59,7 @@ const string NO_LOOT = "This container doesn't have any items.";
 // Generate a tier Item. Specific Tier granted if nTier is 1-5.
 // Valid types: "Armor", "Melee", "Magic", "Range", "Misc, "Clothing"
 // "Potion", "ScrollsDivine", "ScrollsArcane"
-object GenerateTierItem(int iCR, object oContainer, string sType = "", int nTier = 0, int bNonUnique = FALSE);
+object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = "", int nTier = 0, int bNonUnique = FALSE);
 
 // Open a personal loot. Called from a containing object.
 void OpenPersonalLoot(object oContainer, object oPC);
@@ -71,7 +71,7 @@ void OpenPersonalLoot(object oContainer, object oPC);
 // ---------------------------------------------------------
 // This function is used to determine the tier of the drop.
 // ---------------------------------------------------------
-string DetermineTier(int iCR, string sType = "")
+string DetermineTier(int iCR, int iAreaCR, string sType = "")
 {
     float fCR = IntToFloat(iCR);
     string sTier;
@@ -87,9 +87,9 @@ string DetermineTier(int iCR, string sType = "")
 
     int nT1Weight = BASE_T1_WEIGHT;
     int nT2Weight = FloatToInt(BASE_T2_WEIGHT * fMod);
-    int nT3Weight = FloatToInt(BASE_T3_WEIGHT * fMod) - 80;
-    int nT4Weight = FloatToInt(BASE_T4_WEIGHT * fMod) - 120;
-    int nT5Weight = FloatToInt(BASE_T5_WEIGHT * fMod) - 40;
+    int nT3Weight = FloatToInt(BASE_T3_WEIGHT * fMod);
+    int nT4Weight = FloatToInt(BASE_T4_WEIGHT * fMod);
+    int nT5Weight = FloatToInt(BASE_T5_WEIGHT * fMod);
 
    int nCombinedWeight = 0;
 
@@ -97,9 +97,26 @@ string DetermineTier(int iCR, string sType = "")
 
    if (nT1Weight < 0) nT1Weight = 0;
    if (nT2Weight < 0) nT2Weight = 0;
-   if ((nT3Weight < 0) || (iCR < MIN_T3_CR)) nT3Weight = 0;
-   if ((nT4Weight < 0) || (iCR < MIN_T4_CR)) nT4Weight = 0;
-   if ((nT5Weight < 0) || (iCR < MIN_T5_CR)) nT5Weight = 0;
+   if (nT3Weight < 0) nT3Weight = 0;
+   if (nT4Weight < 0) nT4Weight = 0;
+   if (nT5Weight < 0) nT5Weight = 0;
+
+// modify weight by area CR
+    if (iAreaCR < MIN_T3_AREA_CR)
+    {
+        if (nT3Weight > 0) nT3Weight = nT3Weight/100;
+        if (nT4Weight > 0) nT4Weight = nT4Weight/100;
+        if (nT5Weight > 0) nT5Weight = nT5Weight/100;
+    }
+    else if (iAreaCR < MIN_T4_AREA_CR)
+    {
+        if (nT4Weight > 0) nT3Weight = nT4Weight/100;
+        if (nT5Weight > 0) nT3Weight = nT5Weight/100;
+    }
+    else if (iAreaCR < MIN_T5_AREA_CR)
+    {
+        if (nT5Weight > 0) nT3Weight = nT5Weight/100;
+    }
 
 
    //SendDebugMessage("Loot T1Weight: "+IntToString(nT1Weight));
@@ -122,20 +139,20 @@ string DetermineTier(int iCR, string sType = "")
         nTierRoll = nTierRoll - nT2Weight;
         if (nTierRoll <= 0) {sTier = "T2";break;}
 
-        if (iCR >= MIN_T3_CR)
+        if (iAreaCR >= MIN_T3_AREA_CR)
         {
             nTierRoll = nTierRoll - nT3Weight;
             if (nTierRoll <= 0) {sTier = "T3";break;}
         }
 
-        if (iCR >= MIN_T4_CR)
+        if (iAreaCR >= MIN_T4_AREA_CR)
         {
             nTierRoll = nTierRoll - nT4Weight;
             if (nTierRoll <= 0) {sTier = "T4";break;}
         }
 
 
-        if (iCR >= MIN_T5_CR)
+        if (iAreaCR >= MIN_T5_AREA_CR)
         {
             nTierRoll = nTierRoll - nT5Weight;
             if (nTierRoll <= 0) {sTier = "T5";break;}
@@ -153,9 +170,9 @@ string DetermineTier(int iCR, string sType = "")
 // ---------------------------------------------------------
 // This function is used to generate a tier item.
 // ---------------------------------------------------------
-object GenerateTierItem(int iCR, object oContainer, string sType = "", int nTier = 0, int bNonUnique = FALSE)
+object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = "", int nTier = 0, int bNonUnique = FALSE)
 {
-    string sTier = DetermineTier(iCR, sType);
+    string sTier = DetermineTier(iCR, iAreaCR, sType);
     string sRarity = "";
     string sNonUnique = "";
 
@@ -258,6 +275,7 @@ void GenerateLoot(object oContainer, int nBonusItems = 0)
    }
 
    int iCR = GetLocalInt(oContainer, "cr");
+   int iAreaCR = GetLocalInt(oContainer, "area_cr");
 
 // Add all the weights
    int nCombinedWeight = 0;
@@ -283,22 +301,22 @@ void GenerateLoot(object oContainer, int nBonusItems = 0)
    while (TRUE)
    {
        nItemRoll = nItemRoll - nMiscWeight;
-       if (nItemRoll <= 0) {GenerateTierItem(iCR, oContainer, "Misc");break;}
+       if (nItemRoll <= 0) {GenerateTierItem(iCR, iAreaCR, oContainer, "Misc");break;}
 
        nItemRoll = nItemRoll - nScrollsWeight;
-       if (nItemRoll <= 0) {GenerateTierItem(iCR, oContainer, "Scrolls");break;}
+       if (nItemRoll <= 0) {GenerateTierItem(iCR, iAreaCR, oContainer, "Scrolls");break;}
 
        nItemRoll = nItemRoll - nPotionsWeight;
-       if (nItemRoll <= 0) {GenerateTierItem(iCR, oContainer, "Potions");break;}
+       if (nItemRoll <= 0) {GenerateTierItem(iCR, iAreaCR, oContainer, "Potions");break;}
 
        nItemRoll = nItemRoll - nWeaponWeight;
-       if (nItemRoll <= 0) {GenerateTierItem(iCR, oContainer, "Weapon");break;}
+       if (nItemRoll <= 0) {GenerateTierItem(iCR, iAreaCR, oContainer, "Weapon");break;}
 
        nItemRoll = nItemRoll - nArmorWeight;
-       if (nItemRoll <= 0) {GenerateTierItem(iCR, oContainer, "Armor");break;}
+       if (nItemRoll <= 0) {GenerateTierItem(iCR, iAreaCR, oContainer, "Armor");break;}
 
        nItemRoll = nItemRoll - nApparelWeight;
-       if (nItemRoll <= 0) {GenerateTierItem(iCR, oContainer, "Apparel");break;}
+       if (nItemRoll <= 0) {GenerateTierItem(iCR, iAreaCR, oContainer, "Apparel");break;}
    }
 
 }

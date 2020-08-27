@@ -6,6 +6,6 @@ void main()
     int i;
     for (i = 0; i < nItems; i++)
     {
-        GenerateTierItem(6, OBJECT_SELF);
+        GenerateTierItem(6, 3, OBJECT_SELF);
     }
 }
