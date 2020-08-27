@@ -16,5 +16,6 @@
 void main()
 {
      SetSpawnInCondition(NW_FLAG_FAST_BUFF_ENEMY, TRUE);
+     DeleteLocalInt(OBJECT_SELF, "invis");
      DeleteLocalInt(OBJECT_SELF, "rest");
 }
