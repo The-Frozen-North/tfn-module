@@ -19,6 +19,8 @@ void main()
 
     object oDamager = GetLastDamager();
 
+    PlayNonMeleePainSound(oDamager);
+
     if (GetIsPC(oDamager) || GetIsPC(GetMaster(oDamager))) SetLocalInt(OBJECT_SELF, "player_tagged", 1);
 
 

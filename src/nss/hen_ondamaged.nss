@@ -18,6 +18,7 @@
 //:://////////////////////////////////////////////
 
 #include "x0_inc_henai"
+#include "inc_general"
 
 // Determine whether to switch to new attacker
 int SwitchTargets(object oCurTarget, object oNewEnemy);
@@ -29,6 +30,8 @@ void main()
     object oDamager = oAttacker;
     object oMe=OBJECT_SELF;
     int nHPBefore;
+
+    PlayNonMeleePainSound(oDamager);
 
     // UNINTERRUPTIBLE ACTIONS
     if(GetAssociateState(NW_ASC_IS_BUSY)

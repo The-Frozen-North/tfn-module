@@ -139,6 +139,25 @@ void DoMoraleCheckSphere(object oCreature, int nDC = 10, float fRadius = MORALE_
     }
 }
 
+void PlayNonMeleePainSound(object oDamager)
+{
+    if (GetIsDead(OBJECT_SELF)) return;
+
+    int nWeaponDamage = GetDamageDealtByType(DAMAGE_TYPE_BASE_WEAPON);
+
+    int bRanged = GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oDamager));
+
+    if (bRanged || nWeaponDamage == -1)
+    {
+        switch (d6())
+        {
+            case 1: PlayVoiceChat(VOICE_CHAT_PAIN1); break;
+            case 2: PlayVoiceChat(VOICE_CHAT_PAIN2); break;
+            case 3: PlayVoiceChat(VOICE_CHAT_PAIN3); break;
+        }
+    }
+}
+
 int Gibs(object oCreature)
 {
     int nHP = GetCurrentHitPoints(oCreature);

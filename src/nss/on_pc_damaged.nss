@@ -1,7 +1,10 @@
 #include "inc_horse"
+#include "inc_general"
 
 void main()
 {
+    PlayNonMeleePainSound(GetLastDamager());
+
     if (GetIsMounted(OBJECT_SELF))
     {
         int nSkill = SKILL_RIDE;
