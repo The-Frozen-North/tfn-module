@@ -100,7 +100,7 @@ void main()
         else if (sLCMessage == "/roll use magic device" || sLCMessage == "/roll umd") {sType = "Use Magic Device"; nModifier = GetSkillRank(SKILL_USE_MAGIC_DEVICE, oPC);}
 
         int nRoll = d20();
-        sMessage = GetName(oPC) + " rolls " + (sType != "" ? "for " + sType : "") + ": " + 
+        sMessage = GetName(oPC) + " rolls " + (sType != "" ? "for " + sType : "") + ": " +
             IntToString(nRoll) + (nModifier >= 0 ? " + " : " - ") + IntToString(abs(nModifier)) + " = " + IntToString(nRoll + nModifier);
 
         SetPCChatMessage("");
