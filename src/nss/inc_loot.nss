@@ -57,7 +57,7 @@ const string NO_LOOT = "This container doesn't have any items.";
 // ===========================================================
 
 // Generate a tier Item. Specific Tier granted if nTier is 1-5.
-// Valid types: "Armor", "Melee", "Magic", "Range", "Misc, "Clothing"
+// Valid types: "Armor", "Melee", "Range", "Misc, "Apparel"
 // "Potion", "ScrollsDivine", "ScrollsArcane"
 object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = "", int nTier = 0, int bNonUnique = FALSE);
 

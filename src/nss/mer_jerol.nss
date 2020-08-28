@@ -1,4 +1,5 @@
 #include "inc_merchant"
+#include "inc_loot"
 
 void main()
 {
@@ -15,4 +16,17 @@ void main()
     CopyChest(OBJECT_SELF, "_RangeCommonT3NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_RangeUncommonT3NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_RangeRareT3NonUnique", 256, "", TRUE);
+
+    int i;
+    int nMax = d3(2);
+    for (i = 0; i < nMax; i++)
+    {
+        GenerateTierItem(0, 0, OBJECT_SELF, "Range", 4, TRUE);
+    }
+
+    nMax = d2();
+    for (i = 0; i < nMax; i++)
+    {
+        GenerateTierItem(0, 0, OBJECT_SELF, "Range", 5, TRUE);
+    }
 }
