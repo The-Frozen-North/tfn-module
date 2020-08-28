@@ -30,7 +30,7 @@ void main()
      case TALKVOLUME_TALK:
         if (CheckDeadSpeak(oPC)) return;
         sVolume = "TALK";
-        nColor = COLOR_BLUE_LIGHT;
+        nColor = COLOR_BLUE;
         break;
      case TALKVOLUME_WHISPER:
         if (CheckDeadSpeak(oPC)) return;
@@ -46,6 +46,9 @@ void main()
   string sMessage = GetPCChatMessage();
 
   WriteTimestampedLogEntry(PlayerDetailedName(oPC)+" ["+sVolume+"]: "+sMessage);
+
+  if (nColor)
+      SetPCChatMessage(HexColorString(sMessage, nColor));
 
   if (GetIsDead(oPC)) return;
 
@@ -96,26 +99,12 @@ void main()
         else if (sLCMessage == "/roll tumble") {sType = "Tumble"; nModifier = GetSkillRank(SKILL_TUMBLE, oPC);}
         else if (sLCMessage == "/roll use magic device" || sLCMessage == "/roll umd") {sType = "Use Magic Device"; nModifier = GetSkillRank(SKILL_USE_MAGIC_DEVICE, oPC);}
 
-        string sResult;
         int nRoll = d20();
-        int nResult = nRoll + nModifier;
-
-        if (sType != "")
-        {
-            sType = "for "+sType;
-
-            string sSign = "+";
-            if (nModifier < 0) sSign = "-";
-
-            sResult = IntToString(nResult)+" "+sSign+" "+IntToString(abs(nModifier))+" = "+IntToString(nResult);
-        }
-        else
-        {
-            sResult = IntToString(nResult);
-        }
+        sMessage = GetName(oPC) + " rolls " + (sType != "" ? "for " + sType : "") + ": " + 
+            IntToString(nRoll) + (nModifier >= 0 ? " + " : " - ") + IntToString(abs(nModifier)) + " = " + IntToString(nRoll + nModifier);
 
         SetPCChatMessage("");
-        FloatingTextStringOnCreature(GetName(oPC)+" rolls "+sType+": "+sResult, oPC);
+        FloatingTextStringOnCreature(sMessage, oPC);
   }
 
   StringReplace(sLCMessage, ".", "");
@@ -125,7 +114,4 @@ void main()
     PlayVoiceChat(VOICE_CHAT_LAUGH, oPC);
     AssignCommand(oPC, ActionPlayAnimation(ANIMATION_LOOPING_TALK_LAUGHING));
   }
-
-  if (nColor)
-    SetPCChatMessage(HexColorString(sMessage, nColor));
 }
