@@ -154,7 +154,7 @@ void main()
 
             if (d100() <= nTrapChance)
             {
-                oTrap = CreateTrapAtLocation(DetermineTrap(iCR), GetLocation(oTrapWP), 2.5+(IntToFloat(Random(10)+1)/10.0));
+                oTrap = CreateTrapAtLocation(DetermineTrap(iCR), GetLocation(oTrapWP), 2.5+(IntToFloat(Random(10)+1)/10.0), "", STANDARD_FACTION_HOSTILE, "on_trap_disarm");
                 TrapLogic(oTrap);
 
 // store the trap so it can deleted later on refresh

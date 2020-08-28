@@ -185,6 +185,8 @@ void TrapLogic(object oTrap)
    SetTrapDisarmable(oTrap, TRUE);
    SetTrapActive(oTrap, TRUE);
 
+   SetLocalInt(oTrap, "trap_dc", GetTrapDisarmDC(oTrap));
+
 // Only non-deadly traps are recoverable
    if (GetStringLeft(GetName(oTrap), 6) != "Deadly") SetTrapRecoverable(oTrap, TRUE);
 }
@@ -204,7 +206,7 @@ void GenerateTrapOnObject(object oObject = OBJECT_SELF)
 
    if (d100() <= nTrapChance)
    {
-       CreateTrapOnObject(DetermineTrap(iCR), oObject);
+       CreateTrapOnObject(DetermineTrap(iCR), oObject, STANDARD_FACTION_HOSTILE, "on_trap_disarm");
        TrapLogic(oObject);
    }
 }
