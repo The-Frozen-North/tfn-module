@@ -292,6 +292,8 @@ void main()
    location lBaseLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
    object oAreaRefresher;
 
+   if (FindSubString(NWNX_Administration_GetServerName(), "NS") != -1) SetLocalInt(OBJECT_SELF, "ns", 1);
+
 // Loop through all objects in the module.
    while (GetIsObjectValid(oArea))
    {

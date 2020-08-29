@@ -25,7 +25,7 @@ void SetSpawnPoint(string sResRef, object oTable, int nTarget, location lLocatio
         {
               int nSpawns = GetLocalInt(oTable, "random"+IntToString(nTarget)+"_spawn_point_total")+1;
 
-              if (GetLocalInt(GetModule(), "dev") == 1) CreateObject(OBJECT_TYPE_PLACEABLE, "plc_solblue", lLocation);
+              //if (GetLocalInt(GetModule(), "dev") == 1) CreateObject(OBJECT_TYPE_PLACEABLE, "plc_solblue", lLocation);
               CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lLocation, FALSE, sResRef+"_random"+IntToString(nTarget)+"_spawn_point"+IntToString(nSpawns));
               SetLocalInt(oTable, "random"+IntToString(nTarget)+"_spawn_point_total", nSpawns);
               break;
@@ -235,78 +235,80 @@ void main()
 //===========================================================
 // LOOP THROUGH EACH TILE, CREATING SPAWN POINTS
 //===========================================================
-
-       int iRows = GetAreaSize(AREA_WIDTH, oArea);
-       int iColumns = GetAreaSize(AREA_HEIGHT, oArea);
-
        int nSpawns = 0;
-
-       int iXAxis, iYAxis;
-       float fYAxis, fXAxis, fDistanceFromDoor, fDistanceBetweenPoints, fX, fY;
-       location lTile, lValidator;
-       object oValidator, oDoor;
-       vector vTile, vValidator;
-
        int i;
 
-       int bTrapped = GetLocalInt(oArea, "trapped");
-
-// use this to get the center of a tile
-       float fMultiplier = 5.0;
-
-// Loop through the X axis of an area
-       for (iXAxis = 0; iXAxis < iRows; iXAxis++)
+       if (GetLocalInt(GetModule(), "ns") != 1)
        {
-            float fXAxis = fMultiplier+(IntToFloat(iXAxis)*fMultiplier*2.0);
 
-// Loop through the Y axis of an area, following the previous X location
-            for (iYAxis = 0; iYAxis < iColumns; iYAxis++)
-            {
-                fYAxis = fMultiplier+(IntToFloat(iYAxis)*fMultiplier*2.0);
+           int iRows = GetAreaSize(AREA_WIDTH, oArea);
+           int iColumns = GetAreaSize(AREA_HEIGHT, oArea);
 
-                lTile = Location(oArea, Vector(fXAxis, fYAxis, 0.0), 0.0);
+           int iXAxis, iYAxis;
+           float fYAxis, fXAxis, fDistanceFromDoor, fDistanceBetweenPoints, fX, fY;
+           location lTile, lValidator;
+           object oValidator, oDoor;
+           vector vTile, vValidator;
 
-// we will spawn a creature at the exact location to check if it is in the proper spot
-                oValidator = CreateObject(OBJECT_TYPE_CREATURE, "_area_validator", lTile);
+           int bTrapped = GetLocalInt(oArea, "trapped");
 
-                vTile = GetPositionFromLocation(lTile);
-                vValidator = GetPosition(oValidator);
+    // use this to get the center of a tile
+           float fMultiplier = 5.0;
 
-                lValidator = GetLocation(oValidator);
+    // Loop through the X axis of an area
+           for (iXAxis = 0; iXAxis < iRows; iXAxis++)
+           {
+                float fXAxis = fMultiplier+(IntToFloat(iXAxis)*fMultiplier*2.0);
 
-                oDoor = GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile);
-                if (GetIsObjectValid(oDoor))
+    // Loop through the Y axis of an area, following the previous X location
+                for (iYAxis = 0; iYAxis < iColumns; iYAxis++)
                 {
-                    fDistanceFromDoor = GetDistanceBetweenLocations(GetLocation(GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile)), lTile);
-                }
-                else
-                {
-// in cases of a door not existing, just set the distance to a high number so it emulates not being close to a door
-                    fDistanceFromDoor = 999.0;
-                }
+                    fYAxis = fMultiplier+(IntToFloat(iYAxis)*fMultiplier*2.0);
 
-// we don't want spawns too close to a door. also, make sure the spot and the creature are around the same position
-// using the Distance Between Two Points Formula:
-                fX = vTile.x - vValidator.x;
-                fY = vTile.y - vValidator.y;
-                fDistanceBetweenPoints = sqrt((fX*fX) + (fY*fY));
-                if (fDistanceBetweenPoints < 0.0) fDistanceBetweenPoints = 999.0;
+                    lTile = Location(oArea, Vector(fXAxis, fYAxis, 0.0), 0.0);
 
-                if (fDistanceFromDoor >= 3.0 && fDistanceBetweenPoints <= 2.0 && vValidator.z > -2.0)
-                {
-                    if (bTrapped)
+    // we will spawn a creature at the exact location to check if it is in the proper spot
+                    oValidator = CreateObject(OBJECT_TYPE_CREATURE, "_area_validator", lTile);
+
+                    vTile = GetPositionFromLocation(lTile);
+                    vValidator = GetPosition(oValidator);
+
+                    lValidator = GetLocation(oValidator);
+
+                    oDoor = GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile);
+                    if (GetIsObjectValid(oDoor))
                     {
-                        nSpawns = nSpawns + 1;
-                        CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"_trap_spawn_point"+IntToString(nSpawns));
+                        fDistanceFromDoor = GetDistanceBetweenLocations(GetLocation(GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile)), lTile);
+                    }
+                    else
+                    {
+    // in cases of a door not existing, just set the distance to a high number so it emulates not being close to a door
+                        fDistanceFromDoor = 999.0;
                     }
 
-                    for (i = 1; i < 10; i++)
-                    {
-                        SetSpawnPoint(sResRef, oArea, i, lValidator);
-                    }
-                }
+    // we don't want spawns too close to a door. also, make sure the spot and the creature are around the same position
+    // using the Distance Between Two Points Formula:
+                    fX = vTile.x - vValidator.x;
+                    fY = vTile.y - vValidator.y;
+                    fDistanceBetweenPoints = sqrt((fX*fX) + (fY*fY));
+                    if (fDistanceBetweenPoints < 0.0) fDistanceBetweenPoints = 999.0;
 
-                DestroyObject(oValidator);
+                    if (fDistanceFromDoor >= 3.0 && fDistanceBetweenPoints <= 2.0 && vValidator.z > -2.0)
+                    {
+                        if (bTrapped)
+                        {
+                            nSpawns = nSpawns + 1;
+                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"_trap_spawn_point"+IntToString(nSpawns));
+                        }
+
+                        for (i = 1; i < 10; i++)
+                        {
+                            SetSpawnPoint(sResRef, oArea, i, lValidator);
+                        }
+                    }
+
+                    DestroyObject(oValidator);
+                }
             }
         }
 

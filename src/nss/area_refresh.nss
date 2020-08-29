@@ -14,6 +14,8 @@ string ChooseSpawnRef(object oArea, int nTarget)
 
 void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
 {
+      if (GetLocalInt(GetModule(), "ns") == 1) return;
+
       string sResRef = GetResRef(oArea);
       int nMax = 100;
 

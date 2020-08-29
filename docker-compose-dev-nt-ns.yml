@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+    tfn-server-dev:
+        hostname: tfn_server_dev
+        container_name: tfn_server_dev
+        image:  nwnxee/unified:build8193.13
+        env_file: 
+            - ${PWD-.}/config/common.env
+            - ${PWD-.}/config/nwserver_dev_nt_ns.env
+        stdin_open: true
+        tty: true
+        volumes:
+            - ${PWD-.}/logs:/nwn/run/logs.0
+            - ${PWD-.}/:/nwn/home
+            - ${PWD-.}/logs:/nwn/data/bin/linux-x86/logs.0
+        ports:
+            - "5131:5131/udp"
