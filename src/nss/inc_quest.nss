@@ -16,14 +16,15 @@ void SetQuestEntry(object oPC, string sQuestEntry, int nValue);
 // Leave quest#_prereq<1-9> for no prerequisite quest stages.
 // quest#_reward_xp_tier, quest#_reward_xp_level, quest#_reward_gold
 // quest#_reward_item - must be a resref
-void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bPersuadeBonusGold = FALSE);
+void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FALSE);
 
 // Same as advance quest, but in an AoE sphere.
 void AdvanceQuestSphere(object oQuestObject, int nTarget, float fRadius = 30.0);
 
 // if the PC is NOT at quest#: ##_<quest_name>, zero padded
 // and quest#_prereq<1-9>: ##_<quest_name>, zero padded is met, return TRUE
-int GetIsQuestStageEligible(object oQuestObject, object oPC, int nTarget);
+// if bBluff, allow skipping of one quest stage
+int GetIsQuestStageEligible(object oQuestObject, object oPC, int nTarget, int bBluff = FALSE);
 
 // Returns TRUE if the PC is at or past quest#: ##_<quest_name>, zero padded
 int GetIsAtQuestStage(object oQuestObject, object oPC, int nTarget);
@@ -129,7 +130,7 @@ int GetIsCurrentlyAtQuestStage(object oQuestObject, object oPC, int nTarget)
     return FALSE;
 }
 
-int GetIsQuestStageEligible(object oQuestObject, object oPC, int nTarget)
+int GetIsQuestStageEligible(object oQuestObject, object oPC, int nTarget, int bBluff = FALSE)
 {
     string sQuestTarget = "quest"+IntToString(nTarget);
 
@@ -137,8 +138,8 @@ int GetIsQuestStageEligible(object oQuestObject, object oPC, int nTarget)
     string sQuestName = GetSubString(sQuest, 3, 27);
     int nQuestStage = StringToInt(GetSubString(sQuest, 0, 2));
 
-// Player must be behind by 1 of their quest entry
-    if (GetQuestEntry(oPC, sQuestName) != (nQuestStage-1)) return FALSE;
+// Player must be behind by 1 of their quest entry. Skipped on bluff.
+    if (!bBluff && GetQuestEntry(oPC, sQuestName) != (nQuestStage-1)) return FALSE;
 
     int i;
     for (i = 1; i < 10; i++)
@@ -161,9 +162,9 @@ int GetIsQuestStageEligible(object oQuestObject, object oPC, int nTarget)
 }
 
 
-void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bPersuadeBonusGold = FALSE)
+void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FALSE)
 {
-    if (GetIsQuestStageEligible(oQuestObject, oPC, nTarget) != TRUE) return;
+    if (GetIsQuestStageEligible(oQuestObject, oPC, nTarget, bBluff) != TRUE) return;
 
     string sQuestTarget = "quest"+IntToString(nTarget);
 
@@ -186,7 +187,7 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bPersuadeBon
     int nXPLevel = GetLocalInt(oQuestObject, sQuestTarget+"_reward_xp_level");
     int nXPTier = GetLocalInt(oQuestObject, sQuestTarget+"_reward_xp_tier");
 
-    if (nXPTier > 0 && nXPLevel > 0) GiveQuestXPToPC(oPC, nXPTier, nXPLevel);
+    if (nXPTier > 0 && nXPLevel > 0) GiveQuestXPToPC(oPC, nXPTier, nXPLevel, bBluff);
 
 // if there is an item to reward, give
     string sRewardItem = GetLocalString(oQuestObject, sQuestTarget+"_reward_item");
@@ -203,8 +204,6 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bPersuadeBon
 
     if (nRewardGold > 0)
     {
-// alter the amount of bonus gold if present. typically used for persuade
-        if (bPersuadeBonusGold == TRUE) nRewardGold = FloatToInt(IntToFloat(nRewardGold) * PERSUADE_BONUS_MODIFIER);
         GiveGoldToCreature(oPC, nRewardGold);
     }
 

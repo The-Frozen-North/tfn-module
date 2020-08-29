@@ -52,7 +52,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 5
+                "value": 7
               },
               "IsChild": {
                 "type": "byte",
@@ -67,7 +67,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -194,11 +194,27 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 2
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
-          "value": "warden_tele"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -248,7 +264,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
+                "value": 6
               },
               "IsChild": {
                 "type": "byte",
@@ -263,7 +279,22 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 3
+                "value": 5
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 4
               },
               "IsChild": {
                 "type": "byte",
@@ -416,12 +447,102 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I am glad to hear that. The goblin attacks appeared most frequent in the East Road of Neverwinter, so I suggest you start there. Good luck."
+            "0": "<StartCheck>[Failure]</Start> I am afraid that I must have proof. Bring me the head of the goblin leader, and then we shall talk about the reward."
           }
         }
       },
       {
         "__struct_id": 6,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartCheck>[Success]</Start> Good work, <FirstName>. Here is your reward for a job well done. Farewell."
+          }
+        }
+      },
+      {
+        "__struct_id": 7,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_q_adv1"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I am glad to hear that. The goblin attacks appeared most frequent in the East Road of Neverwinter, so I suggest you start there. Good luck."
+          }
+        }
+      },
+      {
+        "__struct_id": 8,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -469,7 +590,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 175
+    "value": 224
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -612,6 +733,47 @@
         },
         "EntriesList": {
           "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "warden_tele"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
+          }
+        }
+      },
+      {
+        "__struct_id": 3,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
           "value": [
             {
               "__struct_id": 0,
@@ -650,7 +812,7 @@
         }
       },
       {
-        "__struct_id": 3,
+        "__struct_id": 4,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -707,7 +869,7 @@
         }
       },
       {
-        "__struct_id": 4,
+        "__struct_id": 5,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -729,6 +891,21 @@
           "value": [
             {
               "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_q_chk_advb2"
+              },
+              "Index": {
+                "type": "dword",
+                "value": 6
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -759,12 +936,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I can do that."
+            "0": "<StartCheck>[Bluff]</Start> I have already slain the leader of the goblins."
           }
         }
       },
       {
-        "__struct_id": 5,
+        "__struct_id": 6,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -792,7 +969,64 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 6
+                "value": 7
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I can do that."
+          }
+        }
+      },
+      {
+        "__struct_id": 7,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 8
               },
               "IsChild": {
                 "type": "byte",

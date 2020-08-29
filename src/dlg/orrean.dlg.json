@@ -52,7 +52,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
+                "value": 6
               },
               "IsChild": {
                 "type": "byte",
@@ -63,11 +63,11 @@
               "__struct_id": 1,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_chk_blufblak"
               },
               "Index": {
                 "type": "dword",
-                "value": 3
+                "value": 4
               },
               "IsChild": {
                 "type": "byte",
@@ -82,7 +82,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -97,7 +97,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 1
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
@@ -106,6 +106,21 @@
             },
             {
               "__struct_id": 4,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 1
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 5,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -218,7 +233,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
+                "value": 6
               },
               "IsChild": {
                 "type": "byte",
@@ -321,7 +336,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
+                "value": 6
               },
               "IsChild": {
                 "type": "byte",
@@ -443,7 +458,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
+                "value": 6
               },
               "IsChild": {
                 "type": "byte",
@@ -565,6 +580,129 @@
               },
               "Index": {
                 "type": "dword",
+                "value": 3
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 2
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 1
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 0
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "id": 16994,
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartCheck>[Failure]</Start> Nice try. Meldanen has given me a description of unknowns that are allowed you enter and you don't match any of them."
+          }
+        }
+      },
+      {
+        "__struct_id": 6,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
                 "value": 5
               },
               "IsChild": {
@@ -589,68 +727,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Ah, yes. Master Meldanen has been expecting you. You may enter the district and go to his estate. You can't miss it - it's at the end of the district and it's nearly as big as Castle Never itself."
-          }
-        }
-      },
-      {
-        "__struct_id": 6,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 0
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 6
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "A fair warning, if I may - although these gates are sealed to the public, his estate is not. It is fraught with dangerous experiments, minions, and other ilk."
+            "0": "<StartCheck>[Success]</Start> Oh, is that right? You didn't quite match the description... In any case, the gate is open for you."
           }
         }
       },
@@ -698,7 +775,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_q_adv1"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -711,12 +788,73 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Many have entered his estate and have never gotten past his ground floor. This shall also be your test - for if you cannot survive even that, then you will be of no use to Master Meldanen."
+            "0": "Ah, yes. Master Meldanen has been expecting you. You may enter the district and go to his estate. You can't miss it - it's at the end of the district and it's nearly as big as Castle Never itself."
           }
         }
       },
       {
         "__struct_id": 8,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 0
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 8
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "A fair warning, if I may - although these gates are sealed to the public, his estate is not. It is fraught with dangerous experiments, minions, and other ilk."
+          }
+        }
+      },
+      {
+        "__struct_id": 9,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -754,6 +892,67 @@
                 "type": "byte",
                 "value": 0
               }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_q_adv1"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Many have entered his estate and have never gotten past his ground floor. This shall also be your test - for if you cannot survive even that, then you will be of no use to Master Meldanen."
+          }
+        }
+      },
+      {
+        "__struct_id": 10,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 11
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
             },
             {
               "__struct_id": 1,
@@ -763,7 +962,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 8
+                "value": 10
               },
               "IsChild": {
                 "type": "byte",
@@ -792,7 +991,7 @@
         }
       },
       {
-        "__struct_id": 9,
+        "__struct_id": 11,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -837,52 +1036,7 @@
         }
       },
       {
-        "__struct_id": 10,
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": []
-        },
-        "Script": {
-          "type": "resref",
-          "value": "warden_tele"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Right this way, <sir/madam>."
-          }
-        }
-      },
-      {
-        "__struct_id": 11,
+        "__struct_id": 12,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -914,7 +1068,68 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 9
+                "value": 12
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Right this way, <sir/madam>."
+          }
+        }
+      },
+      {
+        "__struct_id": 13,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 11
               },
               "IsChild": {
                 "type": "byte",
@@ -933,7 +1148,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 8
+                "value": 10
               },
               "IsChild": {
                 "type": "byte",
@@ -969,7 +1184,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 273
+    "value": 325
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -1218,7 +1433,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": ""
+          "value": "Intelligence greater than 8"
         },
         "Delay": {
           "type": "dword",
@@ -1229,6 +1444,21 @@
           "value": [
             {
               "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_chk_bluf"
+              },
+              "Index": {
+                "type": "dword",
+                "value": 6
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -1257,9 +1487,10 @@
           "value": ""
         },
         "Text": {
+          "id": 16989,
           "type": "cexolocstring",
           "value": {
-            "0": "I'm <FirstName>. I am sure Meldanen has told you of me."
+            "0": "<StartCheck>[Bluff]</Start> Didn't Meldanen tell you? He's sent for me."
           }
         }
       },
@@ -1283,23 +1514,7 @@
         },
         "EntriesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 6
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
+          "value": []
         },
         "Quest": {
           "type": "cexostring",
@@ -1307,7 +1522,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "warden_tele"
         },
         "Sound": {
           "type": "resref",
@@ -1373,7 +1588,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": ""
+            "0": "I'm <FirstName>. I am sure Meldanen has told you of me."
           }
         }
       },
@@ -1487,7 +1702,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I'll pass for now."
+            "0": ""
           }
         }
       },
@@ -1544,7 +1759,162 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
+            "0": ""
+          }
+        }
+      },
+      {
+        "__struct_id": 10,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 11
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I'll pass for now."
+          }
+        }
+      },
+      {
+        "__struct_id": 11,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 12
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
             "0": "Yes."
+          }
+        }
+      },
+      {
+        "__struct_id": 12,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "warden_tele"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
           }
         }
       }
@@ -1561,7 +1931,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 11
+          "value": 13
         }
       },
       {

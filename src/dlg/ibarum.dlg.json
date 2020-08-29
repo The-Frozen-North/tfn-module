@@ -52,7 +52,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -63,7 +63,7 @@
               "__struct_id": 1,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_chk_blufcd"
               },
               "Index": {
                 "type": "dword",
@@ -188,7 +188,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -235,7 +235,9 @@
         "Text": {
           "id": 16994,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "<StartCheck>[Failure]</Start> I don't care if you're the bloody avatar of Ilmater himself, you're not getting through this gate. Nobody passes this point until a cure is found."
+          }
         }
       },
       {
@@ -271,7 +273,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 3
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
@@ -293,9 +295,10 @@
           "value": ""
         },
         "Text": {
-          "id": 16996,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "<StartCheck>[Success]</Start> Strange, I would think I would have been notified first. You must have been sent immediately on a mission. Very well, you may pass."
+          }
         }
       },
       {
@@ -328,6 +331,66 @@
               "Active": {
                 "type": "resref",
                 "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 4
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "id": 16996,
+          "type": "cexolocstring",
+          "value": {}
+        }
+      },
+      {
+        "__struct_id": 5,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_chk_blufcd"
               },
               "Index": {
                 "type": "dword",
@@ -382,7 +445,7 @@
         }
       },
       {
-        "__struct_id": 5,
+        "__struct_id": 6,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -414,7 +477,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 5
+                "value": 6
               },
               "IsChild": {
                 "type": "byte",
@@ -429,7 +492,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
+                "value": 5
               },
               "IsChild": {
                 "type": "byte",
@@ -458,7 +521,7 @@
         }
       },
       {
-        "__struct_id": 6,
+        "__struct_id": 7,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -503,7 +566,7 @@
         }
       },
       {
-        "__struct_id": 7,
+        "__struct_id": 8,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -526,11 +589,27 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 7
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
-          "value": "warden_tele"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -551,7 +630,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 158
+    "value": 187
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -641,6 +720,21 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
+                "value": "dlg_chk_bluf"
+              },
+              "Index": {
+                "type": "dword",
+                "value": 3
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
                 "value": ""
               },
               "Index": {
@@ -669,7 +763,9 @@
         "Text": {
           "id": 16989,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "<StartCheck>[Bluff]</Start> I'm on an important mission from Lady Aribeth. Let me pass."
+          }
         }
       },
       {
@@ -684,7 +780,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "Intelligence greater than 8"
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -692,23 +788,7 @@
         },
         "EntriesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "Index": {
-                "type": "dword",
-                "value": 3
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
+          "value": []
         },
         "Quest": {
           "type": "cexostring",
@@ -716,16 +796,17 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "warden_tele"
         },
         "Sound": {
           "type": "resref",
           "value": ""
         },
         "Text": {
-          "id": 16985,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": ""
+          }
         }
       },
       {
@@ -740,7 +821,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": ""
+          "value": "Intelligence greater than 8"
         },
         "Delay": {
           "type": "dword",
@@ -779,6 +860,7 @@
           "value": ""
         },
         "Text": {
+          "id": 16985,
           "type": "cexolocstring",
           "value": {}
         }
@@ -812,7 +894,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 6
+                "value": 5
               },
               "IsChild": {
                 "type": "byte",
@@ -835,9 +917,7 @@
         },
         "Text": {
           "type": "cexolocstring",
-          "value": {
-            "0": "No, not at this time."
-          }
+          "value": {}
         }
       },
       {
@@ -893,7 +973,105 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
+            "0": "No, not at this time."
+          }
+        }
+      },
+      {
+        "__struct_id": 6,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 8
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
             "0": "Yes."
+          }
+        }
+      },
+      {
+        "__struct_id": 7,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "warden_tele"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
           }
         }
       }
@@ -910,7 +1088,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 5
+          "value": 6
         }
       },
       {

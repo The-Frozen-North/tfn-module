@@ -69,7 +69,7 @@ void GiveXPToPC(object oPC, float fXpAmount);
 
 // Gives nXp amount to oPC, wisdom adjusted
 // with bonuses/penalties related to the target level
-void GiveQuestXPToPC(object oPC, int nTier, int nLevel);
+void GiveQuestXPToPC(object oPC, int nTier, int nLevel, int bBluff = FALSE);
 
 // This function returns the level based on XP
 int GetLevelFromXP(int nXP);
@@ -145,7 +145,7 @@ void GiveXPToPC(object oPC, float fXpAmount)
    SetXP(oPC, oPCXP + nXP);
 }
 
-void GiveQuestXPToPC(object oPC, int nTier, int nLevel)
+void GiveQuestXPToPC(object oPC, int nTier, int nLevel, int bBluff = FALSE)
 {
    if (nTier == 0 || nLevel == 0) return;
 
@@ -178,6 +178,8 @@ void GiveQuestXPToPC(object oPC, int nTier, int nLevel)
    SendDebugMessage("Quest base XP: "+FloatToString(fXP));
 
    fXP = fXP * fMod;
+
+   if (bBluff) fXP = fXP * 0.5;
 
    SendDebugMessage("Quest XP level adjusted: "+FloatToString(fXP));
 

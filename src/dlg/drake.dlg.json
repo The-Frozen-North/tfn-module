@@ -711,7 +711,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 17
+                "value": 18
               },
               "IsChild": {
                 "type": "byte",
@@ -803,7 +803,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 16
+                "value": 17
               },
               "IsChild": {
                 "type": "byte",
@@ -812,6 +812,21 @@
             },
             {
               "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 16
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 2,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -919,6 +934,96 @@
         },
         "Script": {
           "type": "resref",
+          "value": "dlg_q_adv3"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartCheck>[Failure]</Start> What? That's just not possible. Bring me proof that you have destroyed the mummy."
+          }
+        }
+      },
+      {
+        "__struct_id": 14,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartCheck>[Success]</Start> That's remarkable, <FirstName>. Here is your reward. Farewell!"
+          }
+        }
+      },
+      {
+        "__struct_id": 15,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
           "value": ""
         },
         "Sound": {
@@ -937,7 +1042,7 @@
         }
       },
       {
-        "__struct_id": 14,
+        "__struct_id": 16,
         "Animation": {
           "type": "dword",
           "value": 0
@@ -985,7 +1090,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 393
+    "value": 424
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -1875,6 +1980,21 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
+                "value": "dlg_q_chk_advb4"
+              },
+              "Index": {
+                "type": "dword",
+                "value": 14
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
                 "value": ""
               },
               "Index": {
@@ -1894,7 +2014,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_q_adv3"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -1903,7 +2023,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I'll do it."
+            "0": "<StartCheck>[Bluff]</Start> I have already killed the mummy."
           }
         }
       },
@@ -1936,7 +2056,64 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 14
+                "value": 15
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_q_adv3"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I'll do it."
+          }
+        }
+      },
+      {
+        "__struct_id": 18,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
