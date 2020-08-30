@@ -116,6 +116,29 @@ void main()
        {
                nType = GetObjectType(oObject);
 
+// tag merchants/quest NPCs that are plot/immortal as dm_immune
+// these types should never be skipped
+                if (nType == OBJECT_TYPE_CREATURE)
+                {
+                   for (nQuestLoop = 1; nQuestLoop < 10; nQuestLoop++)
+                   {
+                        sQuest = GetLocalString(oObject, "quest"+IntToString(nQuestLoop));
+                        sQuestName = GetSubString(sQuest, 3, 27);
+
+                        if (GetStringLeft(sQuestName, 2) == "q_")
+                        {
+                            SetLocalString(oModule, "quests", AddListItem(GetLocalString(oModule, "quests"), sQuestName, TRUE));
+                        }
+                        else if (GetStringLeft(sQuestName, 2) == "b_")
+                        {
+                            SetLocalString(oModule, "bounties", AddListItem(GetLocalString(oModule, "bounties"), sQuestName, TRUE));
+                        }
+                   }
+
+                   if ( (GetLocalString(oObject, "quest1") != "" || GetLocalString(oObject, "merchant") != "") && (GetPlotFlag(oObject) || GetImmortal(oObject)) )
+                          SetLocalInt(oObject, "dm_immune", 1);
+               }
+
                if (GetLocalInt(oObject, "skip") == 1)
                {
                    oObject = GetNextObjectInArea(oArea);
@@ -154,22 +177,6 @@ void main()
                     }
                  break;
                  case OBJECT_TYPE_CREATURE:
-
-                     for (nQuestLoop = 1; nQuestLoop < 10; nQuestLoop++)
-                     {
-                        sQuest = GetLocalString(oObject, "quest"+IntToString(nQuestLoop));
-                        sQuestName = GetSubString(sQuest, 3, 27);
-
-                        if (GetStringLeft(sQuestName, 2) == "q_")
-                        {
-                            SetLocalString(oModule, "quests", AddListItem(GetLocalString(oModule, "quests"), sQuestName, TRUE));
-                        }
-                        else if (GetStringLeft(sQuestName, 2) == "b_")
-                        {
-                            SetLocalString(oModule, "bounties", AddListItem(GetLocalString(oModule, "bounties"), sQuestName, TRUE));
-                        }
-                     }
-
                      if (bInstance == 1)
                      {
                           nCreatures = nCreatures + 1;
@@ -184,9 +191,6 @@ void main()
 
                           DestroyObject(oObject);
                      }
-// tag merchants/quest NPCs that are plot/immortal as dm_immune
-                     if ( (GetLocalString(oObject, "quest1") != "" || GetLocalString(oObject, "merchant") != "") && (GetPlotFlag(oObject) || GetImmortal(oObject)) )
-                        SetLocalInt(oObject, "dm_immune", 1);
                  break;
                  case OBJECT_TYPE_PLACEABLE:
 // any object with an inventory is removed, including it's items
