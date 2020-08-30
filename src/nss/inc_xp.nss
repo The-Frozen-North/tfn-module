@@ -65,7 +65,7 @@ void GiveXP(object oKiller);
 
 
 // Gives nXpAmount to oPC, wisdom adjusted
-void GiveXPToPC(object oPC, float fXpAmount);
+void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE);
 
 // Gives nXp amount to oPC, wisdom adjusted
 // with bonuses/penalties related to the target level
@@ -85,16 +85,12 @@ int GetLevelFromXP(int nXP)
 }
 
 
-void GiveXPToPC(object oPC, float fXpAmount)
+void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
 {
 // Dead PCs do not get any XP
    if (GetIsDead(oPC)) return;
 
-// Calculate wisdom bonus
-   int nWisdomMod = GetAbilityScore(oPC, ABILITY_WISDOM) - 10;
-   float fXpPercent = 1.0 + (IntToFloat(nWisdomMod) * WISDOM_BONUS);
-
-   SendDebugMessage("Wisdom Percentage Modifier"+FloatToString(fXpPercent));
+   string sFavoredBonus = "";
 
 // Calculate favored bonus
    float fFavoredModifier = 1.0;
@@ -119,23 +115,44 @@ void GiveXPToPC(object oPC, float fXpAmount)
             if (GetLevelByPosition(3, oPC) > 0)
             {
                 fFavoredModifier = FAVORED_BONUS;
+                sFavoredBonus = ", Triple-class: 20%";
             }
             else if (GetLevelByPosition(2, oPC) > 0)
             {
                 fFavoredModifier = DUAL_CLASS_BONUS;
+                sFavoredBonus = ", Dual-class: 10%";
             }
             break;
    }
 
+// Calculate wisdom bonus
+   int nWisdomMod = GetAbilityScore(oPC, ABILITY_WISDOM) - 10;
+   float fWisdom = IntToFloat(nWisdomMod) * WISDOM_BONUS;
 
-   SendDebugMessage("Favored class percentage modifier: "+FloatToString(fFavoredModifier));
+// calculate total bonus
+   float fModifier = fFavoredModifier + fWisdom;
 
+// cap
+   if (fModifier > 1.5) fModifier = 1.5;
 
-   float fAdjustedXpAmount = fXpPercent * fXpAmount * fFavoredModifier;
+// for favored racial class with non humans/half-elves
+   if (sFavoredBonus == "" && fFavoredModifier == FAVORED_BONUS) sFavoredBonus = ", Favored class: 20%";
 
-   SendDebugMessage("Adjusted XP: "+FloatToString(fAdjustedXpAmount));
+   float fAdjustedXpAmount = fModifier * fXpAmount;
 
    int nXP = Round(fAdjustedXpAmount);
+
+   if (bQuest)
+   {
+      int nTotal = FloatToInt(fAdjustedXpAmount - fXpAmount);
+
+      string sBonus = "Bonus";
+      if (nTotal < 0) sBonus = "Penalty";
+
+      FloatingTextStringOnCreature("*XP "+sBonus+": "+IntToString(nTotal)+" (Wisdom: "+IntToString(nWisdomMod)+"%"+sFavoredBonus+")*", oPC, FALSE);
+   }
+
+   SendDebugMessage("Adjusted XP: "+FloatToString(fAdjustedXpAmount));
 
 // If the XP returned is less than or equal to 0, make it at least 1
    if (nXP <= 0) nXP = 1;
@@ -183,7 +200,7 @@ void GiveQuestXPToPC(object oPC, int nTier, int nLevel, int bBluff = FALSE)
 
    SendDebugMessage("Quest XP level adjusted: "+FloatToString(fXP));
 
-   GiveXPToPC(oPC, fXP);
+   GiveXPToPC(oPC, fXP, TRUE);
 }
 
 // get xp amount by level
