@@ -27,6 +27,8 @@ Patch 1.70
 
 void main()
 {
+    ExecuteScript("pet_tweak");
+
     string sTag;
     object oNPC;
     SetAssociateListenPatterns();//Sets up the special henchmen listening patterns
