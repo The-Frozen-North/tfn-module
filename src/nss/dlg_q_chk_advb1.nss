@@ -3,7 +3,7 @@
 int StartingConditional()
 {
     object oPC = GetPCSpeaker();
-    int nSkill = SKILL_PERSUADE;
+    int nSkill = SKILL_BLUFF;
     int nDC = GetLocalInt(OBJECT_SELF, "quest1_bluff_dc");
 
     if(GetIsSkillSuccessful(oPC, nSkill, nDC))
