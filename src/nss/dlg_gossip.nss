@@ -28,7 +28,17 @@ int StartingConditional()
         nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "This place is a safe haven. Let's keep it that way for the sake of us both.");
    }
 // ====================================
-// HIGHCLIFF VILLAGER
+// BLACKLAKE GUARD
+// ====================================
+   else if (sResRef == "blklakeguard")
+   {
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I'm paid well to keep order, not chit-chat.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Move along. I'm on duty.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I used to be a city guard. Let's just say I moved to greener, and safer pastures.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Meldanen is quite generous. He took not only me in, but also my family as well.");
+   }
+// ====================================
+// THUNDERTREE VILLAGER
 // ====================================
    else if (sResRef == "villager_thunder")
    {
@@ -315,7 +325,8 @@ int StartingConditional()
             nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I regret that the Blacklake must shut out the plagues and weak, but what choice do we have?");
             nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I think the plague is a result of the poor classes we allowed into the district. The barricades were long overdue.");
             nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I hope a plague cure is found soon. The barricades can't keep everyone out. Ugh.");
-
+            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "The Divine Elegance is such a fine shop. Best tailor this side of the Sword Coast, I'd say.");
+            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Have you been to Argali's Apparels recently? She has the comfiest boots and the coziest of cloaks!");
 
             if (GetAbilityScore(oPC, ABILITY_CHARISMA) >= 13) // high charisma
             {
