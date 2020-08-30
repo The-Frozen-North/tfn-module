@@ -4,15 +4,42 @@
 void main()
 {
 
+
+    int bPlayersInLinkedArea = FALSE;
+    int bPlayersInArea = FALSE;
+    int bPlayersInInvalidArea = FALSE;
+    string sResRef = GetResRef(OBJECT_SELF);
+    object oLink1 = GetObjectByTag(GetLocalString(OBJECT_SELF, "link1"));
+    object oLink2 = GetObjectByTag(GetLocalString(OBJECT_SELF, "link2"));
+    object oLink3 = GetObjectByTag(GetLocalString(OBJECT_SELF, "link3"));
+
+    if (NWNX_Area_GetNumberOfPlayersInArea(OBJECT_SELF) > 0)  bPlayersInArea = TRUE;
+    if (NWNX_Area_GetNumberOfPlayersInArea(oLink1) > 0)  bPlayersInLinkedArea = TRUE;
+    if (NWNX_Area_GetNumberOfPlayersInArea(oLink2) > 0)  bPlayersInLinkedArea = TRUE;
+    if (NWNX_Area_GetNumberOfPlayersInArea(oLink3) > 0)  bPlayersInLinkedArea = TRUE;
+
+    object oPlayer = GetFirstPC();
+
+    while (GetIsObjectValid(oPlayer))
+    {
+        if (GetArea(oPlayer) == OBJECT_INVALID)
+        {
+            bPlayersInInvalidArea = TRUE;
+            break;
+        }
+
+        oPlayer = GetNextPC();
+    }
+
 // item clean up
     object oItem = GetFirstObjectInArea(OBJECT_SELF);
     int nDestroyCount;
     while (GetIsObjectValid(oItem))
     {
-        if(GetObjectType(oItem) == OBJECT_TYPE_ITEM )
+        if(GetObjectType(oItem) == OBJECT_TYPE_ITEM)
         {
             nDestroyCount = GetLocalInt(oItem, "destroy_count");
-            if (nDestroyCount == 50)
+            if (nDestroyCount == 100 && !bPlayersInInvalidArea && !bPlayersInArea && !bPlayersInLinkedArea)
             {
                 DestroyObject(oItem);
             }
@@ -38,31 +65,6 @@ void main()
     int nRefresh = GetLocalInt(OBJECT_SELF, "refresh");
     if (nRefresh >= 300)
     {
-        int bPlayersInLinkedArea = FALSE;
-        int bPlayersInArea = FALSE;
-        int bPlayersInInvalidArea = FALSE;
-        string sResRef = GetResRef(OBJECT_SELF);
-        object oLink1 = GetObjectByTag(GetLocalString(OBJECT_SELF, "link1"));
-        object oLink2 = GetObjectByTag(GetLocalString(OBJECT_SELF, "link2"));
-        object oLink3 = GetObjectByTag(GetLocalString(OBJECT_SELF, "link3"));
-
-        if (NWNX_Area_GetNumberOfPlayersInArea(OBJECT_SELF) > 0)  bPlayersInArea = TRUE;
-        if (NWNX_Area_GetNumberOfPlayersInArea(oLink1) > 0)  bPlayersInLinkedArea = TRUE;
-        if (NWNX_Area_GetNumberOfPlayersInArea(oLink2) > 0)  bPlayersInLinkedArea = TRUE;
-        if (NWNX_Area_GetNumberOfPlayersInArea(oLink3) > 0)  bPlayersInLinkedArea = TRUE;
-
-        object oPlayer = GetFirstPC();
-
-        while (GetIsObjectValid(oPlayer))
-        {
-            if (GetArea(oPlayer) == OBJECT_INVALID)
-            {
-                bPlayersInInvalidArea = TRUE;
-                break;
-            }
-
-            oPlayer = GetNextPC();
-        }
 
         if (!bPlayersInInvalidArea && !bPlayersInArea && !bPlayersInLinkedArea)
         {
