@@ -403,7 +403,7 @@ int StartingConditional()
 // ====================================
 // MERCENARY
 // ====================================
-    else if (sResRef == "mercenary")
+    else if (GetStringLeft(sResRef, 9) == "mercenary")
     {
         if (GetItemInSlot(INVENTORY_SLOT_CHEST, oPC) == OBJECT_INVALID) // naked
         {
