@@ -401,12 +401,16 @@ void main()
         break;
     }
 
+    if (nDexterity > nStrength) NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_WEAPON_FINESSE);
+
     NWNX_Object_SetMaxHitPoints(OBJECT_SELF, (nHitDice+1)*8);
     NWNX_Object_SetCurrentHitPoints(OBJECT_SELF, GetMaxHitPoints(OBJECT_SELF));
 
     SetObjectVisualTransform(OBJECT_SELF, OBJECT_VISUAL_TRANSFORM_SCALE, fScale+(fScaleLevel*fHitDice));
 
-    SetObjectVisualTransform(OBJECT_SELF, OBJECT_VISUAL_TRANSFORM_SCALE, fTranslation+(fTranslationLevel*fHitDice));
+    SetObjectVisualTransform(OBJECT_SELF, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, fTranslation+(fTranslationLevel*fHitDice));
+
+    NWNX_Creature_SetLevelByPosition(OBJECT_SELF, 0, nHitDice+1);
 
     NWNX_Creature_SetAbilityScore(OBJECT_SELF, ABILITY_STRENGTH, nStrength+FloatToInt(fStrengthLevel*fHitDice));
     NWNX_Creature_SetAbilityScore(OBJECT_SELF, ABILITY_DEXTERITY, nDexterity+FloatToInt(fDexterityLevel*fHitDice));
