@@ -84,6 +84,8 @@ void main()
     float fDistanceFromSpawn = GetDistanceBetweenLocations(GetLocation(OBJECT_SELF), lSpawn);
     float fMaxDistance = 5.0;
 
+    if (GetLocalString(OBJECT_SELF, "merchant") != "") fMaxDistance = fMaxDistance * 0.5;
+
 // enemies have a much farther distance before they need to reset
     if (GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) <= 10) fMaxDistance = fMaxDistance*10.0;
 
