@@ -450,6 +450,7 @@ void DistributeTreasureToStores(object oItem)
 // Boost some full plates and tower shields to next tier
        if (sName == "Tower Shield +1") sTier = "T4";
        if (sName == "Tower Shield +2") sTier = "T5";
+       if (sName == "Half Plate +1") sTier = "T4";
        if (sName == "Full Plate +2") sTier = "T5";
 
 // Bump up items to the right tier for non-uniques
