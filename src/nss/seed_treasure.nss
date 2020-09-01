@@ -621,6 +621,7 @@ void CountItemsThroughTiers()
             else
             {
                 SetLocalInt(oContainer, "item_count", nItems);
+                SetDescription(oContainer, IntToString(nItems));
                 SetName(oContainer, GetName(oContainer)+" - Count:"+IntToString(nItems));
 
                 if (StoreCampaignObject("treasures", GetTag(oContainer), oContainer) == 0)

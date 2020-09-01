@@ -383,20 +383,6 @@ void main()
       LoadTreasureContainer("_PotionsT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 34.0);
    }
 
-// Generate Merchants
-    object oStore;
-    location lLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
-
-    int i;
-    for (i = 1; i < 25; i++)
-    {
-        oStore = CreateObject(OBJECT_TYPE_STORE, "merchant"+IntToString(i), lLocation);
-
-        ExecuteScript(""+GetTag(oStore), oStore);
-    }
-    SetLocalInt(GetModule(), "treasure_ready", 1);
-    SendDebugMessage("Merchants created", TRUE);
-
    object oArea = GetFirstArea();
    string sAreaResRef;
    location lBaseLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
@@ -427,6 +413,20 @@ void main()
 
    WriteTimestampedLogEntry("Total Bounties: "+IntToString(CountList(sBounties)));
    WriteTimestampedLogEntry("Bounties: "+sBounties);
+
+   // Generate Merchants
+    object oStore;
+    location lLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
+
+    int i;
+    for (i = 1; i < 25; i++)
+    {
+        oStore = CreateObject(OBJECT_TYPE_STORE, "merchant"+IntToString(i), lLocation);
+
+        ExecuteScript(""+GetTag(oStore), oStore);
+    }
+    SetLocalInt(GetModule(), "treasure_ready", 1);
+    SendDebugMessage("Merchants created", TRUE);
 
 // Treasures cause heavy delay on starting a module
 // It can be skipped, but it will cause merchants to lose most of their inventory

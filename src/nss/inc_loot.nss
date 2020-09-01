@@ -238,7 +238,7 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 // chest still invalid at that point? return
     if (!GetIsObjectValid(oChest)) return OBJECT_INVALID;
 
-    int nRandom = Random(GetLocalInt(oChest, "item_count"));
+    int nRandom = Random(StringToInt(GetDescription(oChest)));
     object oItem = GetFirstItemInInventory(oChest);
     while (nRandom)
     {
