@@ -1,36 +1,30 @@
 #include "inc_debug"
-#include "nwnx_object"
 #include "util_i_csvlists"
 
-void SetSpawnPoint(string sResRef, object oTable, int nTarget, location lLocation)
+vector StringToVector(string sVector)
 {
-    object oTrigger;
-    float fMaxHeight;
-    vector vVector = GetPositionFromLocation(lLocation);
-// loop through elevation 0, 1, and 2
-    int i;
-    for (i = 0; i < 3; i++)
+    vector vVector;
+
+    int nLength = GetStringLength(sVector);
+
+    if(nLength > 0)
     {
-        oTrigger = GetObjectByTag(sResRef+"e"+IntToString(i)+"_random"+IntToString(nTarget)+"_spawn");
+        int nPos, nCount;
 
-        fMaxHeight = 3.5;
+        nPos = FindSubString(sVector, "#X#") + 3;
+        nCount = FindSubString(GetSubString(sVector, nPos, nLength - nPos), "#");
+        vVector.x = StringToFloat(GetSubString(sVector, nPos, nCount));
 
-        switch (GetLocalInt(oTrigger, "elevation"))
-        {
-            case 1: fMaxHeight = 7.0; break;
-            case 2: fMaxHeight = 10.5; break;
-        }
+        nPos = FindSubString(sVector, "#Y#") + 3;
+        nCount = FindSubString(GetSubString(sVector, nPos, nLength - nPos), "#");
+        vVector.y = StringToFloat(GetSubString(sVector, nPos, nCount));
 
-        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vVector) && (vVector.z <= fMaxHeight))
-        {
-              int nSpawns = GetLocalInt(oTable, "random"+IntToString(nTarget)+"_spawn_point_total")+1;
-
-              //if (GetLocalInt(GetModule(), "dev") == 1) CreateObject(OBJECT_TYPE_PLACEABLE, "plc_solblue", lLocation);
-              CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lLocation, FALSE, sResRef+"_random"+IntToString(nTarget)+"_spawn_point"+IntToString(nSpawns));
-              SetLocalInt(oTable, "random"+IntToString(nTarget)+"_spawn_point_total", nSpawns);
-              break;
-        }
+        nPos = FindSubString(sVector, "#Z#") + 3;
+        nCount = FindSubString(GetSubString(sVector, nPos, nLength - nPos), "#");
+        vVector.z = StringToFloat(GetSubString(sVector, nPos, nCount));
     }
+
+    return vVector;
 }
 
 void main()
@@ -155,10 +149,6 @@ void main()
                            SetTag(oObject, sResRef+"WP_EVENT"+IntToString(nEventSpawns));
                        }
                  break;
-                 case OBJECT_TYPE_TRIGGER:
-// add the resref to a spawn trigger tag to work with the spawn system
-                       if (GetStringLeft(GetResRef(oObject), 11) == "trig_random") SetTag(oObject, sResRef+GetTag(oObject));
-                 break;
                  case OBJECT_TYPE_DOOR:
 // nullify this, doors with an on click script do not function
                    SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLICKED, "");
@@ -236,113 +226,70 @@ void main()
        SetLocalInt(oArea, "creatures", nCreatures);
        SetLocalInt(oArea, "doors", nDoors);
 
-//===========================================================
-// LOOP THROUGH EACH TILE, CREATING SPAWN POINTS
-//===========================================================
-       int nSpawns = 0;
-       int i;
+//==========================================
+// LOAD SPAWNS
+//==========================================
 
-       if (GetLocalInt(GetModule(), "ns") != 1)
-       {
+   string sRow;
+   int nRandomSpawnPoints, nSpawnTarget;
 
-           int iRows = GetAreaSize(AREA_WIDTH, oArea);
-           int iColumns = GetAreaSize(AREA_HEIGHT, oArea);
+   location lSpawnLocation;
 
-           int iXAxis, iYAxis;
-           float fYAxis, fXAxis, fDistanceFromDoor, fDistanceBetweenPoints, fX, fY;
-           location lTile, lValidator;
-           object oValidator, oDoor;
-           vector vTile, vValidator;
+   for (nSpawnTarget = 1; nSpawnTarget < 10; nSpawnTarget++)
+   {
+        sRow = GetCampaignString("spawns", sResRef+"_spawn"+IntToString(nSpawnTarget));
+        nRandomSpawnPoints = CountList(sRow);
 
-           int bTrapped = GetLocalInt(oArea, "trapped");
+        if (nRandomSpawnPoints > 0)
+        {
+            SetLocalInt(oArea, "random"+IntToString(nSpawnTarget)+"_spawn_point_total", nRandomSpawnPoints);
 
-    // use this to get the center of a tile
-           float fMultiplier = 5.0;
+            int i;
+            for (i = 0; i < nRandomSpawnPoints; i++)
+            {
+                 lSpawnLocation = Location(oArea, StringToVector(GetListItem(sRow, i)), IntToFloat(Random(360)+1));
+                 //if (GetLocalInt(GetModule(), "dev") == 1) CreateObject(OBJECT_TYPE_PLACEABLE, "plc_solblue", lSpawnLocation);
 
-    // Loop through the X axis of an area
-           for (iXAxis = 0; iXAxis < iRows; iXAxis++)
-           {
-                float fXAxis = fMultiplier+(IntToFloat(iXAxis)*fMultiplier*2.0);
-
-    // Loop through the Y axis of an area, following the previous X location
-                for (iYAxis = 0; iYAxis < iColumns; iYAxis++)
-                {
-                    fYAxis = fMultiplier+(IntToFloat(iYAxis)*fMultiplier*2.0);
-
-                    lTile = Location(oArea, Vector(fXAxis, fYAxis, 0.0), 0.0);
-
-    // we will spawn a creature at the exact location to check if it is in the proper spot
-                    oValidator = CreateObject(OBJECT_TYPE_CREATURE, "_area_validator", lTile);
-
-                    vTile = GetPositionFromLocation(lTile);
-                    vValidator = GetPosition(oValidator);
-
-                    lValidator = GetLocation(oValidator);
-
-                    oDoor = GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile);
-                    if (GetIsObjectValid(oDoor))
-                    {
-                        fDistanceFromDoor = GetDistanceBetweenLocations(GetLocation(GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile)), lTile);
-                    }
-                    else
-                    {
-    // in cases of a door not existing, just set the distance to a high number so it emulates not being close to a door
-                        fDistanceFromDoor = 999.0;
-                    }
-
-    // we don't want spawns too close to a door. also, make sure the spot and the creature are around the same position
-    // using the Distance Between Two Points Formula:
-                    fX = vTile.x - vValidator.x;
-                    fY = vTile.y - vValidator.y;
-                    fDistanceBetweenPoints = sqrt((fX*fX) + (fY*fY));
-                    if (fDistanceBetweenPoints < 0.0) fDistanceBetweenPoints = 999.0;
-
-                    if (fDistanceFromDoor >= 3.0 && fDistanceBetweenPoints <= 2.0 && vValidator.z > -2.0)
-                    {
-                        if (bTrapped)
-                        {
-                            nSpawns = nSpawns + 1;
-                            CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lTile, FALSE, sResRef+"_trap_spawn_point"+IntToString(nSpawns));
-                        }
-
-                        for (i = 1; i < 10; i++)
-                        {
-                            SetSpawnPoint(sResRef, oArea, i, lValidator);
-                        }
-                    }
-
-                    DestroyObject(oValidator);
-                }
+                 CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lSpawnLocation, FALSE, sResRef+"_random"+IntToString(nSpawnTarget)+"_spawn_point"+IntToString(i+1));
             }
+            SendDebugMessage(sResRef+" loaded random"+IntToString(nSpawnTarget)+" spawn points: "+IntToString(nRandomSpawnPoints), TRUE);
         }
+   }
 
-        SetLocalInt(oArea, "trap_spawns", nSpawns);
+    string sTrapRow = GetCampaignString("spawns", sResRef+"_traps");
+    int nTrapSpawnPoints = CountList(sTrapRow);
+
+    if (nTrapSpawnPoints > 0)
+    {
+        SetLocalInt(oArea, "trap_spawns", nTrapSpawnPoints);
+
+        int i;
+        for (i = 0; i < nTrapSpawnPoints; i++)
+        {
+             lSpawnLocation = Location(oArea, StringToVector(GetListItem(sTrapRow, i)), 0.0);
+
+             CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lSpawnLocation, FALSE, sResRef+"_trap_spawn_point"+IntToString(i+1));
+        }
+        SendDebugMessage(sResRef+" loaded trap spawn points: "+IntToString(nTrapSpawnPoints), TRUE);
+    }
 
 //==========================================
 // SET AREA AS INITIALIZED
 //==========================================
-       string sScript = GetLocalString(oArea, "init_script");
-       if (sScript != "") ExecuteScript(sScript, oArea);
+    string sScript = GetLocalString(oArea, "init_script");
+    if (sScript != "") ExecuteScript(sScript, oArea);
 
 
-       if (nEventSpawns > 0) SendDebugMessage(sResRef+" event spawn points: "+IntToString(nEventSpawns), TRUE);
-       if (nSpawns > 0) SendDebugMessage(sResRef+" trap spawn points: "+IntToString(nSpawns), TRUE);
-       int nRandomSpawnPoints;
-       for (i = 1; i < 10; i++)
-       {
-            nRandomSpawnPoints = GetLocalInt(oArea, "random"+IntToString(i)+"_spawn_point_total");
-            if (nRandomSpawnPoints > 0) SendDebugMessage(sResRef+" random1 spawn points: "+IntToString(nRandomSpawnPoints), TRUE);
-       }
+    if (nEventSpawns > 0) SendDebugMessage(sResRef+" event spawn points: "+IntToString(nEventSpawns), TRUE);
 
-       if (nDoors > 0) SendDebugMessage(sResRef+" doors: "+IntToString(nDoors), TRUE);
-       if (nTreasures > 0) SendDebugMessage(sResRef+" treasures found: "+IntToString(nTreasures), TRUE);
-       if (nCreatures > 0) SendDebugMessage(sResRef+" creatures: "+IntToString(nCreatures), TRUE);
-       if (nSpawns > 0) SendDebugMessage(sResRef+" trap spawns: "+IntToString(nSpawns), TRUE);
+    if (nDoors > 0) SendDebugMessage(sResRef+" doors: "+IntToString(nDoors), TRUE);
+    if (nTreasures > 0) SendDebugMessage(sResRef+" treasures found: "+IntToString(nTreasures), TRUE);
+    if (nCreatures > 0) SendDebugMessage(sResRef+" creatures: "+IntToString(nCreatures), TRUE);
 
-// we will refresh it once so there's spawns
-       ExecuteScript("area_refresh", oArea);
+    // we will refresh it once so there's spawns
+    ExecuteScript("area_refresh", oArea);
 
-       SendDebugMessage("initialized "+sResRef, TRUE);
-       SetLocalInt(oArea, "initialized", 1);
+    SendDebugMessage("initialized "+sResRef, TRUE);
+    SetLocalInt(oArea, "initialized", 1);
 }
 

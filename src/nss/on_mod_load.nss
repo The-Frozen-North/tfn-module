@@ -10,10 +10,71 @@
 
 #include "70_inc_switches"
 
+void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)
+{
+    object oContainer = RetrieveCampaignObject("treasures", sTag, Location(GetObjectByTag("_TREASURE"), Vector(x, y, z), 0.0));
+    if (GetIsObjectValid(oContainer)) SendDebugMessage("loaded "+GetName(oContainer));
+}
+
 void main()
 {
 // Set a very high instruction limit so we can run the initialization scripts without TMI
     NWNX_Util_SetInstructionLimit(52428888);
+
+// We do some things different on DEV and local (without NWNX), such as ignoring webhooks and having verbose debug messages
+    if ((NWNX_Time_GetTimeStamp() == 0) || FindSubString(NWNX_Administration_GetServerName(), "DEV") > -1)
+    {
+        SetLocalInt(OBJECT_SELF, "dev", 1);
+        SetLocalInt(OBJECT_SELF, "debug_verbose", 1);
+    }
+
+    if (FindSubString(NWNX_Administration_GetServerName(), "SEED") > -1)
+    {
+// Destroy the databases to give it a clean slate.
+       DestroyCampaignDatabase("spawns");
+
+       object oArea = GetFirstArea();
+       string sAreaResRef;
+
+// Loop through all areas in the module.
+       while (GetIsObjectValid(oArea))
+       {
+
+// Skip the system areas. They are prepended with an underscore.
+           if (GetStringLeft(GetResRef(oArea), 1) == "_")
+           {
+               oArea = GetNextArea();
+               continue;
+           }
+
+           ExecuteScript("seed_area_spawns", oArea);
+
+           oArea = GetNextArea();
+
+       }
+       SetCampaignInt("spawns", "finished", 1);
+
+       ExecuteScript("seed_treasure");
+
+       SendDebugMessage("Seeding complete", TRUE);
+       NWNX_Administration_ShutdownServer();
+
+       return;
+    }
+    else
+    {
+        if (GetCampaignInt("spawns", "finished") != 1)
+        {
+            SendDebugMessage("Spawns database is not complete", TRUE);
+            NWNX_Administration_ShutdownServer();
+        }
+        else if (GetCampaignInt("treasures", "finished") != 1)
+        {
+            SendDebugMessage("Treasures database is not complete", TRUE);
+            NWNX_Administration_ShutdownServer();
+        }
+
+    }
 
 // Set up some server options
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_ENFORCE_LEGAL_CHARACTERS, TRUE);
@@ -101,14 +162,6 @@ void main()
 // Check and do certain logic on spawning of objects.
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SPAWN_OBJECT_BEFORE", "dm_spawnb");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SPAWN_OBJECT_AFTER", "dm_spawna");
-
-
-// We do some things different on DEV and local (without NWNX), such as ignoring webhooks and having verbose debug messages
-    if ((NWNX_Time_GetTimeStamp() == 0) || FindSubString(NWNX_Administration_GetServerName(), "DEV") > -1)
-    {
-        SetLocalInt(OBJECT_SELF, "dev", 1);
-        SetLocalInt(OBJECT_SELF, "debug_verbose", 1);
-    }
 
     SendDiscordLogMessage("Starting the server. This may take a few minutes.");
 
@@ -287,12 +340,65 @@ void main()
     // * This feature is disabled by default.
    SetModuleSwitch (MODULE_SWITCH_ENABLE_TAGBASED_SCRIPTS, TRUE);
 
+// Load treasure tables
+   int nIndex;
+   for (nIndex = 1; nIndex < 6; nIndex++)
+   {
+      LoadTreasureContainer("_ArmorCommonT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 0.0);
+      LoadTreasureContainer("_ArmorUncommonT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 1.0);
+      LoadTreasureContainer("_ArmorRareT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 2.0);
+
+      LoadTreasureContainer("_RangeCommonT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 4.0);
+      LoadTreasureContainer("_RangeUncommonT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 5.0);
+      LoadTreasureContainer("_RangeRareT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 6.0);
+
+      LoadTreasureContainer("_MeleeCommonT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 8.0);
+      LoadTreasureContainer("_MeleeUncommonT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 9.0);
+      LoadTreasureContainer("_MeleeRareT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 10.0);
+
+      LoadTreasureContainer("_ApparelCommonT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 12.0);
+      LoadTreasureContainer("_ApparelUncommonT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 13.0);
+      LoadTreasureContainer("_ApparelRareT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 14.0);
+
+      LoadTreasureContainer("_ScrollsT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 16.0);
+
+      LoadTreasureContainer("_PotionsT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 18.0);
+
+      LoadTreasureContainer("_MiscT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 20.0);
+
+      LoadTreasureContainer("_ArmorCommonT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 22.0);
+      LoadTreasureContainer("_ArmorUncommonT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 23.0);
+      LoadTreasureContainer("_ArmorRareT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 24.0);
+
+      LoadTreasureContainer("_RangeCommonT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 26.0);
+      LoadTreasureContainer("_RangeUncommonT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 27.0);
+      LoadTreasureContainer("_RangeRareT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 28.0);
+
+      LoadTreasureContainer("_MeleeCommonT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 30.0);
+      LoadTreasureContainer("_MeleeUncommonT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 31.0);
+      LoadTreasureContainer("_MeleeRareT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 32.0);
+
+      LoadTreasureContainer("_PotionsT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 34.0);
+   }
+
+// Generate Merchants
+    object oStore;
+    location lLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
+
+    int i;
+    for (i = 1; i < 25; i++)
+    {
+        oStore = CreateObject(OBJECT_TYPE_STORE, "merchant"+IntToString(i), lLocation);
+
+        ExecuteScript(""+GetTag(oStore), oStore);
+    }
+    SetLocalInt(GetModule(), "treasure_ready", 1);
+    SendDebugMessage("Merchants created", TRUE);
+
    object oArea = GetFirstArea();
    string sAreaResRef;
    location lBaseLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
    object oAreaRefresher;
-
-   if (FindSubString(NWNX_Administration_GetServerName(), "NS") != -1) SetLocalInt(OBJECT_SELF, "ns", 1);
 
 // Loop through all objects in the module.
    while (GetIsObjectValid(oArea))
@@ -324,7 +430,7 @@ void main()
 // It can be skipped, but it will cause merchants to lose most of their inventory
 // As well as cause no treasure to be generated.
 // For testing purposes, we shall skip creating treasures if local/no NWNX.
-   if (FindSubString(NWNX_Administration_GetServerName(), "NT") == -1)
+   if (FALSE && FindSubString(NWNX_Administration_GetServerName(), "NT") == -1)
    {
         ExecuteScript("gen_treasure", OBJECT_SELF);
    }

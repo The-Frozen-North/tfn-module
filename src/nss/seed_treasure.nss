@@ -1,4 +1,5 @@
 #include "inc_treasure"
+#include "nwnx_admin"
 
 object ChangeSpecialWeapon(object oItem, int nTopModel, int nTopColor)
 {
@@ -621,6 +622,13 @@ void CountItemsThroughTiers()
             {
                 SetLocalInt(oContainer, "item_count", nItems);
                 SetName(oContainer, GetName(oContainer)+" - Count:"+IntToString(nItems));
+
+                if (StoreCampaignObject("treasures", GetTag(oContainer), oContainer) == 0)
+                {
+                    SendDebugMessage("Aborting, failed to store "+GetTag(oContainer), TRUE);
+                    NWNX_Administration_ShutdownServer();
+                    break;
+                }
             }
         }
 
@@ -1121,21 +1129,7 @@ void main()
 
     CountItemsThroughTiers();
 
-    SendDebugMessage("Distribution finished", TRUE);
+    SetCampaignInt("treasures", "finished", 1);
 
-// ======================================================
-// MERCHANTS
-// ======================================================
-
-    object oStore;
-    location lLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
-
-    for (i = 1; i < 25; i++)
-    {
-        oStore = CreateObject(OBJECT_TYPE_STORE, "merchant"+IntToString(i), lLocation);
-
-        ExecuteScript(""+GetTag(oStore), oStore);
-    }
-    SetLocalInt(GetModule(), "treasure_ready", 1);
-    SendDebugMessage("Merchants created", TRUE);
+    SendDebugMessage("Distribution finished and treasures stored to DB", TRUE);
 }

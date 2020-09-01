@@ -7,7 +7,7 @@ services:
         image:  nwnxee/unified:build8193.13
         env_file: 
             - ${PWD-.}/config/common.env
-            - ${PWD-.}/config/nwserver_dev_nt.env
+            - ${PWD-.}/config/nwserver_dev_seed.env
         stdin_open: true
         tty: true
         volumes:
