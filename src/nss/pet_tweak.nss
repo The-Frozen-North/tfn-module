@@ -65,7 +65,7 @@ void main()
 
             fACLevel = 2.0;
 
-            fScale = 2.0;
+            fScale = 1.2;
             fScaleLevel = 0.05;
 
             fTranslation = -1.5;
