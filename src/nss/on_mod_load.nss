@@ -67,11 +67,13 @@ void main()
         {
             SendDebugMessage("Spawns database is not complete", TRUE);
             NWNX_Administration_ShutdownServer();
+            return;
         }
         else if (GetCampaignInt("treasures", "finished") != 1)
         {
             SendDebugMessage("Treasures database is not complete", TRUE);
             NWNX_Administration_ShutdownServer();
+            return;
         }
 
     }
