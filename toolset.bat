@@ -14,7 +14,6 @@ if exist "%DefaultGogPath%" (
 	exit
 )
 
-C:\Users[user]\Beamdog Library\00829\bin\win32
 set DefaultBeamdogPath=C:\Users\%USERNAME%\Beamdog Library\00785\bin\win32\nwtoolset.exe
 if exist "%DefaultBeamdogPath%" (
 	echo DefaultBeamdogPath found: "%DefaultBeamdogPath%"
