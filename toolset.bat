@@ -14,7 +14,13 @@ if exist "%DefaultGogPath%" (
 	exit
 )
 
-set DefaultBeamdogPath=C:/Users/%USERNAME%/Beamdog/7710
+C:\Users[user]\Beamdog Library\00829\bin\win32
+set DefaultBeamdogPath=C:\Users\%USERNAME%\Beamdog Library\00785\bin\win32\nwtoolset.exe
+if exist "%DefaultBeamdogPath%" (
+	echo DefaultBeamdogPath found: "%DefaultBeamdogPath%"
+	START "" "%DefaultBeamdogPath%" -userdirectory "%cd%"
+	exit
+)
 
 (for /f "usebackq tokens=1,2,*" %%a in (`reg query "HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Steam" /v UninstallString`) do set SteamPath32=%%c)>nul 2>&1
 (for /f "usebackq tokens=1,2,*" %%a in (`reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam" /v UninstallString`) do set SteamPath64=%%c)>nul 2>&1
