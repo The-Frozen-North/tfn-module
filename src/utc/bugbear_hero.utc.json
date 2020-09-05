@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 135
+    "value": 25
   },
   "BodyBag": {
     "type": "byte",
@@ -10,7 +10,7 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 10
+    "value": 12
   },
   "ChallengeRating": {
     "type": "float",
@@ -23,7 +23,7 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 4
+          "value": 0
         },
         "ClassLevel": {
           "type": "short",
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 15
+    "value": 14
   },
   "Conversation": {
     "type": "resref",
@@ -50,7 +50,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 50
+    "value": 60
   },
   "DecayTime": {
     "type": "dword",
@@ -61,13 +61,13 @@
     "value": ""
   },
   "Description": {
-    "id": 12667,
+    "id": 12410,
     "type": "cexolocstring",
     "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 16
+    "value": 13
   },
   "Disarmable": {
     "type": "byte",
@@ -80,28 +80,28 @@
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_aarcl004"
+          "value": "nw_aarcl008"
         }
       },
       {
-        "__struct_id": 16384,
+        "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp026"
+          "value": "nw_wswbs001"
         }
       },
       {
-        "__struct_id": 32768,
+        "__struct_id": 32,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp026"
+          "value": "nw_ashto001"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 14
+    "value": 1
   },
   "FeatList": {
     "type": "list",
@@ -110,7 +110,14 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 2
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 3
         }
       },
       {
@@ -118,6 +125,34 @@
         "Feat": {
           "type": "word",
           "value": 4
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 194
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 293
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 326
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 14
         }
       },
       {
@@ -145,23 +180,16 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 45
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
           "value": 46
         }
       }
     ]
   },
   "FirstName": {
-    "id": 12671,
+    "id": 12412,
     "type": "cexolocstring",
     "value": {
-      "0": "Lizardfolk Soldier"
+      "0": "Bugbear Hero"
     }
   },
   "fortbonus": {
@@ -174,15 +202,15 @@
   },
   "GoodEvil": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "HitPoints": {
     "type": "short",
-    "value": 50
+    "value": 60
   },
   "Int": {
     "type": "byte",
-    "value": 9
+    "value": 10
   },
   "Interruptable": {
     "type": "byte",
@@ -202,7 +230,7 @@
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "Lootable": {
     "type": "byte",
@@ -210,7 +238,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 60
+    "value": 70
   },
   "NaturalAC": {
     "type": "byte",
@@ -222,7 +250,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 17
+    "value": 14
   },
   "PerceptionRange": {
     "type": "byte",
@@ -238,11 +266,11 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 268
+    "value": 160
   },
   "Race": {
     "type": "byte",
-    "value": 15
+    "value": 12
   },
   "refbonus": {
     "type": "short",
@@ -503,19 +531,35 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 60
+    "value": 12
   },
   "SpecAbilityList": {
     "type": "list",
-    "value": []
+    "value": [
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 299
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 3
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      }
+    ]
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 4
+    "value": 0
   },
   "Str": {
     "type": "byte",
-    "value": 16
+    "value": 15
   },
   "Subrace": {
     "type": "cexostring",
@@ -523,11 +567,11 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_OLDWARRA"
+    "value": "NW_BUGCHIEFA"
   },
   "Tail_New": {
     "type": "dword",
-    "value": 1
+    "value": 0
   },
   "TemplateList": {
     "type": "list",
@@ -535,7 +579,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "lizard_soldier"
+    "value": "bugbear_hero"
   },
   "VarTable": {
     "type": "list",
@@ -552,7 +596,7 @@
         },
         "Value": {
           "type": "cexostring",
-          "value": "rand_lizardw"
+          "value": "rand_bugbearh"
         }
       }
     ]
@@ -567,7 +611,7 @@
   },
   "Wings_New": {
     "type": "dword",
-    "value": 205
+    "value": 0
   },
   "Wis": {
     "type": "byte",

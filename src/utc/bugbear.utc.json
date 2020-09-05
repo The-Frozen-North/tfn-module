@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 135
+    "value": 29
   },
   "BodyBag": {
     "type": "byte",
@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 10
+    "value": 9
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 5.0
+    "value": 3.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 5
+          "value": 3
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 15
+    "value": 13
   },
   "Conversation": {
     "type": "resref",
@@ -50,7 +50,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 50
+    "value": 30
   },
   "DecayTime": {
     "type": "dword",
@@ -61,17 +61,17 @@
     "value": ""
   },
   "Description": {
-    "id": 12667,
+    "id": 12410,
     "type": "cexolocstring",
     "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 16
+    "value": 14
   },
   "Disarmable": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "Equip_ItemList": {
     "type": "list",
@@ -80,28 +80,14 @@
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_aarcl004"
-        }
-      },
-      {
-        "__struct_id": 16384,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_it_crewpsp026"
-        }
-      },
-      {
-        "__struct_id": 32768,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_it_crewpsp026"
+          "value": "nw_aarcl010"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 14
+    "value": 13
   },
   "FeatList": {
     "type": "list",
@@ -110,7 +96,14 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 2
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 3
         }
       },
       {
@@ -124,21 +117,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 32
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
           "value": 289
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 44
         }
       },
       {
@@ -158,10 +137,10 @@
     ]
   },
   "FirstName": {
-    "id": 12671,
+    "id": 12411,
     "type": "cexolocstring",
     "value": {
-      "0": "Lizardfolk Soldier"
+      "0": "Bugbear"
     }
   },
   "fortbonus": {
@@ -174,15 +153,15 @@
   },
   "GoodEvil": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "HitPoints": {
     "type": "short",
-    "value": 50
+    "value": 30
   },
   "Int": {
     "type": "byte",
-    "value": 9
+    "value": 10
   },
   "Interruptable": {
     "type": "byte",
@@ -202,7 +181,7 @@
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "Lootable": {
     "type": "byte",
@@ -210,7 +189,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 60
+    "value": 33
   },
   "NaturalAC": {
     "type": "byte",
@@ -222,7 +201,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 17
+    "value": 14
   },
   "PerceptionRange": {
     "type": "byte",
@@ -238,11 +217,11 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 268
+    "value": 158
   },
   "Race": {
     "type": "byte",
-    "value": 15
+    "value": 12
   },
   "refbonus": {
     "type": "short",
@@ -328,7 +307,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 7
         }
       },
       {
@@ -349,7 +328,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 7
         }
       },
       {
@@ -363,28 +342,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 7
         }
       },
       {
@@ -426,7 +384,28 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 7
         }
       },
       {
@@ -503,7 +482,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 60
+    "value": 12
   },
   "SpecAbilityList": {
     "type": "list",
@@ -515,7 +494,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 16
+    "value": 14
   },
   "Subrace": {
     "type": "cexostring",
@@ -523,11 +502,11 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_OLDWARRA"
+    "value": "NW_BUGBEARA"
   },
   "Tail_New": {
     "type": "dword",
-    "value": 1
+    "value": 0
   },
   "TemplateList": {
     "type": "list",
@@ -535,7 +514,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "lizard_soldier"
+    "value": "bugbear"
   },
   "VarTable": {
     "type": "list",
@@ -552,7 +531,7 @@
         },
         "Value": {
           "type": "cexostring",
-          "value": "rand_lizardw"
+          "value": "rand_bugbear"
         }
       }
     ]
@@ -567,7 +546,7 @@
   },
   "Wings_New": {
     "type": "dword",
-    "value": 205
+    "value": 0
   },
   "Wis": {
     "type": "byte",

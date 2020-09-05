@@ -312,7 +312,7 @@ void main()
 
     // * Fire User Defined Event 1003
     // *
-    // SetSpawnInCondition(NW_FLAG_END_COMBAT_ROUND_EVENT);
+    SetSpawnInCondition(NW_FLAG_END_COMBAT_ROUND_EVENT);
 
     // * Fire User Defined Event 1004
     // *

@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 135
+    "value": 160
   },
   "BodyBag": {
     "type": "byte",
@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 5.0
+    "value": 4.0
   },
   "ClassList": {
     "type": "list",
@@ -23,11 +23,11 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 4
+          "value": 26
         },
         "ClassLevel": {
           "type": "short",
-          "value": 5
+          "value": 4
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 15
+    "value": 13
   },
   "Conversation": {
     "type": "resref",
@@ -50,7 +50,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 50
+    "value": 32
   },
   "DecayTime": {
     "type": "dword",
@@ -61,7 +61,7 @@
     "value": ""
   },
   "Description": {
-    "id": 12667,
+    "id": 12721,
     "type": "cexolocstring",
     "value": {}
   },
@@ -77,31 +77,38 @@
     "type": "list",
     "value": [
       {
-        "__struct_id": 2,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_aarcl004"
-        }
-      },
-      {
         "__struct_id": 16384,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp026"
+          "value": "nw_it_crewps007"
         }
       },
       {
         "__struct_id": 32768,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp026"
+          "value": "nw_it_crewps007"
+        }
+      },
+      {
+        "__struct_id": 65536,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "nw_it_crewps007"
+        }
+      },
+      {
+        "__struct_id": 131072,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "nw_it_creitem007"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 14
+    "value": 9
   },
   "FeatList": {
     "type": "list",
@@ -110,21 +117,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 2
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 4
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 32
+          "value": 228
         }
       },
       {
@@ -133,36 +126,13 @@
           "type": "word",
           "value": 289
         }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 44
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 45
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 46
-        }
       }
     ]
   },
   "FirstName": {
-    "id": 12671,
+    "id": 12722,
     "type": "cexolocstring",
-    "value": {
-      "0": "Lizardfolk Soldier"
-    }
+    "value": {}
   },
   "fortbonus": {
     "type": "short",
@@ -170,7 +140,7 @@
   },
   "Gender": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "GoodEvil": {
     "type": "byte",
@@ -178,11 +148,11 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 50
+    "value": 32
   },
   "Int": {
     "type": "byte",
-    "value": 9
+    "value": 7
   },
   "Interruptable": {
     "type": "byte",
@@ -210,11 +180,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 60
+    "value": 36
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 0
+    "value": 3
   },
   "NoPermDeath": {
     "type": "byte",
@@ -222,7 +192,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 17
+    "value": 11
   },
   "PerceptionRange": {
     "type": "byte",
@@ -238,11 +208,11 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 268
+    "value": 302
   },
   "Race": {
     "type": "byte",
-    "value": 15
+    "value": 19
   },
   "refbonus": {
     "type": "short",
@@ -298,7 +268,7 @@
   },
   "ScriptUserDefine": {
     "type": "resref",
-    "value": "ai_onuserdef"
+    "value": "nw_c2_dimdoor"
   },
   "SkillList": {
     "type": "list",
@@ -328,7 +298,21 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 11
         }
       },
       {
@@ -349,21 +333,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 11
         }
       },
       {
@@ -503,7 +473,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 60
+    "value": 87
   },
   "SpecAbilityList": {
     "type": "list",
@@ -511,11 +481,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 4
+    "value": 0
   },
   "Str": {
     "type": "byte",
-    "value": 16
+    "value": 13
   },
   "Subrace": {
     "type": "cexostring",
@@ -523,11 +493,11 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_OLDWARRA"
+    "value": "NW_SPIDPHASE"
   },
   "Tail_New": {
     "type": "dword",
-    "value": 1
+    "value": 0
   },
   "TemplateList": {
     "type": "list",
@@ -535,27 +505,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "lizard_soldier"
-  },
-  "VarTable": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "spawn_script"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 3
-        },
-        "Value": {
-          "type": "cexostring",
-          "value": "rand_lizardw"
-        }
-      }
-    ]
+    "value": "spider_phase"
   },
   "WalkRate": {
     "type": "int",
@@ -567,10 +517,10 @@
   },
   "Wings_New": {
     "type": "dword",
-    "value": 205
+    "value": 0
   },
   "Wis": {
     "type": "byte",
-    "value": 10
+    "value": 13
   }
 }
