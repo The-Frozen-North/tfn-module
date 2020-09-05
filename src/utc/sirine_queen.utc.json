@@ -1,20 +1,96 @@
 {
   "__data_type": "UTC ",
+  "Appearance_Head": {
+    "type": "byte",
+    "value": 15
+  },
   "Appearance_Type": {
     "type": "word",
-    "value": 126
+    "value": 1
+  },
+  "ArmorPart_RFoot": {
+    "type": "byte",
+    "value": 1
   },
   "BodyBag": {
     "type": "byte",
     "value": 0
   },
+  "BodyPart_Belt": {
+    "type": "byte",
+    "value": 0
+  },
+  "BodyPart_LBicep": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LFArm": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LFoot": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LHand": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LShin": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LShoul": {
+    "type": "byte",
+    "value": 0
+  },
+  "BodyPart_LThigh": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_Neck": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_Pelvis": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RBicep": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RFArm": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RHand": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RShin": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RShoul": {
+    "type": "byte",
+    "value": 0
+  },
+  "BodyPart_RThigh": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_Torso": {
+    "type": "byte",
+    "value": 1
+  },
   "Cha": {
     "type": "byte",
-    "value": 20
+    "value": 18
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 5.0
+    "value": 7.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +103,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 5
+          "value": 8
         },
         "KnownList1": {
           "type": "list",
@@ -101,7 +177,7 @@
               "__struct_id": 3,
               "Spell": {
                 "type": "word",
-                "value": 34
+                "value": 83
               },
               "SpellFlags": {
                 "type": "byte",
@@ -126,19 +202,115 @@
                 "type": "byte",
                 "value": 0
               }
+            },
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
+                "value": 157
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 1
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
+                "value": 167
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 1
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "KnownList3": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
+                "value": 26
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 1
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
+                "value": 78
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 1
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
+                "value": 166
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 1
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 0
+              }
             }
           ]
         }
       }
     ]
   },
+  "Color_Hair": {
+    "type": "byte",
+    "value": 23
+  },
+  "Color_Skin": {
+    "type": "byte",
+    "value": 1
+  },
+  "Color_Tattoo1": {
+    "type": "byte",
+    "value": 1
+  },
+  "Color_Tattoo2": {
+    "type": "byte",
+    "value": 1
+  },
   "Comment": {
     "type": "cexostring",
-    "value": ""
+    "value": "Nymph in the Spirit Wood plot: M2Q2FNYMPH"
   },
   "Con": {
     "type": "byte",
-    "value": 12
+    "value": 14
   },
   "Conversation": {
     "type": "resref",
@@ -150,7 +322,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 30
+    "value": 48
   },
   "DecayTime": {
     "type": "dword",
@@ -179,17 +351,24 @@
     "type": "list",
     "value": [
       {
+        "__struct_id": 2,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "armor18"
+        }
+      },
+      {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wswmdg002"
+          "value": "nw_wspmku002"
         }
       },
       {
         "__struct_id": 2048,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wammar008"
+          "value": "nw_wammar003"
         }
       }
     ]
@@ -205,7 +384,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 0
+          "value": 4
         }
       },
       {
@@ -219,6 +398,13 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 7
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 871
         }
       },
@@ -226,14 +412,14 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 10
+          "value": 423
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 22
+          "value": 42
         }
       },
       {
@@ -241,6 +427,13 @@
         "Feat": {
           "type": "word",
           "value": 289
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 44
         }
       },
       {
@@ -263,7 +456,7 @@
     "id": 12662,
     "type": "cexolocstring",
     "value": {
-      "0": "Sirine"
+      "0": "Sirine Queen"
     }
   },
   "fortbonus": {
@@ -280,11 +473,11 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 30
+    "value": 48
   },
   "Int": {
     "type": "byte",
-    "value": 16
+    "value": 12
   },
   "Interruptable": {
     "type": "byte",
@@ -305,7 +498,7 @@
         "__struct_id": 0,
         "InventoryRes": {
           "type": "resref",
-          "value": "nw_wbwmsh002"
+          "value": "nw_wbwmsh008"
         },
         "Repos_PosX": {
           "type": "word",
@@ -332,7 +525,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 35
+    "value": 64
   },
   "NaturalAC": {
     "type": "byte",
@@ -344,7 +537,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 15
+    "value": 1
   },
   "PerceptionRange": {
     "type": "byte",
@@ -360,7 +553,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 261
+    "value": 25
   },
   "Race": {
     "type": "byte",
@@ -436,7 +629,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 12
         }
       },
       {
@@ -450,7 +643,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 12
         }
       },
       {
@@ -464,28 +657,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 12
         }
       },
       {
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 9
+          "value": 12
         }
       },
       {
@@ -499,7 +678,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 12
         }
       },
       {
@@ -520,7 +699,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 12
         }
       },
       {
@@ -548,7 +727,21 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 12
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 12
         }
       },
       {
@@ -576,7 +769,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 12
         }
       },
       {
@@ -625,7 +818,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 90
+    "value": 205
   },
   "SpecAbilityList": {
     "type": "list",
@@ -638,7 +831,22 @@
         },
         "SpellCasterLevel": {
           "type": "byte",
-          "value": 6
+          "value": 8
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 45
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 8
         },
         "SpellFlags": {
           "type": "byte",
@@ -653,7 +861,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 14
+    "value": 12
   },
   "Subrace": {
     "type": "cexostring",
@@ -661,7 +869,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": ""
+    "value": "M2Q2FNymph"
   },
   "Tail_New": {
     "type": "dword",
@@ -673,7 +881,27 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "sirine"
+    "value": "sirine_queen"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "boss"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
@@ -689,6 +917,6 @@
   },
   "Wis": {
     "type": "byte",
-    "value": 13
+    "value": 10
   }
 }

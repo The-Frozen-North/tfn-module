@@ -487,6 +487,44 @@
                     "__struct_id": 0,
                     "CR": {
                       "type": "float",
+                      "value": 7.0
+                    },
+                    "FACTION": {
+                      "type": "cexostring",
+                      "value": "Shadow Druid"
+                    },
+                    "NAME": {
+                      "type": "cexostring",
+                      "value": "Sirine Queen"
+                    },
+                    "RESREF": {
+                      "type": "resref",
+                      "value": "sirine_queen"
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "CR": {
+                      "type": "float",
+                      "value": 3.0
+                    },
+                    "FACTION": {
+                      "type": "cexostring",
+                      "value": "Merchant"
+                    },
+                    "NAME": {
+                      "type": "cexostring",
+                      "value": "Terari"
+                    },
+                    "RESREF": {
+                      "type": "resref",
+                      "value": "terari"
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "CR": {
+                      "type": "float",
                       "value": 3.0
                     },
                     "FACTION": {
@@ -2500,7 +2538,7 @@
                           "__struct_id": 0,
                           "CR": {
                             "type": "float",
-                            "value": 6.0
+                            "value": 5.0
                           },
                           "FACTION": {
                             "type": "cexostring",
@@ -2513,6 +2551,25 @@
                           "RESREF": {
                             "type": "resref",
                             "value": "sirine"
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "CR": {
+                            "type": "float",
+                            "value": 3.0
+                          },
+                          "FACTION": {
+                            "type": "cexostring",
+                            "value": "Shadow Druid"
+                          },
+                          "NAME": {
+                            "type": "cexostring",
+                            "value": "Sirine Slave"
+                          },
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "sirine_slave"
                           }
                         }
                       ]
@@ -3057,13 +3114,13 @@
                             "type": "cexostring",
                             "value": "Drow"
                           },
-                          "NAME": {
-                            "type": "cexostring",
-                            "value": "Phase Spider"
-                          },
                           "RESREF": {
                             "type": "resref",
                             "value": "spider_phase"
+                          },
+                          "STRREF": {
+                            "type": "dword",
+                            "value": 12722
                           }
                         },
                         {
