@@ -1944,7 +1944,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Ha! Always like him to get tangled up with something like the sirines. Poor bastard's still recovering from their wicked spells. Anyways, here's some coin for ya, for the teasin' I get to lay on him later."
+            "0": "Ha! Always like him to get tangled up with something like the sirines. Poor bastard's told me all about it. Anyways, here's some coin for ya, as promised. Ya did get him out in one piece."
           }
         }
       },
@@ -2106,12 +2106,118 @@
           "type": "cexolocstring",
           "value": {}
         }
+      },
+      {
+        "__struct_id": 21,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 23
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Har har! Tis always like you to get into trouble with the ladies, eh Terari? "
+          }
+        }
+      },
+      {
+        "__struct_id": 22,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 0
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": "TERARI_HOME"
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartAction>[Sigh.]</Start> You'll never let me hear the end of it, will you?"
+          }
+        }
       }
     ]
   },
   "NumWords": {
     "type": "dword",
-    "value": 638
+    "value": 664
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -3447,6 +3553,63 @@
             "0": "I have found Terari."
           }
         }
+      },
+      {
+        "__struct_id": 23,
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "Index": {
+                "type": "dword",
+                "value": 22
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
+          }
+        }
       }
     ]
   },
@@ -3457,6 +3620,17 @@
         "__struct_id": 0,
         "Active": {
           "type": "resref",
+          "value": "dlg_q_chk_atp2"
+        },
+        "Index": {
+          "type": "dword",
+          "value": 21
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Active": {
+          "type": "resref",
           "value": "dlg_chk_talked"
         },
         "Index": {
@@ -3465,7 +3639,7 @@
         }
       },
       {
-        "__struct_id": 1,
+        "__struct_id": 2,
         "Active": {
           "type": "resref",
           "value": ""
