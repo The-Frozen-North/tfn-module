@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 109
+    "value": 69
   },
   "BodyBag": {
     "type": "byte",
@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 15
+    "value": 11
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 3.0
+    "value": 5.0
   },
   "ClassList": {
     "type": "list",
@@ -23,11 +23,11 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 24
+          "value": 16
         },
         "ClassLevel": {
           "type": "short",
-          "value": 3
+          "value": 5
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 10
+    "value": 18
   },
   "Conversation": {
     "type": "resref",
@@ -50,7 +50,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 18
+    "value": 50
   },
   "DecayTime": {
     "type": "dword",
@@ -61,7 +61,7 @@
     "value": ""
   },
   "Description": {
-    "id": 12635,
+    "id": 12801,
     "type": "cexolocstring",
     "value": {}
   },
@@ -77,24 +77,17 @@
     "type": "list",
     "value": [
       {
-        "__struct_id": 16384,
+        "__struct_id": 65536,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp004"
-        }
-      },
-      {
-        "__struct_id": 32768,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_it_crewpsp004"
+          "value": "cre_elewc"
         }
       },
       {
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_mepfs"
+          "value": "cre_elews"
         }
       }
     ]
@@ -117,16 +110,23 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 23
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 289
         }
       }
     ]
   },
   "FirstName": {
-    "id": 6001,
+    "id": 12802,
     "type": "cexolocstring",
     "value": {
-      "0": "Fire Mephit"
+      "0": "Water Elemental"
     }
   },
   "fortbonus": {
@@ -135,7 +135,7 @@
   },
   "Gender": {
     "type": "byte",
-    "value": 0
+    "value": 4
   },
   "GoodEvil": {
     "type": "byte",
@@ -143,11 +143,11 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 18
+    "value": 50
   },
   "Int": {
     "type": "byte",
-    "value": 12
+    "value": 10
   },
   "Interruptable": {
     "type": "byte",
@@ -175,11 +175,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 18
+    "value": 70
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 2
+    "value": 4
   },
   "NoPermDeath": {
     "type": "byte",
@@ -187,7 +187,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 25
+    "value": 22
   },
   "PerceptionRange": {
     "type": "byte",
@@ -203,11 +203,11 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 246
+    "value": 312
   },
   "Race": {
     "type": "byte",
-    "value": 20
+    "value": 16
   },
   "refbonus": {
     "type": "short",
@@ -293,7 +293,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 10
         }
       },
       {
@@ -314,35 +314,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 6
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 10
         }
       },
       {
@@ -391,7 +363,35 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 6
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 10
         }
       },
       {
@@ -468,27 +468,11 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 63
+    "value": 35
   },
   "SpecAbilityList": {
     "type": "list",
-    "value": [
-      {
-        "__struct_id": 4,
-        "Spell": {
-          "type": "word",
-          "value": 219
-        },
-        "SpellCasterLevel": {
-          "type": "byte",
-          "value": 0
-        },
-        "SpellFlags": {
-          "type": "byte",
-          "value": 1
-        }
-      }
-    ]
+    "value": []
   },
   "StartingPackage": {
     "type": "byte",
@@ -496,7 +480,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 12
+    "value": 16
   },
   "Subrace": {
     "type": "cexostring",
@@ -504,7 +488,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_MEPFIRE"
+    "value": "NW_WATER"
   },
   "Tail_New": {
     "type": "dword",
@@ -516,7 +500,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "mepfire"
+    "value": "elemental_water"
   },
   "WalkRate": {
     "type": "int",

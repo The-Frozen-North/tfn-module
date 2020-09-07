@@ -225,6 +225,25 @@
                     },
                     "FACTION": {
                       "type": "cexostring",
+                      "value": "Merchant"
+                    },
+                    "NAME": {
+                      "type": "cexostring",
+                      "value": "Bree"
+                    },
+                    "RESREF": {
+                      "type": "resref",
+                      "value": "bree"
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "CR": {
+                      "type": "float",
+                      "value": 4.0
+                    },
+                    "FACTION": {
+                      "type": "cexostring",
                       "value": "Bandit"
                     },
                     "NAME": {
@@ -2262,6 +2281,87 @@
                 "type": "byte",
                 "value": 22
               },
+              "LIST": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "CR": {
+                      "type": "float",
+                      "value": 5.0
+                    },
+                    "FACTION": {
+                      "type": "cexostring",
+                      "value": "Hostile"
+                    },
+                    "NAME": {
+                      "type": "cexostring",
+                      "value": "Air Elemental"
+                    },
+                    "RESREF": {
+                      "type": "resref",
+                      "value": "elemental_air"
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "CR": {
+                      "type": "float",
+                      "value": 5.0
+                    },
+                    "FACTION": {
+                      "type": "cexostring",
+                      "value": "Hostile"
+                    },
+                    "NAME": {
+                      "type": "cexostring",
+                      "value": "Earth Elemental"
+                    },
+                    "RESREF": {
+                      "type": "resref",
+                      "value": "elemental_earth"
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "CR": {
+                      "type": "float",
+                      "value": 5.0
+                    },
+                    "FACTION": {
+                      "type": "cexostring",
+                      "value": "Hostile"
+                    },
+                    "NAME": {
+                      "type": "cexostring",
+                      "value": "Fire Elemental"
+                    },
+                    "RESREF": {
+                      "type": "resref",
+                      "value": "elemental_fire"
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "CR": {
+                      "type": "float",
+                      "value": 5.0
+                    },
+                    "FACTION": {
+                      "type": "cexostring",
+                      "value": "Hostile"
+                    },
+                    "NAME": {
+                      "type": "cexostring",
+                      "value": "Water Elemental"
+                    },
+                    "RESREF": {
+                      "type": "resref",
+                      "value": "elemental_water"
+                    }
+                  }
+                ]
+              },
               "STRREF": {
                 "type": "dword",
                 "value": 6714
@@ -3307,6 +3407,44 @@
                           },
                           "NAME": {
                             "type": "cexostring",
+                            "value": "Air Mephit"
+                          },
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "mepair"
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "CR": {
+                            "type": "float",
+                            "value": 3.0
+                          },
+                          "FACTION": {
+                            "type": "cexostring",
+                            "value": "Hostile"
+                          },
+                          "NAME": {
+                            "type": "cexostring",
+                            "value": "Dust Mephit"
+                          },
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "mepdust"
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "CR": {
+                            "type": "float",
+                            "value": 3.0
+                          },
+                          "FACTION": {
+                            "type": "cexostring",
+                            "value": "Hostile"
+                          },
+                          "NAME": {
+                            "type": "cexostring",
                             "value": "Earth Mephit"
                           },
                           "RESREF": {
@@ -3369,6 +3507,82 @@
                           "RESREF": {
                             "type": "resref",
                             "value": "imp"
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "CR": {
+                            "type": "float",
+                            "value": 3.0
+                          },
+                          "FACTION": {
+                            "type": "cexostring",
+                            "value": "Hostile"
+                          },
+                          "NAME": {
+                            "type": "cexostring",
+                            "value": "Magma Mephit"
+                          },
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "mepmagma"
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "CR": {
+                            "type": "float",
+                            "value": 3.0
+                          },
+                          "FACTION": {
+                            "type": "cexostring",
+                            "value": "Hostile"
+                          },
+                          "NAME": {
+                            "type": "cexostring",
+                            "value": "Ooze Mephit"
+                          },
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "mepooze"
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "CR": {
+                            "type": "float",
+                            "value": 3.0
+                          },
+                          "FACTION": {
+                            "type": "cexostring",
+                            "value": "Hostile"
+                          },
+                          "NAME": {
+                            "type": "cexostring",
+                            "value": "Salt Mephit"
+                          },
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "mepsalt"
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "CR": {
+                            "type": "float",
+                            "value": 3.0
+                          },
+                          "FACTION": {
+                            "type": "cexostring",
+                            "value": "Hostile"
+                          },
+                          "NAME": {
+                            "type": "cexostring",
+                            "value": "Steam Mephit"
+                          },
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "mepsteam"
                           }
                         },
                         {

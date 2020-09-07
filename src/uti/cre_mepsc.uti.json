@@ -6,7 +6,7 @@
   },
   "BaseItem": {
     "type": "int",
-    "value": 72
+    "value": 71
   },
   "Charges": {
     "type": "byte",
@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 1950
+    "value": 2530
   },
   "Cursed": {
     "type": "byte",
@@ -30,17 +30,19 @@
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": ""
+    }
   },
   "Identified": {
     "type": "byte",
     "value": 0
   },
   "LocalizedName": {
-    "id": 13267,
+    "id": 13217,
     "type": "cexolocstring",
     "value": {
-      "0": "Water Mephit Claw"
+      "0": "Steam Mephit Slam"
     }
   },
   "ModelPart1": {
@@ -70,7 +72,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 2
+          "value": 1
         },
         "Param1": {
           "type": "byte",
@@ -86,7 +88,38 @@
         },
         "Subtype": {
           "type": "word",
-          "value": 6
+          "value": 10
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 4
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 1
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 16
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 13
         }
       },
       {
@@ -132,10 +165,10 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_IT_CREWPSP007"
+    "value": "NW_IT_CREWPB005"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "cre_wmephclaw"
+    "value": "cre_mepsc"
   }
 }

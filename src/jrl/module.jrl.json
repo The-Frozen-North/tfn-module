@@ -569,7 +569,7 @@
               "Text": {
                 "type": "cexolocstring",
                 "value": {
-                  "0": "Terari wants you to slay the current sirine. She is probably in the same house that he was found when kidnapped."
+                  "0": "Terari wants you to slay the current sirine queen. She is probably located in the same house he was staying in when he was kidnapped."
                 }
               }
             },
@@ -977,7 +977,24 @@
               "Text": {
                 "type": "cexolocstring",
                 "value": {
-                  "0": "Entry002"
+                  "0": "Bree has been found and is making her way back to camp. You should check in with Janken."
+                }
+              }
+            },
+            {
+              "__struct_id": 2,
+              "End": {
+                "type": "word",
+                "value": 1
+              },
+              "ID": {
+                "type": "dword",
+                "value": 3
+              },
+              "Text": {
+                "type": "cexolocstring",
+                "value": {
+                  "0": "Bree is now back at camp safely, and Janken has rewarded you for her safe return."
                 }
               }
             }
@@ -1113,7 +1130,7 @@
               "Text": {
                 "type": "cexolocstring",
                 "value": {
-                  "0": "Entry003"
+                  "0": "Terari is now back at camp safely, and Elgar has rewarded you for his safe return."
                 }
               }
             }
@@ -1739,6 +1756,91 @@
       },
       {
         "__struct_id": 20,
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "EntryList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "End": {
+                "type": "word",
+                "value": 0
+              },
+              "ID": {
+                "type": "dword",
+                "value": 1
+              },
+              "Text": {
+                "type": "cexolocstring",
+                "value": {
+                  "0": "Setara, a witch deep in the Neverwinter Wood, claims to have once been a beautiful maiden. Apparently the sirines elsewhere in the forest have a mirror that can return her to her former beauty. Setara has offered an amulet that can prolong the wearer's life to whoever can return retrieve a mirror for her."
+                }
+              }
+            },
+            {
+              "__struct_id": 1,
+              "End": {
+                "type": "word",
+                "value": 0
+              },
+              "ID": {
+                "type": "dword",
+                "value": 2
+              },
+              "Text": {
+                "type": "cexolocstring",
+                "value": {
+                  "0": "That mirror has now been found. A Mirror of Vanity, it will show whoever looks into it a reflection of great beauty. You should return it to Setara for a reward."
+                }
+              }
+            },
+            {
+              "__struct_id": 2,
+              "End": {
+                "type": "word",
+                "value": 1
+              },
+              "ID": {
+                "type": "dword",
+                "value": 3
+              },
+              "Text": {
+                "type": "cexolocstring",
+                "value": {
+                  "0": "You have given the mirror to Setara, and she bestowed upon you an amulet that can prolong the wearer's life. Unfortunately for her, it would seem that her appearance is only changed inside the mirror and not in the real world."
+                }
+              }
+            }
+          ]
+        },
+        "Name": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "The Witch's Mirror"
+          }
+        },
+        "Picture": {
+          "type": "word",
+          "value": 65535
+        },
+        "Priority": {
+          "type": "dword",
+          "value": 4
+        },
+        "Tag": {
+          "type": "cexostring",
+          "value": "q_mirror"
+        },
+        "XP": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 21,
         "Comment": {
           "type": "cexostring",
           "value": ""
