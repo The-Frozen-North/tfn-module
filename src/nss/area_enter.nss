@@ -1,6 +1,34 @@
 #include "inc_debug"
 #include "inc_horse"
 #include "inc_persist"
+#include "inc_quest"
+
+void WarningMessage(object oPC)
+{
+    string sMessage = "";
+    int nQuest = GetQuestEntry(oPC, "q_wailing");
+
+    if (nQuest < 2)
+    {
+        sMessage = "You should return to the academy and speak to Sedos.";
+    }
+    else if (nQuest < 3)
+    {
+        sMessage = "You should return to the academy and head downstairs to Harben to complete your training.";
+    }
+    else if (nQuest < 4)
+    {
+        sMessage = "You should return to the academy and speak to Sedos to get your first mission.";
+    }
+    else
+    {
+        return;
+    }
+
+    if (sMessage != "") FloatingTextStringOnCreature(sMessage, oPC, FALSE);
+
+}
+
 
 void main()
 {
@@ -8,6 +36,9 @@ void main()
 
 // only trigger this for PCs
        if (!GetIsPC(oPC)) return;
+
+       string sResRef = GetStringLeft(GetResRef(OBJECT_SELF), 4);
+       if (sResRef != "acad") DelayCommand(0.5, WarningMessage(oPC));
 
        SendDebugMessage(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+", tag: "+GetTag(OBJECT_SELF)+", resref: "+GetResRef(OBJECT_SELF), TRUE);
 
