@@ -267,7 +267,7 @@ void SpawnCommoner(object oArea, struct CommonerSettings sSettings)
 
     SetEventScript(oCommoner, EVENT_SCRIPT_CREATURE_ON_DIALOGUE, "ai_on_conversec");
     DeleteLocalInt(oCommoner, "respawn");
-    DeleteLocalString(oCommoner, "heartbeat_script");
+    SetLocalString(oCommoner, "heartbeat_script", "ai_commoner");
     SetLocalInt(oCommoner, "ambient", 1);
 
     if (!sSettings.StationaryCommoners)
