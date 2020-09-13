@@ -241,7 +241,7 @@
               "__struct_id": 3,
               "Spell": {
                 "type": "word",
-                "value": 11
+                "value": 34
               },
               "SpellFlags": {
                 "type": "byte",
@@ -256,7 +256,7 @@
               "__struct_id": 3,
               "Spell": {
                 "type": "word",
-                "value": 34
+                "value": 425
               },
               "SpellFlags": {
                 "type": "byte",
@@ -622,7 +622,7 @@
   },
   "Conversation": {
     "type": "resref",
-    "value": ""
+    "value": "realm_spirit"
   },
   "CRAdjust": {
     "type": "int",
@@ -690,7 +690,7 @@
   },
   "FactionID": {
     "type": "word",
-    "value": 1
+    "value": 20
   },
   "FeatList": {
     "type": "list",
@@ -828,7 +828,7 @@
   },
   "IsImmortal": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "IsPC": {
     "type": "byte",
@@ -867,7 +867,7 @@
   },
   "PerceptionRange": {
     "type": "byte",
-    "value": 11
+    "value": 10
   },
   "Phenotype": {
     "type": "int",
@@ -1164,7 +1164,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "M2Q2GSpirit"
+    "value": "realm_spirit"
   },
   "Tail_New": {
     "type": "dword",
@@ -1194,6 +1194,21 @@
         "Value": {
           "type": "cexostring",
           "value": "spawn_spirit"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest1"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "03_q_dryad"
         }
       }
     ]

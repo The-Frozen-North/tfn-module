@@ -17,6 +17,8 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
       string sResRef = GetResRef(oArea);
       int nMax = 100;
 
+      string sSpawnScript = GetLocalString(oArea, "random"+IntToString(nTarget)+"_spawn_script");
+
 // there's a variable amount of enemies, based on how many spawn points there are in the area
       int nTotalSpawns = (nSpawnPoints/6) + (Random(nSpawnPoints/8));
       if (nTotalSpawns > nMax) nMax = 100;
@@ -43,7 +45,11 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
            oSpawnWP = GetObjectByTag(sResRef+"_random"+IntToString(nTarget)+"_spawn_point"+IntToString(Random(nSpawnPoints)+1));
            vSpawnWP = GetPosition(oSpawnWP);
 
+
+
            oCreature = CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), Location(oArea, Vector(vSpawnWP.x, vSpawnWP.y, vSpawnWP.z), IntToFloat(Random(360)+1)));
+
+           if (sSpawnScript != "") ExecuteScript(sSpawnScript, oCreature);
 
 // Store the creature so it can be deleted later.
            SetLocalObject(oArea, "random"+IntToString(nTarget)+"_creature"+IntToString(nSpawn), oCreature);
