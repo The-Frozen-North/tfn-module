@@ -5,10 +5,14 @@
 
 void CreateAmbush(int nTarget, object oArea, location lLocation)
 {
+    string sSpawnScript = GetLocalString(oArea, "random"+IntToString(nTarget)+"_spawn_script");
+
     object oEnemy1 = CreateObject(OBJECT_TYPE_CREATURE, SpawnRef(OBJECT_INVALID, oArea, nTarget), lLocation, TRUE);
     SetLocalInt(oEnemy1, "ambush", 1);
+    if (sSpawnScript != "") ExecuteScript(sSpawnScript, oEnemy1);
     object oEnemy2 = CreateObject(OBJECT_TYPE_CREATURE, SpawnRef(OBJECT_INVALID, oArea, nTarget), lLocation, TRUE);
     SetLocalInt(oEnemy2, "ambush", 1);
+    if (sSpawnScript != "") ExecuteScript(sSpawnScript, oEnemy2);
 
     DestroyObject(oEnemy1, 300.0);
     DestroyObject(oEnemy2, 300.0);
