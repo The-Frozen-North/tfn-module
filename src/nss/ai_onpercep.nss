@@ -1,166 +1,191 @@
-//:://////////////////////////////////////////////////
-//:: NW_C2_DEFAULT2
-/*
-  Default OnPerception event handler for NPCs.
+/************************ [On Percieve] ****************************************
+    Filename: ai_onpercep or nw_c2_default2
+************************* [On Percieve] ****************************************
+    If the target is an enemy, attack
+    Will determine combat round on that person, is an enemy, basically.
+    Includes shouting for a big radius - if the spawn in condition is set to this.
 
-  Handles behavior when perceiving a creature for the
-  first time.
- */
-//:://////////////////////////////////////////////////
-/*
-Patch 1.71
+    NOTE: Debug strings in this file will be uncommented for speed by default.
+          - It is one of the most intensive scripts as it runs so often.
+          - Attempted to optimise as much as possible.
+************************* [History] ********************************************
+    1.3 - We include inc_ai_other to initiate combat (or go into combat again)
+                - inc_ai_other holds all other needed functions/integers ETC.
+        - Turn off hide things.
+        - Added "Only attack if attacked"
+        - Removed special conversation things. Almost no one uses them, and the taunt system is easier.
+        - Should now search around if they move to a dead body, and only once they get there.
+************************* [Workings] *******************************************
+    It fires:
 
-- better heard behavior
-*/
+    - When a creature enters it perception range (Set in creature properties) and
+      is seen or heard.
+    - When a creature uses invisiblity/leaves the area in the creatures perception
+      range
+    - When a creature appears suddenly, already in the perception range (not
+      the other way round, normally)
+    - When a creature moves out of the creatures perception range, and therefore
+      becomes unseen.
+************************* [Arguments] ******************************************
+    Arguments: GetLastPerceived, GetLastPerceptionSeen, GetLastPerceptionHeard,
+               GetLastPerceptionVanished, GetLastPerceptionInaudible.
+************************* [On Percieve] ***************************************/
 
-#include "nw_i0_generic"
+#include "inc_ai_other"
 
 void main()
 {
-    // * if not runnning normal or better Ai then exit for performance reasons
-    if (GetAILevel() == AI_LEVEL_VERY_LOW) return;
+    // Percieve pre event.
+    if(FireUserEvent(AI_FLAG_UDE_PERCIEVE_PRE_EVENT, EVENT_PERCIEVE_PRE_EVENT))
+        // We may exit if it fires
+        if(ExitFromUDE(EVENT_PERCIEVE_PRE_EVENT)) return;
 
-    object oPercep = GetLastPerceived();
+    // AI status check. Is the AI on?
+    if(GetAIOff()) return;
+
+    // Declare main things.
+    // - We declare OUTSIDE if's JUST IN CASE!
+    object oPerceived = GetLastPerceived();
+    object oAttackTarget = GetAttackTarget();
     int bSeen = GetLastPerceptionSeen();
     int bHeard = GetLastPerceptionHeard();
-    if (bHeard == FALSE)
-    {
-        // Has someone vanished in front of me?
-        bHeard = GetLastPerceptionVanished();
-    }
 
-    // This will cause the NPC to speak their one-liner
-    // conversation on perception even if they are already
-    // in combat.
-    if(GetSpawnInCondition(NW_FLAG_SPECIAL_COMBAT_CONVERSATION)
-       && GetIsPC(oPercep)
-       && bSeen)
+    // Need to be valid and not ignorable.
+    if(GetIsObjectValid(oPerceived) &&
+      !GetIsDM(oPerceived) &&
+      !GetIgnore(oPerceived))
     {
-        SpeakOneLinerConversation();
-    }
-
-// Buff ourselves up right away if we should
-    if (GetIsEnemy(GetLastPerceived()) && GetSpawnInCondition(NW_FLAG_FAST_BUFF_ENEMY))
-    {
-        // This will return TRUE if an enemy was within 40.0 m
-        // and we buffed ourselves up instantly to respond --
-        // simulates a spellcaster with protections enabled
-        // already.
-        if(TalentAdvancedBuff(40.0))
+        // First, easy enemy checks.
+        if(GetIsEnemy(oPerceived) && !GetFactionEqual(oPerceived))
         {
-            // This is a one-shot deal
-            SetSpawnInCondition(NW_FLAG_FAST_BUFF_ENEMY, FALSE);
+            // Turn of hiding, a timer to activate Hiding in the main file. This is
+            // done in each of the events, with the opposition checking seen/heard.
+            TurnOffHiding(oPerceived);
 
-            if (GetLocalInt(OBJECT_SELF, "rest") < 1) SetLocalInt(OBJECT_SELF, "rest", 1);
-
-            // This return means we skip sending the user-defined
-            // heartbeat signal in this one case.
-            return;
-        }
-    }
-
-    // March 5 2003 Brent
-    // Had to add this section back in, since  modifications were not taking this specific
-    // example into account -- it made invisibility basically useless.
-    //If the last perception event was hearing based or if someone vanished then go to search mode
-    if ((GetLastPerceptionVanished()) && GetIsEnemy(GetLastPerceived()))
-    {
-        object oGone = GetLastPerceived();
-        if((GetAttemptedAttackTarget() == GetLastPerceived() ||
-           GetAttemptedSpellTarget() == GetLastPerceived() ||
-           GetAttackTarget() == GetLastPerceived()) && GetArea(GetLastPerceived()) != GetArea(OBJECT_SELF))
-        {
-           ClearAllActions();
-           DetermineCombatRound();
-        }
-    }
-
-    // This section has been heavily revised while keeping the
-    // pre-existing behavior:
-    // - If we're in combat, keep fighting.
-    // - If not and we've perceived an enemy, start to fight.
-    //   Even if the perception event was a 'vanish', that's
-    //   still what we do anyway, since that will keep us
-    //   fighting any visible targets.
-    // - If we're not in combat and haven't perceived an enemy,
-    //   see if the perception target is a PC and if we should
-    //   speak our attention-getting one-liner.
-    if (GetIsInCombat(OBJECT_SELF))
-    {
-        // don't do anything else, we're busy
-        //MyPrintString("GetIsFighting: TRUE");
-
-    }
-    // * BK FEB 2003 Only fight if you can see them. DO NOT RELY ON HEARING FOR ENEMY DETECTION
-    else if (GetIsEnemy(oPercep) && bSeen)
-    { // SpawnScriptDebugger();
-        //MyPrintString("GetIsEnemy: TRUE");
-        // We spotted an enemy and we're not already fighting
-        if(!GetHasEffect(EFFECT_TYPE_SLEEP)) {
-            if(GetBehaviorState(NW_FLAG_BEHAVIOR_SPECIAL))
+            // Well, are we both inaudible and vanished?
+            // * the GetLastPerception should only say what specific event has fired!
+            if(GetLastPerceptionInaudible() || GetLastPerceptionVanished())
             {
-                //MyPrintString("DetermineSpecialBehavior");
-                DetermineSpecialBehavior();
-            } else
+                // If they just became invisible because of the spell
+                // invisiblity, or improved invisiblity...we set a local object.
+                // - Beta: Added in ethereal as well.
+                if(GetHasEffect(EFFECT_TYPE_INVISIBILITY, oPerceived) ||
+                   GetHasEffect(EFFECT_TYPE_ETHEREAL, oPerceived) ||
+                   GetStealthMode(oPerceived) == STEALTH_MODE_ACTIVATED)
+                {
+                    // Set object, AND the location they went invisible!
+                    SetAIObject(AI_LAST_TO_GO_INVISIBLE, oPerceived);
+                    // We also set thier location for AOE dispelling - same name
+                    SetLocalLocation(OBJECT_SELF, AI_LAST_TO_GO_INVISIBLE, GetLocation(oPerceived));
+                }
+
+                // If they were our target, follow! >:-D
+                // - Optional, on spawn option, for following through areas.
+                if(oAttackTarget == oPerceived)
+                {
+                    // This means they have exited the area! follow!
+                    if(GetArea(oPerceived) != GetArea(OBJECT_SELF))
+                    {
+                        ClearAllActions();
+                        // 51: "[Perception] Our Enemy Target changed areas. Stopping, moving too...and attack... [Percieved] " + GetName(oPerceived)
+                        DebugActionSpeakByInt(51, oPerceived);
+                        // Call to stop silly moving to enemies if we are fleeing
+                        ActionMoveToEnemy(oPerceived);
+                    }
+                    // - Added check for not casting a spell. If we are, we finnish
+                    //  (EG: AOE spell) and automatically carry on.
+                    else if(GetCurrentAction() != ACTION_CASTSPELL)
+                    {
+                        ClearAllActions();
+                        // 52: "[Perception] Enemy Vanished (Same area) Retargeting/Searching [Percieved] " + GetName(oPerceived)
+                        DebugActionSpeakByInt(52, oPerceived);
+                        DetermineCombatRound(oPerceived);
+                    }
+                }
+            }// End if just gone out of perception
+            // ELSE they have been SEEN or HEARD. We don't check specifics.
+            else //if(bSeen || bHeard)
             {
-                //MyPrintString("DetermineCombatRound");
-                SetFacingPoint(GetPosition(oPercep));
-                SpeakString("NW_I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
-                DetermineCombatRound();
+                // If they have been made seen, and they are our attack target,
+                // we must re-do combat round - unless we are casting a spell.
+                if(bSeen && GetCurrentAction() != ACTION_CASTSPELL &&
+                  (oAttackTarget == oPerceived || !GetObjectSeen(oAttackTarget)))
+                {
+                    AISpeakString(I_WAS_ATTACKED);
+                    // 53: "[Perception] Enemy seen, and was old enemy/cannot see current. Re-evaluating (no spell) [Percieved] " + GetName(oPerceived)
+                    DebugActionSpeakByInt(53, oPerceived);
+                    DetermineCombatRound(oPerceived);
+                }
+                // Else We check if we are already attacking.
+                else if(!CannotPerformCombatRound() &&
+                        !GetSpawnInCondition(AI_FLAG_OTHER_ONLY_ATTACK_IF_ATTACKED, AI_OTHER_MASTER))
+                {
+                    // Special shout, d1000 though!
+                    SpeakArrayString(AI_TALK_ON_PERCIEVE_ENEMY, TRUE);
+
+                    // Stop stuff because of facing point - New enemy
+                    HideOrClear();
+
+                    // Face the person (this helps stops sneak attacks if we then
+                    // cast something on ourselves, ETC).
+                    SetFacingPoint(GetPosition(oPerceived));
+
+                    // Get all allies in 60M to come to thier aid. Talkvolume silent
+                    // shout does not seem to work well.
+                    // - void function. Checks for the spawn int. in it.
+                    // - Turns it off in it too
+                    // - Variable range On Spawn
+                    ShoutBossShout(oPerceived);
+
+                    // Warn others
+                    AISpeakString(I_WAS_ATTACKED);
+                    // 54: "[Perception] Enemy Seen. Not in combat, attacking. [Percieved] " + GetName(oPerceived)
+                    DebugActionSpeakByInt(54, oPerceived);
+                    // Note: added ActionDoCommand, so that SetFacingPoint is not
+                    // interrupted.
+                    ActionDoCommand(DetermineCombatRound(oPerceived));
+                }
             }
         }
-    }
-    else
-    {
-        if (bSeen)
-        {
-            //MyPrintString("GetLastPerceptionSeen: TRUE");
-            if(GetBehaviorState(NW_FLAG_BEHAVIOR_SPECIAL)) {
-                DetermineSpecialBehavior();
-            } else if (GetSpawnInCondition(NW_FLAG_SPECIAL_CONVERSATION)
-                       && GetIsPC(oPercep))
-            {
-                // The NPC will speak their one-liner conversation
-                // This should probably be:
-                // SpeakOneLinerConversation(oPercep);
-                // instead, but leaving it as is for now.
-                ActionStartConversation(OBJECT_SELF);
-            }
-        }
+        // Else, they are an equal faction, or not an enemy (or both)
         else
-        // * July 14 2003: Some minor reactions based on invisible creatures being nearby
-        if (bHeard && GetIsEnemy(oPercep))
         {
-           // SpeakString("vanished");
-            // * don't want creatures wandering too far after noises
-            if (GetDistanceToObject(oPercep) <= 7.0)
+            // If they are dead, say we saw something on waypoints, we charge in
+            // to investigate.
+            // * Higher intelligence will buff somewhat as well!
+            if(GetIsDead(oPerceived) && (bSeen || bHeard))
             {
-                ActionPlayAnimation(ANIMATION_FIREFORGET_HEAD_TURN_LEFT, 0.5);
-                ActionPlayAnimation(ANIMATION_FIREFORGET_HEAD_TURN_RIGHT, 0.5);
-                ActionPlayAnimation(ANIMATION_FIREFORGET_PAUSE_SCRATCH_HEAD, 0.5);
-                DetermineCombatRound();
+                // Warn others
+                AISpeakString(I_WAS_ATTACKED);
+                // Check if we can attack
+                if(!CannotPerformCombatRound())
+                {
+                    // Hide or clear actions
+                    HideOrClear();
+                    // 55: "[Perception] Percieved Dead Friend! Moving and Searching [Percieved] " + GetName(oPerceived)
+                    DebugActionSpeakByInt(55, oPerceived);
+                    ActionMoveToLocation(GetLocation(oPerceived), TRUE);
+                    ActionDoCommand(DetermineCombatRound());
+                }
+            }
+            else if(GetIsInCombat(oPerceived) && (bSeen || bHeard))
+            {
+                // Warn others
+                AISpeakString(I_WAS_ATTACKED);
+                // Only if we can attack.
+                if(!CannotPerformCombatRound())
+                {
+                    // Hide or clear actions
+                    HideOrClear();
+                    // 56: "[Perception] Percieved Alive Fighting Friend! Moving to and attacking. [Percieved] " + GetName(oPerceived)
+                    DebugActionSpeakByInt(56, oPerceived);
+                    ActionMoveToLocation(GetLocation(oPerceived), TRUE);
+                    ActionDoCommand(DetermineCombatRound());
+                }
             }
         }
-
-        // activate ambient animations or walk waypoints if appropriate
-       if (!IsInConversation(OBJECT_SELF)) {
-           if (GetIsPostOrWalking()) {
-               WalkWayPoints();
-           } else if (GetIsPC(oPercep) &&
-               (GetSpawnInCondition(NW_FLAG_AMBIENT_ANIMATIONS)
-                || GetSpawnInCondition(NW_FLAG_AMBIENT_ANIMATIONS_AVIAN)
-                || GetSpawnInCondition(NW_FLAG_IMMOBILE_AMBIENT_ANIMATIONS)
-                || GetIsEncounterCreature()))
-           {
-                SetAnimationCondition(NW_ANIM_FLAG_IS_ACTIVE);
-           }
-        }
     }
 
-    // Send the user-defined event if appropriate
-    if(GetSpawnInCondition(NW_FLAG_PERCIEVE_EVENT) && GetLastPerceptionSeen())
-    {
-        SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_PERCEIVE));
-    }
+    // Fire End of Percieve event
+    FireUserEvent(AI_FLAG_UDE_PERCIEVE_EVENT, EVENT_PERCIEVE_EVENT);
 }
-
