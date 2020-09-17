@@ -27,9 +27,13 @@ void LoopResetTriggers(string sString, object oTrigger);
 void main()
 {
     // Pre-heartbeat-event
-    if(FireUserEvent(AI_FLAG_UDE_RESTED_PRE_EVENT, EVENT_RESTED_PRE_EVENT))
-        // We may exit if it fires
-        if(ExitFromUDE(EVENT_RESTED_PRE_EVENT)) return;
+    //if(FireUserEvent(AI_FLAG_UDE_RESTED_PRE_EVENT, EVENT_RESTED_PRE_EVENT))
+    // We may exit if it fires
+    //if(ExitFromUDE(EVENT_RESTED_PRE_EVENT)) return;
+
+    SetSpawnInCondition(AI_FLAG_COMBAT_FLAG_FAST_BUFF_ENEMY, AI_COMBAT_MASTER);
+    DeleteLocalInt(OBJECT_SELF, "invis");
+    DeleteLocalInt(OBJECT_SELF, "rest");
 
     // AI status check. Is the AI on?
     if(GetAIOff()) return;

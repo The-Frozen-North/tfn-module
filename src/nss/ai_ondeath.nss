@@ -20,24 +20,30 @@
 // We only require the constants/debug file. We have 1 function, not worth another include.
 #include "inc_ai_constants"
 
+#include "nwnx_area"
+#include "inc_general"
+
 // We need a wrapper. If the amount of deaths, got in this, is not equal to iDeaths,
 // we don't execute the script, else we do. :-P
 void DeathCheck(int iDeaths);
 
 void main()
 {
+    TakeGoldFromCreature(1000, OBJECT_SELF, TRUE);
+
     // If we are set to, don't fire this script at all
     if(GetAIInteger(I_AM_TOTALLY_DEAD)) return;
-
-    // Pre-death-event
-    if(FireUserEvent(AI_FLAG_UDE_DEATH_PRE_EVENT, EVENT_DEATH_PRE_EVENT))
-        // We may exit if it fires
-        if(ExitFromUDE(EVENT_DEATH_PRE_EVENT)) return;
 
     // Note: No AI on/off check here.
 
     // Who killed us? (alignment changing, debug, XP).
     object oKiller = GetLastKiller();
+
+// only give credit if a PC or their associate killed it or if it was already tagged
+    if (GetIsPC(GetMaster(oKiller)) || GetIsPC(oKiller) || (GetLocalInt(OBJECT_SELF, "player_tagged") == 1))
+    {
+        ExecuteScript("party_credit", OBJECT_SELF);
+    }
 
     // Stops if we just applied EffectDeath to ourselves.
     if(GetLocalTimer(AI_TIMER_DEATH_EFFECT_DEATH)) return;
@@ -80,11 +86,7 @@ void main()
 /************************ [Experience] ****************************************/
     }
 
-    // Note: Here we do a simple way of checking how many times we have died.
-    // Nothing special. Debugging most useful aspect.
-    int iDeathCounterNew = GetAIInteger(AMOUNT_OF_DEATHS);
-    iDeathCounterNew++;
-    SetAIInteger(AMOUNT_OF_DEATHS, iDeathCounterNew);
+    ExecuteScript("murder_dismiss", OBJECT_SELF);
 
     // Here is the last time (in game seconds) we died. It is used in the executed script
     // to make sure we don't prematurly remove areselves.
@@ -97,70 +99,16 @@ void main()
     {
         ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(iDeathEffect), GetLocation(OBJECT_SELF));
     }
-    // Default Commoner alignment changing. (If the commoner is not evil!)
-    if(GetLevelByClass(CLASS_TYPE_COMMONER) > i0 &&
-       GetAlignmentGoodEvil(OBJECT_SELF) != ALIGNMENT_EVIL &&
-      !GetSpawnInCondition(AI_FLAG_OTHER_NO_COMMONER_ALIGNMENT_CHANGE, AI_OTHER_MASTER))
-    {
-        if(GetIsPC(oKiller))
-        {
-            AdjustAlignment(oKiller, ALIGNMENT_EVIL, i5);
-        }
-        else
-        {
-            // If it is a summon, henchmen or familar of a PC, we adust the PC itself
-            // Clever, eh?
-            object oMaster = GetMaster(oKiller);
-            if(GetIsObjectValid(oMaster) && GetIsPC(oMaster))
-            {
-                AdjustAlignment(oMaster, ALIGNMENT_EVIL, i5);
-            }
-        }
-    }
+
     // Always shout when we are killed. Reactions - Morale penalty, and attack the killer.
     AISpeakString(I_WAS_KILLED);
 
     // Speaks the set death speak, like "AGGGGGGGGGGGGGGGGGGG!! NOOOO!" for instance :-)
     SpeakArrayString(AI_TALK_ON_DEATH);
 
-    // First check - do we use "destroyable corpses" or not? (default, yes)
-    if(!GetSpawnInCondition(AI_FLAG_OTHER_TURN_OFF_CORPSES, AI_OTHER_MASTER))
-    {
-        // We will actually dissapear after 30.0 seconds if not raised.
-        int iTime = GetAIInteger(AI_CORPSE_DESTROY_TIME);
-        if(iTime == i0) // Error checking
-        {
-            iTime = i30;
-        }
-        // 64: "[Death] Checking corpse status in " + IntToString(iTime) + " [Killer] " + GetName(oKiller) + " [Times Died Now] " + IntToString(iDeathCounterNew)
-        DebugActionSpeakByInt(64, oKiller, iTime, IntToString(iDeathCounterNew));
-        // Delay check
-        DelayCommand(IntToFloat(iTime), DeathCheck(iDeathCounterNew));
-    }
-    else
-    {
-/************************ [Alternative Corpses] ********************************
-    This is where you can add some alternative corpse code - EG looting
-    and so on, without disrupting the rest of the AI (as the corpses
-    are turned off).
-************************* [Alternative Corpses] *******************************/
-    // Add alternative corpse code here
+    string sScript = GetLocalString(OBJECT_SELF, "death_script");
+    if (sScript != "") ExecuteScript(sScript);
 
-
-/************************ [Alternative Corpses] *******************************/
-    }
-    // Signal the death event.
-    FireUserEvent(AI_FLAG_UDE_DEATH_EVENT, EVENT_DEATH_EVENT);
+    GibsNPC(OBJECT_SELF);
 }
 
-// We need a wrapper. If the amount of deaths, got in this, is not equal to iDeaths,
-// we don't execute the script, else we do. :-P
-void DeathCheck(int iDeaths)
-{
-    // Do the deaths imputted equal the amount we have suffered?
-    if(GetAIInteger(AMOUNT_OF_DEATHS) == iDeaths)
-    {
-        // - This now includes a check for Bioware's lootable functions and using them.
-        ExecuteScript(FILE_DEATH_CLEANUP, OBJECT_SELF);
-    }
-}

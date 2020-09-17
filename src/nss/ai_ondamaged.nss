@@ -21,6 +21,8 @@
 ************************* [On Damaged] ****************************************/
 
 #include "inc_ai_other"
+#include "inc_general"
+
 void main()
 {
     // Pre-damaged-event
@@ -36,6 +38,9 @@ void main()
     object oDamager = GetLastDamager();
     // Check to see if we will polymorph.
     int iPolymorph = GetAIConstant(AI_POLYMORPH_INTO);
+
+    PlayNonMeleePainSound(oDamager);
+    if (GetIsPC(oDamager) || GetIsPC(GetMaster(oDamager))) SetLocalInt(OBJECT_SELF, "player_tagged", 1);
 
     // Polymorph check.
     if(iPolymorph >= i0)

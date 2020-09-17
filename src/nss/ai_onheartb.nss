@@ -52,11 +52,6 @@ void main()
     // - Includes door bashing stop heartbeat
     if(PerformSpecialAction()) return;
 
-    // Pre-heartbeat-event
-    if(FireUserEvent(AI_FLAG_UDE_HEARTBEAT_PRE_EVENT, EVENT_HEARTBEAT_PRE_EVENT))
-        // We may exit if it fires
-        if(ExitFromUDE(EVENT_HEARTBEAT_PRE_EVENT)) return;
-
     // AI status check. Is the AI on?
     if(GetAIOff() || GetSpawnInCondition(AI_FLAG_OTHER_LAG_IGNORE_HEARTBEAT, AI_OTHER_MASTER)) return;
 
@@ -134,6 +129,7 @@ void main()
             }
         }
     }
-    // Fire End-heartbeat-UDE
-    FireUserEvent(AI_FLAG_UDE_HEARTBEAT_EVENT, EVENT_HEARTBEAT_EVENT);
+
+    string sScript = GetLocalString(OBJECT_SELF, "heartbeat_script");
+    if (sScript != "") ExecuteScript(sScript);
 }

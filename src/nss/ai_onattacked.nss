@@ -17,11 +17,6 @@
 
 void main()
 {
-    // Pre-attacked-event
-    if(FireUserEvent(AI_FLAG_UDE_ATTACK_PRE_EVENT, EVENT_ATTACK_PRE_EVENT))
-        // We may exit if it fires
-        if(ExitFromUDE(EVENT_ATTACK_PRE_EVENT)) return;
-
     // AI status check. Is the AI on?
     if(GetAIOff()) return;
 
@@ -30,6 +25,8 @@ void main()
     object oWeapon = GetLastWeaponUsed(oAttacker);
     int iMode = GetLastAttackMode(oAttacker);       // Currently unused
     int iAttackType = GetLastAttackType(oAttacker);
+
+    if (GetIsPC(oAttacker) || GetIsPC(GetMaster(oAttacker))) SetLocalInt(OBJECT_SELF, "player_tagged", 1);
 
     if(GetIsObjectValid(oAttacker) && !GetFactionEqual(oAttacker) &&
        !GetIsDM(oAttacker) && !GetIgnore(oAttacker))

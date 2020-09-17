@@ -1307,11 +1307,13 @@ int AI_EquipAndAttack()
         int iVoice = VOICE_CHAT_ATTACK;// Default
         switch(Random(i6)) // Random will do 0-5, so more chance of ATTACK
         {
-            case i0: iVoice = VOICE_CHAT_LAUGH; break;
-            case i1: iVoice = VOICE_CHAT_BATTLECRY1; break;
-            case i2: iVoice = VOICE_CHAT_BATTLECRY2; break;
-            case i3: iVoice = VOICE_CHAT_BATTLECRY3; break;
-            default: iVoice = VOICE_CHAT_ATTACK; break;// Default
+            case i0: iVoice = VOICE_CHAT_BATTLECRY1; break;
+            case i1: iVoice = VOICE_CHAT_BATTLECRY2; break;
+            case i2: iVoice = VOICE_CHAT_BATTLECRY3; break;
+            case i3: iVoice = VOICE_CHAT_ATTACK; break;
+            case i4: iVoice = VOICE_CHAT_TAUNT; break;
+            case i5: iVoice = VOICE_CHAT_LAUGH; break;
+            case i6: iVoice = VOICE_CHAT_ENEMIES; break;
         }
         // Random delay for 0.0 to 1.0 seconds.
         float fDelay = IntToFloat(Random(10) + 1) / 10.0;

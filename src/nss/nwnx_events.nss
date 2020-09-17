@@ -1,4 +1,4 @@
-/// @addtogroup events Events 
+/// @addtogroup events Events
 /// @brief Provides an interface for plugins to create event-based systems, and exposes some events through that interface.
 /// @{
 /// @file nwnx_events.nss
@@ -74,6 +74,7 @@ _______________________________________
     TARGET_POSITION_X       | float  | |
     TARGET_POSITION_Y       | float  | |
     TARGET_POSITION_Z       | float  | |
+    USE_CHARGES             | int  | |
 
     @note You can set the event result to "0" (send feedback to the client that the item cannot be used, default)
     or "1" to suppress that feedback.
@@ -124,7 +125,7 @@ _______________________________________
 
     Event Data Tag        | Type   | Notes |
     ----------------------|--------|-------|
-    ITEM                  | object | Convert to object with NWNX_Object_StringToObject()|
+    ITEM_OBJECT_ID        | object | Convert to object with NWNX_Object_StringToObject()|
     SLOT                  | int    | INVENTORY_SLOT_* Constant|
     BEFORE_RESULT         | int    | TRUE/FALSE, only in _AFTER events|
 
@@ -927,7 +928,7 @@ _______________________________________
     TARGET                | object | Convert to object with NWNX_Object_StringToObject()
 
  _______________________________________
-    ## Input Cast Spell Evens
+    ## Input Cast Spell Events
     - NWNX_ON_INPUT_CAST_SPELL_BEFORE
     - NWNX_ON_INPUT_CAST_SPELL_AFTER
 
@@ -972,7 +973,20 @@ _______________________________________
           NWNX_Object_SetPosition(oPlayer, GetPositionFromLocation(locPlayer));
           ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectVisualEffect(VFX_DUR_CUTSCENE_INVISIBILITY), oBoulder);
 
- _______________________________________
+_______________________________________
+    ## Input Keyboard Events
+    - NWNX_ON_INPUT_TOGGLE_PAUSE_BEFORE
+    - NWNX_ON_INPUT_TOGGLE_PAUSE_AFTER
+
+    `OBJECT_SELF` = The player or DM
+
+    Event Data Tag        | Type   | Notes
+    ----------------------|--------|-------
+    PAUSE_STATE           | int    | TRUE = Pausing, FALSE = Unpausing
+
+    @note This event also fires when a non-dm player presses the spacebar.
+
+_______________________________________
     ## Object Lock Events
     - NWNX_ON_OBJECT_LOCK_BEFORE
     - NWNX_ON_OBJECT_LOCK_AFTER
@@ -1068,6 +1082,19 @@ _______________________________________
     NEW                   | int    | The (Hour/Day/Month/Year) after the change. Not available in DAWN/DUSK.
 
 _______________________________________
+    ## Broadcast Spell Cast Events
+    - NWNX_ON_BROADCAST_CAST_SPELL_BEFORE
+    - NWNX_ON_BROADCAST_CAST_SPELL_AFTER
+
+    `OBJECT_SELF` = The creature casting the spell
+
+    Event Data Tag        | Type   | Notes |
+    ----------------------|--------|-------|
+    SPELL_ID              | int    | |
+    MULTI_CLASS           | int    | |
+    FEAT                  | int    | 65535 if a feat wasn't used, otherwise the feat ID |
+
+_______________________________________
 */
 /*
 const int NWNX_EVENTS_OBJECT_TYPE_CREATURE          = 5;
@@ -1110,6 +1137,7 @@ void NWNX_Events_PushEventData(string tag, string data);
 
 /// Signals an event. This will dispatch a notification to all subscribed handlers.
 /// Returns TRUE if anyone was subscribed to the event, FALSE otherwise.
+/// @remark target will be available as OBJECT_SELF in subscribed event scripts.
 int NWNX_Events_SignalEvent(string evt, object target);
 
 /// Retrieves the event data for the currently executing script.
@@ -1149,6 +1177,7 @@ string NWNX_Events_GetEventData(string tag);
 /// - {Enter|Exit}Stealth events
 /// - Object {Lock|Unlock} events
 /// - Quickbar Events
+/// - Input Pause Event
 void NWNX_Events_SkipEvent();
 
 /// Set the return value of the event.

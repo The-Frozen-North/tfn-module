@@ -49,7 +49,4 @@ void main()
 
     // Delete it whatever happens
     DeleteAIObject(AI_TEMP_SET_TARGET);
-
-    // Fire end of combat action event.
-    FireUserEvent(AI_FLAG_UDE_COMBAT_ACTION_EVENT, EVENT_COMBAT_ACTION_EVENT);
 }

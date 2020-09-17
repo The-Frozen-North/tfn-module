@@ -177,6 +177,16 @@ string NWNX_Util_GetUserDirectory();
 /// @return Return value of the last run script.
 int NWNX_Util_GetScriptReturnValue();
 
+/// @brief Create a door.
+/// @param sResRef The ResRef of the door.
+/// @param locLocation The location to create the door at.
+/// @param sNewTag An optional new tag for the door.
+/// @return The door, or OBJECT_INVALID on failure.
+object NWNX_Util_CreateDoor(string sResRef, location locLocation, string sNewTag = "");
+
+/// @brief Set the object that will be returned by GetItemActivator.
+/// @param oObject An object.
+void NWNX_Util_SetItemActivator(object oObject);
 /// @}
 
 string NWNX_Util_GetCurrentScriptName(int depth = 0)
@@ -419,3 +429,31 @@ int NWNX_Util_GetScriptReturnValue()
 
     return NWNX_GetReturnValueInt(NWNX_Util, sFunc);
 }
+
+object NWNX_Util_CreateDoor(string sResRef, location locLocation, string sNewTag)
+{
+    string sFunc = "CreateDoor";
+
+    vector vPosition = GetPositionFromLocation(locLocation);
+
+    NWNX_PushArgumentString(NWNX_Util, sFunc, sNewTag);
+    NWNX_PushArgumentFloat(NWNX_Util, sFunc, GetFacingFromLocation(locLocation));
+    NWNX_PushArgumentFloat(NWNX_Util, sFunc, vPosition.z);
+    NWNX_PushArgumentFloat(NWNX_Util, sFunc, vPosition.y);
+    NWNX_PushArgumentFloat(NWNX_Util, sFunc, vPosition.x);
+    NWNX_PushArgumentObject(NWNX_Util, sFunc, GetAreaFromLocation(locLocation));
+    NWNX_PushArgumentString(NWNX_Util, sFunc, sResRef);
+    NWNX_CallFunction(NWNX_Util, sFunc);
+
+    return NWNX_GetReturnValueObject(NWNX_Util, sFunc);
+}
+
+void NWNX_Util_SetItemActivator(object oObject)
+{
+    string sFunc = "SetItemActivator";
+
+    NWNX_PushArgumentObject(NWNX_Util, sFunc, oObject);
+
+    NWNX_CallFunction(NWNX_Util, sFunc);
+}
+

@@ -382,15 +382,13 @@ void PlaySomeTaunt(int iLowest, int iHighest)
     int iVoice = VOICE_CHAT_ATTACK;
     switch (iRandom)
     {
-        case 0: iVoice = VOICE_CHAT_ATTACK; break;
-        case 1: iVoice = VOICE_CHAT_TAUNT; break;
-        case 2: iVoice = VOICE_CHAT_BATTLECRY1; break;
-        case 3: iVoice = VOICE_CHAT_BATTLECRY2; break;
-        case 4: iVoice = VOICE_CHAT_BATTLECRY3; break;
-        case 5: iVoice = VOICE_CHAT_ENEMIES; break;
-        case 6: iVoice = VOICE_CHAT_GROUP; break;
-        case 7: iVoice = VOICE_CHAT_HELP; break;
-        default: iVoice = VOICE_CHAT_ATTACK; break;
+        case 0: iVoice = VOICE_CHAT_BATTLECRY1; break;
+        case 1: iVoice = VOICE_CHAT_BATTLECRY2; break;
+        case 2: iVoice = VOICE_CHAT_BATTLECRY3; break;
+        case 3: iVoice = VOICE_CHAT_ATTACK; break;
+        case 4: iVoice = VOICE_CHAT_TAUNT; break;
+        case 5: iVoice = VOICE_CHAT_LAUGH; break;
+        case 6: iVoice = VOICE_CHAT_ENEMIES; break;
     }
     PlayVoiceChat(iVoice);
 }
