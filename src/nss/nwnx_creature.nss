@@ -196,13 +196,6 @@ void NWNX_Creature_SetBaseAC(object creature, int ac);
 /// @return The base AC.
 int NWNX_Creature_GetBaseAC(object creature);
 
-/// @brief Sets the ability score of the creature to the value.
-/// @param creature The creature object.
-/// @param ability The ability constant.
-/// @param value The value to set.
-/// @deprecated Use NWNX_Creature_SetRawAbilityScore(). This will be removed in future NWNX releases.
-void NWNX_Creature_SetAbilityScore(object creature, int ability, int value);
-
 /// @brief Sets the ability score of the creature to the provided value.
 /// @note Does not apply racial bonuses/penalties.
 /// @param creature The creature object.
@@ -317,18 +310,6 @@ void NWNX_Creature_ClearMemorisedKnownSpells(object creature, int class, int spe
 /// @param index The index. Index bounds: 0 <= index < NWNX_Creature_GetMemorisedSpellCountByLevel().
 void NWNX_Creature_ClearMemorisedSpell(object creature, int class, int level, int index);
 
-/// @brief Gets whether or not creature has a specialist school of wizardry.
-/// @param creature The creature object.
-/// @return TRUE if the wizard specializes.
-/// @deprecated Use GetSpecialization(). This will be removed in future NWNX releases.
-int NWNX_Creature_GetWizardSpecialization(object creature);
-
-/// @brief Sets creature's wizard specialist school.
-/// @param creature The creature object.
-/// @param school The wizard school constant.
-/// @deprecated Use NWNX_Creature_SetSpecialization(). This will be removed in future NWNX releases.
-void NWNX_Creature_SetWizardSpecialization(object creature, int school);
-
 /// @brief Gets the maximum hit points for creature for level.
 /// @param creature The creature object.
 /// @param level The level.
@@ -385,19 +366,6 @@ void NWNX_Creature_SetAlignmentGoodEvil(object creature, int value);
 /// @param creature The creature object.
 /// @param value The value to set.
 void NWNX_Creature_SetAlignmentLawChaos(object creature, int value);
-
-/// @brief Gets one of creature's cleric domains.
-/// @param creature The creature object.
-/// @param index The first or second domain.
-/// @deprecated Use GetDomain(). This will be removed in future NWNX releases.
-int NWNX_Creature_GetClericDomain(object creature, int index);
-
-/// @brief Sets one of creature's cleric domains.
-/// @param creature The creature object.
-/// @param index The first or second domain.
-/// @param domain The domain constant to set.
-/// @deprecated Use NWNX_Creature_SetDomain(). This will be removed in future NWNX releases.
-void NWNX_Creature_SetClericDomain(object creature, int index, int domain);
 
 /// @brief Get the soundset index for creature.
 /// @param creature The creature object.
@@ -780,6 +748,50 @@ int NWNX_Creature_GetCriticalRangeOverride(object oCreature, int nHand = 0);
 /// @param nAssociateType The associate type, one of ASSOCIATE_TYPE_*, except _NONE
 void NWNX_Creature_AddAssociate(object oCreature, object oAssociate, int nAssociateType);
 
+/// @brief Set whether an effect icon is flashing or not.
+/// @param oCreature The target creature.
+/// @param nIconId The icon id, see effecticons.2da.
+/// @param bFlashing TRUE for flashing, FALSE for not flashing.
+void NWNX_Creature_SetEffectIconFlashing(object oCreature, int nIconId, int bFlashing);
+
+/// @brief Override the damage level of oCreature.
+/// @note Damage levels are the damage state under a creature's name, for example: 'Near Death'
+/// @param oCreature The target creature.
+/// @param nDamageLevel A damage level, see damagelevels.2da. Allowed values: 0-255 or -1 to remove the override.
+void NWNX_Creature_OverrideDamageLevel(object oCreature, int nDamageLevel);
+
+/// @brief Set the encounter source of oCreature.
+/// @param oCreature The target creature.
+/// @param oEncounter The source encounter
+void NWNX_Creature_SetEncounter(object oCreature, object oEncounter);
+
+/// @brief Get the encounter source of oCreature.
+/// @param oCreature The target creature.
+/// @return The encounter, OBJECT_INVALID if not part of an encounter or on error
+object NWNX_Creature_GetEncounter(object oCreature);
+
+/// @brief Get if oCreature is currently bartering.
+/// @param oCreature The target creature.
+/// @return TRUE if oCreature is bartering, FALSE if not or on error.
+int NWNX_Creature_GetIsBartering(object oCreature);
+
+/// @brief Sets caster level for the last item used. Use in a spellhook or spell event before to set caster level for any spells cast from the item.
+/// @param oCreature the creature who used the item.
+/// @param nCasterLvl the desired caster level.
+void NWNX_Creature_SetLastItemCasterLevel(object oCreature, int nCasterLvl);
+
+/// @brief Gets the caster level of the last item used.
+/// @param oCreature the creature who used the item.
+/// @return returns the creatures last used item's level.
+int NWNX_Creature_GetLastItemCasterLevel(object oCreature);
+
+/// @brief Gets the Armor classed of attacked against versus
+/// @param oAttacked The one being attacked
+/// @param oVersus The one doing the attacking
+/// @param nTouch TRUE for touch attacks
+/// @return -255 on Error, Flat footed AC if oVersus is invalid or the Attacked AC versus oVersus.
+int NWNX_Creature_GetArmorClassVersus(object oAttacked, object oVersus, int nTouch=FALSE);
+
 /// @}
 
 void NWNX_Creature_AddFeat(object creature, int feat)
@@ -979,12 +991,6 @@ int NWNX_Creature_GetBaseAC(object creature)
 
     NWNX_CallFunction(NWNX_Creature, sFunc);
     return NWNX_GetReturnValueInt(NWNX_Creature, sFunc);
-}
-
-void NWNX_Creature_SetAbilityScore(object creature, int ability, int value)
-{
-    WriteTimestampedLogEntry("NWNX_Creature: SetAbilityScore() is deprecated. Use native NWNX_Creature_SetRawAbilityScore() instead");
-    NWNX_Creature_SetRawAbilityScore(creature, ability, value);
 }
 
 void NWNX_Creature_SetRawAbilityScore(object creature, int ability, int value)
@@ -1267,30 +1273,6 @@ void NWNX_Creature_SetAlignmentLawChaos(object creature, int value)
     NWNX_PushArgumentObject(NWNX_Creature, sFunc, creature);
 
     NWNX_CallFunction(NWNX_Creature, sFunc);
-}
-
-int NWNX_Creature_GetClericDomain(object creature, int index)
-{
-    WriteTimestampedLogEntry("NWNX_Creature: GetClericDomain() is deprecated. Please use the basegame's GetDomain() instead");
-    return GetDomain(creature, index, CLASS_TYPE_CLERIC);
-}
-
-void NWNX_Creature_SetClericDomain(object creature, int index, int domain)
-{
-    WriteTimestampedLogEntry("NWNX_Creature: SetClericDomain() is deprecated. Please use NWNX_Creature_SetDomain() instead");
-    NWNX_Creature_SetDomain(creature, CLASS_TYPE_CLERIC, index, domain);
-}
-
-int NWNX_Creature_GetWizardSpecialization(object creature)
-{
-    WriteTimestampedLogEntry("NWNX_Creature: GetWizardSpecialization() is deprecated. Please use the basegame's GetSpecialization() instead");
-    return GetSpecialization(creature, CLASS_TYPE_WIZARD);
-}
-
-void NWNX_Creature_SetWizardSpecialization(object creature, int school)
-{
-    WriteTimestampedLogEntry("NWNX_Creature: SetWizardSpecialization() is deprecated. Please use NWNX_Creature_SetSpecialization() instead");
-    NWNX_Creature_SetSpecialization(creature, CLASS_TYPE_WIZARD, school);
 }
 
 int NWNX_Creature_GetSoundset(object creature)
@@ -1945,4 +1927,81 @@ void NWNX_Creature_AddAssociate(object oCreature, object oAssociate, int nAssoci
     NWNX_PushArgumentObject(NWNX_Creature, sFunc, oCreature);
 
     NWNX_CallFunction(NWNX_Creature, sFunc);
+}
+
+void NWNX_Creature_SetEffectIconFlashing(object oCreature, int nIconId, int bFlashing)
+{
+    string sFunc = "SetEffectIconFlashing";
+
+    NWNX_PushArgumentInt(NWNX_Creature, sFunc, bFlashing);
+    NWNX_PushArgumentInt(NWNX_Creature, sFunc, nIconId);
+    NWNX_PushArgumentObject(NWNX_Creature, sFunc, oCreature);
+    NWNX_CallFunction(NWNX_Creature, sFunc);
+}
+
+void NWNX_Creature_OverrideDamageLevel(object oCreature, int nDamageLevel)
+{
+    string sFunc = "OverrideDamageLevel";
+
+    NWNX_PushArgumentInt(NWNX_Creature, sFunc, nDamageLevel);
+    NWNX_PushArgumentObject(NWNX_Creature, sFunc, oCreature);
+    NWNX_CallFunction(NWNX_Creature, sFunc);
+}
+
+void NWNX_Creature_SetEncounter(object oCreature, object oEncounter)
+{
+    string sFunc = "SetEncounter";
+
+    NWNX_PushArgumentObject(NWNX_Creature, sFunc, oEncounter);
+    NWNX_PushArgumentObject(NWNX_Creature, sFunc, oCreature);
+    NWNX_CallFunction(NWNX_Creature, sFunc);
+}
+
+object NWNX_Creature_GetEncounter(object oCreature)
+{
+    string sFunc = "GetEncounter";
+
+    NWNX_PushArgumentObject(NWNX_Creature, sFunc, oCreature);
+    NWNX_CallFunction(NWNX_Creature, sFunc);
+
+    return NWNX_GetReturnValueObject(NWNX_Creature, sFunc);
+}
+
+int NWNX_Creature_GetIsBartering(object oCreature)
+{
+    string sFunc = "GetIsBartering";
+
+    NWNX_PushArgumentObject(NWNX_Creature, sFunc, oCreature);
+    NWNX_CallFunction(NWNX_Creature, sFunc);
+
+    return NWNX_GetReturnValueInt(NWNX_Creature, sFunc);
+}
+
+void NWNX_Creature_SetLastItemCasterLevel(object oCreature, int nCasterLvl)
+{
+    string sFunc = "SetLastItemCasterLevel";
+    NWNX_PushArgumentInt(NWNX_Creature, sFunc, nCasterLvl);
+    NWNX_PushArgumentObject(NWNX_Creature, sFunc, oCreature);
+    NWNX_CallFunction(NWNX_Creature, sFunc);
+}
+
+
+int NWNX_Creature_GetLastItemCasterLevel(object oCreature)
+{
+    string sFunc = "GetLastItemCasterLevel";
+    NWNX_PushArgumentObject(NWNX_Creature, sFunc, oCreature);
+    NWNX_CallFunction(NWNX_Creature, sFunc);
+
+    return NWNX_GetReturnValueInt(NWNX_Creature, sFunc);
+}
+
+int NWNX_Creature_GetArmorClassVersus(object oAttacked, object oVersus, int nTouch=FALSE)
+{
+    string sFunc = "GetArmorClassVersus";
+    NWNX_PushArgumentInt(NWNX_Creature, sFunc, nTouch);
+    NWNX_PushArgumentObject(NWNX_Creature, sFunc, oVersus);
+    NWNX_PushArgumentObject(NWNX_Creature, sFunc, oAttacked);
+    NWNX_CallFunction(NWNX_Creature, sFunc);
+
+    return NWNX_GetReturnValueInt(NWNX_Creature, sFunc);
 }
