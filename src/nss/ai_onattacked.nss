@@ -1,96 +1,65 @@
-/************************ [On Phisical Attacked] *******************************
-    Filename: ai_onattacked or nw_c2_default5
-************************* [On Phisical Attacked] *******************************
-    On Attacked
-    No checking for fleeing or warnings.
-    Very boring really!
-************************* [History] ********************************************
-    1.3 - Added hiding things
-************************* [Workings] *******************************************
-    Got some simple Knockdown timer, so that we use heal sooner if we keep getting
-    a creature who is attempting to knock us down.
-************************* [Arguments] ******************************************
-    Arguments: GetLastAttacker, GetLastWeaponUsed, GetLastAttackMode, GetLastAttackType
-************************* [On Phisical Attacked] ******************************/
+//::///////////////////////////////////////////////
+//:: Default On Attacked
+//:: NW_C2_DEFAULT5
+//:: Copyright (c) 2001 Bioware Corp.
+//:://////////////////////////////////////////////
+/*
+    If already fighting then ignore, else determine
+    combat round
+*/
+//:://////////////////////////////////////////////
+//:: Created By: Preston Watamaniuk
+//:: Created On: Oct 16, 2001
+//:://////////////////////////////////////////////
+//:://////////////////////////////////////////////
+//:: Modified By: Deva Winblood
+//:: Modified On: Jan 4th, 2008
+//:: Added Support for Mounted Combat Feat Support
+//:://////////////////////////////////////////////
 
-#include "inc_ai_other"
+#include "nw_i0_generic"
 
 void main()
 {
-    // AI status check. Is the AI on?
-    if(GetAIOff()) return;
 
-    // Set up objects.
     object oAttacker = GetLastAttacker();
-    object oWeapon = GetLastWeaponUsed(oAttacker);
-    int iMode = GetLastAttackMode(oAttacker);       // Currently unused
-    int iAttackType = GetLastAttackType(oAttacker);
-
     if (GetIsPC(oAttacker) || GetIsPC(GetMaster(oAttacker))) SetLocalInt(OBJECT_SELF, "player_tagged", 1);
 
-    if(GetIsObjectValid(oAttacker) && !GetFactionEqual(oAttacker) &&
-       !GetIsDM(oAttacker) && !GetIgnore(oAttacker))
-    {
-        // Adjust automatically if set.
-        if(GetSpawnInCondition(AI_FLAG_OTHER_CHANGE_FACTIONS_TO_HOSTILE_ON_ATTACK, AI_OTHER_MASTER))
-        {
-            if(!GetIsEnemy(oAttacker))
-            {
-                AdjustReputation(oAttacker, OBJECT_SELF, -100);
-            }
-        }
-        // If we were attacked by knockdown, for a timer of X seconds, we make
-        // sure we attempt healing at a higher level.
-        if(!GetLocalTimer(AI_TIMER_KNOCKDOWN) &&
-          (iAttackType == SPECIAL_ATTACK_IMPROVED_KNOCKDOWN ||
-           iAttackType == SPECIAL_ATTACK_KNOCKDOWN) &&
-          !GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_KNOCKDOWN) &&
-           GetBaseAttackBonus(oAttacker) + i20 >= GetAC(OBJECT_SELF))
-        {
-            SetLocalTimer(AI_TIMER_KNOCKDOWN, f30);
-        }
+    if(GetFleeToExit()) {
+        // Run away!
+        ActivateFleeToExit();
+    } else if (GetSpawnInCondition(NW_FLAG_SET_WARNINGS)) {
+        // We give an attacker one warning before we attack
+        // This is not fully implemented yet
+        SetSpawnInCondition(NW_FLAG_SET_WARNINGS, FALSE);
 
-        // Set last hostile attacker.
-        SetAIObject(AI_STORED_LAST_ATTACKER, oAttacker);
-
-        // Speak the phisically attacked string, if applicable.
-        // Speak the damaged string, if applicable.
-        SpeakArrayString(AI_TALK_ON_PHISICALLY_ATTACKED);
-
-        // Turn of hiding, a timer to activate Hiding in the main file. This is
-        // done in each of the events, with the opposition checking seen/heard.
-        TurnOffHiding(oAttacker);
-
-        // We set if we are attacked in HTH onto a low-delay timer.
-        // - Not currently used
-        /*if(!GetLocalTimer(AI_TIMER_ATTACKED_IN_HTH))
-        {
-            // If the weapon is not ranged, or is not valid, set the timer.
-            if(!GetIsObjectValid(oWeapon) ||
-               !GetWeaponRanged(oWeapon))
-            {
-                SetLocalTimer(AI_TIMER_ATTACKED_IN_HTH, f18);
-            }
-        }*/
-
-        // If we are not fighting, and they are in the area, attack. Else, determine anyway.
-        if(!CannotPerformCombatRound())
-        {
-            if(GetArea(oAttacker) == GetArea(OBJECT_SELF))
-            {
-                // 59: "[Phisically Attacked] Attacking back. [Attacker(enemy)] " + GetName(oAttacker)
-                DebugActionSpeakByInt(59, oAttacker);
+        //Put a check in to see if this attacker was the last attacker
+        //Possibly change the GetNPCWarning function to make the check
+    } else {
+        if (!GetIsObjectValid(oAttacker)) {
+            // Don't do anything, invalid attacker
+        } else if (!GetIsFighting(OBJECT_SELF)) {
+            // We're not fighting anyone else, so
+            // start fighting the attacker
+            if(GetBehaviorState(NW_FLAG_BEHAVIOR_SPECIAL)) {
+                SetSummonHelpIfAttacked();
+                DetermineSpecialBehavior(oAttacker);
+            } else if (GetArea(oAttacker) == GetArea(OBJECT_SELF)) {
+                SetSummonHelpIfAttacked();
                 DetermineCombatRound(oAttacker);
             }
-            else
-            {
-                // 60: "[Phisically Attacked] Not same area. [Attacker(enemy)] " + GetName(oAttacker)
-                DebugActionSpeakByInt(60, oAttacker);
-                DetermineCombatRound();// May find another hostile to attack...
-            }
+
+            //Shout Attack my target, only works with the On Spawn In setup
+            SpeakString("NW_ATTACK_MY_TARGET", TALKVOLUME_SILENT_TALK);
+
+            //Shout that I was attacked
+            SpeakString("NW_I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
         }
     }
 
-    // Fire End of Attacked event
-    FireUserEvent(AI_FLAG_UDE_ATTACK_EVENT, EVENT_ATTACK_EVENT);
+
+    if(GetSpawnInCondition(NW_FLAG_ATTACK_EVENT))
+    {
+        SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_ATTACKED));
+    }
 }
