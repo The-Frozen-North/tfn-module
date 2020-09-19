@@ -2535,9 +2535,10 @@ int AI_ActionCastSpontaeousSpell(int iSpellID, int nTalent, object oTarget)
         // Equip the best shield we have
         AI_EquipBestShield();
         // Decrement the spell being cast by one as we cheat cast it
-        DecrementRemainingSpellUses(OBJECT_SELF, iSpellID);
+        //DecrementRemainingSpellUses(OBJECT_SELF, iSpellID);
         // Cheat cast, it'll remove inflict wounds if it is an inflict spell anyway.
-        ActionCastSpellAtObject(iSpellID, oTarget, METAMAGIC_NONE, TRUE);
+        //ActionCastSpellAtObject(iSpellID, oTarget, METAMAGIC_NONE, TRUE);
+        ActionCastSpellAtObject(iSpellID, oTarget, METAMAGIC_ANY);
         return TRUE;
     }
     return FALSE;
@@ -2615,8 +2616,10 @@ int AI_ActionCastSpell(int iSpellID, int nTalent = 0, object oTarget = OBJECT_SE
                 // Fire ActionSpellAtLocation at the given location
                 // 1.3 fix - Until ActionCastSpellAtLocation works with METAMAGIC
                 //           it will cheat-cast, and decrement the spell by one, with no metamagic.
-                ActionCastSpellAtLocation(iSpellID, GetLocation(oTarget), METAMAGIC_NONE, TRUE);
-                DecrementRemainingSpellUses(OBJECT_SELF, iSpellID);
+                ActionCastSpellAtLocation(iSpellID, GetLocation(oTarget), METAMAGIC_ANY);
+                //DecrementRemainingSpellUses(OBJECT_SELF, iSpellID);
+
+                // Cheat casting disabled
             }
             // Lasts...recheck items
             if(AI_GetSpellCategoryHasItem(nTalent))
@@ -2696,16 +2699,22 @@ int AI_ActionCastSubSpell(int iSubSpell, int nTalent = 0, object oTarget = OBJEC
             if(GetObjectSeen(oTarget) && !bEtherealEnemy)
             {
                 // Aim at the object directly!
-                ActionCastSpellAtObject(iSubSpell, oTarget, METAMAGIC_ANY, TRUE);
+                //ActionCastSpellAtObject(iSubSpell, oTarget, METAMAGIC_ANY, TRUE);
+                ActionCastSpellAtObject(iSubSpell, oTarget, METAMAGIC_ANY);
             }
             // If location...
             else// if(iLocation)
             {
                 // Fire ActionSpellAtLocation at the given location
-                ActionCastSpellAtLocation(iSubSpell, GetLocation(oTarget), METAMAGIC_NONE, TRUE);
+                //ActionCastSpellAtLocation(iSubSpell, GetLocation(oTarget), METAMAGIC_NONE, TRUE);
+                ActionCastSpellAtLocation(iSubSpell, GetLocation(oTarget), METAMAGIC_ANY);
+
             }
             // Decrement
-            DecrementRemainingSpellUses(OBJECT_SELF, iSubSpell);
+            //DecrementRemainingSpellUses(OBJECT_SELF, iSubSpell);
+
+            // Cheat casting disabled
+
             // Lasts...recheck items
             if(AI_GetSpellCategoryHasItem(nTalent))
             {
@@ -2797,8 +2806,9 @@ int AI_ActionCastSpellRandom(int iSpellID, int nTalent, int iRandom, object oTar
                     // Fire ActionSpellAtLocation at the given location
                     // 1.3 fix - Until ActionCastSpellAtLocation works with METAMAGIC
                     //           it will cheat-cast, and decrement the spell by one, with no metamagic.
-                    ActionCastSpellAtLocation(iSpellID, GetLocation(oTarget), METAMAGIC_NONE, TRUE);
-                    DecrementRemainingSpellUses(OBJECT_SELF, iSpellID);
+                    //ActionCastSpellAtLocation(iSpellID, GetLocation(oTarget), METAMAGIC_NONE, TRUE);
+                    //DecrementRemainingSpellUses(OBJECT_SELF, iSpellID);
+                    ActionCastSpellAtLocation(iSpellID, GetLocation(oTarget), METAMAGIC_ANY);
                 }
                 // Lasts...recheck items
                 if(AI_GetSpellCategoryHasItem(nTalent))
@@ -2920,8 +2930,10 @@ int AI_ActionCastSummonSpell(int iThingID, int iRequirement = 0, int iSummonLeve
             if (iSpellID)//...
             {
 //                SendMessageToPC(GetFirstPC(), "PM undead: " + IntToString(iThingID));//...
-                ActionCastSpellAtLocation(iSpellID, GlobalSummonLocation, METAMAGIC_ANY, TRUE);
-                DecrementRemainingFeatUses(OBJECT_SELF, iThingID);
+                //ActionCastSpellAtLocation(iSpellID, GlobalSummonLocation, METAMAGIC_ANY, TRUE);
+                //DecrementRemainingFeatUses(OBJECT_SELF, iThingID);
+
+                ActionCastSpellAtLocation(iSpellID, GlobalSummonLocation, METAMAGIC_ANY);
 
                 int iBonus = (GetHasFeat(FEAT_EPIC_BLACKGUARD)) ? (GetLevelByClass(CLASS_TYPE_BLACKGUARD) - 10) :
                     (GetHasFeat(FEAT_EPIC_PALE_MASTER)) ? (GetLevelByClass(CLASS_TYPE_PALEMASTER) - 10) :
@@ -2968,8 +2980,11 @@ int AI_ActionCastSummonSpell(int iThingID, int iRequirement = 0, int iSummonLeve
             // Fire ActionSpellAtLocation at the given location
             // 1.3 fix - Until ActionCastSpellAtLocation works with METAMAGIC
             //           it will cheat-cast, and decrement the spell by one, with no metamagic.
-            ActionCastSpellAtLocation(iThingID, GlobalSummonLocation, METAMAGIC_NONE, TRUE);
-            DecrementRemainingSpellUses(OBJECT_SELF, iThingID);
+            //ActionCastSpellAtLocation(iThingID, GlobalSummonLocation, METAMAGIC_NONE, TRUE);
+            //DecrementRemainingSpellUses(OBJECT_SELF, iThingID);
+
+            ActionCastSpellAtLocation(iThingID, GlobalSummonLocation, METAMAGIC_ANY);
+
             SetAIInteger(AI_LAST_SUMMONED_LEVEL, iSummonLevel);
             // Lasts...recheck items
             if(AI_GetSpellCategoryHasItem(SpellAllies))
@@ -3066,8 +3081,11 @@ int AI_ActionUseEpicSpell(int nFeat, int nSpell, object oTarget = OBJECT_SELF)
         if (nSpell == SPELL_EPIC_HELLBALL)
         {
             AI_ActionTurnOffHiding();
-            ActionCastSpellAtLocation(nSpell, GetLocation(oTarget), METAMAGIC_NONE, TRUE);
-            DecrementRemainingFeatUses(OBJECT_SELF, nFeat);
+            //ActionCastSpellAtLocation(nSpell, GetLocation(oTarget), METAMAGIC_NONE, TRUE);
+            //DecrementRemainingFeatUses(OBJECT_SELF, nFeat);
+
+            ActionCastSpellAtLocation(nSpell, GetLocation(oTarget), METAMAGIC_ANY);
+
             return TRUE;
         }
         else if (GetIsEnemy(oTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oTarget))
@@ -3075,9 +3093,12 @@ int AI_ActionUseEpicSpell(int nFeat, int nSpell, object oTarget = OBJECT_SELF)
             // We turn off hiding/searching
             AI_ActionTurnOffHiding();
             // Cheat cast the spell
-            ActionCastSpellAtObject(nSpell, oTarget, METAMAGIC_NONE, TRUE);
+            //ActionCastSpellAtObject(nSpell, oTarget, METAMAGIC_NONE, TRUE);
             // Decrement casting of it.
-            DecrementRemainingFeatUses(OBJECT_SELF, nFeat);
+            //DecrementRemainingFeatUses(OBJECT_SELF, nFeat);
+
+            ActionCastSpellAtObject(nSpell, oTarget, METAMAGIC_ANY);
+
             return TRUE;
         }
     }
@@ -12100,7 +12121,7 @@ H X [Deafening Clang] +1 enchantment. +3 sonic damage. On Hit: Deafness, on a we
         }
         // 33: "[DCR:Casting] Cheat Spell. End of Spells. [Spell] " + IntToString(iSpell) + "[Target]" + GetName(GlobalSpellTarget)
         DebugActionSpeakByInt(33, GlobalSpellTarget, iSpell);
-        ActionCastSpellAtObject(iSpell, GlobalSpellTarget, METAMAGIC_NONE, TRUE);
+        ActionCastSpellAtObject(iSpell, GlobalSpellTarget, METAMAGIC_ANY, TRUE);
         return TRUE;
     }
 
@@ -15491,7 +15512,7 @@ int AI_AttemptFeatCombatHostile()
 void AI_ActionCastShifterSpell(int iSpell, object oTarget = OBJECT_SELF)
 {
     // Cheat cast the spell. We know we must have it.
-    ActionCastSpellAtObject(iSpell, oTarget, METAMAGIC_NONE, TRUE);
+    ActionCastSpellAtObject(iSpell, oTarget, METAMAGIC_ANY, TRUE);
 }
 // This willcast iFirst -> iFirst + iAmount polymorph spell. It will check
 // if we have iMaster (Either by feat or spell, depending on iFeat).
@@ -15516,8 +15537,10 @@ int AI_ActionPolymorph(int iMaster, int iFirstSpell, int iAmount, int iFeat = FA
         }
 
         // Cast it
-        ActionCastSpellAtObject(iCast, OBJECT_SELF, METAMAGIC_NONE, TRUE);
+        //ActionCastSpellAtObject(iCast, OBJECT_SELF, METAMAGIC_NONE, TRUE);
+        ActionCastSpellAtObject(iCast, OBJECT_SELF, METAMAGIC_ANY);
 
+        /*
         if(iRemove)
         {
             // Decrement one or the other
@@ -15532,6 +15555,7 @@ int AI_ActionPolymorph(int iMaster, int iFirstSpell, int iAmount, int iFeat = FA
                 DecrementRemainingSpellUses(OBJECT_SELF, iMaster);
             }
         }
+        */
         // Add Action Attack melee target :-D
         ActionAttack(GlobalMeleeTarget);
         return TRUE;
@@ -15664,7 +15688,8 @@ int AI_AttemptPolyMorph()
                 // 389   Polymorph_UMBER_HULK
                 // 390   Polymorph_PIXIE
                 // 391   Polymorph_ZOMBIE
-            if(AI_ActionPolymorph(SPELL_POLYMORPH_SELF, 387, 5, TRUE)) return TRUE;
+            if(AI_ActionPolymorph(SPELL_POLYMORPH_SELF, 387, 5, FALSE)) return TRUE;
+
         }
         else /*Else we have it*///... removed if(d10() <= i6)
         {

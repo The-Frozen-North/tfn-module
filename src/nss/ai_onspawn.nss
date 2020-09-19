@@ -429,7 +429,7 @@ void main()
     //AI_CreateRandomOther(-2, 2, -2, 2, -2, 2, -2, 2);
         // Create (Effect-applied) random HP, saves, AC.
 
-    //SetSpawnInCondition(AI_FLAG_OTHER_RETURN_TO_SPAWN_LOCATION, AI_OTHER_MASTER);
+    SetSpawnInCondition(AI_FLAG_OTHER_RETURN_TO_SPAWN_LOCATION, AI_OTHER_MASTER);
         // This will store our spawn location, and then move back there after combat.
     SetSpawnInCondition(AI_FLAG_OTHER_DONT_RESPOND_TO_EMOTES, AI_OTHER_MASTER);
         // This will ignore ALL chat by PC's (Enemies) who speak actions in Stars - *Bow*
@@ -607,7 +607,7 @@ void main()
         SetSpawnInCondition(NW_FLAG_AMBIENT_ANIMATIONS, NW_GENERIC_MASTER);
         // Same as above, except NPC will wander randomly around the area.
 
-        SetAnimationCondition(NW_ANIM_FLAG_IS_CIVILIZED);
+        //SetAnimationCondition(NW_ANIM_FLAG_IS_CIVILIZED);
         // Interacts with placeables + More civilized actions. See Readme.
     }
     // SetAnimationCondition(NW_ANIM_FLAG_CHATTER);

@@ -569,18 +569,18 @@ void AI_SetUpEndOfSpawn()
     }
 
     // We don't set up corpses if set not to...else set to resurrect
-    if(!GetSpawnInCondition(AI_FLAG_OTHER_TURN_OFF_CORPSES, AI_OTHER_MASTER))
-    {
+    //if(!GetSpawnInCondition(AI_FLAG_OTHER_TURN_OFF_CORPSES, AI_OTHER_MASTER))
+    //{
         // Note: Here, if we can, we set Bioware's lootable on.
-        if(GetSpawnInCondition(AI_FLAG_OTHER_USE_BIOWARE_LOOTING, AI_OTHER_MASTER))
-        {
-            // Set to lootable
-            SetLootable(OBJECT_SELF, TRUE);
-        }
+        //if(GetSpawnInCondition(AI_FLAG_OTHER_USE_BIOWARE_LOOTING, AI_OTHER_MASTER))
+        //{
+        //    // Set to lootable
+        //    SetLootable(OBJECT_SELF, TRUE);
+        //}
         // Just handling corpse raising/resurrection/removal
         // - Undestroyable, Raiseable and Selectable
-        SetIsDestroyable(FALSE, TRUE, TRUE);
-    }
+        //SetIsDestroyable(FALSE, TRUE, TRUE);
+    //}
 
 
     // Goes through and sets up which shouts the NPC will listen to.

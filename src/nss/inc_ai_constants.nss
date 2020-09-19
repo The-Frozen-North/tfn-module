@@ -46,9 +46,9 @@ const string FILE_RE_SET_WEAPONS                    = "ai_setweapons";        //
 const string FILE_DEATH_CLEANUP                     = "ai_destroyself";       // FILENAME
 
 // Heartbeat files. Speeds up (hopefully!) heartbeat calls and cirtainly heartbeat file size.
-const string FILE_HEARTBEAT_TALENT_BUFF             = "ai_heart_buff";
-const string FILE_HEARTBEAT_LOOT                    = "ai_heart_loot";
-const string FILE_HEARTBEAT_ANIMATIONS              = "ai_heart_anim";
+const string FILE_HEARTBEAT_TALENT_BUFF             = "ai_heartb_buff";
+const string FILE_HEARTBEAT_LOOT                    = "ai_heartb_loot";
+const string FILE_HEARTBEAT_ANIMATIONS              = "ai_heartb_anim";
 const string FILE_HEARTBEAT_WALK_TO_PC              = "ai_heartb_search";
 
 const string FILE_DRAGON_WING_BUFFET                = "ai_wingbuffet";
