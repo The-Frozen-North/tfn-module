@@ -412,12 +412,12 @@ void main()
 
     NWNX_Creature_SetLevelByPosition(OBJECT_SELF, 0, nHitDice+1);
 
-    NWNX_Creature_SetAbilityScore(OBJECT_SELF, ABILITY_STRENGTH, nStrength+FloatToInt(fStrengthLevel*fHitDice));
-    NWNX_Creature_SetAbilityScore(OBJECT_SELF, ABILITY_DEXTERITY, nDexterity+FloatToInt(fDexterityLevel*fHitDice));
-    NWNX_Creature_SetAbilityScore(OBJECT_SELF, ABILITY_CONSTITUTION, nConstitution+FloatToInt(fConstitutionLevel*fHitDice));
-    NWNX_Creature_SetAbilityScore(OBJECT_SELF, ABILITY_INTELLIGENCE, nIntelligence+FloatToInt(fIntelligenceLevel*fHitDice));
-    NWNX_Creature_SetAbilityScore(OBJECT_SELF, ABILITY_WISDOM, nWisdom+FloatToInt(fWisdomLevel*fHitDice));
-    NWNX_Creature_SetAbilityScore(OBJECT_SELF, ABILITY_CHARISMA, nCharisma+FloatToInt(fCharismaLevel*fHitDice));
+    NWNX_Creature_SetRawAbilityScore(OBJECT_SELF, ABILITY_STRENGTH, nStrength+FloatToInt(fStrengthLevel*fHitDice));
+    NWNX_Creature_SetRawAbilityScore(OBJECT_SELF, ABILITY_DEXTERITY, nDexterity+FloatToInt(fDexterityLevel*fHitDice));
+    NWNX_Creature_SetRawAbilityScore(OBJECT_SELF, ABILITY_CONSTITUTION, nConstitution+FloatToInt(fConstitutionLevel*fHitDice));
+    NWNX_Creature_SetRawAbilityScore(OBJECT_SELF, ABILITY_INTELLIGENCE, nIntelligence+FloatToInt(fIntelligenceLevel*fHitDice));
+    NWNX_Creature_SetRawAbilityScore(OBJECT_SELF, ABILITY_WISDOM, nWisdom+FloatToInt(fWisdomLevel*fHitDice));
+    NWNX_Creature_SetRawAbilityScore(OBJECT_SELF, ABILITY_CHARISMA, nCharisma+FloatToInt(fCharismaLevel*fHitDice));
 
     NWNX_Creature_SetBaseAC(OBJECT_SELF, nBaseAC+FloatToInt(fACLevel*fHitDice));
 }

@@ -1,10 +1,18 @@
 #include "nwnx_events"
+#include "nwnx_creature"
 #include "inc_debug"
 
 void main()
 {
+
+    if (NWNX_Creature_GetIsBartering(OBJECT_SELF))
+    {
+        SendDebugMessage("Skipping save for "+GetName(OBJECT_SELF)+" because bartering");
+        NWNX_Events_SkipEvent();
+        return;
+    }
+
     int bPolymorph = FALSE;
-    int bNearPC = FALSE;
 
     effect e = GetFirstEffect(OBJECT_SELF);
     while(GetIsEffectValid(e))
@@ -17,18 +25,9 @@ void main()
         e = GetNextEffect(OBJECT_SELF);
     }
 
-    object oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC, OBJECT_SELF);
-
-    if (GetIsObjectValid(oPC) && !GetIsDead(oPC) && !GetIsDead(OBJECT_SELF) && !GetIsInCombat(oPC) && !GetIsInCombat(OBJECT_SELF) && GetDistanceBetween(OBJECT_SELF, oPC) <= 3.0) bNearPC = TRUE;
-
     if (bPolymorph)
     {
         SendDebugMessage("Skipping save for "+GetName(OBJECT_SELF)+" because polymorphed");
-        NWNX_Events_SkipEvent();
-    }
-    else if (bNearPC)
-    {
-        SendDebugMessage("Skipping save for "+GetName(OBJECT_SELF)+" because near "+GetName(oPC));
         NWNX_Events_SkipEvent();
     }
 }
