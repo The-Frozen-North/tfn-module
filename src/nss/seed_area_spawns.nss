@@ -1,5 +1,4 @@
 #include "inc_debug"
-#include "nwnx_object"
 #include "util_i_csvlists"
 
 string VectorToString(vector vVector)
@@ -7,38 +6,6 @@ string VectorToString(vector vVector)
     return "#X#" + FloatToString(vVector.x, 0, 5) +
            "#Y#" + FloatToString(vVector.y, 0, 5) +
            "#Z#" + FloatToString(vVector.z, 0, 5) + "#";
-}
-
-void SetSpawnPoint(string sResRef, int nTarget, object oValidator)
-{
-    object oTrigger;
-    float fMaxHeight;
-    location lLocation = GetLocation(oValidator);
-    vector vVector = GetPositionFromLocation(lLocation);
-
-    string sTarget = sResRef+"_spawn"+IntToString(nTarget);
-    string sData;
-
-
-// loop through elevation 0, 1, and 2
-    int i;
-    for (i = 0; i < 3; i++)
-    {
-        oTrigger = GetNearestObjectByTag("e"+IntToString(i)+"_random"+IntToString(nTarget)+"_spawn", oValidator);
-
-        fMaxHeight = 3.5;
-        switch (GetLocalInt(oTrigger, "elevation"))
-        {
-            case 1: fMaxHeight = 7.0; break;
-            case 2: fMaxHeight = 10.5; break;
-        }
-
-        if (GetIsObjectValid(oTrigger) && NWNX_Object_GetPositionIsInTrigger(oTrigger, vVector) && (vVector.z <= fMaxHeight))
-        {
-              SetCampaignString("spawns", sTarget, sData = AddListItem(GetCampaignString("spawns", sTarget), VectorToString(vVector)));
-              break;
-        }
-    }
 }
 
 void main()
@@ -110,11 +77,6 @@ void main()
                     if (bTrapped)
                     {
                         SetCampaignString("spawns", sResRef+"_traps", AddListItem(GetCampaignString("spawns", sResRef+"_traps"), VectorToString(vValidator)));
-                    }
-
-                    for (i = 1; i < 10; i++)
-                    {
-                        SetSpawnPoint(sResRef, i, oValidator);
                     }
                 }
 

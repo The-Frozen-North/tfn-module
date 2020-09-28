@@ -2,7 +2,7 @@
 #include "inc_loot"
 #include "inc_debug"
 #include "nwnx_object"
-
+#include "nwnx_encounter"
 string ChooseSpawnRef(object oArea, int nTarget)
 {
     string sTarget = "random"+IntToString(nTarget)+"_spawn";

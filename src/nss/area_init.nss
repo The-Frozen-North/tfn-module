@@ -1,5 +1,6 @@
 #include "inc_debug"
 #include "util_i_csvlists"
+#include "nwnx_area"
 
 vector StringToVector(string sVector)
 {
@@ -42,6 +43,8 @@ void main()
        if (GetStringLeft(sResRef, 1) == "_") return;
 
        if (!GetIsAreaInterior(oArea)) SetSkyBox(SKYBOX_GRASS_CLEAR, oArea);
+
+       NWNX_Area_SetFogClipDistance(oArea, 90.0);
 
 
 //==========================================
