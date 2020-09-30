@@ -14,9 +14,9 @@ void main()
     object oLink3 = GetObjectByTag(GetLocalString(OBJECT_SELF, "link3"));
 
     if (NWNX_Area_GetNumberOfPlayersInArea(OBJECT_SELF) > 0)  bPlayersInArea = TRUE;
-    if (NWNX_Area_GetNumberOfPlayersInArea(oLink1) > 0)  bPlayersInLinkedArea = TRUE;
-    if (NWNX_Area_GetNumberOfPlayersInArea(oLink2) > 0)  bPlayersInLinkedArea = TRUE;
-    if (NWNX_Area_GetNumberOfPlayersInArea(oLink3) > 0)  bPlayersInLinkedArea = TRUE;
+    if (GetIsObjectValid(oLink1) && NWNX_Area_GetNumberOfPlayersInArea(oLink1) > 0)  bPlayersInLinkedArea = TRUE;
+    if (GetIsObjectValid(oLink2) && NWNX_Area_GetNumberOfPlayersInArea(oLink2) > 0)  bPlayersInLinkedArea = TRUE;
+    if (GetIsObjectValid(oLink3) && NWNX_Area_GetNumberOfPlayersInArea(oLink3) > 0)  bPlayersInLinkedArea = TRUE;
 
     object oPlayer = GetFirstPC();
 

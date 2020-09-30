@@ -1,6 +1,7 @@
 #include "inc_debug"
 #include "util_i_csvlists"
 #include "nwnx_area"
+#include "nwnx_encounter"
 
 vector StringToVector(string sVector)
 {
@@ -51,23 +52,56 @@ void main()
 // COUNT RANDOM SPAWN TYPES IN AREA
 //==========================================
 
-       int nCount, nTarget;
-       string sTarget;
+       int nEncounterIndex, nTotal, nTarget, nUniqueChance;
+       string sTarget, sList, sListUnique;
+       object oEncounter;
+       struct NWNX_Encounter_CreatureListEntry sCreature;
+
 // get the total amount of random spawns in the area
        for (nTarget = 1; nTarget < 10; nTarget++)
        {
-           nCount = 0;
-           sTarget = "random"+IntToString(nTarget)+"_spawn";
+           sTarget = "random"+IntToString(nTarget);
+           oEncounter = GetObjectByTag(GetLocalString(oArea, sTarget));
 
-// up to 24 supported
-           while (nCount < 25)
+           sList = "";
+           sListUnique = "";
+           nUniqueChance = 0;
+
+           if (GetIsObjectValid(oEncounter))
            {
-                if (GetLocalString(oArea, sTarget+IntToString(nCount+1)) == "") break;
-                nCount = nCount + 1;
+                nTotal = NWNX_Encounter_GetNumberOfCreaturesInEncounterList(oEncounter);
+                WriteTimestampedLogEntry("num creatures in encounter: "+IntToString(nTotal));
+
+                switch (GetEncounterDifficulty(oEncounter))
+                {
+                     case 0: nUniqueChance = 5; break;
+                     case 1: nUniqueChance = 10; break;
+                     case 2: nUniqueChance = 15; break;
+                     case 5: nUniqueChance = 20; break;
+                     case 7: nUniqueChance = 25; break;
+                }
+                WriteTimestampedLogEntry("encounter difficulty: "+IntToString(GetEncounterDifficulty(oEncounter)));
+                WriteTimestampedLogEntry("unique chance: "+IntToString(nUniqueChance));
+
+                for (nEncounterIndex = 0; nEncounterIndex < nTotal; nEncounterIndex++)
+                {
+                      sCreature = NWNX_Encounter_GetEncounterCreatureByIndex(oEncounter, nEncounterIndex);
+
+                      if (sCreature.unique)
+                      {
+                            sListUnique = AddListItem(sListUnique, sCreature.resref, TRUE);
+                      }
+                      else
+                      {
+                            sList = AddListItem(sList, sCreature.resref, TRUE);
+                      }
+                }
+
+                SetLocalString(oArea, sTarget+"_list_unique", sListUnique);
+                SetLocalString(oArea, sTarget+"_list", sList);
+                SetLocalInt(oArea, sTarget+"_unique_chance", nUniqueChance);
            }
-// store the count. this will be used to pull random types of spawns
-           SetLocalInt(oArea, sTarget+"_total", nCount);
-        }
+       }
 
 //==========================================
 // COUNT RANDOM EVENT TYPES IN AREA
@@ -96,13 +130,13 @@ void main()
 //==========================================
 
 // Define the variables we need for the loop.
-       string sTag, sQuest, sQuestName;
+       string sTag, sQuest, sQuestName, sSpawnTarget;
        int nTreasures = 0;
        int nEventSpawns = 0;
        int nCreatures = 0;
        int nDoors = 0;
        object oObject = GetFirstObjectInArea(oArea);
-       int nType, nQuestLoop;
+       int nType, nQuestLoop, nSpawnCount;
        int bInstance = GetLocalInt(oArea, "instance");
        vector vTreasureVector, vCreatureVector;
        float fTreasureOrientation;
@@ -170,7 +204,15 @@ void main()
                     }
                  break;
                  case OBJECT_TYPE_CREATURE:
-                     if (bInstance == 1)
+                     if (GetStringLeft(GetResRef(oObject), 6) == "random")
+                     {
+                        sSpawnTarget = "random"+GetSubString(GetResRef(oObject), 6, 1);
+                        nSpawnCount = GetLocalInt(oArea, sSpawnTarget+"_spawn_point_total")+1;
+                        SetLocalInt(oArea, sSpawnTarget+"_spawn_point_total", nSpawnCount);
+                        SetLocalLocation(oArea, sSpawnTarget+"_spawn_point"+IntToString(nSpawnCount), GetLocation(oObject));
+                        DestroyObject(oObject);
+                     }
+                     else if (bInstance == 1)
                      {
                           nCreatures = nCreatures + 1;
 
@@ -233,31 +275,8 @@ void main()
 // LOAD SPAWNS
 //==========================================
 
-   string sRow;
-   int nRandomSpawnPoints, nSpawnTarget;
-
    location lSpawnLocation;
 
-   for (nSpawnTarget = 1; nSpawnTarget < 10; nSpawnTarget++)
-   {
-        sRow = GetCampaignString("spawns", sResRef+"_spawn"+IntToString(nSpawnTarget));
-        nRandomSpawnPoints = CountList(sRow);
-
-        if (nRandomSpawnPoints > 0)
-        {
-            SetLocalInt(oArea, "random"+IntToString(nSpawnTarget)+"_spawn_point_total", nRandomSpawnPoints);
-
-            int i;
-            for (i = 0; i < nRandomSpawnPoints; i++)
-            {
-                 lSpawnLocation = Location(oArea, StringToVector(GetListItem(sRow, i)), IntToFloat(Random(360)+1));
-                 //if (GetLocalInt(GetModule(), "dev") == 1) CreateObject(OBJECT_TYPE_PLACEABLE, "plc_solblue", lSpawnLocation);
-
-                 CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lSpawnLocation, FALSE, sResRef+"_random"+IntToString(nSpawnTarget)+"_spawn_point"+IntToString(i+1));
-            }
-            SendDebugMessage(sResRef+" loaded random"+IntToString(nSpawnTarget)+" spawn points: "+IntToString(nRandomSpawnPoints), TRUE);
-        }
-   }
 
     string sTrapRow = GetCampaignString("spawns", sResRef+"_traps");
     int nTrapSpawnPoints = CountList(sTrapRow);

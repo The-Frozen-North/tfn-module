@@ -1,15 +1,27 @@
 #include "inc_trap"
 #include "inc_loot"
 #include "inc_debug"
+#include "util_i_csvlists"
 #include "nwnx_object"
 #include "nwnx_encounter"
+
 string ChooseSpawnRef(object oArea, int nTarget)
 {
-    string sTarget = "random"+IntToString(nTarget)+"_spawn";
-    int nRandom = GetLocalInt(oArea, sTarget+"_total");
+    string sTarget = "random"+IntToString(nTarget);
 
-// choose a random a random spawn
-    return GetLocalString(oArea, sTarget+IntToString(Random(nRandom)+1));
+    string sList = GetLocalString(oArea, sTarget+"_list");
+    string sListUnique = GetLocalString(oArea, sTarget+"_list_unique");
+
+    int nUniqueChance = GetLocalInt(oArea, sTarget+"_unique_chance");
+
+    if (d100() <= nUniqueChance)
+    {
+        return GetListItem(sListUnique, Random(CountList(sListUnique)));
+    }
+    else
+    {
+        return GetListItem(sList, Random(CountList(sList)));
+    }
 }
 
 void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
@@ -19,17 +31,10 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
 
       string sSpawnScript = GetLocalString(oArea, "random"+IntToString(nTarget)+"_spawn_script");
 
-// there's a variable amount of enemies, based on how many spawn points there are in the area
-      int nTotalSpawns = (nSpawnPoints/6) + (Random(nSpawnPoints/8));
+      int nSpawns = GetLocalInt(oArea, "random"+IntToString(nTarget)+"_spawns");
+      if (nSpawns == 0) return;
+      int nTotalSpawns = nSpawns + (Random(nSpawnPoints/4));
       if (nTotalSpawns > nMax) nMax = 100;
-
-// Overall density mod
-      float fDensityMod = GetLocalFloat(oArea, "creature_density_mod");
-      if (fDensityMod > 0.0) nTotalSpawns = FloatToInt(IntToFloat(nTotalSpawns)*fDensityMod);
-
-// Density applied only to the specific target
-      float fTargetDensityMod = GetLocalFloat(oArea, "random"+IntToString(nTarget)+"_density_mod");
-      if (fTargetDensityMod > 0.0) nTotalSpawns = FloatToInt(IntToFloat(nTotalSpawns)*fTargetDensityMod);
 
 // Destroy all stored creatures.
 // typically done on a refresh
@@ -37,15 +42,14 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
       for (i = 1; i <= nMax; i++)
         DestroyObject(GetLocalObject(oArea, "random"+IntToString(nTarget)+"_creature"+IntToString(i)));
 
-      object oCreature, oSpawnWP;
+      object oCreature;
+      location lLocation;
       vector vSpawnWP;
       int nSpawn;
       for (nSpawn = 1; nSpawn <= nTotalSpawns; nSpawn++)
       {
-           oSpawnWP = GetObjectByTag(sResRef+"_random"+IntToString(nTarget)+"_spawn_point"+IntToString(Random(nSpawnPoints)+1));
-           vSpawnWP = GetPosition(oSpawnWP);
-
-
+           lLocation = GetLocalLocation(oArea, "random"+IntToString(nTarget)+"_spawn_point"+IntToString(Random(nSpawnPoints)+1));
+           vSpawnWP = GetPositionFromLocation(lLocation);
 
            oCreature = CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), Location(oArea, Vector(vSpawnWP.x, vSpawnWP.y, vSpawnWP.z), IntToFloat(Random(360)+1)));
 
@@ -235,12 +239,13 @@ void main()
 // ==============================
 // Random Creature Spawns
 // ==============================
-     int nRandomSpawnTotal, nRandomSpawnPointTotal;
+     string sEncounter;
+     int nRandomSpawnPointTotal;
      int i;
      for (i = 1; i < 10; i++)
      {
-        nRandomSpawnTotal = GetLocalInt(OBJECT_SELF, "random"+IntToString(i)+"_spawn_total");
-        if (nRandomSpawnTotal == 0) continue;
+        sEncounter = GetLocalString(OBJECT_SELF, "random"+IntToString(i));
+        if (sEncounter == "") continue;
 
         nRandomSpawnPointTotal = GetLocalInt(OBJECT_SELF, "random"+IntToString(i)+"_spawn_point_total");
         if (nRandomSpawnPointTotal == 0) continue;
