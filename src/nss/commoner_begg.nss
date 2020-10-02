@@ -3,9 +3,9 @@
 void main()
 {
     struct CommonerSettings sSettings;
-    sSettings.NumberOfCommonersDuringDay = 3;
-    sSettings.NumberOfCommonersDuringNight = 2;
-    sSettings.NumberOfCommonersDuringRain = 1;
+    sSettings.NumberOfCommonersDuringDay = 8;
+    sSettings.NumberOfCommonersDuringNight = 5;
+    sSettings.NumberOfCommonersDuringRain = 3;
     sSettings.CommonerResRef = "commoner";
     sSettings.CommonerTag = "AMBIENT_COMMONER";
     sSettings.WaypointTag = "WP_COMMONER";
@@ -14,9 +14,9 @@ void main()
     SpawnAndUpdateCommoners(sSettings);
 
 
-    sSettings.NumberOfCommonersDuringDay = 2;
-    sSettings.NumberOfCommonersDuringNight = 1;
-    sSettings.NumberOfCommonersDuringRain = 1;
+    sSettings.NumberOfCommonersDuringDay = 6;
+    sSettings.NumberOfCommonersDuringNight = 4;
+    sSettings.NumberOfCommonersDuringRain = 3;
     sSettings.CommonerResRef = "nwguard";
     sSettings.CommonerTag = "AMBIENT_NWGUARD";
     sSettings.WaypointTag = "WP_NWGUARD";
@@ -27,9 +27,9 @@ void main()
     // The SpawnAndUpdateCommoners function can be called multiple times with
     // different settings. Just make sure the CommonerTag is set to something
     // different (otherwise the script will get confused).
-    sSettings.NumberOfCommonersDuringDay = 3;
-    sSettings.NumberOfCommonersDuringNight = 2;
-    sSettings.NumberOfCommonersDuringRain = 1;
+    sSettings.NumberOfCommonersDuringDay = 6;
+    sSettings.NumberOfCommonersDuringNight = 4;
+    sSettings.NumberOfCommonersDuringRain = 3;
     sSettings.CommonerResRef = "militia";
     sSettings.CommonerTag = "AMBIENT_MILITIA";
     sSettings.WaypointTag = "WP_MILITIA";
