@@ -33,7 +33,7 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
 
       int nSpawns = GetLocalInt(oArea, "random"+IntToString(nTarget)+"_spawns");
       if (nSpawns == 0) return;
-      int nTotalSpawns = nSpawns + (Random(nSpawnPoints/4));
+      int nTotalSpawns = nSpawns + (Random(nSpawns/4));
       if (nTotalSpawns > nMax) nMax = 100;
 
 // Destroy all stored creatures.
