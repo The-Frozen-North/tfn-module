@@ -1,16 +1,35 @@
 #include "inc_persist"
-#include "inc_respawn"
 #include "inc_general"
 #include "inc_horse"
+#include "util_i_csvlists"
+
+string ChooseSpawnRef(object oArea, int nTarget)
+{
+    string sTarget = "random"+IntToString(nTarget);
+
+    string sList = GetLocalString(oArea, sTarget+"_list");
+    string sListUnique = GetLocalString(oArea, sTarget+"_list_unique");
+
+    int nUniqueChance = GetLocalInt(oArea, sTarget+"_unique_chance");
+
+    if (d100() <= nUniqueChance)
+    {
+        return GetListItem(sListUnique, Random(CountList(sListUnique)));
+    }
+    else
+    {
+        return GetListItem(sList, Random(CountList(sList)));
+    }
+}
 
 void CreateAmbush(int nTarget, object oArea, location lLocation)
 {
     string sSpawnScript = GetLocalString(oArea, "random"+IntToString(nTarget)+"_spawn_script");
 
-    object oEnemy1 = CreateObject(OBJECT_TYPE_CREATURE, SpawnRef(OBJECT_INVALID, oArea, nTarget), lLocation, TRUE);
+    object oEnemy1 = CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), lLocation, TRUE);
     SetLocalInt(oEnemy1, "ambush", 1);
     if (sSpawnScript != "") ExecuteScript(sSpawnScript, oEnemy1);
-    object oEnemy2 = CreateObject(OBJECT_TYPE_CREATURE, SpawnRef(OBJECT_INVALID, oArea, nTarget), lLocation, TRUE);
+    object oEnemy2 = CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), lLocation, TRUE);
     SetLocalInt(oEnemy2, "ambush", 1);
     if (sSpawnScript != "") ExecuteScript(sSpawnScript, oEnemy2);
 
@@ -73,7 +92,7 @@ void main()
 // only the first 5
             for (i = 1; i < 6; i++)
             {
-                if (GetLocalString(oArea, "random"+IntToString(i)+"_spawn1") != "") nEnemyGroups++;
+                if (GetLocalString(oArea, "random"+IntToString(i)) != "") nEnemyGroups++;
             }
 
 // only do ambushes if there are random enemy groups
