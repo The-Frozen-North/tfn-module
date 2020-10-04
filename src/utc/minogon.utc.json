@@ -1,96 +1,20 @@
 {
   "__data_type": "UTC ",
-  "Appearance_Head": {
-    "type": "byte",
-    "value": 0
-  },
   "Appearance_Type": {
     "type": "word",
-    "value": 475
-  },
-  "ArmorPart_RFoot": {
-    "type": "byte",
-    "value": 0
+    "value": 119
   },
   "BodyBag": {
     "type": "byte",
     "value": 0
   },
-  "BodyPart_Belt": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_LBicep": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_LFArm": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_LFoot": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_LHand": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_LShin": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_LShoul": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_LThigh": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_Neck": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_Pelvis": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_RBicep": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_RFArm": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_RHand": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_RShin": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_RShoul": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_RThigh": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_Torso": {
-    "type": "byte",
-    "value": 1
-  },
   "Cha": {
     "type": "byte",
-    "value": 10
+    "value": 9
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 3.0
+    "value": 6.0
   },
   "ClassList": {
     "type": "list",
@@ -103,26 +27,10 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 3
+          "value": 6
         }
       }
     ]
-  },
-  "Color_Hair": {
-    "type": "byte",
-    "value": 1
-  },
-  "Color_Skin": {
-    "type": "byte",
-    "value": 1
-  },
-  "Color_Tattoo1": {
-    "type": "byte",
-    "value": 1
-  },
-  "Color_Tattoo2": {
-    "type": "byte",
-    "value": 1
   },
   "Comment": {
     "type": "cexostring",
@@ -138,15 +46,15 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 0
+    "value": -1
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 30
+    "value": 60
   },
   "DecayTime": {
     "type": "dword",
-    "value": 300000
+    "value": 5000
   },
   "Deity": {
     "type": "cexostring",
@@ -155,33 +63,31 @@
   "Description": {
     "id": 12646,
     "type": "cexolocstring",
-    "value": {
-      "0": "Though at first appearing to be an ordinary suit of armor, this imposing being begins to move, its lumbering movements slow and methodical."
-    }
+    "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 6
+    "value": 10
   },
   "Disarmable": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "Equip_ItemList": {
     "type": "list",
     "value": [
       {
-        "__struct_id": 2,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "cre_animaarmor"
-        }
-      },
-      {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wblmml002"
+          "value": "nw_wswls001"
+        }
+      },
+      {
+        "__struct_id": 65536,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "nw_it_crewpp010"
         }
       },
       {
@@ -204,13 +110,6 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 2
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
           "value": 228
         }
       },
@@ -225,21 +124,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 44
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
           "value": 45
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 46
         }
       }
     ]
@@ -248,7 +133,7 @@
     "id": 12647,
     "type": "cexolocstring",
     "value": {
-      "0": "Animated Armor"
+      "0": "Minogon"
     }
   },
   "fortbonus": {
@@ -265,7 +150,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 30
+    "value": 60
   },
   "Int": {
     "type": "byte",
@@ -297,15 +182,15 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 33
+    "value": 66
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 0
+    "value": 7
   },
   "NoPermDeath": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "PaletteID": {
     "type": "byte",
@@ -325,7 +210,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 1031
+    "value": 254
   },
   "Race": {
     "type": "byte",
@@ -436,7 +321,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 8
         }
       },
       {
@@ -513,7 +398,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 8
         }
       },
       {
@@ -594,7 +479,53 @@
   },
   "SpecAbilityList": {
     "type": "list",
-    "value": []
+    "value": [
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 272
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 6
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 272
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 6
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 272
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 6
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      }
+    ]
   },
   "StartingPackage": {
     "type": "byte",
@@ -602,7 +533,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 14
+    "value": 18
   },
   "Subrace": {
     "type": "cexostring",
@@ -622,7 +553,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "animaarmor"
+    "value": "minogon"
   },
   "WalkRate": {
     "type": "int",
@@ -638,6 +569,6 @@
   },
   "Wis": {
     "type": "byte",
-    "value": 10
+    "value": 12
   }
 }
