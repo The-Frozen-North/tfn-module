@@ -89,8 +89,8 @@ void main()
 // START REST AMBUSH CODE
 // =======================================
 
-// only the first 5
-            for (i = 1; i < 6; i++)
+// only the first 7
+            for (i = 1; i < 8; i++)
             {
                 if (GetLocalString(oArea, "random"+IntToString(i)) != "") nEnemyGroups++;
             }
