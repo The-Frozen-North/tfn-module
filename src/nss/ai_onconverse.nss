@@ -1,91 +1,56 @@
-//:://////////////////////////////////////////////////
-//:: NW_C2_DEFAULT4
-/*
-  Default OnConversation event handler for NPCs.
-
- */
-//:://////////////////////////////////////////////////
-//:: Copyright (c) 2002 Floodgate Entertainment
-//:: Created By: Naomi Novik
-//:: Created On: 12/22/2002
-//:://////////////////////////////////////////////////
-
-#include "nw_i0_generic"
+#include "inc_ai_combat"
+#include "inc_ai_event"
 
 void main()
 {
-    // * if petrified, jump out
-    if (GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF) == TRUE)
-    {
-        return;
-    }
+    SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_CONVERSATION));
 
-    // * If dead, exit directly.
-    if (GetIsDead(OBJECT_SELF) == TRUE)
-    {
-        return;
-    }
+    object oSpeaker = GetLastSpeaker();
+    object oTarget  = OBJECT_INVALID;
 
-    // See if what we just 'heard' matches any of our
-    // predefined patterns
-    int nMatch = GetListenPatternNumber();
-    object oShouter = GetLastSpeaker();
+    SetListening(OBJECT_SELF, FALSE);
 
-    if (nMatch == -1)
+    switch (GetListenPatternNumber())
     {
-        // Not a match -- start an ordinary conversation
-        if (GetCommandable(OBJECT_SELF))
+    case -1:
+        if (! gsCBGetHasAttackTarget() &&
+            gsCBGetIsPerceived(oSpeaker))
         {
-            ClearActions(CLEAR_NW_C2_DEFAULT4_29);
+            ClearAllActions(TRUE);
             BeginConversation();
         }
-        else
-        // * July 31 2004
-        // * If only charmed then allow conversation
-        // * so you can have a better chance of convincing
-        // * people of lowering prices
-        if (GetHasEffect(EFFECT_TYPE_CHARMED) == TRUE)
-        {
-            ClearActions(CLEAR_NW_C2_DEFAULT4_29);
-            BeginConversation();
-        }
-    }
-    // Respond to shouts from friendly non-PCs only
-    else if (GetIsObjectValid(oShouter)
-               && !GetIsPC(oShouter)
-               && GetIsFriend(oShouter))
-    {
-        object oIntruder = OBJECT_INVALID;
-        // Determine the intruder if any
-        if(nMatch == 4)
-        {
-            oIntruder = GetLocalObject(oShouter, "NW_BLOCKER_INTRUDER");
-        }
-        else if (nMatch == 5)
-        {
-            oIntruder = GetLastHostileActor(oShouter);
-            if(!GetIsObjectValid(oIntruder))
-            {
-                oIntruder = GetAttemptedAttackTarget();
-                if(!GetIsObjectValid(oIntruder))
-                {
-                    oIntruder = GetAttemptedSpellTarget();
-                    if(!GetIsObjectValid(oIntruder))
-                    {
-                        oIntruder = OBJECT_INVALID;
-                    }
-                }
-            }
-        }
+        break;
 
-        // Actually respond to the shout
-        RespondToShout(oShouter, nMatch, oIntruder);
+    case 10000: //GS_AI_ATTACK_TARGET
+        if (! (GetLevelByClass(CLASS_TYPE_COMMONER) ||
+               gsCBGetHasAttackTarget()))
+        {
+            gsCBDetermineAttackTarget(oSpeaker);
+        }
+        break;
+
+    case 10001: //GS_AI_PVP
+        oTarget = GetLocalObject(oSpeaker, "GS_PVP_TARGET");
+
+        if (GetIsObjectValid(oTarget) &&
+            ! GetIsEnemy(oTarget))
+        {
+            gsCBDetermineCombatRound(oSpeaker);
+        }
+        break;
+
+    case 10002: //GS_AI_THEFT
+        if (GetIsSkillSuccessful(OBJECT_SELF, SKILL_SPOT, GetSkillRank(SKILL_PICK_POCKET, oSpeaker) + d20()))
+        {
+            gsCBDetermineCombatRound(oSpeaker);
+        }
+        break;
+
+    case 10003: //GS_AI_REQUEST_REINFORCEMENT
+        if (! GetIsEnemy(oSpeaker)) gsCBSetReinforcementRequestedBy(oSpeaker);
+        break;
     }
 
-    // Send the user-defined event if appropriate
-    if(GetSpawnInCondition(NW_FLAG_ON_DIALOGUE_EVENT))
-    {
-        SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_DIALOGUE));
-    }
+    SetListening(OBJECT_SELF, TRUE);
 }
 

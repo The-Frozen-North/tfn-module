@@ -1,29 +1,15 @@
-//:://////////////////////////////////////////////////
-//:: NW_C2_DEFAULT8
-/*
-  Default OnDisturbed event handler for NPCs.
- */
-//:://////////////////////////////////////////////////
-//:: Copyright (c) 2002 Floodgate Entertainment
-//:: Created By: Naomi Novik
-//:: Created On: 12/22/2002
-//:://////////////////////////////////////////////////
-
-#include "nw_i0_generic"
+#include "inc_ai_combat"
+#include "inc_ai_event"
 
 void main()
 {
-    object oTarget = GetLastDisturbed();
+    SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_DISTURBED));
 
-    // If we've been disturbed and are not already fighting,
-    // attack our disturber.
-    if (GetIsObjectValid(oTarget) && !GetIsFighting(OBJECT_SELF)) {
-        DetermineCombatRound(oTarget);
-    }
-
-    // Send the disturbed flag if appropriate.
-    if(GetSpawnInCondition(NW_FLAG_DISTURBED_EVENT)) {
-        SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_DISTURBED));
+    if (GetInventoryDisturbType() == INVENTORY_DISTURB_TYPE_STOLEN &&
+        ! gsCBGetIsInCombat())
+    {
+        PlayVoiceChat(VOICE_CHAT_CUSS);
+        gsCBDetermineCombatRound(GetLastDisturbed());
     }
 }
 
