@@ -24,7 +24,7 @@ void main()
 
     //Get the nearest creature to the affected creature
     object oTarget = GetNearestObject(OBJECT_TYPE_CREATURE, OBJECT_SELF, nCnt);
-    float fDistance = GetDistanceBetween(OBJECT_SELF, oTarget);
+    float fDistance;
 
     while (GetIsObjectValid(oTarget))
     {
@@ -32,7 +32,7 @@ void main()
         if(GetIsEnemy(oTarget) && fDistance <= 10.0)
         {
             //Run away if they are an enemy of the target's faction
-            ActionMoveAwayFromObject(oTarget, TRUE, 50.0);
+            ActionMoveAwayFromLocation(GetLocation(oTarget), TRUE, 50.0);
             break;
         }
 
