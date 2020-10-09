@@ -49,6 +49,21 @@ void main()
     case 10003: //GS_AI_REQUEST_REINFORCEMENT
         if (! GetIsEnemy(oSpeaker)) gsCBSetReinforcementRequestedBy(oSpeaker);
         break;
+    case 10100: // GS_AI_INNOCENT_ATTACKED
+    // commoners always run away
+        if (GetLocalInt(OBJECT_SELF, "fear") != 1 && GetClassByPosition(1, OBJECT_SELF) == CLASS_TYPE_COMMONER)
+        {
+            SetLocalInt(OBJECT_SELF, "fear", 1);
+            DelayCommand(15.0, DeleteLocalInt(OBJECT_SELF, "fear"));
+            ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectFrightened(), OBJECT_SELF, 30.0);
+            switch(d6())
+            {
+                case 1: PlayVoiceChat(VOICE_CHAT_HELP); break;
+                case 2: PlayVoiceChat(VOICE_CHAT_BATTLECRY1); break;
+                case 3: PlayVoiceChat(VOICE_CHAT_BATTLECRY2); break;
+            }
+        }
+    break;
     }
 
     SetListening(OBJECT_SELF, TRUE);

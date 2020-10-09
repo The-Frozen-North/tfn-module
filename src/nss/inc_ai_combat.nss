@@ -422,6 +422,8 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
     //analyze
     gsC2Analyze();
 
+    if (GetStandardFactionReputation(STANDARD_FACTION_COMMONER) > 25) SpeakString("GS_AI_INNOCENT_ATTACKED", TALKVOLUME_SILENT_TALK);
+
     //follow target
     if (gsCBGetIsFollowing()) return;
 
