@@ -449,6 +449,12 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
     if (! gsCBGetIsInCombat()) gsCBTalentProtectBySpell();
 
     float fDistance = GetDistanceToObject(oTarget);
+
+    if (GetLocalInt(OBJECT_SELF, "range") == 1 && fDistance >= 2.0 && fDistance <= 8.0)
+    {
+        ActionMoveAwayFromObject(oTarget, TRUE, 10.0);
+    }
+
     int nBehavior   = GetLocalInt(OBJECT_SELF, "GS_CB_BEHAVIOR");
     int nAttack     = 80;
     int nSpell      = 20;

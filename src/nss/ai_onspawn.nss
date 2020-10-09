@@ -215,6 +215,8 @@ void main()
     //set action matrix
     gsAISetActionMatrix(gsAIGetDefaultActionMatrix());
 
+    if (GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND))) SetLocalInt(OBJECT_SELF, "range", 1);
+
     //set random facing
     //SetFacing(IntToFloat(Random(360)));
 

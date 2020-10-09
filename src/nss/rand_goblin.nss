@@ -1,5 +1,3 @@
-#include "x0_i0_anims"
-
 void main()
 {
     switch (d2())
@@ -85,7 +83,7 @@ void main()
             SetDroppableFlag(oAmmo, FALSE);
             SetPickpocketableFlag(oAmmo, FALSE);
 
-            SetCombatCondition(X0_COMBAT_FLAG_RANGED);
+            SetLocalInt(OBJECT_SELF, "range", 1);
         break;
     }
 

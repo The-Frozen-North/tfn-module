@@ -1,5 +1,3 @@
-#include "x0_i0_anims"
-
 void main()
 {
     object oWeapon, oAmmo, oBackup;
@@ -20,7 +18,7 @@ void main()
             SetPickpocketableFlag(oAmmo, FALSE);
 
             AssignCommand(OBJECT_SELF, ActionEquipItem(oAmmo, INVENTORY_SLOT_ARROWS));
-            SetCombatCondition(X0_COMBAT_FLAG_RANGED);
+            SetLocalInt(OBJECT_SELF, "range", 1);
         break;
     }
 
