@@ -24,7 +24,7 @@ void main()
 
     location lLocation = Location(GetObjectByTag(fLocA), Vector(fLocX, fLocY, fLocZ), fLocO);
 
-    oWP = CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lLocation);
+    oWP = CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lLocation, FALSE, sKey+sBic);
 
     NWNX_Player_SetPersistentLocation(sKey, sBic, oWP);
 }

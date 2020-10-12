@@ -46,7 +46,8 @@ int GetQuestEntry(object oPC, string sQuestEntry)
 {
     int nQuestInt = NWNX_Object_GetInt(oPC, sQuestEntry);
 
-    if (nQuestInt > 0) AddJournalQuestEntry(sQuestEntry, nQuestInt, oPC, FALSE);
+    if (nQuestInt > 0) AddJournalQuestEntry(sQuestEntry, nQuestInt, oPC, FALSE, FALSE, TRUE);
+
 
     return nQuestInt;
 }
