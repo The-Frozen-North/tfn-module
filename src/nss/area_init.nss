@@ -74,11 +74,11 @@ void main()
 
                 switch (GetEncounterDifficulty(oEncounter))
                 {
-                     case 0: nUniqueChance = 5; break;
-                     case 1: nUniqueChance = 10; break;
-                     case 2: nUniqueChance = 15; break;
-                     case 5: nUniqueChance = 20; break;
-                     case 7: nUniqueChance = 25; break;
+                     case 0: nUniqueChance = 5; break;  //very easy
+                     case 1: nUniqueChance = 10; break; //easy
+                     case 2: nUniqueChance = 15; break; //normal
+                     case 5: nUniqueChance = 20; break; //hard
+                     case 9: nUniqueChance = 25; break; //impossible
                 }
                 WriteTimestampedLogEntry("encounter difficulty: "+IntToString(GetEncounterDifficulty(oEncounter)));
                 WriteTimestampedLogEntry("unique chance: "+IntToString(nUniqueChance));
