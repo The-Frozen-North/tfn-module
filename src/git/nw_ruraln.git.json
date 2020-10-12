@@ -39497,7 +39497,7 @@
         },
         "OnFailToOpen": {
           "type": "resref",
-          "value": ""
+          "value": "warden_trydoor"
         },
         "OnHeartbeat": {
           "type": "resref",
@@ -39578,6 +39578,26 @@
         "TrapType": {
           "type": "byte",
           "value": 0
+        },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "warden"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "core_warden"
+              }
+            }
+          ]
         },
         "Will": {
           "type": "byte",
