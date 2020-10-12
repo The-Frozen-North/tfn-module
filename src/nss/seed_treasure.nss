@@ -704,6 +704,18 @@ void main()
    CreateTypeLoot("weapon");
    CreateTypeLoot("armor");
 
+
+// ==============================================
+//  MANUALLY ADDED ITEMS
+// ==============================================
+
+    CreateItemOnObject("manualstr", GetObjectByTag("_MiscT5"));
+    CreateItemOnObject("manualdex", GetObjectByTag("_MiscT5"));
+    CreateItemOnObject("manualcon", GetObjectByTag("_MiscT5"));
+    CreateItemOnObject("manualwis", GetObjectByTag("_MiscT5"));
+    CreateItemOnObject("manualcha", GetObjectByTag("_MiscT5"));
+    CreateItemOnObject("manualint", GetObjectByTag("_MiscT5"));
+
 // ==============================================
 //  ARMORS
 // ==============================================
