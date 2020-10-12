@@ -6,6 +6,7 @@
 
 void DoRevive(object oDead)
 {
+        if (GetIsInCombat(oDead)) return;
         if (GetIsDead(oDead))
         {
             SendDebugMessage(GetName(oDead)+" is dead, start revive loop");
@@ -36,7 +37,7 @@ void DoRevive(object oDead)
                         SendDebugMessage("Enemy detected, breaking from revive loop: "+GetName(oCreature));
                         break;
                     }
-                    else if (!bFriend && GetIsFriend(oCreature, oDead))
+                    else if (!bFriend && GetIsFriend(oCreature, oDead) && !GetIsInCombat(oCreature))
                     {
                         bFriend = TRUE;
                         SendDebugMessage("Friend detected: "+GetName(oCreature));
