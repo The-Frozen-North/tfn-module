@@ -33,7 +33,7 @@ int GetIsAtQuestStage(object oQuestObject, object oPC, int nTarget);
 int GetIsCurrentlyAtQuestStage(object oQuestObject, object oPC, int nTarget);
 
 // Get the PC's quest entry by string. Returns quest stage.
-int GetQuestEntry(object oPC, string sQuestEntry);
+int GetQuestEntry(object oPC, string sQuestEntry, int bForceJournal = FALSE);
 
 // Refreshes the PC's completed bounties
 void RefreshCompletedBounties(object oPC, int nTime, string sList);
@@ -42,11 +42,11 @@ void RefreshCompletedBounties(object oPC, int nTime, string sList);
 // FUNCTIONS
 // -------------------------------------------------------------------------
 
-int GetQuestEntry(object oPC, string sQuestEntry)
+int GetQuestEntry(object oPC, string sQuestEntry, int bForceJournal = FALSE)
 {
     int nQuestInt = NWNX_Object_GetInt(oPC, sQuestEntry);
 
-    if (nQuestInt > 0) AddJournalQuestEntry(sQuestEntry, nQuestInt, oPC, FALSE, FALSE, TRUE);
+    if (nQuestInt > 0 && (bForceJournal || GetLocalInt(oPC, "NW_JOURNAL_ENTRY"+sQuestEntry) < nQuestInt)) AddJournalQuestEntry(sQuestEntry, nQuestInt, oPC, FALSE, FALSE, TRUE);
 
 
     return nQuestInt;
@@ -58,12 +58,12 @@ void GetQuestEntries(object oPC)
 
     int i;
     for (i = 0; i < CountList(sList); i++)
-        GetQuestEntry(oPC, GetListItem(sList, i));
+        GetQuestEntry(oPC, GetListItem(sList, i), TRUE);
 
     sList = GetLocalString(GetModule(), "bounties");
 
     for (i = 0; i < CountList(sList); i++)
-        GetQuestEntry(oPC, GetListItem(sList, i));
+        GetQuestEntry(oPC, GetListItem(sList, i), TRUE);
 }
 
 void RefreshCompletedBounty(object oPC, string sQuest, int nTime)
