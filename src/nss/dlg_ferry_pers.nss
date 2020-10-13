@@ -5,7 +5,7 @@ int StartingConditional()
 {
     object oPC = GetPCSpeaker();
     int nSkill = SKILL_PERSUADE;
-    int nDC = 17;
+    int nDC = 14;
 
     SetTemporaryInt(GetPCPublicCDKey(oPC, TRUE)+GetName(oPC)+GetTag(OBJECT_SELF), 1, 900.0);
 
@@ -20,8 +20,11 @@ int StartingConditional()
     else
     {
         TakeGoldFromCreature(nCost, oPC, TRUE);
-        location lLocation = GetLocation(GetObjectByTag(GetLocalString(OBJECT_SELF, "warden_tele_wp")));
-        AssignCommand(oPC, JumpToLocation(lLocation));
+
+        location lLocation = GetLocation(GetObjectByTag(GetScriptParam("target")));
+        FadeToBlack(oPC);
+        DelayCommand(2.5, AssignCommand(oPC, JumpToLocation(lLocation)));
+        DelayCommand(5.0, FadeFromBlack(oPC));
         return TRUE;
     }
 }
