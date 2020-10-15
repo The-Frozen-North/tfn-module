@@ -40,6 +40,30 @@ void main()
         GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 4, TRUE);
     }
 
+    nMax = d4(4);
+    for (i = 0; i < nMax; i++)
+    {
+        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 3, TRUE);
+    }
+
+    nMax = d4(4);
+    for (i = 0; i < nMax; i++)
+    {
+        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 3, TRUE);
+    }
+
+    nMax = d6(4);
+    for (i = 0; i < nMax; i++)
+    {
+        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 2, TRUE);
+    }
+
+    nMax = d6(4);
+    for (i = 0; i < nMax; i++)
+    {
+        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 2, TRUE);
+    }
+
     if (d2() == 1)
     {
         nMax = d2();

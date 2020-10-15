@@ -29,4 +29,16 @@ void main()
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Range", 5, TRUE);
     }
+
+    nMax = d6(3);
+    for (i = 0; i < nMax; i++)
+    {
+        GenerateTierItem(0, 0, OBJECT_SELF, "Range", 3, TRUE);
+    }
+
+    nMax = d6(5);
+    for (i = 0; i < nMax; i++)
+    {
+        GenerateTierItem(0, 0, OBJECT_SELF, "Range", 2, TRUE);
+    }
 }

@@ -25,4 +25,16 @@ void main()
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 5, TRUE);
     }
+
+    nMax = d4(2);
+    for (i = 0; i < nMax; i++)
+    {
+        GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 3, TRUE);
+    }
+
+    nMax = d6(3);
+    for (i = 0; i < nMax; i++)
+    {
+        GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 2, TRUE);
+    }
 }
