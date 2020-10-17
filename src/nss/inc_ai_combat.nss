@@ -429,11 +429,13 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
 
     //call aid
 //    if (! gsFLGetFlag(GS_FL_DISABLE_CALL))
-//    {
+    if (GetLocalInt(OBJECT_SELF, "boss") == 1 || GetLocalInt(OBJECT_SELF, "semiboss") == 1)
+    {
         SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
         gsCBRequestReinforcement();
-        if (gsCBReinforce()) oTarget = gsCBGetLastAttackTarget();
-//    }
+    }
+
+    if (gsCBReinforce()) oTarget = gsCBGetLastAttackTarget();
 
     if (GetCurrentAction() != ACTION_CASTSPELL) ClearAllActions();
 
@@ -1679,8 +1681,9 @@ int gsCBReinforce()
     DeleteLocalObject(OBJECT_SELF, "GS_CB_REINFORCEMENT_REQUESTER");
     DeleteLocalInt(OBJECT_SELF, "GS_CB_REINFORCEMENT_REQUESTED");
 
+// add check for the object being reinforced is in combat
     if (GetIsObjectValid(oObject) &&
-        nValue > 0 &&
+        nValue > 0 && GetIsInCombat(oObject) &&
         GetDistanceToObject(oObject) > 10.0)
     {
         object oTarget = gsCBGetLastAttackTarget(oObject);
