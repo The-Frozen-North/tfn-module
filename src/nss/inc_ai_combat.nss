@@ -429,11 +429,11 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
 
     //call aid
 //    if (! gsFLGetFlag(GS_FL_DISABLE_CALL))
-    if (GetLocalInt(OBJECT_SELF, "boss") == 1 || GetLocalInt(OBJECT_SELF, "semiboss") == 1)
-    {
+//    if (GetLocalInt(OBJECT_SELF, "boss") == 1 || GetLocalInt(OBJECT_SELF, "semiboss") == 1)
+//    {
         SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
         gsCBRequestReinforcement();
-    }
+//    }
 
     if (gsCBReinforce()) oTarget = gsCBGetLastAttackTarget();
 

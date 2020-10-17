@@ -106,7 +106,7 @@ void main()
 
     while (GetIsObjectValid(oTarget) && nNth > 1)
     {
-        if (Random(100) >= 90)
+        if (Random(100) >= 80)
         {
             if (nMatrix & GS_AI_ACTION_TYPE_WALK && Random(100) < 65) gsAIActionWalk();
             else                                                      gsAIActionNone();
@@ -119,7 +119,8 @@ void main()
             {
             case OBJECT_TYPE_CREATURE:
 //                if (! gsFLGetFlag(GS_FL_DISABLE_AI, oTarget) &&
-                if (
+//              Only those friendly to commoners will group up.
+                if (GetStandardFactionReputation(STANDARD_FACTION_COMMONER) >= 50 &&
                     gsAIGetActionMatrix(oTarget) & GS_AI_ACTION_TYPE_CREATURE &&
 //                    ! GetIsObjectValid(gsTAGetLastTaskTrigger(oTarget)) &&
                     ! GetIsPC(oTarget) &&
