@@ -415,6 +415,9 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         return;
     }
 
+// Turn off Detect if there is a valid target
+    SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, FALSE);
+
     DoCombatVoice();
 
     if (! GetIsEnemy(oTarget)) SetIsTemporaryEnemy(oTarget, OBJECT_SELF, TRUE, 1800.00);
