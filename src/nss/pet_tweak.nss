@@ -98,7 +98,7 @@ void main()
     int nMasterHitDice;
     switch (nAssociateType)
     {
-        case ASSOCIATE_TYPE_ANIMALCOMPANION: nMasterHitDice = GetLevelByClass(CLASS_TYPE_RANGER, oMaster)+GetLevelByClass(CLASS_TYPE_DRUID, oMaster); break;
+        case ASSOCIATE_TYPE_ANIMALCOMPANION: nMasterHitDice = GetLevelByClass(CLASS_TYPE_RANGER, oMaster)+GetLevelByClass(CLASS_TYPE_DRUID, oMaster)+GetLevelByClass(CLASS_TYPE_SHIFTER, oMaster); break;
         case ASSOCIATE_TYPE_FAMILIAR: nMasterHitDice = GetLevelByClass(CLASS_TYPE_WIZARD, oMaster)+GetLevelByClass(CLASS_TYPE_SORCERER, oMaster)+GetLevelByClass(CLASS_TYPE_DRAGON_DISCIPLE, oMaster)+GetLevelByClass(CLASS_TYPE_PALE_MASTER, oMaster); break;
         default: return; break; // Stop if not familiar or animal companion
     }
@@ -218,13 +218,13 @@ void main()
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_BLINDSIGHT_60_FEET);
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_BLIND_FIGHT);
 
-            oWeaponSpecial = ApplyDamageProgression("bite", INVENTORY_SLOT_CWEAPON_B, 1, nMasterHitDice);
+            oWeaponSpecial = ApplyDamageProgression("bite", INVENTORY_SLOT_CWEAPON_B, 1, nMasterHitDice, FALSE, TRUE);
 
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyVampiricRegeneration(1+nMasterHitDice/3), oWeaponSpecial);
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_SONIC, 1+nMasterHitDice/6), oWeaponSpecial);
         break;
         case APPEARANCE_TYPE_BOAR_DIRE:
-            nBaseAC = 3;
+            nBaseAC = 4;
 
             nStrength = 13;
             nDexterity = 10;
@@ -347,8 +347,8 @@ void main()
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageImmunity(IP_CONST_DAMAGETYPE_FIRE, IP_CONST_DAMAGEIMMUNITY_100_PERCENT), oSkin);
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageVulnerability(IP_CONST_DAMAGETYPE_COLD, IP_CONST_DAMAGEVULNERABILITY_50_PERCENT), oSkin);
 
-            oWeaponLeft = ApplyDamageProgression("slam", INVENTORY_SLOT_CWEAPON_L, nDamage, nMasterHitDice);
-            oWeaponRight = ApplyDamageProgression("slam", INVENTORY_SLOT_CWEAPON_R, nDamage, nMasterHitDice);
+            oWeaponLeft = ApplyDamageProgression("slam", INVENTORY_SLOT_CWEAPON_L, nDamage, nMasterHitDice, FALSE, TRUE);
+            oWeaponRight = ApplyDamageProgression("slam", INVENTORY_SLOT_CWEAPON_R, nDamage, nMasterHitDice, FALSE, TRUE);
 
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_FIRE, nMephit), oWeaponLeft);
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_FIRE, nMephit), oWeaponRight);
@@ -380,8 +380,8 @@ void main()
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageImmunity(IP_CONST_DAMAGETYPE_COLD, IP_CONST_DAMAGEIMMUNITY_100_PERCENT), oSkin);
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageVulnerability(IP_CONST_DAMAGETYPE_FIRE, IP_CONST_DAMAGEVULNERABILITY_50_PERCENT), oSkin);
 
-            oWeaponLeft = ApplyDamageProgression("slam", INVENTORY_SLOT_CWEAPON_L, nDamage, nMasterHitDice);
-            oWeaponRight = ApplyDamageProgression("slam", INVENTORY_SLOT_CWEAPON_R, nDamage, nMasterHitDice);
+            oWeaponLeft = ApplyDamageProgression("slam", INVENTORY_SLOT_CWEAPON_L, nDamage, nMasterHitDice, FALSE, TRUE);
+            oWeaponRight = ApplyDamageProgression("slam", INVENTORY_SLOT_CWEAPON_R, nDamage, nMasterHitDice, FALSE, TRUE);
 
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, nMephit), oWeaponLeft);
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, nMephit), oWeaponRight);
@@ -410,7 +410,7 @@ void main()
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageImmunity(IP_CONST_DAMAGETYPE_COLD, IP_CONST_DAMAGEIMMUNITY_100_PERCENT), oSkin);
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageVulnerability(IP_CONST_DAMAGETYPE_FIRE, IP_CONST_DAMAGEVULNERABILITY_50_PERCENT), oSkin);
 
-            oWeaponSpecial = ApplyDamageProgression("bite", INVENTORY_SLOT_CWEAPON_B, 3, nMasterHitDice);
+            oWeaponSpecial = ApplyDamageProgression("bite", INVENTORY_SLOT_CWEAPON_B, 3, nMasterHitDice, FALSE, TRUE);
 
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_FIRE, 1+nMasterHitDice/6), oWeaponSpecial);
         break;
