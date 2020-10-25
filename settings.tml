@@ -1,10 +1,183 @@
+[camera]
+	dialog-zoom = true
+	edge-turning = true
+	mode = 1
+	turn-speed-multiplier = 1.0000000000000000
+	zoom-speed-multiplier = 3.0000000000000000
+	[camera.limits]
+		max-dist = 25.000000000000000
+		max-pitch = 89.000000000000000
+		min-dist = 1.0000000000000000
+		min-pitch = 1.0000000000000000
 [campaigndb]
 	[campaigndb.storage]
 		[campaigndb.storage.compression]
 			enabled = true
+[client]
+	[client.identity]
+		name = ""
+[debug]
+	[debug.panel]
+		visible = false
 [game]
+	gore = 1
+	[game.campaigns]
+		[game.campaigns.oc]
+			progress = 0
+		[game.campaigns.xp1]
+			progress = 0
+		[game.campaigns.xp2]
+			progress = 0
+	[game.character-generation]
+		show-pregenerated = true
 	[game.language]
 		override = ""
+	[game.log]
+		[game.log.chat]
+			[game.log.chat.all]
+				enabled = false
+			[game.log.chat.emotes]
+				enabled = false
+			[game.log.chat.text]
+				enabled = false
+		[game.log.model-errors]
+			enabled = false
+		[game.log.resman]
+			[game.log.resman.lookup-failures]
+				enabled = false
+[graphics]
+	gamma = 2.2000000000000002
+	[graphics.creature-wind]
+		mode = 1
+	[graphics.effects]
+		creature-environment-mapping = true
+		high-quality = true
+	[graphics.experimental]
+		disable-gui-lighting = true
+		enhanced-light-managing = true
+		gl-finish-before-fbo = false
+		optimize-shadow-rendering = true
+		preload-area-objects = false
+		render-cloaks = true
+		render-grass-sorted = true
+	[graphics.facelifts]
+		mode = "CampaignsAndDLC"
+	[graphics.fbo]
+		[graphics.fbo.dof]
+			amount = 1.0000000000000000
+			deadzone = 3.0000000000000000
+			enabled = false
+			focus-type = "Camera Pitch"
+			never-blur-pc = true
+			vignette = 1.0000000000000000
+		[graphics.fbo.high-contrast]
+			enabled = true
+			intensity = 0.15000000596046448
+			midpoint = 0.40000000596046448
+		[graphics.fbo.sharpen]
+			enabled = true
+		[graphics.fbo.ssao]
+			enabled = true
+		[graphics.fbo.vibrance]
+			amount = 0.69999998807907104
+			enabled = true
+	[graphics.framelimiter]
+		enabled = false
+		[graphics.framelimiter.background]
+			target-fps = 10
+		[graphics.framelimiter.foreground]
+			target-fps = 60
+		[graphics.framelimiter.non-interactive]
+			target-fps = 48
+	[graphics.general]
+		shader-quality = "Performance"
+	[graphics.grass]
+		mode = 2
+		render-distance = 900.00000000000000
+	[graphics.hilite]
+		enabled = true
+		glow = true
+		[graphics.hilite.color]
+			door = "#4cffff"
+			enemy = "#ff1919"
+			friend = "#4cff4c"
+			item = "#4cffff"
+			neutral = "#6666ff"
+			placeable = "#4cffff"
+			self = "#ffffff"
+			trigger = "#4cffff"
+	[graphics.intro]
+		[graphics.intro.splash]
+			enabled = true
+	[graphics.keyholing]
+		enabled = true
+		max-diameter = 0.89999997615814209
+		min-diameter = 0.40000000596046448
+		with-tooltip = false
+	[graphics.lighting]
+		cutoff-range-multiplier = 2.0000000000000000
+		enhanced = true
+		intensity-at-range = 0.20000000298023224
+		max-intensity = 1.5000000000000000
+		max-lights = 32
+	[graphics.lod]
+		enabled = true
+		scale-factor = 1.0000000000000000
+	[graphics.movies]
+		enabled = true
+		[graphics.movies.intro]
+			enabled = true
+	[graphics.second-story-tiles]
+		mode = 1
+	[graphics.shadows]
+		max-casting-lights = 3
+		[graphics.shadows.creatures]
+			mode = 2
+		[graphics.shadows.environment]
+			enabled = true
+	[graphics.skyboxes]
+		enabled = true
+	[graphics.stats]
+		enabled = false
+	[graphics.texture-animations]
+		enabled = true
+	[graphics.textures]
+		max-memory = 256
+		pack = 3
+	[graphics.tile-borders]
+		enabled = true
+	[graphics.trap]
+		[graphics.trap.color]
+			friendly = "#00ff00"
+			hostile = "#ff0000"
+	[graphics.video]
+		anti-aliasing-mode = 1
+		refresh-rate = 60
+		[graphics.video.anisotropic-filtering]
+			enabled = false
+		[graphics.video.vsync]
+			enabled = false
+	[graphics.water]
+		shiny = true
+	[graphics.window]
+		mode = "windowed"
+		[graphics.window.fullscreen]
+			height = 1080
+			toggle-to-borderless = false
+			width = 1920
+		[graphics.window.windowed]
+			borderless = false
+			height = 1017
+			width = 1920
+			[graphics.window.windowed.position]
+				mode = "remember"
+				x = 0
+				y = 23
+[input]
+	[input.keyboard]
+		shift-walk-mode-inverted = false
+	[input.mouse]
+		hardware-pointer = true
 [io]
 	[io.mmap]
 		enabled = false
@@ -92,6 +265,8 @@
 	[server.log]
 		[server.log.creature-deaths]
 			enabled = false
+		[server.log.debug-mode-sends-to-players]
+			enabled = true
 		[server.log.heartbeats]
 			enabled = false
 		[server.log.rotation]
@@ -101,6 +276,8 @@
 		dm-password = ""
 		max-players = 6
 		player-password = ""
+		[server.login.player-dm]
+			enabled = true
 	[server.net]
 		accept-relayed-connections = true
 		port = 5121
@@ -120,16 +297,229 @@
 		mode = 1
 		sticky-player-names = false
 		suppress-base = false
+[sound]
+	[sound.3d]
+		bias = 0.50000000000000000
+	[sound.effects]
+		volume = 0.50000000000000000
+	[sound.music]
+		main-menu-theme = "mus_theme_main"
+		volume = 0.50000000000000000
+	[sound.voices]
+		volume = 0.50000000000000000
 [taskmanager]
 	[taskmanager.threadpool]
 		max-mutex-wait-time = 5000
 		max-size = 0
+[ui]
+	floating-text-feedback = true
+	large-font = true
+	mouseover-feedback = true
+	scale = 1
+	targeting-feedback-mode = 2
+	text-bubble-mode = 2
+	tooltip-delay = 100000
+	[ui.chat]
+		[ui.chat.pane]
+			[ui.chat.pane.primary]
+				height = 0.00000000000000000
+			[ui.chat.pane.secondary]
+				height = 0.00000000000000000
+		[ui.chat.swear-filter]
+			enabled = false
+	[ui.font]
+		name = "(basic)"
+		pixel-height = 0.00000000000000000
+		pixel-snap = true
+		size = 15.000000000000000
+		[ui.font.glyph-spacing]
+			horizontal = 0.50000000000000000
+			vertical = 0.00000000000000000
+		[ui.font.oversample]
+			horizontal = 1.0000000000000000
+			vertical = 1.0000000000000000
+	[ui.main-menu]
+		background-image = "gui_pre_bknd3"
+	[ui.multiplayer]
+		[ui.multiplayer.direct-connect]
+			last-address = "127.0.0.1:5121"
+		[ui.multiplayer.server-browser]
+			hide-empty = false
+			hide-full = false
+			hide-localvault = false
+			hide-passworded = false
+			hide-servervault = false
+			module-name-filter = ""
+	[ui.party]
+		[ui.party.invite-popup]
+			enabled = true
+	[ui.spellbook]
+		sort-spells = true
 ["~~schema"]
 	"##description" = "This config section exists for your convenience so you can understand and manipulate the configuration file programatically. It is write-only; the game doesn't read it back. Making changes here will have no effect."
-	bind-deprecations = ["nwsync.storage.sqlite-shard-count", "nwsync.storage.auto-compact-shards.enabled"]
+	bind-deprecations = ["graphics.experimental.enable-fragment-lighting", "graphics.experimental.enable-gamma-correction", "graphics.lighting.max-dynamic-lights", "graphics.keyholing.max-radius", "graphics.keyholing.min-radius", "graphics.keyholing.min-height", "graphics.fbo.dof.dynamic-focus", "graphics.experimental.optimize-buffer-updates", "graphics.experimental.aggressive-texture-caching", "nwsync.storage.sqlite-shard-count", "nwsync.storage.auto-compact-shards.enabled"]
 	["~~schema".binds]
+		["~~schema".binds."camera.dialog-zoom"]
+			default = true
+			["~~schema".binds."camera.dialog-zoom".ini-mapping]
+				idx = 1
+				label = "EnableDialogZoom"
+				section = "Control Options"
+			["~~schema".binds."camera.dialog-zoom".translations]
+				strref = 10387
+		["~~schema".binds."camera.edge-turning"]
+			default = true
+			["~~schema".binds."camera.edge-turning".ini-mapping]
+				idx = 1
+				label = "Enable ScreenEdgeCameraTurn"
+				section = "Control Options"
+			["~~schema".binds."camera.edge-turning".translations]
+				strref = 67721
+		["~~schema".binds."camera.limits.max-dist"]
+			default = 25.000000000000000
+			["~~schema".binds."camera.limits.max-dist".constraints]
+				max = 200.00000000000000
+				min = 0.10000000149011612
+			["~~schema".binds."camera.limits.max-dist".ini-mapping]
+				idx = 1
+				label = "CameraMaxDist"
+				section = "Control Options"
+		["~~schema".binds."camera.limits.max-pitch"]
+			default = 89.000000000000000
+			["~~schema".binds."camera.limits.max-pitch".constraints]
+				max = 179.00000000000000
+				min = -89.000000000000000
+			["~~schema".binds."camera.limits.max-pitch".ini-mapping]
+				idx = 1
+				label = "CameraMaxPitch"
+				section = "Control Options"
+		["~~schema".binds."camera.limits.min-dist"]
+			default = 1.0000000000000000
+			["~~schema".binds."camera.limits.min-dist".constraints]
+				max = 200.00000000000000
+				min = 0.10000000149011612
+			["~~schema".binds."camera.limits.min-dist".ini-mapping]
+				idx = 1
+				label = "CameraMinDist"
+				section = "Control Options"
+		["~~schema".binds."camera.limits.min-pitch"]
+			default = 1.0000000000000000
+			["~~schema".binds."camera.limits.min-pitch".constraints]
+				max = 179.00000000000000
+				min = -89.000000000000000
+			["~~schema".binds."camera.limits.min-pitch".ini-mapping]
+				idx = 1
+				label = "CameraMinPitch"
+				section = "Control Options"
+		["~~schema".binds."camera.mode"]
+			default = 1
+			["~~schema".binds."camera.mode".constraints]
+				values = [1, 0, 2]
+			["~~schema".binds."camera.mode".ini-mapping]
+				idx = 1
+				label = "CameraMode"
+				section = "Control Options"
+			["~~schema".binds."camera.mode".translations]
+				strref = 7966
+				values-strrefs = [7968, 5194, 7969]
+		["~~schema".binds."camera.turn-speed-multiplier"]
+			default = 1.0000000000000000
+			["~~schema".binds."camera.turn-speed-multiplier".constraints]
+				max = 10.000000000000000
+				min = 1.0000000000000000
+			["~~schema".binds."camera.turn-speed-multiplier".ini-mapping]
+				idx = 1
+				label = "CameraTurnSpeed"
+				section = "Control Options"
+			["~~schema".binds."camera.turn-speed-multiplier".translations]
+				strref = 67449
+		["~~schema".binds."camera.zoom-speed-multiplier"]
+			default = 3.0000000000000000
+			["~~schema".binds."camera.zoom-speed-multiplier".constraints]
+				max = 10.000000000000000
+				min = 1.0000000000000000
+			["~~schema".binds."camera.zoom-speed-multiplier".ini-mapping]
+				idx = 1
+				label = "Zoom Speed"
+				section = "Control Options"
+			["~~schema".binds."camera.zoom-speed-multiplier".translations]
+				strref = 67448
 		["~~schema".binds."campaigndb.storage.compression.enabled"]
 			default = true
+		["~~schema".binds."client.identity.name"]
+			default = ""
+			["~~schema".binds."client.identity.name".constraints]
+				opaque-code = true
+			["~~schema".binds."client.identity.name".ini-mapping]
+				idx = 1
+				label = "Player Name"
+				section = "Profile"
+		["~~schema".binds."debug.panel.visible"]
+			default = false
+			["~~schema".binds."debug.panel.visible".ini-mapping]
+				idx = 0
+				label = "Visible"
+				section = "Debug Panel"
+		["~~schema".binds."game.campaigns.oc.progress"]
+			default = 0
+			["~~schema".binds."game.campaigns.oc.progress".constraints]
+				max = 7
+				min = 0
+			["~~schema".binds."game.campaigns.oc.progress".ini-mapping]
+				idx = 1
+				label = "CODEWORD"
+				opaque-exporter = true
+				opaque-importer = true
+				section = "Game Options"
+		["~~schema".binds."game.campaigns.xp1.progress"]
+			default = 0
+			["~~schema".binds."game.campaigns.xp1.progress".constraints]
+				max = 3
+				min = 0
+			["~~schema".binds."game.campaigns.xp1.progress".ini-mapping]
+				idx = 1
+				label = "CODEWORD XP1"
+				opaque-exporter = true
+				opaque-importer = true
+				section = "Game Options"
+		["~~schema".binds."game.campaigns.xp2.progress"]
+			default = 0
+			["~~schema".binds."game.campaigns.xp2.progress".constraints]
+				max = 4
+				min = 0
+			["~~schema".binds."game.campaigns.xp2.progress".ini-mapping]
+				idx = 1
+				label = "CODEWORD XP2"
+				opaque-exporter = true
+				opaque-importer = true
+				section = "Game Options"
+		["~~schema".binds."game.character-generation.show-pregenerated"]
+			default = true
+			["~~schema".binds."game.character-generation.show-pregenerated".ini-mapping]
+				idx = 1
+				label = "ShowPregenChars"
+				section = "Profile"
+			["~~schema".binds."game.character-generation.show-pregenerated".translations]
+				strref = 6557
+		["~~schema".binds."game.gore"]
+			default = 1
+			["~~schema".binds."game.gore".constraints]
+				values = [0, 1, 2]
+			[["~~schema".binds."game.gore".ini-deprecations]]
+				idx = 1
+				label = "Memory Checksum"
+				section = "Game Options"
+			[["~~schema".binds."game.gore".ini-deprecations]]
+				idx = 1
+				label = "Memory Level"
+				section = "Game Options"
+			["~~schema".binds."game.gore".ini-mapping]
+				idx = 1
+				label = "Memory Access"
+				section = "Game Options"
+			["~~schema".binds."game.gore".translations]
+				strref = 67650
+				values-strrefs = [66092, 66194, 66195]
 		["~~schema".binds."game.language.override"]
 			default = ""
 			["~~schema".binds."game.language.override".constraints]
@@ -140,7 +530,626 @@
 				section = "Display Options"
 			["~~schema".binds."game.language.override".translations]
 				strref = 10431
-				values-strrefs = [0, 58268, 58269, 58270, 58347, 58346, 3094]
+				values-strrefs = [2966, 58268, 58269, 58270, 58347, 58346, 3094]
+		["~~schema".binds."game.log.chat.all.enabled"]
+			default = false
+			["~~schema".binds."game.log.chat.all.enabled".ini-mapping]
+				idx = 1
+				label = "ClientEntireChatWindowLogging"
+				section = "Game Options"
+		["~~schema".binds."game.log.chat.emotes.enabled"]
+			default = false
+			["~~schema".binds."game.log.chat.emotes.enabled".ini-mapping]
+				idx = 1
+				label = "LogMyEmoteUsage"
+				section = "Game Options"
+		["~~schema".binds."game.log.chat.text.enabled"]
+			default = false
+			["~~schema".binds."game.log.chat.text.enabled".ini-mapping]
+				idx = 1
+				label = "ClientChatLogging"
+				section = "Game Options"
+		["~~schema".binds."game.log.model-errors.enabled"]
+			default = false
+			["~~schema".binds."game.log.model-errors.enabled".ini-mapping]
+				idx = 1
+				label = "Log Model Errors"
+				section = "Game Options"
+		["~~schema".binds."game.log.resman.lookup-failures.enabled"]
+			default = false
+		["~~schema".binds."graphics.creature-wind.mode"]
+			default = 1
+			["~~schema".binds."graphics.creature-wind.mode".constraints]
+				values = [2, 1, 0]
+			["~~schema".binds."graphics.creature-wind.mode".ini-mapping]
+				idx = 0
+				label = "CreatureWindSetting"
+				section = "Video Options"
+			["~~schema".binds."graphics.creature-wind.mode".preset_values]
+				10 = 0
+				11 = 1
+				12 = 2
+			["~~schema".binds."graphics.creature-wind.mode".translations]
+				values-strrefs = [67549, 67548, 67547]
+		["~~schema".binds."graphics.effects.creature-environment-mapping"]
+			default = true
+			["~~schema".binds."graphics.effects.creature-environment-mapping".ini-mapping]
+				idx = 0
+				label = "Enable CreatureEnvironmentMapping"
+				section = "Video Options"
+			["~~schema".binds."graphics.effects.creature-environment-mapping".preset_values]
+				10 = false
+				11 = true
+				12 = true
+			["~~schema".binds."graphics.effects.creature-environment-mapping".translations]
+				strref = 10497
+		["~~schema".binds."graphics.effects.high-quality"]
+			default = true
+			["~~schema".binds."graphics.effects.high-quality".ini-mapping]
+				idx = 0
+				label = "EnableVisualEffectsHigh"
+				section = "Video Options"
+			["~~schema".binds."graphics.effects.high-quality".preset_values]
+				10 = false
+				11 = true
+				12 = true
+			["~~schema".binds."graphics.effects.high-quality".translations]
+				strref = 5199
+		["~~schema".binds."graphics.experimental.disable-gui-lighting"]
+			default = true
+		["~~schema".binds."graphics.experimental.enhanced-light-managing"]
+			default = true
+		["~~schema".binds."graphics.experimental.gl-finish-before-fbo"]
+			default = false
+			["~~schema".binds."graphics.experimental.gl-finish-before-fbo".ini-mapping]
+				idx = 0
+				label = "glFinishBeforeFBO"
+				section = "Display Options"
+		["~~schema".binds."graphics.experimental.optimize-shadow-rendering"]
+			default = true
+		["~~schema".binds."graphics.experimental.preload-area-objects"]
+			default = false
+		["~~schema".binds."graphics.experimental.render-cloaks"]
+			default = true
+			["~~schema".binds."graphics.experimental.render-cloaks".ini-mapping]
+				idx = 1
+				label = "Visible Cloaks"
+				section = "Game Options"
+		["~~schema".binds."graphics.experimental.render-grass-sorted"]
+			default = true
+			["~~schema".binds."graphics.experimental.render-grass-sorted".preset_values]
+				10 = false
+				11 = true
+				12 = true
+		["~~schema".binds."graphics.facelifts.mode"]
+			default = "CampaignsAndDLC"
+			["~~schema".binds."graphics.facelifts.mode".constraints]
+				values = ["None", "CampaignsAndDLC"]
+		["~~schema".binds."graphics.fbo.dof.amount"]
+			default = 1.0000000000000000
+			["~~schema".binds."graphics.fbo.dof.amount".constraints]
+				max = 5.0000000000000000
+				min = 0.00000000000000000
+		["~~schema".binds."graphics.fbo.dof.deadzone"]
+			default = 3.0000000000000000
+			["~~schema".binds."graphics.fbo.dof.deadzone".constraints]
+				max = 10.000000000000000
+				min = 0.00000000000000000
+		["~~schema".binds."graphics.fbo.dof.enabled"]
+			default = false
+			["~~schema".binds."graphics.fbo.dof.enabled".ini-mapping]
+				idx = 0
+				label = "Enable FBEffect Depth of Field"
+				section = "Video Options"
+			["~~schema".binds."graphics.fbo.dof.enabled".preset_values]
+				10 = false
+			["~~schema".binds."graphics.fbo.dof.enabled".translations]
+				strref = 112025
+		["~~schema".binds."graphics.fbo.dof.focus-type"]
+			default = "Camera Pitch"
+			["~~schema".binds."graphics.fbo.dof.focus-type".constraints]
+				values = ["Player Character", "Camera Pitch", "Dynamic", "Mouse"]
+		["~~schema".binds."graphics.fbo.dof.never-blur-pc"]
+			default = true
+		["~~schema".binds."graphics.fbo.dof.vignette"]
+			default = 1.0000000000000000
+			["~~schema".binds."graphics.fbo.dof.vignette".constraints]
+				max = 10.000000000000000
+				min = 0.00000000000000000
+		["~~schema".binds."graphics.fbo.high-contrast.enabled"]
+			default = true
+			["~~schema".binds."graphics.fbo.high-contrast.enabled".ini-mapping]
+				idx = 0
+				label = "Enable FBEffect High Contrast"
+				section = "Video Options"
+			["~~schema".binds."graphics.fbo.high-contrast.enabled".translations]
+				strref = 112023
+		["~~schema".binds."graphics.fbo.high-contrast.intensity"]
+			default = 0.15000000596046448
+			["~~schema".binds."graphics.fbo.high-contrast.intensity".constraints]
+				max = 1.0000000000000000
+				min = 0.00000000000000000
+		["~~schema".binds."graphics.fbo.high-contrast.midpoint"]
+			default = 0.40000000596046448
+			["~~schema".binds."graphics.fbo.high-contrast.midpoint".constraints]
+				max = 1.0000000000000000
+				min = 0.00000000000000000
+		["~~schema".binds."graphics.fbo.sharpen.enabled"]
+			default = true
+			["~~schema".binds."graphics.fbo.sharpen.enabled".ini-mapping]
+				idx = 0
+				label = "Enable FBEffect Sharpen"
+				section = "Video Options"
+			["~~schema".binds."graphics.fbo.sharpen.enabled".preset_values]
+				10 = false
+				11 = true
+				12 = true
+			["~~schema".binds."graphics.fbo.sharpen.enabled".translations]
+				strref = 112051
+		["~~schema".binds."graphics.fbo.ssao.enabled"]
+			default = true
+			["~~schema".binds."graphics.fbo.ssao.enabled".ini-mapping]
+				idx = 0
+				label = "Enable FBEffect Ambient Occlusion"
+				section = "Video Options"
+			["~~schema".binds."graphics.fbo.ssao.enabled".preset_values]
+				10 = false
+				11 = false
+				12 = true
+			["~~schema".binds."graphics.fbo.ssao.enabled".translations]
+				strref = 112022
+		["~~schema".binds."graphics.fbo.vibrance.amount"]
+			default = 0.69999998807907104
+			["~~schema".binds."graphics.fbo.vibrance.amount".constraints]
+				max = 2.0000000000000000
+				min = 0.00000000000000000
+			["~~schema".binds."graphics.fbo.vibrance.amount".ini-mapping]
+				idx = 0
+				label = "Enable FBEffect Vibrance Amount"
+				section = "Video Options"
+		["~~schema".binds."graphics.fbo.vibrance.enabled"]
+			default = true
+			["~~schema".binds."graphics.fbo.vibrance.enabled".ini-mapping]
+				idx = 0
+				label = "Enable FBEffect Vibrance"
+				section = "Video Options"
+			["~~schema".binds."graphics.fbo.vibrance.enabled".translations]
+				strref = 112024
+		["~~schema".binds."graphics.framelimiter.background.target-fps"]
+			default = 10
+			["~~schema".binds."graphics.framelimiter.background.target-fps".constraints]
+				max = 255
+				min = 1
+			["~~schema".binds."graphics.framelimiter.background.target-fps".ini-mapping]
+				idx = 0
+				label = "Frame Limiter Background Target FPS"
+				section = "Display Options"
+		["~~schema".binds."graphics.framelimiter.enabled"]
+			default = false
+			["~~schema".binds."graphics.framelimiter.enabled".ini-mapping]
+				idx = 0
+				label = "Frame Limiter Enabled"
+				section = "Display Options"
+		["~~schema".binds."graphics.framelimiter.foreground.target-fps"]
+			default = 60
+			["~~schema".binds."graphics.framelimiter.foreground.target-fps".constraints]
+				max = 255
+				min = 1
+			["~~schema".binds."graphics.framelimiter.foreground.target-fps".ini-mapping]
+				idx = 0
+				label = "Frame Limiter Foreground Target FPS"
+				section = "Display Options"
+		["~~schema".binds."graphics.framelimiter.non-interactive.target-fps"]
+			default = 48
+			["~~schema".binds."graphics.framelimiter.non-interactive.target-fps".constraints]
+				max = 255
+				min = 1
+			["~~schema".binds."graphics.framelimiter.non-interactive.target-fps".ini-mapping]
+				idx = 0
+				label = "Frame Limiter Non-Interactive Target FPS"
+				section = "Display Options"
+		["~~schema".binds."graphics.gamma"]
+			default = 2.2000000476837158
+			["~~schema".binds."graphics.gamma".constraints]
+				max = 10.000000000000000
+				min = 0.00000000000000000
+				stepsize = 0.10000000000000001
+			["~~schema".binds."graphics.gamma".ini-mapping]
+				idx = 0
+				label = "FBEffect Gamma"
+				section = "Video Options"
+		["~~schema".binds."graphics.general.shader-quality"]
+			default = "Performance"
+			["~~schema".binds."graphics.general.shader-quality".constraints]
+				values = ["Minimal", "Performance", "High Quality"]
+			["~~schema".binds."graphics.general.shader-quality".preset_values]
+				10 = "Minimal"
+				11 = "Performance"
+				12 = "High Quality"
+		["~~schema".binds."graphics.grass.mode"]
+			default = 2
+			["~~schema".binds."graphics.grass.mode".constraints]
+				values = [2, 1, 0]
+			[["~~schema".binds."graphics.grass.mode".ini-deprecations]]
+				idx = 0
+				label = "EnableGrass"
+				section = "Video Options"
+			[["~~schema".binds."graphics.grass.mode".ini-deprecations]]
+				idx = 0
+				label = "EnableFastGrass"
+				section = "Video Options"
+			["~~schema".binds."graphics.grass.mode".ini-mapping]
+				idx = 0
+				label = "Grass Mode"
+				section = "Video Options"
+			["~~schema".binds."graphics.grass.mode".preset_values]
+				10 = 0
+				11 = 1
+				12 = 2
+			["~~schema".binds."graphics.grass.mode".translations]
+				strref = 63635
+				values-strrefs = [67563, 67562, 2968]
+		["~~schema".binds."graphics.grass.render-distance"]
+			default = 900.00000000000000
+			["~~schema".binds."graphics.grass.render-distance".constraints]
+				max = 30000.000000000000
+				min = 900.00000000000000
+			["~~schema".binds."graphics.grass.render-distance".ini-mapping]
+				idx = 0
+				label = "Grass Far Render Distance"
+				section = "Video Options"
+		["~~schema".binds."graphics.hilite.color.door"]
+			default = "#4cffff"
+			["~~schema".binds."graphics.hilite.color.door".constraints]
+				opaque-code = true
+		["~~schema".binds."graphics.hilite.color.enemy"]
+			default = "#ff1919"
+			["~~schema".binds."graphics.hilite.color.enemy".constraints]
+				opaque-code = true
+		["~~schema".binds."graphics.hilite.color.friend"]
+			default = "#4cff4c"
+			["~~schema".binds."graphics.hilite.color.friend".constraints]
+				opaque-code = true
+		["~~schema".binds."graphics.hilite.color.item"]
+			default = "#4cffff"
+			["~~schema".binds."graphics.hilite.color.item".constraints]
+				opaque-code = true
+		["~~schema".binds."graphics.hilite.color.neutral"]
+			default = "#6666ff"
+			["~~schema".binds."graphics.hilite.color.neutral".constraints]
+				opaque-code = true
+		["~~schema".binds."graphics.hilite.color.placeable"]
+			default = "#4cffff"
+			["~~schema".binds."graphics.hilite.color.placeable".constraints]
+				opaque-code = true
+		["~~schema".binds."graphics.hilite.color.self"]
+			default = "#ffffff"
+			["~~schema".binds."graphics.hilite.color.self".constraints]
+				opaque-code = true
+		["~~schema".binds."graphics.hilite.color.trigger"]
+			default = "#4cffff"
+			["~~schema".binds."graphics.hilite.color.trigger".constraints]
+				opaque-code = true
+		["~~schema".binds."graphics.hilite.enabled"]
+			default = true
+		["~~schema".binds."graphics.hilite.glow"]
+			default = true
+		["~~schema".binds."graphics.intro.splash.enabled"]
+			default = true
+		["~~schema".binds."graphics.keyholing.enabled"]
+			default = true
+			["~~schema".binds."graphics.keyholing.enabled".ini-mapping]
+				idx = 0
+				label = "Keyholing"
+				section = "Video Options"
+		["~~schema".binds."graphics.keyholing.max-diameter"]
+			default = 0.89999997615814209
+			["~~schema".binds."graphics.keyholing.max-diameter".constraints]
+				max = 1.0000000000000000
+				min = 0.10000000149011612
+		["~~schema".binds."graphics.keyholing.min-diameter"]
+			default = 0.40000000596046448
+			["~~schema".binds."graphics.keyholing.min-diameter".constraints]
+				max = 1.0000000000000000
+				min = 0.10000000149011612
+		["~~schema".binds."graphics.keyholing.with-tooltip"]
+			default = false
+		["~~schema".binds."graphics.lighting.cutoff-range-multiplier"]
+			default = 2.0000000000000000
+			["~~schema".binds."graphics.lighting.cutoff-range-multiplier".constraints]
+				max = 10.000000000000000
+				min = 1.0000000000000000
+		["~~schema".binds."graphics.lighting.enhanced"]
+			default = true
+			["~~schema".binds."graphics.lighting.enhanced".preset_values]
+				10 = false
+				11 = true
+				12 = true
+		["~~schema".binds."graphics.lighting.intensity-at-range"]
+			default = 0.20000000298023224
+			["~~schema".binds."graphics.lighting.intensity-at-range".constraints]
+				max = 1.0000000000000000
+				min = 0.0099999997764825821
+		["~~schema".binds."graphics.lighting.max-intensity"]
+			default = 1.5000000000000000
+			["~~schema".binds."graphics.lighting.max-intensity".constraints]
+				max = 5.0000000000000000
+				min = 1.0000000000000000
+		["~~schema".binds."graphics.lighting.max-lights"]
+			default = 32
+			["~~schema".binds."graphics.lighting.max-lights".constraints]
+				values = [3, 8, 16, 32]
+			["~~schema".binds."graphics.lighting.max-lights".preset_values]
+				10 = 8
+				11 = 16
+				12 = 32
+		["~~schema".binds."graphics.lod.enabled"]
+			default = true
+		["~~schema".binds."graphics.lod.scale-factor"]
+			default = 1.0000000000000000
+			["~~schema".binds."graphics.lod.scale-factor".constraints]
+				max = 5.0000000000000000
+				min = 0.00000000000000000
+		["~~schema".binds."graphics.movies.enabled"]
+			default = true
+			["~~schema".binds."graphics.movies.enabled".ini-mapping]
+				idx = 0
+				label = "Disable Movies"
+				opaque-exporter = true
+				opaque-importer = true
+				section = "Display Options"
+		["~~schema".binds."graphics.movies.intro.enabled"]
+			default = true
+			["~~schema".binds."graphics.movies.intro.enabled".ini-mapping]
+				idx = 0
+				label = "Disable Intro Movies"
+				opaque-exporter = true
+				opaque-importer = true
+				section = "Display Options"
+		["~~schema".binds."graphics.second-story-tiles.mode"]
+			default = 1
+			["~~schema".binds."graphics.second-story-tiles.mode".constraints]
+				values = [2, 0, 1]
+			["~~schema".binds."graphics.second-story-tiles.mode".ini-mapping]
+				idx = 1
+				label = "Hide SecondStoryTiles"
+				section = "Game Options"
+			["~~schema".binds."graphics.second-story-tiles.mode".translations]
+				strref = 5193
+				values-strrefs = [67453, 67452, 67451]
+		["~~schema".binds."graphics.shadows.creatures.mode"]
+			default = 2
+			["~~schema".binds."graphics.shadows.creatures.mode".constraints]
+				values = [2, 1, 0]
+			["~~schema".binds."graphics.shadows.creatures.mode".ini-mapping]
+				idx = 0
+				label = "CreatureShadowDetail"
+				section = "Video Options"
+			["~~schema".binds."graphics.shadows.creatures.mode".preset_values]
+				10 = 0
+				11 = 2
+				12 = 2
+			["~~schema".binds."graphics.shadows.creatures.mode".translations]
+				strref = 10494
+				values-strrefs = [67583, 67586, 62495]
+		["~~schema".binds."graphics.shadows.environment.enabled"]
+			default = true
+			["~~schema".binds."graphics.shadows.environment.enabled".ini-mapping]
+				idx = 0
+				label = "EnableEnvironmentShadows"
+				section = "Video Options"
+			["~~schema".binds."graphics.shadows.environment.enabled".preset_values]
+				10 = false
+				11 = true
+				12 = true
+			["~~schema".binds."graphics.shadows.environment.enabled".translations]
+				strref = 5191
+		["~~schema".binds."graphics.shadows.max-casting-lights"]
+			default = 3
+			["~~schema".binds."graphics.shadows.max-casting-lights".constraints]
+				max = 3
+				min = 1
+			["~~schema".binds."graphics.shadows.max-casting-lights".ini-mapping]
+				idx = 0
+				label = "NumShadowCastingLights"
+				section = "Video Options"
+			["~~schema".binds."graphics.shadows.max-casting-lights".preset_values]
+				10 = 1
+				11 = 2
+				12 = 3
+			["~~schema".binds."graphics.shadows.max-casting-lights".translations]
+				strref = 67454
+		["~~schema".binds."graphics.skyboxes.enabled"]
+			default = true
+			["~~schema".binds."graphics.skyboxes.enabled".ini-mapping]
+				idx = 0
+				label = "EnableSkyboxes"
+				section = "Video Options"
+			["~~schema".binds."graphics.skyboxes.enabled".preset_values]
+				10 = false
+				11 = true
+				12 = true
+			["~~schema".binds."graphics.skyboxes.enabled".translations]
+				strref = 100927
+		["~~schema".binds."graphics.stats.enabled"]
+			default = false
+			["~~schema".binds."graphics.stats.enabled".ini-mapping]
+				idx = 0
+				label = "FPS Stats Display"
+				section = "Video Options"
+		["~~schema".binds."graphics.texture-animations.enabled"]
+			default = true
+			["~~schema".binds."graphics.texture-animations.enabled".ini-mapping]
+				idx = 0
+				label = "Enable TextureAnimations"
+				section = "Video Options"
+			["~~schema".binds."graphics.texture-animations.enabled".preset_values]
+				10 = false
+				11 = true
+				12 = true
+			["~~schema".binds."graphics.texture-animations.enabled".translations]
+				strref = 5192
+		["~~schema".binds."graphics.textures.max-memory"]
+			default = 256
+			["~~schema".binds."graphics.textures.max-memory".constraints]
+				max = 2047
+				min = 96
+			["~~schema".binds."graphics.textures.max-memory".ini-mapping]
+				idx = 0
+				label = "MaxTextureMemory"
+				section = "Video Options"
+			["~~schema".binds."graphics.textures.max-memory".preset_values]
+				10 = 128
+				11 = 256
+				12 = 2047
+		["~~schema".binds."graphics.textures.pack"]
+			default = 3
+			["~~schema".binds."graphics.textures.pack".constraints]
+				values = [0, 1, 2, 3]
+			["~~schema".binds."graphics.textures.pack".ini-mapping]
+				idx = 0
+				label = "TexturePack"
+				section = "Display Options"
+			["~~schema".binds."graphics.textures.pack".translations]
+				strref = 7029
+				values-strrefs = [7031, 7032, 7033, 7034]
+		["~~schema".binds."graphics.tile-borders.enabled"]
+			default = true
+			["~~schema".binds."graphics.tile-borders.enabled".ini-mapping]
+				idx = 0
+				label = "Enable TileBorder"
+				section = "Video Options"
+			["~~schema".binds."graphics.tile-borders.enabled".translations]
+				strref = 5195
+		["~~schema".binds."graphics.trap.color.friendly"]
+			default = "#00ff00"
+			key-deprecations = ["ui.accessibility.trap-colors.friendly"]
+			["~~schema".binds."graphics.trap.color.friendly".constraints]
+				opaque-code = true
+			[["~~schema".binds."graphics.trap.color.friendly".ini-deprecations]]
+				idx = 1
+				label = "FriendlyColor"
+				section = "Trap Colors"
+		["~~schema".binds."graphics.trap.color.hostile"]
+			default = "#ff0000"
+			key-deprecations = ["ui.accessibility.trap-colors.hostile"]
+			[["~~schema".binds."graphics.trap.color.hostile".ini-deprecations]]
+				idx = 1
+				label = "HostileColor"
+				section = "Trap Colors"
+		["~~schema".binds."graphics.video.anisotropic-filtering.enabled"]
+			default = false
+			["~~schema".binds."graphics.video.anisotropic-filtering.enabled".ini-mapping]
+				idx = 0
+				label = "Enable AnisotropicFiltering"
+				section = "Video Options"
+		["~~schema".binds."graphics.video.anti-aliasing-mode"]
+			default = 1
+			["~~schema".binds."graphics.video.anti-aliasing-mode".constraints]
+				max = 3
+				min = 0
+			["~~schema".binds."graphics.video.anti-aliasing-mode".ini-mapping]
+				idx = 0
+				label = "AntiAliasing Mode"
+				section = "Video Options"
+		["~~schema".binds."graphics.video.refresh-rate"]
+			default = 60
+			["~~schema".binds."graphics.video.refresh-rate".ini-mapping]
+				idx = 0
+				label = "RefreshRate"
+				section = "Display Options"
+		["~~schema".binds."graphics.video.vsync.enabled"]
+			default = false
+			["~~schema".binds."graphics.video.vsync.enabled".ini-mapping]
+				idx = 0
+				label = "Enable VSync"
+				section = "Video Options"
+			["~~schema".binds."graphics.video.vsync.enabled".translations]
+				strref = 67536
+		["~~schema".binds."graphics.water.shiny"]
+			default = true
+			["~~schema".binds."graphics.water.shiny".ini-mapping]
+				idx = 0
+				label = "ShinyWater"
+				section = "Video Options"
+			["~~schema".binds."graphics.water.shiny".preset_values]
+				10 = false
+				11 = true
+				12 = true
+			["~~schema".binds."graphics.water.shiny".translations]
+				strref = 67450
+		["~~schema".binds."graphics.window.fullscreen.height"]
+			default = 1080
+		["~~schema".binds."graphics.window.fullscreen.toggle-to-borderless"]
+			default = false
+		["~~schema".binds."graphics.window.fullscreen.width"]
+			default = 1920
+		["~~schema".binds."graphics.window.mode"]
+			default = "windowed"
+			["~~schema".binds."graphics.window.mode".constraints]
+				values = ["exclusive", "borderless", "windowed"]
+			[["~~schema".binds."graphics.window.mode".ini-deprecations]]
+				idx = 0
+				label = "FullScreen"
+				section = "Display Options"
+			[["~~schema".binds."graphics.window.mode".ini-deprecations]]
+				idx = 0
+				label = "FullScreenDesktopMode"
+				section = "Display Options"
+			[["~~schema".binds."graphics.window.mode".ini-deprecations]]
+				idx = 0
+				label = "Enable Windowed Mode"
+				section = "Video Options"
+			["~~schema".binds."graphics.window.mode".ini-mapping]
+				idx = 0
+				label = "Window Mode"
+				section = "Display Options"
+		["~~schema".binds."graphics.window.windowed.borderless"]
+			default = false
+			key-adoptions = ["graphics.window.borderless"]
+			["~~schema".binds."graphics.window.windowed.borderless".ini-mapping]
+				idx = 0
+				label = "Borderless"
+				section = "Display Options"
+		["~~schema".binds."graphics.window.windowed.height"]
+			default = 600
+			key-adoptions = ["graphics.window.height"]
+			["~~schema".binds."graphics.window.windowed.height".ini-mapping]
+				idx = 0
+				label = "Height"
+				section = "Display Options"
+		["~~schema".binds."graphics.window.windowed.position.mode"]
+			default = "remember"
+			key-adoptions = ["graphics.window.position.mode"]
+			["~~schema".binds."graphics.window.windowed.position.mode".constraints]
+				values = ["remember", "centered"]
+		["~~schema".binds."graphics.window.windowed.position.x"]
+			default = -1
+			key-adoptions = ["graphics.window.position.x"]
+		["~~schema".binds."graphics.window.windowed.position.y"]
+			default = -1
+			key-adoptions = ["graphics.window.position.y"]
+		["~~schema".binds."graphics.window.windowed.width"]
+			default = 800
+			key-adoptions = ["graphics.window.width"]
+			["~~schema".binds."graphics.window.windowed.width".ini-mapping]
+				idx = 0
+				label = "Width"
+				section = "Display Options"
+		["~~schema".binds."input.keyboard.shift-walk-mode-inverted"]
+			default = false
+			["~~schema".binds."input.keyboard.shift-walk-mode-inverted".ini-mapping]
+				idx = 0
+				label = "Shift Walk Mode Inverted"
+				section = "Control Options"
+		["~~schema".binds."input.mouse.hardware-pointer"]
+			default = true
+			["~~schema".binds."input.mouse.hardware-pointer".ini-mapping]
+				idx = 0
+				label = "Enable HardwareMouse"
+				section = "Video Options"
+			["~~schema".binds."input.mouse.hardware-pointer".translations]
+				strref = 10604
 		["~~schema".binds."io.mmap.enabled"]
 			default = false
 		["~~schema".binds."io.mmap.experimental.never-close-bif"]
@@ -468,6 +1477,8 @@
 				idx = 1
 				label = "Death Logging"
 				section = "Game Options"
+		["~~schema".binds."server.log.debug-mode-sends-to-players.enabled"]
+			default = true
 		["~~schema".binds."server.log.heartbeats.enabled"]
 			default = false
 			["~~schema".binds."server.log.heartbeats.enabled".ini-mapping]
@@ -505,6 +1516,9 @@
 				section = "Server Options"
 			["~~schema".binds."server.login.max-players".translations]
 				strref = 5551
+		["~~schema".binds."server.login.player-dm.enabled"]
+			default = true
+			singleplayer-override = true
 		["~~schema".binds."server.login.player-password"]
 			default = ""
 			["~~schema".binds."server.login.player-password".ini-mapping]
@@ -667,6 +1681,56 @@
 				idx = 1
 				label = "Suppress Base Servervault"
 				section = "Server Options"
+		["~~schema".binds."sound.3d.bias"]
+			default = 0.50000000000000000
+			["~~schema".binds."sound.3d.bias".constraints]
+				max = 1.8999999999999999
+				min = 0.10000000000000001
+			["~~schema".binds."sound.3d.bias".ini-mapping]
+				idx = 0
+				label = "2D3D Bias"
+				section = "Sound Options"
+			["~~schema".binds."sound.3d.bias".translations]
+				strref = 67618
+		["~~schema".binds."sound.effects.volume"]
+			default = 0.50000000000000000
+			["~~schema".binds."sound.effects.volume".constraints]
+				max = 1.0000000000000000
+				min = 0.00000000000000000
+			["~~schema".binds."sound.effects.volume".ini-mapping]
+				idx = 0
+				label = "SoundFX Volume"
+				section = "Sound Options"
+			["~~schema".binds."sound.effects.volume".translations]
+				strref = 67621
+		["~~schema".binds."sound.music.main-menu-theme"]
+			default = "mus_theme_main"
+			["~~schema".binds."sound.music.main-menu-theme".ini-mapping]
+				idx = 0
+				label = "Main Menu Music Theme"
+				section = "Sound Options"
+		["~~schema".binds."sound.music.volume"]
+			default = 0.50000000000000000
+			["~~schema".binds."sound.music.volume".constraints]
+				max = 1.0000000000000000
+				min = 0.00000000000000000
+			["~~schema".binds."sound.music.volume".ini-mapping]
+				idx = 0
+				label = "Music Volume"
+				section = "Sound Options"
+			["~~schema".binds."sound.music.volume".translations]
+				strref = 67619
+		["~~schema".binds."sound.voices.volume"]
+			default = 0.50000000000000000
+			["~~schema".binds."sound.voices.volume".constraints]
+				max = 1.0000000000000000
+				min = 0.00000000000000000
+			["~~schema".binds."sound.voices.volume".ini-mapping]
+				idx = 0
+				label = "Voice Volume"
+				section = "Sound Options"
+			["~~schema".binds."sound.voices.volume".translations]
+				strref = 67620
 		["~~schema".binds."taskmanager.threadpool.max-mutex-wait-time"]
 			default = 5000
 			["~~schema".binds."taskmanager.threadpool.max-mutex-wait-time".constraints]
@@ -685,6 +1749,244 @@
 				idx = 0
 				label = "Max Threadpool Size"
 				section = "Taskmanager"
+		["~~schema".binds."ui.chat.pane.primary.height"]
+			default = 0.00000000000000000
+			["~~schema".binds."ui.chat.pane.primary.height".constraints]
+				max = 1000.0000000000000
+				min = 0.00000000000000000
+			["~~schema".binds."ui.chat.pane.primary.height".ini-mapping]
+				idx = 1
+				label = "ChatUIPrimaryHeight"
+				section = "Control Options"
+		["~~schema".binds."ui.chat.pane.secondary.height"]
+			default = 0.00000000000000000
+			["~~schema".binds."ui.chat.pane.secondary.height".constraints]
+				max = 1000.0000000000000
+				min = 0.00000000000000000
+			["~~schema".binds."ui.chat.pane.secondary.height".ini-mapping]
+				idx = 1
+				label = "ChatUISecondaryHeight"
+				section = "Control Options"
+		["~~schema".binds."ui.chat.swear-filter.enabled"]
+			default = false
+			["~~schema".binds."ui.chat.swear-filter.enabled".ini-mapping]
+				idx = 1
+				label = "In-game Text Swear Filter"
+				section = "Game Options"
+		["~~schema".binds."ui.floating-text-feedback"]
+			default = true
+			["~~schema".binds."ui.floating-text-feedback".ini-mapping]
+				idx = 1
+				label = "Enable FloatyTextFeedback"
+				section = "Game Options"
+			["~~schema".binds."ui.floating-text-feedback".translations]
+				strref = 67500
+		["~~schema".binds."ui.font.glyph-spacing.horizontal"]
+			default = 0.50000000000000000
+			["~~schema".binds."ui.font.glyph-spacing.horizontal".constraints]
+				max = 10.000000000000000
+				min = 0.00000000000000000
+		["~~schema".binds."ui.font.glyph-spacing.vertical"]
+			default = 0.00000000000000000
+			["~~schema".binds."ui.font.glyph-spacing.vertical".constraints]
+				max = 10.000000000000000
+				min = 0.00000000000000000
+		["~~schema".binds."ui.font.name"]
+			default = "(basic)"
+			["~~schema".binds."ui.font.name".constraints]
+				values = ["(basic)", "galahad"]
+		["~~schema".binds."ui.font.oversample.horizontal"]
+			default = 1.0000000000000000
+			["~~schema".binds."ui.font.oversample.horizontal".constraints]
+				max = 8.0000000000000000
+				min = 1.0000000000000000
+		["~~schema".binds."ui.font.oversample.vertical"]
+			default = 1.0000000000000000
+			["~~schema".binds."ui.font.oversample.vertical".constraints]
+				max = 8.0000000000000000
+				min = 1.0000000000000000
+		["~~schema".binds."ui.font.pixel-height"]
+			default = 0.00000000000000000
+			["~~schema".binds."ui.font.pixel-height".constraints]
+				max = 64.000000000000000
+				min = 0.00000000000000000
+		["~~schema".binds."ui.font.pixel-snap"]
+			default = true
+		["~~schema".binds."ui.font.size"]
+			default = 15.000000000000000
+			["~~schema".binds."ui.font.size".constraints]
+				max = 64.000000000000000
+				min = 1.0000000000000000
+		["~~schema".binds."ui.large-font"]
+			default = true
+			["~~schema".binds."ui.large-font".ini-mapping]
+				idx = 1
+				label = "UseLargeFont"
+				section = "Game Options"
+			["~~schema".binds."ui.large-font".translations]
+				strref = 2653
+		["~~schema".binds."ui.main-menu.background-image"]
+			default = "gui_pre_bknd3"
+		["~~schema".binds."ui.mouseover-feedback"]
+			default = true
+			["~~schema".binds."ui.mouseover-feedback".ini-mapping]
+				idx = 1
+				label = "MouseoverFeedback"
+				section = "Game Options"
+			["~~schema".binds."ui.mouseover-feedback".translations]
+				strref = 62498
+		["~~schema".binds."ui.multiplayer.direct-connect.last-address"]
+			default = "127.0.0.1:5121"
+			["~~schema".binds."ui.multiplayer.direct-connect.last-address".ini-mapping]
+				idx = 1
+				label = "Direct Connect IP"
+				section = "Profile"
+		["~~schema".binds."ui.multiplayer.server-browser.hide-empty"]
+			default = false
+			["~~schema".binds."ui.multiplayer.server-browser.hide-empty".ini-mapping]
+				idx = 1
+				label = "ServerList HideEmptyServers"
+				section = "Profile"
+		["~~schema".binds."ui.multiplayer.server-browser.hide-full"]
+			default = false
+			["~~schema".binds."ui.multiplayer.server-browser.hide-full".ini-mapping]
+				idx = 1
+				label = "ServerList HideFullServers"
+				section = "Profile"
+		["~~schema".binds."ui.multiplayer.server-browser.hide-localvault"]
+			default = false
+			["~~schema".binds."ui.multiplayer.server-browser.hide-localvault".ini-mapping]
+				idx = 1
+				label = "ServerList Hide Local Vault"
+				section = "Profile"
+		["~~schema".binds."ui.multiplayer.server-browser.hide-passworded"]
+			default = false
+			["~~schema".binds."ui.multiplayer.server-browser.hide-passworded".ini-mapping]
+				idx = 1
+				label = "ServerList Hide Passworded"
+				section = "Profile"
+		["~~schema".binds."ui.multiplayer.server-browser.hide-servervault"]
+			default = false
+			["~~schema".binds."ui.multiplayer.server-browser.hide-servervault".ini-mapping]
+				idx = 1
+				label = "ServerList Hide Server Vault"
+				section = "Profile"
+		["~~schema".binds."ui.multiplayer.server-browser.module-name-filter"]
+			default = ""
+			["~~schema".binds."ui.multiplayer.server-browser.module-name-filter".ini-mapping]
+				idx = 1
+				label = "ServerList ModuleNameFilter"
+				section = "Profile"
+		["~~schema".binds."ui.party.invite-popup.enabled"]
+			default = true
+			["~~schema".binds."ui.party.invite-popup.enabled".ini-mapping]
+				idx = 1
+				label = "DisablePartyInvitePopup"
+				opaque-exporter = true
+				opaque-importer = true
+				section = "Game Options"
+		["~~schema".binds."ui.scale"]
+			default = 1
+			["~~schema".binds."ui.scale".constraints]
+				max = 8
+				min = 1
+			["~~schema".binds."ui.scale".ini-mapping]
+				idx = 0
+				label = "SetUIScale"
+				section = "Video Options"
+			["~~schema".binds."ui.scale".translations]
+				strref = 112026
+		["~~schema".binds."ui.spellbook.sort-spells"]
+			default = true
+		["~~schema".binds."ui.targeting-feedback-mode"]
+			default = 2
+			["~~schema".binds."ui.targeting-feedback-mode".constraints]
+				values = [0, 1, 2]
+			["~~schema".binds."ui.targeting-feedback-mode".ini-mapping]
+				idx = 1
+				label = "TargetingFeedbackMode"
+				section = "Game Options"
+			["~~schema".binds."ui.targeting-feedback-mode".translations]
+				strref = 66190
+				values-strrefs = [66191, 66192, 66193]
+		["~~schema".binds."ui.text-bubble-mode"]
+			default = 2
+			["~~schema".binds."ui.text-bubble-mode".constraints]
+				values = [0, 1, 2]
+			["~~schema".binds."ui.text-bubble-mode".ini-mapping]
+				idx = 1
+				label = "TextBubbleMode"
+				section = "Game Options"
+			["~~schema".binds."ui.text-bubble-mode".translations]
+				strref = 62494
+				values-strrefs = [62495, 62496, 62497]
+		["~~schema".binds."ui.tooltip-delay"]
+			default = 100000
+			["~~schema".binds."ui.tooltip-delay".constraints]
+				max = 5000000
+				min = 1000
+			["~~schema".binds."ui.tooltip-delay".ini-mapping]
+				idx = 1
+				label = "TooltipDelay uSec"
+				section = "Game Options"
+			["~~schema".binds."ui.tooltip-delay".translations]
+				strref = 67456
+	[["~~schema".ini-deprecations]]
+		idx = 0
+		label = "Enable Truform"
+		section = "Video Options"
+	[["~~schema".ini-deprecations]]
+		idx = 0
+		label = "DisableSound"
+		section = "Sound Options"
+	[["~~schema".ini-deprecations]]
+		idx = 0
+		label = "3D Provider"
+		section = "Sound Options"
+	[["~~schema".ini-deprecations]]
+		idx = 0
+		label = "Number 2D Voices"
+		section = "Sound Options"
+	[["~~schema".ini-deprecations]]
+		idx = 0
+		label = "Number 3D Voices"
+		section = "Sound Options"
+	[["~~schema".ini-deprecations]]
+		idx = 0
+		label = "Speaker Type"
+		section = "Sound Options"
+	[["~~schema".ini-deprecations]]
+		idx = 0
+		label = "Environment Effects"
+		section = "Sound Options"
+	[["~~schema".ini-deprecations]]
+		idx = 0
+		label = "Environment Effects Level"
+		section = "Sound Options"
+	[["~~schema".ini-deprecations]]
+		idx = 0
+		label = "Speaker Type"
+		section = "Sound Options"
+	[["~~schema".ini-deprecations]]
+		idx = 0
+		label = "Environment Effects"
+		section = "Sound Options"
+	[["~~schema".ini-deprecations]]
+		idx = 0
+		label = "Environment Effects Level"
+		section = "Sound Options"
+	[["~~schema".ini-deprecations]]
+		idx = 1
+		label = "ChatUISplitScreen"
+		section = "Control Options"
+	[["~~schema".ini-deprecations]]
+		idx = 1
+		label = ""
+		section = "History Page"
+	[["~~schema".ini-deprecations]]
+		idx = 1
+		label = ""
+		section = "Favorites Page"
 	[["~~schema".ini-deprecations]]
 		idx = 1
 		label = "MPEnabled"
