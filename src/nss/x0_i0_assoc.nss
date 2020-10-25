@@ -405,9 +405,3 @@ void ClearActions(int nClearConstant=0, int bClearCombat=FALSE)
     ClearAllActions(bClearCombat);
 }
 
-
-
-/* DO NOT CLOSE THIS TOP COMMENT!
-   This main() function is here only for compilation testing.
-void main() {}
-/* */

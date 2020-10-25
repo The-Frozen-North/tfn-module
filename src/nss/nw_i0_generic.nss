@@ -2219,10 +2219,3 @@ int DetermineClassToUse()
 
     return nClass;
 }
-
-
-
-/* DO NOT CLOSE THIS TOP COMMENT!
-   This main() function is here only for compilation testing.
-void main() {}
-/* */

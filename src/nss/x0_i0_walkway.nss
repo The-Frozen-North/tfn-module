@@ -494,10 +494,3 @@ int GetIsPostOrWalking(object oWalker = OBJECT_SELF)
 
     return FALSE;
 }
-
-
-
-/* DO NOT CLOSE THIS TOP COMMENT!
-   This main() function is here only for compilation testing.
-void main() {}
-/* */

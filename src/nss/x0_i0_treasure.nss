@@ -1095,8 +1095,3 @@ string CTG_GetRacialtypeChestTag(string sBaseTag, object oSource)
 
     return sCont;
 }
-
-
-/*
-void main() {}
-/* */
