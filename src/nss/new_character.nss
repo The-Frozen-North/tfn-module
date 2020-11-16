@@ -264,4 +264,8 @@ void main()
     }
 
     DelayCommand(1.0, GiveStartingGold(oPC));
+
+    object oSedos = GetObjectByTag("sedos");
+
+    if (!IsInConversation(oSedos)) DelayCommand(3.0, AssignCommand(oPC, ActionStartConversation(oSedos)));
 }
