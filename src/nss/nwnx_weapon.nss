@@ -93,6 +93,7 @@ void NWNX_Weapon_SetGreaterWeaponSpecializationFeat(int nBaseItem, int nFeat);
 void NWNX_Weapon_SetGreaterWeaponFocusFeat(int nBaseItem, int nFeat);
 
 /// @brief Set base item as monk weapon.
+/// @note Requires activation of CombatModes plugin for Flurry of Blows.
 /// @param nBaseItem The base item id.
 void NWNX_Weapon_SetWeaponIsMonkWeapon(int nBaseItem);
 
@@ -124,6 +125,14 @@ void NWNX_Weapon_SetOneHalfStrength(object oWeapon, int nEnable, int bPersist = 
 /// @param oWeapon the weapon
 /// @return FALSE/0 if weapon is not receiving the bonus. TRUE/1 if it does.
 int NWNX_Weapon_GetOneHalfStrength(object oWeapon);
+
+/// @brief Override the max attack distance of ranged weapons.
+/// @param nBaseItem The baseitem id.
+/// @param fMax The maximum attack distance. Default is 40.0f.
+/// @param fMaxPassive The maximum passive attack distance. Default is 20.0f. Seems to be used by the engine to determine a new nearby target when needed.
+/// @param fPreferred The preferred attack distance. See the PrefAttackDist column in baseitems.2da, default seems to be 30.0f for ranged weapons.
+/// @note fMaxPassive should probably be lower than fMax, half of fMax seems to be a good start. fPreferred should be at least ~0.5f lower than fMax.
+void NWNX_Weapon_SetMaxRangedAttackDistanceOverride(int nBaseItem, float fMax, float fMaxPassive, float fPreferred);
 
 /// @}
 
@@ -326,4 +335,15 @@ int NWNX_Weapon_GetOneHalfStrength(object oWeapon)
     NWNX_CallFunction(NWNX_Weapon, sFunc);
 
     return NWNX_GetReturnValueInt(NWNX_Weapon, sFunc);
+}
+
+void NWNX_Weapon_SetMaxRangedAttackDistanceOverride(int nBaseItem, float fMax, float fMaxPassive, float fPreferred)
+{
+    string sFunc = "SetMaxRangedAttackDistanceOverride";
+
+    NWNX_PushArgumentFloat(NWNX_Weapon, sFunc, fPreferred);
+    NWNX_PushArgumentFloat(NWNX_Weapon, sFunc, fMaxPassive);
+    NWNX_PushArgumentFloat(NWNX_Weapon, sFunc, fMax);
+    NWNX_PushArgumentInt(NWNX_Weapon, sFunc, nBaseItem);
+    NWNX_CallFunction(NWNX_Weapon, sFunc);
 }

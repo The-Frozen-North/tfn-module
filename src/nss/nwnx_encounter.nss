@@ -53,6 +53,16 @@ int NWNX_Encounter_GetPlayerTriggeredOnly(object encounter);
 /// @param playerTriggeredOnly TRUE/FALSE
 void NWNX_Encounter_SetPlayerTriggeredOnly(object encounter, int playerTriggeredOnly);
 
+/// @brief Get if the encounter respawns or not.
+/// @param encounter The encounter object.
+/// @return TRUE if the encounter does respawn, FALSE otherwise.
+int NWNX_Encounter_GetCanReset(object encounter);
+
+/// @brief Set if the encounter respawns or not.
+/// @param encounter The encounter object.
+/// @param reset Does the encounter respawn TRUE or FALSE.
+void NWNX_Encounter_SetCanReset(object encounter, int reset);
+
 /// @brief Get the reset time of encounter.
 /// @param encounter The encounter object.
 /// @return The seconds the encounter is defined to reset.
@@ -88,6 +98,22 @@ int NWNX_Encounter_GetMaxNumSpawned(object encounter);
 /// @param encounter The encounter object.
 /// @return amount of creatures
 int NWNX_Encounter_GetCurrentNumSpawned(object encounter);
+
+/// @brief Get the geometry of an encounter
+/// @param oEncounter: The encounter object.
+/// @return A string of vertex positions.
+string NWNX_Encounter_GetGeometry(object oEncounter);
+
+/// @brief Set the geometry of an encounter with a list of vertex positions
+/// @param oTrigger The encounter object.
+/// @param sGeometry Needs to be in the following format -> {x.x, y.y, z.z} or {x.x, y.y}
+/// Example Geometry: "{1.0, 1.0, 0.0}{4.0, 1.0, 0.0}{4.0, 4.0, 0.0}{1.0, 4.0, 0.0}"
+///
+/// @remark The Z position is optional and will be calculated dynamically based
+/// on terrain height if it's not provided.
+///
+/// @remark The minimum number of vertices is 3.
+void NWNX_Encounter_SetGeometry(object oTrigger, string sGeometry);
 
 /// @}
 
@@ -173,6 +199,26 @@ void NWNX_Encounter_SetPlayerTriggeredOnly(object encounter, int playerTriggered
     NWNX_CallFunction(NWNX_Encounter, sFunc);
 }
 
+int NWNX_Encounter_GetCanReset(object encounter)
+{
+    string sFunc = "GetCanReset";
+
+    NWNX_PushArgumentObject(NWNX_Encounter, sFunc, encounter);
+    NWNX_CallFunction(NWNX_Encounter, sFunc);
+
+    return NWNX_GetReturnValueInt(NWNX_Encounter, sFunc);
+}
+
+void NWNX_Encounter_SetCanReset(object encounter, int reset)
+{
+    string sFunc = "SetCanReset";
+
+    NWNX_PushArgumentInt(NWNX_Encounter, sFunc, reset);
+    NWNX_PushArgumentObject(NWNX_Encounter, sFunc, encounter);
+
+    NWNX_CallFunction(NWNX_Encounter, sFunc);
+}
+
 int NWNX_Encounter_GetResetTime(object encounter)
 {
     string sFunc = "GetResetTime";
@@ -247,4 +293,23 @@ int NWNX_Encounter_GetCurrentNumSpawned(object encounter)
     NWNX_CallFunction(NWNX_Encounter, sFunc);
   
     return NWNX_GetReturnValueInt(NWNX_Encounter, sFunc);
+}
+
+string NWNX_Encounter_GetGeometry(object oEncounter)
+{
+    string sFunc = "GetGeometry";
+
+    NWNX_PushArgumentObject(NWNX_Encounter, sFunc, oEncounter);
+    NWNX_CallFunction(NWNX_Encounter, sFunc);
+
+    return NWNX_GetReturnValueString(NWNX_Encounter, sFunc);
+}
+
+void NWNX_Encounter_SetGeometry(object oEncounter, string sGeometry)
+{
+    string sFunc = "SetGeometry";
+
+    NWNX_PushArgumentString(NWNX_Encounter, sFunc, sGeometry);
+    NWNX_PushArgumentObject(NWNX_Encounter, sFunc, oEncounter);
+    NWNX_CallFunction(NWNX_Encounter, sFunc);
 }
