@@ -17,7 +17,7 @@ void RemoveMount(object oPC)
     if (GetIsMounted(oPC))
     {
         PlaySound("c_horse_slct");
-        ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_SUMMON_MONSTER_2), GetLocation(oPC));
+        ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_SUMMON_MONSTER_1), GetLocation(oPC));
     }
 
     switch (GetRacialType(oPC))
