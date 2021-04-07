@@ -256,6 +256,7 @@ void main()
 
 
     NWNX_Creature_SetCorpseDecayTime(OBJECT_SELF, 1200000);
+    NWNX_Creature_SetDisarmable(OBJECT_SELF, TRUE);
 
 // Set cr integer on self. This is used for determining treasure.
     SetLocalInt(OBJECT_SELF, "cr", FloatToInt(GetChallengeRating(OBJECT_SELF)));
