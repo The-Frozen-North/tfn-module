@@ -1,5 +1,5 @@
 #include "inc_debug"
-#include "nwnx_object"
+#include "inc_sql"
 #include "nwnx_player"
 
 // -------------------------------------------------------------------------
@@ -63,7 +63,7 @@ void ExportMinimap(object oPC)
     string sDataTarget = "map_"+GetResRef(oArea);
 
     SendDebugMessage("exporting minimap "+sDataTarget+": "+sData);
-    NWNX_Object_SetString(oPC, sDataTarget, sData, TRUE);
+    SQLocalsPlayer_SetString(oPC, sDataTarget, sData);
 }
 
 void ImportMinimap(object oPC)
@@ -82,7 +82,7 @@ void ImportMinimap(object oPC)
   else
   {
     string sDataTarget = "map_"+GetResRef(oArea);
-    string sData = NWNX_Object_GetString(oPC, sDataTarget);
+    string sData = SQLocalsPlayer_GetString(oPC, sDataTarget);
     SendDebugMessage("importing minimap "+sDataTarget+": "+sData);
 
     if (sData == "") return;
@@ -100,16 +100,16 @@ void SavePCInfo(object oPC)
     if(GetIsAreaAboveGround(oArea) != AREA_INVALID)
     {
          vector v = GetPosition(oPC);
-         NWNX_Object_SetFloat(oPC, "LOC_X", v.x, TRUE);
-         NWNX_Object_SetFloat(oPC, "LOC_Y", v.y, TRUE);
-         NWNX_Object_SetFloat(oPC, "LOC_Z", v.z, TRUE);
-         NWNX_Object_SetFloat(oPC, "LOC_O", GetFacing(oPC), TRUE);
-         NWNX_Object_SetString(oPC, "LOC_A", GetTag(oArea), TRUE);
+         SQLocalsPlayer_SetFloat(oPC, "LOC_X", v.x);
+         SQLocalsPlayer_SetFloat(oPC, "LOC_Y", v.y);
+         SQLocalsPlayer_SetFloat(oPC, "LOC_Z", v.z);
+         SQLocalsPlayer_SetFloat(oPC, "LOC_O", GetFacing(oPC));
+         SQLocalsPlayer_SetString(oPC, "LOC_A", GetTag(oArea));
     }
 
     ExportMinimap(oPC);
 
-    NWNX_Object_SetInt(oPC, "CURRENT_HP", GetCurrentHitPoints(oPC), TRUE);
+    SQLocalsPlayer_SetInt(oPC, "CURRENT_HP", GetCurrentHitPoints(oPC));
 }
 
 //void main () {}

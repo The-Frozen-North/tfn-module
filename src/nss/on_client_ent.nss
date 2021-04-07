@@ -68,7 +68,7 @@ void main()
         RehireHenchman(oPC);
 
         int nCurrentHP = GetCurrentHitPoints(oPC);
-        int nStoredHP = NWNX_Object_GetInt(oPC, "CURRENT_HP");
+        int nStoredHP = SQLocalsPlayer_GetInt(oPC, "CURRENT_HP");
 
 // if the stored hp is 0 or less, assume some kind of error or the variable doesnt exist
 // in that case make it the current hp
@@ -76,14 +76,14 @@ void main()
 
 
 // kill player if marked as dead
-        if (NWNX_Object_GetInt(oPC, "DEAD") == 1)
+        if (SQLocalsPlayer_GetInt(oPC, "DEAD") == 1)
         {
             ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDeath(), oPC);
         }
 // otherwise, handle hp
         else
         {
-            NWNX_Object_SetCurrentHitPoints(oPC, nStoredHP);
+            SetCurrentHitPoints(oPC, nStoredHP);
         }
     }
 // otherwise, assume they're new and do the whole new PC routine

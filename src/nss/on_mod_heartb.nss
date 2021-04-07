@@ -52,7 +52,7 @@ void DoRevive(object oDead)
 
             if (!bEnemy && bFriend)
             {
-                NWNX_Object_DeleteInt(oDead, "DEAD");
+                SQLocalsPlayer_DeleteInt(oDead, "DEAD");
                 ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oDead);
                 if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound) SetMaster(oDead, oMaster);
                 WriteTimestampedLogEntry(GetName(oDead)+" was revived by friendly "+GetName(oCreature)+".");

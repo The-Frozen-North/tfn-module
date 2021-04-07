@@ -21,6 +21,7 @@
 #include "inc_persist"
 #include "inc_general"
 #include "inc_horse"
+#include "inc_sql"
 
 void main()
 {
@@ -34,7 +35,7 @@ void main()
     RemoveMount(oPlayer);
 
 // Take away XP only at the first death
-    if (NWNX_Object_GetInt(oPlayer, "DEAD") == 0)
+    if (SQLocalsPlayer_GetInt(oPlayer, "DEAD") == 0)
     {
         location lDeathSpot = GetLocation(oPlayer);
         float fFacing = GetFacing(oPlayer);
@@ -47,7 +48,7 @@ void main()
 
      DelayCommand(4.5, PopUpDeathGUIPanel(oPlayer, TRUE, TRUE, 0, sDeathMessage));
 
-     NWNX_Object_SetInt(oPlayer, "DEAD", 1, TRUE);
+     SQLocalsPlayer_SetInt(oPlayer, "DEAD", 1);
 
     SavePCInfo(oPlayer);
 

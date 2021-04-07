@@ -36,7 +36,7 @@ void main()
     }
     RemoveEffects(oRespawner);
 
-    NWNX_Object_DeleteInt(oRespawner, "DEAD");
+    SQLocalsPlayer_DeleteInt(oRespawner, "DEAD");
 
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oRespawner);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(GetMaxHitPoints(oRespawner)), oRespawner);

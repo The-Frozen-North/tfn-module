@@ -1,8 +1,8 @@
-#include "nwnx_object"
+#include "inc_sql"
 
 int StartingConditional()
 {
-    if (NWNX_Object_GetInt(GetPCSpeaker(), GetLocalString(OBJECT_SELF, "ship1_known")) == 1)
+    if (SQLocalsPlayer_GetInt(GetPCSpeaker(), GetLocalString(OBJECT_SELF, "ship1_known")) == 1)
     {
         return TRUE;
     }

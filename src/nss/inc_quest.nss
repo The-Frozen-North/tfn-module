@@ -44,7 +44,7 @@ void RefreshCompletedBounties(object oPC, int nTime, string sList);
 
 int GetQuestEntry(object oPC, string sQuestEntry, int bForceJournal = FALSE)
 {
-    int nQuestInt = NWNX_Object_GetInt(oPC, sQuestEntry);
+    int nQuestInt = SQLocalsPlayer_GetInt(oPC, sQuestEntry);
 
     if (nQuestInt > 0 && (bForceJournal || GetLocalInt(oPC, "NW_JOURNAL_ENTRY"+sQuestEntry) < nQuestInt)) AddJournalQuestEntry(sQuestEntry, nQuestInt, oPC, FALSE, FALSE, TRUE);
 
@@ -72,12 +72,12 @@ void RefreshCompletedBounty(object oPC, string sQuest, int nTime)
     if (GetStringLeft(sQuest, 2) != "b_") return;
 
     string sReset = sQuest+"_reset";
-    int nReset = NWNX_Object_GetInt(oPC, sReset);
+    int nReset = SQLocalsPlayer_GetInt(oPC, sReset);
 
     if (nReset > 0 && nTime >= nReset)
     {
-        NWNX_Object_DeleteInt(oPC, sReset);
-        NWNX_Object_DeleteInt(oPC, sQuest);
+        SQLocalsPlayer_DeleteInt(oPC, sReset);
+        SQLocalsPlayer_DeleteInt(oPC, sQuest);
         RemoveJournalQuestEntry(sQuest, oPC, FALSE);
         FloatingTextStringOnCreature("*One of your completed bounties is available again.*", oPC, FALSE);
     }
@@ -93,9 +93,9 @@ void RefreshCompletedBounties(object oPC, int nTime, string sList)
 void SetQuestEntry(object oPC, string sQuestEntry, int nValue)
 {
 // Fail safe to not override the quest entry if set lower.
-    if (NWNX_Object_GetInt(oPC, sQuestEntry) >= nValue) return;
+    if (SQLocalsPlayer_GetInt(oPC, sQuestEntry) >= nValue) return;
 
-    NWNX_Object_SetInt(oPC, sQuestEntry, nValue, TRUE);
+    SQLocalsPlayer_SetInt(oPC, sQuestEntry, nValue);
     GetQuestEntry(oPC, sQuestEntry);
 }
 
@@ -212,7 +212,7 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FAL
     {
         string sVar = sQuestName+"_reset";
 
-        if (NWNX_Object_GetInt(oPC, sVar) == 0) NWNX_Object_SetInt(oPC, sVar, NWNX_Time_GetTimeStamp()+BOUNTY_RESET_TIME, TRUE);
+        if (SQLocalsPlayer_GetInt(oPC, sVar) == 0) SQLocalsPlayer_SetInt(oPC, sVar, NWNX_Time_GetTimeStamp()+BOUNTY_RESET_TIME);
     }
 
     FloatingTextStringOnCreature("*Your journal has been updated*", oPC, FALSE);
