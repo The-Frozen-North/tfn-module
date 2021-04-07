@@ -4,7 +4,7 @@ services:
     tfn-server-dev:
         hostname: tfn_server_dev
         container_name: tfn_server_dev
-        image:  nwnxee/unified:c64661b
+        image:  nwnxee/unified:cc37b09
         env_file: 
             - ${PWD-.}/config/common.env
             - ${PWD-.}/config/nwserver_dev_seed.env
