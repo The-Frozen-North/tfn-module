@@ -65,7 +65,7 @@ void ApplyMount(object oPC, int nHorse = 0)
     if (!GetIsMounted(oPC))
     {
         PlaySound("c_horse_bat"+IntToString(d2()));
-        ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_SUMMON_MONSTER_2), GetLocation(oPC));
+        ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_SUMMON_MONSTER_1), GetLocation(oPC));
         //AssignCommand(oPC, PlaySound("c_horse_bat"+IntToString(d2())));
     }
 
