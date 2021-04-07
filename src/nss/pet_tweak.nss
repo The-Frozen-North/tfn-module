@@ -239,7 +239,7 @@ void main()
             fStrengthLevel = 0.75;
 
             fScale = 0.9;
-            fScaleLevel = 0.04;
+            fScaleLevel = 0.03;
 
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_TOUGHNESS);
 
@@ -429,7 +429,7 @@ void main()
             fStrengthLevel = 0.25;
 
             fScale = 0.7;
-            fScaleLevel = 0.06;
+            fScaleLevel = 0.04;
 
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertySpellImmunitySpecific(IP_CONST_IMMUNITYSPELL_WEB), oSkin);
 
@@ -467,7 +467,7 @@ void main()
             fStrengthLevel = 0.75;
 
             fScale = 0.9;
-            fScaleLevel = 0.04;
+            fScaleLevel = 0.03;
 
             oWeaponSpecial = ApplyDamageProgression("bite", INVENTORY_SLOT_CWEAPON_B, 3, nMasterHitDice);
         break;
@@ -511,7 +511,7 @@ void main()
             fACLevel = 1.5;
 
             fScale = 1.0;
-            fScaleLevel = 0.5;
+            fScaleLevel = 0.09;
 
             nDamage = 1;
 
