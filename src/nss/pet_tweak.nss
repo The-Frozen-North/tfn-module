@@ -530,7 +530,7 @@ void main()
             nBaseAC = 6;
 
             nStrength = 10;
-            nDexterity = 17;
+            nDexterity = 20;
             nConstitution = 8;
             nIntelligence = 3;
             nWisdom = 14;
@@ -681,7 +681,7 @@ void main()
             nBaseAC = 6;
 
             nStrength = 8;
-            nDexterity = 19;
+            nDexterity = 22;
             nConstitution = 11;
             nIntelligence = 3;
             nWisdom = 12;
