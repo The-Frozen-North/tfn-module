@@ -145,6 +145,8 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_ELC_VALIDATE_CHARACTER_AFTER", "on_validatea");
 
+    NWNX_Events_SubscribeEvent("NWNX_ON_STORE_REQUEST_SELL_AFTER", "on_storesella");
+
 // We must skip this if polymorphed or bartering.
     NWNX_Events_SubscribeEvent("NWNX_ON_SERVER_CHARACTER_SAVE_BEFORE", "on_pc_save");
 

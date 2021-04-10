@@ -28,7 +28,7 @@
   },
   "MarkDown": {
     "type": "int",
-    "value": 0
+    "value": 40
   },
   "MarkUp": {
     "type": "int",
@@ -36,7 +36,7 @@
   },
   "MaxBuyPrice": {
     "type": "int",
-    "value": 0
+    "value": 4000
   },
   "OnOpenStore": {
     "type": "resref",
@@ -78,20 +78,40 @@
     "type": "cexostring",
     "value": "mer_katla"
   },
-  "WillNotBuy": {
+  "VarTable": {
     "type": "list",
-    "value": []
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "target_pawnshop"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "mer_olgerd"
+        }
+      }
+    ]
   },
-  "WillOnlyBuy": {
+  "WillNotBuy": {
     "type": "list",
     "value": [
       {
         "__struct_id": 97869,
         "BaseItem": {
           "type": "int",
-          "value": 70
+          "value": 64
         }
       }
     ]
+  },
+  "WillOnlyBuy": {
+    "type": "list",
+    "value": []
   }
 }
