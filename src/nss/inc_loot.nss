@@ -218,7 +218,7 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
     }
 
 // These types can have either a unique, or non-unique
-    if ((sType == "Weapon" || sType == "Armor" || sType == "Potions") && d2() == 2) sNonUnique = "NonUnique";
+    if ((sType == "Weapon" || sType == "Armor" || sType == "Potions") && d3() <= 2) sNonUnique = "NonUnique";
 
     if (bNonUnique) sNonUnique = "NonUnique";
 
