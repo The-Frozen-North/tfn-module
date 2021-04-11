@@ -47,61 +47,12 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "There be no ships allowed out of port with the city being quarantined, so begone."
-          }
-        }
-      },
-      {
-        "__struct_id": 1,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
           "value": [
             {
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "dlg_ship_chkk2"
+                "value": ""
               },
               "ConditionParams": {
                 "type": "list",
@@ -109,7 +60,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 8
+                "value": 7
               },
               "IsChild": {
                 "type": "byte",
@@ -120,7 +71,7 @@
               "__struct_id": 1,
               "Active": {
                 "type": "resref",
-                "value": "dlg_ship_chkk1"
+                "value": "dlg_ship_chkk2"
               },
               "ConditionParams": {
                 "type": "list",
@@ -171,7 +122,56 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Aye, the guards have come and told me to allow you to board me ship if you need it. The Midnight Rose will take you to where you need to go, but they ain't said nothing about it being free."
+            "0": "I'm the captain of the White Whale - the fastest ship on the Sword Coast! Where are ya headed?"
+          }
+        }
+      },
+      {
+        "__struct_id": 1,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Fair enough. Come back to me if you want to experience travel by the high seas."
           }
         }
       },
@@ -203,7 +203,88 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_ship_chkc2"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 5
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_ship_chkp2"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 3
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 2
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 8
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
@@ -220,7 +301,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "So be it. Let me know if you change your mind."
+            "0": "Hmm, Highcliff. Alright That's going to set you back <CUSTOM4501>, and not a single gold coin less."
           }
         }
       },
@@ -252,65 +333,7 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_chkc1"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 6
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_chkp1"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 4
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 2
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
@@ -327,7 +350,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "That quaint little town? Tis a bit far. Fine. That'll be <CUSTOM4501> gold."
+            "0": "Do I look like I do this for my health? Come back when you have the gold."
           }
         }
       },
@@ -364,7 +387,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "dlg_ship_chkk2"
+                "value": "dlg_ship_chkc2"
               },
               "ConditionParams": {
                 "type": "list",
@@ -372,7 +395,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 8
+                "value": 5
               },
               "IsChild": {
                 "type": "byte",
@@ -387,7 +410,7 @@
               "__struct_id": 1,
               "Active": {
                 "type": "resref",
-                "value": "dlg_ship_chkk1"
+                "value": ""
               },
               "ConditionParams": {
                 "type": "list",
@@ -395,7 +418,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 1
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
@@ -418,7 +441,80 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 3
+                "value": 8
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartCheck>[Failure]</Start> You can pay the full price, or take the long way. Your choice."
+          }
+        }
+      },
+      {
+        "__struct_id": 5,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 4
               },
               "IsChild": {
                 "type": "byte",
@@ -442,12 +538,81 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Bah. Where do you want to go then?"
+            "0": "<StartCheck>[Success]</Start> Alright alright, you've talked me into it. Now hurry along and get into the ship."
           }
         }
       },
       {
-        "__struct_id": 5,
+        "__struct_id": 6,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 0
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 6
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Good. Now I hope you don't get seasick easily..."
+          }
+        }
+      },
+      {
+        "__struct_id": 7,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -487,22 +652,18 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 6
+                "value": 13
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+                "value": 0
               }
             },
             {
               "__struct_id": 1,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_ship_chkp1"
               },
               "ConditionParams": {
                 "type": "list",
@@ -510,69 +671,15 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 11
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+                "value": 0
               }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "<StartCheck>[Failure]</Start> Nay. I'm the only captain in this city with a ship. Take it or leave it."
-          }
-        }
-      },
-      {
-        "__struct_id": 6,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
+            },
             {
-              "__struct_id": 0,
+              "__struct_id": 2,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -583,7 +690,26 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 5
+                "value": 10
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 8
               },
               "IsChild": {
                 "type": "byte",
@@ -607,12 +733,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Success]</Start> Fine, you've talked me into it. The Midnight Rose departs for Highcliff!"
+            "0": "Neverwinter, eh? That'll be <CUSTOM4501>, and not a gold less."
           }
         }
       },
       {
-        "__struct_id": 7,
+        "__struct_id": 8,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -656,83 +782,18 @@
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Alright, keep your tunic on. The Midnight Rose departs for Highcliff!"
-          }
-        }
-      },
-      {
-        "__struct_id": 8,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_chkc2"
+                "value": 1
               },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 11
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
             },
             {
               "__struct_id": 1,
               "Active": {
                 "type": "resref",
-                "value": "dlg_ship_chkp2"
+                "value": "dlg_ship_chkk2"
               },
               "ConditionParams": {
                 "type": "list",
@@ -740,11 +801,15 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 9
+                "value": 1
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
             },
             {
@@ -759,15 +824,11 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 9
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+                "value": 0
               }
             }
           ]
@@ -787,7 +848,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "To Port Llast you say? That'll cost <CUSTOM4501> gold."
+            "0": "That's fine. Where would you like to go?"
           }
         }
       },
@@ -819,54 +880,7 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_chkc2"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 11
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 2
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
@@ -883,7 +897,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Failure]</Start> Nay. I'm the only captain in this city with a ship. Take it or leave it."
+            "0": "Do I look like I do this for my health? Come back when you have the gold."
           }
         }
       },
@@ -920,6 +934,29 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
+                "value": "dlg_ship_chkc1"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 13
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
                 "value": ""
               },
               "ConditionParams": {
@@ -932,7 +969,34 @@
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 8
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
             }
           ]
@@ -952,7 +1016,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Success]</Start> Fine, you've talked me into it. The Midnight Rose departs for Highcliff!"
+            "0": "<StartCheck>[Failure]</Start> You can pay the full price, or take the long way. Your choice."
           }
         }
       },
@@ -1021,7 +1085,76 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Alright, keep your tunic on. The Midnight Rose departs for Port Llast!"
+            "0": "<StartCheck>[Success]</Start> Alright alright, you've talked me into it. Now hurry along and get into the ship."
+          }
+        }
+      },
+      {
+        "__struct_id": 12,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 0
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 14
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Good. Now I hope you don't get seasick easily..."
           }
         }
       }
@@ -1029,7 +1162,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 244
+    "value": 257
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -1040,6 +1173,71 @@
     "value": [
       {
         "__struct_id": 0,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 1
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I don't want to go anywhere right now."
+          }
+        }
+      },
+      {
+        "__struct_id": 1,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1090,7 +1288,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_ship_init2"
         },
         "Sound": {
           "type": "resref",
@@ -1099,12 +1297,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I don't need to hire a ship right now."
+            "0": "Take me to Highcliff."
           }
         }
       },
       {
-        "__struct_id": 1,
+        "__struct_id": 2,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1155,7 +1353,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_ship_init1"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -1164,12 +1362,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Take me to Highcliff."
+            "0": "I don't have that kind of gold on me right now."
           }
         }
       },
       {
-        "__struct_id": 2,
+        "__struct_id": 3,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1195,6 +1393,25 @@
           "value": [
             {
               "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_ship_pers2"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 5
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -1229,76 +1446,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I've changed my mind."
-          }
-        }
-      },
-      {
-        "__struct_id": 3,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 2
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Actually, I don't want to go anywhere right now."
+            "0": "<StartCheck>[Persuade]</Start> That's a bit steep. How about for <CUSTOM4502>?"
           }
         }
       },
@@ -1326,28 +1474,54 @@
         },
         "EntriesList": {
           "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_ship_sape2"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
+          }
+        }
+      },
+      {
+        "__struct_id": 5,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
           "value": [
             {
               "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_pers1"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 6
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -1358,7 +1532,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 5
+                "value": 6
               },
               "IsChild": {
                 "type": "byte",
@@ -1382,12 +1556,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Persuade]</Start> Please, it's to save Neverwinter. Would <CUSTOM4502> gold be enough?"
+            "0": "Here's the gold. Let's set sail."
           }
         }
       },
       {
-        "__struct_id": 5,
+        "__struct_id": 6,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1418,7 +1592,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_ship_sape1"
+          "value": "dlg_ship_sail2"
         },
         "Sound": {
           "type": "resref",
@@ -1432,7 +1606,7 @@
         }
       },
       {
-        "__struct_id": 6,
+        "__struct_id": 7,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1483,7 +1657,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_ship_init1"
         },
         "Sound": {
           "type": "resref",
@@ -1492,52 +1666,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Here's the gold. Let's get going."
-          }
-        }
-      },
-      {
-        "__struct_id": 7,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": []
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": "dlg_ship_sail1"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": ""
+            "0": "Take me to Neverwinter."
           }
         }
       },
@@ -1593,7 +1722,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_ship_init2"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -1602,7 +1731,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Take me to Port Llast."
+            "0": "I've changed my mind."
           }
         }
       },
@@ -1635,7 +1764,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "dlg_ship_pers2"
+                "value": ""
               },
               "ConditionParams": {
                 "type": "list",
@@ -1643,15 +1772,65 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 10
+                "value": 1
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
-            },
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Nowhere for now."
+          }
+        }
+      },
+      {
+        "__struct_id": 10,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
             {
-              "__struct_id": 1,
+              "__struct_id": 0,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -1686,52 +1865,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Persuade]</Start> Please, it's to save Neverwinter. Would <CUSTOM4502> gold be enough?"
-          }
-        }
-      },
-      {
-        "__struct_id": 10,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": []
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": "dlg_ship_sape2"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": ""
+            "0": "I don't have that kind of gold on me right now."
           }
         }
       },
@@ -1764,7 +1898,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_ship_pers1"
               },
               "ConditionParams": {
                 "type": "list",
@@ -1773,6 +1907,25 @@
               "Index": {
                 "type": "dword",
                 "value": 11
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 10
               },
               "IsChild": {
                 "type": "byte",
@@ -1796,7 +1949,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Here's the gold. Let's get going."
+            "0": "<StartCheck>[Persuade]</Start> That's a bit steep. How about for <CUSTOM4502>?"
           }
         }
       },
@@ -1832,7 +1985,117 @@
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_ship_sail2"
+          "value": "dlg_ship_sape1"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
+          }
+        }
+      },
+      {
+        "__struct_id": 13,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 12
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Here's the gold. Let's set sail."
+          }
+        }
+      },
+      {
+        "__struct_id": 14,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_ship_sail1"
         },
         "Sound": {
           "type": "resref",
@@ -1852,21 +2115,6 @@
     "value": [
       {
         "__struct_id": 0,
-        "Active": {
-          "type": "resref",
-          "value": "dlg_q_chk_atp1"
-        },
-        "ConditionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Index": {
-          "type": "dword",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 1,
         "Active": {
           "type": "resref",
           "value": ""
