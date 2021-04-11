@@ -23,7 +23,7 @@
   "LocName": {
     "type": "cexolocstring",
     "value": {
-      "0": "Olgerd - Pawnshop"
+      "0": "Haljal - Pawnshop/Blacksmith"
     }
   },
   "MarkDown": {
@@ -36,7 +36,7 @@
   },
   "MaxBuyPrice": {
     "type": "int",
-    "value": 5000
+    "value": 4000
   },
   "OnOpenStore": {
     "type": "resref",
@@ -48,7 +48,7 @@
   },
   "ResRef": {
     "type": "resref",
-    "value": "merchant2"
+    "value": "merchant15"
   },
   "StoreGold": {
     "type": "int",
@@ -105,6 +105,44 @@
                 "type": "word",
                 "value": 0
               }
+            },
+            {
+              "__struct_id": 2,
+              "Infinite": {
+                "type": "byte",
+                "value": 1
+              },
+              "InventoryRes": {
+                "type": "resref",
+                "value": "cure_potion1"
+              },
+              "Repos_PosX": {
+                "type": "word",
+                "value": 2
+              },
+              "Repos_Posy": {
+                "type": "word",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Infinite": {
+                "type": "byte",
+                "value": 1
+              },
+              "InventoryRes": {
+                "type": "resref",
+                "value": "cure_potion2"
+              },
+              "Repos_PosX": {
+                "type": "word",
+                "value": 3
+              },
+              "Repos_Posy": {
+                "type": "word",
+                "value": 0
+              }
             }
           ]
         }
@@ -139,7 +177,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "mer_olgerd"
+    "value": "mer_haljal"
   },
   "WillNotBuy": {
     "type": "list",

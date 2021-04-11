@@ -46275,11 +46275,11 @@
         },
         "LinkedTo": {
           "type": "cexostring",
-          "value": ""
+          "value": "PLSouthRoadToHighRoad"
         },
         "LinkedToFlags": {
           "type": "byte",
-          "value": 0
+          "value": 1
         },
         "LoadScreenID": {
           "type": "word",
@@ -46296,7 +46296,9 @@
         "LocName": {
           "id": 5349,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Door"
+          }
         },
         "OnClick": {
           "type": "resref",
@@ -46372,7 +46374,7 @@
         },
         "Tag": {
           "type": "cexostring",
-          "value": "RuralExit"
+          "value": "HighRoadToPLSouthRoad"
         },
         "TemplateResRef": {
           "type": "resref",
@@ -53531,7 +53533,7 @@
         },
         "Value": {
           "type": "int",
-          "value": 3
+          "value": 4
         }
       },
       {
@@ -53817,6 +53819,21 @@
         "Value": {
           "type": "cexostring",
           "value": "spawn_heartrip"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "ambush"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
         }
       }
     ]
@@ -54137,6 +54154,69 @@
         "YPosition": {
           "type": "float",
           "value": 6.6706
+        },
+        "ZPosition": {
+          "type": "float",
+          "value": 5.02
+        }
+      },
+      {
+        "__struct_id": 5,
+        "Appearance": {
+          "type": "byte",
+          "value": 1
+        },
+        "Description": {
+          "type": "cexolocstring",
+          "value": {}
+        },
+        "HasMapNote": {
+          "type": "byte",
+          "value": 1
+        },
+        "LinkedTo": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "LocalizedName": {
+          "id": 14814,
+          "type": "cexolocstring",
+          "value": {}
+        },
+        "MapNote": {
+          "id": 14815,
+          "type": "cexolocstring",
+          "value": {
+            "0": "Port Llast South Road"
+          }
+        },
+        "MapNoteEnabled": {
+          "type": "byte",
+          "value": 1
+        },
+        "Tag": {
+          "type": "cexostring",
+          "value": "NW_MAPNOTE001"
+        },
+        "TemplateResRef": {
+          "type": "resref",
+          "value": "nw_mapnote001"
+        },
+        "XOrientation": {
+          "type": "float",
+          "value": 0.0
+        },
+        "XPosition": {
+          "type": "float",
+          "value": 35.0328
+        },
+        "YOrientation": {
+          "type": "float",
+          "value": 1.0
+        },
+        "YPosition": {
+          "type": "float",
+          "value": 314.5982
         },
         "ZPosition": {
           "type": "float",
