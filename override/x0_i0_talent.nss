@@ -23,7 +23,7 @@
 
 #include "70_inc_ai"
 #include "x0_inc_generic"
-//void main(){}
+
 /**********************************************************************
  * CONSTANTS
  **********************************************************************/
@@ -50,14 +50,6 @@ const float WHIRL_DISTANCE = 3.0; // * Shortened distance so its more effective 
  * FUNCTION PROTOTYPES
  **********************************************************************/
 
-// Buff OBJECT_SELF if OBJECT_SELF isn't already buffed with the particular spell
-void BuffIfNotBuffed(int bSpell, int bInstant)
-{
-    if(GetHasSpell(bSpell) && !GetHasSpellEffect(bSpell))
-    {
-      ActionCastSpellAtObject(bSpell, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-}
 
  // * Tries to do the Ki Damage ability
 int TryKiDamage(object oTarget)
@@ -1952,112 +1944,14 @@ int TalentPersistentAbilities()
 int TalentAdvancedBuff(float fDistance, int bInstant = TRUE)
 {
     //MyPrintString("TalentAdvancedBuff Enter");
-    //object oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC, OBJECT_SELF, 1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY);
-    //if(GetIsObjectValid(oPC))
-    //{
-        //if(GetDistanceToObject(oPC) <= fDistance)
-        //{
-            //if(!GetIsFighting(OBJECT_SELF))
-            //{
-                //ClearActions(CLEAR_X0_I0_TALENT_AdvancedBuff);
-                ClearAllActions(TRUE);
-
-                // General Protections and misc buffs
-                BuffIfNotBuffed(SPELL_NEGATIVE_ENERGY_PROTECTION, bInstant);
-                BuffIfNotBuffed(SPELL_DEATH_WARD, bInstant);
-                BuffIfNotBuffed(SPELL_DARKVISION, bInstant);
-                BuffIfNotBuffed(SPELL_DEATH_WARD, bInstant);
-                BuffIfNotBuffed(SPELL_TRUE_SEEING, bInstant);
-                BuffIfNotBuffed(SPELL_FREEDOM_OF_MOVEMENT, bInstant);
-                BuffIfNotBuffed(SPELL_PROTECTION_FROM_SPELLS, bInstant);
-                BuffIfNotBuffed(SPELL_SPELL_RESISTANCE, bInstant);
-                BuffIfNotBuffed(SPELL_RESISTANCE, bInstant);
-                BuffIfNotBuffed(SPELL_VIRTUE, bInstant);
-                BuffIfNotBuffed(SPELL_CLAIRAUDIENCE_AND_CLAIRVOYANCE, bInstant);
-
-                // Cleric buffs
-                BuffIfNotBuffed(SPELL_BLESS, bInstant);
-                BuffIfNotBuffed(SPELL_PRAYER, bInstant);
-                BuffIfNotBuffed(SPELL_AID, bInstant);
-                BuffIfNotBuffed(SPELL_DIVINE_POWER, bInstant);
-                BuffIfNotBuffed(SPELL_DIVINE_FAVOR, bInstant);
-
-                // Ranger/Druid buffs
-                BuffIfNotBuffed(SPELL_CAMOFLAGE, bInstant);
-                BuffIfNotBuffed(SPELL_MASS_CAMOFLAGE, bInstant);
-                BuffIfNotBuffed(SPELL_ONE_WITH_THE_LAND, bInstant);
-
-                // Weapon Buffs
-                BuffIfNotBuffed(SPELL_DARKFIRE, bInstant);
-                BuffIfNotBuffed(SPELL_MAGIC_VESTMENT, bInstant);
-                BuffIfNotBuffed(SPELL_MAGIC_WEAPON, bInstant);
-                BuffIfNotBuffed(SPELL_GREATER_MAGIC_WEAPON, bInstant);
-                BuffIfNotBuffed(SPELL_FLAME_WEAPON, bInstant);
-                BuffIfNotBuffed(SPELL_KEEN_EDGE, bInstant);
-                BuffIfNotBuffed(SPELL_BLADE_THIRST, bInstant);
-                BuffIfNotBuffed(SPELL_BLACKSTAFF, bInstant);
-                BuffIfNotBuffed(SPELL_BLESS_WEAPON, bInstant);
-                BuffIfNotBuffed(SPELL_DEAFENING_CLANG, bInstant);
-                BuffIfNotBuffed(SPELL_HOLY_SWORD, bInstant);
-
-                // Armor buffs
-                BuffIfNotBuffed(SPELL_MAGE_ARMOR, bInstant);
-                BuffIfNotBuffed(SPELL_SHIELD, bInstant);
-                BuffIfNotBuffed(SPELL_SHIELD_OF_FAITH, bInstant);
-                BuffIfNotBuffed(SPELL_ENTROPIC_SHIELD, bInstant);
-                BuffIfNotBuffed(SPELL_BARKSKIN, bInstant);
-
-                // Stat buffs
-                BuffIfNotBuffed(SPELL_AURA_OF_VITALITY, bInstant);
-                BuffIfNotBuffed(SPELL_BULLS_STRENGTH, bInstant);
-                BuffIfNotBuffed(SPELL_OWLS_WISDOM, bInstant);
-                BuffIfNotBuffed(SPELL_OWLS_INSIGHT, bInstant);
-                BuffIfNotBuffed(SPELL_FOXS_CUNNING, bInstant);
-                BuffIfNotBuffed(SPELL_ENDURANCE, bInstant);
-                BuffIfNotBuffed(SPELL_CATS_GRACE, bInstant);
-
-
-                // Alignment Protections
-                int nAlignment = GetAlignmentGoodEvil(OBJECT_SELF);
-                if (nAlignment == ALIGNMENT_EVIL)
-                {
-                    BuffIfNotBuffed(SPELL_PROTECTION_FROM_GOOD, bInstant);
-                    BuffIfNotBuffed(SPELL_MAGIC_CIRCLE_AGAINST_GOOD, bInstant);
-                    BuffIfNotBuffed(SPELL_UNHOLY_AURA, bInstant);
-                }
-                else if (nAlignment == ALIGNMENT_GOOD || nAlignment == ALIGNMENT_NEUTRAL)
-                {
-                    BuffIfNotBuffed(SPELL_PROTECTION_FROM_EVIL, bInstant);
-                    BuffIfNotBuffed(SPELL_MAGIC_CIRCLE_AGAINST_EVIL, bInstant);
-                    BuffIfNotBuffed(SPELL_HOLY_AURA, bInstant);
-                }
-
-
-                if(GetRacialType(OBJECT_SELF) == RACIAL_TYPE_UNDEAD && GetHasSpell(SPELL_STONE_BONES) && !GetHasSpellEffect(SPELL_STONE_BONES))
-                {
-                    ActionCastSpellAtObject(SPELL_STONE_BONES, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-                }
-
-                //Evasion Protections
-                if(GetHasSpell(SPELL_IMPROVED_INVISIBILITY) && !GetHasSpellEffect(SPELL_IMPROVED_INVISIBILITY))
-                {
-                    ActionCastSpellAtObject(SPELL_IMPROVED_INVISIBILITY, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-                }
-                else if(GetHasSpell(SPELL_DISPLACEMENT)&& !GetHasSpellEffect(SPELL_DISPLACEMENT))
-                {
-                    ActionCastSpellAtObject(SPELL_DISPLACEMENT, OBJECT_SELF, METAMAGIC_ANY, 0, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-                }
-
-                //Regeneration Protections
-                if(GetHasSpell(SPELL_REGENERATE) && !GetHasSpellEffect(SPELL_REGENERATE))
-                {
-                    ActionCastSpellAtObject(SPELL_REGENERATE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-                }
-                else if(GetHasSpell(SPELL_MONSTROUS_REGENERATION)&& !GetHasSpellEffect(SPELL_MONSTROUS_REGENERATION))
-                {
-                    ActionCastSpellAtObject(SPELL_MONSTROUS_REGENERATION, OBJECT_SELF, METAMAGIC_ANY, 0, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-                }
-
+    object oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC, OBJECT_SELF, 1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY);
+    if(GetIsObjectValid(oPC))
+    {
+        if(GetDistanceToObject(oPC) <= fDistance)
+        {
+            if(!GetIsFighting(OBJECT_SELF))
+            {
+                ClearActions(CLEAR_X0_I0_TALENT_AdvancedBuff);
                 //Combat Protections
                 if(GetHasSpell(SPELL_PREMONITION) && !GetHasSpellEffect(SPELL_PREMONITION))
                 {
@@ -2122,11 +2016,7 @@ int TalentAdvancedBuff(float fDistance, int bInstant = TRUE)
                 }
 
                 //Elemental Protections
-                if(GetHasSpell(SPELL_ENERGY_BUFFER)&& !GetHasSpellEffect(SPELL_ENERGY_BUFFER))
-                {
-                    ActionCastSpellAtObject(SPELL_ENERGY_BUFFER, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-                }
-                else if(GetHasSpell(SPELL_PROTECTION_FROM_ELEMENTS)&& !GetHasSpellEffect(SPELL_PROTECTION_FROM_ELEMENTS))
+                if(GetHasSpell(SPELL_PROTECTION_FROM_ELEMENTS)&& !GetHasSpellEffect(SPELL_PROTECTION_FROM_ELEMENTS))
                 {
                     ActionCastSpellAtObject(SPELL_PROTECTION_FROM_ELEMENTS, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
                 }
@@ -2152,7 +2042,6 @@ int TalentAdvancedBuff(float fDistance, int bInstant = TRUE)
                 {
                     ActionCastSpellAtObject(SPELL_CLARITY, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
                 }
-
                 //Summon Ally
                 if(GetHasSpell(SPELL_BLACK_BLADE_OF_DISASTER))
                 {
@@ -2161,10 +2050,6 @@ int TalentAdvancedBuff(float fDistance, int bInstant = TRUE)
                 else if(GetHasSpell(SPELL_SUMMON_CREATURE_IX))
                 {
                     ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_IX, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-                }
-                else if(GetHasSpell(SPELLABILITY_PM_SUMMON_GREATER_UNDEAD))
-                {
-                    ActionCastSpellAtLocation(SPELLABILITY_PM_SUMMON_GREATER_UNDEAD, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
                 }
                 else if(GetHasSpell(SPELL_SUMMON_CREATURE_VIII))
                 {
@@ -2178,14 +2063,6 @@ int TalentAdvancedBuff(float fDistance, int bInstant = TRUE)
                 {
                     ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_VI, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
                 }
-                else if(GetHasSpell(SPELL_CREATE_UNDEAD))
-                {
-                    ActionCastSpellAtLocation(SPELL_CREATE_UNDEAD, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-                }
-                else if(GetHasSpell(SPELL_PLANAR_ALLY))
-                {
-                    ActionCastSpellAtLocation(SPELL_PLANAR_ALLY, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-                }
                 else if(GetHasSpell(SPELL_SUMMON_CREATURE_V))
                 {
                     ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_V, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
@@ -2193,10 +2070,6 @@ int TalentAdvancedBuff(float fDistance, int bInstant = TRUE)
                 else if(GetHasSpell(SPELL_SUMMON_CREATURE_IV))
                 {
                     ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_IV, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-                }
-                else if(GetHasSpell(SPELL_ANIMATE_DEAD))
-                {
-                    ActionCastSpellAtLocation(SPELL_ANIMATE_DEAD, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
                 }
                 else if(GetHasSpell(SPELL_SUMMON_CREATURE_III))
                 {
@@ -2213,11 +2086,11 @@ int TalentAdvancedBuff(float fDistance, int bInstant = TRUE)
 
                 //MyPrintString("TalentAdvancedBuff Successful Exit");
                 return TRUE;
-            //}
-        //}
-    //}
+            }
+        }
+    }
     //MyPrintString("TalentAdvancedBuff Failed Exit");
-    //return FALSE;
+    return FALSE;
 }
 
 // USE POTIONS

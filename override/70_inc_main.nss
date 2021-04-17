@@ -11,7 +11,7 @@
 //:: Created On: 01-01-2016
 //:://////////////////////////////////////////////
 
-//#include "x3_inc_skin"
+#include "x3_inc_skin"
 
 const int ATTACK_BONUS_CWEAPON1            = 3;
 const int ATTACK_BONUS_CWEAPON2            = 4;
@@ -210,17 +210,16 @@ void AddFeat(int nFeat, object oPC)
  break;
  }
 itemproperty bonusFeat = ItemPropertyBonusFeat(nFeat);
-// if(GetIsItemPropertyValid(bonusFeat))
-// {
-// object oSkin = SKIN_SupportGetSkin(oPC);
-// AddItemProperty(DURATION_TYPE_PERMANENT,bonusFeat,oSkin);
-// AssignCommand(oPC,SKIN_SupportEquipSkin(oSkin));
-// }
-// else
-// {
- WriteTimestampedLogEntry("70_inc_main: Skin function was used but was commented out.");
-// WriteTimestampedLogEntry("70_inc_main: AddFunction used with nonsupported feat.");
-// }
+ if(GetIsItemPropertyValid(bonusFeat))
+ {
+ object oSkin = SKIN_SupportGetSkin(oPC);
+ AddItemProperty(DURATION_TYPE_PERMANENT,bonusFeat,oSkin);
+ AssignCommand(oPC,SKIN_SupportEquipSkin(oSkin));
+ }
+ else
+ {
+ WriteTimestampedLogEntry("70_inc_main: AddFunction used with nonsupported feat.");
+ }
 }
 
 int GetKnowsFeat(int nFeat, object oCreature)

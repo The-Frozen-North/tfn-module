@@ -10,13 +10,42 @@
 //:: Created By: Georg Zoeller
 //:: Created On: 2003-07-16
 //:://////////////////////////////////////////////
+//:: Modified By: Deva Winblood
+//:: Modified On: April 15th, 2008
+//:: Added Support for Mounted Archery Feat penalties
+//:://////////////////////////////////////////////
+
+#include "70_inc_itemprop"
 #include "x2_inc_switches"
 #include "x2_inc_intweapon"
+#include "x3_inc_horse"
+
 void main()
 {
-
     object oItem = GetPCItemLastEquipped();
     object oPC   = GetPCItemLastEquippedBy();
+
+    //1.72: OnPolymorph scripted event handler
+    if(!GetLocalInt(oPC,"Polymorphed") && GetHasEffect(EFFECT_TYPE_POLYMORPH,oPC))
+    {
+        SetLocalInt(oPC,"Polymorphed",1);
+        SetLocalInt(oPC,"UnPolymorph",0);
+        ExecuteScript("70_mod_polymorph",oPC);
+    }
+    //1.71: wounding item property handling
+    if(GetItemHasItemProperty(oItem,ITEM_PROPERTY_WOUNDING))
+    {
+        itemproperty ip = GetFirstItemProperty(oItem);
+        while(GetIsItemPropertyValid(ip))
+        {
+            if(GetItemPropertyType(ip) == ITEM_PROPERTY_WOUNDING)
+            {
+                ApplyWounding(oItem,oPC,GetItemPropertyCostTableValue(ip));
+            }
+            ip = GetNextItemProperty(oItem);
+        }
+    }
+
     // -------------------------------------------------------------------------
     // Intelligent Weapon System
     // -------------------------------------------------------------------------
@@ -45,23 +74,29 @@ void main()
         }
     }
 
+    // -------------------------------------------------------------------------
+    // Mounted benefits control
+    // -------------------------------------------------------------------------
+    if (GetWeaponRanged(oItem))
+    {
+        SetLocalInt(oPC,"bX3_M_ARCHERY",TRUE);
+        HORSE_SupportAdjustMountedArcheryPenalty(oPC);
+    }
 
-     // -------------------------------------------------------------------------
-     // Generic Item Script Execution Code
-     // If MODULE_SWITCH_EXECUTE_TAGBASED_SCRIPTS is set to TRUE on the module,
-     // it will execute a script that has the same name as the item's tag
-     // inside this script you can manage scripts for all events by checking against
-     // GetUserDefinedItemEventNumber(). See x2_it_example.nss
-     // -------------------------------------------------------------------------
-     if (GetModuleSwitchValue(MODULE_SWITCH_ENABLE_TAGBASED_SCRIPTS) == TRUE)
-     {
+    // -------------------------------------------------------------------------
+    // Generic Item Script Execution Code
+    // If MODULE_SWITCH_EXECUTE_TAGBASED_SCRIPTS is set to TRUE on the module,
+    // it will execute a script that has the same name as the item's tag
+    // inside this script you can manage scripts for all events by checking against
+    // GetUserDefinedItemEventNumber(). See x2_it_example.nss
+    // -------------------------------------------------------------------------
+    if (GetModuleSwitchValue(MODULE_SWITCH_ENABLE_TAGBASED_SCRIPTS) == TRUE)
+    {
         SetUserDefinedItemEventNumber(X2_ITEM_EVENT_EQUIP);
         int nRet =   ExecuteScriptAndReturnInt(GetUserDefinedItemEventScriptName(oItem),OBJECT_SELF);
         if (nRet == X2_EXECUTE_SCRIPT_END)
         {
-           return;
+            return;
         }
-     }
-
+    }
 }
-

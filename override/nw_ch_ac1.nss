@@ -65,10 +65,6 @@ void main()
     }
 
     object oMaster = GetMaster();
-
-    if (GetAssociateType(OBJECT_SELF) == ASSOCIATE_TYPE_FAMILIAR) DecrementRemainingFeatUses(oMaster, FEAT_SUMMON_FAMILIAR);
-    else if (GetAssociateType(OBJECT_SELF) == ASSOCIATE_TYPE_ANIMALCOMPANION) DecrementRemainingFeatUses(oMaster, FEAT_ANIMAL_COMPANION);
-
     if(!GetAssociateState(NW_ASC_IS_BUSY))
     {
 

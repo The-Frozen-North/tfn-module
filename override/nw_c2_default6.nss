@@ -17,12 +17,37 @@
 //:://////////////////////////////////////////////////
 
 #include "nw_i0_generic"
+#include "x3_inc_horse"
 
 void main()
 {
     object oDamager = GetLastDamager();
     object oMe=OBJECT_SELF;
     int nHPBefore;
+    if (!GetLocalInt(GetModule(),"X3_NO_MOUNTED_COMBAT_FEAT"))
+    if (GetHasFeat(FEAT_MOUNTED_COMBAT)&&HorseGetIsMounted(OBJECT_SELF))
+    { // see if can negate some damage
+        if (GetLocalInt(OBJECT_SELF,"bX3_LAST_ATTACK_PHYSICAL"))
+        { // last attack was physical
+            nHPBefore=GetLocalInt(OBJECT_SELF,"nX3_HP_BEFORE");
+            if (!GetLocalInt(OBJECT_SELF,"bX3_ALREADY_MOUNTED_COMBAT"))
+            { // haven't already had a chance to use this for the round
+                SetLocalInt(OBJECT_SELF,"bX3_ALREADY_MOUNTED_COMBAT",TRUE);
+                int nAttackRoll=GetBaseAttackBonus(oDamager)+d20();
+                int nRideCheck=GetSkillRank(SKILL_RIDE,OBJECT_SELF)+d20();
+                if (nRideCheck>=nAttackRoll&&!GetIsDead(OBJECT_SELF))
+                { // averted attack
+                    if (GetIsPC(oDamager)) SendMessageToPC(oDamager,GetName(OBJECT_SELF)+GetStringByStrRef(111991));
+                    //if (GetIsPC(OBJECT_SELF)) SendMessageToPCByStrRef(OBJECT_SELF,111992");
+                    if (GetCurrentHitPoints(OBJECT_SELF)<nHPBefore)
+                    { // heal
+                        effect eHeal=EffectHeal(nHPBefore-GetCurrentHitPoints(OBJECT_SELF));
+                        AssignCommand(GetModule(),ApplyEffectToObject(DURATION_TYPE_INSTANT,eHeal,oMe));
+                    } // heal
+                } // averted attack
+            } // haven't already had a chance to use this for the round
+        } // last attack was physical
+    } // see if can negate some damage
     if(GetFleeToExit()) {
         // We're supposed to run away, do nothing
     } else if (GetSpawnInCondition(NW_FLAG_SET_WARNINGS)) {

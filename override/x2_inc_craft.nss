@@ -38,19 +38,19 @@ const string  X2_CI_CRAFTSKILL_CONV ="x2_p_craftskills";
 
 const int     X2_CI_BREWPOTION_FEAT_ID        = 944;                    // Brew Potion feat simulation
 const int     X2_CI_BREWPOTION_MAXLEVEL       = 3;                      // Max Level for potions
-const int     X2_CI_BREWPOTION_COSTMODIFIER   = 75;                     // gp Brew Potion XPCost Modifier
+const int     X2_CI_BREWPOTION_COSTMODIFIER   = 50;                     // gp Brew Potion XPCost Modifier
 
 const string  X2_CI_BREWPOTION_NEWITEM_RESREF = "x2_it_pcpotion";       // ResRef for new potion item
 
 // Scribe Scroll related constants
 const int     X2_CI_SCRIBESCROLL_FEAT_ID        = 945;
-const int     X2_CI_SCRIBESCROLL_COSTMODIFIER   = 40;                 // Scribescroll Cost Modifier
+const int     X2_CI_SCRIBESCROLL_COSTMODIFIER   = 25;                 // Scribescroll Cost Modifier
 const string  X2_CI_SCRIBESCROLL_NEWITEM_RESREF = "x2_it_pcscroll";   // ResRef for new scroll item
 
 // Craft Wand related constants
 const int     X2_CI_CRAFTWAND_FEAT_ID        = 946;
 const int     X2_CI_CRAFTWAND_MAXLEVEL       = 4;
-const int     X2_CI_CRAFTWAND_COSTMODIFIER   = 1000;
+const int     X2_CI_CRAFTWAND_COSTMODIFIER   = 750;
 const string  X2_CI_CRAFTWAND_NEWITEM_RESREF = "x2_it_pcwand";
 
 // 2da for the craftskills
@@ -128,15 +128,6 @@ int   CIGetSpellInnateLevel(int nSpellID, int bDefaultZeroToOne = FALSE)
         nRet =1;
 
     return nRet;
-}
-
-
-object CreateItemOnObjectWithAuthor(string sItemTemplate, object oTarget=OBJECT_SELF)
-{
-    object oItem = CreateItemOnObject(sItemTemplate, oTarget);
-    SetName(oItem, GetName(oItem)+" ("+GetName(oTarget)+")");
-    SetStolenFlag(oItem, TRUE);
-    return oItem;
 }
 
 // * Makes oPC do a Craft check using nSkill to create the item supplied in sResRe
@@ -236,8 +227,7 @@ object CICraftBrewPotion(object oCreator, int nSpellID )
     string customPotion = Get2DAString("des_crft_spells","CustomPotion",nSpellID);
     if(customPotion != "" && customPotion != "****")
     {
-        oTarget = CreateItemOnObjectWithAuthor(customPotion,oCreator);
-
+        oTarget = CreateItemOnObject(customPotion,oCreator);
         if(GetIsObjectValid(oTarget))
         {
             return oTarget;
@@ -258,7 +248,7 @@ object CICraftBrewPotion(object oCreator, int nSpellID )
     if (nPropID != -1)
     {
         itemproperty ipProp = ItemPropertyCastSpell(nPropID,IP_CONST_CASTSPELL_NUMUSES_SINGLE_USE);
-        oTarget = CreateItemOnObjectWithAuthor(X2_CI_BREWPOTION_NEWITEM_RESREF,oCreator);
+        oTarget = CreateItemOnObject(X2_CI_BREWPOTION_NEWITEM_RESREF,oCreator);
         AddItemProperty(DURATION_TYPE_PERMANENT,ipProp,oTarget);
     }
     return oTarget;
@@ -319,7 +309,7 @@ object CICraftCraftWand(object oCreator, int nSpellID )
     string customWand = Get2DAString("des_crft_spells","CustomWand",nSpellID);
     if(customWand != "" && customWand != "****")
     {
-        oTarget = CreateItemOnObjectWithAuthor(customWand,oCreator);
+        oTarget = CreateItemOnObject(customWand,oCreator);
         if(GetIsObjectValid(oTarget))
         {
             // Hard core rule mode enabled
@@ -350,7 +340,7 @@ object CICraftCraftWand(object oCreator, int nSpellID )
     if (nPropID != -1)
     {
         itemproperty ipProp = ItemPropertyCastSpell(nPropID,IP_CONST_CASTSPELL_NUMUSES_1_CHARGE_PER_USE);
-        oTarget = CreateItemOnObjectWithAuthor(X2_CI_CRAFTWAND_NEWITEM_RESREF,oCreator);
+        oTarget = CreateItemOnObject(X2_CI_CRAFTWAND_NEWITEM_RESREF,oCreator);
         AddItemProperty(DURATION_TYPE_PERMANENT,ipProp,oTarget);
 
         string sTemp = Get2DAString("spells","Master",nSpellID);
@@ -485,8 +475,7 @@ object CICraftScribeScroll(object oCreator, int nSpellID)
         string sResRef = Get2DAString(X2_CI_2DA_SCROLLS,sClass,nSpellID);
         if (sResRef != "")
         {
-            oTarget = CreateItemOnObjectWithAuthor(sResRef,oCreator);
-            SetName(oTarget, "Scroll of "+GetName(oTarget));
+            oTarget = CreateItemOnObject(sResRef,oCreator);
             if(GetGameDifficulty() <= GAME_DIFFICULTY_EASY)//1.71: no class limitation under (very) easy difficulty
             {
                 itemproperty ipProp = GetFirstItemProperty(oTarget);
@@ -551,7 +540,7 @@ int CICraftCheckBrewPotion(object oSpellTarget, object oCaster)
     // XP/GP Cost Calculation
     // -------------------------------------------------------------------------
     int nCost = CIGetCraftGPCost(nLevel, X2_CI_BREWPOTION_COSTMODIFIER);
-    //float nExperienceCost = 0.04  * nCost; // xp = 1/25 of gp value
+    float nExperienceCost = 0.04  * nCost; // xp = 1/25 of gp value
     int nGoldCost = nCost ;
 
     // -------------------------------------------------------------------------
@@ -564,18 +553,18 @@ int CICraftCheckBrewPotion(object oSpellTarget, object oCaster)
     }
 
     int nHD = GetHitDice(oCaster);
-    //int nMinXPForLevel = ((nHD * (nHD - 1)) / 2) * 1000;
-    //int nNewXP = FloatToInt(GetXP(oCaster) - nExperienceCost);
+    int nMinXPForLevel = ((nHD * (nHD - 1)) / 2) * 1000;
+    int nNewXP = FloatToInt(GetXP(oCaster) - nExperienceCost);
 
 
     // -------------------------------------------------------------------------
     // check for sufficient XP to cast spell
     // -------------------------------------------------------------------------
-    //if (nMinXPForLevel > nNewXP || nNewXP == 0 )
-    //{
-    //    FloatingTextStrRefOnCreature(3785, oCaster); // Item Creation Failed - Not enough XP
-    //    return TRUE;
-    //}
+    if (nMinXPForLevel > nNewXP || nNewXP == 0 )
+    {
+        FloatingTextStrRefOnCreature(3785, oCaster); // Item Creation Failed - Not enough XP
+        return TRUE;
+    }
 
     // -------------------------------------------------------------------------
     // Here we brew the new potion
@@ -588,7 +577,7 @@ int CICraftCheckBrewPotion(object oSpellTarget, object oCaster)
     if (GetIsObjectValid(oPotion))
     {
         TakeGoldFromCreature(nGoldCost, oCaster, TRUE);
-        //SetXP(oCaster, nNewXP);
+        SetXP(oCaster, nNewXP);
         int nStack = GetItemStackSize(oSpellTarget);
         if(nStack > 1)//1.71: support for stacking
         {
@@ -641,7 +630,7 @@ int CICraftCheckScribeScroll(object oSpellTarget, object oCaster)
     // -------------------------------------------------------------------------
     int  nLevel    = CIGetSpellInnateLevel(nID,TRUE);
     int nCost = CIGetCraftGPCost(nLevel, X2_CI_SCRIBESCROLL_COSTMODIFIER);
-    //float fExperienceCost = 0.04 * nCost;
+    float fExperienceCost = 0.04 * nCost;
     int nGoldCost = nCost ;
 
     // -------------------------------------------------------------------------
@@ -654,17 +643,17 @@ int CICraftCheckScribeScroll(object oSpellTarget, object oCaster)
     }
 
     int nHD = GetHitDice(oCaster);
-    //int nMinXPForLevel = ((nHD * (nHD - 1)) / 2) * 1000;
-    //int nNewXP = FloatToInt(GetXP(oCaster) - fExperienceCost);
+    int nMinXPForLevel = ((nHD * (nHD - 1)) / 2) * 1000;
+    int nNewXP = FloatToInt(GetXP(oCaster) - fExperienceCost);
 
     // -------------------------------------------------------------------------
     // check for sufficient XP to cast spell
     // -------------------------------------------------------------------------
-    //if (nMinXPForLevel > nNewXP || nNewXP == 0 )
-    //{
-    //     FloatingTextStrRefOnCreature(3785, oCaster); // Item Creation Failed - Not enough XP
-    //     return TRUE;
-    //}
+    if (nMinXPForLevel > nNewXP || nNewXP == 0 )
+    {
+         FloatingTextStrRefOnCreature(3785, oCaster); // Item Creation Failed - Not enough XP
+         return TRUE;
+    }
 
     // -------------------------------------------------------------------------
     // Here we scribe the scroll
@@ -682,7 +671,7 @@ int CICraftCheckScribeScroll(object oSpellTarget, object oCaster)
         SetIdentified(oScroll,TRUE);
         ActionPlayAnimation (ANIMATION_FIREFORGET_READ,1.0);
         TakeGoldFromCreature(nGoldCost, oCaster, TRUE);
-        //SetXP(oCaster, nNewXP);
+        SetXP(oCaster, nNewXP);
         int nStack = GetItemStackSize(oSpellTarget);
         if(nStack > 1)//1.71: support for stacking
         {
@@ -746,7 +735,7 @@ int CICraftCheckCraftWand(object oSpellTarget, object oCaster)
     // XP/GP Cost Calculation
     // -------------------------------------------------------------------------
     int nCost = CIGetCraftGPCost( nLevel, X2_CI_CRAFTWAND_COSTMODIFIER);
-    //float nExperienceCost = 0.04 * nCost;
+    float nExperienceCost = 0.04 * nCost;
     int nGoldCost = nCost;
 
     // -------------------------------------------------------------------------
@@ -760,17 +749,17 @@ int CICraftCheckCraftWand(object oSpellTarget, object oCaster)
 
     // more calculations on XP cost
     int nHD = GetHitDice(oCaster);
-    //int nMinXPForLevel = ((nHD * (nHD - 1)) / 2) * 1000;
-    //int nNewXP = FloatToInt(GetXP(oCaster) - nExperienceCost);
+    int nMinXPForLevel = ((nHD * (nHD - 1)) / 2) * 1000;
+    int nNewXP = FloatToInt(GetXP(oCaster) - nExperienceCost);
 
     // -------------------------------------------------------------------------
     // check for sufficient XP to cast spell
     // -------------------------------------------------------------------------
-    // if (nMinXPForLevel > nNewXP || nNewXP == 0 )
-    //{
-    //     FloatingTextStrRefOnCreature(3785, oCaster); // Item Creation Failed - Not enough XP
-    //     return TRUE;
-    //}
+     if (nMinXPForLevel > nNewXP || nNewXP == 0 )
+    {
+         FloatingTextStrRefOnCreature(3785, oCaster); // Item Creation Failed - Not enough XP
+         return TRUE;
+    }
 
     // -------------------------------------------------------------------------
     // Here we craft the wand
@@ -783,7 +772,7 @@ int CICraftCheckCraftWand(object oSpellTarget, object oCaster)
     if (GetIsObjectValid(oWand))
     {
         TakeGoldFromCreature(nGoldCost, oCaster, TRUE);
-        //SetXP(oCaster, nNewXP);
+        SetXP(oCaster, nNewXP);
         DestroyObject (oSpellTarget);
         FloatingTextStrRefOnCreature(8502, oCaster); // Item Creation successful
         return TRUE;
@@ -895,12 +884,12 @@ object CIUseCraftItemSkill(object oPC, int nSkill, string sResRef, int nDC, obje
             // stackable item problems that happen when we create the item
             // directly on the player
             //------------------------------------------------------------------
-            oNew =CreateItemOnObjectWithAuthor(sResRef,IPGetIPWorkContainer(oPC));
+            oNew =CreateItemOnObject(sResRef,IPGetIPWorkContainer(oPC));
             bFix = TRUE;
         }
         else
         {
-            oNew =CreateItemOnObjectWithAuthor(sResRef,oContainer);
+            oNew =CreateItemOnObject(sResRef,oContainer);
         }
 
         int nBase = GetBaseItemType(oNew);
@@ -1593,6 +1582,6 @@ int CIGetWeaponModificationCost(object oOldItem, object oNewItem)
    }
    return nTotal;
 }
-//void main (){}
+
 
 

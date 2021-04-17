@@ -114,3 +114,8 @@ void TriggerProjectileTrap(int nSpell,
     // Cast the spell at the target.
     AssignCommand(oTrapOrigin, ActionCastSpellAtObject(nSpell,oTarget,METAMAGIC_ANY,TRUE,nCasterLevel,nProjectilePath,TRUE));
 }
+
+
+/*
+void main() {}
+/* */

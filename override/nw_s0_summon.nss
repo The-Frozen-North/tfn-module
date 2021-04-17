@@ -61,27 +61,27 @@ effect SetSummonEffect(int nSpellID, int bAnimalDomain)
         if(nSpellID == SPELL_SUMMON_CREATURE_I)
         {
             nFNF_Effect = VFX_FNF_SUMMON_MONSTER_1;
-            sSummon = "sum_direboar";
+            sSummon = "NW_S_BOARDIRE";
         }
         else if(nSpellID == SPELL_SUMMON_CREATURE_II)
         {
             nFNF_Effect = VFX_FNF_SUMMON_MONSTER_1;
-            sSummon = "sum_direwolf";
+            sSummon = "NW_S_WOLFDIRE";
         }
         else if(nSpellID == SPELL_SUMMON_CREATURE_III)
         {
             nFNF_Effect = VFX_FNF_SUMMON_MONSTER_1;
-            sSummon = "sum_direspider";
+            sSummon = "NW_S_SPIDDIRE";
         }
         else if(nSpellID == SPELL_SUMMON_CREATURE_IV)
         {
             nFNF_Effect = VFX_FNF_SUMMON_MONSTER_2;
-            sSummon = "sum_direbear";
+            sSummon = "NW_S_beardire";
         }
         else if(nSpellID == SPELL_SUMMON_CREATURE_V)
         {
             nFNF_Effect = VFX_FNF_SUMMON_MONSTER_2;
-            sSummon = "sum_diretiger";
+            sSummon = "NW_S_diretiger";
         }
         else if(nSpellID == SPELL_SUMMON_CREATURE_VI)
         {
@@ -89,15 +89,15 @@ effect SetSummonEffect(int nSpellID, int bAnimalDomain)
             switch (nRoll)
             {
                 case 1:
-                    sSummon = "sum_hugeair";
+                    sSummon = "NW_S_AIRHUGE";
                 break;
 
                 case 2:
-                    sSummon = "sum_hugewater";
+                    sSummon = "NW_S_WATERHUGE";
                 break;
 
                 case 3:
-                    sSummon = "sum_hugefire";
+                    sSummon = "NW_S_FIREHUGE";
                 break;
             }
         }
@@ -107,15 +107,15 @@ effect SetSummonEffect(int nSpellID, int bAnimalDomain)
             switch (nRoll)
             {
                 case 1:
-                    sSummon = "sum_greatair";
+                    sSummon = "NW_S_AIRGREAT";
                 break;
 
                 case 2:
-                    sSummon = "sum_greatwater";
+                    sSummon = "NW_S_WATERGREAT";
                 break;
 
                 case 3:
-                    sSummon = "sum_greatfire";
+                    sSummon = "NW_S_FIREGREAT";
                 break;
             }
         }
@@ -125,15 +125,15 @@ effect SetSummonEffect(int nSpellID, int bAnimalDomain)
             switch (nRoll)
             {
                 case 1:
-                    sSummon = "sum_elderair";
+                    sSummon = "NW_S_AIRELDER";
                 break;
 
                 case 2:
-                    sSummon = "sum_elderwater";
+                    sSummon = "NW_S_WATERELDER";
                 break;
 
                 case 3:
-                    sSummon = "sum_elderfire";
+                    sSummon = "NW_S_FIREELDER";
                 break;
             }
         }
@@ -143,15 +143,15 @@ effect SetSummonEffect(int nSpellID, int bAnimalDomain)
             switch (nRoll)
             {
                 case 1:
-                    sSummon = "sum_elderair";
+                    sSummon = "NW_S_AIRELDER";
                 break;
 
                 case 2:
-                    sSummon = "sum_elderwater";
+                    sSummon = "NW_S_WATERELDER";
                 break;
 
                 case 3:
-                    sSummon = "sum_elderfire";
+                    sSummon = "NW_S_FIREELDER";
                 break;
             }
         }
@@ -161,32 +161,32 @@ effect SetSummonEffect(int nSpellID, int bAnimalDomain)
         if(nSpellID == SPELL_SUMMON_CREATURE_I)
         {
             nFNF_Effect = VFX_FNF_SUMMON_MONSTER_1;
-            sSummon = "sum_direbadger";
+            sSummon = "NW_S_badgerdire";
         }
         else if(nSpellID == SPELL_SUMMON_CREATURE_II)
         {
             nFNF_Effect = VFX_FNF_SUMMON_MONSTER_1;
-            sSummon = "sum_direboar";
+            sSummon = "NW_S_BOARDIRE";
         }
         else if(nSpellID == SPELL_SUMMON_CREATURE_III)
         {
             nFNF_Effect = VFX_FNF_SUMMON_MONSTER_1;
-            sSummon = "sum_direwolf";
+            sSummon = "NW_S_WOLFDIRE";
         }
         else if(nSpellID == SPELL_SUMMON_CREATURE_IV)
         {
             nFNF_Effect = VFX_FNF_SUMMON_MONSTER_2;
-            sSummon = "sum_direspider";
+            sSummon = "NW_S_SPIDDIRE";
         }
         else if(nSpellID == SPELL_SUMMON_CREATURE_V)
         {
             nFNF_Effect = VFX_FNF_SUMMON_MONSTER_2;
-            sSummon = "sum_direbear";
+            sSummon = "NW_S_beardire";
         }
         else if(nSpellID == SPELL_SUMMON_CREATURE_VI)
         {
             nFNF_Effect = VFX_FNF_SUMMON_MONSTER_2;
-            sSummon = "sum_diretiger";
+            sSummon = "NW_S_diretiger";
         }
         else if(nSpellID == SPELL_SUMMON_CREATURE_VII)
         {
@@ -194,15 +194,15 @@ effect SetSummonEffect(int nSpellID, int bAnimalDomain)
             switch (nRoll)
             {
                 case 1:
-                    sSummon = "sum_hugeair";
+                    sSummon = "NW_S_AIRHUGE";
                 break;
 
                 case 2:
-                    sSummon = "sum_hugewater";
+                    sSummon = "NW_S_WATERHUGE";
                 break;
 
                 case 3:
-                    sSummon = "sum_hugefire";
+                    sSummon = "NW_S_FIREHUGE";
                 break;
             }
         }
@@ -212,15 +212,15 @@ effect SetSummonEffect(int nSpellID, int bAnimalDomain)
             switch (nRoll)
             {
                 case 1:
-                    sSummon = "sum_greatair";
+                    sSummon = "NW_S_AIRGREAT";
                 break;
 
                 case 2:
-                    sSummon = "sum_greatwater";
+                    sSummon = "NW_S_WATERGREAT";
                 break;
 
                 case 3:
-                    sSummon = "sum_greatfire";
+                    sSummon = "NW_S_FIREGREAT";
                 break;
             }
         }
@@ -230,15 +230,15 @@ effect SetSummonEffect(int nSpellID, int bAnimalDomain)
             switch (nRoll)
             {
                 case 1:
-                    sSummon = "sum_elderair";
+                    sSummon = "NW_S_AIRELDER";
                 break;
 
                 case 2:
-                    sSummon = "sum_elderwater";
+                    sSummon = "NW_S_WATERELDER";
                 break;
 
                 case 3:
-                    sSummon = "sum_elderfire";
+                    sSummon = "NW_S_FIREELDER";
                 break;
             }
         }

@@ -964,13 +964,13 @@ void DetermineCombatRound(object oIntruder = OBJECT_INVALID, int nAI_Difficulty 
     // Community Patch 1.72: function changed in order to allow modify combat AI without need
     // to recompile all creature scripts. The combat AI is now resolved in 70_ai_generic script
     //------------------------------------------------------------------------------
-
-// FORCE this to be used! don't need to check if CPP is being used...
-    SetLocalObject(OBJECT_SELF,"Intruder",oIntruder);
-    SetLocalInt(OBJECT_SELF,"AI_Difficulty",nAI_Difficulty);
-    ExecuteScript("70_ai_generic",OBJECT_SELF);
-    return;
-
+    if(GetCommunityPatchVersion() == 172)
+    {
+        SetLocalObject(OBJECT_SELF,"Intruder",oIntruder);
+        SetLocalInt(OBJECT_SELF,"AI_Difficulty",nAI_Difficulty);
+        ExecuteScript("70_ai_generic",OBJECT_SELF);
+        return;
+    }
     // MyPrintString("************** DETERMINE COMBAT ROUND START *************");
     // MyPrintString("**************  " + GetTag(OBJECT_SELF) + "  ************");
 
@@ -2219,3 +2219,10 @@ int DetermineClassToUse()
 
     return nClass;
 }
+
+
+
+/* DO NOT CLOSE THIS TOP COMMENT!
+   This main() function is here only for compilation testing.
+void main() {}
+/* */

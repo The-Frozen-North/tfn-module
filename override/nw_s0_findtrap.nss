@@ -41,27 +41,21 @@ void main()
     {
         if(GetIsTrapped(oTrap))
         {
-            if(GetTrapDetectable(oTrap))
+            if(GetGameDifficulty() < GAME_DIFFICULTY_CORE_RULES && GetTrapDisarmable(oTrap))
             {
-
-                if ((spell.DC - 10 + d20()) >= GetTrapDisarmDC(oTrap))
+                SetTrapDetectedBy(oTrap, spell.Caster);
+                DelayCommand(2.0, SetTrapDisabled(oTrap));
+                ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eVis, GetLocation(oTrap));
+            }
+            else if(GetTrapDetectable(oTrap))
+            {
+                //1.72: reveal trap for all party members (even if they are not in same area)
+                oParty = GetFirstFactionMember(spell.Caster,FALSE);
+                while(GetIsObjectValid(oParty))
                 {
-                    SetTrapDetectedBy(oTrap, spell.Caster);
-                    DelayCommand(2.0, SetTrapDisabled(oTrap));
+                    SetTrapDetectedBy(oTrap, oParty);
+                    oParty = GetNextFactionMember(spell.Caster,FALSE);
                 }
- //1.72: reveal trap for all party members (even if they are not in same area)
-                else
-                {
-                    FloatingTextStringOnCreature("*The spell failed to disarm the trap.*",spell.Caster);
-
-                    oParty = GetFirstFactionMember(spell.Caster,FALSE);
-                    while(GetIsObjectValid(oParty))
-                    {
-                        SetTrapDetectedBy(oTrap, oParty);
-                        oParty = GetNextFactionMember(spell.Caster,FALSE);
-                    }
-                }
-
                 ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eVis, GetLocation(oTrap));
             }
         }

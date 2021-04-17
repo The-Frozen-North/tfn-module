@@ -14,32 +14,6 @@ routines without need to recompile all creature events scripts.
 
 #include "x0_inc_henai"
 
-void DoCombatVoice()
-{
-    if (GetIsDead(OBJECT_SELF)) return;
-
-    string sBattlecryScript = GetLocalString(OBJECT_SELF, "battlecry_script");
-    if (sBattlecryScript != "")
-    {
-        ExecuteScript(sBattlecryScript, OBJECT_SELF);
-    }
-    else
-    {
-        int nRand = 40;
-        if (GetLocalInt(OBJECT_SELF, "boss") == 1) nRand = nRand/2;
-
-        switch (Random(nRand))
-        {
-            case 0: PlayVoiceChat(VOICE_CHAT_BATTLECRY1, OBJECT_SELF); break;
-            case 1: PlayVoiceChat(VOICE_CHAT_BATTLECRY2, OBJECT_SELF); break;
-            case 2: PlayVoiceChat(VOICE_CHAT_BATTLECRY3, OBJECT_SELF); break;
-            case 3: PlayVoiceChat(VOICE_CHAT_ATTACK, OBJECT_SELF); break;
-            case 4: PlayVoiceChat(VOICE_CHAT_TAUNT, OBJECT_SELF); break;
-            case 5: PlayVoiceChat(VOICE_CHAT_LAUGH, OBJECT_SELF); break;
-        }
-    }
-}
-
 void main()
 {
     object oIntruder = GetLocalObject(OBJECT_SELF,"Intruder");
@@ -214,8 +188,8 @@ void main()
 
     // * only go into determinecombatround if there's a valid enemy nearby
     // * feb 26 2003: To prevent henchmen from resuming combat
-    if (GetIsObjectValid(oIntruder)) DelayCommand(IntToFloat(d10())/10.0, DoCombatVoice());
-
-    if (GetIsObjectValid(oIntruder) || GetIsObjectValid(oNearestTarget)) DetermineCombatRound(oIntruder);
-
+    if (GetIsObjectValid(oIntruder) || GetIsObjectValid(oNearestTarget))
+    {
+        DetermineCombatRound(oIntruder);
+    }
 }

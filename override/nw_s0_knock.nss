@@ -45,16 +45,8 @@ void main()
             nResist =  GetDoorFlag(oTarget,DOOR_FLAG_RESIST_KNOCK);
             if (nResist == 0)
             {
-                if ((spell.DC - 10 + d20()) >= GetLockUnlockDC(oTarget))
-                {
-                    AssignCommand(oTarget, ActionUnlockObject(oTarget));
-                    DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
-                    DelayCommand(fDelay, AssignCommand(oTarget, PlaySound("gui_picklockopen")));
-                }
-                else
-                {
-                    FloatingTextStringOnCreature("*The spell failed to unlock the object.*",spell.Caster);
-                }
+                DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
+                AssignCommand(oTarget, ActionUnlockObject(oTarget));
             }
             else if  (nResist == 1)
             {

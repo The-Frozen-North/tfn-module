@@ -15,32 +15,6 @@ routines without need to recompile all creature events scripts.
 #include "70_inc_ai"
 #include "nw_i0_generic"
 
-void DoCombatVoice()
-{
-    if (GetIsDead(OBJECT_SELF)) return;
-
-    string sBattlecryScript = GetLocalString(OBJECT_SELF, "battlecry_script");
-    if (sBattlecryScript != "")
-    {
-        ExecuteScript(sBattlecryScript, OBJECT_SELF);
-    }
-    else
-    {
-        int nRand = 40;
-        if (GetLocalInt(OBJECT_SELF, "boss") == 1) nRand = nRand/2;
-
-        switch (Random(nRand))
-        {
-            case 0: PlayVoiceChat(VOICE_CHAT_BATTLECRY1, OBJECT_SELF); break;
-            case 1: PlayVoiceChat(VOICE_CHAT_BATTLECRY2, OBJECT_SELF); break;
-            case 2: PlayVoiceChat(VOICE_CHAT_BATTLECRY3, OBJECT_SELF); break;
-            case 3: PlayVoiceChat(VOICE_CHAT_ATTACK, OBJECT_SELF); break;
-            case 4: PlayVoiceChat(VOICE_CHAT_TAUNT, OBJECT_SELF); break;
-            case 5: PlayVoiceChat(VOICE_CHAT_LAUGH, OBJECT_SELF); break;
-        }
-    }
-}
-
 void main()
 {
     object oIntruder = GetLocalObject(OBJECT_SELF,"Intruder");
@@ -152,8 +126,6 @@ void main()
     // ----------------------------------------------------------------------------------------
     if(GetIsObjectValid(oIntruder))
     {
-        DelayCommand(IntToFloat(d10())/10.0, DoCombatVoice());
-
         if(GetActionMode(OBJECT_SELF,ACTION_MODE_DEFENSIVE_CAST))//1.72: needs to be disabled after every cast
         {
             SetActionMode(OBJECT_SELF,ACTION_MODE_DEFENSIVE_CAST,FALSE);
@@ -162,7 +134,7 @@ void main()
         if(TalentPersistentAbilities()) // * Will put up things like Auras quickly
         {
             __TurnCombatRoundOn(FALSE);
-            if(GetAILevel() >= AI_LEVEL_HIGH)
+            if(GetGameDifficulty() == GAME_DIFFICULTY_DIFFICULT || GetAILevel() >= AI_LEVEL_HIGH)
             {
                 ActionDoCommand(DetermineCombatRound(oIntruder));
             }
