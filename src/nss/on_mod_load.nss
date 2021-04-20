@@ -147,6 +147,8 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_STORE_REQUEST_SELL_AFTER", "on_storesella");
 
+    NWNX_Events_SubscribeEvent("NWNX_ON_ITEM_ACQUIRE_BEFORE", "on_pc_acquireb");
+
 // We must skip this if polymorphed or bartering.
     NWNX_Events_SubscribeEvent("NWNX_ON_SERVER_CHARACTER_SAVE_BEFORE", "on_pc_save");
 
