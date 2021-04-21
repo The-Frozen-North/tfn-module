@@ -18,32 +18,34 @@ int GetRandomTier()
     {
         return 3;
     }
-    else if (nRandom <= 15)
-    {
-        return 2;
-    }
     else
     {
-        return 1;
+        return 2;
     }
 }
 
 void CreatePlaceholderItem(object oItem)
 {
+// must be a magic item of some sort
+    if (!GetIsItemPropertyValid(GetFirstItemProperty(oItem)))
+        return;
+
     string sPlaceholderResRef;
+
+    int nMultiplier = 1;
 
     switch (GetBaseItemType(oItem))
     {
-       case BASE_ITEM_GLOVES: sPlaceholderResRef = "gamble_gloves"; break;
-       case BASE_ITEM_BRACER: sPlaceholderResRef = "gamble_bracers"; break;
-       case BASE_ITEM_RING: sPlaceholderResRef = "gamble_ring"; break;
-       case BASE_ITEM_AMULET: sPlaceholderResRef = "gamble_amulet"; break;
-       case BASE_ITEM_CLOAK: sPlaceholderResRef = "gamble_cloak"; break;
-       case BASE_ITEM_BELT: sPlaceholderResRef = "gamble_belt"; break;
-       case BASE_ITEM_SMALLSHIELD: sPlaceholderResRef = "nw_ashsw001"; break;
-       case BASE_ITEM_HELMET: sPlaceholderResRef = "nw_arhe006"; break;
-       case BASE_ITEM_LARGESHIELD: sPlaceholderResRef = "nw_ashlw001"; break;
-       case BASE_ITEM_TOWERSHIELD: sPlaceholderResRef = "nw_ashto001"; break;
+       case BASE_ITEM_GLOVES: sPlaceholderResRef = "gamble_gloves"; nMultiplier = 3; break;
+       case BASE_ITEM_BRACER: sPlaceholderResRef = "gamble_bracers"; nMultiplier = 3; break;
+       case BASE_ITEM_RING: sPlaceholderResRef = "gamble_ring"; nMultiplier = 5; break;
+       case BASE_ITEM_AMULET: sPlaceholderResRef = "gamble_amulet"; nMultiplier = 6; break;
+       case BASE_ITEM_CLOAK: sPlaceholderResRef = "gamble_cloak"; nMultiplier = 3; break;
+       case BASE_ITEM_BELT: sPlaceholderResRef = "gamble_belt"; nMultiplier = 3; break;
+       //case BASE_ITEM_SMALLSHIELD: sPlaceholderResRef = "nw_ashsw001"; nMultiplier = 2; break;
+       case BASE_ITEM_HELMET: sPlaceholderResRef = "nw_arhe006"; nMultiplier = 3; break;
+       case BASE_ITEM_LARGESHIELD: sPlaceholderResRef = "nw_ashlw001"; nMultiplier = 3; break;
+       case BASE_ITEM_TOWERSHIELD: sPlaceholderResRef = "nw_ashto001"; nMultiplier = 4; break;
        case BASE_ITEM_BASTARDSWORD: sPlaceholderResRef = "nw_wswbs001"; break;
        case BASE_ITEM_BATTLEAXE: sPlaceholderResRef = "nw_waxbt001"; break;
        case BASE_ITEM_CLUB: sPlaceholderResRef = "nw_wblcl001"; break;
@@ -83,29 +85,32 @@ void CreatePlaceholderItem(object oItem)
        case BASE_ITEM_ARMOR:
           switch (NWNX_Item_GetBaseArmorClass(oItem))
           {
-            case 0: sPlaceholderResRef = "nw_wbwsl001"; break;
-            case 1: sPlaceholderResRef = "nw_aarcl009"; break;
-            case 2: sPlaceholderResRef = "nw_aarcl001"; break;
-            case 3: sPlaceholderResRef = "nw_aarcl002"; break;
-            case 4: sPlaceholderResRef = "nw_aarcl012"; break;
-            case 5: sPlaceholderResRef = "nw_aarcl004"; break;
-            case 6: sPlaceholderResRef = "nw_aarcl005"; break;
-            case 7: sPlaceholderResRef = "nw_aarcl006"; break;
-            case 8: sPlaceholderResRef = "nw_aarcl007"; break;
+            case 0: sPlaceholderResRef = "nw_wbwsl001"; nMultiplier = 2; break;
+            case 1: sPlaceholderResRef = "nw_aarcl009"; nMultiplier = 2; break;
+            case 2: sPlaceholderResRef = "nw_aarcl001"; nMultiplier = 3; break;
+            case 3: sPlaceholderResRef = "nw_aarcl002"; nMultiplier = 4; break;
+            case 4: sPlaceholderResRef = "nw_aarcl012"; nMultiplier = 5; break;
+            case 5: sPlaceholderResRef = "nw_aarcl004"; nMultiplier = 6; break;
+            case 6: sPlaceholderResRef = "nw_aarcl005";  nMultiplier = 7; break;
+            case 7: sPlaceholderResRef = "nw_aarcl006"; nMultiplier = 8; break;
+            case 8: sPlaceholderResRef = "nw_aarcl007"; nMultiplier = 10; break;
           }
        break;
     }
 
     object oPlaceholderItem = CreateItemOnObject(sPlaceholderResRef, OBJECT_SELF, 1, "gamble");
     //NWNX_Item_SetBaseGoldPieceValue(oPlaceholderItem, 1000);
-    NWNX_Item_SetAddGoldPieceValue(oPlaceholderItem, 1000);
 
     SetLocalObject(oPlaceholderItem, "item", oItem);
     string sDescription = "This item will be revealed when purchased.";
 
     SetDescription(oPlaceholderItem, sDescription);
     SetDescription(oPlaceholderItem, sDescription, FALSE);
-    SetIdentified(oPlaceholderItem, FALSE);
+    SetName(oPlaceholderItem, GetName(oPlaceholderItem)+" (Unknown)");
+    // We can't set the item to unidentified, because any change to the gold won't work
+    //SetIdentified(oPlaceholderItem, FALSE);
+
+    NWNX_Item_SetBaseGoldPieceValue(oPlaceholderItem, GetGoldPieceValue(oPlaceholderItem)+1500*nMultiplier);
 }
 
 void main()
@@ -128,14 +133,13 @@ void main()
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Range", GetRandomTier());
         CreatePlaceholderItem(oItemInStorage);
     }
-    /*
     nMax = d4(40);
     for (i = 0; i < nMax; i++)
     {
-        oItemInStorage = GenerateTierItem(0, 0, oStorage, "Armor", GetRandomTier(), TRUE);
+        oItemInStorage = GenerateTierItem(0, 0, oStorage, "Armor", GetRandomTier());
         CreatePlaceholderItem(oItemInStorage);
     }
-    */
+
     nMax = d4(60);
     for (i = 0; i < nMax; i++)
     {
