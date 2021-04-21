@@ -1,7 +1,7 @@
 #include "inc_quest"
 #include "inc_henchman"
 #include "x3_inc_string"
-#include "inc_nwnx"
+#include "inc_webhook"
 #include "nwnx_damage"
 
 void CreateItemIfBlank(object oPC, string sItem)
@@ -24,22 +24,10 @@ void main()
 
     string sType = "player";
 
-    if (GetIsDM(oPC)) sType = "dungeon master";
-
-    object oPCCount = GetFirstPC();
-    int nPCs = 0;
-
-    while (GetIsObjectValid(oPCCount))
-    {
-        nPCs = nPCs + 1;
-        oPCCount = GetNextPC();
-    }
-
     string sMessage = PlayerDetailedName(oPC)+" has entered the game as a "+sType;
 
     WriteTimestampedLogEntry(sMessage);
-
-    SendDiscordLogMessage(sMessage+" - there " + (nPCs == 1 ? "is" : "are") + " now " + IntToString(nPCs) + " player" + (nPCs == 1 ? "" : "s") + " online.");
+    LogWebhook(oPC, LOG_IN);
 
 // assign the PC a UUID if it doesn't have one
     GetObjectUUID(oPC);

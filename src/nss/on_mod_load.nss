@@ -1,7 +1,7 @@
 #include "x2_inc_switches"
 #include "x2_inc_restsys"
 #include "inc_treasure"
-#include "inc_nwnx"
+#include "inc_webhook"
 #include "nwnx_admin"
 #include "nwnx_weapon"
 #include "nwnx_events"
@@ -147,7 +147,6 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_STORE_REQUEST_SELL_AFTER", "on_storesella");
 
-    //NWNX_Events_SubscribeEvent("NWNX_ON_ITEM_ACQUIRE_BEFORE", "on_pc_acquireb");
     NWNX_Events_SubscribeEvent("NWNX_ON_STORE_REQUEST_BUY_BEFORE", "on_pc_buyb");
 
 // We must skip this if polymorphed or bartering.
@@ -188,7 +187,7 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SPAWN_OBJECT_BEFORE", "dm_spawnb");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SPAWN_OBJECT_AFTER", "dm_spawna");
 
-    SendDiscordLogMessage("Starting the server. This may take a few minutes.");
+    ServerWebhook("The Frozen North is starting!", "The Frozen North server is starting up. Once the module is stable and ready for players to login, we'll let you know.");
 
    // Multiple henchmen on the server, so let's set a high limit.
    SetMaxHenchmen(999);

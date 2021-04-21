@@ -1,6 +1,6 @@
 #include "nwnx_admin"
 #include "nwnx_util"
-#include "inc_nwnx"
+#include "inc_webhook"
 
 void main()
 {
@@ -14,6 +14,6 @@ void main()
         NWNX_Administration_ClearPlayerPassword();
         NWNX_Administration_SetDMPassword(Get2DAString("env", "Value", 3));
         SetEventScript(oModule, EVENT_SCRIPT_MODULE_ON_HEARTBEAT, "on_mod_heartb");
-        SendDiscordLogMessage("The server is now online.");
+        ServerWebhook("The Frozen North is ready!", "The Frozen North server is ready for players to login.");
     }
 }

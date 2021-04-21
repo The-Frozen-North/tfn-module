@@ -1,5 +1,5 @@
 #include "inc_persist"
-#include "inc_nwnx"
+#include "inc_webhook"
 #include "inc_debug"
 
 void main()
@@ -20,7 +20,7 @@ void main()
 
     string sMessage = PlayerDetailedName(oPC)+" has left the game.";
 
-    WriteTimestampedLogEntry(sMessage);
+    WriteTimestampedLogEntry(PlayerDetailedName(oPC)+" has left the game.");
 
-    SendDiscordLogMessage(sMessage+" - there " + (nPCs == 1 ? "is" : "are") + " now " + IntToString(nPCs) + " player" + (nPCs == 1 ? "" : "s") + " online.");
+    LogWebhook(oPC, LOG_OUT);
 }

@@ -21,6 +21,7 @@
 #include "inc_persist"
 #include "inc_general"
 #include "inc_horse"
+#include "inc_webhook"
 #include "inc_sql"
 
 void main()
@@ -57,6 +58,7 @@ void main()
     SetStandardFactionReputation(STANDARD_FACTION_MERCHANT, 50, oPlayer);
     SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 50, oPlayer);
 
+    DeathWebhook(oPlayer, oKiller);
 
 // Give a gore animation if the PC took a lot of damage.
 
