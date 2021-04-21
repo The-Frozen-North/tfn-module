@@ -267,7 +267,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 17
+                "value": 18
               },
               "IsChild": {
                 "type": "byte",
@@ -630,7 +630,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 9
+                "value": 10
               },
               "IsChild": {
                 "type": "byte",
@@ -741,7 +741,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 10
+                "value": 9
               },
               "IsChild": {
                 "type": "byte",
@@ -765,7 +765,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Err... a strapping, if brutish gent. Jalek was his name. He said he was soon to come into his own ship."
+            "0": "Yes... that I did. The gentleman Jalek said he was soon to come into his own ship, and he would take us out of Neverwinter, in exchange for the amulet."
           }
         }
       },
@@ -829,12 +829,12 @@
         },
         "Speaker": {
           "type": "cexostring",
-          "value": "agnes"
+          "value": ""
         },
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Probably stealing that as well. Honestly, Hemmel, you can be such a fool."
+            "0": "Err... a strapping, if brutish gent. Jalek was his name. He said he was soon to come into his own ship."
           }
         }
       },
@@ -879,7 +879,76 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 15
+                "value": 12
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": "agnes"
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Probably stealing that as well. Honestly, Hemmel, you can be such a fool."
+          }
+        }
+      },
+      {
+        "__struct_id": 12,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 16
               },
               "IsChild": {
                 "type": "byte",
@@ -898,7 +967,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 13
+                "value": 14
               },
               "IsChild": {
                 "type": "byte",
@@ -917,7 +986,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 12
+                "value": 13
               },
               "IsChild": {
                 "type": "byte",
@@ -946,7 +1015,7 @@
         }
       },
       {
-        "__struct_id": 12,
+        "__struct_id": 13,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -995,75 +1064,6 @@
         }
       },
       {
-        "__struct_id": 13,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 14
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "I suppose I could manage some form of payment. I'll have to see the amulet first, of course. I've already been swindled once."
-          }
-        }
-      },
-      {
         "__struct_id": 14,
         "ActionParams": {
           "type": "list",
@@ -1104,7 +1104,76 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 16
+                "value": 15
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I suppose I could manage some form of payment. I'll have to see the amulet first, of course. I've already been swindled once."
+          }
+        }
+      },
+      {
+        "__struct_id": 15,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 17
               },
               "IsChild": {
                 "type": "byte",
@@ -1133,7 +1202,7 @@
         }
       },
       {
-        "__struct_id": 15,
+        "__struct_id": 16,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1182,75 +1251,6 @@
         }
       },
       {
-        "__struct_id": 16,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 18
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Very little, I'm afraid. I came here... well... I came here hoping to circumvent the quarantine on Neverwinter."
-          }
-        }
-      },
-      {
         "__struct_id": 17,
         "ActionParams": {
           "type": "list",
@@ -1291,7 +1291,76 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 21
+                "value": 19
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Very little, I'm afraid. I came here... well... I came here hoping to circumvent the quarantine on Neverwinter."
+          }
+        }
+      },
+      {
+        "__struct_id": 18,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 22
               },
               "IsChild": {
                 "type": "byte",
@@ -1310,7 +1379,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 20
+                "value": 21
               },
               "IsChild": {
                 "type": "byte",
@@ -1329,7 +1398,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 19
+                "value": 20
               },
               "IsChild": {
                 "type": "byte",
@@ -1358,7 +1427,7 @@
         }
       },
       {
-        "__struct_id": 18,
+        "__struct_id": 19,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1407,7 +1476,7 @@
         }
       },
       {
-        "__struct_id": 19,
+        "__struct_id": 20,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1447,7 +1516,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 17
+                "value": 18
               },
               "IsChild": {
                 "type": "byte",
@@ -1499,75 +1568,6 @@
           "type": "cexolocstring",
           "value": {
             "0": "If you need, though I don't know if there's anything else I can add."
-          }
-        }
-      },
-      {
-        "__struct_id": 20,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 22
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Wonderful! Snatched from fate and returned to family Masterson! You see, Agnes? We Mastersons get things done!"
           }
         }
       },
@@ -1636,7 +1636,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "A... reward. Well, I suppose that would be fair. It's better than not getting it back at all, I guess."
+            "0": "Wonderful! Snatched from fate and returned to family Masterson! You see, Agnes? We Mastersons get things done!"
           }
         }
       },
@@ -1692,6 +1692,75 @@
         },
         "Script": {
           "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "A... reward. Well, I suppose that would be fair. It's better than not getting it back at all, I guess."
+          }
+        }
+      },
+      {
+        "__struct_id": 23,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 25
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
           "value": "dlg_q_adv2"
         },
         "Sound": {
@@ -1710,7 +1779,7 @@
         }
       },
       {
-        "__struct_id": 23,
+        "__struct_id": 24,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1759,7 +1828,7 @@
         }
       },
       {
-        "__struct_id": 24,
+        "__struct_id": 25,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1811,7 +1880,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 541
+    "value": 571
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -2381,11 +2450,7 @@
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+                "value": 0
               }
             }
           ]
@@ -2446,11 +2511,15 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 9
+                "value": 11
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
             }
           ]
@@ -2470,7 +2539,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Who was this man?"
+            "0": ""
           }
         }
       },
@@ -2535,7 +2604,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": ""
+            "0": "Who was this man?"
           }
         }
       },
@@ -2665,7 +2734,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I've no interest in helping you."
+            "0": ""
           }
         }
       },
@@ -2730,81 +2799,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I won't help for free."
+            "0": "I've no interest in helping you."
           }
         }
       },
       {
         "__struct_id": 14,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 15
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": ""
-          }
-        }
-      },
-      {
-        "__struct_id": 15,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -2864,7 +2864,76 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I could look into it for you."
+            "0": "I won't help for free."
+          }
+        }
+      },
+      {
+        "__struct_id": 15,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 16
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
           }
         }
       },
@@ -2929,7 +2998,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": ""
+            "0": "I could look into it for you."
           }
         }
       },
@@ -2994,12 +3063,77 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "What do you know about the docks?"
+            "0": ""
           }
         }
       },
       {
         "__struct_id": 18,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 17
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "What do you know about the docks?"
+          }
+        }
+      },
+      {
+        "__struct_id": 19,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -3068,71 +3202,6 @@
         }
       },
       {
-        "__struct_id": 19,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 18
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Sorry, I haven't discovered anything yet."
-          }
-        }
-      },
-      {
         "__struct_id": 20,
         "ActionParams": {
           "type": "list",
@@ -3193,7 +3262,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I need you to repeat some things."
+            "0": "Sorry, I haven't discovered anything yet."
           }
         }
       },
@@ -3258,7 +3327,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I have your amulet here."
+            "0": "I need you to repeat some things."
           }
         }
       },
@@ -3323,7 +3392,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": ""
+            "0": "I have your amulet here."
           }
         }
       },
@@ -3453,6 +3522,71 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
+            "0": ""
+          }
+        }
+      },
+      {
+        "__struct_id": 25,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 24
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
             "0": "That will be fine. Thank you."
           }
         }
@@ -3474,7 +3608,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 24
+          "value": 25
         }
       },
       {
@@ -3489,7 +3623,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 17
+          "value": 18
         }
       },
       {
