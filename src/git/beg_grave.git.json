@@ -18535,11 +18535,11 @@
         },
         "LinkedTo": {
           "type": "cexostring",
-          "value": ""
+          "value": "TombToGraveyard"
         },
         "LinkedToFlags": {
           "type": "byte",
-          "value": 0
+          "value": 1
         },
         "LoadScreenID": {
           "type": "word",
@@ -18551,7 +18551,7 @@
         },
         "Locked": {
           "type": "byte",
-          "value": 0
+          "value": 1
         },
         "LocName": {
           "id": 5349,
@@ -18616,7 +18616,7 @@
         },
         "OpenLockDC": {
           "type": "byte",
-          "value": 18
+          "value": 17
         },
         "Plot": {
           "type": "byte",
@@ -18632,7 +18632,7 @@
         },
         "Tag": {
           "type": "cexostring",
-          "value": "TNO_wd_door"
+          "value": "GraveyardToTomb"
         },
         "TemplateResRef": {
           "type": "resref",
@@ -34616,6 +34616,68 @@
         "YPosition": {
           "type": "float",
           "value": 78.2752
+        },
+        "ZPosition": {
+          "type": "float",
+          "value": 5.0
+        }
+      },
+      {
+        "__struct_id": 5,
+        "Appearance": {
+          "type": "byte",
+          "value": 1
+        },
+        "Description": {
+          "type": "cexolocstring",
+          "value": {}
+        },
+        "HasMapNote": {
+          "type": "byte",
+          "value": 1
+        },
+        "LinkedTo": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "LocalizedName": {
+          "id": 14817,
+          "type": "cexolocstring",
+          "value": {}
+        },
+        "MapNote": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Tomb"
+          }
+        },
+        "MapNoteEnabled": {
+          "type": "byte",
+          "value": 1
+        },
+        "Tag": {
+          "type": "cexostring",
+          "value": "NW_WAYPOINT001"
+        },
+        "TemplateResRef": {
+          "type": "resref",
+          "value": "nw_waypoint001"
+        },
+        "XOrientation": {
+          "type": "float",
+          "value": 0.0
+        },
+        "XPosition": {
+          "type": "float",
+          "value": 64.85639999999999
+        },
+        "YOrientation": {
+          "type": "float",
+          "value": 1.0
+        },
+        "YPosition": {
+          "type": "float",
+          "value": 90.8115
         },
         "ZPosition": {
           "type": "float",

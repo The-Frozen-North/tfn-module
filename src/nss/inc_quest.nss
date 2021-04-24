@@ -216,6 +216,8 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FAL
     }
 
     FloatingTextStringOnCreature("*Your journal has been updated*", oPC, FALSE);
+    if (GetObjectType(oQuestObject) == OBJECT_TYPE_ITEM)
+        FloatingTextStringOnCreature("*You stash away "+GetName(oQuestObject)+" for safe keeping*", oPC, FALSE);
 }
 
 void AdvanceQuestSphere(object oQuestObject, int nTarget, float fRadius = 30.0)

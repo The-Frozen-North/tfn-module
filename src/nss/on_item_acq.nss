@@ -49,6 +49,7 @@ doing so, do this only if running original event has no longer sense.
 
 #include "x0_i0_spells"
 #include "70_inc_itemprop"
+#include "inc_quest"
 
 void main()
 {
@@ -56,6 +57,13 @@ void main()
     object oItem = GetModuleItemAcquired();
     object oOwner = GetModuleItemAcquiredFrom();
     int nStackSize =GetModuleItemAcquiredStackSize();
+
+    if (GetTag(oItem) == "quest")
+    {
+        AdvanceQuest(oItem, oPC, 1);
+        DestroyObject(oItem);
+        return;
+    }
 
     DeleteLocalInt(oItem, "destroy_count");
 

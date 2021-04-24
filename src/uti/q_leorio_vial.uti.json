@@ -6,7 +6,7 @@
   },
   "BaseItem": {
     "type": "int",
-    "value": 52
+    "value": 49
   },
   "Charges": {
     "type": "byte",
@@ -18,21 +18,22 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 5582
+    "value": 0
   },
   "Cursed": {
     "type": "byte",
     "value": 0
   },
   "DescIdentified": {
-    "id": 67527,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "This vial is labeled \"PLAGUE-66\". It has a strange, black, swirling mist and you can sense that it is a concoction most foul, perhaps related to the Wailing Death. Aribeth will definitely be interested in this."
+    }
   },
   "Description": {
     "type": "cexolocstring",
     "value": {
-      "0": ""
+      "0": "This vial is labeled \"PLAGUE-66\". It has a strange, black, swirling mist and you can sense that it is a concoction most foul, perhaps related to the Wailing Death. Aribeth will definitely be interested in this."
     }
   },
   "Identified": {
@@ -40,17 +41,26 @@
     "value": 0
   },
   "LocalizedName": {
-    "id": 67526,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Strange Vial"
+    }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 14
+    "value": 46
+  },
+  "ModelPart2": {
+    "type": "byte",
+    "value": 43
+  },
+  "ModelPart3": {
+    "type": "byte",
+    "value": 33
   },
   "PaletteID": {
     "type": "byte",
-    "value": 22
+    "value": 1
   },
   "Plot": {
     "type": "byte",
@@ -67,42 +77,11 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 18
+          "value": 28
         },
         "CostValue": {
-          "type": "word",
-          "value": 3
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 9
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 5
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 44
-        },
-        "Subtype": {
           "type": "word",
           "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 2
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 1
         },
         "Param1": {
           "type": "byte",
@@ -114,7 +93,7 @@
         },
         "PropertyName": {
           "type": "word",
-          "value": 40
+          "value": 85
         },
         "Subtype": {
           "type": "word",
@@ -125,7 +104,7 @@
   },
   "StackSize": {
     "type": "word",
-    "value": 1
+    "value": 2
   },
   "Stolen": {
     "type": "byte",
@@ -133,10 +112,30 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_IT_MRING031"
+    "value": "quest"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "apparel117"
+    "value": "q_leorio_vial"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest1"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "10_q_wailing"
+        }
+      }
+    ]
   }
 }

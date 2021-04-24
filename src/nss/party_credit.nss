@@ -130,6 +130,7 @@ void main()
    int nUnlooted;
    vector vPosition;
    location lLocation;
+   string sQuestItemResRef;
 
 // if the hit points of the object is 0 or less than 0,
 // assume it is a dead creature or destroyed treasure
@@ -192,6 +193,11 @@ void main()
             oContainer = CreateObject(OBJECT_TYPE_PLACEABLE, "_loot_container", GetLocation(OBJECT_SELF));
             SetLocalInt(oContainer, "cr", iCR);
             SetLocalInt(oContainer, "area_cr", iAreaCR);
+
+// Pass on any quest variables, if any
+            SetLocalString(oContainer, "quest1", GetLocalString(OBJECT_SELF, "quest1"));
+            SetLocalString(oContainer, "quest_item", GetLocalString(OBJECT_SELF, "quest_item"));
+
             DestroyObject(oContainer, LOOT_DESTRUCTION_TIME); // destroy loot bag after awhile
         }
 // otherwise, the container is itself
@@ -200,6 +206,8 @@ void main()
             oContainer = OBJECT_SELF;
         }
         ForceRefreshObjectUUID(oContainer); // assign a UUID to this container
+
+        sQuestItemResRef = GetLocalString(oContainer, "quest_item");
 
         vPosition = GetPosition(oContainer);
         vPosition.z = -100.0; // Make the personal loot go under the map
@@ -278,6 +286,10 @@ void main()
 
         SetLocalString(oContainer, "personal_loot_"+sPlayerCDKey, GetObjectUUID(oPersonalLoot));
         SetLocalString(oPersonalLoot, "loot_parent_uuid", GetObjectUUID(oContainer));
+
+// If there's a quest on the object, add a quest item to their personal if this player is eligible
+        if (sQuestItemResRef != "" && GetLocalString(oContainer, "quest1") != "" && GetIsQuestStageEligible(oContainer, oPC, 1))
+            CreateItemOnObject(sQuestItemResRef, oPersonalLoot, 1, "quest");
 
         if (bNoTreasure == FALSE)
         {
