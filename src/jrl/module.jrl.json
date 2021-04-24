@@ -391,7 +391,7 @@
         "Name": {
           "type": "cexolocstring",
           "value": {
-            "0": "Artifacts of Neverwinter: A Stolen Relic"
+            "0": "Artifact Recovery: A Stolen Relic"
           }
         },
         "Picture": {
@@ -413,6 +413,91 @@
       },
       {
         "__struct_id": 5,
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "EntryList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "End": {
+                "type": "word",
+                "value": 0
+              },
+              "ID": {
+                "type": "dword",
+                "value": 1
+              },
+              "Text": {
+                "type": "cexolocstring",
+                "value": {
+                  "0": "Judge Oleff Uskar has entrusted you to finding the artifacts of Halueth Never. One such tomb may be found in the Great Graveyard, located in the Beggar's Nest."
+                }
+              }
+            },
+            {
+              "__struct_id": 1,
+              "End": {
+                "type": "word",
+                "value": 0
+              },
+              "ID": {
+                "type": "dword",
+                "value": 2
+              },
+              "Text": {
+                "type": "cexolocstring",
+                "value": {
+                  "0": "The Ancient Chronicles of Halueth Never was found in one of the tombs in the Great Graveyard. You should return it to Oleff for a reward."
+                }
+              }
+            },
+            {
+              "__struct_id": 2,
+              "End": {
+                "type": "word",
+                "value": 1
+              },
+              "ID": {
+                "type": "dword",
+                "value": 3
+              },
+              "Text": {
+                "type": "cexolocstring",
+                "value": {
+                  "0": "The Ancient Chronicles of Halueth Never was returned to Oleff and you were rewarded with gold."
+                }
+              }
+            }
+          ]
+        },
+        "Name": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Artifact Recovery: Graveyard Tomb"
+          }
+        },
+        "Picture": {
+          "type": "word",
+          "value": 65535
+        },
+        "Priority": {
+          "type": "dword",
+          "value": 4
+        },
+        "Tag": {
+          "type": "cexostring",
+          "value": "q_artifacts_graveyard"
+        },
+        "XP": {
+          "type": "dword",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 6,
         "Comment": {
           "type": "cexostring",
           "value": ""
@@ -476,7 +561,7 @@
         "Name": {
           "type": "cexolocstring",
           "value": {
-            "0": "Artifacts of Neverwinter: Hidden in the Docks"
+            "0": "Artifact Recovery: Hidden Tomb"
           }
         },
         "Picture": {
@@ -497,7 +582,7 @@
         }
       },
       {
-        "__struct_id": 6,
+        "__struct_id": 7,
         "Comment": {
           "type": "cexostring",
           "value": ""
@@ -578,7 +663,7 @@
         "Name": {
           "type": "cexolocstring",
           "value": {
-            "0": "Artifacts of Neverwinter: Never's Tomb"
+            "0": "Artifact Recovery: Never's Tomb"
           }
         },
         "Picture": {
@@ -592,91 +677,6 @@
         "Tag": {
           "type": "cexostring",
           "value": "q_artifacts_blacklake"
-        },
-        "XP": {
-          "type": "dword",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 7,
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "EntryList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "End": {
-                "type": "word",
-                "value": 0
-              },
-              "ID": {
-                "type": "dword",
-                "value": 1
-              },
-              "Text": {
-                "type": "cexolocstring",
-                "value": {
-                  "0": "Judge Oleff Uskar has entrusted you to finding the artifacts of Halueth Never. One such tomb may be found in the Great Graveyard, located in the Beggar's Nest."
-                }
-              }
-            },
-            {
-              "__struct_id": 1,
-              "End": {
-                "type": "word",
-                "value": 0
-              },
-              "ID": {
-                "type": "dword",
-                "value": 2
-              },
-              "Text": {
-                "type": "cexolocstring",
-                "value": {
-                  "0": "The Ancient Chronicles of Halueth Never was found in one of the tombs in the Great Graveyard. You should return it to Oleff for a reward."
-                }
-              }
-            },
-            {
-              "__struct_id": 2,
-              "End": {
-                "type": "word",
-                "value": 1
-              },
-              "ID": {
-                "type": "dword",
-                "value": 3
-              },
-              "Text": {
-                "type": "cexolocstring",
-                "value": {
-                  "0": "The Ancient Chronicles of Halueth Never was returned to Oleff and you were rewarded with gold."
-                }
-              }
-            }
-          ]
-        },
-        "Name": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Artifacts of Neverwinter: Underneath the Graveyard"
-          }
-        },
-        "Picture": {
-          "type": "word",
-          "value": 65535
-        },
-        "Priority": {
-          "type": "dword",
-          "value": 4
-        },
-        "Tag": {
-          "type": "cexostring",
-          "value": "q_artifacts_graveyard"
         },
         "XP": {
           "type": "dword",

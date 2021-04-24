@@ -5,7 +5,7 @@ void main()
         object oPlayer = OBJECT_SELF;
         int nXP = GetXP(oPlayer);
         int nHD = GetLevelFromXP(nXP);
-        int nPenalty = 20 * nHD;
+        int nPenalty = 30 * nHD;
 // * You cannot lose a level by dying
         int nMin = ((nHD * (nHD - 1)) / 2) * 1000;
 
