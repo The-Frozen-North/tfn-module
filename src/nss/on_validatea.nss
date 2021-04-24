@@ -81,11 +81,11 @@ void main()
 
         MigrateInt(OBJECT_SELF, "DEAD");
         MigrateInt(OBJECT_SELF, "CURRENT_HP");
-        MigrateFloat(OBJECT_SELF, "LOC_X");
-        MigrateFloat(OBJECT_SELF, "LOC_Y");
-        MigrateFloat(OBJECT_SELF, "LOC_Z");
-        MigrateFloat(OBJECT_SELF, "LOC_O");
-        MigrateString(OBJECT_SELF, "LOC_A");
+        //MigrateFloat(OBJECT_SELF, "LOC_X");
+        //MigrateFloat(OBJECT_SELF, "LOC_Y");
+        //MigrateFloat(OBJECT_SELF, "LOC_Z");
+        //MigrateFloat(OBJECT_SELF, "LOC_O");
+        //MigrateString(OBJECT_SELF, "LOC_A");
 
         WriteTimestampedLogEntry(sKey+" "+sBic+" migrated from NWNX_OBJECT to SQL.");
     }
