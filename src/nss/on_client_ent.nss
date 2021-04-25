@@ -41,6 +41,9 @@ void main()
 
     GiveHiPSFeatSafely(oPC);
 
+// this item is deprecated
+    DestroyObject(GetItemPossessedBy(oPC, "_dev_tool"));
+
     DeleteLocalInt(oPC,"70_applied_darkvision");
     DeleteLocalInt(oPC,"70_applied_lowlightvision");
     ExecuteScript("70_featfix",oPC);
@@ -86,7 +89,6 @@ void main()
     SetQuestEntry(oPC, "q_wailing", 1);
 
     DelayCommand(4.0, CreateItemIfBlank(oPC, "_pc_handbook"));
-    DelayCommand(4.5, CreateItemIfBlank(oPC, "_dev_tool"));
     DelayCommand(5.0, FloatingTextStringOnCreature("Welcome to The Frozen North!", oPC, FALSE));
     DelayCommand(6.0, FloatingTextStringOnCreature("Please read your \"Adventurer's Handbook\" for rules and information.", oPC, FALSE));
     DelayCommand(7.0, FloatingTextStringOnCreature("https://discord.gg/qKqRUDZ", oPC, FALSE));
