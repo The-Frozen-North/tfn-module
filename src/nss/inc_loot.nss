@@ -113,12 +113,12 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
     }
     else if (iAreaCR < MIN_T4_AREA_CR)
     {
-        if (nT4Weight > 0) nT3Weight = nT4Weight/100;
-        if (nT5Weight > 0) nT3Weight = nT5Weight/100;
+        if (nT4Weight > 0) nT4Weight = nT4Weight/100;
+        if (nT5Weight > 0) nT5Weight = nT5Weight/100;
     }
     else if (iAreaCR < MIN_T5_AREA_CR)
     {
-        if (nT5Weight > 0) nT3Weight = nT5Weight/100;
+        if (nT5Weight > 0) nT5Weight = nT5Weight/100;
     }
 
 
