@@ -1,6 +1,7 @@
 #include "inc_persist"
 #include "inc_general"
 #include "inc_horse"
+#include "inc_nwnx"
 #include "util_i_csvlists"
 
 string ChooseSpawnRef(object oArea, int nTarget)
@@ -223,6 +224,7 @@ void main()
         break;
         case REST_EVENTTYPE_REST_FINISHED:
             DeleteLocalInt(oPC, "invis");
+            GiveHiPSFeatSafely(oPC);
 
             if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_FAMILIAR, oPC))) DecrementRemainingFeatUses(oPC, FEAT_SUMMON_FAMILIAR);
             if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION, oPC)))  DecrementRemainingFeatUses(oPC, FEAT_ANIMAL_COMPANION);

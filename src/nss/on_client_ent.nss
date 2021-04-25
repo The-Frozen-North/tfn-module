@@ -3,6 +3,7 @@
 #include "x3_inc_string"
 #include "inc_webhook"
 #include "nwnx_damage"
+#include "inc_nwnx"
 
 void CreateItemIfBlank(object oPC, string sItem)
 {
@@ -37,6 +38,8 @@ void main()
 
     NWNX_Damage_SetAttackEventScript("pc_attack", oPC);
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_DAMAGED, "on_pc_damaged");
+
+    GiveHiPSFeatSafely(oPC);
 
     DeleteLocalInt(oPC,"70_applied_darkvision");
     DeleteLocalInt(oPC,"70_applied_lowlightvision");

@@ -128,7 +128,8 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_HEALER_KIT_BEFORE", "on_pc_healkit");
 
-    NWNX_Events_SubscribeEvent("NWNX_ON_ENTER_STEALTH_BEFORE", "on_pc_stealth");
+    NWNX_Events_SubscribeEvent("NWNX_ON_STEALTH_ENTER_BEFORE", "on_pc_stealth");
+    NWNX_Events_SubscribeEvent("NWNX_ON_STEALTH_ENTER_AFTER", "on_pc_stealtha");
 
     NWNX_Events_SubscribeEvent("NWNX_ON_TRAP_RECOVER_BEFORE", "on_pc_trap");
     NWNX_Events_SubscribeEvent("NWNX_ON_TRAP_FLAG_BEFORE", "on_pc_trap");

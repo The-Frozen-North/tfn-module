@@ -1,3 +1,4 @@
+// on stealth before
 #include "nwnx_events"
 #include "inc_horse"
 
