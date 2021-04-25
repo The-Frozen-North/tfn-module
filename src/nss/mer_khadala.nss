@@ -2,19 +2,19 @@
 #include "inc_loot"
 #include "nwnx_item"
 
-int GetRandomTier()
+int GetRandomTier(int nMultiplier = 1)
 {
     int nRandom = d100();
 
-    if (nRandom == 1)
+    if (nRandom == 1*nMultiplier)
     {
         return 5;
     }
-    else if (nRandom <= 3)
+    else if (nRandom <= 3*nMultiplier)
     {
         return 4;
     }
-    else if (nRandom <= 7)
+    else if (nRandom <= 7*nMultiplier)
     {
         return 3;
     }
@@ -36,13 +36,14 @@ void CreatePlaceholderItem(object oItem)
 
     switch (GetBaseItemType(oItem))
     {
+       case BASE_ITEM_SPELLSCROLL: sPlaceholderResRef = "gamble_scroll"; nMultiplier = 0; break;
        case BASE_ITEM_GLOVES: sPlaceholderResRef = "gamble_gloves"; nMultiplier = 3; break;
        case BASE_ITEM_BRACER: sPlaceholderResRef = "gamble_bracers"; nMultiplier = 3; break;
        case BASE_ITEM_RING: sPlaceholderResRef = "gamble_ring"; nMultiplier = 5; break;
        case BASE_ITEM_AMULET: sPlaceholderResRef = "gamble_amulet"; nMultiplier = 6; break;
        case BASE_ITEM_CLOAK: sPlaceholderResRef = "gamble_cloak"; nMultiplier = 3; break;
        case BASE_ITEM_BELT: sPlaceholderResRef = "gamble_belt"; nMultiplier = 3; break;
-       //case BASE_ITEM_SMALLSHIELD: sPlaceholderResRef = "nw_ashsw001"; nMultiplier = 2; break;
+       case BASE_ITEM_SMALLSHIELD: if (d3() == 1) { sPlaceholderResRef = "nw_ashsw001"; nMultiplier = 2; } break;
        case BASE_ITEM_HELMET: sPlaceholderResRef = "nw_arhe006"; nMultiplier = 3; break;
        case BASE_ITEM_LARGESHIELD: sPlaceholderResRef = "nw_ashlw001"; nMultiplier = 3; break;
        case BASE_ITEM_TOWERSHIELD: sPlaceholderResRef = "nw_ashto001"; nMultiplier = 4; break;
@@ -98,6 +99,8 @@ void CreatePlaceholderItem(object oItem)
        break;
     }
 
+    if (sPlaceholderResRef == "") return;
+
     object oPlaceholderItem = CreateItemOnObject(sPlaceholderResRef, OBJECT_SELF, 1, "gamble");
     //NWNX_Item_SetBaseGoldPieceValue(oPlaceholderItem, 1000);
 
@@ -137,6 +140,13 @@ void main()
     for (i = 0; i < nMax; i++)
     {
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Armor", GetRandomTier());
+        CreatePlaceholderItem(oItemInStorage);
+    }
+
+    nMax = d4(40);
+    for (i = 0; i < nMax; i++)
+    {
+        oItemInStorage = GenerateTierItem(0, 0, oStorage, "Scrolls", GetRandomTier(3));
         CreatePlaceholderItem(oItemInStorage);
     }
 

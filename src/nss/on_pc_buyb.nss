@@ -23,24 +23,24 @@ void main()
                 {
                     switch (d6())
                     {
-                        case 1: sOneLiner = "What a steal!";
-                        case 2: sOneLiner = "Whoa, that's nice! Can I have it back?";
-                        case 3: sOneLiner = "Fate smiles on you today.";
-                        case 4: sOneLiner = "Such a brave soul!";
-                        case 5: sOneLiner = "What a steal!";
-                        case 6: sOneLiner = "What?! I never even knew I had that thing!";
+                        case 1: sOneLiner = "What a steal!"; break;
+                        case 2: sOneLiner = "Whoa, that's nice! Can I have it back?"; break;
+                        case 3: sOneLiner = "Fate smiles on you today."; break;
+                        case 4: sOneLiner = "Such a brave soul!"; break;
+                        case 5: sOneLiner = "What a steal!"; break;
+                        case 6: sOneLiner = "What?! I never even knew I had that thing!"; break;
                     }
                 }
                 else
                 {
                     switch (d6())
                     {
-                        case 1: sOneLiner = "A good paperweight.";
-                        case 2: sOneLiner = "I've seen better.";
-                        case 3: sOneLiner = "Fortune favors the bold.";
-                        case 4: sOneLiner = "Do come back again.";
-                        case 5: sOneLiner = "Let's see what happens, shall we?";
-                        case 6: sOneLiner = "Don't forget - luck always changes.";
+                        case 1: sOneLiner = "A good paperweight."; break;
+                        case 2: sOneLiner = "I've seen better."; break;
+                        case 3: sOneLiner = "Fortune favors the bold."; break;
+                        case 4: sOneLiner = "Do come back again."; break;
+                        case 5: sOneLiner = "Let's see what happens, shall we?"; break;
+                        case 6: sOneLiner = "Don't forget - luck always changes."; break;
                     }
                 }
                 AssignCommand(oKhadala, SpeakString(sOneLiner));
