@@ -13,7 +13,6 @@ int CheckDeadSpeak(object oPC)
     return bDead;
 }
 
-
 void main()
 {
   object oPC = GetPCChatSpeaker();

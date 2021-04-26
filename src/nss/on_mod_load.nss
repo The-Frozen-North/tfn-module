@@ -8,6 +8,7 @@
 #include "nwnx_util"
 #include "util_i_csvlists"
 #include "inc_ai_time"
+#include "nwnx_chat"
 
 #include "70_inc_switches"
 
@@ -113,6 +114,8 @@ void main()
 // Initialize monk weapons
     NWNX_Weapon_SetWeaponIsMonkWeapon(BASE_ITEM_QUARTERSTAFF);
     NWNX_Weapon_SetWeaponIsMonkWeapon(BASE_ITEM_SHURIKEN);
+
+    NWNX_Chat_RegisterChatScript("on_nwnx_chat");
 
 // Events.
 
