@@ -1,41 +1,43 @@
-//#include "gs_inc_common"
-//#include "gs_inc_effect"
-//#include "gs_inc_encounter"
-#include "inc_ai_event"
-//#include "gs_inc_flag"
-#include "inc_ai_time"
-//#include "gs_inc_xp"
-#include "inc_respawn"
-#include "inc_general"
-#include "inc_henchman"
-#include "inc_follower"
+/************************ [On Death] *******************************************
+    Filename: ai_ondeath or nw_c2_default7
+************************* [On Death] *******************************************
+    Speeded up no end, when compiling, with seperate Include.
+    Cleans up all un-droppable items, all ints and all local things when destroyed.
+
+    Check down near the bottom for a good place to add XP or corpse lines ;-)
+************************* [History] ********************************************
+    1.3 - Added in Turn of corpses toggle
+        - Added in appropriate space for XP awards, marked with ideas (effect death)
+************************* [Workings] *******************************************
+    You can edit this for experience, there is a seperate section for it.
+
+    It will use DeathCheck to execute a cleanup-and-destroy script, that removes
+    any coprse, named "ai_destroyself".
+************************* [Arguments] ******************************************
+    Arguments: GetLastKiller.
+************************* [On Death] ******************************************/
+
+// We only require the constants/debug file. We have 1 function, not worth another include.
+#include "inc_ai_constants"
+
 #include "nwnx_area"
+#include "inc_general"
 
-
-//const string GS_TEMPLATE_CORPSE  = "gs_placeable016";
-//const string GS_BOSS_HEAD_MEGA   = "gs_item393";
-//const string GS_BOSS_HEAD_HIGH   = "gs_item386";
-//const string GS_BOSS_HEAD_MEDIUM = "gs_item390";
-//const string GS_BOSS_HEAD_LOW    = "gs_item391";
-//const string GS_BOSS_HEAD_MINI   = "gs_item392";
-//const int GS_TIMEOUT             = 21600; //6 hours
-//const int GS_LIMIT_VALUE         = 10000;
+// We need a wrapper. If the amount of deaths, got in this, is not equal to iDeaths,
+// we don't execute the script, else we do. :-P
+void DeathCheck(int iDeaths);
 
 void main()
 {
-    SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_DEATH));
+    TakeGoldFromCreature(1000, OBJECT_SELF, TRUE);
 
-//    gsFXBleed();
-//    SetLocalInt(OBJECT_SELF, "GS_TIMEOUT", gsTIGetActualTimestamp() + GS_TIMEOUT);
+    // If we are set to, don't fire this script at all
+    if(GetAIInteger(I_AM_TOTALLY_DEAD)) return;
 
+    // Note: No AI on/off check here.
+
+    // Who killed us? (alignment changing, debug, XP).
     object oKiller = GetLastKiller();
-
-    if (GetIsObjectValid(oKiller) && GetObjectType(oKiller) == OBJECT_TYPE_CREATURE && oKiller != OBJECT_SELF)
-    {
-            SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
-    }
-
-    StartRespawn();
 
 // only give credit if a PC or their associate killed it or if it was already tagged
     if (GetIsPC(GetMaster(oKiller)) || GetIsPC(oKiller) || (GetLocalInt(OBJECT_SELF, "player_tagged") == 1))
@@ -43,55 +45,70 @@ void main()
         ExecuteScript("party_credit", OBJECT_SELF);
     }
 
-// Set for no credit after first death so no multiple credit is rewarded (cases of rez or resurrection)
-    SetLocalInt(OBJECT_SELF, "no_credit", 1);
+    // Stops if we just applied EffectDeath to ourselves.
+    if(GetLocalTimer(AI_TIMER_DEATH_EFFECT_DEATH)) return;
 
-// dismiss henchman when killing innocent in non-pvp area
-    if ((GetStandardFactionReputation(STANDARD_FACTION_COMMONER, OBJECT_SELF) >= 50 || GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) >= 50) && NWNX_Area_GetPVPSetting(GetArea(OBJECT_SELF)) == NWNX_AREA_PVP_SETTING_NO_PVP)
+    // Special: To stop giving out multiple amounts of XP, we use EffectDeath
+    // to change the killer, so the XP systems will NOT award MORE XP.
+    // - Even the default one suffers from this!
+    if(GetAIInteger(WE_HAVE_DIED_ONCE))
     {
-        object oMurderer;
-
-        if (GetIsPC(GetMaster(oKiller)))
+        if(!GetLocalTimer(AI_TIMER_DEATH_EFFECT_DEATH))
         {
-            oMurderer = GetMaster(oKiller);
-        }
-        else if (GetIsPC(oKiller))
-        {
-            oMurderer = oKiller;
-        }
-
-        if (GetIsObjectValid(oMurderer))
-        {
-            object oHench = GetFirstFactionMember(oMurderer, FALSE);
-
-            while (GetIsObjectValid(oHench))
-            {
-
-                if (GetMaster(oHench) == oMurderer)
-                {
-
-                    if (GetLocalInt(oHench, "follower") == 1) { DismissFollower(oHench); }
-                    else if (GetStringLeft(GetResRef(oHench), 3) == "hen") { DismissHenchman(oHench); }
-                }
-
-                oHench = GetNextFactionMember(oMurderer, FALSE);
-            }
+            // Don't apply effect death to self more then once per 2 seconds.
+            SetLocalTimer(AI_TIMER_DEATH_EFFECT_DEATH, f2);
+            // This should make the last killer us.
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), OBJECT_SELF);
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(GetMaxHitPoints()), OBJECT_SELF);
         }
     }
+    else if(oKiller != OBJECT_SELF)
+    {
+        // Set have died once, stops giving out mulitple amounts of XP.
+        SetAIInteger(WE_HAVE_DIED_ONCE, TRUE);
 
-    TakeGoldFromCreature(1000, OBJECT_SELF, TRUE);
+/************************ [Experience] *****************************************
+    THIS is the place for it, below this comment. To reward XP, you might want
+    to first apply EffectDeath to ourselves (uncomment the example lines) which
+    will remove the "You recieved 0 Experience" if you have normal XP at 0, as
+    the On Death event is before the reward, and therefore now our last killer
+    will be outselves. It will not cause any errors, oKiller is already set.
 
-//    if (gsFLGetFlag(GS_FL_MORTAL)) gsCMDestroyInventory();
+    Anything else, I leave to you. GetFirstFactionMember (and next), GiveXPToCreature,
+    GetXP, SetXP, GetChallengeRating all are really useful.
 
-        string sScript = GetLocalString(OBJECT_SELF, "death_script");
+    Bug note: GetFirstFactionMember/Next with the PC parameter means either ONLY PC
+************************* [Experience] ****************************************/
+    // Do XP things (Use object "oKiller").
+
+
+
+/************************ [Experience] ****************************************/
+    }
+
+    ExecuteScript("murder_dismiss", OBJECT_SELF);
+
+    // Here is the last time (in game seconds) we died. It is used in the executed script
+    // to make sure we don't prematurly remove areselves.
+
+    // We may want some sort of visual effect - like implosion or something, to fire.
+    int iDeathEffect = GetAIConstant(AI_DEATH_VISUAL_EFFECT);
+
+    // Valid constants from 0 and up. Apply to our location (not to us, who will go!)
+    if(iDeathEffect >= i0)
+    {
+        ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(iDeathEffect), GetLocation(OBJECT_SELF));
+    }
+
+    // Always shout when we are killed. Reactions - Morale penalty, and attack the killer.
+    AISpeakString(I_WAS_KILLED);
+
+    // Speaks the set death speak, like "AGGGGGGGGGGGGGGGGGGG!! NOOOO!" for instance :-)
+    SpeakArrayString(AI_TALK_ON_DEATH);
+
+    string sScript = GetLocalString(OBJECT_SELF, "death_script");
     if (sScript != "") ExecuteScript(sScript);
 
-    if (GibsNPC(OBJECT_SELF))
-    {
-        DoMoraleCheckSphere(OBJECT_SELF, 16);
-    }
-    else
-    {
-        DoMoraleCheckSphere(OBJECT_SELF, 12);
-    }
+    GibsNPC(OBJECT_SELF);
 }
+

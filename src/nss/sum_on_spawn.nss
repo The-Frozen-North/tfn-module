@@ -23,7 +23,6 @@ Patch 1.71
 
 #include "x0_inc_henai"
 #include "x2_inc_switches"
-#include "inc_ai_combat"
 
 void main_delayed()
 {
@@ -97,7 +96,7 @@ void main()
     // Set starting location
     SetAssociateStartLocation();
 
-    FastBuff();
+    //FastBuff();
 
     //1.72: new way of enforcing unlimited summoning feature
     DelayCommand(0.0,main_delayed());

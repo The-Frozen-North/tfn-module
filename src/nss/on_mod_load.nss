@@ -7,7 +7,6 @@
 #include "nwnx_events"
 #include "nwnx_util"
 #include "util_i_csvlists"
-#include "inc_ai_time"
 #include "nwnx_chat"
 
 #include "70_inc_switches"
@@ -20,26 +19,6 @@ void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 
 
 void main()
 {
-
-    //time
-    SetLocalInt(OBJECT_SELF, "GS_YEAR", GetCalendarYear());
-    SetLocalInt(OBJECT_SELF, "GS_LAST_MONTH", GetCalendarMonth());
-    SetLocalInt(OBJECT_SELF, "GS_DAY", GetCalendarDay());
-    SetLocalInt(OBJECT_SELF, "GS_HOUR", GetTimeHour());
-
-    int nTimestamp = GetCampaignInt("GS_SYSTEM", "TIMESTAMP");
-
-    if (nTimestamp) gsTISetTime(nTimestamp);
-
-    //restart timeout
-    int nTimeout   = GetLocalInt(OBJECT_SELF, "GS_RESTART_TIMEOUT");
-
-    if (nTimeout)
-    {
-        nTimeout = nTimestamp + gsTIGetGameTimestamp(nTimeout);
-        SetLocalInt(OBJECT_SELF, "GS_RESTART_TIMEOUT", nTimeout);
-    }
-
 // Set a very high instruction limit so we can run the initialization scripts without TMI
     NWNX_Util_SetInstructionLimit(52428888);
 
