@@ -1,6 +1,8 @@
 #include "inc_ai_combat"
 #include "inc_ai_event"
+//#include "inc_crime"
 
+/*
 void gsPlayVoiceChat()
 {
     if (Random(100) >= 75)
@@ -13,50 +15,71 @@ void gsPlayVoiceChat()
         case 3: PlayVoiceChat(VOICE_CHAT_BATTLECRY3); break;
         case 4: PlayVoiceChat(VOICE_CHAT_ENEMIES);    break;
         case 5: PlayVoiceChat(VOICE_CHAT_TAUNT);      break;
-        case 6: PlayVoiceChat(VOICE_CHAT_THREATEN);   break;
+        //case 6: PlayVoiceChat(VOICE_CHAT_THREATEN);   break;
         }
     }
 }
-
-
+*/
 //----------------------------------------------------------------
 void main()
 {
+    object oPerceived = GetLastPerceived();
+    if (GetLocalInt(oPerceived, "AI_IGNORE")) return; // Scrying / sent images.
+
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_PERCEPTION));
 
-    object oPerceived = GetLastPerceived();
-
-    if (GetLastPerceptionVanished() ||
-        GetLastPerceptionInaudible())
+    if (GetLastPerceptionVanished() || GetLastPerceptionInaudible())
     {
-// Added a check if the target is in stealth mode.
-        if (GetIsEnemy(oPerceived) && GetActionMode(oPerceived, ACTION_MODE_STEALTH) &&
-            ! gsCBGetHasAttackTarget())
+        if (GetIsEnemy(oPerceived) && !gsCBGetHasAttackTarget())
         {
-            SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, TRUE);
+           SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, TRUE);
         }
+              else if (gsCBGetLastAttackTarget() == oPerceived && GetLastPerceptionVanished())
+                {
+                  // Our current target vanished.
+                if (gsCBGetIsPerceived(oPerceived))
+                  {
+                    // We can still hear them! Keep chasing them.
+                  }
+                else
+                  {
+                    // Look for another target.  Since gsCBGetIsPerceived fails
+                    // we'll pick someone else.
+                    gsCBDetermineCombatRound();
+                  }
+                }
         return;
     }
 
-    if (GetIsEnemy(oPerceived))
+    if (GetIsEnemy(oPerceived) )
     {
+        // Summons etc shouldn't attack before their PC - breaks pvp rules.
+        if (GetIsPC(oPerceived) && GetIsPC(GetMaster(OBJECT_SELF)) &&
+             !GetIsInCombat(GetMaster(OBJECT_SELF))) return;
+
+        FastBuff();
+
+
         if (gsCBGetHasAttackTarget())
         {
             object oTarget = gsCBGetLastAttackTarget();
-            FastBuff();
 
+            // If the creature we just spotted (or which just vanished) isn't our
+            // current target, and the enemy we spotted is (much) closer than
+            // our current target, switch targets.
             if (oPerceived != oTarget &&
                 GetDistanceToObject(oPerceived) + 5.0 <=
                 GetDistanceToObject(oTarget))
             {
                 gsCBDetermineCombatRound(oPerceived);
-                gsPlayVoiceChat();
+                //gsPlayVoiceChat();
             }
         }
         else
         {
             gsCBDetermineCombatRound(oPerceived);
-            gsPlayVoiceChat();
+            //gsPlayVoiceChat();
         }
     }
+
 }

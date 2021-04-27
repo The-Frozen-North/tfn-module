@@ -1,9 +1,3 @@
-/* COMBAT Library by Gigaschatten */
-
-#include "inc_ai_combat2"
-#include "inc_ai_combat3"
-//#include "gs_inc_flag"
-
 //void main() {}
 
 // Buff OBJECT_SELF if OBJECT_SELF isn't already buffed with the particular spell
@@ -301,6 +295,22 @@ void DoCombatVoice()
     }
 }
 
+/* COMBAT Library by Gigaschatten */
+/* COMBAT Library by Gigaschatten */
+
+//#include "inc_boss"
+//#include "inc_rename"
+//#include "inc_zombie"
+//#include "inc_flag"
+#include "inc_ai_combat2"
+#include "inc_ai_combat3"
+//#include "gs_inc_flag"
+//#include "inc_ai_time"
+#include "x0_i0_position"
+
+//void main() {}
+
+const float MIN_RANGE_DISTANCE = 2.0;
 
 const int GS_CB_BEHAVIOR_DEFENSIVE       = 1;
 const int GS_CB_BEHAVIOR_ATTACK_SPELL    = 2;
@@ -316,8 +326,9 @@ object gsCBGetAttackTarget(object oObject = OBJECT_SELF, object oTarget = OBJECT
 object gsCBGetLastAttackTarget(object oObject = OBJECT_SELF);
 //return TRUE if oObject has attack target
 int gsCBGetHasAttackTarget(object oObject = OBJECT_SELF);
-//set oTarget as attack target of oObject
-void gsCBSetAttackTarget(object oTarget, object oObject = OBJECT_SELF);
+//set oTarget as attack target of oObject.  If oTarget is guarded, return the
+//guarding creature.
+object gsCBSetAttackTarget(object oTarget, object oObject = OBJECT_SELF);
 //clear attack target of oObject
 void gsCBClearAttackTarget(object oObject = OBJECT_SELF);
 //return TRUE if caller is involved in combat
@@ -400,6 +411,16 @@ int _gsCBTalentProtectBySpell(int nSpell, int nInstant = FALSE);
 int gsCBTalentDispelMagic(object oTarget);
 //return TRUE if caller takes action to evade darkness effect
 int gsCBTalentEvadeDarkness();
+// If the NPC has Taunt they may use Taunt.
+int gsCBTalentTaunt(object oTarget);
+// If the NPC has Hide they may attempt a feint.
+//int gsCBTalentFeint(object oTarget);
+// If the NPC has Parry they may enter parry mode.
+int gsCBTalentParry(object oTarget);
+// added by Dunshine, Gonne NPC functions
+//int gsCBTalentGonne(object oTarget);
+// Delayed (telegraphed) attacks.
+//int gsCBTelegraphAttack(object oTarget);
 
 //caller issues requests reinforcement if required
 void gsCBRequestReinforcement();
@@ -407,6 +428,27 @@ void gsCBRequestReinforcement();
 void gsCBSetReinforcementRequestedBy(object oObject);
 //return TRUE if caller follows reinforcement request
 int gsCBReinforce();
+//equips most damaging melee weapon, or if monk, unequips.
+void gsCBEquipMeleeWeapon(object oTarget);
+
+// Associate -guard functions, which are superceded by the -guard chat command.
+// Implemented for the introduction of guardian summons (e.g. shadowdancer shadow).
+//void SetAssociateGuardian(object oPC, object oGuardian, int bFeedback = TRUE);
+//object GetAssociateGuardian(object oPC, int bReturnInactiveGuardian = FALSE);
+//int GetIsAssociateGuardEnabled(object oPC);
+//void SetIsAssociateGuardEnabled(object oPC, int bIsEnabled, int bFeedback = TRUE);
+//void SendAssociateGuardFeedback(object oPC);
+
+void gsCBEquipMeleeWeapon(object oTarget)
+{
+    if (gsCBDetermineClass() != CLASS_TYPE_MONK)
+          ActionEquipMostDamagingMelee(oTarget);
+    else
+    {
+        object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
+        if (GetIsObjectValid(oWeapon)) ActionUnequipItem(oWeapon);
+    }
+}
 
 int gsCBDetermineClass()
 {
@@ -426,8 +468,8 @@ int gsCBDetermineClass()
 //----------------------------------------------------------------
 int gsCBGetIsPerceived(object oTarget, object oObject = OBJECT_SELF)
 {
-    if (gsC2GetHasEffect(EFFECT_TYPE_TRUESEEING, oObject))   return TRUE;
     if (gsC2GetHasEffect(EFFECT_TYPE_ETHEREAL, oTarget))     return FALSE;
+    if (gsC2GetHasEffect(EFFECT_TYPE_TRUESEEING, oObject))   return TRUE;
     if (GetObjectSeen(oTarget, oObject))                     return TRUE;
     if (gsC2GetHasEffect(EFFECT_TYPE_SANCTUARY, oTarget))    return FALSE;
     if (GetObjectHeard(oTarget, oObject))                    return TRUE;
@@ -442,21 +484,34 @@ int gsCBGetIsPerceived(object oTarget, object oObject = OBJECT_SELF)
     return TRUE;
 }
 //----------------------------------------------------------------
+int gsCBGetIsEnemy(object oTarget, object oSource = OBJECT_SELF)
+{
+    // Removed code to prevent multiple hostile NPCs fighting.
+    // Instead we have turned off "global effect" from all hostile factions.
+    return (GetIsEnemy(oTarget, oSource));
+}
+
+//----------------------------------------------------------------
 object gsCBGetAttackTarget(object oObject = OBJECT_SELF, object oTarget = OBJECT_INVALID)
 {
+
     if (! GetIsObjectValid(oTarget) ||
         GetPlotFlag(oTarget) ||
         GetIsDead(oTarget) ||
         GetDistanceBetween(oObject, oTarget) > 60.0 ||
-        (! GetIsEnemy(oTarget, oObject) && GetFactionEqual(oObject, oTarget)) ||
-        ! gsCBGetIsPerceived(oTarget, oObject))
+        ! gsCBGetIsEnemy(oTarget, oObject) || //<<--Modified by Space Pirate March 2011
+//--    (! gsCBGetIsEnemy(oTarget, oObject) && GetFactionEqual(oObject, oTarget)) ||
+        ! gsCBGetIsPerceived(oTarget, oObject)
+        )
     {
         oTarget = gsCBGetLastAttackTarget(oObject);
 
         if (! GetIsObjectValid(oTarget) ||
+            ! GetIsEnemy(oTarget) ||
             GetPlotFlag(oTarget) ||
             GetIsDead(oTarget) ||
-            (! GetIsEnemy(oTarget, oObject) && GetFactionEqual(oObject, oTarget)) ||
+            ! gsCBGetIsEnemy(oTarget, oObject) || //<<--Modified by Space Pirate March 2011
+//--        (! gsCBGetIsEnemy(oTarget, oObject) && GetFactionEqual(oObject, oTarget)) ||
             ! gsCBGetIsPerceived(oTarget, oObject))
         {
             oTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY,
@@ -465,6 +520,7 @@ object gsCBGetAttackTarget(object oObject = OBJECT_SELF, object oTarget = OBJECT
                                          CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
 
             if (! GetIsObjectValid(oTarget) ||
+                ! gsCBGetIsEnemy(oTarget, oObject) ||
                 GetPlotFlag(oTarget))
             {
                 oTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY,
@@ -473,6 +529,7 @@ object gsCBGetAttackTarget(object oObject = OBJECT_SELF, object oTarget = OBJECT
                                              CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD);
 
                 if (! GetIsObjectValid(oTarget) ||
+                    ! gsCBGetIsEnemy(oTarget, oObject) ||
                     GetPlotFlag(oTarget))
                 {
                     gsCBClearAttackTarget(oObject);
@@ -482,7 +539,7 @@ object gsCBGetAttackTarget(object oObject = OBJECT_SELF, object oTarget = OBJECT
         }
     }
 
-    gsCBSetAttackTarget(oTarget, oObject);
+    oTarget = gsCBSetAttackTarget(oTarget, oObject);
     return oTarget;
 }
 //----------------------------------------------------------------
@@ -496,9 +553,111 @@ int gsCBGetHasAttackTarget(object oObject = OBJECT_SELF)
     return GetIsObjectValid(gsCBGetLastAttackTarget(oObject));
 }
 //----------------------------------------------------------------
-void gsCBSetAttackTarget(object oTarget, object oObject = OBJECT_SELF)
+object gsCBSetAttackTarget(object oTarget, object oObject = OBJECT_SELF)
 {
+    /*
+    int nTime = GetModuleTime();
+    int bAssociateGuardingMe = FALSE;
+    object oGuard = GetLocalObject(oTarget, "CURRENT_GUARD");
+    object oMaster;
+    string sName;
+    int bGuarded = FALSE;
+    int bWarded = FALSE;
+
+    if(!GetIsObjectValid(oGuard) || GetDistanceBetween(oTarget, oGuard) == 0.0 || GetDistanceBetween(oTarget, oGuard) > 3.0)
+    {
+        // Fallback guard. Implemented for use with guardian summons (e.g. shadowdancer shadow). This implementation is a little
+        // messy and should probably just reference a prioritized list, but this'll do for now.
+        oGuard = GetAssociateGuardian(oTarget);
+        bAssociateGuardingMe = TRUE;
+    }
+
+    if (GetIsObjectValid(oGuard) &&
+        (bAssociateGuardingMe || GetLocalObject(oGuard, "CURRENT_WARD") == oTarget) &&
+        GetDistanceBetween(oTarget, oGuard) != 0.0f &&
+        GetDistanceBetween(oTarget, oGuard) <= 3.0f)
+    {
+      // Added timestamps to prevent -guard feedback spam. Now shows at most once
+      // per round.
+      if(nTime - GetLocalInt(oTarget, "GuardFeedbackTimestamp") >= 6)
+      {
+        //sName = GetIsPC(oGuard) ? svGetPCNameOverride(oGuard) : GetName(oGuard);
+        sName = GetName(oGuard);
+        FloatingTextStringOnCreature(sName + " shields you from an attacker.", oTarget, FALSE);
+        SetLocalInt(oTarget, "GuardFeedbackTimestamp", nTime);
+      }
+      if(nTime - GetLocalInt(oGuard, "GuardFeedbackTimestamp") >= 6)
+      {
+        //sName = GetIsPC(oTarget) ? svGetPCNameOverride(oTarget) : GetName(oTarget);
+        sName = GetName(oTarget);
+        FloatingTextStringOnCreature("You shield " + sName + " from an attacker.", oGuard, FALSE);
+        SetLocalInt(oGuard, "GuardFeedbackTimestamp", nTime);
+      }
+      oTarget = oGuard;
+      bGuarded = TRUE;
+    }
+
+    // Separate guardian system for PDK wards
+    object oPDK = GetLocalObject(oTarget, "PDKWarded");
+    if (bGuarded == FALSE && GetIsObjectValid(oPDK) == TRUE && oTarget == GetLocalObject(oPDK, "PDKWard")) {
+        if (GetDistanceBetween(oTarget, oPDK) != 0.0f && GetDistanceBetween(oTarget, oPDK) <= 6.0f)
+        {
+            if(nTime - GetLocalInt(oTarget, "WardFeedbackTimestamp") >= 6)
+            {
+                //sName = GetIsPC(oPDK) ? svGetPCNameOverride(oPDK) : GetName(oPDK);
+                sName = GetName(oPDK);
+                FloatingTextStringOnCreature(sName + " shields you from an attacker.", oTarget, FALSE);
+                SetLocalInt(oTarget, "WardFeedbackTimestamp", nTime);
+            }
+            if(nTime - GetLocalInt(oPDK, "WardFeedbackTimestamp") >= 6)
+            {
+                //sName = GetIsPC(oTarget) ? svGetPCNameOverride(oTarget) : GetName(oTarget);
+                sName = GetName(oTarget);
+                FloatingTextStringOnCreature("You shield " + sName + " from an attacker.", oPDK, FALSE);
+                SetLocalInt(oPDK, "WardFeedbackTimestamp", nTime);
+            }
+            oTarget = oPDK;
+            bWarded = TRUE;
+        }
+    }
+    // Oath of Wrath!  Focus on the object of our ire for one minute.
+    object oWrath = GetLocalObject(oObject, "PDKWrath");
+    int nWrathTime = GetLocalInt(oObject, "WrathTimeStamp");
+    if (bGuarded == FALSE &&
+        bWarded == FALSE &&
+        GetIsObjectValid(oWrath) == TRUE &&
+        nTime - nWrathTime < 60)
+    {
+        if (GetDistanceBetween(oTarget, oWrath) != 0.0f && GetDistanceBetween(oTarget, oWrath) <= 6.0f)
+        {
+            if(nTime - GetLocalInt(oTarget, "WrathFeedbackTimestamp") >= 6)
+            {
+                //sName = GetIsPC(oWrath) ? svGetPCNameOverride(oWrath) : GetName(oWrath);
+                sName = GetName(oWrath);
+                FloatingTextStringOnCreature(sName + " draws the attacker's ire.", oTarget, FALSE);
+                SetLocalInt(oTarget, "WrathFeedbackTimestamp", nTime);
+            }
+            if(nTime - GetLocalInt(oWrath, "WrathFeedbackTimestamp") >= 6)
+            {
+                //sName = GetIsPC(oTarget) ? svGetPCNameOverride(oTarget) : GetName(oTarget);
+                sName = GetName(oTarget);
+                FloatingTextStringOnCreature("You distract an attacker away from " + sName + ".", oWrath, FALSE);
+                SetLocalInt(oWrath, "WrathFeedbackTimestamp", nTime);
+            }
+            oTarget = oWrath;
+        }
+    }
+    */
+    object oMaster = GetMaster(oTarget);
+    if(GetPlotFlag(oTarget) && (!GetPlotFlag(oMaster) && GetIsObjectValid(GetMaster(oTarget))))
+    {
+        // Catch to ensure enemies change targets when facing plot-flagged associates, such as
+        // Black Blade of Diaster.
+        oTarget = GetMaster(oTarget);
+    }
+
     SetLocalObject(oObject, "GS_CB_ATTACK_TARGET", oTarget);
+    return oTarget;
 }
 //----------------------------------------------------------------
 void gsCBClearAttackTarget(object oObject = OBJECT_SELF)
@@ -508,15 +667,31 @@ void gsCBClearAttackTarget(object oObject = OBJECT_SELF)
 //----------------------------------------------------------------
 int gsCBGetIsInCombat()
 {
+    // Added a bunch of status effects to this check, because they
+    // prevent a creature participating in combat normally.
     return GetIsInCombat() ||
            GetIsObjectValid(GetAttackTarget()) ||
            GetIsObjectValid(GetAttemptedAttackTarget()) ||
-           GetIsObjectValid(GetAttemptedSpellTarget());
+           GetIsObjectValid(GetAttemptedSpellTarget()) ||
+           gsC2GetIsIncapacitated(OBJECT_SELF) ;
 }
 //----------------------------------------------------------------
 int gsCBGetIsFollowing(object oObject = OBJECT_SELF)
 {
-    return GetIsObjectValid(GetLocalObject(oObject, "GS_CB_FOLLOW_TARGET"));
+    // If we're a boss, don't follow our target across areas.
+    object oTarget = GetLocalObject(oObject, "GS_CB_FOLLOW_TARGET");
+    if (GetIsObjectValid(oTarget) &&
+    //    gsBOGetIsBossCreature(oObject) &&
+        (GetLocalInt(oObject, "boss") == 1 || GetLocalInt(oObject, "semiboss") == 1) &&
+        GetArea(oObject) != GetArea(oTarget))
+    {
+      DeleteLocalObject(oObject, "GS_CB_FOLLOW_TARGET");
+      DeleteLocalInt(oObject, "GS_CB_FOLLOW_COUNTER");
+      AssignCommand(oObject, ClearAllActions());
+      return FALSE;
+    }
+
+    return GetIsObjectValid(oTarget);
 }
 //----------------------------------------------------------------
 object gsCBGetCreatureAtLocation(location lLocation,
@@ -669,62 +844,161 @@ void gsCBDetermineAttackTarget(object oVictim)
 //----------------------------------------------------------------
 void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
 {
-//    if (GetPlotFlag() ||
-//        gsFLGetFlag(GS_FL_DISABLE_COMBAT))
-//    {
-//        return;
-//    }
 
+    guALSetAILevel(AI_LEVEL_NORMAL);
+    /*
+    if (GetPlotFlag() ||
+        gsFLGetFlag(GS_FL_DISABLE_COMBAT))
+          GetLevelByClass(CLASS_TYPE_COMMONER) > 0)
+    {
+        return;
+    }
+    */
     //attack target
     oTarget = gsCBGetAttackTarget(OBJECT_SELF, oTarget);
 
     if (! GetIsObjectValid(oTarget))
     {
         ClearAllActions();
+
+        // Check whether our last attacker is standing in darkness and not
+        // concealed.
+        object oLastAttacker = GetLastAttacker();
+        if (gsC2GetHasEffect(EFFECT_TYPE_DARKNESS, oLastAttacker) ||
+            gsC2GetHasEffect(EFFECT_TYPE_INVISIBILITY, oLastAttacker))
+        {
+          // Walk up and see what's going on.
+          if (d6() == 6) PlayVoiceChat(VOICE_CHAT_ENEMIES);
+          AssignCommand(OBJECT_SELF, ActionMoveToObject(oLastAttacker, TRUE));
+        }
+
+        //::  ActionReplay
+        //::  [-------------------- Darkness SMRT AI FIX START
+        object oPotentialThreat = GetLastHostileActor();
+        if ( GetIsPC(oPotentialThreat) &&
+            (gsC2GetHasEffect(EFFECT_TYPE_DARKNESS, oPotentialThreat) ||
+             gsC2GetHasEffect(EFFECT_TYPE_INVISIBILITY, oPotentialThreat)) ) {
+
+            if ( !(gsC2GetHasEffect(EFFECT_TYPE_TRUESEEING) || gsC2GetHasEffect(EFFECT_TYPE_ULTRAVISION)) ) {
+                int nSpell = -1;
+                if (GetHasSpell(SPELL_TRUE_SEEING))                    nSpell = SPELL_TRUE_SEEING;
+                else if (GetHasSpell(SPELL_DARKVISION))                nSpell = SPELL_DARKVISION;
+
+                if (nSpell != -1 && gsCBCastSpellAtObject(nSpell))     return;
+
+                if (GetHasSpell(SPELL_LESSER_DISPEL))                  nSpell = SPELL_LESSER_DISPEL;
+                else if (GetHasSpell(SPELL_DISPEL_MAGIC))              nSpell = SPELL_DISPEL_MAGIC;
+                else if (GetHasSpell(SPELL_GREATER_DISPELLING))        nSpell = SPELL_GREATER_DISPELLING;
+                else if (GetHasSpell(SPELL_MORDENKAINENS_DISJUNCTION)) nSpell = SPELL_MORDENKAINENS_DISJUNCTION;
+
+                if (nSpell != -1)
+                {
+                    ActionCastSpellAtLocation(nSpell, GetLocation(oPotentialThreat));
+                    return;
+                }
+                //::  Fallback for creatures not having appropriate spells
+                else if ( !GetLocalInt(OBJECT_SELF, "AR_STOP_POLLING") ) {
+                    //::  Just move into the darkness if below conditions are met
+                    if ( d4() == 1 && (GetHitDice(OBJECT_SELF) >= 18 || GetAbilityModifier(ABILITY_WISDOM, OBJECT_SELF) >= 3)  ) {
+                        ActionMoveToLocation( GetRandomLocation(GetArea(OBJECT_SELF), oPotentialThreat, RADIUS_SIZE_MEDIUM + d4()), TRUE );
+                        SetLocalInt(OBJECT_SELF, "AR_STOP_POLLING", TRUE);
+                        DelayCommand(7.0, DeleteLocalInt(OBJECT_SELF, "AR_STOP_POLLING"));
+                    }
+                    //::  Run away we're cowards
+                    else
+                        ActionMoveAwayFromLocation(GetLocation(OBJECT_SELF), TRUE, 10.0);
+                }
+            }
+        }
+        //:: [-------------------- Darkness SMRT AI FIX END
+
         return;
     }
 
-// Turn off Detect if there is a valid target
-    SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, FALSE);
-
-    DoCombatVoice();
+    if (GetStandardFactionReputation(STANDARD_FACTION_COMMONER) > 25) SpeakString("GS_AI_INNOCENT_ATTACKED", TALKVOLUME_SILENT_TALK);
 
     if (! GetIsEnemy(oTarget)) SetIsTemporaryEnemy(oTarget, OBJECT_SELF, TRUE, 1800.00);
 
     //analyze
     gsC2Analyze();
 
-    if (GetStandardFactionReputation(STANDARD_FACTION_COMMONER) > 25) SpeakString("GS_AI_INNOCENT_ATTACKED", TALKVOLUME_SILENT_TALK);
+    //if (fbZGetIsZombie(OBJECT_SELF))
+    //{
+    //  SetLocalInt(OBJECT_SELF, "GS_CB_BEHAVIOUR", GS_CB_BEHAVIOR_ATTACK_PHYSICAL);
+    //  gsCBTalentAttack(oTarget);
+    //  return;
+    //}
 
     //follow target
     if (gsCBGetIsFollowing()) return;
 
-    //call aid
-//    if (! gsFLGetFlag(GS_FL_DISABLE_CALL))
-//    if (GetLocalInt(OBJECT_SELF, "boss") == 1 || GetLocalInt(OBJECT_SELF, "semiboss") == 1)
-//    {
+    //call aid, if we're intelligent enough to do so.
+    if (GetLocalInt(OBJECT_SELF, "HELP_REQUESTED") == 0) {
+      //if (! gsFLGetFlag(GS_FL_DISABLE_CALL) && GetAbilityModifier(ABILITY_INTELLIGENCE, OBJECT_SELF) >= -2)
+      if (GetAbilityModifier(ABILITY_INTELLIGENCE, OBJECT_SELF) >= -2)
+      {
+        SetLocalInt(OBJECT_SELF, "HELP_REQUESTED", 1);
         SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
         gsCBRequestReinforcement();
-//    }
+        if (gsCBReinforce()) oTarget = gsCBGetLastAttackTarget();
+      }
+    }
 
-    if (gsCBReinforce()) oTarget = gsCBGetLastAttackTarget();
+    // added by Dunshine, check if the NPC is a Gonne user
+    //if (gsCBTalentGonne(oTarget)) return;
 
-    if (GetCurrentAction() != ACTION_CASTSPELL) ClearAllActions();
+    // added by Dunshine, check if the NPC has a percentage chance of getting a True Strike effect
+    // use this variable to add some randomness and danger to monsters here and there
 
-//    //no magic area
-//    if (gsFLGetAreaFlag("OVERRIDE_MAGIC"))
-//    {
-//        SetLocalInt(OBJECT_SELF, "GS_CB_BEHAVIOR", GS_CB_BEHAVIOR_ATTACK_PHYSICAL);
-//        gsCBTalentAttack(oTarget);
-//        return;
-//    }
+    // check if the effect is activated already
+    /*
+    if (GetLocalInt(OBJECT_SELF,"GVD_TRUESTRIKE_RUNNING") != 1) {
+
+      // not in effect yet, see if the monster got lucky
+      if (d100(1) <= GetLocalInt(OBJECT_SELF,"GVD_TRUESTRIKE")) {
+
+        // keep track of activation
+        SetLocalInt(OBJECT_SELF,"GVD_TRUESTRIKE_RUNNING",1);
+        DelayCommand(10.0f, DeleteLocalInt(OBJECT_SELF,"GVD_TRUESTRIKE_RUNNING"));
+
+        // flavor
+        string sFlavor = GetLocalString(OBJECT_SELF,"GVD_TRUESTRIKE_FLAVOR");
+        if (sFlavor == "") {
+          // default flavor
+          sFlavor = "*" + GetName(OBJECT_SELF) + " gets lucky...*";
+        }
+        // Speak the string as floating text on NPCs won't be visible to PCs
+        SpeakString(sFlavor);
+
+        // apply effect
+        effect eTrueStrike = EffectAttackIncrease(20);
+        ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eTrueStrike, OBJECT_SELF, 9.0f);
+      }
+    }
+    */
+
+    if (GetCurrentAction() != ACTION_CASTSPELL)
+    {
+      ClearAllActions();
+    }
+
+    //no magic area // added extra check by Dunshine to make it possible for NPCs to use magic or monsterabilities in no magic zones
+    // set GVD_OVERRIDE_NO_MAGIC as a local int on the NPC with value 1 for these situations.
+    //if (gsFLGetAreaFlag("OVERRIDE_MAGIC") && (GetLocalInt(OBJECT_SELF,"GVD_OVERRIDE_NO_MAGIC") != 1))
+    //{
+    //    SetLocalInt(OBJECT_SELF, "GS_CB_BEHAVIOR", GS_CB_BEHAVIOR_ATTACK_PHYSICAL);
+    //    gsCBTalentAttack(oTarget);
+    //    return;
+    //}
 
     //initial protection
     if (! gsCBGetIsInCombat()) gsCBTalentProtectBySpell();
 
+    DoCombatVoice();
+
     float fDistance = GetDistanceToObject(oTarget);
 
-    if (GetLocalInt(OBJECT_SELF, "range") == 1 && fDistance >= 2.0 && fDistance <= 8.0)
+    if (GetLocalInt(OBJECT_SELF, "range") == 1 && fDistance >= MIN_RANGE_DISTANCE && fDistance <= 8.0)
     {
         ActionMoveAwayFromObject(oTarget, TRUE, 10.0);
     }
@@ -773,7 +1047,7 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         break;
     case CLASS_TYPE_DRAGON:
         nAttack = 70;
-        nSpell  = 40;
+        nSpell  = 30;
         break;
     case CLASS_TYPE_DRAGONDISCIPLE:
         nAttack = 70;
@@ -870,6 +1144,12 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         break;
     }
 
+    // Override - for custom creature behaviour.
+    int nOverrideSpell = GetLocalInt(OBJECT_SELF, "GS_OVERRIDE_SPELL");
+    int nOverrideAttack = GetLocalInt(OBJECT_SELF, "GS_OVERRIDE_ATTACK");
+    if (nOverrideSpell) nSpell = nOverrideSpell;
+    if (nOverrideAttack) nAttack = nOverrideAttack;
+
     //additional behavior adjustment
     if (fDistance > 5.0)
     {
@@ -882,11 +1162,13 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
     if (nBehavior == GS_CB_BEHAVIOR_DEFENSIVE)
     {
         nAttack  = 100;
+        SetActionMode(OBJECT_SELF, ACTION_MODE_PARRY, FALSE);
     }
 
     //primary
     if (gsCBTalentEvadeDarkness())           return;
     if (gsCBTalentDragonWing(oTarget, TRUE)) return;
+    //if (gsCBTelegraphAttack(oTarget))        return;
 
     //defensive
     if (Random(100) >= nAttack)
@@ -897,10 +1179,11 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         if (Random(100) >= 25 && gsCBTalentCureCondition())        return;
         if (Random(100) >= 25 && gsCBTalentPersistentEffect())     return;
         if (Random(100) >= 25 && gsCBTalentProtectSelf())          return;
-        //if (Random(100) >= 25 && gsCBTalentProtectOthers())        return;
+        if (Random(100) >= 25 && gsCBTalentProtectOthers())        return;
         if (Random(100) >= 25 && gsCBTalentEnhanceSelf())          return;
         if (Random(100) >= 25 && gsCBTalentEnhanceOthers())        return;
         if (Random(100) >= 25 && gsCBTalentSummonAlly(oTarget))    return;
+        if (Random(100) >= 25 && gsCBTalentParry(oTarget))         return;
     }
 
     //spell
@@ -918,17 +1201,46 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
     //offensive
     SetLocalInt(OBJECT_SELF, "GS_CB_BEHAVIOR", GS_CB_BEHAVIOR_ATTACK_PHYSICAL);
 
-    if (Random(100) >= 50 && gsCBTalentDragonWing(oTarget)) return;
+    // Taunt?
+    if (Random(100) >= 80 && gsCBTalentTaunt(oTarget)) return;
+
+    // Feint? NB - this will always return FALSE even if a feint is attempted.
+    //if (Random(100) >= 80 && gsCBTalentFeint(oTarget)) return;
+
+    // Note - wing buffet will actually fire every other time this is called.
+    if (Random(100) >= 60 && gsCBTalentDragonWing(oTarget)) return;
     gsCBTalentAttack(oTarget);
 }
 //----------------------------------------------------------------
 int gsCBUseTalentOnObject(talent tTalent, object oTarget = OBJECT_SELF)
 {
+    //SpeakString("Debug: Using talent type " + IntToString(GetTypeFromTalent(tTalent)) + ", number " + IntToString(GetIdFromTalent(tTalent)));
     if (GetIsTalentValid(tTalent))
     {
-        int nID = GetIdFromTalent(tTalent);
+        int nID   = GetIdFromTalent(tTalent);
+        int nType = GetTypeFromTalent(tTalent);
 
-        switch (GetTypeFromTalent(tTalent))
+        // Catch talents which aren't useful in combat and suppress them.
+        if (gsCBGetHasAttackTarget())
+        {
+          if (nType == TALENT_TYPE_FEAT && nID == 1089) // Ride menu
+          {
+            return FALSE;
+          }
+
+          if (nType == TALENT_TYPE_SKILL)
+          {
+            // When we call this method we've done ClearAllActions(), so we won't be attacking.
+            // See gsCBTalentParry instead.
+            if (nID == SKILL_PARRY) return FALSE;
+
+            // Only try to taunt if (a) we have a valid target and (b) we're good at it...
+            // Turns out taunt is never called in a useful context.  Created gsCBTalentTaunt for it instead.
+            if (nID == SKILL_TAUNT && (!(GetSkillRank(SKILL_TAUNT, OBJECT_SELF, TRUE) > 0) || oTarget == OBJECT_SELF || !GetIsEnemy(oTarget, OBJECT_SELF))) return FALSE;
+          }
+        }
+
+        switch (nType)
         {
         case TALENT_TYPE_FEAT:
             return gsCBUseFeatOnObject(nID, oTarget);
@@ -936,6 +1248,34 @@ int gsCBUseTalentOnObject(talent tTalent, object oTarget = OBJECT_SELF)
         case TALENT_TYPE_SKILL:
             if (GetHasSkill(nID))
             {
+                if (nID == SKILL_HEAL)
+                {
+                  object oKit = GetFirstItemInInventory();
+
+                  while(GetIsObjectValid(oKit))
+                  {
+                    // Get if healers kit
+                    if(GetBaseItemType(oKit) == BASE_ITEM_HEALERSKIT)
+                    {
+                      break;
+                    }
+
+                    oKit = GetNextItemInInventory();
+                  }
+
+                  // Check oKit
+                  if(GetIsObjectValid(oKit))
+                  {
+                    // Use our heal skill.
+                    ActionUseSkill(SKILL_HEAL, OBJECT_SELF, 0, oKit);
+                  }
+                  else
+                  {
+                    // No healing kit - cannot heal.
+                    return FALSE;
+                  }
+                }
+
                 ActionUseSkill(nID, oTarget);
                 return TRUE;
             }
@@ -1095,8 +1435,8 @@ int gsCBTalentHealSelf()
     if (gsC2GetIsDamaged() &&
         GetRacialType(OBJECT_SELF) != RACIAL_TYPE_UNDEAD)
     {
-        return gsCBTalentSelf(TALENT_CATEGORY_BENEFICIAL_HEALING_TOUCH,
-                              FALSE,
+        return gsCBTalentSelf(FALSE,
+                              TALENT_CATEGORY_BENEFICIAL_HEALING_TOUCH,
                               TALENT_CATEGORY_BENEFICIAL_HEALING_POTION,
                               TALENT_CATEGORY_BENEFICIAL_HEALING_AREAEFFECT);
     }
@@ -1419,9 +1759,93 @@ int gsCBTalentDragonBreath(object oTarget)
     return FALSE;
 }
 //----------------------------------------------------------------
+int gsCBTalentTaunt(object oTarget)
+{
+  int nDistance = GetDistanceToObject(oTarget) > 2.5;
+
+  if (nDistance ||
+      !(GetSkillRank(SKILL_TAUNT, OBJECT_SELF, TRUE) > 0) ||
+      oTarget == OBJECT_SELF ||
+      !GetIsEnemy(oTarget, OBJECT_SELF))
+  {
+    return FALSE;
+  }
+
+  FloatingTextStringOnCreature(GetName(OBJECT_SELF) + " taunts you!", oTarget);
+  ActionUseSkill(SKILL_TAUNT, oTarget);
+  return TRUE;
+}
+//----------------------------------------------------------------
+/*
+int gsCBTalentFeint(object oTarget)
+{
+  if (!(GetSkillRank(SKILL_TAUNT, OBJECT_SELF, TRUE) > 0)) return FALSE;
+  if (GetArea(oTarget) != GetArea(OBJECT_SELF)) return FALSE;
+
+  if (GetDistanceToObject(oTarget) > 2.5 || GetDistanceToObject(oTarget) == 0.0f) return FALSE;
+
+  //--------------------------------------------------------------
+  // Mimic the effect of Taunt, but for attack bonus.  5 rounds.
+  // Hide vs Discipline, penalty of the amount the feinter wins by,
+  // up to 5.  Tag the effect so multiples don't stack.
+  // NB: we want to use INT not DEX here, so adjust accordingly.
+  //--------------------------------------------------------------
+  int nCheck = (d20() + GetSkillRank(SKILL_HIDE, OBJECT_SELF)) +
+               (GetAbilityModifier(ABILITY_INTELLIGENCE) - GetAbilityModifier(ABILITY_DEXTERITY, oTarget)) -
+               (d20() + GetSkillRank(SKILL_DISCIPLINE, oTarget));
+
+  FloatingTextStringOnCreature(GetName(OBJECT_SELF) + " feints!", oTarget);
+
+  if (nCheck <= 0)
+  {
+    // Nothing happens.
+  }
+  else
+  {
+    if (nCheck > 6) nCheck = 6;
+    effect eFeint = TagEffect(ExtraordinaryEffect(EffectAttackDecrease(nCheck)), "FEINT");
+
+    effect eEffect = GetFirstEffect(oTarget);
+    while (GetIsEffectValid(eEffect))
+    {
+      if (GetEffectTag(eEffect) == "FEINT")
+      {
+        RemoveEffect(oTarget, eEffect);
+        break;
+      }
+
+      eEffect = GetNextEffect(oTarget);
+    }
+
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eFeint, oTarget, 30.0f);
+  }
+
+  // Feint is a free action.  Carry on with other parts of the action queue.
+  return FALSE;
+}
+*/
+//----------------------------------------------------------------
+int gsCBTalentParry(object oTarget)
+{
+    int nDistance = GetDistanceToObject(oTarget) > 2.5;
+
+    if (!nDistance && GetSkillRank(SKILL_PARRY, OBJECT_SELF, TRUE) > 0)
+    {
+        FloatingTextStringOnCreature(GetName(OBJECT_SELF) + " parries!", oTarget);
+        SetActionMode(OBJECT_SELF, ACTION_MODE_PARRY, TRUE);
+        gsCBEquipMeleeWeapon(oTarget);
+        ActionAttack(oTarget);
+        return TRUE;
+    }
+
+    return FALSE;
+}
+//----------------------------------------------------------------
 int gsCBTalentDragonWing(object oTarget, int nFly = FALSE)
 {
-    if (GetRacialType(OBJECT_SELF) != RACIAL_TYPE_DRAGON) return FALSE;
+    int canFly = GetLocalInt(OBJECT_SELF, "AR_CAN_FLY") == TRUE;
+
+    if (!canFly && GetRacialType(OBJECT_SELF) != RACIAL_TYPE_DRAGON) return FALSE;
 
     if (nFly)
     {
@@ -1505,6 +1929,17 @@ void __gsCBTalentDragonWing(object oObject)
 int ___gsCBTalentDragonWing(location lLocation)
 {
     if (GetCreatureSize(OBJECT_SELF) != CREATURE_SIZE_HUGE) return FALSE;
+
+    // Avoid doing it two rounds in a row.
+    if (GetLocalInt(OBJECT_SELF, "WINGED"))
+    {
+      DeleteLocalInt(OBJECT_SELF, "WINGED");
+      return FALSE;
+    }
+    else
+    {
+      SetLocalInt(OBJECT_SELF, "WINGED", TRUE);
+    }
 
     object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_COLOSSAL, lLocation);
     int nFlag      = FALSE;
@@ -1699,29 +2134,56 @@ int gsCBTalentSpellAttack(object oTarget)
 //----------------------------------------------------------------
 void gsCBTalentAttack(object oTarget)
 {
-    int nDistance = GetDistanceToObject(oTarget) > 5.0;
+    float fMeleeDistance = 5.0;
 
-    if (nDistance) ActionEquipMostDamagingRanged(oTarget);
-    else           ActionEquipMostDamagingMelee(oTarget);
+    if (GetLocalInt(OBJECT_SELF, "range") == 1)
+    fMeleeDistance = MIN_RANGE_DISTANCE;
+
+    int nDistance = GetDistanceToObject(oTarget) > fMeleeDistance;
+
+    // Dunshine: extra check here, to see if the creature is not in a Cordor Arena fight, if so, only allow the ability during the fight, not before/after it
+    //int iArena = GetLocalInt(OBJECT_SELF,"iArena");
+
+    if ((nDistance)) //&& ((iArena == 0) || (iArena == 2)))
+    {
+      //string sYoinkText = GetLocalString(OBJECT_SELF, "MI_TALENT_YOINK");
+      //string sJumpText  = GetLocalString(OBJECT_SELF, "MI_TALENT_JUMP");
+      /*
+      if ((sYoinkText != "") &&
+          LineOfSightObject(OBJECT_SELF, oTarget) &&
+          GetDistanceToObject(oTarget) < 25.0)
+      {
+        object oAttacker = OBJECT_SELF;
+
+        // Some creatures can yoink PCs to them.
+        SpeakString("*" + sYoinkText + " " + svGetPCNameOverride(oTarget) + "*");
+        AssignCommand(oTarget, ClearAllActions());
+        AssignCommand(oTarget, ActionJumpToObject(oAttacker, FALSE));
+      }
+      else
+      if ((sJumpText != "") &&
+          //LineOfSightObject(OBJECT_SELF, oTarget) &&  -- removed to see if it fixes TMI issues.
+          GetDistanceToObject(oTarget) < 25.0)
+      {
+        // Some creatures can jump to their enemies.
+        SpeakString("*" + sJumpText + " " + svGetPCNameOverride(oTarget) + "*");
+        ActionJumpToObject(oTarget, FALSE);
+      }
+      else
+      {*/
+        ActionEquipMostDamagingRanged(oTarget);
+      //}
+    }
+    else
+    {
+        gsCBEquipMeleeWeapon(oTarget);
+    }
 
     ActionDoCommand(_gsCBTalentAttack(oTarget, nDistance));
 }
 //----------------------------------------------------------------
 void _gsCBTalentAttack(object oTarget, int nDistance)
 {
-    if (nDistance)
-    {
-        object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
-
-        if (! (GetIsObjectValid(oWeapon) ||
-               GetWeaponRanged(oWeapon)))
-        {
-            ActionEquipMostDamagingMelee(oTarget);
-            ActionDoCommand(_gsCBTalentAttack(oTarget, FALSE));
-            return;
-        }
-    }
-
     if (Random(2))
     {
         talent tTalent = GetCreatureTalentRandom(
@@ -1903,12 +2365,73 @@ int gsCBTalentEvadeDarkness()
             return TRUE;
         }
 
-        ActionMoveAwayFromLocation(GetLocation(OBJECT_SELF), TRUE, 10.0);
-        return TRUE;
+        if (d2() == 2)
+        {
+          ActionMoveAwayFromLocation(GetLocation(OBJECT_SELF), TRUE, 10.0);
+          return TRUE;
+        }
     }
 
     return FALSE;
 }
+//----------------------------------------------------------------
+/*
+int gsCBTelegraphAttack(object oTarget)
+{
+  // This method uses two new custom AOEs to telegraph the area that will be affected by an attack in 6s time.
+  // Anyone who doesn't get out of the way will be hit for 1d6 damage per caster hit dice with no save or attack roll.
+  // Don't telegraph an attack two rounds running.
+  if (GetLocalInt(OBJECT_SELF, "TELEGRAPHED"))
+  {
+    DeleteLocalInt(OBJECT_SELF, "TELEGRAPHED");
+    return FALSE;
+  }
+
+  if (GetDistanceBetween(oTarget, OBJECT_SELF) > 3.0f) return FALSE;
+
+  if (d3() == 1) return FALSE;
+
+  // Location calculations
+  location lLocation = GetLocation(OBJECT_SELF);
+  float fDir = GetFacing(OBJECT_SELF);
+  location lAheadLocation = GenerateNewLocation(OBJECT_SELF, 3.0f, fDir, fDir);
+
+  if (GetKnowsFeat(FEAT_SPELL_FOCUS_NECROMANCY, OBJECT_SELF))
+  {
+    SpeakString(GetName(OBJECT_SELF) + " readies Negative Burst!");
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectMovementSpeedDecrease(99), OBJECT_SELF, 6.0f);
+    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_PULSE_NEGATIVE), OBJECT_SELF);
+    ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, EffectAreaOfEffect(55, "", "evt_custatk_hb", ""), lLocation, 7.0f);
+    SetLocalInt(OBJECT_SELF, "TELEGRAPHED", TRUE);
+    ActionAttack(oTarget);
+    return TRUE;
+  }
+  else if (GetKnowsFeat(FEAT_SPELL_FOCUS_EVOCATION, OBJECT_SELF))
+  {
+    SpeakString(GetName(OBJECT_SELF) + " readies Cold Strike!");
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectMovementSpeedDecrease(99), OBJECT_SELF, 6.0f);
+    SetLocalInt(OBJECT_SELF, "DAMAGE_TYPE", DAMAGE_TYPE_COLD);
+    SetLocalInt(OBJECT_SELF, "VFX_IMP", VFX_IMP_FROST_L);
+    ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, EffectAreaOfEffect(54, "", "evt_custatk_hb", ""), lAheadLocation, 7.0f);
+    SetLocalInt(OBJECT_SELF, "TELEGRAPHED", TRUE);
+    ActionAttack(oTarget);
+    return TRUE;
+  }
+  else if (GetKnowsFeat(FEAT_IMPROVED_WHIRLWIND, OBJECT_SELF))
+  {
+    SpeakString(GetName(OBJECT_SELF) + " readies Greater Whirlwind Attack!");
+    SetLocalInt(OBJECT_SELF, "DAMAGE_TYPE", DAMAGE_TYPE_SLASHING);
+    SetLocalInt(OBJECT_SELF, "VFX_IMP", VFX_IMP_WALLSPIKE);
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectMovementSpeedDecrease(99), OBJECT_SELF, 6.0f);
+    ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, EffectAreaOfEffect(55, "", "evt_custatk_hb", ""), lLocation, 7.0f);
+    SetLocalInt(OBJECT_SELF, "TELEGRAPHED", TRUE);
+    ActionAttack(oTarget);
+    return TRUE;
+  }
+
+  return FALSE;
+}
+*/
 //----------------------------------------------------------------
 void gsCBRequestReinforcement()
 {
@@ -1920,11 +2443,11 @@ void gsCBRequestReinforcement()
     {
         if (Random(100) > 75)
         {
-            switch (Random(2))
+            switch (Random(3))
             {
             case 0: PlayVoiceChat(VOICE_CHAT_GROUP);   break;
             case 1: PlayVoiceChat(VOICE_CHAT_GUARDME); break;
-            //case 2: PlayVoiceChat(VOICE_CHAT_HELP);
+            case 2: PlayVoiceChat(VOICE_CHAT_HELP);
             }
         }
 
@@ -1953,16 +2476,15 @@ int gsCBReinforce()
     DeleteLocalObject(OBJECT_SELF, "GS_CB_REINFORCEMENT_REQUESTER");
     DeleteLocalInt(OBJECT_SELF, "GS_CB_REINFORCEMENT_REQUESTED");
 
-// add check for the object being reinforced is in combat
     if (GetIsObjectValid(oObject) &&
-        nValue > 0 && GetIsInCombat(oObject) &&
+        nValue > 0 &&
         GetDistanceToObject(oObject) > 10.0)
     {
         object oTarget = gsCBGetLastAttackTarget(oObject);
 
         if (GetIsObjectValid(oTarget))
         {
-            gsCBSetAttackTarget(oTarget);
+            oTarget = gsCBSetAttackTarget(oTarget);
             nValue -= FloatToInt(GetChallengeRating(OBJECT_SELF) * 10.0);
             if (nValue > 0) SetLocalInt(oObject, "GS_CB_REINFORCEMENT", nValue);
             else            DeleteLocalInt(oObject, "GS_CB_REINFORCEMENT");
@@ -1972,4 +2494,149 @@ int gsCBReinforce()
 
     return FALSE;
 }
+
+
+// added by Dunshine function for NPC Gonne users:
+// set variable GVD_OVERRIDE_GONNE on an NPC to have them use their Gonne instead of normal attacks
+// set variable GVD_SLUGS to determine the amount of shots they can do
+
+//----------------------------------------------------------------
+/*
+int gsCBTalentGonne(object oTarget)
+{
+
+    // Gonne wielder?
+    if (GetLocalInt(OBJECT_SELF, "GVD_OVERRIDE_GONNE") == 1) {
+
+      // check if not still reloading
+      if (GetLocalInt(OBJECT_SELF,"GVD_GONNE_RELOAD") != 1) {
+
+        // how many slugs left?
+        int iSlugs = GetLocalInt(OBJECT_SELF, "GVD_SLUGS");
+        if (iSlugs >= 1) {
+
+          // check if line of sight to target
+          if (LineOfSightObject(OBJECT_SELF, oTarget) == 1) {
+
+            // use the Gonne and lower the amount of slugs
+            SetLocalInt(OBJECT_SELF,"GVD_SLUGS", (iSlugs - 1));
+
+            ClearAllActions();
+
+            object oGonne = GetItemPossessedBy(OBJECT_SELF,"Gonne");
+            ActionEquipItem(oGonne, INVENTORY_SLOT_RIGHTHAND);
+
+            SetFacingPoint(GetPosition(oTarget));
+
+            // 5% chance of ammunition exploding.
+            if (d20() == 1) {
+              SpeakString("*** Misfire! ***", TALKVOLUME_TALK);
+              ActionCastSpellAtObject(SPELL_COMBUST,
+                            OBJECT_SELF,
+                            METAMAGIC_ANY,
+                            TRUE,
+                            0,
+                            PROJECTILE_PATH_TYPE_DEFAULT,
+                            TRUE);
+            } else {
+
+              SpeakString("*** Bang! ***", TALKVOLUME_TALK);
+
+              // Roll to hit.  Touch attack; Gonnes really don't care about armour.
+              int nHit = TouchAttackRanged(oTarget);
+
+              ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectVisualEffect(VFX_DUR_ARROW_IN_STERNUM), oTarget, 1.0);
+              ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectVisualEffect(VFX_FNF_SMOKE_PUFF), OBJECT_SELF, 1.0);
+
+              if (nHit) {
+
+                // Damage
+                int nDamage = (nHit == 1) ? d6(30) : d6(60);
+
+                // delay damage slightly, so PC knows he's being shot
+                effect eDamage = EffectDamage(nDamage, DAMAGE_TYPE_PIERCING, DAMAGE_POWER_NORMAL);
+                DelayCommand(1.0f, ApplyEffectToObject(DURATION_TYPE_INSTANT, eDamage, oTarget));
+
+              }
+
+            }
+
+            // force reload time
+            effect eReload = EffectCutsceneImmobilize();
+            ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eReload, OBJECT_SELF, 12.0f);
+            SetLocalInt(OBJECT_SELF,"GVD_GONNE_RELOAD",1);
+            DelayCommand(12.0f, DeleteLocalInt(OBJECT_SELF,"GVD_GONNE_RELOAD"));
+            return TRUE;
+
+          } else {
+            // no longer line of sight to target, do something else
+            return FALSE;
+          }
+
+        } else {
+          // out of ammo, normal attack
+          return FALSE;
+        }
+
+      } else {
+        // still reloading
+        return FALSE;
+
+      }
+
+    } else {
+      return FALSE;
+    }
+}
+*/
+// TO DO:
+// * Use constant string values for feedback and tie into -guard command.
+// * Turn guard into a prioritized list, so that separate PC and associate
+//   guard variables are no longer necessary. This will suffice for our current
+//   purposes, however.
+//----------------------------------------------------------------
+/*
+void SetAssociateGuardian(object oPC, object oGuardian, int bFeedback = TRUE)
+{
+    SetLocalObject(oPC, "AssociateGuardian", oGuardian);
+    if(bFeedback && GetIsAssociateGuardEnabled(oPC))
+    {
+        SendAssociateGuardFeedback(oPC);
+    }
+}
+//----------------------------------------------------------------
+object GetAssociateGuardian(object oPC, int bReturnInactiveGuardian = FALSE)
+{
+    if(!bReturnInactiveGuardian && !GetIsAssociateGuardEnabled(oPC)) return OBJECT_INVALID;
+    return GetLocalObject(oPC, "AssociateGuardian");
+}
+//----------------------------------------------------------------
+int GetIsAssociateGuardEnabled(object oPC)
+{
+    // Returns !GetLocalInt so that value zero defaults to guard enabled.
+    //return !GetLocalInt(gsPCGetCreatureHide(oPC), "AssociateGuardEnabled");
+    return !GetLocalInt(oPC, "AssociateGuardEnabled");
+}
+//----------------------------------------------------------------
+void SetIsAssociateGuardEnabled(object oPC, int bIsEnabled, int bFeedback = TRUE)
+{
+    //SetLocalInt(gsPCGetCreatureHide(oPC), "AssociateGuardEnabled", !bIsEnabled);
+    SetLocalInt(oPC, "AssociateGuardEnabled", !bIsEnabled);
+    if(bFeedback) SendAssociateGuardFeedback(oPC);
+}
+//----------------------------------------------------------------
+void SendAssociateGuardFeedback(object oPC)
+{
+    string sName = GetName(GetAssociateGuardian(oPC, TRUE));
+
+    if(GetIsAssociateGuardEnabled(oPC))
+    {
+        FloatingTextStringOnCreature(sName + " is now guarding you!", oPC, FALSE);
+    }
+    else
+    {
+        FloatingTextStringOnCreature(sName + " is no longer guarding you!", oPC, FALSE);
+    }
+}
+*/
 

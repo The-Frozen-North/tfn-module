@@ -1,4 +1,5 @@
 #include "inc_ai_event"
+#include "inc_ai_behaviors"
 
 void main()
 {
@@ -37,7 +38,6 @@ void main()
     case GS_EV_ON_HEART_BEAT:
 //................................................................
         ExecuteScript("ai_run", OBJECT_SELF);
-
         break;
 
     case GS_EV_ON_PERCEPTION:
@@ -57,12 +57,40 @@ void main()
 
     case GS_EV_ON_SPAWN:
 //................................................................
-
         break;
 
     case GS_EV_ON_SPELL_CAST_AT:
 //................................................................
 
         break;
+    case SEP_EV_ON_NIGHTPOST:
+//................................................................
+        SetLocalInt(OBJECT_SELF, "sep_run_daynight", SEP_EV_ON_NIGHTPOST);
+        ExecuteScript("sep_run_daynight", OBJECT_SELF);
+
+        break;
+    case SEP_EV_ON_DAYPOST:
+//................................................................
+        SetLocalInt(OBJECT_SELF, "sep_run_daynight", SEP_EV_ON_DAYPOST);
+        ExecuteScript("sep_run_daynight", OBJECT_SELF);
+
+        break;
+case SEP_EV_ON_SECURITY_HEARD:
+//................................................................
+        break;
+case SEP_EV_ON_SECURITY_SPOT:
+//................................................................
+        break;
+case SEP_EV_ON_SECURITY_RESOLVE:
+//................................................................
+        break;
+case SEP_EV_ON_GUARD_ALERT:
+//................................................................
+        break;
+case SEP_EV_ON_GUARD_RESOLVE:
+//................................................................
+        break;
     }
+    RunSpecialBehaviors(GetUserDefinedEventNumber());
 }
+

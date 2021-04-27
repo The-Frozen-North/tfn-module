@@ -2,7 +2,8 @@
 
 //void main() {}
 
-//#include "gs_inc_flag"
+//#include "inc_flag"
+#include "inc_ai_time"
 
 //required aid constants
 const int GS_C2_GREATER_RESTORATION           = 0x00000001;
@@ -42,6 +43,12 @@ const string GS_C2_LAST_DAMAGE_TYPE           = "GS_C2_14";
 
 const string GS_C2_SPELL_EFFECTIVENESS        = "GS_C2_SE_";
 
+// AI level to set nearby NPCs to when one NPC enters combat mode
+const int GU_AI_LEVEL_NEAR_COMBAT = AI_LEVEL_NORMAL;
+
+// Radius of nearby NPCs to wake up on a combat event
+const float GU_AI_WAKEUP_RADIUS = 35.0;
+
 int gsC2BreachableSpellNth                    = 0;
 int gsC2DamageTypeNth                         = 0;
 
@@ -53,16 +60,18 @@ struct gsC2Effect
     string sList;
 };
 
-//analyze oCreature
-void gsC2Analyze(object oCreature = OBJECT_SELF);
+//analyze oCreature.  If bAllEffects is true, supernatural and
+//extraordinary effects are counted too.
+void gsC2Analyze(object oCreature = OBJECT_SELF, int bAllEffects = FALSE);
 //return TRUE if oCreature is damaged
 int gsC2GetIsDamaged(object oCreature = OBJECT_SELF);
 //return required aid of oCreature
 int gsC2GetRequiredAid(object oCreature = OBJECT_SELF);
 //return counter measure for oCreature
 int gsC2GetCounterMeasure(object oCreature = OBJECT_SELF);
-//return TRUE if oCreature is affected by nEffect
-int gsC2GetHasEffect(int nEffect, object oCreature = OBJECT_SELF);
+//return TRUE if oCreature is affected by nEffect.  If bAllEffects is true, supernatural and
+//extraordinary effects are counted too.
+int gsC2GetHasEffect(int nEffect, object oCreature = OBJECT_SELF, int bAllEffects = FALSE);
 //return value reflecting effect balance of oCreature
 int gsC2GetEffectBalance(object oCreature = OBJECT_SELF);
 //return highest Damager of oCreature
@@ -71,11 +80,12 @@ object gsC2GetHighestDamager(object oCreature = OBJECT_SELF);
 int gsC2GetHighestDamageType(object oCreature = OBJECT_SELF);
 //return last damager of oCreature
 object gsC2GetLastDamager(object oCreature = OBJECT_SELF);
-//return effect information on oCreature
-struct gsC2Effect gsC2GetEffect(object oCreature = OBJECT_SELF);
+//return effect information on oCreature.  If bAllEffects is true, supernatural and
+//extraordinary effects are counted too.
+struct gsC2Effect gsC2GetEffect(object oCreature = OBJECT_SELF, int bAllEffects=FALSE);
 //return TRUE if oCreature is affected by spells that can be removed by spell breach
 int gsC2GetHasBreachableSpell(object oCreature = OBJECT_SELF);
-//return TRUE if oCreature is affected by spells that can be removed by spell breach
+//return the spell ID if oCreature is affected by spells that can be removed by spell breach
 int gsC2GetBreachableSpell(object oCreature = OBJECT_SELF);
 //return first spell that can be removed by spell breach
 int gsC2GetFirstBreachableSpell();
@@ -93,12 +103,19 @@ int gsC2GetNextDamageType();
 int gsC2GetIsSpellEffective(int nSpell, object oCreature);
 //adjust if nSpell is nEffective on oCreature
 void gsC2AdjustSpellEffectiveness(int nSpell, object oCreature, int nEffective = TRUE);
+// Check whether oCreature is incapacitated.
+int gsC2GetIsIncapacitated(object oCreature);
+// Set an NPC's AI level to a desired value, waking up other
+// nearby NPCs if appropriate.
+void guALSetAILevel(int nAILevel, object oTarget = OBJECT_SELF);
 
-void gsC2Analyze(object oCreature = OBJECT_SELF)
+void gsC2Analyze(object oCreature = OBJECT_SELF, int bAllEffects = FALSE)
 {
-    if (GetLocalInt(oCreature, GS_C2_ANALYZE)) return;
+    // Use timestamps - DelayCommand unset is unreliable.
+    int nTimestamp = gsTIGetActualTimestamp();
+    if (GetLocalInt(oCreature, GS_C2_ANALYZE) > nTimestamp) return;
 
-    struct gsC2Effect stEffect = gsC2GetEffect(oCreature);
+    struct gsC2Effect stEffect = gsC2GetEffect(oCreature, bAllEffects);
 
     SetLocalInt(
         oCreature,
@@ -127,8 +144,7 @@ void gsC2Analyze(object oCreature = OBJECT_SELF)
         GS_C2_EFFECT_LIST,
         stEffect.sList);
 
-    SetLocalInt(oCreature, GS_C2_ANALYZE, TRUE);
-    AssignCommand(oCreature, DelayCommand(6.0, DeleteLocalInt(oCreature, GS_C2_ANALYZE)));
+    SetLocalInt(oCreature, GS_C2_ANALYZE, nTimestamp + 6);
 }
 //----------------------------------------------------------------
 int gsC2GetIsDamaged(object oCreature = OBJECT_SELF)
@@ -149,9 +165,9 @@ int gsC2GetCounterMeasure(object oCreature = OBJECT_SELF)
     return GetLocalInt(oCreature, GS_C2_EFFECT_COUNTER_MEASURE);
 }
 //----------------------------------------------------------------
-int gsC2GetHasEffect(int nEffect, object oCreature = OBJECT_SELF)
+int gsC2GetHasEffect(int nEffect, object oCreature = OBJECT_SELF, int bAllEffects = FALSE)
 {
-    gsC2Analyze(oCreature);
+    gsC2Analyze(oCreature, bAllEffects);
     string sList = GetLocalString(oCreature, GS_C2_EFFECT_LIST);
     return GetSubString(sList, nEffect, 1) == "1";
 }
@@ -177,7 +193,7 @@ object gsC2GetLastDamager(object oCreature = OBJECT_SELF)
     return GetLocalObject(oCreature, GS_C2_LAST_DAMAGER);
 }
 //----------------------------------------------------------------
-struct gsC2Effect gsC2GetEffect(object oCreature = OBJECT_SELF)
+struct gsC2Effect gsC2GetEffect(object oCreature = OBJECT_SELF, int bAllEffects = FALSE)
 {
     struct gsC2Effect stEffect;
     stEffect.sList    = "00000000000000000000000000000000000000000000000000" +
@@ -187,7 +203,9 @@ struct gsC2Effect gsC2GetEffect(object oCreature = OBJECT_SELF)
 
     while (GetIsEffectValid(eEffect))
     {
-        if (GetEffectSubType(eEffect) != SUBTYPE_EXTRAORDINARY)
+        if (bAllEffects ||
+            ((GetEffectSubType(eEffect) != SUBTYPE_EXTRAORDINARY) &&
+             (GetEffectSubType(eEffect) != SUBTYPE_SUPERNATURAL)))
         {
             nType          = GetEffectType(eEffect);
             stEffect.sList = GetStringLeft(stEffect.sList, nType) +
@@ -579,7 +597,7 @@ int gsC2GetBreachableSpell(object oCreature = OBJECT_SELF)
 
     while (nSpell != -1)
     {
-        if (GetHasSpellEffect(nSpell, oCreature)) return TRUE;
+        if (GetHasSpellEffect(nSpell, oCreature)) return nSpell;
         nSpell = gsC2GetNextBreachableSpell();
     }
 
@@ -621,14 +639,15 @@ int gsC2GetNextBreachableSpell()
     case 23: return SPELL_SHADOW_SHIELD;
     case 24: return SPELL_SHADOW_CONJURATION_MAGE_ARMOR;
     case 25: return SPELL_NEGATIVE_ENERGY_PROTECTION;
-    case 26: return SPELL_SANCTUARY;
-    case 27: return SPELL_MAGE_ARMOR;
-    case 28: return SPELL_STONE_BONES;
-    case 29: return SPELL_SHIELD;
-    case 30: return SPELL_SHIELD_OF_FAITH;
-    case 31: return SPELL_LESSER_MIND_BLANK;
-    case 32: return SPELL_IRONGUTS;
-    case 33: return SPELL_RESISTANCE;
+    case 26: return SPELL_FREEDOM_OF_MOVEMENT;
+    case 27: return SPELL_SANCTUARY;
+    case 28: return SPELL_MAGE_ARMOR;
+    case 29: return SPELL_STONE_BONES;
+    case 30: return SPELL_SHIELD;
+    case 31: return SPELL_SHIELD_OF_FAITH;
+    case 32: return SPELL_LESSER_MIND_BLANK;
+    case 33: return SPELL_IRONGUTS;
+    case 34: return SPELL_RESISTANCE;
     }
 
     return -1;
@@ -749,5 +768,56 @@ void gsC2AdjustSpellEffectiveness(int nSpell, object oCreature, int nEffective =
 
     //debug
     //AssignCommand(oCreature, SpeakString(nEffective ? "spell effective" : "spell ineffective"));
+}
+//----------------------------------------------------------------
+int gsC2GetIsIncapacitated(object oCreature)
+{
+  return  (gsC2GetHasEffect(EFFECT_TYPE_CHARMED, oCreature, TRUE) ||
+           gsC2GetHasEffect(EFFECT_TYPE_CONFUSED, oCreature, TRUE) ||
+           gsC2GetHasEffect(EFFECT_TYPE_CUTSCENE_PARALYZE, oCreature, TRUE) ||
+           gsC2GetHasEffect(EFFECT_TYPE_CUTSCENEIMMOBILIZE, oCreature, TRUE) ||
+           gsC2GetHasEffect(EFFECT_TYPE_DAZED, oCreature, TRUE) ||
+           gsC2GetHasEffect(EFFECT_TYPE_DOMINATED, oCreature, TRUE) ||
+           gsC2GetHasEffect(EFFECT_TYPE_FRIGHTENED, oCreature, TRUE) ||
+           gsC2GetHasEffect(EFFECT_TYPE_PARALYZE, oCreature, TRUE) ||
+           gsC2GetHasEffect(EFFECT_TYPE_PETRIFY, oCreature, TRUE) ||
+           gsC2GetHasEffect(EFFECT_TYPE_SLEEP, oCreature, TRUE) ||
+           gsC2GetHasEffect(EFFECT_TYPE_STUNNED, oCreature, TRUE));
+}
+//----------------------------------------------------------------
+void guALSetAILevel(int nAILevel, object oTarget = OBJECT_SELF)
+{
+    int nOldAILevel = GetAILevel(oTarget);
+
+    if (nOldAILevel == nAILevel)
+        return;
+
+    SetAILevel(oTarget, nAILevel);
+
+    // If, and only if, we're raising the NPC's AI level to combat, then search
+    // for other NPCs to wake up too.
+
+    if (!(nAILevel == AI_LEVEL_NORMAL &&
+          nOldAILevel <= nAILevel))
+        return;
+
+    location lTarget = GetLocation(oTarget);
+    object oNPC = GetFirstObjectInShape(SHAPE_SPHERE,
+                                        GU_AI_WAKEUP_RADIUS,
+                                        lTarget,
+                                        FALSE,  // No line-of-sight check
+                                        OBJECT_TYPE_CREATURE);
+
+    while (GetIsObjectValid(oNPC))
+    {
+        if (!GetIsPC(oNPC) && GetAILevel(oNPC) < GU_AI_LEVEL_NEAR_COMBAT)
+            SetAILevel(oNPC, GU_AI_LEVEL_NEAR_COMBAT);
+
+        oNPC = GetNextObjectInShape(SHAPE_SPHERE,
+                                    GU_AI_WAKEUP_RADIUS,
+                                    lTarget,
+                                    FALSE,  // No line-of-sight check
+                                    OBJECT_TYPE_CREATURE);
+    }
 }
 

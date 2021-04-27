@@ -25,6 +25,7 @@ void main()
         {
             gsCBDetermineCombatRound(oCaster);
         }
+
     }
 }
 

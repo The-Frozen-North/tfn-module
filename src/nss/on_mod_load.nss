@@ -23,6 +23,9 @@ void main()
 
     //time
     SetLocalInt(OBJECT_SELF, "GS_YEAR", GetCalendarYear());
+    SetLocalInt(OBJECT_SELF, "GS_LAST_MONTH", GetCalendarMonth());
+    SetLocalInt(OBJECT_SELF, "GS_DAY", GetCalendarDay());
+    SetLocalInt(OBJECT_SELF, "GS_HOUR", GetTimeHour());
 
     int nTimestamp = GetCampaignInt("GS_SYSTEM", "TIMESTAMP");
 

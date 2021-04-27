@@ -10,6 +10,8 @@ void main()
     {
         if (GetAbilityScore(OBJECT_SELF, ABILITY_INTELLIGENCE) >= 6)
         {
+            if (GetIsDoorActionPossible(oDoor, DOOR_ACTION_UNLOCK))
+                DoDoorAction(oDoor, DOOR_ACTION_UNLOCK);
             if (GetIsDoorActionPossible(oDoor, DOOR_ACTION_OPEN))
                 DoDoorAction(oDoor, DOOR_ACTION_OPEN);
         }
