@@ -5071,9 +5071,24 @@ void AI_ActionFleeScared()
     {
         SpeakArrayString(AI_TALK_ON_STUPID_RUN);
     }
+    else
+    {
+         // added some voice chat - pok
+         switch (d6())
+         {
+             case 1: PlayVoiceChat(VOICE_CHAT_HELP, oCreature); break;
+             case 2: PlayVoiceChat(VOICE_CHAT_FLEE, oCreature); break;
+             case 3: PlayVoiceChat(VOICE_CHAT_NEARDEATH, oCreature); break;
+             case 4:
+                if (GetCurrentHitPoints(oCreature) <= GetMaxHitPoints(oCreature)/2)
+                    PlayVoiceChat(VOICE_CHAT_HEALME, oCreature);
+             break;
+         }
+    }
     ClearAllActions();
     // 24: "[DCR:Fleeing] Stupid/Panic/Flee moving from enemies/position - We are a commoner/no morale/failed < 3 int"
     DebugActionSpeakByInt(24);
+
 
     // Turn on fleeing visual effect
     ApplyFleeingVisual();
@@ -5097,7 +5112,9 @@ void AI_ActionFleeScared()
     }
     // Default action is to move away from the nearest seen enemy - in this case,
     // it is valid.
-    ActionMoveAwayFromObject(oTarget, TRUE, 50.0);
+    //ActionMoveAwayFromObject(oTarget, TRUE, 50.0);
+    // use location instead because its less buggy - pok
+    ActionMoveAwayFromLocation(GetLocation(oTarget), TRUE, 50.0);
 }
 /*::///////////////////////////////////////////////
 //:: Name Flee
@@ -5280,6 +5297,9 @@ int AI_AttemptMoraleFlee()
                     // protection from evil and so on).
                     if(!WillSave(OBJECT_SELF, nSaveDC, SAVING_THROW_TYPE_FEAR, GlobalMeleeTarget))
                     {
+                        // fleeing will happen regardless of intelligence if it fails - pok
+                        AI_ActionFleeScared();
+                        /*
                         // If we fail the will save, VS fear...
                         // You see, if there is no valid object ,we stop the script so not to call GetNearbyFleeObject more then once
                         if(AI_ActionFlee(AI_TALK_ON_MORALE_BREAK))
@@ -5303,6 +5323,7 @@ int AI_AttemptMoraleFlee()
                                 SpeakArrayString(AI_TALK_ON_CANNOT_RUN);
                             }
                         }
+                        */
                         return FALSE;
                     }
                 }
@@ -5646,33 +5667,24 @@ int AI_AttemptArcherRetreat()
         // Enemy range must be close (HTH distance, roughly) and we must have
         // a close ally. ELSE we'll just get lots of AOO and die running (pointless)
         // * Was > 1, now >= 1, 1.4 fix.
-        if((GlobalEnemiesIn4Meters >= 1 && GlobalValidAlly && GlobalRangeToAlly < 4.0) ||
-            GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER))
+        //if((GlobalEnemiesIn4Meters >= 1 && GlobalValidAlly && GlobalRangeToAlly < 4.0) ||
+        //    GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER))
+
+        // only retreat is enemies are close
+        if(GlobalEnemiesIn4Meters >= 1)
         {
-            // We may, if at the right range (and got a ranged weapon) equip it.
-            object oRanged = GetAIObject(AI_WEAPON_RANGED);
-            if(GetIsObjectValid(oRanged) &&
-               GetItemPossessor(oRanged) == OBJECT_SELF)
+            // ammo and other checks removed
+            // only check if main hand isn't ranged - pok
+            if(!GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND)))
             {
-                // Is the ranged weapon valid?
-                // We need valid ammo, else we eqip nothing!
-                int bValidAmmo = GetAIInteger(AI_WEAPON_RANGED_AMMOSLOT);
-                if(bValidAmmo == INVENTORY_SLOT_RIGHTHAND ||
-                   GetIsObjectValid(GetItemInSlot(bValidAmmo)))
-                {
-                    // 27: "[DCR:Moving] Archer Retreating back from the enemy [Enemy]" + GetName(GlobalMeleeTarget)
-                    DebugActionSpeakByInt(27, GlobalMeleeTarget);
-                    // - Equip the rnaged weapon if not already
-                    if(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND) != oRanged)
-                    {
-                        ActionEquipItem(oRanged, INVENTORY_SLOT_RIGHTHAND);
-                    }
-                    // This action will cancle next round if we are far enough
-                    // away from enemies.
-                    ActionMoveAwayFromObject(GlobalMeleeTarget, TRUE, 15.0);
-                    return TRUE;
-                }
+                ActionEquipMostDamagingRanged();
             }
+            // This action will cancle next round if we are far enough
+            // away from enemies.
+            //ActionMoveAwayFromObject(GlobalMeleeTarget, TRUE, 15.0);
+            ActionMoveAwayFromLocation(GetLocation(GlobalMeleeTarget), TRUE, IntToFloat(8+d8()));
+            return TRUE;
+
         }
     }
     return FALSE;
@@ -6377,9 +6389,9 @@ int AI_GetSpellWhoCanSeeInvis(int nLimit)
         nTotal++;
         // Make this the total of any seeing spells.
         if(GetHasSpellEffect(SPELL_SEE_INVISIBILITY, oEnemy) ||
-           GetHasSpellEffect(SPELL_TRUE_SEEING, oEnemy) ||
+           GetHasSpellEffect(SPELL_TRUE_SEEING, oEnemy))// || don't check skins for true seeing - pok
         // - We obviously can tell with creatures with true seeing hides. Only checking hides!
-           GetItemHasItemProperty(GetItemInSlot(INVENTORY_SLOT_CARMOUR, oEnemy), ITEM_PROPERTY_TRUE_SEEING))
+           //GetItemHasItemProperty(GetItemInSlot(INVENTORY_SLOT_CARMOUR, oEnemy), ITEM_PROPERTY_TRUE_SEEING))
         {
             nHasSeeingTotal++;
             // Limit checking
@@ -6517,15 +6529,15 @@ int AI_AttemptAllSpells(int nLowestSpellLevel = 0, int nBABCheckHighestLevel = 3
     // Do we have any spells to cast?
 //      (GlobalSilenceSoItems && !GobalOtherItemsValid && !GobalPotionsValid) ||
 //      (!SpellAnySpellValid && !GobalOtherItemsValid && !GobalPotionsValid) ||
-       !GetIsObjectValid(GlobalSpellTarget))
+       !GetIsObjectValid(GlobalSpellTarget) || GetIsDead(GlobalSpellTarget)) // check dead - pok
     {
         // 31: "[DCR: All Spells] Error! No casting (No spells, items, target Etc)."
-        DebugActionSpeakByInt(31);
+        //DebugActionSpeakByInt(31);
         return FALSE;
     }
     // 11: "[DCR: All Spells] [Modifier|BaseDC|SRA] " + IntToString(iInput)
     // Input: 100 * GlobalSpellAbilityModifier) + 10 * GlobalSpellBaseSaveDC + SRA
-    DebugActionSpeakByInt(32, OBJECT_INVALID, (100 * GlobalSpellAbilityModifier) + (10 * GlobalSpellBaseSaveDC) + (SRA));
+    //DebugActionSpeakByInt(32, OBJECT_INVALID, (100 * GlobalSpellAbilityModifier) + (10 * GlobalSpellBaseSaveDC) + (SRA));
 
     // All the inputs (plus for SRA a few extra ones) for the spells function
     // we calculate now. SRA is quite common, so useful not to do repetitive
@@ -14682,7 +14694,9 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         GlobalNearestEnemyHeard = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD, CREATURE_TYPE_IS_ALIVE, TRUE);
         if(GetIsObjectValid(GlobalNearestEnemyHeard))
         {
-            ActionMoveAwayFromObject(GlobalNearestEnemyHeard, TRUE);
+            //ActionMoveAwayFromObject(GlobalNearestEnemyHeard, TRUE);
+            // use location instead - pok
+            ActionMoveAwayFromLocation(GetLocation(GlobalNearestEnemyHeard), TRUE);
         }
         else
         {

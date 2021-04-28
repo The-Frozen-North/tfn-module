@@ -104,15 +104,19 @@ void CopyKey()
 void main()
 {
 /************************ [Important Spawn Settings] **************************/
-    int nIntelligence = GetAbilityScore(OBJECT_SELF, ABILITY_INTELLIGENCE)/2;
-    if (nIntelligence > 10) nIntelligence = 10;
-    if (nIntelligence < 1) nIntelligence = 1;
+    int nCreatureIntelligence = GetAbilityScore(OBJECT_SELF, ABILITY_INTELLIGENCE);
+    int nIntelligence = 1;
+    if (nIntelligence > 14) nIntelligence = 10;
+    if (nIntelligence > 12) nIntelligence = 8;
+    if (nIntelligence > 9) nIntelligence = 7;
+    if (nIntelligence > 6) nIntelligence = 4;
+
     SetAIInteger(AI_INTELLIGENCE, nIntelligence);
         // Intelligence value of the creauture. Can be 1-10, read readme's for help.
 
 
-    int nMorale = 10;
-    if (GetClassByPosition(1) == CLASS_TYPE_COMMONER) nMorale = -1;
+    int nMorale = FloatToInt(GetChallengeRating(OBJECT_SELF));
+    if (GetLocalInt(OBJECT_SELF, "herbivore") || GetClassByPosition(1) == CLASS_TYPE_COMMONER) nMorale = -1;
 
     SetAIInteger(AI_MORALE, nMorale);
         // Will save (See readme). Remember: -1 or below means they always flee.
@@ -197,6 +201,8 @@ void main()
 
     3 or under intelligence will just run away. 4 or more will know where allies
     are, and if there are none, will not run.
+
+    pok - fleeing now happens regardless of intelligence
 ************************* [Fleeing] *******************************************/
     //SetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER);
         // Forces them to not flee. This may be set with AI_SetMaybeFearless at the end.
@@ -246,7 +252,7 @@ void main()
         // Set if you want them to move forwards into HTH sooner. Will always
         // if the enemy is a mage/archer, else % based on range.
 
-    if (GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND)))
+    if (GetLocalInt(OBJECT_SELF, "range") == 1 || GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND)))
     {
         SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ATTACKING, AI_COMBAT_MASTER);
             // For archers. If they have ally support, they'd rather move back & shoot then go into HTH.
