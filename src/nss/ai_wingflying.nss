@@ -1,6 +1,6 @@
-/************************ [Dragon Flying] **************************************
+/*/////////////////////// [Ability - Dragon Flying] ////////////////////////////
     Filename: J_AI_WingFlying
-************************* [Dragon Flying] **************************************
+///////////////////////// [Ability - Dragon Flying] ////////////////////////////
     Hey, a dragon can fly (if we are set to, mind you!) this is executed from
     the default AI, using local objects to "fly" to, a duration based on the
     distance between the 2 places.
@@ -13,10 +13,11 @@
     - Can be used with NPC's who are not dragons, but if they are not huge,
       the damage is not done (only the pulses at thier location and the target
       location)
-************************* [History] ********************************************
-    Version 1.3
-    - Added
-************************* [Workings] *******************************************
+///////////////////////// [History] ////////////////////////////////////////////
+    1.3 - Added
+    1.4 - Added an actual spell event fire for the damage. It might not have
+          registered with some hostile monsters otherwise! (EG: DR)
+///////////////////////// [Workings] ///////////////////////////////////////////
     Executed via. ExecuteScript from the AI file, it is seperate because it is
     almost a new AI ability.
 
@@ -24,9 +25,9 @@
     1M between targets. Not too much, but enough.
 
     Does damage to landing and taking off sites too :-)
-************************* [Arguments] ******************************************
+///////////////////////// [Arguments] //////////////////////////////////////////
     Arguments: N/A
-************************* [Dragon Flying] *************************************/
+///////////////////////// [Ability - Dragon Flying] //////////////////////////*/
 
 #include "inc_ai_constants"
 
@@ -55,7 +56,7 @@ void main()
     if(GetCreatureSize(OBJECT_SELF) == CREATURE_SIZE_HUGE)
     {
         // Damage instantly
-        DelayCommand(f1, DoDamageToArea(lSelf));
+        DelayCommand(1.0, DoDamageToArea(lSelf));
         // Delay the jump down damage - a little extra delay mind you.
         DelayCommand(fDuration + 1.2, DoDamageToArea(lJumpTo));
     }
@@ -64,7 +65,7 @@ void main()
         // Visual effects only
         effect eImpact = EffectVisualEffect(VFX_IMP_PULSE_WIND);
         // Pulse of wind applied...
-        DelayCommand(f1, ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eImpact, lSelf));
+        DelayCommand(1.0, ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eImpact, lSelf));
         // Delay the new wind
         DelayCommand(fDuration + 1.2, ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eImpact, lJumpTo));
     }
@@ -72,7 +73,7 @@ void main()
     DelayCommand(fDuration + 1.5, ActionAttack(oJumpTo));
 
     effect eFly = EffectDisappearAppear(lJumpTo);
-    DelayCommand(f1, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eFly, OBJECT_SELF, fDuration - f1));
+    DelayCommand(1.0, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eFly, OBJECT_SELF, fDuration - 1.0));
 }
 
 // Damages area with blast of flying
@@ -109,6 +110,10 @@ void DoDamageToArea(location lLocation)
             // Can't knock over huge things!
             if(GetCreatureSize(oTarget) != CREATURE_SIZE_HUGE)
             {
+                // Signal spell cast at event
+                // * Using: SPELLABILITY_DRAGON_WING_BUFFET - just so something is used
+                SignalEvent(oTarget, EventSpellCastAt(OBJECT_SELF, SPELLABILITY_DRAGON_WING_BUFFET));
+
                 // Reflex save for damage
                 if(!ReflexSave(oTarget, nDC))
                 {
@@ -126,3 +131,4 @@ void DoDamageToArea(location lLocation)
         oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_GARGANTUAN, lLocation);
     }
 }
+

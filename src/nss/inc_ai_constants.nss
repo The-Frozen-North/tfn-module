@@ -1,13 +1,22 @@
-/************************ [Constants] ******************************************
-    Filename: inc_ai_constants
-************************* [Constants] ******************************************
+/*/////////////////////// [Include - Constants] ////////////////////////////////
+    Filename: J_INC_Constants
+///////////////////////// [Include - Constants] ////////////////////////////////
     This file just holds many constants, and many common functions (EG: Set
     and Get spawn in conditions) to stop repeating code.
 
     See workings for more information.
-************************* [History] ********************************************
+///////////////////////// [History] ////////////////////////////////////////////
     1.3 - Added to make sure things are not repeated + constants in one place
-************************* [Workings] *******************************************
+    1.4 - Removed the silly (well, now I think it is silly) definitions of
+          i1, i2 etc. It looks annoying anyway. Won't save much code (or any)
+          as the constants mearly put the 1 to where i1 is in the code anyway.
+        - TO DO:
+        - Sort out constants. Add new ones for sea hag, and other new abilities.
+
+        - Fixed a few minor errors.
+        - Formatted correctly now
+        - Removed all i0, i1 etc. And make sure the AI has all of them removed.
+///////////////////////// [Workings] ///////////////////////////////////////////
     By using the SoU implimented way of defining static variables, "const" means
     I can have a whole include which will include all used variables - this
     keeps it all uniformed, and compiles better - as in all variable names
@@ -18,12 +27,12 @@
 
     If it does cause a lot of lag, more updates should clean this up.
 
-    - To Do - Impliment better Debug system (see inc_ai_debug) which you can
+    - To Do - Impliment better Debug system (see j_inc_debug) which you can
     uncomment them long debug strings so that they don't get added to compiled
     scripts if not used.
-************************* [Arguments] ******************************************
+///////////////////////// [Arguments] //////////////////////////////////////////
     Arguments: N/A
-************************* [Constants] *****************************************/
+///////////////////////// [Include - Constants] //////////////////////////////*/
 
 // This makes most scripts have debug anyway, and so its there :-).
 // Multiple includes are ignored anyway :-D
@@ -41,95 +50,34 @@ const string COMBAT_FILE                            = "ai_detercombat";       //
 //nw_walk_wp
 // - FILE_
 const string FILE_WALK_WAYPOINTS                    = "ai_walkwaypoint";       // FILENAME
-//const string FILE_RE_SET_WEAPONS                    = "ai_setweapons";        // FILENAME
+//const string FILE_RE_SET_WEAPONS                    = "j_ai_setweapons";        // FILENAME
 // If we are dead when this fires, it destroys us
-//const string FILE_DEATH_CLEANUP                     = "ai_destroyself";       // FILENAME
+//const string FILE_DEATH_CLEANUP                     = "j_ai_destroyself";       // FILENAME
 
 // Heartbeat files. Speeds up (hopefully!) heartbeat calls and cirtainly heartbeat file size.
 const string FILE_HEARTBEAT_TALENT_BUFF             = "ai_heartb_buff";
-const string FILE_HEARTBEAT_LOOT                    = "ai_heartb_loot";
+//const string FILE_HEARTBEAT_LOOT                    = "j_ai_heart_loot";
 const string FILE_HEARTBEAT_ANIMATIONS              = "ai_heartb_anim";
 const string FILE_HEARTBEAT_WALK_TO_PC              = "ai_heartb_search";
 
 const string FILE_DRAGON_WING_BUFFET                = "ai_wingbuffet";
 const string FILE_FLY_ATTACK                        = "ai_wingflying";
 
+// Special for "I_WAS_OPENED" shout.
+const string FILE_SET_OPENER                        = "j_ai_setopener";
+
 // Spell trigger creation file
-const string FILE_SPELLTRIGGER_START                = "ai_spelltrig1";
+const string FILE_SPELLTRIGGER_START                = "j_ai_spelltrig1";
+
+// Default User Defined Event file name - for the default AI file
+const string FILE_DEFAULT_UDE                       = "nw_c2_defaultd";
 
 // Special: custom AI script set to a standard local string to this:
 const string AI_CUSTOM_AI_SCRIPT = "AI_CUSTOM_AI_SCRIPT";
 
 /******************************************************************************/
-// Simple constants to save re-typing ETC.
+// Special constants
 /******************************************************************************/
-// Just trying this. It won't harm anything, as with the const word, if the
-// numbers are not used, they are not added, but if they are, getting them from
-// these might be better.
-// - Especially used for imputting the spell talent numbers, and required
-//   INT, WIS or CHA for that spell. :-D
-const int iM10  = -10;// Dying threshold - die at -11
-const int iM1   = -1;
-const int i0    = 0;
-const int i1    = 1;
-const int i2    = 2;
-const int i3    = 3;
-const int i4    = 4;
-const int i5    = 5;
-const int i6    = 6;
-const int i7    = 7;
-const int i8    = 8;
-const int i9    = 9;
-const int i10   = 10;
-const int i11   = 11;
-const int i12   = 12;
-const int i13   = 13;
-const int i14   = 14;
-const int i15   = 15;
-const int i16   = 16;
-const int i17   = 17;
-const int i18   = 18;
-const int i19   = 19;
-const int i20   = 20;
-const int i21   = 21;
-const int i22   = 22;
-const int i23   = 23;// SpellAllSpells
-const int i24   = 24;
-const int i25   = 25;
-const int i30   = 30;
-const int i35   = 35;
-const int i40   = 40;// Here onwards are normally %'s
-const int i50   = 50;
-const int i60   = 60;
-const int i70   = 70;
-const int i80   = 80;
-const int i90   = 90;
-const int i99   = 99;
-const int i100  = 100;
-const int i150  = 150;// Limit for PW Stun
-
-const float f0 = 0.0;
-const float f1 = 1.0;
-const float f2 = 2.0;
-const float f3 = 3.0;
-const float f4 = 4.0;
-const float f5 = 5.0;
-const float f6 = 6.0;// 1 heartbeat/round
-const float f8 = 8.0;// Useful...for some reason
-const float f9 = 9.0;
-const float f10 = 10.0;
-const float f11 = 11.0;// Range for some spell cones
-const float f12 = 12.0;// 2 heartbeats/rounds
-const float f15 = 15.0;
-const float f16 = 16.0;// Double f8, the range of summon spells.
-const float f18 = 18.0;// 3 heartbeats/rounds
-const float f20 = 20.0;
-const float f24 = 24.0;// 4 heartbeats/rounds
-const float f30 = 30.0;
-const float f35 = 35.0;
-const float f40 = 40.0;
-const float f50 = 50.0;
-const float f60 = 60.0;
 
 // Ranges for spells - from Ranges.2da
 const float fTouchRange  = 2.25;
@@ -140,7 +88,7 @@ const float fLongRange   = 40.0;
 // Types:
 // S. = Stored
 // FILENAME
-// CONSTANT
+
 // S.CONSTANT
 // S.INTEGER
 // S.OBJECT
@@ -150,11 +98,34 @@ const float fLongRange   = 40.0;
 // Global overriding actions
 /******************************************************************************/
 // Leader thing
-const int AI_SPECIAL_ACTIONS_ME_RUNNER              = 1;                        // CONSTANT
+const int AI_SPECIAL_ACTIONS_ME_RUNNER              = 1;
 // Fleeing
-const int AI_SPECIAL_ACTIONS_FLEE                   = 2;                        // CONSTANT
+const int AI_SPECIAL_ACTIONS_FLEE                   = 2;
 // Moving out of a pre-set AOE.
-const int AI_SPECIAL_ACTIONS_MOVE_OUT_OF_AOE        = 3;                        // CONSTANT
+const int AI_SPECIAL_ACTIONS_MOVE_OUT_OF_AOE        = 3;
+// Searching around after combat.
+const int AI_SPECIAL_ACTIONS_SEARCH_AROUND          = 4;
+// Move to combat - we buff (and only buff again after 1 minute of running)
+// and either follow the person who wants us to help them, or we will run to the
+// location set.
+// * Can be set via. most shouts.
+const int AI_SPECIAL_ACTIONS_MOVE_TO_COMBAT         = 5;
+
+// Special for "move to combat". If there was something who called to us, we will
+// follow them - or at least move to them - if there is no location to move to.
+const string AI_MOVE_TO_COMBAT_OBJECT               = "AI_MOVE_TO_COMBAT_OBJECT";
+// Another special. This will be set to the location that can be used for
+// the "special actions move to combat" action.
+const string AI_MOVE_TO_COMBAT_LOCATION             = "AI_MOVE_TO_COMBAT_LOCATION";
+// Timer constant - set for 60 seconds to stop lots of spells being cast before
+// we move, but we do cast 1.
+const string AI_TIMER_MOVE_TO_COMBAT_BUFF           = "AI_TIMER_MOVE_TO_COMBAT_BUFF";
+
+// Needed for overriding search action:
+// * Amount of rounds left to search using special action on heartbeat
+const string AI_SEARCH_ROUNDS_REMAINING = "AI_SEARCH_ROUNDS_REMAINING";
+// * Target (dead body?) to move near to search around
+const string AI_SEARCH_TARGET           = "AI_SEARCH_TARGET";
 
 // This is trap thing. If we (on heartbeat) start disarming a trap, can we
 // ignore it in combat?
@@ -163,10 +134,12 @@ const string TRAP_CAN_IGNORE_IN_COMBAT              = "TRAP_CAN_IGNORE_IN_COMBAT
 // Override for all AI scripts
 const string AI_TOGGLE                              = "AI_TOGGLE";              // INTEGER
 
-// Set to a local int...
-// 1 = Beholder AI
-// 2 = Mindflayer AI
+// Set to a local int...special AI executed like Bioware's
 const string AI_SPECIAL_AI                          = "AI_SPECIAL_AI";
+// 1 = Beholder AI
+const int AI_SPECIAL_AI_BEHOLDER = 1;
+// 2 = Mindflayer AI
+const int AI_SPECIAL_AI_MINDFLAYER = 2;
 
 // Set to the last AI spell category cast.
 const string ITEM_TALENT_VALUE                      = "ITEM_TALENT_VALUE";      // S.CONSTANT
@@ -197,11 +170,6 @@ const string AI_SPELL_IMMUNE_LEVEL                  = "AI_SPELL_IMMUNE_LEVEL";  
 const string AI_EFFECT_HEX                          = "AI_EFFECT_HEX";
 const string AI_SPELL_HEX                           = "AI_SPELL_HEX";
 const string AI_ABILITY_DECREASE                    = "AI_ABILITY_DECREASE";
-// Timer for resetting PC effects
-const string AI_TIMER_EFFECT_SET                    = "AI_TIMER_EFFECT_SET";
-// This is not a timer, but if 1, it means the NPC uses Jasperre's AI and sets
-// thier own effects
-const string AI_JASPERRES_EFFECT_SET                = "AI_JASPERRES_EFFECT_SET";
 // This is a timer for checking allies for spell effects, for buffing.
 // - If TRUE, it won't loop around until it finds one to cast at.
 // AI_TIMER_BUFF_ALLY_SPELL + IntToString(iSpell);
@@ -260,53 +228,25 @@ const string AI_SPELLTRIG_PREFIX    = "AI_SPELLTRIG_PREFIX";
 // FEATS
 // THese are the forgotten ones. Others are remembered.
 // I have left OUT the ones which we cannot "use"
+// 1.4: Removed ones now added in 1.64. Added some needed for AI_ActionUseSpellLikeFeat().
 
 // These are blackguard. Note that they are under spell abilities, but I'd rather
 // use them as ActionUseFeat.
-const int AI_FEAT_BG_CREATE_UNDEAD                  = 474;                      // CONSTANT
-const int AI_FEAT_BG_FIENDISH_SERVANT               = 475;                      // CONSTANT
-// Othes
-const int AI_FEAT_PM_CREATE_UNDEAD                  = 890;
-const int AI_FEAT_PM_ANIMATE_DEAD                   = 889;
-const int AI_FEAT_PM_CREATE_GREATER_UNDEAD          = 895;
-
-// Polymorphing ones missing
-const int AI_FEAT_EPIC_WILD_SHAPE_UNDEAD            = 872;
-const int AI_FEAT_EPIC_WILD_SHAPE_DRAGON            = 873;
-const int AI_FEAT_GREATER_WILDSHAPE_1               = 898;
-const int AI_FEAT_GREATER_WILDSHAPE_2               = 900;
-const int AI_FEAT_GREATER_WILDSHAPE_3               = 901;
-const int AI_FEAT_HUMANOID_SHAPE                    = 902;
-const int AI_FEAT_GREATER_WILDSHAPE_4               = 903;
-
-const int AI_FEAT_EPIC_OUTSIDER_SHAPE               = 1060;
-const int AI_FEAT_EPIC_CONSTRUCT_SHAPE              = 1061;
-const int AI_FEAT_EPIC_SHIFTER_INFINITE_WILDSHAPE_1 = 1062;
-const int AI_FEAT_EPIC_SHIFTER_INFINITE_WILDSHAPE_2 = 1063;
-const int AI_FEAT_EPIC_SHIFTER_INFINITE_WILDSHAPE_3 = 1064;
-const int AI_FEAT_EPIC_SHIFTER_INFINITE_WILDSHAPE_4 = 1065;
-const int AI_FEAT_EPIC_SHIFTER_INFINITE_HUMANOID_SHAPE = 1066;
-const int AI_FEAT_EPIC_DRUID_INFINITE_WILDSHAPE     = 1068;
-const int AI_FEAT_EPIC_DRUID_INFINITE_ELEMENTAL_SHAPE = 1069;
-
-const int AI_FEAT_EPIC_PLANAR_TURNING               = 854;
+// 1.64: BG_CREATE_UNDEAD still under constant FEAT_INFLICT_LIGHT_WOUNDS
+const int AI_FEAT_BG_CREATE_UNDEAD                  = 474;
+// 1.64: Still under FEAT_INFLICT_MODERATE_WOUNDS.
+const int AI_FEAT_BG_FIENDISH_SERVANT               = 475;
 
 // Used in tunr undead checking. Faster then looping effects - GetHasSpellEffect(AI_SPELL_FEAT_TURN_UNDEAD);
 const int AI_SPELL_FEAT_TURN_UNDEAD                 = 308;
-
-const int AI_SPELL_EVIL_BLIGHT                      = 566;
 const int AI_SPELL_FEAT_PLANAR_TURNING              = 643;
+// We are missing the feat for planar turning *still* in 1.64
+const int AI_FEAT_EPIC_PLANAR_TURNING               = 854;
 
-// Epic spells are feats, but act like spells.
-const int AI_FEAT_EPIC_SPELL_MUMMY_DUST             = 874;
-// SPELL_EPIC_MUMMY_DUST
-const int AI_FEAT_EPIC_SPELL_DRAGON_KNIGHT          = 875;
-// SPELL_EPIC_DRAGON_KNIGHT
-const int AI_FEAT_EPIC_SPELL_HELLBALL               = 876;
-const int AI_FEAT_EPIC_SPELL_EPIC_MAGE_ARMOR        = 877;
-const int AI_FEAT_EPIC_SPELL_RUIN                   = 878;
-const int AI_FEAT_EPIC_SPELL_EPIC_WARDING           = 990;
+// Missing *actual* spell constant, still missing in 1.64.
+const int AI_SPELL_EVIL_BLIGHT                      = 566;
 
+// Epic constants. 1.64: Only the spell for Epic Warding is missing.
 const int AI_SPELL_EPIC_WARDING                     = 695;
 
 // healing ones missed
@@ -314,24 +254,34 @@ const int AI_SPELL_EPIC_WARDING                     = 695;
 const int AI_SPELLABILITY_UNDEAD_HARM_SELF          = 759;
 // Cure Others Critical Wounds
 const int AI_SPELLABILITY_CURE_CRITICAL_WOUNDS_OTHER= 567;
+// Restoration others
+const int AI_SPELLABILITY_RESTORATION_OTHERS        = 568;
 
 
+// 1.4: WHAT IS THIS?!??!?
 // Subspell set to this:
 const string AI_SPELL_SUB_SPELL_CAST = "AI_SPELL_SUB_SPELL_CAST";
 
+// All invalid spell instances are -1.
+const int AI_SPELL_INVALID                          = -1;
+
 // For checking if they have this spell's effects. Most are feats, if not all.
-const int AI_SPELL_BARD_SONG                        = 411;                      // CONSTANT
-const int AI_SPELL_CURSE_SONG                       = 644;                      // CONSTANT
+const int AI_SPELLABILITY_BARD_SONG                 = 411;
+// * 1.4: Curse song is now under SPELLABILITY_EPIC_CURSE_SONG.
 // - hordes - still not in!
-const int AI_SPELL_OWLS_INSIGHT                     = 438;                      // CONSTANT
+const int AI_SPELL_OWLS_INSIGHT                     = 438;
 
 // These are not anywhere, even though blackguard and AA ones are
-const int AI_SPELL_HARPER_CATS_GRACE                = 481;
-const int AI_SPELL_HARPER_EAGLE_SPLEDOR             = 482;
+const int AI_SPELLABILITY_HARPER_SLEEP              = 480;
+const int AI_SPELLABILITY_HARPER_CATS_GRACE         = 481;
+const int AI_SPELLABILITY_HARPER_EAGLE_SPLEDOR      = 482;
+const int AI_SPELLABILITY_HARPER_INVISIBILITY       = 483;
 
 // Shifter only spells (monster abilities) that are limited
+const int AI_SPELLABILITY_BLINDING_SPEED            = 647;
 const int AI_SPELLABILITY_GWILDSHAPE_STONEGAZE      = 687;
 const int AI_SPELLABILITY_GWILDSHAPE_DRIDER_DARKNESS= 688;
+const int AI_SPELLABILITY_DIS_BREATH                = 690;// Dragon Disciple breath.
 const int AI_SPELLABILITY_GWILDSHAPE_SPIKES         = 692;// Manticore Spikes - no limit
 const int AI_SPELLABILITY_GWILDSHAPE_MINDBLAST      = 693;// GWildShape_Mindblast
 const int AI_SPELLABILITY_VAMPIRE_DOMINATION_GAZE   = 800;// Dom gaze.
@@ -345,8 +295,9 @@ const int AI_SPELLABILITY_EYEBALL_RAY_1             = 711;// EyeballRay1
 const int AI_SPELLABILITY_EYEBALL_RAY_2             = 712;// EyeballRay2
 const int AI_SPELLABILITY_MINDFLAYER_MINDBLAST_10   = 713;// Mindflayer Mindblast 10
 const int AI_SPELLABILITY_MINDFLAYER_PARAGON_MINDBLAST = 714;// Mindflayer Paragon Mindblast
-const int AI_SPELLABILITY_GOLEM_RANGED_SLAM         = 715;
+const int AI_SPELLABILITY_GOLEM_RANGED_SLAM         = 715;// Ranged slam, pretty neat.
 const int AI_SPELLABILITY_SUCKBRAIN                 = 716;// SuckBrain
+const int AI_SPELLABILITY_ETHEREALNESS              = 724;// Missing constant - and a monster ability only!
 const int AI_SPELLABILITY_BEHOLDER_MAGIC_CONE       = 727;// Beholder_Anti_Magic_Cone
 const int AI_SPELLABILITY_BEBELITH_WEB              = 731;// Bebelith Web
 const int AI_SPELLABILITY_BEHOLDER_ALLRAYS          = 736;// Beholder_Special_Spell_AI
@@ -357,10 +308,10 @@ const int AI_SPELLABILITY_HELL_INFERNO              = 762;// Hell Inferno - wors
 const int AI_SPELLABILITY_PSIONIC_MASS_CONCUSSION   = 763;// Damage to AOE - psiconic mass concussion
 const int AI_SPELLABILITY_SHADOW_ATTACK             = 769;// SHIFTER Shadow Attack - also shifter
 const int AI_SPELLABILITY_SLAAD_CHAOS_SPITTLE       = 770;// SHIFTER Slaad Chaos Spittle - also shifter
-const int AI_SPELLABILITY_BATTLE_BOULDER_TOSS       = 773;
+const int AI_SPELLABILITY_BATTLE_BOULDER_TOSS       = 773;// Battle - hordes only, but added as it is an actual thing
 const int AI_SPELLABILITY_PRISMATIC_DEFLECTING_FORCE= 774;// Deflecting_Force
-const int AI_SPELLABILITY_GIANT_HURL_ROCK           = 775;
-const int AI_SPELLABILITY_ILLITHID_MINDBLAST        = 789;
+const int AI_SPELLABILITY_GIANT_HURL_ROCK           = 775;// Cool - Giant hurls a large rock
+const int AI_SPELLABILITY_ILLITHID_MINDBLAST        = 789;// Ilithid mindblast.
 const int AI_SPELLABILITY_VAMPIRE_INVISIBILITY      = 799;// SHIFTER Vampire Invis.
 const int AI_SPELLABILITY_AZER_FIRE_BLAST           = 801;// SHIFTER Fire Blast.
 const int AI_SPELLABILITY_SHIFTER_SPECTRE_ATTACK    = 802;// SHIFTER Spectire Attack.
@@ -383,8 +334,9 @@ const string AI_AOE_PER_STONEHOLD               = "VFX_PER_STONEHOLD";
 const string AI_AOE_PER_WEB                     = "VFX_PER_WEB";
 
 // When we ActionAttack
-const int AI_NORMAL_MELEE_ATTACK                    = 1000;                     // CONSTANT
-const int AI_PARRY_ATTACK                           = 2000;                     // CONSTANT
+const int AI_NORMAL_MELEE_ATTACK                    = 1000;
+const int AI_NORMAL_RANGED_ATTACK                   = 1500;
+const int AI_PARRY_ATTACK                           = 2000;
 
 /******************************************************************************/
 // The ignore string. If a creature has this set to anything but 0, then the AI ignores them.
@@ -417,37 +369,44 @@ const string AI_VALID_HEALING_KIT_OBJECT            = "AI_VALID_HEALING_KIT_OBJE
 const string AI_VALID_HEALING_KITS                  = "AI_VALID_HEALING_KITS";  // S.INTEGER
 // Set to TRUE before re-setting things, it ignores weapons, only does healing kits.
 const string RESET_HEALING_KITS                     = "RESET_HEALING_KITS";     // S.INTEGER
-// TRUE if any of the SoU animations are valid.
-const string AI_VALID_ANIMATIONS                    = "AI_VALID_ANIMATIONS";
 
 // The amounts set to these are waypoint things
 const string WAYPOINT_RUN                           = "WAYPOINT_RUN";
 const string WAYPOINT_PAUSE                         = "WAYPOINT_PAUSE";
 
-// S.FLOAT
 /******************************************************************************/
 // Shout strings.
 /******************************************************************************/
+// 0 - Anything said
+const int AI_SHOUT_ANYTHING_SAID_CONSTANT                 = 0;
 // 1 - I was attacked. :-P
-const string I_WAS_ATTACKED                         = "I_WAS_ATTACKED";         // CONSTANT
+const int AI_SHOUT_I_WAS_ATTACKED_CONSTANT                = 1;
+const string AI_SHOUT_I_WAS_ATTACKED                = "I_WAS_ATTACKED";
 // 2 is blocked NWN thingy
+const int AI_SHOUT_BLOCKER_CONSTANT                       = 2;
 // 3 - Call to arms - Determines combat round
-const string CALL_TO_ARMS                           = "CALL_TO_ARMS";           // CONSTANT
+const int AI_SHOUT_CALL_TO_ARMS_CONSTANT                  = 3;
+const string AI_SHOUT_CALL_TO_ARMS                           = "CALL_TO_ARMS";
 // 4 - Runner shout (shouts on heartbeat if running)
-const string HELP_MY_FRIEND                         = "HELP_MY_FRIEND";         // CONSTANT
-// 5 - Leader flee now
-const string LEADER_FLEE_NOW                        = "LEADER_FLEE_NOW";        // CONSTANT
+const int AI_SHOUT_HELP_MY_FRIEND_CONSTANT                = 4;
+const string AI_SHOUT_HELP_MY_FRIEND                         = "HELP_MY_FRIEND";
+// 5 - Leader flee now. Does what it says on the tin.
+const int AI_SHOUT_LEADER_FLEE_NOW_CONSTANT               = 5;
+const string AI_SHOUT_LEADER_FLEE_NOW                        = "LEADER_FLEE_NOW";
 // 6 - Attack target X (specific target)
-const string LEADER_ATTACK_TARGET                   = "LEADER_ATTACK_TARGET";   // CONSTANT
+const int AI_SHOUT_LEADER_ATTACK_TARGET_CONSTANT    = 6;
+const string AI_SHOUT_LEADER_ATTACK_TARGET          = "LEADER_ATTACK_TARGET";
 // 7 - I was killed - May flee if lots die!
-const string I_WAS_KILLED                           = "I_WAS_KILLED";           // CONSTANT
+const int AI_SHOUT_I_WAS_KILLED_CONSTANT            = 7;
+const string AI_SHOUT_I_WAS_KILLED                           = "I_WAS_KILLED";
 // 8 - 1.3 - PLaceables/doors which shout this get responded to!
-const string I_WAS_OPENED                           = "I_WAS_OPENED";           // CONSTANT
+const int AI_SHOUT_I_WAS_OPENED_CONSTANT                  = 8;
+const string AI_SHOUT_I_WAS_OPENED                           = "I_WAS_OPENED";
 
 // Extra - runner location variable (local location)
 const string AI_HELP_MY_FRIEND_LOCATION             = "AI_HELP_MY_FRIEND_LOCATION";// LOCATION
 // Set on a placeable, by the placeable - thier last opener.
-const string PLACEABLE_LAST_OPENED_BY               = "PLACEABLE_LAST_OPENED_BY";// Object
+const string AI_PLACEABLE_LAST_OPENED_BY               = "AI_PLACEABLE_LAST_OPENED_BY";// Object
 
 /******************************************************************************/
 // All timers  (the end bits. Not the prefixes.)
@@ -466,9 +425,6 @@ const string AI_TIMER_EMPATHY                       = "AI_TIMER_EMPATHY";       
 const string AI_TIMER_AOE_SPELL_EVENT               = "AI_TIMER_AOE_SPELL_EVENT";
 const string AI_TIMER_FLEE                          = "AI_TIMER_FLEE";
 const string AI_TIMER_LEADER_SENT_RUNNER            = "AI_TIMER_LEADER_SENT_RUNNER";
-
-// Special search timer - stops calling Search()
-const string AI_TIMER_SEARCH                        = "AI_TIMER_SEARCH_TIMER";        // S.INTEGER
 
 // On phisical attacked - if knockdown adn they can hit us (and not doofing the AI)
 // then we use healing sooner as, basically, we may be knockdowned too much!
@@ -500,6 +456,7 @@ const string AI_TALK_ON_TAUNT                       = "AI_TALK_ON_TAUNT";
 
 const string AI_TALK_ON_LEADER_SEND_RUNNER          = "AI_TALK_ON_LEADER_SEND_RUNNER";
 const string AI_TALK_ON_LEADER_ATTACK_TARGET        = "AI_TALK_ON_LEADER_ATTACK_TARGET";
+const string AI_TALK_ON_LEADER_BOSS_SHOUT           = "AI_TALK_ON_LEADER_BOSS_SHOUT";
 // Constant for the Size of the a string array - the prefix.
 const string ARRAY_SIZE                             = "ARRAY_SIZE_";            // S.STRING
 const string ARRAY_PERCENT                          = "ARRAY_PER_";             // S.STRING
@@ -554,8 +511,8 @@ const string AI_WEAPON_RANGED_IS_UNLIMITED          = "AI_WEAPON_RANGED_IS_UNLIM
 const string AI_WEAPON_SHIELD                       = "AI_WEAPON_SHIELD";       // S.OBJECT
 const string AI_WEAPON_SHIELD_2                     = "AI_WEAPON_SHIELD_2";     // S.OBJECT
 // End post-fixs as it were
-const string WEAP_SIZE                              = "AI_WEAP_SIZE";           // CONSTANT
-const string WEAP_DAMAGE                            = "AI_WEAP_DAMAGE";         // CONSTANT
+const string WEAP_SIZE                              = "AI_WEAP_SIZE";
+const string WEAP_DAMAGE                            = "AI_WEAP_DAMAGE";
 
 /*******************************************************************************
     Constants for spawn options
@@ -581,6 +538,8 @@ const string WEAP_DAMAGE                            = "AI_WEAP_DAMAGE";         
 /******************************************************************************/
 const string AI_UDE_MASTER      = "AI_UDE_MASTER";
 const string EXIT_UDE_PREFIX_   = "EXIT_UDE_PREFIX_";// Exit string, like EXIT_UDE_PREFIX_1001 is the heartbeat exit
+const string AI_PRE_EVENT_NUMBER = "AI_PRE_EVENT_NUMBER";// Set if it is a pre-event
+const string AI_UDE_SCRIPT_NAME = "AI_UDE_SCRIPT_NAME";// The script that User Defined Events are run
 /******************************************************************************/
 /******************************************************************************/
 
@@ -691,6 +650,8 @@ const int AI_FLAG_FLEEING_NEVER_FIGHT_IMPOSSIBLE_ODDS = 0x00000800;
 const int AI_FLAG_FLEEING_TURN_OFF_GROUP_MORALE     = 0x00001000;
 // Stops the overriding of HP% we'd need to test our morale.
 const int AI_FLAG_FLEEING_NO_OVERRIDING_HP_AMOUNT   = 0x00002000;
+// If this is ON, we will use a visual effect when we are fleeing battle
+const int AI_FLAG_FLEEING_USE_VISUAL_EFFECT         = 0x00004000;
 
 // Stored integer, base morale save (Default 10)
 const string BASE_MORALE_SAVE                       = "BASE_MORALE_SAVE";// S.INTEGER
@@ -917,6 +878,8 @@ const int AI_FLAG_OTHER_COMBAT_GROUP_LEADER                 = 0x04000000;
 const string AI_BOSS_MONSTER_SHOUT_RANGE            = "AI_BOSS_MONSTER_SHOUT_RANGE";
 // counter - adds 1, when 4+, we may shout for people to attack our target.
 const string AI_LEADER_SHOUT_COUNT                  = "AI_LEADER_SHOUT_COUNT";
+// This will be a timer for disabling the boss shout *tempoarily* for 5 minutes
+const string AI_TIMER_BOSS_SHOUT_COOLDOWN           = "AI_TIMER_BOSS_SHOUT_COOLDOWN";
 
 /******************************************************************************/
 /******************************************************************************/
@@ -1024,11 +987,6 @@ const int AI_FLAG_OTHER_LAG_IGNORE_HEARTBEAT                    = 0x00004000;
 // Go for the nearest seen enemy always
 const int AI_FLAG_OTHER_LAG_TARGET_NEAREST_ENEMY                = 0x00008000;
 
-// SetAI level things.
-const string LAG_AI_LEVEL_NO_PC_OR_ENEMY_50M        = "LAG_AI_LEVEL_NO_PC_OR_ENEMY_50M";
-const string LAG_AI_LEVEL_YES_PC_OR_ENEMY_50M       = "LAG_AI_LEVEL_YES_PC_OR_ENEMY_50M";
-const string LAG_AI_LEVEL_COMBAT                    = "LAG_AI_LEVEL_COMBAT";
-
 /******************************************************************************/
 // Other settings
 /******************************************************************************/
@@ -1059,7 +1017,7 @@ const string AI_VALID_SPELLS = "AI_VALID_SPELLS";
 /******************************************************************************/
 // Max CR used OnSpawn or other GetCreatureTalentBest places
 const int MAXCR                                                     = 20;
-
+/*
 // Doesn't set what they are, only if they exsist.
 const int AI_VALID_TALENT_HARMFUL_AREAEFFECT_DISCRIMINANT           = 0x00000001;// 1 - This is the constant number added to AI_VALID_SPELLS spawn settings.
 const int AI_VALID_TALENT_HARMFUL_RANGED                            = 0x00000002;// 2
@@ -1090,6 +1048,7 @@ const int AI_VALID_ANY_SPELL                                        = 0x80000000
 // Unused. This is mearly to not use talents if we don't have any!
 //const string AI_TALENT_HARMFUL_MELEE                                = "AI_TALENT_HM";
 
+*/
 /******************************************************************************/
 // Other file constants (default1, 2, 4-9, a, b, e
 /******************************************************************************/
@@ -1100,11 +1059,10 @@ const string AI_TIMER                               = "AI_TIMER_";    // Prefix 
 const string AI_CONSTANT                            = "AI_CONSTANT_"; // Prefix for constansts
 const string AI_INTEGER                             = "AI_INTEGER_";  // Prefix for integers
 const string AI_OBJECT                              = "AI_OBJECT_";   // Prefix for objects
+const string AI_LOCATION                            = "AI_LOCATION";  // Prefix for local locations
 
 // Array constants
 const string MAXINT_                            = "MAXINT_";
-const string s1                                 = "1";
-const string s0                                 = "0";// Used mainly for spell triggers
 
 const string ARRAY_TEMP_ENEMIES                 = "ARRAY_TEMP_ENEMIES";
 const string ARRAY_TEMP_ALLIES                  = "ARRAY_TEMP_ALLIES";
@@ -1140,18 +1098,22 @@ void SetAIOff(object oTarget = OBJECT_SELF);
 void SetAIOn(object oTarget = OBJECT_SELF);
 
 // This sets a spawn in condition.
-// * nCondition - the condition to check for (From the "inc_ai_constants" file)
+// * nCondition - the condition to check for (From the "j_inc_constants" file)
 // * sName - The name its stored under
 void SetSpawnInCondition(int nCondition, string sName);
 // This removes a spawn in condition.
-// * nCondition - the condition to check for (From the "inc_ai_constants" file)
+// * nCondition - the condition to check for (From the "j_inc_constants" file)
 // * sName - The name its stored under
 void DeleteSpawnInCondition(int nCondition, string sName);
 // Gets a spawn in condition.
-// * nCondition - the condition to check for (From the "inc_ai_constants" file)
+// * nCondition - the condition to check for (From the "j_inc_constants" file)
 // * sName - The name its stored under
 // * oTarget - The target to look at (Ususally ourselves)
 int GetSpawnInCondition(int nCondition, string sName, object oTarget = OBJECT_SELF);
+// Tests a spawn in condition.
+// * nCondition - A condition to test for.
+// * nTestAgains - An already got (via. local integer) integer to test nCondition against.
+int CheckSpawnCondition(int nCondition, int nTestAgainst);
 
 // We can only ever set ONE special action. These are special things, such as
 // fleeing (that are a mixture of special things).
@@ -1167,29 +1129,31 @@ int GetCurrentSetAction();
 // Sets a local constant to sName, adding one to set right (so values of 0 become 1).
 // * Use GetLocalConstant to return original value set.
 // (To stop local's going awary, we set them with pre-fixes.)
-void SetAIConstant(string sName, int iConstant);
+void SetAIConstant(string sName, int nConstant);
 // Returns a constant set to sName (Takes one away).
 // * Therefore, returns -1 on error.
 // (To stop local's going awary, we set them with pre-fixes.)
 int GetAIConstant(string sName);
 // Deletes a constant set to sName.
 // (To stop local's going awary, we set them with pre-fixes.)
-int DeleteAIConstant(string sName);
+// * Note: Fixed, now "void"
+void DeleteAIConstant(string sName);
 
 // Sets a local AI integers to ourselves.
 // (To stop local's going awary, we set them with pre-fixes.)
-void SetAIInteger(string sName, int iValue);
+void SetAIInteger(string sName, int nValue);
 // Gets a local AI integers from ourselves.
 // (To stop local's going awary, we set them with pre-fixes.)
 int GetAIInteger(string sName);
 // Gets a local AI integers from ourselves.
 // - We can define boundries for what it returns.
 // (To stop local's going awary, we set them with pre-fixes.)
-// If X is < iBottom or > iTop, return iDefault.
-int GetBoundriedAIInteger(string sName, int iDefault = 10, int iTop = 10, int iBottom = 1);
+// If X is < nBottom or > nTop, return iDefault.
+int GetBoundriedAIInteger(string sName, int nDefault = 10, int nTop = 10, int nBottom = 1);
 // Deletes a local AI integers from ourselves.
 // (To stop local's going awary, we set them with pre-fixes.)
-int DeleteAIInteger(string sName);
+// * Note: Fixed, now "void"
+void DeleteAIInteger(string sName);
 
 // Sets a local AI object to ourselves.
 // (To stop local's going awary, we set them with pre-fixes.)
@@ -1199,7 +1163,18 @@ void SetAIObject(string sName, object oObject);
 object GetAIObject(string sName);
 // Deletes a local AI object from ourselves.
 // (To stop local's going awary, we set them with pre-fixes.)
+// * Note: Fixed, now "void"
 void DeleteAIObject(string sName);
+
+// Sets a local AI location to ourselves.
+// (To stop local's going awary, we set them with pre-fixes.)
+void SetAILocation(string sName, location lLocation);
+// Gets a local AI location from ourselves.
+// (To stop local's going awary, we set them with pre-fixes.)
+location GetAILocation(string sName);
+// Deletes a local AI location from ourselves.
+// (To stop local's going awary, we set them with pre-fixes.)
+void DeleteAILocation(string sName);
 
 // Sets up a timer.
 // * sName - the variable name (Adds a pre-fix).
@@ -1212,13 +1187,13 @@ int GetLocalTimer(string sName);
 // Sets a local INTEGER array on ourselves.
 // * sArray - the array name.
 // * oObjectArray - The object we will set.
-// * iValue - The value to check. It is done HIGHEST to LOWEST.
-void SetArrayIntegerValue(string sArray, object oObjectArray, int iValue);
+// * nValue - The value to check. It is done HIGHEST to LOWEST.
+void SetArrayIntegerValue(string sArray, object oObjectArray, int nValue);
 // This will move all integer values from a point back a position
 // * sArray - the array name.
-// * iNumberStart - The value to start at.
-// * iMax - The old-highest (or highest in the order) of the array (EG the 10th of 10)
-void MoveArrayIntegerBackOne(string sArray, int iNumberStart, int iMax);
+// * nNumberStart - The value to start at.
+// * nMax - The old-highest (or highest in the order) of the array (EG the 10th of 10)
+void MoveArrayIntegerBackOne(string sArray, int nNumberStart, int nMax);
 
 // Sets a local FLOAT array on ourselves.
 // * sArray - the array name.
@@ -1227,9 +1202,9 @@ void MoveArrayIntegerBackOne(string sArray, int iNumberStart, int iMax);
 void SetArrayFloatValue(string sArray, object oObjectArray, float fValue);
 // This will move all float values from a point back a position
 // * sArray - the array name.
-// * iNumberStart - The value to start at.
-// * iMax - The old-highest (or highest in the order) of the array (EG the 10th of 10)
-void MoveArrayFloatBackOne(string sArray, int iNumberStart, int iMax);
+// * nNumberStart - The value to start at.
+// * nMax - The old-highest (or highest in the order) of the array (EG the 10th of 10)
+void MoveArrayFloatBackOne(string sArray, int nNumberStart, int nMax);
 
 // Deletes all the things in an array...set to sArray
 void DeleteArray(string sArray);
@@ -1241,24 +1216,29 @@ void SetIgnore(object oTarget);
 // * The AI ignores, and shouldn't intentioally target, the creature.
 int GetIgnore(object oTarget);
 // This gets if the oTarget can be targeted as an enemy.
-// * Returns if a DM, is faction Equal, is dead or the ignore variable.
+// * Returns TRUE if a DM, is faction Equal, is dead, invalid, or the ignore variable.
 int GetIgnoreNoFriend(object oTarget);
 
 // Fires a User Defined Event.
-// * iSpawnValue - The spawn value (like NW_FLAG_PERCIEVE_PRE_EVENT)
-// * iNumber - The number to fire (like EVENT_PERCIEVE_PRE_EVENT)
+// * nSpawnValue - The spawn value (like NW_FLAG_PERCIEVE_PRE_EVENT)
+// * nNumber - The number to fire (like EVENT_PERCIEVE_PRE_EVENT)
 // Returns TRUE if the event fires.
-int FireUserEvent(int iSpawnValue, int iNumber);
+int FireUserEvent(int nSpawnValue, int nNumber);
+// Fire the pre-event, and return TRUE if it interrupts the rest of the
+// event. It uses FireUserEvent() and ExitFromUDE().
+int FirePreUserEvent(int nSpawnValue, int nNumber);
 // This sets to exit the script. Use in the defaultd (On User Defined) file.
 // For example: We want to not attack PC's with the item "ROCK" (Tag). We
 // therefore use the event EVENT_PERCIEVE_PRE_EVENT to exit if they have that item
 // because we go friendly to them.
-// * iNumber - The user defined number to exit from.
-void SetToExitFromUDE(int iNumber);
+// * nNumber - The user defined number to exit from.
+void SetToExitFromUDE(int nNumber);
 // This is used for Pre-events. If we exit from EVENT_PERCIEVE_PRE_EVENT, and
 // use SetToExitFromUDE, this returns TRUE (ONCE!)
-// * iNumber - The user defined number to exit from.
-int ExitFromUDE(int iNumber);
+// * nNumber - The user defined number to exit from.
+int ExitFromUDE(int nNumber);
+// Get the user defined event number - includes Pre-events.
+int AI_GetUDENumber();
 
 // We check if we are attacking anything
 // * Checks Attempted* Targets, Get the AttackTarget of us.
@@ -1275,15 +1255,8 @@ int GetIsBusyWithAction();
 // * IE it adds GetIsBusyWithAction with GetIsFighting to give 0, 1 or 2.
 // * Checks if we are fleeing too
 int CannotPerformCombatRound();
-// This will SpeakString a value from sName's array. i1000 uses a d1000 for % chance
-void SpeakArrayString(string sName, int i1000 = FALSE);
-// This is used in combat (at the end thereof) and when something shouts, and is a placeable.
-// * oTarget - The target which may have shouted, or similar. Moves to and closes normally.
-// If no oTarget, it still searches
-void Search(object oTarget = OBJECT_INVALID);
-// Used in Search(). This apply Trueseeing, See invisibility, or Invisiblity purge
-// if we have neither of the 3 on us.
-void SearchSpells();
+// This will SpeakString a value from sName's array. b1000 uses a d1000 for % chance
+void SpeakArrayString(string sName, int b1000 = FALSE);
 
 // Returns our custom AI file (if any)
 // - Blank string if not set
@@ -1294,6 +1267,9 @@ string GetCustomAIFileName();
 // - Can sort actions against a imputted target (EG: On Percieved enemy) by
 //   "GetLocalObject(OBJECT_SELF, AI_TEMP_SET_TARGET)"
 void SetCustomAIFileName(string sAIFileName);
+// Sets our User Defined Event file.
+// * Should be called if we are using pre-events. By default, it is called.
+void SetCustomUDEFileName(string sUDEFileName);
 
 // This is still used - we just set a local object and execute script.
 // Set the script to use by COMBAT_FILE constant
@@ -1303,10 +1279,46 @@ void DetermineCombatRound(object oTarget = OBJECT_INVALID);
 // - Returns FALSE if none of them are performed
 // Use this to make sure that an ActionMoveTo or DCR doesn't fire if we are fleeing.
 // - This does not perform any actions.
+// * Doesn't include a check for Search. This can be interrupted.
+// * Note: 1.4: If we are not doing something that combat cannot interrupt (EG:
+//   if we are, say, moving to combat...but not if we were fleeing) we will delete
+//   what special action we were doing.
 int GetIsPerformingSpecialAction();
 
 // This will, if we are set that we can, shout the string.
 void AISpeakString(string sString);
+
+// This will apply the fear visual for fleeing, if the variable
+// AI_FLAG_FLEEING_USE_VISUAL_EFFECT is on.
+void ApplyFleeingVisual();
+// This will remove the fear visual for fleeing.
+void RemoveFleeingVisual();
+
+// ETHEREALNESS:
+// Can be SEEN through with TRUESEEING. If we see a ETHEREAL person, we cannot
+// DIRECTLY attack them.
+// Soooo...we will never target them as spell targets (AOE ones are fine!) nor
+// as attack targets, but they are counted and recognised - and can be used
+// as AOE targets.
+// Best way is to leave most checks as normal, but make sure DetermineCombatRound()
+// works correctly - it recognises (and will attempt to dispel too!), but will
+// never target those.
+
+// Add check here for GetIsEthereal()
+
+// 1.4 addition: See J_INC_CONSTANT, under "ETHEREALNESS:", it explains how
+// etherealness and trueseing now work with later patches.
+// * Special use in DetermineCombatRound() makes the AI never target ethereal people,
+//   but take account of them for cirtain things (IE: They exsist).
+// NOTE: If oTarget is OBJECT_SELF, we return FALSE.
+int GetIsEthereal(object oTarget);
+
+// This will be for array speakstrings (IE: Taunts), and will make sure
+// we are commandable, not dead, not deaf, and not silenced.
+int CanSpeak();
+// Checks the target for a specific EFFECT_TYPE constant value
+// Returns TRUE or FALSE. Used On Damaged for polymorph checking.
+int GetHasEffect(int nEffectType, object oTarget = OBJECT_SELF);
 
 /*::///////////////////////////////////////////////
 //:: Name: AI ON, or OFF.
@@ -1354,6 +1366,13 @@ void DeleteSpawnInCondition(int nCondition, string sName)
 {
     SetLocalInt(OBJECT_SELF, sName, (GetLocalInt(OBJECT_SELF, sName) & ~nCondition));
 }
+// Tests a spawn in condition.
+// * nCondition - A condition to test for.
+// * nTestAgains - An already got (via. local integer) integer to test nCondition against.
+int CheckSpawnCondition(int nCondition, int nTestAgainst)
+{
+    return (nTestAgainst & nCondition);
+}
 /*::///////////////////////////////////////////////
 //:: Name: SetCurrentAction, ResetCurrentAction, GetCurrentSetAction.
 //::///////////////////////////////////////////////
@@ -1396,51 +1415,52 @@ int GetLocalTimer(string sName)
 // Sets a local INTEGER array on ourselves.
 // * sArray - the array name.
 // * oObjectArray - The object we will set.
-// * iValue - The value to check. It is done HIGHEST to LOWEST.
-void SetArrayIntegerValue(string sArray, object oObjectArray, int iValue)
+// * nValue - The value to check. It is done HIGHEST to LOWEST.
+void SetArrayIntegerValue(string sArray, object oObjectArray, int nValue)
 {
-    int iValueAtPosition, iMax, i;
+    int nValueAtPosition, nMax, nCnt;
     // Get the current size
-    iMax = GetLocalInt(OBJECT_SELF, MAXINT_ + sArray);
+    nMax = GetLocalInt(OBJECT_SELF, MAXINT_ + sArray);
     string sArrayStore = sArray;
     // Special -  IE no valid array values at the start.
-    if(iMax < i1)
+    if(nMax < 1)
     {
-        sArrayStore += s1;
-        SetLocalInt(OBJECT_SELF, sArray + s1, iValue);
-        SetLocalObject(OBJECT_SELF, sArray + s1, oObjectArray);
-        SetLocalInt(OBJECT_SELF, MAXINT_ + sArray, i1);  // always the first.
+        sArrayStore += "1";
+        SetLocalInt(OBJECT_SELF, sArray + "1", nValue);
+        SetLocalObject(OBJECT_SELF, sArray + "1", oObjectArray);
+        SetLocalInt(OBJECT_SELF, MAXINT_ + sArray, 1);  // always the first.
     }
     // Else, we will set it in the array.
     else
     {
         // Loop through the items stored already.
-        for(i = i1; i <= iMax; i++)
+        for(nCnt = 1; nCnt <= nMax; nCnt++)
         {
             // Get the value of the item.
-            iValueAtPosition = GetLocalInt(OBJECT_SELF, sArray + IntToString(i));
+            nValueAtPosition = GetLocalInt(OBJECT_SELF, sArray + IntToString(nCnt));
             // If imput is greater than stored...move all of them back one.
-            if(iValue > iValueAtPosition)
+            if(nValue > nValueAtPosition)
             {
                 // Move all values from this point onwards back one.
-                MoveArrayIntegerBackOne(sArray, i, iMax);
+                MoveArrayIntegerBackOne(sArray, nCnt, nMax);
                 // Set the local object and the local integer.
-                sArrayStore += IntToString(i);
-                SetLocalInt(OBJECT_SELF, sArrayStore, iValue);
+                sArrayStore += IntToString(nCnt);
+                SetLocalInt(OBJECT_SELF, sArrayStore, nValue);
                 SetLocalObject(OBJECT_SELF, sArrayStore, oObjectArray);
-                // Set max values we have (IE add one!)    1.3beta - changed from iMax++
-                SetLocalInt(OBJECT_SELF, MAXINT_ + sArray, ++iMax);
+                // Set max values we have (IE add one!)
+                // 1.3 beta - changed from nMax++
+                SetLocalInt(OBJECT_SELF, MAXINT_ + sArray, ++nMax);
                 break;
             }
             // If at end, just add at end.
-            else if(i == iMax)
+            else if(nCnt == nMax)
             {
                 // Set the local object and the local integer.
-                sArrayStore += IntToString(i + i1);
-                SetLocalInt(OBJECT_SELF, sArrayStore, iValue);
+                sArrayStore += IntToString(nCnt + 1);
+                SetLocalInt(OBJECT_SELF, sArrayStore, nValue);
                 SetLocalObject(OBJECT_SELF, sArrayStore, oObjectArray);
                 // Set max values we have (IE add one!)
-                SetLocalInt(OBJECT_SELF, MAXINT_ + sArray, ++iMax);
+                SetLocalInt(OBJECT_SELF, MAXINT_ + sArray, ++nMax);
                 break;
             }
         }
@@ -1448,29 +1468,29 @@ void SetArrayIntegerValue(string sArray, object oObjectArray, int iValue)
 }
 // This will move all integer values from a point back a position
 // * sArray - the array name.
-// * iNumberStart - The value to start at.
-// * iMax - The old-highest (or highest in the order) of the array (EG the 10th of 10)
-void MoveArrayIntegerBackOne(string sArray, int iNumberStart, int iMax)
+// * nNumberStart - The value to start at.
+// * nMax - The old-highest (or highest in the order) of the array (EG the 10th of 10)
+void MoveArrayIntegerBackOne(string sArray, int nNumberStart, int nMax)
 {
     // Objects, the old name for that value and the new one.
     object oObjectAtNumber;
     string sCurrentName, sNewName;
-    int iArrayAtNumberValue, i;
+    int nArrayAtNumberValue, nCnt;
     // Move it from the back, back one, then then next...
     // Start at value 5 (Max) and move it to 6, then move to 4, move it
-    // to 5 and so on down to iNumber Start, say, 3, so we get to 3, move it to 4,
+    // to 5 and so on down to nNumber Start, say, 3, so we get to 3, move it to 4,
     // and space 3 is free.
-    for(i = iMax; i >= iNumberStart; i--)
+    for(nCnt = nMax; nCnt >= nNumberStart; nCnt--)
     {
         // Sets the name up right.
-        sCurrentName = sArray + IntToString(i);  // The current name to get values.
-        sNewName = sArray + IntToString(i + i1); // Move back = Add one
+        sCurrentName = sArray + IntToString(nCnt);  // The current name to get values.
+        sNewName = sArray + IntToString(nCnt + 1); // Move back = Add one
         //  Set the things up in the right parts.
         oObjectAtNumber = GetLocalObject(OBJECT_SELF, sCurrentName);
-        iArrayAtNumberValue = GetLocalInt(OBJECT_SELF, sCurrentName);
-        // To the NEW name - we add one to the i value.
+        nArrayAtNumberValue = GetLocalInt(OBJECT_SELF, sCurrentName);
+        // To the NEW name - we add one to the nCnt value.
         SetLocalObject(OBJECT_SELF, sNewName, oObjectAtNumber);
-        SetLocalInt(OBJECT_SELF, sNewName, iArrayAtNumberValue);
+        SetLocalInt(OBJECT_SELF, sNewName, nArrayAtNumberValue);
     }
 }
 // Sets a local FLOAT array on ourselves.
@@ -1479,48 +1499,48 @@ void MoveArrayIntegerBackOne(string sArray, int iNumberStart, int iMax)
 // * fValue - The value to check. It is done LOWEST (nearest) to HIGHEST (fathest).
 void SetArrayFloatValue(string sArray, object oObjectArray, float fValue)
 {
-    int iMax, i;
-    iMax = GetLocalInt(OBJECT_SELF, MAXINT_ + sArray);
+    int nMax, nCnt;
+    nMax = GetLocalInt(OBJECT_SELF, MAXINT_ + sArray);
     string sArrayStore = sArray;
     float fValueAtPosition;
     // Special -  IE no valid array values at the start.
-    if(iMax <= FALSE)
+    if(nMax <= FALSE)
     {
-        sArrayStore = sArray + s1;
+        sArrayStore = sArray + "1";
         SetLocalFloat(OBJECT_SELF, sArrayStore, fValue);
         SetLocalObject(OBJECT_SELF, sArrayStore, oObjectArray);
-        SetLocalInt(OBJECT_SELF, MAXINT_ + sArray, i1);  // always the first.
+        SetLocalInt(OBJECT_SELF, MAXINT_ + sArray, 1);  // always the first.
     }
     // Else, we will set it in the array.
     else
     {
         // Loop through the items stored already.
-        for(i = i1; i <= iMax; i++)
+        for(nCnt = 1; nCnt <= nMax; nCnt++)
         {
             // Get the value of the item.
-            fValueAtPosition = GetLocalFloat(OBJECT_SELF, sArray + IntToString(i));
+            fValueAtPosition = GetLocalFloat(OBJECT_SELF, sArray + IntToString(nCnt));
             // If imput is LESS (nearer) than stored...move all of them back one.
             if(fValue < fValueAtPosition)
             {
                 // Move all values from this point onwards back one.
-                MoveArrayFloatBackOne(sArray, i, iMax);
+                MoveArrayFloatBackOne(sArray, nCnt, nMax);
                 // Set the local object and the local integer.
-                sArrayStore = sArray + IntToString(i);
+                sArrayStore = sArray + IntToString(nCnt);
                 SetLocalFloat(OBJECT_SELF, sArrayStore, fValue);
                 SetLocalObject(OBJECT_SELF, sArrayStore, oObjectArray);
-                // Set max values we have (IE add one!)  1.3 beta - it was iMax++
-                SetLocalInt(OBJECT_SELF, MAXINT_ + sArray, ++iMax);
+                // Set max values we have (IE add one!)  1.3 beta - it was nMax++
+                SetLocalInt(OBJECT_SELF, MAXINT_ + sArray, ++nMax);
                 break;
             }
-            // Else, if it is the end value (iMax) we set it at the end
-            else if(i == iMax)
+            // Else, if it is the end value (nMax) we set it at the end
+            else if(nCnt == nMax)
             {
                 // Set the local object and the local integer.
-                sArrayStore = sArray + IntToString(i + i1);
+                sArrayStore = sArray + IntToString(nCnt + 1);
                 SetLocalFloat(OBJECT_SELF, sArrayStore, fValue);
                 SetLocalObject(OBJECT_SELF, sArrayStore, oObjectArray);
                 // Set max values we have (IE add one!)
-                SetLocalInt(OBJECT_SELF, MAXINT_ + sArray, ++iMax);
+                SetLocalInt(OBJECT_SELF, MAXINT_ + sArray, ++nMax);
                 break;
             }
         }
@@ -1528,21 +1548,21 @@ void SetArrayFloatValue(string sArray, object oObjectArray, float fValue)
 }
 // This will move all float values from a point back a position
 // * sArray - the array name.
-// * iNumberStart - The value to start at.
-// * iMax - The old-highest (or highest in the order) of the array (EG the 10th of 10)
-void MoveArrayFloatBackOne(string sArray, int iNumberStart, int iMax)
+// * nNumberStart - The value to start at.
+// * nMax - The old-highest (or highest in the order) of the array (EG the 10th of 10)
+void MoveArrayFloatBackOne(string sArray, int nNumberStart, int nMax)
 {
     // Objects, the old name for that value and the new one.
     object oObjectAtNumber;
     string sCurrentName, sNewName;
-    int i;
+    int nCnt;
     float fArrayAtNumberValue;
     // Move it from the back, back one, then then next...
-    for(i = iMax; i >= iNumberStart; i--)
+    for(nCnt = nMax; nCnt >= nNumberStart; nCnt--)
     {
         // Sets the name up right.
-        sCurrentName = sArray + IntToString(i);  // The current name to get values.
-        sNewName = sArray + IntToString(i + i1); // Move back = Add one
+        sCurrentName = sArray + IntToString(nCnt);  // The current name to get values.
+        sNewName = sArray + IntToString(nCnt + 1); // Move back = Add one
         //  Set the things up in the right parts.
         oObjectAtNumber = GetLocalObject(OBJECT_SELF, sCurrentName);
         fArrayAtNumberValue = GetLocalFloat(OBJECT_SELF, sCurrentName);
@@ -1554,15 +1574,15 @@ void MoveArrayFloatBackOne(string sArray, int iNumberStart, int iMax)
 // Deletes all the things in an array...set to sArray
 void DeleteArray(string sArray)
 {
-    int i, iMax;
+    int nCnt, nMax;
     string sNewName;
     // Max values, if any
-    iMax = GetLocalInt(OBJECT_SELF, MAXINT_ + sArray);
-    if(iMax)
+    nMax = GetLocalInt(OBJECT_SELF, MAXINT_ + sArray);
+    if(nMax)
     {
-        for(i = i1; i <= iMax; i++)
+        for(nCnt = 1; nCnt <= nMax; nCnt++)
         {
-            sNewName = sArray + IntToString(i);
+            sNewName = sArray + IntToString(nCnt);
             DeleteLocalObject(OBJECT_SELF, sNewName);// Object
             DeleteLocalInt(OBJECT_SELF, sNewName);// Value
             DeleteLocalFloat(OBJECT_SELF, sNewName);// Value
@@ -1587,10 +1607,12 @@ int GetIgnore(object oTarget)
 {
     return GetLocalInt(oTarget, AI_IGNORE_TOGGLE);
 }
+// This gets if the oTarget can be targeted as an enemy.
+// * Returns if a DM, is faction Equal, is dead, invalid, or the ignore variable.
 int GetIgnoreNoFriend(object oTarget)
 {
-    if(GetLocalInt(oTarget, AI_IGNORE_TOGGLE) || GetFactionEqual(oTarget) ||
-       GetIsDM(oTarget) || GetIsDead(oTarget))
+    if(!GetIsObjectValid(oTarget) || GetLocalInt(oTarget, AI_IGNORE_TOGGLE) ||
+       GetFactionEqual(oTarget) || GetIsDM(oTarget) || GetIsDead(oTarget))
     {
         return TRUE;
     }
@@ -1601,13 +1623,13 @@ int GetIgnoreNoFriend(object oTarget)
 //::///////////////////////////////////////////////
   Sets a constant (from nwscript.nss)
 //::////////////////////////////////////////////*/
-void SetAIConstant(string sName, int iConstant)
+void SetAIConstant(string sName, int nConstant)
 {
-    SetLocalInt(OBJECT_SELF, AI_CONSTANT + sName, iConstant + i1);
+    SetLocalInt(OBJECT_SELF, AI_CONSTANT + sName, nConstant + 1);
 }
 int GetAIConstant(string sName)
 {
-    return GetLocalInt(OBJECT_SELF, AI_CONSTANT + sName) - i1;
+    return GetLocalInt(OBJECT_SELF, AI_CONSTANT + sName) - 1;
 }
 void DeleteAIConstant(string sName)
 {
@@ -1618,23 +1640,27 @@ void DeleteAIConstant(string sName)
 //::///////////////////////////////////////////////
     To stop local's going awary, we set them with pre-fixes.
 //::////////////////////////////////////////////*/
-void SetAIInteger(string sName, int iValue)
+void SetAIInteger(string sName, int nValue)
 {
-    SetLocalInt(OBJECT_SELF, AI_INTEGER + sName, iValue);
+    SetLocalInt(OBJECT_SELF, AI_INTEGER + sName, nValue);
 }
 int GetAIInteger(string sName)
 {
     return GetLocalInt(OBJECT_SELF, AI_INTEGER + sName);
 }
-int GetBoundriedAIInteger(string sName, int iDefault, int iTop, int iBottom)
+// Gets a local AI integers from ourselves.
+// - We can define boundries for what it returns.
+// (To stop local's going awary, we set them with pre-fixes.)
+// If X is < nBottom or > nTop, return iDefault.
+int GetBoundriedAIInteger(string sName, int nDefault = 10, int nTop = 10, int nBottom = 1)
 {
-    int iReturn = GetAIInteger(sName);
+    int nReturn = GetAIInteger(sName);
     // Boundries
-    if(iReturn < iBottom || iReturn > iTop)
+    if(nReturn < nBottom || nReturn > nTop)
     {
-        iReturn = iDefault;
+        nReturn = nDefault;
     }
-    return iReturn;
+    return nReturn;
 }
 void DeleteAIInteger(string sName)
 {
@@ -1657,23 +1683,63 @@ void DeleteAIObject(string sName)
 {
     DeleteLocalObject(OBJECT_SELF, AI_OBJECT + sName);
 }
-
+/*::///////////////////////////////////////////////
+//:: Name: SetAILocation, GetAILocation, DeleteAILocation
+//::///////////////////////////////////////////////
+    To stop local's going awary, we set them with pre-fixes.
+//::////////////////////////////////////////////*/
+void SetAILocation(string sName, location lLocation)
+{
+    SetLocalLocation(OBJECT_SELF, AI_LOCATION + sName, lLocation);
+}
+location GetAILocation(string sName)
+{
+    return GetLocalLocation(OBJECT_SELF, AI_LOCATION + sName);
+}
+void DeleteAILocation(string sName)
+{
+    DeleteLocalLocation(OBJECT_SELF, AI_LOCATION + sName);
+}
 /*::///////////////////////////////////////////////
 //:: Name: FireUserEvent
 //::///////////////////////////////////////////////
 // Fires a User Defined Event.
-// * iSpawnValue - The spawn value (like NW_FLAG_PERCIEVE_PRE_EVENT)
-// * iNumber - The number to fire (like EVENT_PERCIEVE_PRE_EVENT)
+// * nSpawnValue - The spawn value (like NW_FLAG_PERCIEVE_PRE_EVENT)
+// * nNumber - The number to fire (like EVENT_PERCIEVE_PRE_EVENT)
 // Returns TRUE if the event fires.
 //::////////////////////////////////////////////*/
-int FireUserEvent(int iSpawnValue, int iNumber)
+int FireUserEvent(int nSpawnValue, int nNumber)
 {
     // Check spawn in condition
-    if(GetSpawnInCondition(iSpawnValue, AI_UDE_MASTER))
+    if(GetSpawnInCondition(nSpawnValue, AI_UDE_MASTER))
     {
         // Signal event (and return TRUE)
-        SignalEvent(OBJECT_SELF, EventUserDefined(iNumber));
+        SignalEvent(OBJECT_SELF, EventUserDefined(nNumber));
         return TRUE;
+    }
+    return FALSE;
+}
+// Fire the pre-event, and return TRUE if it interrupts the rest of the
+// event. It uses FireUserEvent() and ExitFromUDE().
+int FirePreUserEvent(int nSpawnValue, int nNumber)
+{
+    // If we fire the event...
+    if(GetSpawnInCondition(nSpawnValue, AI_UDE_MASTER))
+    {
+        // "Signal" the event
+        SetAIInteger(AI_PRE_EVENT_NUMBER, TRUE);
+
+        // Execute the script
+        string sScript = GetLocalString(OBJECT_SELF, AI_UDE_SCRIPT_NAME);
+
+        // Default the file to FILE_DEFAULT_UDE
+        if(sScript == "") sScript = FILE_DEFAULT_UDE;
+
+        // Execute it
+        ExecuteScript(sScript, OBJECT_SELF);
+
+        // Return TRUE or FALSE depending on ExitFromUDE();
+        return ExitFromUDE(nNumber);
     }
     return FALSE;
 }
@@ -1684,23 +1750,23 @@ int FireUserEvent(int iSpawnValue, int iNumber)
 // For example: We want to not attack PC's with the item "ROCK" (Tag). We
 // therefore use the event EVENT_PERCIEVE_PRE_EVENT to exit if they have that item
 // because we go friendly to them.
-// * iNumber - The user defined number to exit from.
+// * nNumber - The user defined number to exit from.
 //::////////////////////////////////////////////*/
-void SetToExitFromUDE(int iNumber)
+void SetToExitFromUDE(int nNumber)
 {
-    SetLocalInt(OBJECT_SELF, EXIT_UDE_PREFIX_ + IntToString(iNumber), TRUE);
+    SetLocalInt(OBJECT_SELF, EXIT_UDE_PREFIX_ + IntToString(nNumber), TRUE);
 }
 /*::///////////////////////////////////////////////
 //:: Name: ExitFromUDE
 //::///////////////////////////////////////////////
 // This is used for Pre-events. If we exit from EVENT_PERCIEVE_PRE_EVENT, and
 // use SetToExitFromUDE, this returns TRUE (ONCE!)
-// * iNumber - The user defined number to exit from.
+// * nNumber - The user defined number to exit from.
 //::////////////////////////////////////////////*/
-int ExitFromUDE(int iNumber)
+int ExitFromUDE(int nNumber)
 {
     // Set up string to delete/check
-    string sCheck = EXIT_UDE_PREFIX_ + IntToString(iNumber);
+    string sCheck = EXIT_UDE_PREFIX_ + IntToString(nNumber);
     // Check local value
     if(GetLocalInt(OBJECT_SELF, sCheck))
     {
@@ -1709,6 +1775,21 @@ int ExitFromUDE(int iNumber)
         return TRUE;
     }
     return FALSE;
+}
+// Get the user defined event number - includes Pre-events.
+int AI_GetUDENumber()
+{
+    // Check for pre-event
+    int nPre = GetAIInteger(AI_PRE_EVENT_NUMBER);
+
+    if(nPre > 0)
+    {
+        // return nPre, and we delete it so it doesn't interfere later.
+        DeleteAIInteger(AI_PRE_EVENT_NUMBER);
+        return nPre;
+    }
+    // By default, return the normal event number used
+    return GetUserDefinedEventNumber();
 }
 
 /*::///////////////////////////////////////////////
@@ -1740,75 +1821,83 @@ int GetIsFighting()
 int GetIsBusyWithAction()
 {
     // Set up actions.
-    int iAction = GetCurrentAction();
-    // Common dropout ones to speed it up.
-    if(iAction == ACTION_INVALID ||
-       iAction == ACTION_WAIT ||
-       iAction == ACTION_FOLLOW ||
-       iAction == ACTION_MOVETOPOINT ||
-       iAction == ACTION_DIALOGOBJECT ||
-       iAction == ACTION_REST ||
-       iAction == ACTION_USEOBJECT ||
-       iAction == ACTION_COUNTERSPELL ||
-       iAction == ACTION_DISABLETRAP ||
-       iAction == ACTION_EXAMINETRAP ||
-       iAction == ACTION_FLAGTRAP ||
-       iAction == ACTION_RECOVERTRAP)
+    int nAction = GetCurrentAction();
+    switch(nAction)
     {
-        return FALSE;
-    }
-    else
-    if(iAction == ACTION_ATTACKOBJECT)// Very common. Could be a door as well as a creature!
-    {
-        // This is a special thing...if we are attacking a non-creature, we
-        // return FALSE anyway, to attack the creature.
-
-        // Therefore, if we are attacking a creature though, we return TRUE as
-        // we do not want to change objects. :-P
-        int iAttackObjectType = GetObjectType(GetAttackTarget());
-        // Note: as this returns -1 on error, its easier to just use an if/else
-        //       checking the integers, with a -1 dropout.
-        if(iAttackObjectType != -1)
+        // Very common. Could be a door as well as a creature!
+        case ACTION_ATTACKOBJECT:
         {
-            // We never stop attacking one creature
-            if(iAttackObjectType == OBJECT_TYPE_CREATURE)
+            // This is a special thing...if we are attacking a non-creature, we
+            // return FALSE anyway, to attack the creature.
+
+            // Therefore, if we are attacking a creature though, we return TRUE as
+            // we do not want to change objects. :-P
+            int nAttackObjectType = GetObjectType(GetAttackTarget());
+            // Note: as this returns -1 on error, its easier to just use an if/else
+            //       checking the integers, with a -1 dropout.
+            if(nAttackObjectType != -1)
             {
-                return TRUE;
+                // We never stop attacking one creature
+                if(nAttackObjectType == OBJECT_TYPE_CREATURE)
+                {
+                    return TRUE;
+                }
+                // we may stop attacking a door if we are not fleeing though
+                // But if we are attacking a door and fleeing, don't react.
+                else if(nAttackObjectType == OBJECT_TYPE_DOOR &&
+                       !GetIsObjectValid(GetAIObject(AI_FLEE_TO)))
+                {
+                    return TRUE;
+                }
             }
-            // we may stop attacking a door if we are not fleeing though
-            // But if we are attacking a door and fleeing, don't react.
-            else if(iAttackObjectType == OBJECT_TYPE_DOOR &&
-                   !GetIsObjectValid(GetAIObject(AI_FLEE_TO)))
+        }
+        break;
+        // We are opening a door... (or unlocking one)
+        case ACTION_OPENDOOR: // Opening a door!
+        case ACTION_OPENLOCK: // The AI only unlocks doors
+        {
+            // It may be that we want to always unlock doors and open them as we
+            // are fleeing.
+            if(!GetIsObjectValid(GetAIObject(AI_FLEE_TO)))
             {
                 return TRUE;
             }
         }
-    }
-    // We are opening a door... (or unlocking one)
-    else
-    if(iAction == ACTION_OPENDOOR || // Opening a door!
-       iAction == ACTION_OPENLOCK)   // The AI only unlocks doors
-    {
-        // It may be that we want to always unlock doors and open them as we
-        // are fleeing.
-        if(!GetIsObjectValid(GetAIObject(AI_FLEE_TO)))
+        break;
+        // If we are using a cirtain skill or similar, don't try and attack.
+        // We probably are already!
+        case ACTION_ANIMALEMPATHY: // An "attack" skill we use
+        case ACTION_CASTSPELL:     // Casting a spell shouldn't be interrupted.
+        case ACTION_HEAL:          // Heal skill. A very important way to heal and not to override
+        case ACTION_ITEMCASTSPELL: // Scrolls, potions ETC.
+        case ACTION_LOCK:          // Won't be used. Added for completeness.
+        case ACTION_PICKPOCKET:    // Sometimes used in combat. Nifty!
+        case ACTION_PICKUPITEM:    // We may be picking up lost weapons (disarmed ones)
+        case ACTION_SETTRAP:       // Can't seem to work it :-/ Well, here for completeness
+        case ACTION_TAUNT:         // Taunt shouldn't be interrupted.
         {
             return TRUE;
         }
-    }
-    // If we are using a cirtain skill or similar, don't try and attack.
-    else
-    if(iAction == ACTION_ANIMALEMPATHY || // An "attack" skill we use
-       iAction == ACTION_CASTSPELL ||     // Casting a spell shouldn't be interrupted.
-       iAction == ACTION_HEAL ||          // Heal skill. A very important way to heal and not to override
-       iAction == ACTION_ITEMCASTSPELL || // Scrolls, potions ETC.
-       iAction == ACTION_LOCK ||          // Won't be used. Added for completeness.
-       iAction == ACTION_PICKPOCKET ||    // Sometimes used in combat. Nifty!
-       iAction == ACTION_PICKUPITEM ||    // We may be picking up lost weapons (disarmed ones)
-       iAction == ACTION_SETTRAP ||       // Can't seem to work it :-/ Well, here for completeness
-       iAction == ACTION_TAUNT)           // Taunt shouldn't be interrupted.
-    {
-        return TRUE;
+        break;
+        // These common ones which we will interrupt are covered by "default:"
+        // and are here for reference
+        default:
+        {
+            /* nAction == ACTION_INVALID ||
+               nAction == ACTION_WAIT ||
+               nAction == ACTION_FOLLOW ||
+               nAction == ACTION_MOVETOPOINT ||
+               nAction == ACTION_DIALOGOBJECT ||
+               nAction == ACTION_REST ||
+               nAction == ACTION_USEOBJECT ||
+               nAction == ACTION_COUNTERSPELL ||
+               nAction == ACTION_DISABLETRAP ||
+               nAction == ACTION_EXAMINETRAP ||
+               nAction == ACTION_FLAGTRAP ||
+               nAction == ACTION_RECOVERTRAP  */
+            return FALSE;
+        }
+        break;
     }
     return FALSE;
 }
@@ -1822,12 +1911,12 @@ int CannotPerformCombatRound()
     return GetIsPerformingSpecialAction() + GetIsBusyWithAction() + GetIsFighting();
 }
 
-// This will SpeakString a value from sName's array. i1000 uses a d1000 for % chance
-void SpeakArrayString(string sName, int i1000 = FALSE)
+// This will SpeakString a value from sName's array. b1000 uses a d1000 for % chance
+void SpeakArrayString(string sName, int b1000 = FALSE)
 {
     // Need a valid array (arrays of 1 are just that - 1 value to choose from.)
-    int iSize = GetLocalInt(OBJECT_SELF, ARRAY_SIZE + sName);
-    if(iSize > i0)
+    int nSize = GetLocalInt(OBJECT_SELF, ARRAY_SIZE + sName);
+    if(nSize > 0)
     {
         // Make sure we are not dead (unless we should be)
         if(sName != AI_TALK_ON_DEATH)
@@ -1835,35 +1924,35 @@ void SpeakArrayString(string sName, int i1000 = FALSE)
             if(GetIsDead(OBJECT_SELF)) return;
         }
         // Do we carry on?
-        int iCarryOn = FALSE;
-        if(i1000 == TRUE)
+        int bCarryOn = FALSE;
+        if(b1000 == TRUE)
         {
             // Do the % check now. Values 1-1000 randomised.
-            if((Random(1000) + i1) <= GetLocalInt(OBJECT_SELF, ARRAY_PERCENT + sName)) iCarryOn = TRUE;
+            if((Random(1000) + 1) <= GetLocalInt(OBJECT_SELF, ARRAY_PERCENT + sName)) bCarryOn = TRUE;
         }
         else
         {
             // 100 normal one.
-            if(d100() <= GetLocalInt(OBJECT_SELF, ARRAY_PERCENT + sName)) iCarryOn = TRUE;
+            if(d100() <= GetLocalInt(OBJECT_SELF, ARRAY_PERCENT + sName)) bCarryOn = TRUE;
         }
-        if(iCarryOn)
+        if(bCarryOn)
         {
-            int iRandomOne = i1;
-            if(iSize > i1)
+            int nRandomOne = 1;
+            if(nSize > 1)
             {
                 // Randomise - we add one, so instead of 0-2 (for 3 values) it goes 1-3.
-                iRandomOne = Random(iSize) + i1;
+                nRandomOne = Random(nSize) + 1;
             }
             // Now, to choose one...
-            string sSpeak = GetLocalString(OBJECT_SELF, sName + IntToString(iRandomOne));
+            string sSpeak = GetLocalString(OBJECT_SELF, sName + IntToString(nRandomOne));
             // And speak!
             // - Added random delay for 0.1 to 1.2 seconds to add some variety,
             //   if it is used for n1000
             if(sSpeak != "")
             {
-                // Code sorta taken from NW_I0_Spells, the random stuff.
+                // Code sorta taken from NW_i0_Spells, the random stuff.
                 // FloatToInt(15);/FloatToInt(fRandom * 10.0);
-                if(i1000 == TRUE)
+                if(b1000 == TRUE)
                 {
                     float fDelay = IntToFloat(Random(15) + 1) / 10.0;
                     DelayCommand(fDelay, SpeakString(sSpeak));
@@ -1874,148 +1963,6 @@ void SpeakArrayString(string sName, int i1000 = FALSE)
                     SpeakString(sSpeak);
                 }
             }
-        }
-    }
-}
-// Used in Search(). This apply Trueseeing, See invisibility, or Invisiblity purge
-// if we have neither of the 3 on us.
-void SearchSpells()
-{
-    effect eCheck = GetFirstEffect(OBJECT_SELF);
-    int iEffectType, iBreak;
-    while(GetIsEffectValid(eCheck) && iBreak == FALSE)
-    {
-        iEffectType = GetEffectType(eCheck);
-        if(iEffectType == EFFECT_TYPE_TRUESEEING ||
-           iEffectType == EFFECT_TYPE_SEEINVISIBLE)
-        {
-            iBreak = TRUE;
-        }
-        eCheck = GetNextEffect(OBJECT_SELF);
-    }
-    // We have effects, stop.
-    if(iBreak == TRUE && !GetHasSpellEffect(SPELL_INVISIBILITY_PURGE))
-    {
-        return;
-    }
-    // Else we apply the best spell we have.
-    if(GetHasSpell(SPELL_TRUE_SEEING))
-    {
-        ActionCastSpellAtObject(SPELL_TRUE_SEEING, OBJECT_SELF);
-        return;
-    }
-    if(GetHasSpell(SPELL_SEE_INVISIBILITY))
-    {
-        ActionCastSpellAtObject(SPELL_SEE_INVISIBILITY, OBJECT_SELF);
-        return;
-    }
-    if(GetHasSpell(SPELL_INVISIBILITY_PURGE))
-    {
-        ActionCastSpellAtObject(SPELL_INVISIBILITY_PURGE, OBJECT_SELF);
-        return;
-    }
-}
-// This is used in combat (at the end thereof) and when something shouts, and is a placeable.
-// * oTarget - The target which may have shouted, or similar. Moves to and closes normally.
-// If no oTarget, it still searches
-void Search(object oTarget = OBJECT_INVALID)
-{
-    if(GetIsObjectValid(GetAttemptedSpellTarget()) ||
-       GetIsObjectValid(GetAttemptedAttackTarget()) ||
-       GetIsObjectValid(GetAttackTarget()) ||
-       GetLocalTimer(AI_TIMER_SEARCH))
-    {
-        return;
-    }
-    else
-    {
-        // Stop now
-        ClearAllActions();
-        // Rest after combat?
-        if(GetSpawnInCondition(AI_FLAG_OTHER_REST_AFTER_COMBAT, AI_OTHER_MASTER))
-        {
-            // 71: "[Search] Resting"
-            DebugActionSpeakByInt(71);
-            ForceRest(OBJECT_SELF);
-            ActionWait(f1);
-        }
-        // Determine the amount of time to search if there is antone else around.
-        int iIntelligence = GetBoundriedAIInteger(AI_INTELLIGENCE, i10, i10, i1);
-        float fTime = IntToFloat(iIntelligence * i3);
-        // Set local timer for a minimum of 4 seconds
-        SetLocalTimer(AI_TIMER_SEARCH, f4);
-        // Check some spells. Cast one if we have no true seeing ETC.
-        SearchSpells();
-        // Stealth/search.
-        int iStealth = GetStealthMode(OBJECT_SELF);
-        int iSearch = GetDetectMode(OBJECT_SELF);
-        // We perfere to hide again if we search if set to...sneaky!
-        if(GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_HIDING, AI_OTHER_COMBAT_MASTER))
-        {
-            if(iStealth != STEALTH_MODE_ACTIVATED)
-            {
-                SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
-            }
-        }
-        else
-        {
-            // If we are hiding, stop to search (we shouldn't be - who knows?)
-            if(iStealth == STEALTH_MODE_ACTIVATED)
-            {
-                SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, FALSE);
-            }
-            // And search!
-            if(iSearch != DETECT_MODE_ACTIVE && !GetHasFeat(FEAT_KEEN_SENSE))
-            {
-                SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, TRUE);
-            }
-        }
-        // We check around the target, if there is one.
-        if(GetIsObjectValid(oTarget))
-        {
-            ActionMoveToLocation(GetLocation(oTarget));
-            // If it is a chest ETC. We close it.
-            if(GetIsOpen(oTarget))
-            {
-                if(GetObjectType(oTarget) == OBJECT_TYPE_DOOR)
-                {
-                    ActionCloseDoor(oTarget);
-                }
-                else
-                {
-                    // Close it
-                    ActionDoCommand(DoPlaceableObjectAction(oTarget, PLACEABLE_ACTION_USE));
-                }
-            }
-        }
-        // We will get nearest enemy at the very least
-        else
-        {
-            // Use nearest heard
-            object oEnemy = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY,
-                               OBJECT_SELF, i1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD);
-            if(GetIsObjectValid(oEnemy))
-            {
-                // Move to location
-                ActionMoveToLocation(GetLocation(oEnemy));
-            }
-        }
-        // Note: Here, we will return to spawn location after moving to the
-        // object, if it is a valid setting, else we do the normal randomwalk
-        if(GetSpawnInCondition(AI_FLAG_OTHER_RETURN_TO_SPAWN_LOCATION, AI_OTHER_MASTER))
-        {
-            ActionMoveToLocation(GetLocalLocation(OBJECT_SELF, AI_RETURN_TO_POINT));
-        }
-        else
-        {
-            // 72: "[Search] Searching, No one to attack. [Time] " + FloatToString(fTime, i3, i2)
-            DebugActionSpeakByInt(72, OBJECT_INVALID, FALSE, FloatToString(fTime, i3, i2));
-            // Randomly walk.
-            ActionRandomWalk();
-            // Clear all actions stops Random Walk
-            DelayCommand((fTime - f1), ClearAllActions());
-            // Delay a 30 second walk waypoints (which stops ActionRandomWalk).
-            DelayCommand(fTime, ExecuteScript(FILE_WALK_WAYPOINTS, OBJECT_SELF));
         }
     }
 }
@@ -2034,6 +1981,12 @@ string GetCustomAIFileName()
 void SetCustomAIFileName(string sAIFileName)
 {
     SetLocalString(OBJECT_SELF, AI_CUSTOM_AI_SCRIPT, sAIFileName);
+}
+// Sets our User Defined Event file.
+// * Should be called if we are using pre-events. By default, it is called.
+void SetCustomUDEFileName(string sUDEFileName)
+{
+    SetLocalString(OBJECT_SELF, AI_UDE_SCRIPT_NAME, sUDEFileName);
 }
 
 /*::///////////////////////////////////////////////
@@ -2076,15 +2029,20 @@ void DetermineCombatRound(object oTarget = OBJECT_INVALID)
 // This checks the current special action (fleeing, runner, door smashing)
 // - Returns FALSE if none of them are performed
 // Use this to make sure that an ActionMoveTo or DCR doesn't fire if we are fleeing.
+// * Note: 1.4: If we are not doing something that combat cannot interrupt (EG:
+//   if we are, say, moving to combat...but not if we were fleeing) we will delete
+//   what special action we were doing.
 int GetIsPerformingSpecialAction()
 {
-    int iAction = GetCurrentSetAction();
+    int nAction = GetCurrentSetAction();
     object oTarget = GetAttackTarget();
     object oRunTarget;
-    switch(iAction)
+    switch(nAction)
     {
+        // We are running to get help
         case AI_SPECIAL_ACTIONS_ME_RUNNER:
         {
+            // Get who we are running too.
             oRunTarget = GetAIObject(AI_RUNNER_TARGET);
             if(GetIsObjectValid(oRunTarget))
             {
@@ -2101,6 +2059,7 @@ int GetIsPerformingSpecialAction()
             }
         }
         break;
+        // We are fleeing battle
         case AI_SPECIAL_ACTIONS_FLEE:
         {
             oRunTarget = GetAIObject(AI_FLEE_TO);
@@ -2121,12 +2080,12 @@ int GetIsPerformingSpecialAction()
             {
                 // Check if we have bad intellgence, and we will run away
                 // from the nearest enemy if heard.
-                if(GetAIInteger(AI_INTELLIGENCE) <= i3)
+                if(GetAIInteger(AI_INTELLIGENCE) <= 3)
                 {
-                    oRunTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, i1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN, CREATURE_TYPE_IS_ALIVE, TRUE);
+                    oRunTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN, CREATURE_TYPE_IS_ALIVE, TRUE);
                     if(!GetIsObjectValid(oRunTarget))
                     {
-                        oRunTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, i1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD, CREATURE_TYPE_IS_ALIVE, TRUE);
+                        oRunTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD, CREATURE_TYPE_IS_ALIVE, TRUE);
                         if(!GetIsObjectValid(oRunTarget))
                         {
                             oRunTarget = GetLastHostileActor();
@@ -2144,6 +2103,7 @@ int GetIsPerformingSpecialAction()
             }
         }
         break;
+        // We are moving out of a bad AOE
         case AI_SPECIAL_ACTIONS_MOVE_OUT_OF_AOE:
         {
             // We must be X distance away from a cirtain AOE, if we are not, we
@@ -2164,6 +2124,16 @@ int GetIsPerformingSpecialAction()
             }
         }
         break;
+        default:
+        {
+            // We reset stuff - eg: Move to fighting or Search routines,
+            // because now we will (or should) initiate combat!
+            ResetCurrentAction();
+
+            // Return false to carry on a normal DCR or move to enemy.
+            return FALSE;
+        }
+        break;
     }
     // Return false to carry on a normal DCR or move to enemy.
     return FALSE;
@@ -2180,6 +2150,91 @@ void AISpeakString(string sString)
         SpeakString(sString, TALKVOLUME_SILENT_TALK);
     }
 }
+// This will apply the fear visual for fleeing, if the variable
+// AI_FLAG_FLEEING_USE_VISUAL_EFFECT is on.
+void ApplyFleeingVisual()
+{
+    if(GetSpawnInCondition(AI_FLAG_FLEEING_USE_VISUAL_EFFECT, AI_TARGETING_FLEE_MASTER))
+    {
+        // Supernatural effect.
+        effect eFear = SupernaturalEffect(EffectVisualEffect(VFX_DUR_MIND_AFFECTING_FEAR));
+        ApplyEffectToObject(DURATION_TYPE_PERMANENT, eFear, OBJECT_SELF);
+    }
+}
+// This will remove the fear visual for fleeing.
+void RemoveFleeingVisual()
+{
+    // Get first effect
+    effect eCheck = GetFirstEffect(OBJECT_SELF);
+    while(GetIsEffectValid(eCheck))
+    {
+        // Must be: Not from a spell
+        if(GetEffectSpellId(eCheck) == AI_SPELL_INVALID)
+        {
+            // * Supernatural only, a visual effect, permanent, applied by us.
+            if(GetEffectType(eCheck) == EFFECT_TYPE_VISUALEFFECT &&
+               GetEffectSubType(eCheck) == SUBTYPE_SUPERNATURAL &&
+               GetEffectCreator(eCheck) == OBJECT_SELF &&
+               GetEffectDurationType(eCheck) == DURATION_TYPE_PERMANENT)
+            {
+                // Remove all effects which match this.
+                RemoveEffect(OBJECT_SELF, eCheck);
+            }
+        }
+        // Get next effect
+        eCheck = GetNextEffect(OBJECT_SELF);
+    }
+}
+
+// 1.4 addition: See J_INC_CONSTANT, under "ETHEREALNESS:", it explains how
+// etherealness and trueseing now work with later patches.
+// * Special use in DetermineCombatRound() makes the AI never target ethereal people,
+//   but take account of them for cirtain things (IE: They exsist).
+// NOTE: If oTarget is OBJECT_SELF, we return FALSE.
+int GetIsEthereal(object oTarget)
+{
+    // Return FALSE.
+    if(oTarget == OBJECT_SELF) return FALSE;
+
+    // Check for the 2 spells which might apply this.
+    return (GetHasSpellEffect(SPELL_ETHEREALNESS, oTarget) ||
+            GetHasSpellEffect(AI_SPELLABILITY_ETHEREALNESS, oTarget));
+}
+
+// This will be for array speakstrings (IE: Taunts), and will make sure
+// we are commandable, not dead, not deaf, and not silenced.
+int CanSpeak()
+{
+    // If dead, we cannot speak
+    if(GetIsDead(OBJECT_SELF)) return FALSE;
+
+    // If uncommandable, same
+    if(!GetCommandable()) return FALSE;
+
+    // If silenced, cannot speak, and if deaf, we cannot hear ourselves speak
+    if(GetHasEffect(EFFECT_TYPE_SILENCE) ||
+       GetHasEffect(EFFECT_TYPE_DEAF)) return FALSE;
+
+    // We CAN speak, return TRUE
+    return TRUE;
+}
+// Get Has Effect
+//  Checks to see if the target has a given
+//  effect, usually from a spell. Really useful this is.
+int GetHasEffect(int nEffectType, object oTarget = OBJECT_SELF)
+{
+    effect eCheck = GetFirstEffect(oTarget);
+    while(GetIsEffectValid(eCheck))
+    {
+        if(GetEffectType(eCheck) == nEffectType)
+        {
+             return TRUE;
+        }
+        eCheck = GetNextEffect(oTarget);
+    }
+    return FALSE;
+}
+
 // Debug: To compile this script full, uncomment all of the below.
 /* - Add two "/"'s at the start of this line
 void main()
@@ -2187,3 +2242,4 @@ void main()
     return;
 }
 //*/
+

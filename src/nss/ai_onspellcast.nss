@@ -1,29 +1,30 @@
-/************************ [On Spell Cast At] ***********************************
-    Filename: ai_onspellcast or nw_c2_defaultb
-************************* [On Spell Cast At] ***********************************
+/*/////////////////////// [On Spell Cast At] ///////////////////////////////////
+    Filename: j_ai_onspellcast or nw_c2_defaultb
+///////////////////////// [On Spell Cast At] ///////////////////////////////////
     What does this do? Well...
     - Any AOE spell effects are set in a timer, so we can react to them right
     - Reacts to hostile casters, or allies in combat
 
     And the normal attack :-)
-************************* [History] ********************************************
+///////////////////////// [History] ////////////////////////////////////////////
     1.3 - Added special AOE checks.
         - Hide checks.
-************************* [Workings] *******************************************
+    1.4 - Added more silent shouts. Edited the formatting. Moved a few things around.
+///////////////////////// [Workings] ///////////////////////////////////////////
     This is fired when EventSpellCastAt(object oCaster, int nSpell, int bHarmful=TRUE)
     is signaled on the creature.
 
     GetLastSpellCaster() = oCaster (Door, Placeable, Creature who cast it)
     GetLastSpell()       = nSpell (The spell cast at us)
     GetLastSpellHarmful()= bHarmful (If it is harmful!)
-************************* [Arguments] ******************************************
+///////////////////////// [Arguments] //////////////////////////////////////////
     Arguments: GetLastSpellCaster, GetLastSpellHarmful GetLastSpell()
-************************* [On Spell Cast At] **********************************/
+///////////////////////// [On Spell Cast At] /////////////////////////////////*/
 
 #include "inc_ai_other"
 
 // Sets a local timer if the spell is an AOE one
-void SetAOESpell(int iSpellCast, object oCaster);
+void SetAOESpell(int nSpellCast, object oCaster);
 // Gets the nearest AOE cast by oCaster, of sTag.
 object GetNearestAOECastBy(string sTag, object oCaster);
 // Gets the amount of protections we have - IE globes
@@ -31,67 +32,49 @@ int GetOurSpellLevelImmunity();
 
 void main()
 {
-    // Pre-heartbeat-event
-    if(FireUserEvent(AI_FLAG_UDE_SPELL_CAST_AT_PRE_EVENT, EVENT_SPELL_CAST_AT_PRE_EVENT))
-        // We may exit if it fires
-        if(ExitFromUDE(EVENT_SPELL_CAST_AT_PRE_EVENT)) return;
+    // Pre-spell cast at-event. Returns TRUE if we interrupt this script call.
+    if(FirePreUserEvent(AI_FLAG_UDE_SPELL_CAST_AT_PRE_EVENT, EVENT_SPELL_CAST_AT_PRE_EVENT)) return;
 
     // AI status check. Is the AI on?
     if(GetAIOff()) return;
 
     object oCaster = GetLastSpellCaster();
-    int iHarmful = GetLastSpellHarmful();
-    int iSpellCast = GetLastSpell();
+    int bHarmful = GetLastSpellHarmful();
+    int nSpellCast = GetLastSpell();
     object oAttackerOfCaster;
 
     // If harmful, we set the spell to a timer, if an AOE one.
-    if(iHarmful && GetIsObjectValid(oCaster))
+    if(bHarmful && GetIsObjectValid(oCaster))
     {
         // Might set AOE spell to cast.
-        SetAOESpell(iSpellCast, oCaster);
+        SetAOESpell(nSpellCast, oCaster);
     }
     // If not a creature, probably an AOE or trap.
     if(GetObjectType(oCaster) != OBJECT_TYPE_CREATURE)
     {
         // 67: "[Spell] Caster isn't a creature! May look for target [Caster] " + GetName(oCaster)
         DebugActionSpeakByInt(67, oCaster);
+
+        // Shout to allies to attack, or be prepared.
+        AISpeakString(AI_SHOUT_CALL_TO_ARMS);
+
         // Attack anyone else around
         if(!CannotPerformCombatRound())
         {
+            // Determine Combat Round
             DetermineCombatRound();
         }
     }
-    else if(GetIsObjectValid(oCaster) && !GetIsDM(oCaster) &&
-           !GetIgnore(oCaster) && oCaster != OBJECT_SELF && !GetIsDead(oCaster))
+    // If a friend, or dead, or a DM, or invalid, or self, we ignore them.
+    else if(!GetIgnoreNoFriend(oCaster) && oCaster != OBJECT_SELF)
     {
         // 1.3 changes here:
         // - We do NOT need to know if it is hostile or not, except if it is hostile
-        //   and they are not our faction! We do, however, use iHarmful for speakstrings.
-        if(!GetFactionEqual(oCaster))
-        {
-            // If harmful, we attack anyone! (and if is enemy)
-            if(iHarmful || GetIsEnemy(oCaster))
-            {
-                if(iHarmful)
-                {
-                    // Hostile spell speaksting, if set.
-                    SpeakArrayString(AI_TALK_ON_HOSTILE_SPELL_CAST_AT);
-                }
-                // Turn of hiding check
-                TurnOffHiding(oCaster);
-                // Attack
-                AISpeakString(I_WAS_ATTACKED);
-                // We attack
-                if(!CannotPerformCombatRound())
-                {
-                    // 68: "[Spell:Enemy/Hostile] Not in combat. Attacking: [Caster] " + GetName(oCaster)
-                    DebugActionSpeakByInt(68, oCaster);
-                    DetermineCombatRound(oCaster);
-                }
-            }
-        }
-        // Else, faction is equal, we normally ignore, and only move to attack.
-        else
+        //   and they are not our faction! We do, however, use bHarmful for speakstrings.
+
+        // If harmful, we attack anyone! (and if is enemy)
+        // 1.4: Faction equal check in GetIgnoreNoFriend()
+        if(bHarmful || GetIsEnemy(oCaster))
         {
             // Spawn in condition hostile thingy
             if(GetSpawnInCondition(AI_FLAG_OTHER_CHANGE_FACTIONS_TO_HOSTILE_ON_ATTACK, AI_OTHER_MASTER))
@@ -101,43 +84,74 @@ void main()
                     AdjustReputation(oCaster, OBJECT_SELF, -100);
                 }
             }
-            // We move to the person, if they are attacking something we cannot see...
-            AISpeakString(CALL_TO_ARMS);
 
-            // Not in combat
+            if(bHarmful)
+            {
+                // * Don't speak when dead. 1.4 change (an obvious one to make)
+                if(CanSpeak())
+                {
+                    // Hostile spell speaksting, if set.
+                    SpeakArrayString(AI_TALK_ON_HOSTILE_SPELL_CAST_AT);
+                }
+            }
+
+            // Turn of hiding check
+            TurnOffHiding(oCaster);
+
+            // We attack
             if(!CannotPerformCombatRound())
             {
-                // 69: "[Spell] (ally). Not in combat. May Attack/Move [Caster] " + GetName(oCaster)
-                DebugActionSpeakByInt(69, oCaster);
-                ClearAllActions();
-                // Check thier target. Might not be valid (IE AOE spell at location)
-                oAttackerOfCaster = GetAttackTarget(oCaster);
-                // - Faster then DetermineCombatRound(); and looping targets until
-                //   we get this ally, and get this attacker! :-)
-                if(GetIsObjectValid(oAttackerOfCaster))
+                // 68: "[Spell:Enemy/Hostile] Not in combat. Attacking: [Caster] " + GetName(oCaster)
+                DebugActionSpeakByInt(68, oCaster);
+                DetermineCombatRound(oCaster);
+            }
+
+            // Shout to allies to attack the enemy who attacked me, got via. Last Hostile Actor.
+            AISpeakString(AI_SHOUT_I_WAS_ATTACKED);
+        }
+        // Else, was neutral perhaps. Don't attack them anyway.
+        else
+        {
+            // 69: "[Spell] (ally). Not in combat. May Attack/Move [Caster] " + GetName(oCaster)
+            DebugActionSpeakByInt(69, oCaster);
+
+            // Set special action to investigate - as if this event was triggered
+            // by I_WAS_ATTACKED.
+
+            // If we are already attacking, we do not move
+            if(CannotPerformCombatRound())
+            {
+                // Shout to allies to attack, or be prepared.
+                AISpeakString(AI_SHOUT_CALL_TO_ARMS);
+            }
+            else
+            {
+                // We react as if the caster, a neutral, called for help ala
+                // I_WAS_ATTACKED (they might not have, might just be
+                // preperation for something), but normally, this is a neutral
+                // casting a spell. Do not respond to PC's.
+                if(!GetIsPC(oCaster))
                 {
-                    // Move to the attack target, and wait for a proper on
-                    // perception event (as we are not currently in combat)
-                    ActionMoveToObject(oCaster, TRUE);
-                }
-                else
-                {
-                    // Move to the caster otherwise
-                    ActionMoveToObject(oCaster, TRUE);
+                    IWasAttackedResponse(oCaster);
                 }
             }
         }
+    }
+    // If they are not a faction equal, and valid, we help them.
+    else if(GetIsObjectValid(oCaster) && GetFactionEqual(oCaster))
+    {
+        IWasAttackedResponse(oCaster);
     }
     // Fire End-spell cast at-UDE
     FireUserEvent(AI_FLAG_UDE_SPELL_CAST_AT_EVENT, EVENT_SPELL_CAST_AT_EVENT);
 }
 
 // Sets a local timer if the spell is an AOE one
-void SetAOESpell(int iSpellCast, object oCaster)
+void SetAOESpell(int nSpellCast, object oCaster)
 {
     // Check it is one we can check
-    int iStop = TRUE;
-    switch(iSpellCast)
+    int bStop = TRUE;
+    switch(nSpellCast)
     {
         case SPELL_ACID_FOG:
         case SPELL_MIND_FOG:
@@ -159,82 +173,82 @@ void SetAOESpell(int iSpellCast, object oCaster)
         case SPELL_VINE_MINE_HAMPER_MOVEMENT:
         case SPELL_VINE_MINE_ENTANGLE:
         {
-            iStop = FALSE;
+            bStop = FALSE;
         }
         break;
     }
     // Check immune level
-    int iImmuneLevel = GetOurSpellLevelImmunity();
-    if(iImmuneLevel >= i9)
+    int nImmuneLevel = GetOurSpellLevelImmunity();
+    if(nImmuneLevel >= 9)
     {
-        iStop = TRUE;
+        bStop = TRUE;
     }
     // Check
-    if(iStop == TRUE)
+    if(bStop == TRUE)
     {
         return;
     }
     // We do use intelligence here...
-    int iAIInt = GetBoundriedAIInteger(AI_INTELLIGENCE);
-    int iIgnoreSaves;
-    int iIgnoreImmunities;
+    int nAIInt = GetBoundriedAIInteger(AI_INTELLIGENCE);
+    int bIgnoreSaves;
+    int bIgnoreImmunities;
     object oAOE;
 
     // If it is low, we ignore all things that we could ignore with it...
-    if(iAIInt <= i3)
+    if(nAIInt <= 3)
     {
-        iIgnoreSaves = TRUE;
-        iIgnoreImmunities = TRUE;
+        bIgnoreSaves = TRUE;
+        bIgnoreImmunities = TRUE;
     }
     // Average ignores saves
-    else if(iAIInt <= i7)
+    else if(nAIInt <= 7)
     {
-        iIgnoreSaves = TRUE;
-        iIgnoreImmunities = FALSE;
+        bIgnoreSaves = TRUE;
+        bIgnoreImmunities = FALSE;
     }
     // Else, we do both.
     else
     {
-        iIgnoreSaves = FALSE;
-        iIgnoreImmunities = FALSE;
+        bIgnoreSaves = FALSE;
+        bIgnoreImmunities = FALSE;
     }
 
-    int SetAOE = FALSE;// TRUE means set to timer
-    int iSaveDC = i11;
+    int bSetAOE = FALSE;// TRUE means set to timer
+    int nSaveDC = 11;
 
     // Get the caster DC, the most out of WIS, INT or CHA...
-    int iInt = GetAbilityModifier(ABILITY_INTELLIGENCE, oCaster);
-    int iWis = GetAbilityModifier(ABILITY_WISDOM, oCaster);
-    int iCha = GetAbilityModifier(ABILITY_CHARISMA, oCaster);
+    int nInt = GetAbilityModifier(ABILITY_INTELLIGENCE, oCaster);
+    int nWis = GetAbilityModifier(ABILITY_WISDOM, oCaster);
+    int nCha = GetAbilityModifier(ABILITY_CHARISMA, oCaster);
 
-    if(iInt > iWis && iInt > iCha)
+    if(nInt > nWis && nInt > nCha)
     {
-        iSaveDC += iInt;
+        nSaveDC += nInt;
     }
-    else if(iWis > iCha)
+    else if(nWis > nCha)
     {
-        iSaveDC += iWis;
+        nSaveDC += nWis;
     }
     else
     {
-        iSaveDC += iCha;
+        nSaveDC += nCha;
     }
     // Note:
     // - No reaction type/friendly checks. Signal Event is only fired if the
     //   spell WILL pierce any PvP/Friendly/Area settings
 
     // We check immunities here, please note...
-    switch(iSpellCast)
+    switch(nSpellCast)
     {
         // First: IS GetIsReactionTypeHostile ones.
         case SPELL_EVARDS_BLACK_TENTACLES:
         // Fortitude save, but if we are immune to the hits, its impossible to hurt us
         {
             // If save immune OR AC immune, we ignore this.
-            if(i25 >= GetAC(OBJECT_SELF) && iImmuneLevel < i4 &&
-             ((GetFortitudeSavingThrow(OBJECT_SELF) < iSaveDC + i2) || iIgnoreSaves))
+            if(25 >= GetAC(OBJECT_SELF) && nImmuneLevel < 4 &&
+             ((GetFortitudeSavingThrow(OBJECT_SELF) < nSaveDC + 2) || bIgnoreSaves))
             {
-                SetAOE = TRUE;
+                bSetAOE = TRUE;
                 // Nearest string of tag
                 oAOE = GetNearestAOECastBy(AI_AOE_PER_EVARDS_BLACK_TENTACLES, oCaster);
             }
@@ -244,11 +258,11 @@ void SetAOESpell(int iSpellCast, object oCaster)
         // d4 damage. LOTS of speed loss.
         // Reflex save, or immunity, would stop the speed
         {
-            if(iImmuneLevel < i3 &&
-              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_MOVEMENT_SPEED_DECREASE) || iIgnoreImmunities) &&
-              ((GetReflexSavingThrow(OBJECT_SELF) < iSaveDC + i5) || iIgnoreSaves))
+            if(nImmuneLevel < 3 &&
+              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_MOVEMENT_SPEED_DECREASE) || bIgnoreImmunities) &&
+              ((GetReflexSavingThrow(OBJECT_SELF) < nSaveDC + 5) || bIgnoreSaves))
             {
-                SetAOE = TRUE;
+                bSetAOE = TRUE;
                 // Both use ENTANGLE AOE's
                 oAOE = GetNearestAOECastBy(AI_AOE_PER_ENTANGLE, oCaster);
             }
@@ -257,12 +271,12 @@ void SetAOESpell(int iSpellCast, object oCaster)
         case SPELL_ENTANGLE:
         case SPELL_VINE_MINE_ENTANGLE:
         {
-            if(iImmuneLevel < i1 &&
-             (!GetHasFeat(FEAT_WOODLAND_STRIDE) || iIgnoreImmunities) &&
-             (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_ENTANGLE) || iIgnoreImmunities) &&
-             ((GetReflexSavingThrow(OBJECT_SELF) < iSaveDC + i4) || iIgnoreSaves))
+            if(nImmuneLevel < 1 &&
+             (!GetHasFeat(FEAT_WOODLAND_STRIDE) || bIgnoreImmunities) &&
+             (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_ENTANGLE) || bIgnoreImmunities) &&
+             ((GetReflexSavingThrow(OBJECT_SELF) < nSaveDC + 4) || bIgnoreSaves))
             {
-                SetAOE = TRUE;
+                bSetAOE = TRUE;
                 // Both use ENTANGLE AOE's
                 oAOE = GetNearestAOECastBy(AI_AOE_PER_ENTANGLE, oCaster);
             }
@@ -270,12 +284,12 @@ void SetAOESpell(int iSpellCast, object oCaster)
         break;
         case SPELL_WEB:
         {
-            if(iImmuneLevel < i1 &&
-              (!GetHasFeat(FEAT_WOODLAND_STRIDE) || iIgnoreImmunities) &&
-              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_ENTANGLE) || iIgnoreImmunities) &&
-              ((GetReflexSavingThrow(OBJECT_SELF) < iSaveDC + i4) || iIgnoreSaves))
+            if(nImmuneLevel < 1 &&
+              (!GetHasFeat(FEAT_WOODLAND_STRIDE) || bIgnoreImmunities) &&
+              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_ENTANGLE) || bIgnoreImmunities) &&
+              ((GetReflexSavingThrow(OBJECT_SELF) < nSaveDC + 4) || bIgnoreSaves))
             {
-                SetAOE = TRUE;
+                bSetAOE = TRUE;
                 // Web AOE
                 oAOE = GetNearestAOECastBy(AI_AOE_PER_WEB, oCaster);
             }
@@ -284,12 +298,12 @@ void SetAOESpell(int iSpellCast, object oCaster)
         // Fort save
         case SPELL_STINKING_CLOUD:
         {
-            if(iImmuneLevel < i3 &&
-              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_POISON) || iIgnoreImmunities) &&
-              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_DAZED) || iIgnoreImmunities) &&
-              ((GetFortitudeSavingThrow(OBJECT_SELF) < iSaveDC + i6) || iIgnoreSaves))
+            if(nImmuneLevel < 3 &&
+              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_POISON) || bIgnoreImmunities) &&
+              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_DAZED) || bIgnoreImmunities) &&
+              ((GetFortitudeSavingThrow(OBJECT_SELF) < nSaveDC + 6) || bIgnoreSaves))
             {
-                SetAOE = TRUE;
+                bSetAOE = TRUE;
                 // Stinking cloud persistant AOE.
                 oAOE = GetNearestAOECastBy(AI_AOE_PER_FOGSTINK, oCaster);
             }
@@ -298,10 +312,10 @@ void SetAOESpell(int iSpellCast, object oCaster)
         // Fort save
         case SPELL_CLOUD_OF_BEWILDERMENT:
         {
-            if(iImmuneLevel < i2 &&
-              ((GetFortitudeSavingThrow(OBJECT_SELF) < iSaveDC + i7) || iIgnoreSaves))
+            if(nImmuneLevel < 2 &&
+              ((GetFortitudeSavingThrow(OBJECT_SELF) < nSaveDC + 7) || bIgnoreSaves))
             {
-                SetAOE = TRUE;
+                bSetAOE = TRUE;
                 // Bewilderment cloud persistant AOE.
                 oAOE = GetNearestAOECastBy(AI_AOE_PER_FOGBEWILDERMENT, oCaster);
             }
@@ -310,11 +324,11 @@ void SetAOESpell(int iSpellCast, object oCaster)
         // Special: Mind save is the effect.
         case SPELL_STONEHOLD:
         {
-            if(iImmuneLevel < i6 &&
-              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_MIND_SPELLS) || iIgnoreImmunities) &&
-              ((GetWillSavingThrow(OBJECT_SELF) < iSaveDC + i7) || iIgnoreSaves))
+            if(nImmuneLevel < 6 &&
+              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_MIND_SPELLS) || bIgnoreImmunities) &&
+              ((GetWillSavingThrow(OBJECT_SELF) < nSaveDC + 7) || bIgnoreSaves))
             {
-                SetAOE = TRUE;
+                bSetAOE = TRUE;
                 // Stonehold persistant AOE.
                 oAOE = GetNearestAOECastBy(AI_AOE_PER_STONEHOLD, oCaster);
             }
@@ -323,11 +337,11 @@ void SetAOESpell(int iSpellCast, object oCaster)
         // Special: EFFECT_TYPE_SAVING_THROW_DECREASE is the effect.
         case SPELL_MIND_FOG:
         {
-            if(iImmuneLevel < i5 &&
-              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_SAVING_THROW_DECREASE) || iIgnoreImmunities) &&
-              ((GetWillSavingThrow(OBJECT_SELF) < iSaveDC + i6) || iIgnoreSaves))
+            if(nImmuneLevel < 5 &&
+              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_SAVING_THROW_DECREASE) || bIgnoreImmunities) &&
+              ((GetWillSavingThrow(OBJECT_SELF) < nSaveDC + 6) || bIgnoreSaves))
             {
-                SetAOE = TRUE;
+                bSetAOE = TRUE;
                 // Mind fog
                 oAOE = GetNearestAOECastBy(AI_AOE_PER_FOGMIND, oCaster);
             }
@@ -336,12 +350,12 @@ void SetAOESpell(int iSpellCast, object oCaster)
         // Special: Feats, knockdown
         case SPELL_GREASE:
         {
-            if(iImmuneLevel < i1 &&
-              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_KNOCKDOWN) || iIgnoreImmunities) &&
-              (!GetHasFeat(FEAT_WOODLAND_STRIDE, OBJECT_SELF) || iIgnoreImmunities) &&
-              ((GetReflexSavingThrow(OBJECT_SELF) < iSaveDC + i2) || iIgnoreSaves))
+            if(nImmuneLevel < 1 &&
+              (!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_KNOCKDOWN) || bIgnoreImmunities) &&
+              (!GetHasFeat(FEAT_WOODLAND_STRIDE, OBJECT_SELF) || bIgnoreImmunities) &&
+              ((GetReflexSavingThrow(OBJECT_SELF) < nSaveDC + 2) || bIgnoreSaves))
             {
-                SetAOE = TRUE;
+                bSetAOE = TRUE;
                 // Grease
                 oAOE = GetNearestAOECastBy(AI_AOE_PER_GREASE, oCaster);
             }
@@ -352,23 +366,23 @@ void SetAOESpell(int iSpellCast, object oCaster)
         case SPELL_INCENDIARY_CLOUD:// reflex
         case SPELL_WALL_OF_FIRE:// Reflex
         {
-            if(iImmuneLevel < i6 &&
-               (((GetReflexSavingThrow(OBJECT_SELF) < iSaveDC + i6) &&
+            if(nImmuneLevel < 6 &&
+               (((GetReflexSavingThrow(OBJECT_SELF) < nSaveDC + 6) &&
                   !GetHasFeat(FEAT_IMPROVED_EVASION) &&
-                  !GetHasFeat(FEAT_EVASION)) || iIgnoreSaves))
+                  !GetHasFeat(FEAT_EVASION)) || bIgnoreSaves))
             {
-                SetAOE = TRUE;
-                if(iSpellCast == SPELL_BLADE_BARRIER)
+                bSetAOE = TRUE;
+                if(nSpellCast == SPELL_BLADE_BARRIER)
                 {
                     // BB
                     oAOE = GetNearestAOECastBy(AI_AOE_PER_WALLBLADE, oCaster);
                 }
-                else if(iSpellCast == SPELL_INCENDIARY_CLOUD)
+                else if(nSpellCast == SPELL_INCENDIARY_CLOUD)
                 {
                     // Fog of fire
                     oAOE = GetNearestAOECastBy(AI_AOE_PER_FOGFIRE, oCaster);
                 }
-                else if(iSpellCast == SPELL_WALL_OF_FIRE)
+                else if(nSpellCast == SPELL_WALL_OF_FIRE)
                 {
                     // Wall of fire
                     oAOE = GetNearestAOECastBy(AI_AOE_PER_WALLFIRE, oCaster);
@@ -380,20 +394,20 @@ void SetAOESpell(int iSpellCast, object oCaster)
         case SPELL_CLOUDKILL:// No save!
         case SPELL_CREEPING_DOOM: // No save!
         {
-            if(iImmuneLevel < i6)
+            if(nImmuneLevel < 6)
             {
-                SetAOE = TRUE;
-                if(iSpellCast == SPELL_ACID_FOG)
+                bSetAOE = TRUE;
+                if(nSpellCast == SPELL_ACID_FOG)
                 {
                     // Acid fog
                     oAOE = GetNearestAOECastBy(AI_AOE_PER_FOGACID, oCaster);
                 }
-                else if(iSpellCast == SPELL_CLOUDKILL)
+                else if(nSpellCast == SPELL_CLOUDKILL)
                 {
                     // Cloud Kill
                     oAOE = GetNearestAOECastBy(AI_AOE_PER_FOGKILL, oCaster);
                 }
-                else if(iSpellCast == SPELL_CREEPING_DOOM)
+                else if(nSpellCast == SPELL_CREEPING_DOOM)
                 {
                     // Creeping doom
                     oAOE = GetNearestAOECastBy(AI_AOE_PER_CREEPING_DOOM, oCaster);
@@ -403,28 +417,28 @@ void SetAOESpell(int iSpellCast, object oCaster)
         // Storm - because the AI likes it, we stay in it if it is ours :-)
         case SPELL_STORM_OF_VENGEANCE: // Reflex partial. No check, always damages.
         {
-            if(oCaster != OBJECT_SELF && iImmuneLevel < i9)
+            if(oCaster != OBJECT_SELF && nImmuneLevel < 9)
             {
-                SetAOE = TRUE;
+                bSetAOE = TRUE;
                 // Storm of vengance
                 oAOE = GetNearestAOECastBy(AI_AOE_PER_STORM, oCaster);
             }
         }
     }
-    if(SetAOE)
+    if(bSetAOE)
     {
-        if(!GetLocalTimer(AI_TIMER_AOE_SPELL_EVENT + IntToString(iSpellCast)))
+        if(!GetLocalTimer(AI_TIMER_AOE_SPELL_EVENT + IntToString(nSpellCast)))
         {
-            SetLocalTimer(AI_TIMER_AOE_SPELL_EVENT + IntToString(iSpellCast), f18);
+            SetLocalTimer(AI_TIMER_AOE_SPELL_EVENT + IntToString(nSpellCast), 18.0);
             // Set nearest AOE
             if(GetIsObjectValid(oAOE))
             {
                 // Set nearest AOE of this spell to the local
-                object oNearest = GetAIObject(AI_TIMER_AOE_SPELL_EVENT + IntToString(iSpellCast));
+                object oNearest = GetAIObject(AI_TIMER_AOE_SPELL_EVENT + IntToString(nSpellCast));
                 if(GetDistanceToObject(oAOE) < GetDistanceToObject(oNearest) ||
                   !GetIsObjectValid(oNearest))
                 {
-                    SetAIObject(AI_TIMER_AOE_SPELL_EVENT + IntToString(iSpellCast), oAOE);
+                    SetAIObject(AI_TIMER_AOE_SPELL_EVENT + IntToString(nSpellCast), oAOE);
                 }
             }
         }
@@ -433,8 +447,8 @@ void SetAOESpell(int iSpellCast, object oCaster)
 // Gets the nearest AOE cast by oCaster, of sTag.
 object GetNearestAOECastBy(string sTag, object oCaster)
 {
-    int iCnt = i1;
-    object oAOE = GetNearestObjectByTag(sTag, OBJECT_SELF, iCnt);
+    int nCnt = 1;
+    object oAOE = GetNearestObjectByTag(sTag, OBJECT_SELF, nCnt);
     object oReturn = OBJECT_INVALID;
     // Loop
     while(GetIsObjectValid(oAOE) && !GetIsObjectValid(oReturn))
@@ -444,8 +458,8 @@ object GetNearestAOECastBy(string sTag, object oCaster)
         {
             oReturn = oAOE;
         }
-        iCnt++;
-        oAOE = GetNearestObjectByTag(sTag, OBJECT_SELF, iCnt);
+        nCnt++;
+        oAOE = GetNearestObjectByTag(sTag, OBJECT_SELF, nCnt);
     }
     return oReturn;
 }
@@ -453,27 +467,28 @@ object GetNearestAOECastBy(string sTag, object oCaster)
 // Gets the amount of protections we have - IE globes
 int GetOurSpellLevelImmunity()
 {
-    int iNatural = GetLocalInt(OBJECT_SELF, AI_SPELL_IMMUNE_LEVEL);
+    int nNatural = GetLocalInt(OBJECT_SELF, AI_SPELL_IMMUNE_LEVEL);
     // Stop here, if natural is over 4
-    if(iNatural > i4) return iNatural;
+    if(nNatural > 4) return nNatural;
 
     // Big globe affects 4 or lower spells
-    if(GetHasSpellEffect(SPELL_GLOBE_OF_INVULNERABILITY, OBJECT_SELF) || iNatural >= i4)
-        return i4;
+    if(GetHasSpellEffect(SPELL_GLOBE_OF_INVULNERABILITY, OBJECT_SELF) || nNatural >= 4)
+        return 4;
     // Minor globe is 3 or under
     if(GetHasSpellEffect(SPELL_MINOR_GLOBE_OF_INVULNERABILITY, OBJECT_SELF) ||
        // Shadow con version
        GetHasSpellEffect(SPELL_GREATER_SHADOW_CONJURATION_MINOR_GLOBE, OBJECT_SELF) ||
-       iNatural >= i3)
-        return i3;
+       nNatural >= 3)
+        return 3;
     // 2 and under is ethereal visage.
-    if(GetHasSpellEffect(SPELL_ETHEREAL_VISAGE, OBJECT_SELF) || iNatural >= i2)
-        return i2;
+    if(GetHasSpellEffect(SPELL_ETHEREAL_VISAGE, OBJECT_SELF) || nNatural >= 2)
+        return 2;
     // Ghostly Visarge affects 1 or 0 level spells, and any spell immunity.
-    if(GetHasSpellEffect(SPELL_GHOSTLY_VISAGE, OBJECT_SELF) || iNatural >= i1 ||
+    if(GetHasSpellEffect(SPELL_GHOSTLY_VISAGE, OBJECT_SELF) || nNatural >= 1 ||
        // Or shadow con version.
        GetHasSpellEffect(SPELL_GREATER_SHADOW_CONJURATION_MIRROR_IMAGE, OBJECT_SELF))
-        return i1;
-    // Return iNatural, which is 0-9
+        return 1;
+    // Return nNatural, which is 0-9
     return FALSE;
 }
+

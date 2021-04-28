@@ -1,17 +1,18 @@
-/************************ [Resume Waypoint Walking] ****************************
-    Filename: ai_walkwaypoint
-************************* [Resume Waypoint Walking] ****************************
+/*/////////////////////// [Resume Waypoint Walking] ////////////////////////////
+    Filename: j_ai_walkwaypoin
+///////////////////////// [Resume Waypoint Walking] ////////////////////////////
     Executed On Spawn, and from the end of combat, to resume walking
 
     Notes:
     Needed my own file as to execute and be sure it exsisted. This means
     the Non-override version will not use 2 different waypoint files most of the
     time.
-************************* [History] ********************************************
+///////////////////////// [History] ////////////////////////////////////////////
     1.0 - Added
     1.3 - Changed to SoU waypoints. fired from End of Spawn and heartbeat.
           It also returns to start location if set.
-************************* [Workings] *******************************************
+    1.4 -
+///////////////////////// [Workings] ///////////////////////////////////////////
     Might change to SoU waypoints, this, at the moment, will just
     walk normal waypoints.
 
@@ -48,18 +49,21 @@
     Waypoints can be between areas and creatures will move there, if you set a
     global integer variable called X2_SWITCH_CROSSAREA_WALKWAYPOINTS on your
     module to 1.
-************************* [Arguments] ******************************************
+///////////////////////// [Arguments] //////////////////////////////////////////
     Arguments: WAYPOINT_RUN, WAYPOINT_PAUSE are set On Spawn to remember
                the pause/run actions.
-************************* [Resume Waypoint Walking] ***************************/
+///////////////////////// [Resume Waypoint Walking] //////////////////////////*/
 
-#include "inc_ai_debug"
 #include "NW_I0_GENERIC"
+#include "inc_ai_debug"
 
 const string WAYPOINT_RUN       = "WAYPOINT_RUN";
 const string WAYPOINT_PAUSE     = "WAYPOINT_PAUSE";
 const int AI_FLAG_OTHER_RETURN_TO_SPAWN_LOCATION                = 0x00020000;
 const string AI_OTHER_MASTER    = "AI_OTHER_MASTER";
+const string AI_LOCATION = "AI_LOCATION";
+const string AI_RETURN_TO_POINT = "AI_RETURN_TO_POINT";
+
 
 // For return  to.
 int AI_GetSpawnInCondition(int nCondition, string sName, object oTarget = OBJECT_SELF);
@@ -69,7 +73,7 @@ void main()
     // FIRST, if we are meant to move back to the start location, do it.
     if(AI_GetSpawnInCondition(AI_FLAG_OTHER_RETURN_TO_SPAWN_LOCATION, AI_OTHER_MASTER))
     {
-        location lReturnPoint = GetLocalLocation(OBJECT_SELF, "AI_RETURN_TO_POINT");
+        location lReturnPoint = GetLocalLocation(OBJECT_SELF, AI_LOCATION + AI_RETURN_TO_POINT);
         object oReturnArea = GetAreaFromLocation(lReturnPoint);
         if(GetIsObjectValid(oReturnArea))
         {
@@ -92,3 +96,4 @@ int AI_GetSpawnInCondition(int nCondition, string sName, object oTarget)
 {
     return (GetLocalInt(oTarget, sName) & nCondition);
 }
+

@@ -1,25 +1,33 @@
-/************************ [Spawn In Include] ***********************************
-    Filename: inc_ai_spawn
-************************* [Spawn In Include] ***********************************
+/*/////////////////////// [Include - Spawn In] /////////////////////////////////
+    Filename: J_Inc_SpawnIn
+///////////////////////// [Include - Spawn In] /////////////////////////////////
     This contains all the functions used in the spawning process, in one easy
     and very long file.
 
     It also importantly sets up spells we have, or at least talents, so we
     know if we have any spells from category X.
-************************* [History] ********************************************
+///////////////////////// [History] ////////////////////////////////////////////
     1.3 - Changed, added a lot of new things (such as constants file)
-************************* [Workings] *******************************************
+    1.4 - No more setting talent categories On Spawn. This is too much hassel.
+          See the On rest script for ideas (remove this when complete!).
+
+          Perhaps set "Items" the first time we enter combat, and reset each time
+          combat stops. Can be more efficeint maybe.
+        - Skills set to "use" should have, say, 3 or more skill points to be
+          used automatically, especially true for hiding.
+///////////////////////// [Workings] ///////////////////////////////////////////
     This doesn't call anything to run the rest, except AI_SetUpEndOfSpawn has
     a lot of things that the generic AI requires (SetListeningPatterns and skills
     and waypoints ETC)
 
     See the spawn in script for all the actual uses.
-************************* [Arguments] ******************************************
+///////////////////////// [Arguments] //////////////////////////////////////////
     Arguments: N/A see spawn in script
-************************* [Spawn In Include] **********************************/
+///////////////////////// [Include - Spawn In] ///////////////////////////////*/
 
 // All constants.
-#include "inc_ai_weapons"
+//#include "inc_ai_weapons"
+#include "inc_ai_constants"
 // Set weapons
 // - Constants file is in this
 
@@ -39,53 +47,56 @@ const int NW_ANIM_FLAG_IS_MOBILE_CLOSE_RANGE   = 0x00000200;
 // This will activate one aura, very quickly.
 // If we have more than one...oh well.
 void AI_AdvancedAuras();
-// Activate the aura number, if it is possible.
+// Activate the aura number (IE: Spell number), if it is possible.
 void AI_ActivateAura(int nAuraNumber);
-// This is an attempt to speed up some things.
-// We use talents to set general valid categories.
-// Levels are also accounted for, checking the spell given and using a switch
-// statement to get the level.
-void AI_SetUpSpells();
 
 // Base for moving round thier waypoints
 // - Uses ExectuteScript to run the waypoint walking.
-void SpawnWalkWayPoints(int nRun = FALSE, float fPause = 1.0);
+// * If bRun is TRUE, we run all the waypoint.
+// * fPause is the time delay between walking to the next waypoint (default 1.0)
+void SpawnWalkWayPoints(int bRun = FALSE, float fPause = 1.0);
 
 // Sets up what we will listen to (everything!)
 void AI_SetListeningPatterns();
 // This will set what creature to create OnDeath.
 void AI_SetDeathResRef(string sResRef);
 // This will set the string, sNameOfValue, to sValue. Array size of 1.
-// - Use iPercentToSay to determine what % out of 100 it is said.
-void AI_SetSpawnInSpeakValue(string sNameOfValue, string sValue, int iPercentToSay = 100);
+// - Use nPercentToSay to determine what % out of 100 it is said.
+void AI_SetSpawnInSpeakValue(string sNameOfValue, string sValue, int nPercentToSay = 100);
 // This will choose a random string, using iAmountOfValues, which is
 // the amount of non-empty strings given. The size of the array is therefore 1.
-// - Use iPercentToSay to determine what % out of 100 it is said.
-void AI_SetSpawnInSpeakRandomValue(string sNameOfValue, int iPercentToSay, int iAmountOfValues, string sValue1, string sValue2, string sValue3 = "", string sValue4 = "", string sValue5 = "", string sValue6 = "", string sValue7 = "", string sValue8 = "", string sValue9 = "", string sValue10 = "", string sValue11 = "", string sValue12 = "");
+// - Use nPercentToSay to determine what % out of 100 it is said.
+void AI_SetSpawnInSpeakRandomValue(string sNameOfValue, int nPercentToSay, int nAmountOfValues, string sValue1, string sValue2, string sValue3 = "", string sValue4 = "", string sValue5 = "", string sValue6 = "", string sValue7 = "", string sValue8 = "", string sValue9 = "", string sValue10 = "", string sValue11 = "", string sValue12 = "");
 // This will set an array of values, to sNameOfValue, for one to be chosen to
 // be said at the right time :-)
 // - sNameOfValue must be a valid name.
 // - Use iPercentToSay to determine what % out of 100 it is said.
 // NOTE: If the sNameOfValue is any combat one, we make that 1/100 to 1/1000.
-void AI_SetSpawnInSpeakArray(string sNameOfValue, int iPercentToSay, int iSize, string sValue1, string sValue2, string sValue3 = "", string sValue4 = "", string sValue5 = "", string sValue6 = "", string sValue7 = "", string sValue8 = "", string sValue9 = "", string sValue10 = "", string sValue11 = "", string sValue12 = "");
+void AI_SetSpawnInSpeakArray(string sNameOfValue, int nPercentToSay, int nSize, string sValue1, string sValue2, string sValue3 = "", string sValue4 = "", string sValue5 = "", string sValue6 = "", string sValue7 = "", string sValue8 = "", string sValue9 = "", string sValue10 = "", string sValue11 = "", string sValue12 = "");
 
 // This applies an increase, decrease or no change to the intended stat.
-void AI_ApplyStatChange(int iStat, int iAmount);
-// This will alter (magically) an ammount of random stats - iAmount
-// by a value within iLowest and iHighest.
-//void AI_CreateRandomStats(int iLowest, int iHighest, int iAmount);
+// * Applies the effects INSTANTLY. These CANNOT be removed easily!
+void AI_ApplyStatChange(int nStat, int nAmount);
+// This will alter (magically) an ammount of random stats - nAmount
+// by a value within iLowest and nHighest.
+// * Applies the effects INSTANTLY. These CANNOT be removed easily!
+void AI_CreateRandomStats(int nLowest, int nHighest, int nAmount);
 // This will randomise other stats. Put both numbers to 0 to ignore some.
-// iHPMin, iHPMax                   = HP changes.
-// iReflexSaveMin, iReflexSaveMax   = Reflex Save changes
-// iWillSaveMin, iWillSaveMax       = Will Save changes
-// iFortSaveMin, iFortSaveMax       = Fortitude Save changes
-// iACMin, iACMax                   = AC change.
-//      Use iACType to define the AC type - default AC_DODGE_BONUS
-//void AI_CreateRandomOther(int iHPMin, int iHPMax, int iReflexSaveMin = 0, int iReflexSaveMax = 0, int iWillSaveMin = 0, int iWillSaveMax = 0, int iFortSaveMin = 0, int iFortSaveMax = 0, int iACMin = 0, int iACMax = 0, int iACType = AC_DODGE_BONUS);
+// nHPMin, nHPMax                   = HP changes.
+// nReflexSaveMin, nReflexSaveMax   = Reflex Save changes
+// nWillSaveMin, nWillSaveMax       = Will Save changes
+// nFortSaveMin, nFortSaveMax       = Fortitude Save changes
+// nACMin, nACMax                   = AC change.
+//      Use nACType to define the AC type - default AC_DODGE_BONUS
+// * Applies the effects INSTANTLY. These CANNOT be removed easily!
+void AI_CreateRandomOther(int nHPMin, int nHPMax, int nReflexSaveMin = 0, int nReflexSaveMax = 0, int nWillSaveMin = 0, int nWillSaveMax = 0, int nFortSaveMin = 0, int nFortSaveMax = 0, int nACMin = 0, int nACMax = 0, int nACType = AC_DODGE_BONUS);
 
 // Sets up thier selection of skills, to integers, if they would ever use them.
 // NOTE: it also triggers "hide" if they have enough skill and not stopped.
-//void AI_SetUpSkillToUse();
+// * 1.4 Changes: Some skills are turned off automatically when they have very
+//   low points in that skill (IE: No possibility of doing it sucessfully). Also
+//   edited other parts of the AI to take this into account.
+void AI_SetUpSkillToUse();
 // Sets the turning level if we have FEAT_TURN_UNDEAD.
 // - Called from AI_SetUpEndOfSpawn.
 void AI_SetTurningLevel();
@@ -94,12 +105,12 @@ void AI_SetTurningLevel();
 // These MUST be called! the AI might fail to work correctly if they don't fire!
 void AI_SetUpEndOfSpawn();
 // This will make the visual effect passed play INSTANTLY at the creatures location.
-// * iVFX - The visual effect constant number
-void AI_SpawnInInstantVisual(int iVFX);
+// * nVFX - The visual effect constant number
+void AI_SpawnInInstantVisual(int nVFX);
 // This will make the visual effect passed play PERMAMENTLY.
-// * iVFX - The visual effect constant number
+// * nVFX - The visual effect constant number
 // NOTE: They will be made to be SUPERNATUAL, so are not dispelled!
-void AI_SpawnInPermamentVisual(int iVFX);
+void AI_SpawnInPermamentVisual(int nVFX);
 // This should not be used!
 // * called from SetUpEndOfSpawn.
 void AI_SetMaybeFearless();
@@ -108,9 +119,9 @@ void AI_SetMaybeFearless();
 // - If we set it to min of 5, max of 10, for AC, if we cancled 5 targets on having
 //   AC higher then wanted, we will take the highest 5 minimum.
 //   If there are over 10, we take a max of 10 to choose from.
-// * iType - must be TARGET_HIGHER or TARGET_LOWER. Defaults to the lowest, so it
+// * nType - must be TARGET_HIGHER or TARGET_LOWER. Defaults to the lowest, so it
 //           targets the lowest value for sName.
-void AI_SetAITargetingValues(string sName, int iType, int iMinimum, int iMaximum);
+void AI_SetAITargetingValues(string sName, int nType, int nMinimum, int nMaximum);
 
 
 // Levels up us.
@@ -127,7 +138,7 @@ void AI_LevelLoop(int nClass, int nLevels);
 // Sets up what random spells to cheat-cast at the end of all known spells.
 // it does NOT check for immunities, barriers, or anything else.
 // - You can set spells to more then one of the imputs to have a higher % to cast that one.
-void SetAICheatCastSpells(int iSpell1, int iSpell2, int iSpell3, int iSpell4, int iSpell5, int iSpell6);
+void SetAICheatCastSpells(int nSpell1, int nSpell2, int nSpell3, int nSpell4, int nSpell5, int nSpell6);
 
 // Mark that the given creature has the given condition set for anitmations
 // * Bioware SoU animations thing.
@@ -147,10 +158,10 @@ void SetMindflayerAI();
 //   SPELLTRIGGER_NOT_GOT_FIRST_SPELL - Makes sure !GetHasSpellEffect(iSpell1) already,
 //                                  then fires. Checks all in this category each round (first one fires!)
 //   SPELLTRIGGER_START_OF_COMBAT     - Triggered always, at the start of DetermineCombatRound.
-// * iNumber - can be 1-9, in sequential order of when you want them to fire.
-// * iValue - is only required with DAMAGED_AT_PERCENT.
-// * iSpellX - Cannot be 0. It should only really be defensive spells.
-void SetSpellTrigger(string sType, int iValue, int iNumber, int iSpell1, int iSpell2 = 0, int iSpell3 = 0, int iSpell4 = 0, int iSpell5 = 0, int iSpell6 = 0, int iSpell7 = 0, int iSpell8 = 0, int iSpell9 = 0);
+// * nNumber - can be 1-9, in sequential order of when you want them to fire.
+// * nValue - is only required with DAMAGED_AT_PERCENT.
+// * nSpellX - Cannot be 0. It should only really be defensive spells.
+void SetSpellTrigger(string sType, int nValue, int nNumber, int nSpell1, int nSpell2 = 0, int nSpell3 = 0, int nSpell4 = 0, int nSpell5 = 0, int nSpell6 = 0, int nSpell7 = 0, int nSpell8 = 0, int nSpell9 = 0);
 
 // Mark that the given creature has the given condition set
 void SetAnimationCondition(int nCondition, int bValid = TRUE, object oCreature = OBJECT_SELF)
@@ -166,14 +177,14 @@ void SetAnimationCondition(int nCondition, int bValid = TRUE, object oCreature =
 // Sets up what random spells to cheat-cast at the end of all known spells.
 // it does NOT check for immunities, barriers, or anything else.
 // - You can set spells to more then one of the imputs to have a higher % to cast that one.
-void SetAICheatCastSpells(int iSpell1, int iSpell2, int iSpell3, int iSpell4, int iSpell5, int iSpell6)
+void SetAICheatCastSpells(int nSpell1, int nSpell2, int nSpell3, int nSpell4, int nSpell5, int nSpell6)
 {
-    SetAIConstant(AI_CHEAT_CAST_SPELL + IntToString(i1), iSpell1);
-    SetAIConstant(AI_CHEAT_CAST_SPELL + IntToString(i2), iSpell2);
-    SetAIConstant(AI_CHEAT_CAST_SPELL + IntToString(i3), iSpell3);
-    SetAIConstant(AI_CHEAT_CAST_SPELL + IntToString(i4), iSpell4);
-    SetAIConstant(AI_CHEAT_CAST_SPELL + IntToString(i5), iSpell5);
-    SetAIConstant(AI_CHEAT_CAST_SPELL + IntToString(i6), iSpell6);
+    SetAIConstant(AI_CHEAT_CAST_SPELL + IntToString(1), nSpell1);
+    SetAIConstant(AI_CHEAT_CAST_SPELL + IntToString(2), nSpell2);
+    SetAIConstant(AI_CHEAT_CAST_SPELL + IntToString(3), nSpell3);
+    SetAIConstant(AI_CHEAT_CAST_SPELL + IntToString(4), nSpell4);
+    SetAIConstant(AI_CHEAT_CAST_SPELL + IntToString(5), nSpell5);
+    SetAIConstant(AI_CHEAT_CAST_SPELL + IntToString(6), nSpell6);
 }
 
 
@@ -186,16 +197,16 @@ void SetAICheatCastSpells(int iSpell1, int iSpell2, int iSpell3, int iSpell4, in
 void AI_LevelUpCreature(int nLevel, int nClass, int nClass2 = CLASS_TYPE_INVALID,  int nClass3 = CLASS_TYPE_INVALID)
 {
     // Divide by 1, 2 or 3 (100%, 50%, 33%)
-    int iDivideBy = (nClass >= i0) + (nClass2 >= i0) + (nClass3 >= i0);
+    int nDivideBy = (nClass >= 0) + (nClass2 >= 0) + (nClass3 >= 0);
 
-    int iTotalPerClass = nLevel / iDivideBy;
+    int nTotalPerClass = nLevel / nDivideBy;
 
     // Limit and loop - Class 1.
-    AI_LevelLoop(nClass, iTotalPerClass);
+    AI_LevelLoop(nClass, nTotalPerClass);
     // 2
-    AI_LevelLoop(nClass2, iTotalPerClass);
+    AI_LevelLoop(nClass2, nTotalPerClass);
     // 3
-    AI_LevelLoop(nClass3, iTotalPerClass);
+    AI_LevelLoop(nClass3, nTotalPerClass);
 }
 
 // Used in AI_LevelUpCreature.
@@ -220,116 +231,116 @@ void AI_SetDeathResRef(string sResRef)
 // - Use iPercentToSay to determine what % out of 100 it is said.
 void AI_SetSpawnInSpeakValue(string sNameOfValue, string sValue, int iPercentToSay)
 {
-    SetLocalString(OBJECT_SELF, sNameOfValue + s1, sValue);
+    SetLocalString(OBJECT_SELF, sNameOfValue + "1", sValue);
     // The array is 1 big!
-    SetLocalInt(OBJECT_SELF, ARRAY_SIZE + sNameOfValue, i1);
+    SetLocalInt(OBJECT_SELF, ARRAY_SIZE + sNameOfValue, 1);
     SetLocalInt(OBJECT_SELF, ARRAY_PERCENT + sNameOfValue, iPercentToSay);
 }
 // This will choose a random string, using iAmountOfValues, which is
 // the amount of non-empty strings given. The size of the array is therefore 1.
 // - Use iPercentToSay to determine what % out of 100 it is said.
-void AI_SetSpawnInSpeakRandomValue(string sNameOfValue, int iPercentToSay, int iAmountOfValues, string sValue1, string sValue2, string sValue3, string sValue4, string sValue5, string sValue6, string sValue7, string sValue8, string sValue9, string sValue10, string sValue11, string sValue12)
+void AI_SetSpawnInSpeakRandomValue(string sNameOfValue, int nPercentToSay, int nAmountOfValues, string sValue1, string sValue2, string sValue3, string sValue4, string sValue5, string sValue6, string sValue7, string sValue8, string sValue9, string sValue10, string sValue11, string sValue12)
 {
     // Need a value amount of values!
-    if(iAmountOfValues)
+    if(nAmountOfValues)
     {
-        int iRandomNum = Random(iAmountOfValues) -1; // take one, as it is 0 - X, not 1 - X
+        int nRandomNum = Random(nAmountOfValues) - 1; // take one, as it is 0 - X, not 1 - X
         string sValueToUse;
-        switch(iRandomNum)
+        switch(nRandomNum)
         {
-            case(i0):{sValueToUse = sValue1;}break;
-            case(i1):{sValueToUse = sValue2;}break;
-            case(i2):{sValueToUse = sValue3;}break;
-            case(i3):{sValueToUse = sValue4;}break;
-            case(i4):{sValueToUse = sValue5;}break;
-            case(i5):{sValueToUse = sValue6;}break;
-            case(i6):{sValueToUse = sValue7;}break;
-            case(i7):{sValueToUse = sValue8;}break;
-            case(i8):{sValueToUse = sValue9;}break;
-            case(i9):{sValueToUse = sValue10;}break;
-            case(i10):{sValueToUse = sValue11;}break;
-            case(i11):{sValueToUse = sValue12;}break;
+            case 0:{sValueToUse = sValue1;}break;
+            case 1:{sValueToUse = sValue2;}break;
+            case 2:{sValueToUse = sValue3;}break;
+            case 3:{sValueToUse = sValue4;}break;
+            case 4:{sValueToUse = sValue5;}break;
+            case 5:{sValueToUse = sValue6;}break;
+            case 6:{sValueToUse = sValue7;}break;
+            case 7:{sValueToUse = sValue8;}break;
+            case 8:{sValueToUse = sValue9;}break;
+            case 9:{sValueToUse = sValue10;}break;
+            case 10:{sValueToUse = sValue11;}break;
+            case 11:{sValueToUse = sValue12;}break;
         }
-        SetLocalString(OBJECT_SELF, sNameOfValue + s1, sValueToUse);
+        SetLocalString(OBJECT_SELF, sNameOfValue + "1", sValueToUse);
         // The array is 1 big!
-        SetLocalInt(OBJECT_SELF, ARRAY_SIZE + sNameOfValue, i1);
-        SetLocalInt(OBJECT_SELF, ARRAY_PERCENT + sNameOfValue, iPercentToSay);
+        SetLocalInt(OBJECT_SELF, ARRAY_SIZE + sNameOfValue, 1);
+        SetLocalInt(OBJECT_SELF, ARRAY_PERCENT + sNameOfValue, nPercentToSay);
     }
 }
-void AI_SetSpawnInSpeakArray(string sNameOfValue, int iPercentToSay, int iSize, string sValue1, string sValue2, string sValue3 = "", string sValue4 = "", string sValue5 = "", string sValue6 = "", string sValue7 = "", string sValue8 = "", string sValue9 = "", string sValue10 = "", string sValue11 = "", string sValue12 = "")
+void AI_SetSpawnInSpeakArray(string sNameOfValue, int nPercentToSay, int nSize, string sValue1, string sValue2, string sValue3 = "", string sValue4 = "", string sValue5 = "", string sValue6 = "", string sValue7 = "", string sValue8 = "", string sValue9 = "", string sValue10 = "", string sValue11 = "", string sValue12 = "")
 {
-    if(iSize >= i1)
+    if(nSize >= 1)
     {
         SetLocalString(OBJECT_SELF, sNameOfValue + "1", sValue1);
-        if(iSize >= i2)
+        if(nSize >= 2)
         {
             SetLocalString(OBJECT_SELF, sNameOfValue + "2", sValue2);
-            if(iSize >= i3)
+            if(nSize >= 3)
             {
                 SetLocalString(OBJECT_SELF, sNameOfValue + "3", sValue3);
-                if(iSize >= i4)
+                if(nSize >= 4)
                 {
                     SetLocalString(OBJECT_SELF, sNameOfValue + "4", sValue4);
-                    if(iSize >= i5)
+                    if(nSize >= 5)
                     {
                         SetLocalString(OBJECT_SELF, sNameOfValue + "5", sValue5);
-                        if(iSize >= i6)
+                        if(nSize >= 6)
                         {
                             SetLocalString(OBJECT_SELF, sNameOfValue + "6", sValue6);
-                            if(iSize >= i7)
+                            if(nSize >= 7)
                             {
                                 SetLocalString(OBJECT_SELF, sNameOfValue + "7", sValue7);
-                                if(iSize >= i8)
+                                if(nSize >= 8)
                                 {
                                     SetLocalString(OBJECT_SELF, sNameOfValue + "8", sValue8);
-                                    if(iSize >= i9)
+                                    if(nSize >= 9)
                                     {
                                         SetLocalString(OBJECT_SELF, sNameOfValue + "9", sValue9);
-                                        if(iSize >= i10)
+                                        if(nSize >= 10)
                                         {
                                             SetLocalString(OBJECT_SELF, sNameOfValue + "10", sValue10);
-                                            if(iSize >= i11)
+                                            if(nSize >= 11)
                                             {
                                                 SetLocalString(OBJECT_SELF, sNameOfValue + "11", sValue11);
-                                                if(iSize >= i12)
+                                                if(nSize >= 12)
                                                 {
                                                     SetLocalString(OBJECT_SELF, sNameOfValue + "12", sValue12);
     // Hehe, this looks not stright if you stare at it! :-P
     }   }   }   }   }   }   }   }   }   }   }   }
     // The array is so big...
-    SetLocalInt(OBJECT_SELF, ARRAY_SIZE + sNameOfValue, iSize);
-    SetLocalInt(OBJECT_SELF, ARRAY_PERCENT + sNameOfValue, iPercentToSay);
+    SetLocalInt(OBJECT_SELF, ARRAY_SIZE + sNameOfValue, nSize);
+    SetLocalInt(OBJECT_SELF, ARRAY_PERCENT + sNameOfValue, nPercentToSay);
 }
 // This applies an increase, decrease or no change to the intended stat.
-void AI_ApplyStatChange(int iStat, int iAmount)
+// * Applies the effects INSTANTLY. These CANNOT be removed easily!
+void AI_ApplyStatChange(int nStat, int nAmount)
 {
-    if(iAmount != i0)
+    if(nAmount != 0)
     {
         effect eChange;
-        if(iAmount < i0)
+        if(nAmount < 0)
         {
-            int iNewAmount = abs(iAmount);
-            eChange = SupernaturalEffect(EffectAbilityDecrease(iStat, iNewAmount));
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eChange, OBJECT_SELF);
+            nAmount = abs(nAmount);
+            eChange = SupernaturalEffect(EffectAbilityDecrease(nStat, nAmount));
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
         }
         else
         {
-            eChange = SupernaturalEffect(EffectAbilityIncrease(iStat, iAmount));
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eChange, OBJECT_SELF);
+            eChange = SupernaturalEffect(EffectAbilityIncrease(nStat, nAmount));
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
         }
     }
 }
-/*
 // This will, eventually, choose X number of stats, and change them within the
 // range given.
-void AI_CreateRandomStats(int iLowest, int iHighest, int iAmount)
+void AI_CreateRandomStats(int nLowest, int nHighest, int nAmount)
 {
-    if(iAmount > i0 && !(iLowest == i0 && iHighest == i0) && iHighest >= iLowest)
+    if(nAmount > 0 && nHighest != 0 && nLowest != 0 && nHighest >= nLowest)
     {
-        int iRange = iHighest - iLowest;
-        int iNumSlots = iAmount;
-        if(iNumSlots > i6) iNumSlots = i6;
-        int iNumLeft = i6;
+        int nRange = nHighest - nLowest;
+        int nNumSlots = nAmount;
+        if(nNumSlots > 6) nNumSlots = 6;
+        int nNumLeft = 6;
         // Walk through each stat and figure out what it's chance of being
         // modified is.  As an example, suppose we wanted to have 4 randomized
         // abilities.  We'd look at the first ability and it would have a 4 in 6
@@ -337,106 +348,118 @@ void AI_CreateRandomStats(int iLowest, int iHighest, int iAmount)
         // have a 3 in 5 chance of being picked.  If this next ability wasn't
         // picked to be changed, the 3rd ability woud have a 3 in 4 chance of
         // being picked and so on.
-        int iCnt;
-        int iChange;
-        for(iCnt = i0; (iNumSlots > i0) && (iCnt < i6); iCnt++)
+        int nCnt;
+        int nChange;
+        for(nCnt = 0; (nNumSlots > 0 && nCnt < 6); nCnt++)
         {
-           if((iNumSlots == iNumLeft) || (Random(iNumLeft) < iNumSlots))
+           if((nNumSlots == nNumLeft) || (Random(nNumLeft) < nNumSlots))
            {
-              iChange = Random(iRange) + iLowest;
-              AI_ApplyStatChange(iCnt, iChange);
-              iNumSlots--;
+              nChange = Random(nRange) + nLowest;
+              AI_ApplyStatChange(nCnt, nChange);
+              nNumSlots--;
            }
-           iNumLeft--;
+           nNumLeft--;
         }
     }
 }
 
-void AI_CreateRandomOther(int iHPMin, int iHPMax, int iReflexSaveMin = 0, int iReflexSaveMax = 0, int iWillSaveMin = 0, int iWillSaveMax = 0, int iFortSaveMin = 0, int iFortSaveMax = 0, int iACMin = 0, int iACMax = 0, int iACType = AC_DODGE_BONUS)
+// This will randomise other stats. Put both numbers to 0 to ignore some.
+// nHPMin, nHPMax                   = HP changes.
+// nReflexSaveMin, nReflexSaveMax   = Reflex Save changes
+// nWillSaveMin, nWillSaveMax       = Will Save changes
+// nFortSaveMin, nFortSaveMax       = Fortitude Save changes
+// nACMin, nACMax                   = AC change.
+//      Use nACType to define the AC type - default AC_DODGE_BONUS
+// * Applies the effects INSTANTLY. These CANNOT be removed easily!
+void AI_CreateRandomOther(int nHPMin, int nHPMax, int nReflexSaveMin = 0, int nReflexSaveMax = 0, int nWillSaveMin = 0, int nWillSaveMax = 0, int nFortSaveMin = 0, int nFortSaveMax = 0, int nACMin = 0, int nACMax = 0, int nACType = AC_DODGE_BONUS)
 {
-    int iRange, iChange, iNewChange;
+    int nRange, nChange, nNewChange;
     effect eChange;
-    if(!(iHPMin == i0 && iHPMax == i0) && iHPMax >= iHPMin)
+    if(!(nHPMin == 0 && nHPMax == 0) && nHPMax >= nHPMin)
     {
-        iRange = iHPMax - iHPMin;
-        iChange = Random(iRange) + iHPMin;
-        if(iChange > i0)
+        nRange = nHPMax - nHPMin;
+        nChange = Random(nRange) + nHPMin;
+        if(nChange > 0)
         {
-            eChange = SupernaturalEffect(EffectTemporaryHitpoints(iChange));
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eChange, OBJECT_SELF);
+            eChange = SupernaturalEffect(EffectTemporaryHitpoints(nChange));
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
         }
-        else if(iChange < i0 && GetMaxHitPoints() > i1)
+        // * Must have 1HP remaining at least.
+        else if(nChange < 0 && GetMaxHitPoints() > nChange)
         {
-            eChange = EffectDamage(iChange, DAMAGE_TYPE_DIVINE, DAMAGE_POWER_PLUS_FIVE);
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eChange, OBJECT_SELF);
+            eChange = EffectDamage(nChange, DAMAGE_TYPE_DIVINE, DAMAGE_POWER_PLUS_TWENTY);
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
         }
     }
-    if(!(iReflexSaveMin == i0 && iReflexSaveMax == i0) && iReflexSaveMax >= iReflexSaveMin)
+    if(!(nReflexSaveMin == 0 && nReflexSaveMax == 0) && nReflexSaveMax >= nReflexSaveMin)
     {
-        iRange = iReflexSaveMax - iReflexSaveMin;
-        iChange = Random(iRange) + iReflexSaveMin;
-        if(iChange > i0)
+        nRange = nReflexSaveMax - nReflexSaveMin;
+        nChange = Random(nRange) + nReflexSaveMin;
+        if(nChange > 0)
         {
-            eChange = SupernaturalEffect(EffectSavingThrowIncrease(SAVING_THROW_REFLEX, iChange));
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eChange, OBJECT_SELF);
+            eChange = SupernaturalEffect(EffectSavingThrowIncrease(SAVING_THROW_REFLEX, nChange));
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
         }
-        else if(iChange < i0 && GetReflexSavingThrow(OBJECT_SELF) > i1)
+        // Cannot apply 0 change, but can make our saves negative
+        else if(nChange < 0)
         {
-            iNewChange = abs(iChange);
-            eChange = SupernaturalEffect(EffectSavingThrowDecrease(SAVING_THROW_REFLEX, iNewChange));
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eChange, OBJECT_SELF);
+            nNewChange = abs(nChange);
+            eChange = SupernaturalEffect(EffectSavingThrowDecrease(SAVING_THROW_REFLEX, nNewChange));
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
         }
     }
-    if(!(iWillSaveMin == i0 && iWillSaveMax == i0) && iWillSaveMax >= iWillSaveMin)
+    if(!(nWillSaveMin == 0 && nWillSaveMax == 0) && nWillSaveMax >= nWillSaveMin)
     {
-        iRange = iWillSaveMax - iWillSaveMin;
-        iChange = Random(iRange) + iWillSaveMin;
-        if(iChange > i0)
+        nRange = nWillSaveMax - nWillSaveMin;
+        nChange = Random(nRange) + nWillSaveMin;
+        if(nChange > 0)
         {
-            eChange = SupernaturalEffect(EffectSavingThrowIncrease(SAVING_THROW_WILL, iChange));
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eChange, OBJECT_SELF);
+            eChange = SupernaturalEffect(EffectSavingThrowIncrease(SAVING_THROW_WILL, nChange));
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
         }
-        else if(iChange < i0 && GetWillSavingThrow(OBJECT_SELF) > i1)
+        // Cannot apply 0 change, but can make our saves negative
+        else if(nChange < 0)
         {
-            iNewChange = abs(iChange);
-            eChange = SupernaturalEffect(EffectSavingThrowDecrease(SAVING_THROW_WILL, iNewChange));
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eChange, OBJECT_SELF);
+            nNewChange = abs(nChange);
+            eChange = SupernaturalEffect(EffectSavingThrowDecrease(SAVING_THROW_WILL, nNewChange));
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
         }
     }
-    if(!(iFortSaveMin == i0 && iFortSaveMax == i0) && iFortSaveMax >= iFortSaveMin)
+    if(!(nFortSaveMin == 0 && nFortSaveMax == 0) && nFortSaveMax >= nFortSaveMin)
     {
-        iRange = iFortSaveMax - iFortSaveMin;
-        iChange = Random(iRange) + iFortSaveMin;
-        if(iChange > i0)
+        nRange = nFortSaveMax - nFortSaveMin;
+        nChange = Random(nRange) + nFortSaveMin;
+        if(nChange > 0)
         {
-            eChange = SupernaturalEffect(EffectSavingThrowIncrease(SAVING_THROW_FORT, iChange));
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eChange, OBJECT_SELF);
+            eChange = SupernaturalEffect(EffectSavingThrowIncrease(SAVING_THROW_FORT, nChange));
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
         }
-        else if(iChange < i0 && GetFortitudeSavingThrow(OBJECT_SELF) > 1)
+        // Cannot apply 0 change, but can make our saves negative
+        else if(nChange < 0)
         {
-            iNewChange = abs(iChange);
-            eChange = SupernaturalEffect(EffectSavingThrowDecrease(SAVING_THROW_FORT, iNewChange));
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eChange, OBJECT_SELF);
+            nNewChange = abs(nChange);
+            eChange = SupernaturalEffect(EffectSavingThrowDecrease(SAVING_THROW_FORT, nNewChange));
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
         }
     }
-    if(!(iACMin == i0 && iACMax == i0) && iACMax >= iACMin)
+    if(!(nACMin == 0 && nACMax == 0) && nACMax >= nACMin)
     {
-        iRange = iACMax - iACMin;
-        iChange = Random(iRange) + iACMin;
-        if(iChange > i0)
+        nRange = nACMax - nACMin;
+        nChange = Random(nRange) + nACMin;
+        if(nChange > 0)
         {
-            eChange = SupernaturalEffect(EffectACIncrease(iChange, iACType));
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eChange, OBJECT_SELF);
+            eChange = SupernaturalEffect(EffectACIncrease(nChange, nACType));
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
         }
-        else if(iChange < i0)
+        else if(nChange < 0)
         {
-            iNewChange = abs(iChange);
-            eChange = SupernaturalEffect(EffectACDecrease(iNewChange, iACType));
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eChange, OBJECT_SELF);
+            nNewChange = abs(nChange);
+            eChange = SupernaturalEffect(EffectACDecrease(nNewChange, nACType));
+            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
         }
     }
 }
-*/
+
 /*::///////////////////////////////////////////////
 //:: SetListeningPatterns
 //:://////////////////////////////////////////////
@@ -448,52 +471,54 @@ void AI_SetListeningPatterns()
     // Lag check
     if(GetSpawnInCondition(AI_FLAG_OTHER_LAG_NO_LISTENING, AI_OTHER_MASTER)) return;
     SetListening(OBJECT_SELF, TRUE);
-//  Anyone that can hear it, and is not fighting, comes and helps
-    SetListenPattern(OBJECT_SELF, I_WAS_ATTACKED, i1);
+
+    // Anyone that can hear it, and is not fighting, comes and helps
+    SetListenPattern(OBJECT_SELF, AI_SHOUT_I_WAS_ATTACKED, AI_SHOUT_I_WAS_ATTACKED_CONSTANT);
+
     //Set a custom listening pattern for the creature so that placables with
     //"NW_BLOCKER" + Blocker NPC Tag will correctly call to their blockers.
     string sBlocker = "NW_BLOCKER_BLK_" + GetTag(OBJECT_SELF);
-    SetListenPattern(OBJECT_SELF, sBlocker, i2);
-//  Determines combat round, if not fighting
-    SetListenPattern(OBJECT_SELF, CALL_TO_ARMS, i3);
+    SetListenPattern(OBJECT_SELF, sBlocker, AI_SHOUT_BLOCKER_CONSTANT);
+
+    // Determines combat round, if not fighting
+    SetListenPattern(OBJECT_SELF, AI_SHOUT_CALL_TO_ARMS, AI_SHOUT_CALL_TO_ARMS_CONSTANT);
+
     // These call to allies, to move them to a battle.
-    SetListenPattern(OBJECT_SELF, HELP_MY_FRIEND, i4);
-    SetListenPattern(OBJECT_SELF, LEADER_FLEE_NOW, i5);
-    SetListenPattern(OBJECT_SELF, LEADER_ATTACK_TARGET, i6);
+    SetListenPattern(OBJECT_SELF, AI_SHOUT_HELP_MY_FRIEND, AI_SHOUT_HELP_MY_FRIEND_CONSTANT);
+    SetListenPattern(OBJECT_SELF, AI_SHOUT_LEADER_FLEE_NOW, AI_SHOUT_LEADER_FLEE_NOW_CONSTANT);
+    SetListenPattern(OBJECT_SELF, AI_SHOUT_LEADER_ATTACK_TARGET, AI_SHOUT_LEADER_ATTACK_TARGET_CONSTANT);
+
     // 1.3 - Need a killed one.
-    SetListenPattern(OBJECT_SELF, I_WAS_KILLED, i7);
+    SetListenPattern(OBJECT_SELF, AI_SHOUT_I_WAS_KILLED, AI_SHOUT_I_WAS_KILLED_CONSTANT);
+
     // 1.3 - PLaceables/doors which shout this get responded to!
-    SetListenPattern(OBJECT_SELF, I_WAS_OPENED, i8);
-// This will make the listener hear anything, used to react to enemy talking.
-    SetListenPattern(OBJECT_SELF, "**", i0);
+    SetListenPattern(OBJECT_SELF, AI_SHOUT_I_WAS_OPENED, AI_SHOUT_I_WAS_OPENED_CONSTANT);
+
+    // This will make the listener hear anything, used to react to enemy talking.
+    SetListenPattern(OBJECT_SELF, "**", AI_SHOUT_ANYTHING_SAID_CONSTANT);
 }
+
 // Base for moving round thier waypoints
 // - Uses ExectuteScript to run the waypoint walking.
-void SpawnWalkWayPoints(int nRun = FALSE, float fPause = 1.0)
+// * If bRun is TRUE, we run all the waypoint.
+// * fPause is the time delay between walking to the next waypoint (default 1.0)
+void SpawnWalkWayPoints(int bRun = FALSE, float fPause = 1.0)
 {
-    SetLocalInt(OBJECT_SELF, WAYPOINT_RUN, nRun);
+    SetLocalInt(OBJECT_SELF, WAYPOINT_RUN, bRun);
     SetLocalFloat(OBJECT_SELF, WAYPOINT_PAUSE, fPause);
     ExecuteScript(FILE_WALK_WAYPOINTS, OBJECT_SELF);
 }
 
-
+// This MUST be called. It fires these events:
+// SetUpSpells, SetUpSkillToUse, SetListeningPatterns, SetWeapons, AdvancedAuras.
+// These MUST be called! the AI might fail to work correctly if they don't fire!
 void AI_SetUpEndOfSpawn()
 {
-    // Check if we are using custom AI - this cuts out much of the stuff
-    // used on spawn.
-    int bCustomAIFile = FALSE;
-
-    // Check custom AI file
-    if(GetCustomAIFileName() != "")
-    {
-        bCustomAIFile = TRUE;
-    }
-
     if(GetSpawnInCondition(AI_FLAG_OTHER_RETURN_TO_SPAWN_LOCATION, AI_OTHER_MASTER))
     {
         // This will store thier starting location, and then move back there after combat
         // Will turn off if there are waypoints. It is set in SetUpEndOfSpawn.
-        SetLocalLocation(OBJECT_SELF, AI_RETURN_TO_POINT, GetLocation(OBJECT_SELF));
+        SetAILocation(AI_RETURN_TO_POINT, GetLocation(OBJECT_SELF));
     }
 
     // Set up if we are immune to cirtain levels of spells naturally for better
@@ -503,39 +528,36 @@ void AI_SetUpEndOfSpawn()
     if(GetItemHasItemProperty(oHide, ITEM_PROPERTY_IMMUNITY_SPELLS_BY_LEVEL))
     {
         itemproperty eCheck = GetFirstItemProperty(oHide);
-        int iAmount;
+        int nAmount;
         // Check for item properties until we find the level.
-        while(GetIsItemPropertyValid(eCheck) && iAmount == FALSE)
+        while(GetIsItemPropertyValid(eCheck) && nAmount == FALSE)
         {
             // Check subtype.
             if(GetItemPropertyType(eCheck) == ITEM_PROPERTY_IMMUNITY_SPELLS_BY_LEVEL)
             {
                 // Get the amount
-                iAmount = GetItemPropertyCostTableValue(eCheck);
+                nAmount = GetItemPropertyCostTableValue(eCheck);
             }
             eCheck = GetNextItemProperty(oHide);
         }
         // Set it
-        if(iAmount)
+        if(nAmount)
         {
-            SetLocalInt(OBJECT_SELF, AI_SPELL_IMMUNE_LEVEL, iAmount);
+            SetLocalInt(OBJECT_SELF, AI_SPELL_IMMUNE_LEVEL, nAmount);
         }
-    }
-    // Animations - any valid?
-    if(GetSpawnInCondition(NW_FLAG_AMBIENT_ANIMATIONS, NW_GENERIC_MASTER) ||
-       GetSpawnInCondition(NW_FLAG_AMBIENT_ANIMATIONS_AVIAN, NW_GENERIC_MASTER) ||
-       GetSpawnInCondition(NW_FLAG_IMMOBILE_AMBIENT_ANIMATIONS, NW_GENERIC_MASTER))
-    {
-       SetAIInteger(AI_VALID_ANIMATIONS, TRUE);
     }
 
     // All things only used by my personal AI.
-    if(!bCustomAIFile)
+    // * If we are not using a custom AI file, we do these things.
+    if(GetCustomAIFileName() == "")
     {
-        if(GetLevelByClass(CLASS_TYPE_COMMONER) && GetHitDice(OBJECT_SELF) < i10)
+        // If we are a commoner of any sort, and under 10 hit dice, we are
+        // panicy - IE: We set to -1 morale, which triggers the "commoner" fleeing
+        if(GetLevelByClass(CLASS_TYPE_COMMONER) && GetHitDice(OBJECT_SELF) < 10)
         {
-            SetAIInteger(AI_MORALE, iM1);
+            SetAIInteger(AI_MORALE, -1);
         }
+        // If we are not set already to fearless, we might be set to fearless
         if(!GetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER))
         {
             AI_SetMaybeFearless();
@@ -543,53 +565,60 @@ void AI_SetUpEndOfSpawn()
         // Set if we are a beholder or mindflayer
         switch(GetAppearanceType(OBJECT_SELF))
         {
-            case 401: //beholder
-            case 402: //beholder
-            case 403: //beholder
-            case 472: // Hive mother
-                SetBeholderAI();
+            // Sets we are a Beholder and use Ray attacks, and Animagic Ray.
+            case APPEARANCE_TYPE_BEHOLDER: // beholder, 401
+            case APPEARANCE_TYPE_BEHOLDER_EYEBALL: // beholder, 402
+            case APPEARANCE_TYPE_BEHOLDER_MAGE: // beholder, 403
+            case APPEARANCE_TYPE_BEHOLDER_MOTHER: // Hive mother, 472
+            {
+                // 1 = beholder
+                SetAIInteger(AI_SPECIAL_AI, AI_SPECIAL_AI_BEHOLDER);
+            }
             break;
 
-            case 413: //Mindflayer
-            case 414: // Mindflayer2
-            case 415: // Mindflayer_Alhoon
-                SetMindflayerAI();
+            // Set we are a mindflayer, and uses some special AI for them, IE:
+            // brain sucking.
+            case APPEARANCE_TYPE_MINDFLAYER: // Mindflayer, 413
+            case APPEARANCE_TYPE_MINDFLAYER_2: // Mindflayer2, 414
+            case APPEARANCE_TYPE_MINDFLAYER_ALHOON: // Mindflayer_Alhoon, 415
+            {
+                // 2 = mindflayer
+                SetAIInteger(AI_SPECIAL_AI, AI_SPECIAL_AI_MINDFLAYER);
+            }
             break;
         }
-            // This NEEDS to be called - to set up categories of spells the creature
-            // will use
-        AI_SetUpSpells();
-            // Sets up thier selection of skills, to integers, if they would ever use them.
-            // NOTE: it also triggers "hide" if they have enough skill and not stopped.
-            // commented out because i'll self validate on spawn - pok
-        //AI_SetUpSkillToUse();
-            // Sets the turning level if we have FEAT_TURN_UNDEAD.
+
+        // This will turn OFF skills we cannot use, so will never attempt them
+        // at low skill levels anywhere in the AI.
+        AI_SetUpSkillToUse();
+
+        // Sets the turning level if we have FEAT_TURN_UNDEAD.
         AI_SetTurningLevel();
-            // This sets what weapons the creature will use. They will use the best, according to a "value"
-            // Giving a creature the feat Two-weapon-fighting makes them deul wield if appropriate weapons.
-        SetWeapons();
+
+        // This sets what weapons the creature will use. They will use the best, according to a "value"
+        // Giving a creature the feat Two-weapon-fighting makes them deul wield if appropriate weapons.
+        //SetWeapons();
     }
 
     // We don't set up corpses if set not to...else set to resurrect
-    //if(!GetSpawnInCondition(AI_FLAG_OTHER_TURN_OFF_CORPSES, AI_OTHER_MASTER))
-    //{
+    if(!GetSpawnInCondition(AI_FLAG_OTHER_TURN_OFF_CORPSES, AI_OTHER_MASTER))
+    {
         // Note: Here, if we can, we set Bioware's lootable on.
-        //if(GetSpawnInCondition(AI_FLAG_OTHER_USE_BIOWARE_LOOTING, AI_OTHER_MASTER))
-        //{
-        //    // Set to lootable
-        //    SetLootable(OBJECT_SELF, TRUE);
-        //}
+        if(GetSpawnInCondition(AI_FLAG_OTHER_USE_BIOWARE_LOOTING, AI_OTHER_MASTER))
+        {
+            // Set to lootable
+            SetLootable(OBJECT_SELF, TRUE);
+        }
         // Just handling corpse raising/resurrection/removal
         // - Undestroyable, Raiseable and Selectable
-        //SetIsDestroyable(FALSE, TRUE, TRUE);
-    //}
-
+        SetIsDestroyable(FALSE, TRUE, TRUE);
+    }
 
     // Goes through and sets up which shouts the NPC will listen to.
-    // - Custom AI uses this also
+    // - Custom AI uses this also, or should take advantage of it
     AI_SetListeningPatterns();
 
-    // This activates the creatures top aura.
+    // This activates the creatures aura's.
     if(GetCommandable()) AI_AdvancedAuras();
 }
 
@@ -603,25 +632,29 @@ void AI_SetTurningLevel()
         // We can turn HD up to nTurnLevel (HD = GetHitDice + GetTurnREsistsnceHD of undead)
         int nTurnLevel = GetLevelByClass(CLASS_TYPE_CLERIC);
         // Paladins turn at -2 the level of clerics
-        if(GetLevelByClass(CLASS_TYPE_PALADIN) - i2 > nTurnLevel)
+        if(GetLevelByClass(CLASS_TYPE_PALADIN) - 2 > nTurnLevel)
         {
-            nTurnLevel = GetLevelByClass(CLASS_TYPE_PALADIN) - i2;
+            nTurnLevel = GetLevelByClass(CLASS_TYPE_PALADIN) - 2;
         }
         // Blackguard gets to turn at HITDICE -2 level, not character level,
         // as it says in NW_S2_TURNDEAD.
-        if(GetLevelByClass(CLASS_TYPE_BLACKGUARD) > i0 && (GetHitDice(OBJECT_SELF) - i2 > nTurnLevel))
+        if(GetLevelByClass(CLASS_TYPE_BLACKGUARD) > 0 &&
+          (GetHitDice(OBJECT_SELF) - 2 > nTurnLevel))
         {
-            nTurnLevel = GetHitDice(OBJECT_SELF) - i2;
+            nTurnLevel = GetHitDice(OBJECT_SELF) - 2;
         }
         // BTW, the number of undead turned is at least nTurnLevel, so we
         // can always turn one :-D
         SetAIInteger(AI_TURNING_LEVEL, nTurnLevel);
-        // Note: Turn undead could be used for FEAT_DIVINE_MIGHT and FEAT_DIVINE_SHIELD
+        // Note: Turn undead could be used for FEAT_DIVINE_MIGHT and
+        // FEAT_DIVINE_SHIELD
     }
 }
-
+// This should not be used!
+// * called from SetUpEndOfSpawn.
 void AI_SetMaybeFearless()
 {
+    // Cirtain races are immune to fear
     switch(GetRacialType(OBJECT_SELF))
     {
         case RACIAL_TYPE_CONSTRUCT:
@@ -634,6 +667,7 @@ void AI_SetMaybeFearless()
         }
         break;
     }
+    // If we are immune to fear anyway, we don't care
     if(GetHasFeat(FEAT_AURA_OF_COURAGE) ||
        GetHasFeat(FEAT_RESIST_NATURES_LURE) ||
        GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_FEAR))
@@ -648,69 +682,79 @@ void AI_ActivateAura(int nAuraNumber)
     // Just ActionCast - cheat cast, as then we can use it unlmimted times, as books say.
     if(GetHasSpell(nAuraNumber))
     {
-        ActionCastSpellAtObject(nAuraNumber, OBJECT_SELF, METAMAGIC_NONE, TRUE, i20, PROJECTILE_PATH_TYPE_DEFAULT, TRUE);
+        ActionCastSpellAtObject(nAuraNumber, OBJECT_SELF, METAMAGIC_NONE, TRUE, 20, PROJECTILE_PATH_TYPE_DEFAULT, TRUE);
     }
 }
-
+// This will activate one aura, very quickly.
+// If we have more than one...oh well.
 void AI_AdvancedAuras()
 {
-    if(GetSpawnInCondition(AI_VALID_TALENT_PERSISTENT_AREA_OF_EFFECT, AI_VALID_SPELLS))
-    {
-        // NOTE:
-        // - All cheat cast. As DMG, they should be always on OR free action to reapply.
-        ClearAllActions();
-        AI_ActivateAura(SPELLABILITY_DRAGON_FEAR);
-        AI_ActivateAura(SPELLABILITY_AURA_UNEARTHLY_VISAGE);
-        AI_ActivateAura(SPELLABILITY_AURA_BLINDING);
-        AI_ActivateAura(SPELLABILITY_AURA_OF_COURAGE);
-        AI_ActivateAura(SPELLABILITY_AURA_PROTECTION);
-        AI_ActivateAura(SPELLABILITY_AURA_STUN);
-        AI_ActivateAura(SPELLABILITY_AURA_FIRE);
-        AI_ActivateAura(SPELLABILITY_AURA_COLD);
-        AI_ActivateAura(SPELLABILITY_AURA_ELECTRICITY);
-        AI_ActivateAura(SPELLABILITY_AURA_UNNATURAL);
-        AI_ActivateAura(SPELLABILITY_AURA_FEAR);
-        AI_ActivateAura(SPELLABILITY_AURA_UNNATURAL);
-        AI_ActivateAura(SPELLABILITY_AURA_MENACE);
-        AI_ActivateAura(SPELLABILITY_TYRANT_FOG_MIST);
-        AI_ActivateAura(AI_SPELLABILITY_AURA_OF_HELLFIRE);
-    }
+    // Do aura's
+
+    // NOTE:
+    // - All cheat cast. As DMG, they should be always on OR free action to reapply.
+    ClearAllActions();
+    AI_ActivateAura(SPELLABILITY_DRAGON_FEAR);
+    AI_ActivateAura(SPELLABILITY_AURA_UNEARTHLY_VISAGE);
+    AI_ActivateAura(SPELLABILITY_AURA_BLINDING);
+    AI_ActivateAura(SPELLABILITY_AURA_OF_COURAGE);
+    AI_ActivateAura(SPELLABILITY_AURA_PROTECTION);
+    AI_ActivateAura(SPELLABILITY_AURA_STUN);
+    AI_ActivateAura(SPELLABILITY_AURA_FIRE);
+    AI_ActivateAura(SPELLABILITY_AURA_COLD);
+    AI_ActivateAura(SPELLABILITY_AURA_ELECTRICITY);
+    AI_ActivateAura(SPELLABILITY_AURA_UNNATURAL);
+    AI_ActivateAura(SPELLABILITY_AURA_FEAR);
+    AI_ActivateAura(SPELLABILITY_AURA_UNNATURAL);
+    AI_ActivateAura(SPELLABILITY_AURA_MENACE);
+    AI_ActivateAura(SPELLABILITY_TYRANT_FOG_MIST);
+    AI_ActivateAura(AI_SPELLABILITY_AURA_OF_HELLFIRE);
+    AI_ActivateAura(SPELLABILITY_AURA_HORRIFICAPPEARANCE);
 }
 
 // Sets up thier selection of skills, to integers, if they would ever use them.
 // NOTE: it also triggers "hide" if they have enough skill and not stopped.
-// pok - these all seem to be validations, i'll validate it myself >:)
-/*
 void AI_SetUpSkillToUse()
 {
-    int iHitDice = GetHitDice(OBJECT_SELF);
-    // base skill must be higher than 0 - pok
+    // Get our hitdice
+    int nHitDice = GetHitDice(OBJECT_SELF);
+    int nRank;
+    // Hiding. We turn off if we have no skill or under 1 skill in it
+    // * Note: For the AI to decide "oh, we should hide", it requires a minimum
+    //   of 7 points in hide, and Rank - 4 must be >= our HD too. Can be forced.
     if(!GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_HIDING, AI_OTHER_COMBAT_MASTER))
     {
         if(!GetHasSkill(SKILL_HIDE) ||
-            GetSkillRank(SKILL_HIDE) <= i1)
+            GetSkillRank(SKILL_HIDE) < 1)
         {
             SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_HIDING, AI_OTHER_COMBAT_MASTER);
             DeleteSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_HIDING, AI_OTHER_COMBAT_MASTER);
         }
     }
-    // Pickpocketing...we only turn it OFF here if low skill (or none) Needs 1/4 HD.
+    // Pickpocketing...we only turn it OFF here if low skill
+    // (or none) Needs 1/2 HD or 10 minimum - 10 is probably needed for the DC35
+    // check for this skill at all.
     if(!GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_PICKPOCKETING, AI_OTHER_COMBAT_MASTER))
     {
+        nRank = GetSkillRank(SKILL_PICK_POCKET);
         if(!GetHasSkill(SKILL_PICK_POCKET) ||
-            GetSkillRank(SKILL_PICK_POCKET) < (iHitDice/i4))
+            nRank < nHitDice/2 || nRank < 10)
         {
             SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_PICKPOCKETING, AI_OTHER_COMBAT_MASTER);
             DeleteSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_PICKPOCKETING, AI_OTHER_COMBAT_MASTER);
         }
     }
-    // Taunting. pok - disable taunting if base skill is less than or equal to 0
-    if(GetSkillRank(SKILL_TAUNT, OBJECT_SELF, TRUE) <= 0)
+    // Taunting. Again, only off if low skill. Needs half of HD, or 3 minimum
+    if(!GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_TAUNTING, AI_OTHER_COMBAT_MASTER))
     {
-        SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_TAUNTING, AI_OTHER_COMBAT_MASTER);
-        DeleteSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_TAUNTING, AI_OTHER_COMBAT_MASTER);
+        nRank = GetSkillRank(SKILL_TAUNT);
+        if(!GetHasSkill(SKILL_TAUNT) ||
+            nRank < nHitDice/2 || nRank < 3)
+        {
+            SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_TAUNTING, AI_OTHER_COMBAT_MASTER);
+            DeleteSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_TAUNTING, AI_OTHER_COMBAT_MASTER);
+        }
     }
-
     // Empathy. Again, only off if low skill. Needs any, checked futher in game.
     if(!GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_EMPATHY, AI_OTHER_COMBAT_MASTER))
     {
@@ -749,381 +793,23 @@ void AI_SetUpSkillToUse()
         }
     }
 }
-*/
-
-// This is an attempt to speed up some things.
-// We use talents to set general valid categories.
-// Levels are also accounted for, checking the spell given and using a switch
-// statement to get the level.
-void AI_SetUpSpells()
-{
-    /***************************************************************************
-    We use talents, and Get2daString to check levels, and so on...
-
-    We set:
-    - If the talent is a valid one at all
-    - If we know it (GetHasSpell) we check the level of the spell. Set if highest.
-    - We set the actual talent number as a spell.
-
-    // These must match the list in nwscreaturestats.cpp
-    int TALENT_CATEGORY_HARMFUL_AREAEFFECT_DISCRIMINANT   = 1;
-    int TALENT_CATEGORY_HARMFUL_RANGED                    = 2;
-    int TALENT_CATEGORY_HARMFUL_TOUCH                     = 3;
-    int TALENT_CATEGORY_BENEFICIAL_HEALING_AREAEFFECT     = 4;
-    int TALENT_CATEGORY_BENEFICIAL_HEALING_TOUCH          = 5;
-    int TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_AREAEFFECT = 6;
-    int TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_SINGLE     = 7;
-    int TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_AREAEFFECT = 8;
-    int TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SINGLE     = 9;
-    int TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SELF       = 10;
-    int TALENT_CATEGORY_HARMFUL_AREAEFFECT_INDISCRIMINANT = 11;
-    int TALENT_CATEGORY_BENEFICIAL_PROTECTION_SELF        = 12;
-    int TALENT_CATEGORY_BENEFICIAL_PROTECTION_SINGLE      = 13;
-    int TALENT_CATEGORY_BENEFICIAL_PROTECTION_AREAEFFECT  = 14;
-    int TALENT_CATEGORY_BENEFICIAL_OBTAIN_ALLIES          = 15;
-    int TALENT_CATEGORY_PERSISTENT_AREA_OF_EFFECT         = 16;
-    int TALENT_CATEGORY_BENEFICIAL_HEALING_POTION         = 17;
-    int TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_POTION     = 18;
-    int TALENT_CATEGORY_DRAGONS_BREATH                    = 19;
-    int TALENT_CATEGORY_BENEFICIAL_PROTECTION_POTION      = 20;
-    int TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_POTION     = 21;
-    int TALENT_CATEGORY_HARMFUL_MELEE                     = 22;
-    ***************************************************************************/
-    talent tCheck;
-    // This is set to TRUE if any are valid. :-D
-    int SpellAnySpell;
-
-
-    /** TALENT_CATEGORY_HARMFUL_AREAEFFECT_DISCRIMINANT   = 1; *****************
-    These are *generally* spells which are Harmful, affect many targets in an
-    area, and don't hit allies. Spells such as Wierd (An illusion fear spell, so
-    allies would know it wasn't real, but enemies wouldn't) and so on.
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_AREAEFFECT_DISCRIMINANT, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_HARMFUL_AREAEFFECT_DISCRIMINANT, AI_VALID_SPELLS);
-    }
-    /** TALENT_CATEGORY_HARMFUL_RANGED                    = 2; *****************
-    These are classed as single target, short or longer ranged spells. Anything
-    that affects one target, and isn't a touch spell, is this category. Examples
-    like Acid Arrow or Finger of Death.
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_RANGED, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_HARMFUL_RANGED, AI_VALID_SPELLS);
-    }
-    /** TALENT_CATEGORY_HARMFUL_TOUCH                     = 3; *****************
-    A limited selection. All touch spells, like Harm. Not much to add but they
-    only affect one target. Note: Inflict range are also in here (but remember
-    that GetHasSpell returns TRUE if they can spontaeously cast it as well!)
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_TOUCH, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_HARMFUL_TOUCH, AI_VALID_SPELLS);
-    }
-    /** TALENT_CATEGORY_BENEFICIAL_HEALING_AREAEFFECT     = 4; *****************
-    Healing area effects. Basically, only Mass Heal and Healing Circle :0P
-
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_HEALING_AREAEFFECT, MAXCR);
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_HEALING_AREAEFFECT, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_BENEFICIAL_HEALING_TOUCH          = 5; *****************
-    These are all the healing spells that touch - Cure X wounds and heal really.
-    Also, feat Wholeness of Body and Lay on Hands as well.
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_HEALING_TOUCH, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_HEALING_TOUCH, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_AREAEFFECT = 6; *****************
-    These are spells which help people in an area to rid effects, normally. IE
-    normally, a condition must be met to cast it, like them being stunned.
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_AREAEFFECT, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_CONDITIONAL_AREAEFFECT, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_SINGLE     = 7; *****************
-    This is the same as the AOE version, but things like Clarity, single target
-    ones.
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_SINGLE, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_CONDITIONAL_SINGLE, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_AREAEFFECT = 8; *****************
-    Enhancing stats, or self or others. Friendly, and usually stat-changing. They
-    contain all ones that, basically, don't protect and stop damage, but help
-    defeat enemies. In the AOE ones are things like Invisiblity Sphere.
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_AREAEFFECT, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_ENHANCEMENT_AREAEFFECT, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SINGLE     = 9; *****************
-    Enchancing, these are the more single ones, like Bulls Strength. See above as well.
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SINGLE, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_ENHANCEMENT_SINGLE, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SELF       = 10; ****************
-    Self-encancing spells, that can't be cast on allies, like Divine Power :-)
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SELF, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_ENHANCEMENT_SELF, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_HARMFUL_AREAEFFECT_INDISCRIMINANT = 11; ****************
-    This is the AOE spells which never discriminate between allies, and enemies,
-    such as the well known spell Fireball.
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_AREAEFFECT_INDISCRIMINANT, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_HARMFUL_AREAEFFECT_INDISCRIMINANT, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_BENEFICIAL_PROTECTION_SELF        = 12; ****************
-    Protection spells are usually a Mage's only way to stop instant death. Self
-    only spells include the likes of Premonition :-)
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_PROTECTION_SELF, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_PROTECTION_SELF, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_BENEFICIAL_PROTECTION_AREAEFFECT  = 14; ****************
-    Protection spells are usually a Mage's only way to stop instant death.
-    Area effect ones are the likes of Protection From Spells. Limited ones here.
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_PROTECTION_AREAEFFECT, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_PROTECTION_AREAEFFECT, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_BENEFICIAL_OBTAIN_ALLIES          = 15; ****************
-    Allies, or obtaining them, is anything they can summon. Basically, all
-    Summon Monster 1-9, Innate ones like Summon Tanarri and ones like Gate.
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_OBTAIN_ALLIES, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_OBTAIN_ALLIES, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_PERSISTENT_AREA_OF_EFFECT         = 16; ****************
-    These are NOT AOE spells like acid fog, but rather the Aura's that a monster
-    can use. Also, oddly, Rage's, Monk's Wholeness of Body and so on are here...
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_PERSISTENT_AREA_OF_EFFECT, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        SpellAnySpell = TRUE;
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_PERSISTENT_AREA_OF_EFFECT, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_DRAGONS_BREATH                    = 19; ****************
-    Dragon Breaths. These are all the breaths avalible to Dragons. :-D Nothing else.
-
-    All counted as level 9 innate caster level. Monster ability only :0)
-
-    Contains (By level, innate):
-    9. Dragon Breath Acid, Cold, Fear, Fire, Gas, Lightning, Paralyze, Sleep, Slow, Weaken.
-    ***************************************************************************/
-
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_DRAGONS_BREATH, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck))
-    {
-        // Then set we have it
-        SetSpawnInCondition(AI_VALID_TALENT_DRAGONS_BREATH, AI_VALID_SPELLS);
-    }
-
-    /** TALENT_CATEGORY_HARMFUL_MELEE                     = 22; ****************
-    We might as well check if we have any valid feats :-P
-
-    Contains:
-        Called Shot, Disarm, Imp. Power Attack, Knockdown, Power Attack, Rapid Shot,
-        Sap, Stunning Fist, Flurry of blows, Quivering Palm, Smite Evil,
-        Expertise (and Imp), Smite Good
-    Note:
-        Whirlwind attack (Improved), Dirty Fighting.
-    ***************************************************************************/
-    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_MELEE, MAXCR);
-    // Valid?
-    if(GetIsTalentValid(tCheck) ||
-       GetHasFeat(FEAT_IMPROVED_WHIRLWIND) ||
-       GetHasFeat(FEAT_WHIRLWIND_ATTACK) ||
-       GetHasFeat(FEAT_DIRTY_FIGHTING) ||
-       GetHasFeat(FEAT_KI_DAMAGE))
-    {
-        // Then set we have it. If we don't have any, we never check Knockdown ETC.
-        SetSpawnInCondition(AI_VALID_TALENT_HARMFUL_MELEE, AI_VALID_SPELLS);
-    }
-
-    if(SpellAnySpell == TRUE)
-    {
-        SetSpawnInCondition(AI_VALID_ANY_SPELL, AI_VALID_SPELLS);
-    }
-    // All spells in no category.
-    if(
-//            GetHasSpell(SPELL_CLAIRAUDIENCE_AND_CLAIRVOYANCE) ||
-       GetHasSpell(SPELL_DARKNESS) ||
-//       GetHasSpell(71) || // Greater shadow conjuration
-//       GetHasSpell(SPELL_IDENTIFY) ||
-//       GetHasSpell(SPELL_KNOCK) ||
-       GetHasSpell(SPELL_LIGHT) ||
-       GetHasSpell(SPELL_POLYMORPH_SELF) ||
-//       GetHasSpell(158) || // Shades
-//       GetHasSpell(159) || // Shadow conjuration
-       GetHasSpell(SPELL_SHAPECHANGE) ||
-       GetHasSpell(321) || // Protection...
-       GetHasSpell(322) || // Magic circle...
-       GetHasSpell(323) || // Aura...
-//       GetHasSpell(SPELL_LEGEND_LORE) ||
-//       GetHasSpell(SPELL_FIND_TRAPS) ||
-       GetHasSpell(SPELL_CONTINUAL_FLAME) ||
-//       GetHasSpell(SPELL_ONE_WITH_THE_LAND) ||
-//       GetHasSpell(SPELL_CAMOFLAGE) ||
-       GetHasSpell(SPELL_BLOOD_FRENZY) ||
-//       GetHasSpell(SPELL_AMPLIFY) ||
-       GetHasSpell(SPELL_ETHEREALNESS) ||
-       GetHasSpell(SPELL_DIVINE_SHIELD) ||
-       GetHasSpell(SPELL_DIVINE_MIGHT) ||
-       // Added in again 18th nov
-       GetHasSpell(SPELL_INFLICT_SERIOUS_WOUNDS) ||
-       GetHasSpell(SPELL_INFLICT_MODERATE_WOUNDS) ||
-       GetHasSpell(SPELL_INFLICT_MINOR_WOUNDS) ||
-       GetHasSpell(SPELL_INFLICT_LIGHT_WOUNDS) ||
-       // Feats that will be cast in the spell list.
-       // MOST are under talents anyway, these are ones which are not
-       GetHasFeat(FEAT_PRESTIGE_DARKNESS))
-    {
-        SetSpawnInCondition(AI_VALID_OTHER_SPELL, AI_VALID_SPELLS);
-        SetSpawnInCondition(AI_VALID_ANY_SPELL, AI_VALID_SPELLS);
-    }
-    // SPELL_GREATER_RESTORATION - Ability Decrease, AC decrease, Attack decrease,
-    //  Damage Decrease, Damage Immunity Decrease, Saving Throw Decrease, Spell
-    //  resistance Decrease, Skill decrease, Blindness, Deaf, Curse, Disease, Poison,
-    //  Charmed, Dominated, Dazed, Confused, Frightened, Negative level, Paralyze,
-    //  Slow, Stunned.
-    // SPELL_FREEDOM - Paralyze, Entangle, Slow, Movement speed decrease. (+Immunity!)
-    // SPELL_RESTORATION - Ability Decrease, AC decrease, Attack Decrease,
-    //  Damage Decrease, Damage Immunity Decrease, Saving Throw Decrease,
-    //  Spell Resistance Decrease, Skill Decrease, Blindess, Deaf, Paralyze, Negative level
-    // SPELL_REMOVE_BLINDNESS_AND_DEAFNESS - Blindess, Deaf.
-    // SPELL_NEUTRALIZE_POISON - Poison
-    // SPELL_REMOVE_DISEASE - Disease
-    // SPELL_REMOVE_CURSE - Curse
-    // SPELL_LESSER_RESTORATION - Ability Decrease, AC decrease, Attack Decrease,
-    // Cure condition spells! :-)
-    if(GetHasSpell(SPELL_GREATER_RESTORATION) || GetHasSpell(SPELL_FREEDOM_OF_MOVEMENT) ||
-       GetHasSpell(SPELL_RESTORATION) || GetHasSpell(SPELL_REMOVE_BLINDNESS_AND_DEAFNESS) ||
-       GetHasSpell(SPELL_NEUTRALIZE_POISON) || GetHasSpell(SPELL_REMOVE_DISEASE) ||
-       GetHasSpell(SPELL_REMOVE_CURSE) || GetHasSpell(SPELL_LESSER_RESTORATION) ||
-       GetHasSpell(SPELL_STONE_TO_FLESH))
-    {
-        SetSpawnInCondition(AI_VALID_CURE_CONDITION_SPELLS, AI_VALID_SPELLS);
-    }
-}
 
 // This will make the visual effect passed play INSTANTLY at the creatures location.
-// * iVFX - The visual effect constant number
-void AI_SpawnInInstantVisual(int iVFX)
+// * nVFX - The visual effect constant number
+void AI_SpawnInInstantVisual(int nVFX)
 {
     // Beta 3 change: Made to at location.
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT,
-                          EffectVisualEffect(iVFX),
+                          EffectVisualEffect(nVFX),
                           GetLocation(OBJECT_SELF));
 }
 // This will make the visual effect passed play PERMAMENTLY.
-// * If a VFX is -1, it is ignored.
-// * iVFX1-4 - The visual effect constant number
+// * nVFX - The visual effect constant number
 // NOTE: They will be made to be SUPERNATUAL, so are not dispelled!
-void AI_SpawnInPermamentVisual(int iVFX)
+void AI_SpawnInPermamentVisual(int nVFX)
 {
     ApplyEffectToObject(DURATION_TYPE_INSTANT,
-                        SupernaturalEffect(EffectVisualEffect(iVFX)),
+                        SupernaturalEffect(EffectVisualEffect(nVFX)),
                         OBJECT_SELF);
 }
 // This will set the MAXIMUM and MINIMUM targets to pass this stage (under sName)
@@ -1131,52 +817,39 @@ void AI_SpawnInPermamentVisual(int iVFX)
 // - If we set it to min of 5, max of 10, for AC, if we cancled 5 targets on having
 //   AC higher then wanted, we will take the highest 5 minimum.
 //   If there are over 10, we take a max of 10 to choose from.
-// * iType - must be TARGET_HIGHER or TARGET_LOWER. Defaults to the lowest, so it
+// * nType - must be TARGET_HIGHER or TARGET_LOWER. Defaults to the lowest, so it
 //           targets the lowest value for sName.
-void AI_SetAITargetingValues(string sName, int iType, int iMinimum, int iMaximum)
+void AI_SetAITargetingValues(string sName, int nType, int nMinimum, int nMaximum)
 {
     // Error checking
-    if((iType == TARGET_HIGHER || iType == TARGET_LOWER) &&
-       iMinimum >= i1 && iMaximum >= i1 && iMaximum >= iMinimum)
+    if((nType == TARGET_HIGHER || nType == TARGET_LOWER) &&
+        nMinimum >= 1 && nMaximum >= 1 && nMaximum >= nMinimum)
     {
         // Set the type to sName.
         // - It is TARGET_HIGHER (1) or TARGET_LOWER (0).
-        SetAIInteger(sName, iType);
+        SetAIInteger(sName, nType);
 
         // Minimum amount of targets for this?
-        SetAIInteger(sName + MINIMUM, iMinimum);
+        SetAIInteger(sName + MINIMUM, nMinimum);
 
         // Maximum targets for this?
-        SetAIInteger(sName + MAXIMUM, iMaximum);
+        SetAIInteger(sName + MAXIMUM, nMaximum);
     }
-}
-
-// Sets we are a Beholder and use Ray attacks, and Animagic Ray.
-void SetBeholderAI()
-{
-    // 1 = beholder
-    SetAIInteger(AI_SPECIAL_AI, i1);
-}
-// Set we are a mindflayer, and uses some special AI for them.
-void SetMindflayerAI()
-{
-    // 2 = mindflayer
-    SetAIInteger(AI_SPECIAL_AI, i2);
 }
 
 // This will set a spell trigger up. Under cirtain conditions, spells are released
 // and cast on the caster.
-// Once fired, a spell trigger is only reset by resting.
+// Once fired, a spell trigger is only reset by resting. Only 1 of each max is fired at once!
 // * sType - is specifically:
 //   SPELLTRIGGER_DAMAGED_AT_PERCENT  - When damaged, the trigger fires. Use iValue for the %. One at a time is fired.
 //   SPELLTRIGGER_IMMOBILE            - Fired when held/paralyzed/sleeping ETC. One at a time is fired.
 //   SPELLTRIGGER_NOT_GOT_FIRST_SPELL - Makes sure !GetHasSpellEffect(iSpell1) already,
-//                                  then fires. Checks all in this category each round.
-//   SPELLTRIGGER_START_OF_COMBAT     - All these are all fired at the start of combat.
-// * iNumber - can be 1-9, in sequential order of when you want them to fire.
-// * iValue - is only required with DAMAGED_AT_PERCENT. Only the first one set is used.
-// * iSpellX - Cannot be 0. It should only really be defensive spells.
-void SetSpellTrigger(string sType, int iValue, int iNumber, int iSpell1, int iSpell2 = 0, int iSpell3 = 0, int iSpell4 = 0, int iSpell5 = 0, int iSpell6 = 0, int iSpell7 = 0, int iSpell8 = 0, int iSpell9 = 0)
+//                                  then fires. Checks all in this category each round (first one fires!)
+//   SPELLTRIGGER_START_OF_COMBAT     - Triggered always, at the start of DetermineCombatRound.
+// * nNumber - can be 1-9, in sequential order of when you want them to fire.
+// * nValue - is only required with DAMAGED_AT_PERCENT.
+// * nSpellX - Cannot be 0. It should only really be defensive spells.
+void SetSpellTrigger(string sType, int nValue, int nNumber, int nSpell1, int nSpell2 = 0, int nSpell3 = 0, int nSpell4 = 0, int nSpell5 = 0, int nSpell6 = 0, int nSpell7 = 0, int nSpell8 = 0, int nSpell9 = 0)
 {
     // Either get our spell trigger (creature) or create one
     object oTrigger = GetAIObject(AI_SPELL_TRIGGER_CREATURE);
@@ -1190,49 +863,49 @@ void SetSpellTrigger(string sType, int iValue, int iNumber, int iSpell1, int iSp
         // Local for us to get our spell trigger (should be our henchmen)
         SetAIObject(AI_SPELL_TRIGGER_CREATURE, oTrigger);
     }
-    int iSize = i1;
-    string sTotalID = sType + IntToString(iNumber);
+    int nSize = 1;
+    string sTotalID = sType + IntToString(nNumber);
 
-    SetLocalInt(oTrigger, sTotalID + "1", iSpell1);
-    if(iSpell2 != FALSE)
-    {   iSize = 2;
-        SetLocalInt(oTrigger, sTotalID + "2", iSpell2);    }
-    if(iSpell3 != FALSE)
-    {   iSize = 3;
-        SetLocalInt(oTrigger, sTotalID + "3", iSpell3);    }
-    if(iSpell4 != FALSE)
-    {   iSize = 4;
-        SetLocalInt(oTrigger, sTotalID + "4", iSpell4);    }
-    if(iSpell5 != FALSE)
-    {   iSize = 5;
-        SetLocalInt(oTrigger, sTotalID + "5", iSpell5);    }
-    if(iSpell6 != FALSE)
-    {   iSize = 6;
-        SetLocalInt(oTrigger, sTotalID + "6", iSpell6);    }
-    if(iSpell7 != FALSE)
-    {   iSize = 7;
-        SetLocalInt(oTrigger, sTotalID + "7", iSpell7);    }
-    if(iSpell8 != FALSE)
-    {   iSize = 8;
-        SetLocalInt(oTrigger, sTotalID + "8", iSpell8);    }
-    if(iSpell9 != FALSE)
-    {   iSize = 9;
-        SetLocalInt(oTrigger, sTotalID + "9", iSpell9);    }
+    SetLocalInt(oTrigger, sTotalID + "1", nSpell1);
+    if(nSpell2 != FALSE)
+    {   nSize = 2;
+        SetLocalInt(oTrigger, sTotalID + "2", nSpell2);    }
+    if(nSpell3 != FALSE)
+    {   nSize = 3;
+        SetLocalInt(oTrigger, sTotalID + "3", nSpell3);    }
+    if(nSpell4 != FALSE)
+    {   nSize = 4;
+        SetLocalInt(oTrigger, sTotalID + "4", nSpell4);    }
+    if(nSpell5 != FALSE)
+    {   nSize = 5;
+        SetLocalInt(oTrigger, sTotalID + "5", nSpell5);    }
+    if(nSpell6 != FALSE)
+    {   nSize = 6;
+        SetLocalInt(oTrigger, sTotalID + "6", nSpell6);    }
+    if(nSpell7 != FALSE)
+    {   nSize = 7;
+        SetLocalInt(oTrigger, sTotalID + "7", nSpell7);    }
+    if(nSpell8 != FALSE)
+    {   nSize = 8;
+        SetLocalInt(oTrigger, sTotalID + "8", nSpell8);    }
+    if(nSpell9 != FALSE)
+    {   nSize = 9;
+        SetLocalInt(oTrigger, sTotalID + "9", nSpell9);    }
 
     // Set final sizes ETC.
-    SetLocalInt(oTrigger, MAXINT_ + sTotalID, iSize);
+    SetLocalInt(oTrigger, MAXINT_ + sTotalID, nSize);
     SetLocalInt(oTrigger, sTotalID + USED, FALSE);
 
     // Check value
-    if(iValue > GetLocalInt(oTrigger, VALUE + sType))
+    if(nValue > GetLocalInt(oTrigger, VALUE + sType))
     {
-        SetLocalInt(oTrigger, VALUE + sType, iValue);
+        SetLocalInt(oTrigger, VALUE + sType, nValue);
     }
 
     // Set how many spell triggers we have too
-    if(iNumber > GetLocalInt(oTrigger, MAXIMUM + sType))
+    if(nNumber > GetLocalInt(oTrigger, MAXIMUM + sType))
     {
-        SetLocalInt(oTrigger, MAXIMUM + sType, iNumber);
+        SetLocalInt(oTrigger, MAXIMUM + sType, nNumber);
     }
 }
 // Debug: To compile this script, uncomment all of the below.
@@ -1242,3 +915,4 @@ void main()
     return;
 }
 //*/
+

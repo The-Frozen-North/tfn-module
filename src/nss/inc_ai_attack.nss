@@ -1,6 +1,6 @@
-/************************ [Combat Attack] **************************************
-    Filename: inc_ai_attack
-************************* [Combat Attack] **************************************
+/*/////////////////////// [Include - NPC (Combat) Attack] //////////////////////
+    Filename: J_INC_NPC_Attack
+///////////////////////// [Include - NPC (Combat) Attack] //////////////////////
     What does this do?
 
     It is a wrapper/include for getting a creature to attack target X, or do
@@ -11,14 +11,17 @@
 
     And it also keeps Combat files SMALL! I uses Execute Script to fire the
     combat file, not include it here.
-************************* [History] ********************************************
+///////////////////////// [History] ////////////////////////////////////////////
     1.3 - Added
-************************* [Workings] *******************************************
+    1.4 - TO DO:
+        - Bugfix a few things (copy/paste errors)
+        - Add example script to use (User defined events)
+///////////////////////// [Workings] ///////////////////////////////////////////
     Include this in any conversation file or whatever, and mearly read the
     descriptions of the different functions, and it will do what it says :-)
-************************* [Arguments] ******************************************
-    Arguments:
-************************* [Combat Attack] *************************************/
+///////////////////////// [Arguments] //////////////////////////////////////////
+    Arguments: N/A
+///////////////////////// [Include - NPC (Combat) Attack] ////////////////////*/
 
 // Include the constants for the combat, spawn integers ETC.
 #include "inc_ai_constants"
@@ -41,22 +44,22 @@ void DetermineSpeakCombatRoundNotMe(object oTarget, object oAttacker);
 
 // This is the main wrapper to get an NPC to attack in conversation.
 // * fDelay - The delay AFTER adjusting reputation, that we attack and shout
-// * iPlot - The plot flag to set to (Usually FALSE).
-// * iImmortal - The immortal flag to set to (Usually FALSE).
+// * bPlot - The plot flag to set US to (Usually FALSE).
+// * bImmortal - The immortal flag US to set to (Usually FALSE).
 // Example, how to keep flags already set:
 //      HostileAttackPCSpeaker(0.0, GetPlotFlag(), GetImmortal());
-// * iAllAllies - This will determine combat rounds against the target, that are in 50.0M. False = Don't
-void HostileAttackPCSpeaker(float fDelay = 0.0, int iPlot = FALSE, int iImmortal = FALSE, int iAllAllies = TRUE);
+// * bAllAllies - This will determine combat rounds against the target, that are in 50.0M. False = Don't
+void HostileAttackPCSpeaker(float fDelay = 0.0, int bPlot = FALSE, int bImmortal = FALSE, int bAllAllies = TRUE);
 
 // This will make our faction hostile to the target, and attack them.
 // * oTarget - The target object to attack
 // * fDelay - The delay AFTER adjusting reputation, that we attack and shout
-// * iPlot - The plot flag to set to (Usually FALSE).
-// * iImmortal - The immortal flag to set to (Usually FALSE).
+// * bPlot - The plot flag to set US to (Usually FALSE).
+// * bImmortal - The immortal flag US to set to (Usually FALSE).
 // Example, how to keep flags already set:
 //      HostileAttackObject(oPC, 0.0, GetPlotFlag(), GetImmortal());
-// * iAllAllies - This will determine combat rounds against the target, that are in 50.0M. False = Don't
-void HostileAttackObject(object oTarget, float fDelay = 0.0, int iPlot = FALSE, int iImmortal = FALSE, int iAllAllies = TRUE);
+// * bAllAllies - This will determine combat rounds against the target, that are in 50.0M. False = Don't
+void HostileAttackObject(object oTarget, float fDelay = 0.0, int bPlot = FALSE, int bImmortal = FALSE, int bAllAllies = TRUE);
 
 // This will make our faction hostile to the target, and shout.
 // * oTarget - The target object to shout about.
@@ -65,25 +68,25 @@ void HostileAttackObject(object oTarget, float fDelay = 0.0, int iPlot = FALSE, 
 void ShoutAbout(object oTarget);
 
 // This will make our faction hostile to ALL(!) PC's...in the area or game or range
-// * iType - TYPE_ALL_PCS (1) is all PC's in the world.
+// * nType - TYPE_ALL_PCS (1) is all PC's in the world.
 //         - TYPE_ALL_AREA (2) is all PC's in the specific area.
 //         - TYPE_IN_RANGE (3) is all PC's within fRange.
-// * iPlot - The plot flag to set to (Usually FALSE).
-// * iImmortal - The immortal flag to set to (Usually FALSE).
-// * iAllAllies - This will determine combat rounds against the target, that are in 50.0M. False = Don't
-void HostileAttackAllPCs(int iType = 1, float fRange = 40.0, int iPlot = FALSE, int iImmortal = FALSE, int iAllAllies = TRUE);
+// * bPlot - The plot flag to set US to (Usually FALSE).
+// * bImmortal - The immortal flag US to set to (Usually FALSE).
+// * bAllAllies - This will determine combat rounds against the target, that are in 50.0M. False = Don't
+void HostileAttackAllPCs(int nType = 1, float fRange = 40.0, int bPlot = FALSE, int bImmortal = FALSE, int bAllAllies = TRUE);
 
 // This will thier most damaging weapon, and wait to disarm it.
 // * fDuration - Delay until the weapon is withdrawn.
-// * iRanged - if TRUE, it will equip a ranged weapon as a prioritory (EquipRanged call)
-void EquipWeaponsDuration(float fDuration, int iRanged = FALSE);
+// * bRanged - if TRUE, it will equip a ranged weapon as a prioritory (EquipRanged call)
+void EquipWeaponsDuration(float fDuration, int bRanged = FALSE);
 // Disarms the persons right-hand-weapon
 void RemoveWeapons();
 
 // Plays talks like "ATTACK!" and "Group Near Me" etc.
-// * iLowest, iHighest - the High/Lowest value to use.
+// * nLowest, nHighest - the High/Lowest value to use.
 // 0 = ATTACK, 1 = TAUNT, 2-4 = BATTLE(1-3), 5 = ENEMIES, 6 = GROUP, 7 = HELP.
-void PlaySomeTaunt(int iLowest = 0, int iHighest = 7);
+void PlaySomeTaunt(int nLowest = 0, int nHighest = 7);
 
 // Gets all allies of ourselves to attack oTarget
 // * oTarget - The target to attack.
@@ -156,72 +159,75 @@ void DetermineSpeakCombatRoundNotMe(object oTarget, object oAttacker)
     }
 }
 // This is the main wrapper to get an NPC to attack in conversation.
-// * iPlot - The plot flag to set to (Usually FALSE).
-// * iImmortal - The immortal flag to set to (Usually FALSE).
+// * fDelay - The delay AFTER adjusting reputation, that we attack and shout
+// * bPlot - The plot flag to set US to (Usually FALSE).
+// * bImmortal - The immortal flag US to set to (Usually FALSE).
 // Example, how to keep flags already set:
-//      AttackPCSpeaker(GetPlotFlag(), GetImmortal());
-// * iAllAllies - This will determine combat rounds against the target, that are in 50.0M. False = Don't
-void HostileAttackPCSpeaker(float fDelay = 0.0, int iPlot = FALSE, int iImmortal = FALSE, int iAllAllies = TRUE)
+//      HostileAttackPCSpeaker(0.0, GetPlotFlag(), GetImmortal());
+// * bAllAllies - This will determine combat rounds against the target, that are in 50.0M. False = Don't
+void HostileAttackPCSpeaker(float fDelay = 0.0, int bPlot = FALSE, int bImmortal = FALSE, int bAllAllies = TRUE)
 {
     // Get the PC
     object oPC = GetPCSpeaker();
+
     // Error checking
     if(!GetIsObjectValid(oPC) || GetIsDM(oPC)) return;
-    // Change the flags
-    if(GetPlotFlag() != iPlot)
-        SetPlotFlag(OBJECT_SELF, iPlot);
-    if(GetImmortal() != iImmortal)
-        SetImmortal(OBJECT_SELF, iPlot);
+
+    // Change our flags for plot and immortal (usually turns them off)
+    SetPlotFlag(OBJECT_SELF, bPlot);
+    SetImmortal(OBJECT_SELF, bImmortal);
 
     // We make them hostile to our faction
     AdjustReputation(oPC, OBJECT_SELF, HOSTILE);
+
     // Attack them
     SetLocalObject(OBJECT_SELF, AI_TO_ATTACK, oPC);
     if(fDelay > 0.0)
     {
         // Round start...
-        DelayCommand(fDelay, DetermineSpeakCombatRound(oPC, I_WAS_ATTACKED));
-        if(iAllAllies)
-            DelayCommand(fDelay, AlliesAttack(oPC));
+        DelayCommand(fDelay, DetermineSpeakCombatRound(oPC, AI_SHOUT_I_WAS_ATTACKED));
+        if(bAllAllies) DelayCommand(fDelay, AlliesAttack(oPC));
     }
     else
     {
         // Round start...
-        DetermineSpeakCombatRound(oPC, I_WAS_ATTACKED);
-        if(iAllAllies) AlliesAttack(oPC);
+        DetermineSpeakCombatRound(oPC, AI_SHOUT_I_WAS_ATTACKED);
+        if(bAllAllies) AlliesAttack(oPC);
     }
 }
 
 // This will make our faction hostile to the target, and attack them.
 // * oTarget - The target object to attack
-// * iPlot - The plot flag to set to (Usually FALSE).
-// * iImmortal - The immortal flag to set to (Usually FALSE).
+// * fDelay - The delay AFTER adjusting reputation, that we attack and shout
+// * bPlot - The plot flag to set US to (Usually FALSE).
+// * bImmortal - The immortal flag US to set to (Usually FALSE).
 // Example, how to keep flags already set:
-//      AttackObject(oPC, GetPlotFlag(), GetImmortal());
-// * iAllAllies - This will determine combat rounds against the target, that are in 50.0M. False = Don't
-void HostileAttackObject(object oTarget, float fDelay = 0.0, int iPlot = FALSE, int iImmortal = FALSE, int iAllAllies = TRUE)
+//      HostileAttackObject(oPC, 0.0, GetPlotFlag(), GetImmortal());
+// * bAllAllies - This will determine combat rounds against the target, that are in 50.0M. False = Don't
+void HostileAttackObject(object oTarget, float fDelay = 0.0, int bPlot = FALSE, int bImmortal = FALSE, int bAllAllies = TRUE)
 {
     // Error checking
     if(!GetIsObjectValid(oTarget) || GetIsDM(oTarget)) return;
-    // Change the flags
-    if(GetPlotFlag() != iPlot)
-        SetPlotFlag(OBJECT_SELF, iPlot);
-    if(GetImmortal() != iImmortal)
-        SetImmortal(OBJECT_SELF, iPlot);
+
+    // Change our flags for plot and immortal (usually turns them off)
+    SetPlotFlag(OBJECT_SELF, bPlot);
+    SetImmortal(OBJECT_SELF, bImmortal);
 
     // We make them hostile to our faction
     AdjustReputation(oTarget, OBJECT_SELF, HOSTILE);
+
     // Attack them
     SetLocalObject(OBJECT_SELF, AI_TO_ATTACK, oTarget);
+
     if(fDelay > 0.0)
     {
         // Round start...
-        DelayCommand(fDelay, DetermineSpeakCombatRound(oTarget, I_WAS_ATTACKED));
+        DelayCommand(fDelay, DetermineSpeakCombatRound(oTarget, AI_SHOUT_I_WAS_ATTACKED));
     }
     else
     {
         // Round start...
-        DetermineSpeakCombatRound(oTarget, I_WAS_ATTACKED);
+        DetermineSpeakCombatRound(oTarget, AI_SHOUT_I_WAS_ATTACKED);
     }
 }
 
@@ -233,23 +239,23 @@ void ShoutAbout(object oTarget)
     // We make them hostile to our faction
     AdjustReputation(oTarget, OBJECT_SELF, HOSTILE);
     // And shout for others to attack
-    AISpeakString(CALL_TO_ARMS);
+    AISpeakString(AI_SHOUT_CALL_TO_ARMS);
 }
 
 // This will make our faction hostile to ALL(!) PC's...in the area or game or range
-// * iType - TYPE_ALL_PCS (1) is all PC's in the world.
+// * nType - TYPE_ALL_PCS (1) is all PC's in the world.
 //         - TYPE_ALL_AREA (2) is all PC's in the specific area.
 //         - TYPE_IN_RANGE (3) is all PC's within fRange.
-// * iPlot - The plot flag to set to (Usually FALSE).
-// * iImmortal - The immortal flag to set to (Usually FALSE).
-// * iAllAllies - This will determine combat rounds against the target, that are in 50.0M. False = Don't
-void HostileAttackAllPCs(int iType = 1, float fRange = 40.0, int iPlot = FALSE, int iImmortal = FALSE, int iAllAllies = TRUE)
+// * bPlot - The plot flag to set US to (Usually FALSE).
+// * bImmortal - The immortal flag US to set to (Usually FALSE).
+// * bAllAllies - This will determine combat rounds against the target, that are in 50.0M. False = Don't
+void HostileAttackAllPCs(int nType = 1, float fRange = 40.0, int bPlot = FALSE, int bImmortal = FALSE, int bAllAllies = TRUE)
 {
     object oPC, oToAttack;
-    int iShout, iCnt;
+    int bShout, nCnt;
     float fNearestEnemy = 10000.0;
     object oArea = GetArea(OBJECT_SELF);
-    switch(iType)
+    switch(nType)
     {
         case TYPE_ALL_PCS:// s all PC's in the world.
         {
@@ -267,7 +273,7 @@ void HostileAttackAllPCs(int iType = 1, float fRange = 40.0, int iPlot = FALSE, 
                             oToAttack = oPC;
                         }
                     }
-                    iShout = TRUE;
+                    bShout = TRUE;
                 }
                 oPC = GetNextPC();
             }
@@ -275,8 +281,8 @@ void HostileAttackAllPCs(int iType = 1, float fRange = 40.0, int iPlot = FALSE, 
         break;
         case TYPE_ALL_AREA:// is all PC's in the specific area.
         {
-            iCnt = 1;
-            oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC);
+            nCnt = 1;
+            oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC, OBJECT_SELF, nCnt);
             while(GetIsObjectValid(oPC))
             {
                 // Attack it! (if not a DM!)
@@ -290,19 +296,18 @@ void HostileAttackAllPCs(int iType = 1, float fRange = 40.0, int iPlot = FALSE, 
                             oToAttack = oPC;
                         }
                     }
-                    iShout = TRUE;
+                    bShout = TRUE;
                 }
                 // Next one
-                iCnt++;
-                oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC,
-                                         OBJECT_SELF, iCnt);
+                nCnt++;
+                oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC, OBJECT_SELF, nCnt);
             }
         }
         break;
         case TYPE_IN_RANGE:// is all PC's within fRange.
         {
-            iCnt = 1;
-            oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC);
+            nCnt = 1;
+            oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC, OBJECT_SELF, nCnt);
             while(GetIsObjectValid(oPC) && GetDistanceToObject(oPC) <= fRange)
             {
                 // Attack it! (if not a DM!)
@@ -316,12 +321,11 @@ void HostileAttackAllPCs(int iType = 1, float fRange = 40.0, int iPlot = FALSE, 
                             oToAttack = oPC;
                         }
                     }
-                    iShout = TRUE;
+                    bShout = TRUE;
                 }
                 // Next one
-                iCnt++;
-                oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC,
-                                         OBJECT_SELF, iCnt);
+                nCnt++;
+                oPC = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC, OBJECT_SELF, nCnt);
             }
         }
         break;
@@ -329,17 +333,22 @@ void HostileAttackAllPCs(int iType = 1, float fRange = 40.0, int iPlot = FALSE, 
     // Attack nearest one (if valid)
     if(GetIsObjectValid(oToAttack))
     {
+        // Change our flags for plot and immortal (usually turns them off)
+        SetPlotFlag(OBJECT_SELF, bPlot);
+        SetImmortal(OBJECT_SELF, bImmortal);
+
         DetermineSpeakCombatRound(oToAttack);
-        if(iAllAllies) AlliesAttack(oToAttack);
+        if(bAllAllies) AlliesAttack(oToAttack);
     }
     // Check if we shout
-    if(iShout) AISpeakString(CALL_TO_ARMS);
+    if(bShout) AISpeakString(AI_SHOUT_CALL_TO_ARMS);
 }
-// This will thier most damaging melee weapon, and wait to disarm it.
+// This will thier most damaging weapon, and wait to disarm it.
 // * fDuration - Delay until the weapon is withdrawn.
-void EquipWeaponsDuration(float fDuration, int iRanged = FALSE)
+// * bRanged - if TRUE, it will equip a ranged weapon as a prioritory (EquipRanged call)
+void EquipWeaponsDuration(float fDuration, int bRanged = FALSE)
 {
-    if(iRanged)
+    if(bRanged)
     {
         // Equip any most damaging (don't use oVersus, incase it doesn't arm anything)
         ActionEquipMostDamagingRanged();
@@ -376,39 +385,40 @@ void RemoveWeapons()
 //::///////////////////////////////////////////////
 //:: Created by : Jasperre
 //:://///////////////////////////////////////////*/
-/*
-void PlaySomeTaunt(int iLowest, int iHighest)
+void PlaySomeTaunt(int nLowest, int nHighest)
 {
-    int iRandom = Random(iHighest) + iLowest;
-    int iVoice = VOICE_CHAT_ATTACK;
-    switch (iRandom)
+    int nRandom = Random(nHighest) + nLowest;
+    int nVoice = VOICE_CHAT_ATTACK;
+    switch (nRandom)
     {
-        case 0: iVoice = VOICE_CHAT_BATTLECRY1; break;
-        case 1: iVoice = VOICE_CHAT_BATTLECRY2; break;
-        case 2: iVoice = VOICE_CHAT_BATTLECRY3; break;
-        case 3: iVoice = VOICE_CHAT_ATTACK; break;
-        case 4: iVoice = VOICE_CHAT_TAUNT; break;
-        case 5: iVoice = VOICE_CHAT_LAUGH; break;
-        case 6: iVoice = VOICE_CHAT_ENEMIES; break;
+        case 0: nVoice = VOICE_CHAT_ATTACK; break;
+        case 1: nVoice = VOICE_CHAT_TAUNT; break;
+        case 2: nVoice = VOICE_CHAT_BATTLECRY1; break;
+        case 3: nVoice = VOICE_CHAT_BATTLECRY2; break;
+        case 4: nVoice = VOICE_CHAT_BATTLECRY3; break;
+        case 5: nVoice = VOICE_CHAT_ENEMIES; break;
+        case 6: nVoice = VOICE_CHAT_GROUP; break;
+        case 7: nVoice = VOICE_CHAT_HELP; break;
+        default: nVoice = VOICE_CHAT_ATTACK; break;
     }
-    PlayVoiceChat(iVoice);
+    PlayVoiceChat(nVoice);
 }
-*/
+
 // Gets all allies of ourselves to attack oTarget
 // * oTarget - The target to attack.
 void AlliesAttack(object oTarget)
 {
     if(!GetIsObjectValid(oTarget)) return;
-    int iCnt = 1;
-    object oAlly = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND, OBJECT_SELF, iCnt, CREATURE_TYPE_IS_ALIVE, TRUE);
+    int nCnt = 1;
+    object oAlly = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND, OBJECT_SELF, nCnt, CREATURE_TYPE_IS_ALIVE, TRUE);
     while(GetIsObjectValid(oAlly) && GetDistanceToObject(oAlly) <= 50.0)
     {
         // A slightly modified way to determine a combat round.
         // * oTarget - The target to attack
         // * oAttacker - The NPC who you want to determine a combat round, on oTarget
         DetermineSpeakCombatRoundNotMe(oTarget, oAlly);
-        iCnt++;
-        oAlly = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND, OBJECT_SELF, iCnt, CREATURE_TYPE_IS_ALIVE, TRUE);
+        nCnt++;
+        oAlly = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND, OBJECT_SELF, nCnt, CREATURE_TYPE_IS_ALIVE, TRUE);
     }
 }
 
@@ -428,4 +438,11 @@ object GetNearestFriendCreature()
     return GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND);
 }
 
-//void main(){}
+// Debug: To compile this script full, uncomment all of the below.
+/* - Add two "/"'s at the start of this line
+void main()
+{
+    return;
+}
+//*/
+

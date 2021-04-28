@@ -1,23 +1,33 @@
-/************************ [On Rested] ******************************************
-    Filename: ai_onrest or nw_c2_defaulta
-************************* [On Rested] ******************************************
+/*/////////////////////// [On Rested] //////////////////////////////////////////
+    Filename: J_AI_OnRest or nw_c2_defaulta
+///////////////////////// [On Rested] //////////////////////////////////////////
     This will play the sitting animation for 6 seconds, just something for resting.
     Also, walks waypoints (as resting would stop this) :-) and signals event (if so be)
     Feel free to edit.
 
     It does have the spell trigger information resetting, however. This can
     only be removed if they have no spell triggers, although it is hardly worth it.
-************************* [History] ********************************************
+///////////////////////// [History] ////////////////////////////////////////////
     1.3 - Added sitting.
-************************* [Workings] *******************************************
+    1.4 - Will be editing this down. No need to reset anything on rest, for a
+          better working AI.
+          IDEA: Change so that we will work through all spells/feats in order.
+          If, at cirtain levels, we do not have any spells to cast from that
+          level (set in a global stored integer in the general AI) we ignore all
+          spells in that level. Same for each talent category (no need to use
+          talents for them in the spawn script).
+
+          If not in combat (EG: In heartbeat) we reset the integers saying "don't
+          bother checking those spells" to false.
+///////////////////////// [Workings] ///////////////////////////////////////////
     This fires once, at the END of resting.
 
     If ClearAllActions is added, the resting is actually stopped, or so it seems.
 
     It doesn't fire more then once.
-************************* [Arguments] ******************************************
+///////////////////////// [Arguments] //////////////////////////////////////////
     Arguments: None, it seems.
-************************* [On Rested] *****************************************/
+///////////////////////// [On Rested] ////////////////////////////////////////*/
 
 #include "inc_ai_constants"
 
@@ -26,14 +36,8 @@ void LoopResetTriggers(string sString, object oTrigger);
 
 void main()
 {
-    // Pre-heartbeat-event
-    //if(FireUserEvent(AI_FLAG_UDE_RESTED_PRE_EVENT, EVENT_RESTED_PRE_EVENT))
-    // We may exit if it fires
-    //if(ExitFromUDE(EVENT_RESTED_PRE_EVENT)) return;
-
-    SetSpawnInCondition(AI_FLAG_COMBAT_FLAG_FAST_BUFF_ENEMY, AI_COMBAT_MASTER);
-    DeleteLocalInt(OBJECT_SELF, "invis");
-    DeleteLocalInt(OBJECT_SELF, "rest");
+    // Pre-rest-event. Returns TRUE if we interrupt this script call.
+    if(FirePreUserEvent(AI_FLAG_UDE_RESTED_PRE_EVENT, EVENT_RESTED_PRE_EVENT)) return;
 
     // AI status check. Is the AI on?
     if(GetAIOff()) return;
@@ -53,28 +57,31 @@ void main()
         LoopResetTriggers(SPELLTRIGGER_START_OF_COMBAT, oTrigger);
     }
     // Some sitting for a few seconds.
-    ActionPlayAnimation(ANIMATION_LOOPING_SIT_CROSS, f1, f6);
-    DelayCommand(f9, ExecuteScript(FILE_WALK_WAYPOINTS, OBJECT_SELF));
+    ActionPlayAnimation(ANIMATION_LOOPING_SIT_CROSS, 1.0, 6.0);
+    DelayCommand(9.0, ExecuteScript(FILE_WALK_WAYPOINTS, OBJECT_SELF));
 
     // Fire End-heartbeat-UDE
     FireUserEvent(AI_FLAG_UDE_RESTED_EVENT, EVENT_RESTED_EVENT);
+
+    DeleteLocalInt(OBJECT_SELF, "invis");
+    DeleteLocalInt(OBJECT_SELF, "rest");
 }
 
 // Resets all spell triggers used for sString
 void LoopResetTriggers(string sString, object oTrigger)
 {
-    int iCnt, iBreak, iUsed;
-    for(iCnt = i1; iBreak != TRUE; iCnt++)
+    int nCnt, bBreak, bUsed;
+    for(nCnt = 1; bBreak != TRUE; nCnt++)
     {
         // Check max for this setting
-        iUsed = GetLocalInt(oTrigger, sString + USED);
-        if(iUsed)
+        bUsed = GetLocalInt(oTrigger, sString + USED);
+        if(bUsed)
         {
             DeleteLocalInt(oTrigger, sString + USED);
         }
         else
         {
-            iBreak = TRUE;
+            bBreak = TRUE;
         }
     }
 }

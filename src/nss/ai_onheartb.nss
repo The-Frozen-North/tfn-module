@@ -1,6 +1,6 @@
-/************************ [On Heartbeat] ***************************************
-    Filename: nw_c2_default1 or ai_onheartb
-************************* [On Heartbeat] ***************************************
+/*/////////////////////// [On Heartbeat] ///////////////////////////////////////
+    Filename: nw_c2_default1 or J_AI_OnHeartbeat
+///////////////////////// [On Heartbeat] ///////////////////////////////////////
     Removed stupid stuff, special behaviour, sleep.
 
     Also, note please, I removed waypoints and day/night posting from this.
@@ -24,23 +24,24 @@
             execute script.
 
     -Working- Best possible, fast compile.
-************************* [History] ********************************************
+///////////////////////// [History] ////////////////////////////////////////////
     1.3 - Added more "buffs" to fast buff.
         - Fixed animations (they both WORK and looping ones do loop right!)
         - Loot behaviour!
         - Randomly moving nearer a PC in 25M if set.
         - Removed silly day/night optional setting. Anything we can remove, is a good idea.
-************************* [Workings] *******************************************
+    1.4 - Removed AI level setting. Not good to use, I mistakenly added it.
+///////////////////////// [Workings] ///////////////////////////////////////////
     This fires off every 6 seconds (with PCs in the area, or AI_LEVEL_HIGH without)
     and therefore is intensive.
 
     It fires of ExecutesScript things for the different parts - saves CPU stuff
     if the bits are not used.
-************************* [Arguments] ******************************************
+///////////////////////// [Arguments] //////////////////////////////////////////
     Arguments: Basically, none. Nothing activates this script. Fires every 6 seconds.
-************************* [On Heartbeat] **************************************/
+///////////////////////// [On Heartbeat] /////////////////////////////////////*/
 
-// - This includes inc_ai_constants
+// - This includes J_Inc_Constants
 #include "inc_ai_heartb"
 
 void main()
@@ -52,35 +53,15 @@ void main()
     // - Includes door bashing stop heartbeat
     if(PerformSpecialAction()) return;
 
+    // Pre-heartbeat-event. Returns TRUE if we interrupt this script call.
+    if(FirePreUserEvent(AI_FLAG_UDE_HEARTBEAT_PRE_EVENT, EVENT_HEARTBEAT_PRE_EVENT)) return;
+
     // AI status check. Is the AI on?
     if(GetAIOff() || GetSpawnInCondition(AI_FLAG_OTHER_LAG_IGNORE_HEARTBEAT, AI_OTHER_MASTER)) return;
 
     // Define the enemy and player to use.
     object oEnemy = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY);
     object oPlayer = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC);
-    int iTempInt;
-
-    // AI level (re)setting
-    if(!GetIsInCombat() && !GetIsObjectValid(GetAttackTarget()) &&
-       (GetIsObjectValid(oEnemy) && GetDistanceToObject(oEnemy) <= f50 ||
-        GetIsObjectValid(oPlayer) && GetDistanceToObject(oPlayer) <= f50))
-    {
-        // AI setting, normally higher then normal.
-        iTempInt = GetAIConstant(LAG_AI_LEVEL_YES_PC_OR_ENEMY_50M);
-        if(iTempInt > iM1 && GetAILevel() != iTempInt)
-        {
-            SetAILevel(OBJECT_SELF, iTempInt);
-        }
-    }
-    else
-    {
-        // AI setting, normally higher then normal.
-        iTempInt = GetAIConstant(LAG_AI_LEVEL_NO_PC_OR_ENEMY_50M);
-        if(iTempInt > iM1 && GetAILevel() != iTempInt)
-        {
-            SetAILevel(OBJECT_SELF, iTempInt);
-        }
-    }
 
     // We can skip to the end if we are in combat, or something...
     if(!JumpOutOfHeartBeat() && // We don't stop due to effects.
@@ -90,7 +71,7 @@ void main()
     {
         // Fast buffing...if we have the spawn in condition...
         if(GetSpawnInCondition(AI_FLAG_COMBAT_FLAG_FAST_BUFF_ENEMY, AI_COMBAT_MASTER) &&
-           GetIsObjectValid(oEnemy) && GetDistanceToObject(oEnemy) <= f40)
+           GetIsObjectValid(oEnemy) && GetDistanceToObject(oEnemy) <= 40.0)
         {
             // ...we may do an advanced buff. If we cannot see/hear oEnemy, but oEnemy
             // is within 40M, we cast many defensive spells instantly...
@@ -111,20 +92,19 @@ void main()
             // We must have animations set, and not be "paused", so doing a
             // longer looping one
             // - Need a valid player.
-            if(GetIsObjectValid(oPlayer))
+            if(GetIsObjectValid(oPlayer) && !IsInConversation(OBJECT_SELF))
             {
-                // Do we have any animations to speak of?
-                // If we have a nearby PC, not in conversation, we do animations.
-                if(!IsInConversation(OBJECT_SELF) &&
-                    GetAIInteger(AI_VALID_ANIMATIONS))
-                {
-                    ExecuteScript(FILE_HEARTBEAT_ANIMATIONS, OBJECT_SELF);
-                }
-                // We may search for PC enemies :-) move closer to PC's
-                else if(GetSpawnInCondition(AI_FLAG_OTHER_SEARCH_IF_ENEMIES_NEAR, AI_OTHER_MASTER) &&
-                       !GetLocalTimer(AI_TIMER_SEARCHING) && d4() == i1)
+                // We may search for PC enemies, 25% chance to move closer to PC's
+                if(GetSpawnInCondition(AI_FLAG_OTHER_SEARCH_IF_ENEMIES_NEAR, AI_OTHER_MASTER) &&
+                       !GetLocalTimer(AI_TIMER_SEARCHING) && d4() == 1)
                 {
                     ExecuteScript(FILE_HEARTBEAT_WALK_TO_PC, OBJECT_SELF);
+                }
+                // Else, Do we have any animations to speak of?
+                // If we have a nearby PC, we do animations.
+                else if(GetHasValidAnimations())
+                {
+                    ExecuteScript(FILE_HEARTBEAT_ANIMATIONS, OBJECT_SELF);
                 }
             }
         }
@@ -132,4 +112,7 @@ void main()
 
     string sScript = GetLocalString(OBJECT_SELF, "heartbeat_script");
     if (sScript != "") ExecuteScript(sScript);
+
+    // Fire End-heartbeat-UDE
+    FireUserEvent(AI_FLAG_UDE_HEARTBEAT_EVENT, EVENT_HEARTBEAT_EVENT);
 }

@@ -1,8 +1,8 @@
-/************************ [On User Defined] ************************************
-    Filename: ai_onuserdef or nw_c2_defaultd
-************************* [Workings] *******************************************
-    This is NOT needed, but I have, because of new Pre-events, added it to the
-    files for completeness and documentation.
+/*/////////////////////// [On User Defined] ////////////////////////////////////
+    Filename: J_AI_OnUserDef or nw_c2_defaultd
+///////////////////////// [Workings] ///////////////////////////////////////////
+    1.4 Adds proper Pre-event functionality. Use this to make sure you keep the
+    AI working, but making small additions using this event.
 
     Can be deleted to save space if you want :-)
 
@@ -23,7 +23,7 @@
     // Not in combat, of course!
     if(!GetIsInCombat())
     {
-        // Function in inc_ai_attack to get nearest PC
+        // Function in j_inc_npc_attack to get nearest PC
         object oPC = GetNearestPCCreature();
         // Why check for a PC? Well, it saves memory
         if(GetIsObjectValid(oPC) && GetDistanceToObject(oPC) <= 40.0)
@@ -47,11 +47,14 @@
 
     You can delete sections you don't need, and is recommended as long as you know
     how to use User Defined events.
-************************* [History] ********************************************
+///////////////////////// [History] ////////////////////////////////////////////
     1.3 - Added in with some documentation
-************************* [Arguments] ******************************************
+    1.4 - Changed Pre-events. Now, it uses Execute Script. Will need to set
+          a special string on the creature to now what script to fire.
+          - It means they work correctly, however!
+///////////////////////// [Arguments] //////////////////////////////////////////
     Arguments: Dependant on event. See seperate event scripts.
-************************* [On User Defined] ***********************************/
+///////////////////////// [On User Defined] //////////////////////////////////*/
 
 //  This contains a lot of useful things.
 //  - Combat starting
@@ -63,7 +66,10 @@
 
 /************************ [UDE Values] *****************************************
     These are uneeded, but here for reference. Use the constants in the file
-    "inc_ai_constants" like "EVENT_HEARTBEAT_PRE_EVENT" which is classed as 1021.
+    "j_inc_constants" like "EVENT_HEARTBEAT_PRE_EVENT" which is classed as 1021.
+    * The normal death event might not fire before the creature has vanished.
+      Use the Pre-event (but with no stopping the death event) if you want a special
+      death event to happen.
 
     Name                Normal-End event -  Pre-Event
     Heartbeat Event     1001                1021
@@ -84,9 +90,11 @@
 void main()
 {
     // Get the user defined number.
-    int iEvent = GetUserDefinedEventNumber();
+    // * NOTE: YOU MUST USE AI_GetUDENumber(), not GetUserDefinedEventNumber()!
+    int nEvent = AI_GetUDENumber();
+
     // Events.
-    switch(iEvent)
+    switch(nEvent)
     {
         // Event Heartbeat
         // Arguments: Basically, none. Nothing activates this script. Fires every 6 seconds.
@@ -316,3 +324,4 @@ void main()
         // End all in-built events. Add more in here, if you wish.
     }
 }
+

@@ -1,6 +1,6 @@
-/************************ [On Spawn] *******************************************
-    Filename: ai_onspawn or nw_c2_default9
-************************* [On Spawn] *******************************************
+/*/////////////////////// [On Spawn] ///////////////////////////////////////////
+    Filename: J_AI_OnSpawn or nw_c2_default9
+///////////////////////// [On Spawn] ///////////////////////////////////////////
     This file contains options that will determine some AI behaviour, and a lot
     of toggles for turning things on/off. A big read, but might be worthwhile.
 
@@ -28,18 +28,28 @@
     - Targeting is imporant :-D
     - If you delete this script, there is a template for the On Spawn file
       in the zip it came in, for use in the "scripttemplate" directory.
-************************* [History] ********************************************
+///////////////////////// [History] ////////////////////////////////////////////
     Note: I have removed:
     - Default "Teleporting" and exit/return (this seemed bugged anyway, or useless)
     - Spawn in animation. This can be, of course, re-added.
     - Day/night posting. This is uneeded, with a changed walk waypoints that does it automatically.
 
-    Changes from 1.0-1.2:
-    - All constants names are changed, I am afraid.
-    - Added Set/Delete/GetAIInteger/Constant/Object. This makes sure that the AI
-      doesn't ever interfere with other things - it pre-fixes all stored things
-      with AI_INTEGER_ (and so on)
-************************* [Workings] *******************************************
+    1.0-1.2 - Used short amount of spawn options.
+    1.3 - All constants names are changed, I am afraid.
+        - Added Set/Delete/GetAIInteger/Constant/Object. This makes sure that the AI
+          doesn't ever interfere with other things - it pre-fixes all stored things
+          with AI_INTEGER_ (and so on)
+    1.4 - TO DO: Clear up some old non-working ones
+        - Added in User Defined part of the script, an auto-turn-off-spells for
+          Ranger and Paladin classes. Need to test - perhaps 1.64 fixed it?
+
+
+        Spawn options changed:
+        - Removed AI level settings (can still be done manually)
+        - Added optional (and off by default) fear-visual for fleeing
+
+
+///////////////////////// [Workings] ///////////////////////////////////////////
     Note: You can do without all the comments (it may be that you don't want
     the extra KB it adds or something, although it does not at all slow down a module)
     so as long as you have these at the end:
@@ -47,56 +57,32 @@
     AI_SetUpEndOfSpawn();
     DelayCommand(2.0, SpawnWalkWayPoints());
 
-    Oh, and the include file (Below, "inc_ai_spawn") must be at the top like
+    Oh, and the include file (Below, "j_inc_spawnin") must be at the top like
     here. Also recommended is the AI_INTELLIGENCE and AI_MORALE being set (if
     not using custom AI).
-************************* [Arguments] ******************************************
+///////////////////////// [Arguments] //////////////////////////////////////////
     Arguments: GetIsEncounterCreature
-************************* [On Spawn] ******************************************/
+///////////////////////// [On Spawn] /////////////////////////////////////////*/
+
+// Treasure Includes - See end of spawn for uncomment options.
+
+//#include "nw_o2_coninclude"
+// Uncomment this if you want default NwN Treasure - Uses line "GenerateNPCTreasure()" at the end of spawn.
+// - This generates random things from the default pallet based on the creatures level + race
+
+//#include "x0_i0_treasure"
+// Uncomment this if you want the SoU Treasure - Uses line "CTG_GenerateNPCTreasure()" at the end of spawn.
+// - This will spawn treasure based on chests placed in the module. See "x0_i0_treasure" for more information.
 
 // This is required for all spawn in options!
 #include "inc_ai_spawn"
 
-#include "inc_respawn"
-#include "nwnx_creature"
-#include "inc_loot"
-
-
-void CopyKey()
-{
-// duplicate the key but make it unpickpocketable/undroppable
-    object oItem = GetFirstItemInInventory();
-    object oNewItem;
-
-    while (GetIsObjectValid(oItem))
-    {
-        if (GetBaseItemType(oItem) == BASE_ITEM_KEY)
-        {
-            oNewItem = CopyItem(oItem, OBJECT_SELF, TRUE);
-            SetDroppableFlag(oNewItem, FALSE);
-            SetPickpocketableFlag(oNewItem, FALSE);
-            break;
-        }
-
-        oItem = GetNextItemInInventory();
-    }
-}
-
 void main()
 {
-
 /************************ [Important Spawn Settings] **************************/
-    int nIntelligence = GetAbilityScore(OBJECT_SELF, ABILITY_INTELLIGENCE)/2;
-    if (nIntelligence > 10) nIntelligence = 10;
-    if (nIntelligence < 1) nIntelligence = 1;
-
-    SetAIInteger(AI_INTELLIGENCE, nIntelligence);
+    SetAIInteger(AI_INTELLIGENCE, 10);
         // Intelligence value of the creauture. Can be 1-10, read readme's for help.
-
-    int nMorale = 10;
-    if (GetClassByPosition(1) == CLASS_TYPE_COMMONER) nMorale = -1;
-
-    SetAIInteger(AI_MORALE, nMorale);
+    SetAIInteger(AI_MORALE, 10);
         // Will save (See readme). Remember: -1 or below means they always flee.
     //SetCustomAIFileName("CUSTOM_AI_FILE");
         // Sets our custom AI file. Really, only animation settings will apply when this is set.
@@ -140,13 +126,13 @@ void main()
     // - Remember, uncommenting one will just ignore it (so will never check target's
     //   AC without TARGETING_AC on)
 
-    AI_SetAITargetingValues(TARGETING_MANTALS, TARGET_LOWER, i1, i12);
+    AI_SetAITargetingValues(TARGETING_MANTALS, TARGET_LOWER, 1, 12);
         // Spell mantals are checked only for the spell target. Either Absense of or got any.
-    AI_SetAITargetingValues(TARGETING_RANGE, TARGET_HIGHER, i2, i9);
+    AI_SetAITargetingValues(TARGETING_RANGE, TARGET_HIGHER, 2, 9);
         // Range - very imporant! Basis for all ranged/spell attacks.
-    AI_SetAITargetingValues(TARGETING_AC, TARGET_LOWER, i2, i6);
+    AI_SetAITargetingValues(TARGETING_AC, TARGET_LOWER, 2, 6);
         // AC is used for all phisical attacks. Lower targets lower (By default).
-    AI_SetAITargetingValues(TARGETING_SAVES, TARGET_LOWER, i2, i4);
+    AI_SetAITargetingValues(TARGETING_SAVES, TARGET_LOWER, 2, 4);
         // Used for spell attacks. Saves are sorta a AC versus spells.
 
     // Phisical protections. Used by spells, ranged and melee.
@@ -155,22 +141,22 @@ void main()
     if(GetBaseAttackBonus(OBJECT_SELF) > ((GetHitDice(OBJECT_SELF)/2) + 1))
     {
         // Fighter/Clerics (It is over a mages BAB + 1 (IE 0.5 BAB/Level) target lower
-        AI_SetAITargetingValues(TARGETING_PHISICALS, TARGET_LOWER, i2, i6);
+        AI_SetAITargetingValues(TARGETING_PHISICALS, TARGET_LOWER, 2, 6);
     }
     else
     {
         // Mages target higher (so dispel/elemental attack those who fighters
         // cannot hit as much). (the lowest BAB, under half our hit dice in BAB)
-        AI_SetAITargetingValues(TARGETING_PHISICALS, TARGET_HIGHER, i1, i5);
+        AI_SetAITargetingValues(TARGETING_PHISICALS, TARGET_HIGHER, 1, 5);
     }
     // Base attack bonus. Used for spells and phisical attacks. Checked with GetBaseAttackBonus.
-    AI_SetAITargetingValues(TARGETING_BAB, TARGET_LOWER, i1, i4);
+    AI_SetAITargetingValues(TARGETING_BAB, TARGET_LOWER, 1, 4);
     // Hit dice - how powerful in levels the enemy is. Used for all checks.
-    AI_SetAITargetingValues(TARGETING_HITDICE, TARGET_LOWER, i1, i3);
+    AI_SetAITargetingValues(TARGETING_HITDICE, TARGET_LOWER, 1, 3);
 
-    //AI_SetAITargetingValues(TARGETING_HP_PERCENT, TARGET_LOWER, i1, i3);
-    //AI_SetAITargetingValues(TARGETING_HP_CURRENT, TARGET_LOWER, i1, i3);
-    //AI_SetAITargetingValues(TARGETING_HP_MAXIMUM, TARGET_LOWER, i1, i3);
+    //AI_SetAITargetingValues(TARGETING_HP_PERCENT, TARGET_LOWER, 1, 3);
+    //AI_SetAITargetingValues(TARGETING_HP_CURRENT, TARGET_LOWER, 1, 3);
+    //AI_SetAITargetingValues(TARGETING_HP_MAXIMUM, TARGET_LOWER, 1, 3);
         // The HP's are the last thing to choose a target with.
 /************************ [Targeting] *****************************************/
 
@@ -180,7 +166,7 @@ void main()
     3 or under intelligence will just run away. 4 or more will know where allies
     are, and if there are none, will not run.
 ************************* [Fleeing] *******************************************/
-    //SetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER);
+    SetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER);
         // Forces them to not flee. This may be set with AI_SetMaybeFearless at the end.
     //SetSpawnInCondition(AI_FLAG_FLEEING_NEVER_FIGHT_IMPOSSIBLE_ODDS, AI_TARGETING_FLEE_MASTER);
         // This will make the creature never fight against impossible odds (8HD+ different)
@@ -197,9 +183,9 @@ void main()
         // This will turn off overriding HP checks. AI may decide to run even
         // not at the %HP above, this turns the checks off.
 
-    SetAIInteger(AI_DAMAGE_AT_ONCE_FOR_MORALE_PENALTY, GetMaxHitPoints()/6);
+    //SetAIInteger(AI_DAMAGE_AT_ONCE_FOR_MORALE_PENALTY, GetMaxHitPoints()/6);
         // Damage needed to be done at once to get a massive morale penalty (Below)
-    SetAIInteger(AI_DAMAGE_AT_ONCE_PENALTY, 6);
+    //SetAIInteger(AI_DAMAGE_AT_ONCE_PENALTY, 6);
         // Penalty for the above, set for some time to negativly affect morale. Added to save DC for fleeing.
 
     //SetSpawnInCondition(AI_FLAG_FLEEING_FLEE_TO_NEAREST_NONE_SEEN, AI_TARGETING_FLEE_MASTER);
@@ -209,13 +195,16 @@ void main()
         // They will flee to the nearest object of the tag below, if set.
     //SetLocalString(OBJECT_SELF, AI_FLEE_OBJECT, "BOSS_TAG_OR_WHATEVER");
         // This needs setting if the above is to work.
+
+    //SetSpawnInCondition(AI_FLAG_FLEEING_USE_VISUAL_EFFECT, AI_TARGETING_FLEE_MASTER);
+        // If this is on, we play a visual effect while we flee.
 /************************ [Fleeing] *******************************************/
 
 /************************ [Combat - Fighters] **********************************
     Fighter (Phiscal attacks, really) specific stuff - disarmed weapons, better
     at hand to hand, and archer behaviour.
 ************************* [Combat - Fighters] *********************************/
-    //SetSpawnInCondition(AI_FLAG_COMBAT_PICK_UP_DISARMED_WEAPONS, AI_COMBAT_MASTER);
+    SetSpawnInCondition(AI_FLAG_COMBAT_PICK_UP_DISARMED_WEAPONS, AI_COMBAT_MASTER);
         // This sets to pick up weapons which are disarmed.
 
     //SetAIInteger(AI_RANGED_WEAPON_RANGE, 3);
@@ -224,15 +213,14 @@ void main()
     //SetSpawnInCondition(AI_FLAG_COMBAT_BETTER_AT_HAND_TO_HAND, AI_COMBAT_MASTER);
         // Set if you want them to move forwards into HTH sooner. Will always
         // if the enemy is a mage/archer, else % based on range.
-    if (GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND)))
-    {
-        SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ATTACKING, AI_COMBAT_MASTER);
+
+    //SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ATTACKING, AI_COMBAT_MASTER);
         // For archers. If they have ally support, they'd rather move back & shoot then go into HTH.
-        SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER);
         // This forces the move back from attackers, and shoot bows. Very small chance to go melee.
     //SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_USE_BOW, AI_COMBAT_MASTER);
         // This will make the creature ALWAYs use any bows it has. ALWAYS.
-    }
+
     //SetSpawnInCondition(AI_FLAG_COMBAT_NO_GO_FOR_THE_KILL, AI_COMBAT_MASTER);
         // Turns off any attempts to kill dying PCs, or attack low hit point people.
         // This is only ever attempted at 9 or 10 intelligence anyway.
@@ -250,9 +238,7 @@ void main()
     //SetSpawnInCondition(AI_FLAG_COMBAT_LONGER_RANGED_SPELLS_FIRST, AI_COMBAT_MASTER);
         // Casts spells only if the caster would not move into range to cast them.
         // IE long range spells, then medium, then short (unless the enemy comes to us!)
-    if (GetLevelByClass(CLASS_TYPE_SORCERER, OBJECT_SELF) > 0 || GetLevelByClass(CLASS_TYPE_WIZARD, OBJECT_SELF) > 0 || GetLevelByClass(CLASS_TYPE_BARD, OBJECT_SELF) > 0 ||  GetLevelByClass(CLASS_TYPE_DRUID, OBJECT_SELF) > 0 ||  GetLevelByClass(CLASS_TYPE_CLERIC, OBJECT_SELF) > 0)
-    {
-        SetSpawnInCondition(AI_FLAG_COMBAT_FLAG_FAST_BUFF_ENEMY, AI_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_COMBAT_FLAG_FAST_BUFF_ENEMY, AI_COMBAT_MASTER);
         // When an enemy comes in 40M, we fast-cast many defensive spells, as if prepared.
     //SetSpawnInCondition(AI_FLAG_COMBAT_SUMMON_FAMILIAR, AI_COMBAT_MASTER);
         // The caster summons thier familiar/animal companion. Either a nameless Bat or Badger respectivly.
@@ -299,11 +285,11 @@ void main()
     SetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_SPECIFIC_SPELL_IMMUNITY, AI_COMBAT_MASTER);
         // Turns On checks for Globes & levels of spells. Auto on for 9+ Intel.
 
-    SetSpawnInCondition(AI_FLAG_COMBAT_MORE_ALLY_BUFFING_SPELLS, AI_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_COMBAT_MORE_ALLY_BUFFING_SPELLS, AI_COMBAT_MASTER);
         // This will make the caster buff more allies - or, in fact, use spells
         // to buff allies which they might have not used before.
 
-    SetSpawnInCondition(AI_FLAG_COMBAT_USE_ALL_POTIONS, AI_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_COMBAT_USE_ALL_POTIONS, AI_COMBAT_MASTER);
         // Uses all buffing spells before melee.
 
     //SetAICheatCastSpells(SPELL_MAGIC_MISSILE, SPELL_ICE_DAGGER, SPELL_HORIZIKAULS_BOOM, SPELL_MELFS_ACID_ARROW, SPELL_NEGATIVE_ENERGY_RAY, SPELL_FLAME_ARROW);
@@ -312,7 +298,6 @@ void main()
     // Spell triggers
     //SetSpellTrigger(SPELLTRIGGER_NOT_GOT_FIRST_SPELL, FALSE, 1, SPELL_PREMONITION);
         // This is just an example. See readme for more info.
-    }
 
 /************************ [Combat - Spell Casters] ****************************/
 
@@ -348,7 +333,7 @@ void main()
         // % of HP allies would need to be at to heal them Readme = info. Default: 60
     SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_WILL_RAISE_ALLIES_IN_BATTLE, AI_OTHER_COMBAT_MASTER);
         // Turns on rasing dead with Resurrection/Raise dead.
-    SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_CURING, AI_OTHER_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_CURING, AI_OTHER_COMBAT_MASTER);
         // This turns off all healing.
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_ONLY_CURE_SELF, AI_OTHER_COMBAT_MASTER);
         // This turns off ally healing.
@@ -371,41 +356,21 @@ void main()
     // "NO" - This is for forcing the skill NEVER to be used by the combat AI.
     // "FORCE" - This forces it on (and to be used), except if they have no got the skill.
 
-// no pick pocketing ever
-    SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_PICKPOCKETING, AI_OTHER_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_PICKPOCKETING, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_PICKPOCKETING, AI_OTHER_COMBAT_MASTER);
-
-// disable taunting on 0 base skill
-    if (GetSkillRank(SKILL_TAUNT, OBJECT_SELF, TRUE) <= 0)
-        SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_TAUNTING, AI_OTHER_COMBAT_MASTER);
-
+    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_TAUNTING, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_TAUNTING, AI_OTHER_COMBAT_MASTER);
-
-// no empathy
-    SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_EMPATHY, AI_OTHER_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_EMPATHY, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_EMPATHY, AI_OTHER_COMBAT_MASTER);
-
-    if (GetPlotFlag(OBJECT_SELF) || GetImmortal(OBJECT_SELF) || GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) <= 0)
-        SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_HIDING, AI_OTHER_COMBAT_MASTER);
-
-    if (!GetPlotFlag(OBJECT_SELF) && !GetImmortal(OBJECT_SELF) && GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0)
-        SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_HIDING, AI_OTHER_COMBAT_MASTER);
-
-// let's not open any locked doors under any circumstance
-    SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_OPENING_LOCKED_DOORS, AI_OTHER_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_HIDING, AI_OTHER_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_HIDING, AI_OTHER_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_OPENING_LOCKED_DOORS, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_OPENING_LOCKED_DOORS, AI_OTHER_COMBAT_MASTER);
-
-// no healing kits
-    SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_USING_HEALING_KITS, AI_OTHER_COMBAT_MASTER);
-
-    if (GetSkillRank(SKILL_PARRY, OBJECT_SELF, TRUE) <= 0)
-        SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_PARRYING, AI_OTHER_COMBAT_MASTER);
-
+    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_USING_HEALING_KITS, AI_OTHER_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_PARRYING, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_PARRYING, AI_OTHER_COMBAT_MASTER);
-
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_SEARCH, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_SEARCH, AI_OTHER_COMBAT_MASTER);
-
     // - Concentration - special notes in the readme
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_CONCENTRATION, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_CONCENTRATION, AI_OTHER_COMBAT_MASTER);
@@ -416,17 +381,14 @@ void main()
     Leaders/Bosses can be set to issue some orders and inspire more morale - and bring
     a lot of allies to a battle at once!
 ************************* [Combat Other - Leaders] ****************************/
-    if (GetLocalInt(OBJECT_SELF, "boss") == 1 || GetLocalInt(OBJECT_SELF, "semiboss") == 1)
-    {
-        SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_GROUP_LEADER, AI_OTHER_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_GROUP_LEADER, AI_OTHER_COMBAT_MASTER);
         // Special leader. Can issuse some orders. See readme for details.
 
-        SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_BOSS_MONSTER_SHOUT, AI_OTHER_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_BOSS_MONSTER_SHOUT, AI_OTHER_COMBAT_MASTER);
         // Boss shout. 1 time use - calls all creatures in X meters (below) for battle!
-
-        SetAIInteger(AI_BOSS_MONSTER_SHOUT_RANGE, 60);
+    //SetAIInteger(AI_BOSS_MONSTER_SHOUT_RANGE, 60);
         // Defaults to a 60 M range. This can change it. Note: 1 toolset square = 10M.
-    }
+
 /************************ [Combat Other - Leaders] ****************************/
 
 /************************ [Other - Behaviour/Generic] **************************
@@ -443,7 +405,12 @@ void main()
     //SetAIConstant(AI_POLYMORPH_INTO, POLYMORPH_TYPE_WEREWOLF);
         // Polymorph to this creature when damaged (once, natural effect).
 
-    SetSpawnInCondition(AI_FLAG_OTHER_RETURN_TO_SPAWN_LOCATION, AI_OTHER_MASTER);
+    //AI_CreateRandomStats(-3, 3, 6);
+        // Create (Effect-applied) random statistics.
+    //AI_CreateRandomOther(-2, 2, -2, 2, -2, 2, -2, 2);
+        // Create (Effect-applied) random HP, saves, AC.
+
+    //SetSpawnInCondition(AI_FLAG_OTHER_RETURN_TO_SPAWN_LOCATION, AI_OTHER_MASTER);
         // This will store our spawn location, and then move back there after combat.
     SetSpawnInCondition(AI_FLAG_OTHER_DONT_RESPOND_TO_EMOTES, AI_OTHER_MASTER);
         // This will ignore ALL chat by PC's (Enemies) who speak actions in Stars - *Bow*
@@ -459,12 +426,31 @@ void main()
     //SetSpawnInCondition(AI_FLAG_OTHER_ONLY_ATTACK_IF_ATTACKED, AI_OTHER_MASTER);
         // One shot. We won't instantly attack a creature we see. See readme.
 
-    if (nIntelligence <= 3)
-        SetAIInteger(AI_DOOR_INTELLIGENCE, 1);
+    //SetAIInteger(AI_DOOR_INTELLIGENCE, 1);
         // 3 Special "What to do with Doors" settings. See readme. Good for animals.
 
-    SetSpawnInCondition(AI_FLAG_OTHER_REST_AFTER_COMBAT, AI_OTHER_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_REST_AFTER_COMBAT, AI_OTHER_MASTER);
         // When combat is over, creature rests. Useful for replenising health.
+
+    //SetSpawnInCondition(AI_FLAG_OTHER_NO_PLAYING_VOICE_CHAT, AI_OTHER_MASTER);
+        // Stops any use of "PlayVoiceChat". Use with Custom speakstrings.
+
+          /*** Death settings - still under AI_OTHER_MASTER ***/
+
+    //AI_SetDeathResRef("Resref Here");
+        // Creates a creature from the string set. Instantly destroys this creatures body on death.
+
+    //SetAIConstant(AI_DEATH_VISUAL_EFFECT, VFX_FNF_IMPLOSION);
+        // Fires this visual effect number instantly on death. Use FNF and IMP ones.
+
+    //SetAIInteger(AI_CORPSE_DESTROY_TIME, 30);
+        // Seconds before body finally gets destroyed. Used for Clerical Raise Dead on NPC's.
+
+    //SetSpawnInCondition(AI_FLAG_OTHER_TURN_OFF_CORPSES, AI_OTHER_MASTER);
+        // This turns off the SetDestroyable() usually performed, and the above timer.
+
+    //SetSpawnInCondition(AI_FLAG_OTHER_USE_BIOWARE_LOOTING, AI_OTHER_MASTER);
+        // Makes the death file use Bioware's cool SetLootable() feature when corpses would disappear.
 
       /*** Lag and a few performance settings - still under AI_OTHER_MASTER ***/
 
@@ -480,18 +466,8 @@ void main()
         // This will stop checks for and curing of allies ailments.
     //SetSpawnInCondition(AI_FLAG_OTHER_LAG_IGNORE_HEARTBEAT, AI_OTHER_MASTER);
         // Stops the heartbeat running (Except Pre-Heartbeat-event).
-    if (nIntelligence <= 3)
-        SetSpawnInCondition(AI_FLAG_OTHER_LAG_TARGET_NEAREST_ENEMY, AI_OTHER_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_LAG_TARGET_NEAREST_ENEMY, AI_OTHER_MASTER);
         // Ignores targeting settings. VERY good for lag/bad AI. Attacks nearest seen enemy.
-
-      /*** AI Level setting - Do not use AI_LEVEL_DEFAULT at all. ***/
-
-    //SetAIConstant(LAG_AI_LEVEL_NO_PC_OR_ENEMY_50M, AI_LEVEL_VERY_LOW);
-        // Changes to this AI setting if there is no enemy or PC in 50M.
-    //SetAIConstant(LAG_AI_LEVEL_YES_PC_OR_ENEMY_50M, AI_LEVEL_LOW);
-        // Changes to this AI setting if there IS an enemy or PC in 50M.
-    //SetAIConstant(LAG_AI_LEVEL_COMBAT, AI_LEVEL_NORMAL);
-        // This OVERRIDES others. Only used when a creature is put into combat.
 
 /************************ [Other - Behaviour/Generic] *************************/
 
@@ -499,9 +475,13 @@ void main()
     The user defined events, set up to fire here.
     - New "Start combat attack" and "End Combat Attack" events
     - New "Pre" events. Use these to optionally stop a script from firing
-      under cirtain circumstances as well! (Read nw_c2_defaultd or ai_onuserdef)
+      under cirtain circumstances as well! (Read nw_c2_defaultd or j_ai_onuserdef)
     (User Defined Event = UDE)
 ************************* [User Defined and Shouts] ***************************/
+
+    // This is REQUIRED if we use any Pre-events. If not there, it will default
+    // to the default User Defined Event script for the default AI.
+    SetCustomUDEFileName("k_ai_onuserdef");
 
     //SetSpawnInCondition(AI_FLAG_UDE_HEARTBEAT_EVENT, AI_UDE_MASTER);             // UDE 1001
     //SetSpawnInCondition(AI_FLAG_UDE_HEARTBEAT_PRE_EVENT, AI_UDE_MASTER);         // UDE 1021
@@ -577,6 +557,9 @@ void main()
         // This will be said when the leader, if this creature, sends a runner.
     //AI_SetSpawnInSpeakValue(AI_TALK_ON_LEADER_ATTACK_TARGET, "Help attack this target!");
         // When the leader thinks target X should be attacked, it will say this.
+    //AI_SetSpawnInSpeakValue(AI_TALK_ON_LEADER_BOSS_SHOUT, "Come my minions! To battle!");
+        // This will be said when the leader, if this creature, sees an enemy and uses his "Boss Monster Shout", if turned on.
+
 
 /************************ [User Defined and Shouts] ***************************/
 
@@ -584,8 +567,7 @@ void main()
     All Bioware Stuff. I'd check out "x0_c2_spwn_def" for the SoU/Hordes revisions.
 ************************* [Bioware: Animations/Waypoints/Treasure] ************/
 
-    if (!GetPlotFlag(OBJECT_SELF) && !GetImmortal(OBJECT_SELF) && GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0)
-        SetSpawnInCondition(NW_FLAG_STEALTH, NW_GENERIC_MASTER);
+    // SetSpawnInCondition(NW_FLAG_STEALTH, NW_GENERIC_MASTER);
     // SetSpawnInCondition(NW_FLAG_SEARCH, NW_GENERIC_MASTER);
         // Uses said skill while WalkWaypoints()
 
@@ -595,20 +577,21 @@ void main()
     // SetSpawnInCondition(NW_FLAG_IMMOBILE_AMBIENT_ANIMATIONS, NW_GENERIC_MASTER);
         // This will cause an NPC to use common animations it possesses,
         // and use social ones to any other nearby friendly NPCs.
-
-    if (GetStringLeft(GetTag(OBJECT_SELF), 7) != "AMBIENT" && GetLocalInt(OBJECT_SELF, "no_wander") != 1)
-    {
-        SetSpawnInCondition(NW_FLAG_AMBIENT_ANIMATIONS, NW_GENERIC_MASTER);
+    // SetSpawnInCondition(NW_FLAG_AMBIENT_ANIMATIONS, NW_GENERIC_MASTER);
         // Same as above, except NPC will wander randomly around the area.
 
-        //SetAnimationCondition(NW_ANIM_FLAG_IS_CIVILIZED);
+    // SetAnimationCondition(NW_ANIM_FLAG_IS_CIVILIZED);
         // Interacts with placeables + More civilized actions. See Readme.
-    }
     // SetAnimationCondition(NW_ANIM_FLAG_CHATTER);
         // Will use random voicechats during animations, if Civilized
     // SetAnimationCondition(NW_ANIM_FLAG_IS_MOBILE_CLOSE_RANGE);
         // Will move around the area a bit more, if using Immobile Animations. See readme.
 
+    // Treasure generating.
+    //CTG_GenerateNPCTreasure();
+        // SoU. Requires "x0_i0_treasure" to be uncommented. See readme.
+    //GenerateNPCTreasure();
+        // Default NwN. Requires "nw_o2_coninclude" to be uncommented. See readme.
 
 /************************ [Bioware: Animations/Waypoints/Treasure] ************/
 
@@ -631,63 +614,32 @@ void main()
     - You can use the wrappers AI_SpawnInInstantVisual and AI_SpawnInPermamentVisual
       for visual effects (Instant/Permament as appropriate).
 ************************* [User] **********************************************/
-
-    int iAreaCR = GetLocalInt(GetArea(OBJECT_SELF), "cr");
-
-    switch (GetRacialType(OBJECT_SELF))
+    // Example (and default) of user addition:
+    // - If we are from an encounter, set mobile (move around) animations.
+    if(GetIsEncounterCreature())
     {
-        case RACIAL_TYPE_DWARF:
-        case RACIAL_TYPE_ELF:
-        case RACIAL_TYPE_GNOME:
-        case RACIAL_TYPE_HALFLING:
-        case RACIAL_TYPE_HALFORC:
-        case RACIAL_TYPE_HUMAN:
-        case RACIAL_TYPE_HALFELF:
-            if (GetLocalInt(OBJECT_SELF, "no_potion") != 1 && d4() == 1)
-            {
-                object oPotion = CreateItemOnObject("cure_potion1", OBJECT_SELF);
-                SetDroppableFlag(oPotion, FALSE);
-                SetPickpocketableFlag(oPotion, TRUE);
-            }
-
-            if (d10() == 1)
-            {
-                object oItem = GenerateTierItem(GetHitDice(OBJECT_SELF), iAreaCR, OBJECT_SELF, "Misc");
-                SetDroppableFlag(oItem, FALSE);
-                SetPickpocketableFlag(oItem, TRUE);
-            }
-
-            object oGold = CreateItemOnObject("nw_it_gold001", OBJECT_SELF, d2(GetHitDice(OBJECT_SELF)));
-            SetDroppableFlag(oGold, FALSE);
-            SetPickpocketableFlag(oGold, TRUE);
-        break;
+        SetSpawnInCondition(NW_FLAG_AMBIENT_ANIMATIONS, NW_GENERIC_MASTER);
+    }
+    // Leave this in if you use the variable for creature attacks, as for golems. Bioware's code.
+    int nNumber = GetLocalInt(OBJECT_SELF, "CREATURE_VAR_NUMBER_OF_ATTACKS");
+    if(nNumber > 0)
+    {
+        SetBaseAttackBonus(nNumber);
     }
 
-       NWNX_Creature_SetCorpseDecayTime(OBJECT_SELF, 1200000);
-       NWNX_Creature_SetDisarmable(OBJECT_SELF, TRUE);
-
-// Set cr integer on self. This is used for determining treasure.
-    SetLocalInt(OBJECT_SELF, "cr", FloatToInt(GetChallengeRating(OBJECT_SELF)));
-    SetLocalInt(OBJECT_SELF, "area_cr", iAreaCR);
-
-    object oItem = GetFirstItemInInventory();
-    object oNewItem;
-
-    DelayCommand(3.0, CopyKey());
-
-    //int nRace = GetRacialType(oCreature);
-
-    SetSpawn();
-
-    string sScript = GetLocalString(OBJECT_SELF, "spawn_script");
-    if (sScript != "") ExecuteScript(sScript);
-
-
+    // If we are a ranger or paladin class, do not cast spells. This can be
+    // manually removed if wished. To get the spells they have working correctly,
+    // remove this, and use Monster Abilties instead of thier normal class spells.
+//    if(GetLevelByClass(CLASS_TYPE_RANGER) >= 1 || GetLevelByClass(CLASS_TYPE_PALADIN) >= 1)
+//    {
+//        SetSpawnInCondition(AI_FLAG_OTHER_LAG_NO_SPELLS, AI_OTHER_MASTER);
+//    }
 
 /************************ [User] **********************************************/
 
     // Note: You shouldn't really remove this, even if they have no waypoints.
-    DelayCommand(f2, SpawnWalkWayPoints());
+    DelayCommand(2.0, SpawnWalkWayPoints());
         // Delayed walk waypoints, as to not upset instant combat spawning.
         // This will also check if to change to day/night posts during the walking, no heartbeats.
 }
+
