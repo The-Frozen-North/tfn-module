@@ -174,8 +174,8 @@ void HostileAttackPCSpeaker(float fDelay = 0.0, int bPlot = FALSE, int bImmortal
     if(!GetIsObjectValid(oPC) || GetIsDM(oPC)) return;
 
     // Change our flags for plot and immortal (usually turns them off)
-    SetPlotFlag(OBJECT_SELF, bPlot);
-    SetImmortal(OBJECT_SELF, bImmortal);
+    //SetPlotFlag(OBJECT_SELF, bPlot);
+    //SetImmortal(OBJECT_SELF, bImmortal);
 
     // We make them hostile to our faction
     AdjustReputation(oPC, OBJECT_SELF, HOSTILE);
@@ -210,8 +210,8 @@ void HostileAttackObject(object oTarget, float fDelay = 0.0, int bPlot = FALSE, 
     if(!GetIsObjectValid(oTarget) || GetIsDM(oTarget)) return;
 
     // Change our flags for plot and immortal (usually turns them off)
-    SetPlotFlag(OBJECT_SELF, bPlot);
-    SetImmortal(OBJECT_SELF, bImmortal);
+    //SetPlotFlag(OBJECT_SELF, bPlot);
+    //SetImmortal(OBJECT_SELF, bImmortal);
 
     // We make them hostile to our faction
     AdjustReputation(oTarget, OBJECT_SELF, HOSTILE);
@@ -334,8 +334,8 @@ void HostileAttackAllPCs(int nType = 1, float fRange = 40.0, int bPlot = FALSE, 
     if(GetIsObjectValid(oToAttack))
     {
         // Change our flags for plot and immortal (usually turns them off)
-        SetPlotFlag(OBJECT_SELF, bPlot);
-        SetImmortal(OBJECT_SELF, bImmortal);
+        //SetPlotFlag(OBJECT_SELF, bPlot);
+        //SetImmortal(OBJECT_SELF, bImmortal);
 
         DetermineSpeakCombatRound(oToAttack);
         if(bAllAllies) AlliesAttack(oToAttack);

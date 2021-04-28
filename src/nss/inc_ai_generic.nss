@@ -1170,416 +1170,53 @@ int AI_EquipAndAttack()
     }
 
     // Declare everything
-    object oEquipped, oMainWeapon, oMainPossessor, oPrimary, oSecondary,
-           oTwohanded, oRightWeapon, oLeftWeapon;
-    int bPickUpDisarmed, bRanged, bShield, nValidAmmoSlot, nStrength, nPrimaryNum,
-        nSecondaryNum, bValidPrimary, bValidSecondary, bValidTwoHanded, nPrimaryDamage,
-        bEquippedShield, nShieldInSlotAlready, bEquippedMostDamaging,
+    object oEquipped;
+    int bRanged, bNeedMoreAC;
     // Done in melee attacking, if we want more AC - IE expertise.
-        bNeedMoreAC;
-    float fRangeToWeapon;
+        //bNeedMoreAC;
 
-    // Weapons already in slots
-    // Right == Ranged slot, non-shield slot.
-    // Left == Torch slot, secondary slot, shield slot.
-    oRightWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
-    oLeftWeapon = GetItemInSlot(INVENTORY_SLOT_LEFTHAND);
 
-    // Shield already in our left hand
-    nShieldInSlotAlready = GetBaseItemType(oLeftWeapon);
-
-    // Here...we determine wether to try for melee or ranged attacks.
-    // This is TRUE if we did ActionEquipMostDamaging...
-    bEquippedMostDamaging = FALSE;
-
-    object oShield = GetAIObject(AI_WEAPON_SHIELD);
-    int bValidShield = GetIsObjectValid(oShield);
+    //object oShield = GetAIObject(AI_WEAPON_SHIELD);
+    //int bValidShield = GetIsObjectValid(oShield);
     // SPECIAL: We will just use default calls FIRST and stop IF we have this set
     // same checks to choose between them though :-P
-    if(AI_GetAIHaveEffect(GlobalEffectPolymorph) ||
-       GetSpawnInCondition(AI_FLAG_OTHER_LAG_EQUIP_MOST_DAMAGING, AI_OTHER_MASTER))
-    {
-        // 1: "[DCR:Melee] Most Damaging Weapon. Target: " + GetName(GlobalMeleeTarget)
-        DebugActionSpeakByInt(1, GlobalMeleeTarget);
-        // bRangedAttack = 1 then ranged.
-        if(bRangedAttack)
-        {
-            ActionEquipMostDamagingRanged(GlobalMeleeTarget);
-        }
-        // Special near-range always attack with a bow option.
-        else if(GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_USE_BOW, AI_COMBAT_MASTER))
-        {
-            ActionEquipMostDamagingRanged(GlobalMeleeTarget);
-        }
-        // Spcial - if we are set to always move back, 1/10 times we don't equip HTH.
-        // BUT we will attack in HTH if the last target was this target.
-        else if(GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER)
-             && d10() != 1)
-        {
-            ActionEquipMostDamagingRanged(GlobalMeleeTarget);
-        }
-        // Else we should always be in HTH range.
-        else // if(!bRangedAttack)
-        {
-            ActionEquipMostDamagingMelee(GlobalMeleeTarget, TRUE);
-        }
-        // Always do...
-        bEquippedMostDamaging = TRUE;
-    }
-    // Else normal weapons, IE we check stored ones :-P
-    else if(!AI_GetAIHaveEffect(GlobalEffectPolymorph))
-    {
-        // Declaring
-        // Toggle: Do we pick up any disarmed weapons?
-        bPickUpDisarmed = GetSpawnInCondition(AI_FLAG_COMBAT_PICK_UP_DISARMED_WEAPONS, AI_COMBAT_MASTER);
-        // We may, if at the right range (and got a ranged weapon) equip it.
-        oMainWeapon = GetAIObject(AI_WEAPON_RANGED);
-        oMainPossessor = GetItemPossessor(oMainWeapon);
-        // bRanged = TRUE if we equip a ranged weapon after checks.
-        // bShield = TRUE if we should equip a shield
-        // Is the ranged weapon valid? And bRangedAttack == TRUE
-        // We need valid ammo, else we eqip nothing!
-        nValidAmmoSlot = GetAIInteger(AI_WEAPON_RANGED_AMMOSLOT);
-        if(nValidAmmoSlot == INVENTORY_SLOT_RIGHTHAND)
-        {
-            nValidAmmoSlot = TRUE;
-        }
-        else
-        {
-            nValidAmmoSlot = GetIsObjectValid(GetItemInSlot(nValidAmmoSlot));
-        }
-        // Ranged attack...valid?
-        if(bRangedAttack && nValidAmmoSlot && GetIsObjectValid(oMainWeapon))
-        {
-            // Is the possessor valid? (could be us or someone else)
-            if(GetIsObjectValid(oMainPossessor))
-            {
-                // Check if it is us or not...
-                if(oMainPossessor == OBJECT_SELF)
-                {
-                    if(oRightWeapon != oMainWeapon)
-                    {
-                        // Ranged weapons then equipped in the righthand :-D
-                        ActionEquipItem(oMainWeapon, INVENTORY_SLOT_RIGHTHAND);
-                    }
-                    oEquipped = oMainWeapon;
-                    bRanged = TRUE;// only ranged feats.
-                }
-                // Else, we delete it and check for secondary one :-)
-                else if(GetIsObjectValid(GetAIObject(AI_WEAPON_RANGED_2)))
-                {
-                    // If valid, we re-set weapons! Because we cannot pick up the other.
-                    //ExecuteScript(FILE_RE_SET_WEAPONS, OBJECT_SELF);
-                    // As it happens immediantly (yes, more lag, gee) we check for the original :-)
-                    oMainWeapon = GetAIObject(AI_WEAPON_RANGED);
-                    // If it is now valid, equip it!
-                    if(GetIsObjectValid(oMainWeapon))
-                    {
-                        ActionEquipItem(oMainWeapon, INVENTORY_SLOT_RIGHTHAND);
-                        oEquipped = oMainWeapon;
-                        bRanged = TRUE;// only ranged feats.
-                    }
-                }
-                else // Else, delete the ranged thing, someone else has it.
-                {
-                    DeleteAIObject(AI_WEAPON_RANGED);
-                }
-            }
-            // Else, it is on the ground. If near, we pick it up.
-            else if(bPickUpDisarmed)
-            {
-                fRangeToWeapon = GetDistanceToObject(oMainWeapon);
-                if((fRangeToWeapon < 5.0 && fRangeToWeapon > 0.0)||
-                   !GlobalMeleeAttackers)
-                {
-                    // We should attempt to pick it up...
-                    ActionPickUpItem(oMainWeapon);
-                    ActionEquipItem(oMainWeapon, INVENTORY_SLOT_RIGHTHAND);
-                    oEquipped = oMainWeapon;
-                    bRanged = TRUE;// only ranged feats.
-                }
-                else // Else, we can't or won't get it.
-                {
-                    DeleteAIObject(AI_WEAPON_RANGED);
-                    if(GetIsObjectValid(GetAIObject(AI_WEAPON_RANGED_2)))
-                    {
-                        // If valid, we re-set weapons! Because we cannot pick up the other.
-                        //ExecuteScript(FILE_RE_SET_WEAPONS, OBJECT_SELF);
-                        // As it happens immediantly (yes, more lag, gee) we check for the original :-)
-                        oMainWeapon = GetAIObject(AI_WEAPON_RANGED);
-                        // If it is now valid, equip it!
-                        if(GetIsObjectValid(oMainWeapon))
-                        {
-                            ActionEquipItem(oMainWeapon, INVENTORY_SLOT_RIGHTHAND);
-                            oEquipped = oMainWeapon;
-                            bRanged = TRUE;// only ranged feats.
-                        }
-                    }
-                }
-            }
-        }
-        // This is set to the items AC value, to take away simulating taking it off when
-        // we check AC against other things... :-)
-        if(nShieldInSlotAlready == BASE_ITEM_TOWERSHIELD ||
-           nShieldInSlotAlready == BASE_ITEM_SMALLSHIELD ||
-           nShieldInSlotAlready == BASE_ITEM_LARGESHIELD)
-        {
-            nShieldInSlotAlready = GetItemACValue(oLeftWeapon);
-        }
-        // NOTE: shields cannot be disarmed! If we don't have it, though, we act as if it isnt valid
-        if(!bValidShield || GetItemPossessor(oShield) != OBJECT_SELF)
-        {
-            // If the second is valid, we re-set weapons.
-            if(GetIsObjectValid(GetAIObject(AI_WEAPON_SHIELD_2)))
-            {
-                // If valid, we re-set weapons! Because we cannot pick up the other.
-                //ExecuteScript(FILE_RE_SET_WEAPONS, OBJECT_SELF);
-            }
-            // bValidShield is 1 if valid, and now on us.
-            oShield = GetAIObject(AI_WEAPON_SHIELD);
-            bValidShield = GetIsObjectValid(oShield);
-        }
-        // bEquippedShield is TRUE if we equip a shield.
-        // If something has been equipped, we arm a shield...here
-        if(bRanged)
-        {
-            // Need a vlaid shield AND able to equip one.
-            if(bValidShield && GetAIInteger(AI_WEAPON_RANGED_SHIELD))
-            {
-                if(oShield != GetItemInSlot(INVENTORY_SLOT_LEFTHAND))
-                {
-                    ActionEquipItem(oShield, INVENTORY_SLOT_LEFTHAND);
-                }
-                bEquippedShield = TRUE;
-            }
-        }
-        else // Else, equip the best combo of HTH weapons!
-        {
-            // We run through. Of course, first, is it best for
-            // What do we have?
-            // Get things...
-            // First: Primary. If that is valid, we check secondary. These are arrays.
-            nPrimaryNum = AI_GetWeaponArray(AI_WEAPON_PRIMARY);
-            if(nPrimaryNum)
-            {
-                oPrimary = GetLocalObject(OBJECT_SELF, AI_WEAPON_PRIMARY + IntToString(nPrimaryNum));
-                bValidPrimary = GetIsObjectValid(oPrimary);
-                if(bValidPrimary)
-                {
-                    // We want the smallest...
-                    nSecondaryNum = AI_GetWeaponArray(AI_WEAPON_SECONDARY, oPrimary, 3);
-                    if(nSecondaryNum)
-                    {
-                        oSecondary = GetLocalObject(OBJECT_SELF, AI_WEAPON_SECONDARY + IntToString(nSecondaryNum));
-                        bValidSecondary = GetIsObjectValid(oSecondary);
-                    }
-                }
-            }
-            // 2 handed
-            // * Fix, 1.4, thanks Chris, this is not a GetAIObject()! It is like above lines.
-            oTwohanded = GetLocalObject(OBJECT_SELF, AI_WEAPON_TWO_HANDED + "1");
-            bValidTwoHanded = GetIsObjectValid(oTwohanded);
-            // Shield is done above.
-            // Now, are any valid?
-            if(!bValidPrimary && !bValidTwoHanded)
-            {
-                ActionEquipMostDamagingMelee(GlobalMeleeTarget, TRUE);
-                bEquippedMostDamaging = TRUE;
-            }
-            else
-            {
-                // Now, the circumstances...what is best? Lots of damage and lower AC?
-                // Maybe more AC? Maybe a second weapon? (as if any are valid, its obvious better to use one).
-                // Globals:
-                // GlobalOurAC, GlobalOurHitDice, GlobalOurBaseAttackBonus, GlobalMeleeAttackers
-                // GlobalAverageEnemyHD, GlobalAverageEnemyBAB
-                nStrength = GetAbilityModifier(ABILITY_STRENGTH);
-                // Check one: Is a lot more AC better? Or keep shield equipped, even?
-                // 1. Is our AC below 2x our HD? (IE under 20 at level 10)
-                if((GlobalOurAC < GlobalOurHitDice * 2) ||
-                // 2. Our AC with no shield is under average melee BAB + 6 (a badish roll)
-                   (GlobalOurAC - nShieldInSlotAlready < GlobalAverageEnemyBAB + 6 &&
-                    GlobalAverageEnemyHD >= GlobalOurHitDice - 5) ||
-                // 3. Melee attackers are great, over 1/4th of our HD + 2, and enemy HD is comparable toughness
-                   (GlobalMeleeAttackers > ((GlobalOurHitDice / 4) + 2) &&
-                    GlobalAverageEnemyHD >= GlobalOurHitDice - 3))
-                {
-                    // We need more AC!
-                    bNeedMoreAC = TRUE;
-                    // Valid primary, for the shield...
-                    if(bValidPrimary)
-                    {
-                        oEquipped = oPrimary;// May change though...
-                        // If we have a shield (which is the point) we equip any not in slots.
-                        if(bValidShield)
-                        {
-                            bEquippedShield = TRUE;
-                            if(oRightWeapon != oPrimary)
-                            {
-                                ActionEquipItem(oPrimary, INVENTORY_SLOT_RIGHTHAND);
-                            }
-                            if(oLeftWeapon != oShield)
-                            {
-                                ActionEquipItem(oShield, INVENTORY_SLOT_LEFTHAND);
-                            }
-                        }
-                        else if(bValidTwoHanded)
-                        {
-                            oEquipped = oTwohanded;
-                            if(oRightWeapon != oTwohanded)
-                            {
-                                ActionEquipItem(oTwohanded, INVENTORY_SLOT_RIGHTHAND);
-                            }
-                        }
-                        else if(bValidSecondary)
-                        {
-                            if(oRightWeapon != oPrimary)
-                            {
-                                ActionEquipItem(oPrimary, INVENTORY_SLOT_RIGHTHAND);
-                            }
-                            if(oLeftWeapon != oSecondary)
-                            {
-                                ActionEquipItem(oSecondary, INVENTORY_SLOT_LEFTHAND);
-                            }
-                        }
-                        else
-                        {
-                            if(oRightWeapon != oPrimary)
-                            {
-                                ActionEquipItem(oPrimary, INVENTORY_SLOT_RIGHTHAND);
-                            }
-                        }
-                    }
-                    else if(bValidTwoHanded)
-                    {
-                        oEquipped = oTwohanded;
-                        if(oRightWeapon != oTwohanded)
-                        {
-                            ActionEquipItem(oTwohanded, INVENTORY_SLOT_RIGHTHAND);
-                        }
-                    }
-                }
-                // Check two: If we have a good hitting chance, we might equip a 2handed first.
-                    // 1. We have a decent strength mod, which adds damage to many 2 handed.
-                    // This is AND things...
-                else if((nStrength >= (GlobalOurHitDice / 4 + 2)) &&
-                    // 2. Greater strength then dexterity
-                        (nStrength > GetAbilityModifier(ABILITY_DEXTERITY) + Random(3)))
-                {
-                    if(bValidTwoHanded)
-                    {
-                        oEquipped = oTwohanded;
-                        if(oRightWeapon != oTwohanded)
-                        {
-                            ActionEquipItem(oTwohanded, INVENTORY_SLOT_RIGHTHAND);
-                        }
-                    }
-                    else if(bValidPrimary)
-                    {
-                        oEquipped = oPrimary;
-                        // Secondary first, rather then shield.
-                        if(bValidSecondary)
-                        {
-                            if(oRightWeapon != oPrimary)
-                            {
-                                ActionEquipItem(oPrimary, INVENTORY_SLOT_RIGHTHAND);
-                            }
-                            if(oLeftWeapon != oSecondary)
-                            {
-                                ActionEquipItem(oSecondary, INVENTORY_SLOT_LEFTHAND);
-                            }
-                        }
-                        else if(bValidShield)
-                        {
-                            bEquippedShield = TRUE;
-                            if(oRightWeapon != oPrimary)
-                            {
-                                ActionEquipItem(oPrimary, INVENTORY_SLOT_RIGHTHAND);
-                            }
-                            if(oLeftWeapon != oShield)
-                            {
-                                ActionEquipItem(oShield, INVENTORY_SLOT_LEFTHAND);
-                            }
-                        }
-                        else if(oRightWeapon != oPrimary)
-                        {
-                            ActionEquipItem(oPrimary, INVENTORY_SLOT_RIGHTHAND);
-                        }
-                    }
-                }
-                // Check three: None. We equip 2 weapons, then a shield, then a 2 handed, that order.
-                // In essense, for 2 weapons, it is less damage more times, as it were (if we hit!)
-                else
-                {
-                    if(bValidPrimary)
-                    {
-                        oEquipped = oPrimary;
-                        // Secondary first, rather then shield.
-                        if(bValidSecondary)
-                        {
-                            if(oRightWeapon != oPrimary)
-                            {
-                                ActionEquipItem(oPrimary, INVENTORY_SLOT_RIGHTHAND);
-                            }
-                            if(oLeftWeapon != oSecondary)
-                            {
-                                ActionEquipItem(oSecondary, INVENTORY_SLOT_LEFTHAND);
-                            }
-                        }
-                        else if(bValidShield)
-                        {
-                            bEquippedShield = TRUE;
-                            if(oRightWeapon != oPrimary)
-                            {
-                                ActionEquipItem(oPrimary, INVENTORY_SLOT_RIGHTHAND);
-                            }
-                            if(oLeftWeapon != oShield)
-                            {
-                                ActionEquipItem(oShield, INVENTORY_SLOT_LEFTHAND);
-                            }
-                        }
-                        else if(oRightWeapon != oPrimary)
-                        {
-                            ActionEquipItem(oPrimary, INVENTORY_SLOT_RIGHTHAND);
-                        }
-                    }
-                    else if(bValidTwoHanded)
-                    {
-                        oEquipped = oTwohanded;
-                        if(oRightWeapon != oTwohanded)
-                        {
-                            ActionEquipItem(oTwohanded, INVENTORY_SLOT_RIGHTHAND);
-                        }
-                    }
-                }
-            }// End no valid
-        }
-    }// End "lag buster" check.
 
-    // We check for weapon effective here, if we didn't equip most damaging
-    // - We only do this if we are attacking the target for more then 1 round.
-    if(!bEquippedMostDamaging && !bRangedAttack &&
-        GetAIInteger(AI_MELEE_TURNS_ATTACKING) >= 2)
+
+    // 1: "[DCR:Melee] Most Damaging Weapon. Target: " + GetName(GlobalMeleeTarget)
+    //DebugActionSpeakByInt(1, GlobalMeleeTarget);
+
+    // bRangedAttack = 1 then ranged.
+    if(bRangedAttack)
     {
-        // If neither weapon can damage the target...and no most damaging...
-        if(!GetWeaponRanged(oEquipped) &&
-            GetIsObjectValid(oEquipped) &&
-           !GetIsWeaponEffective(GlobalMeleeTarget))
-        {
-            // 2: "[DCR:Melee] Most Damaging as Not Effective"
-            DebugActionSpeakByInt(2);
-            // We equip a shield (if not already)
-            if(!bEquippedShield && bValidShield)
-            {
-                if(oShield != GetItemInSlot(INVENTORY_SLOT_LEFTHAND))
-                {
-                    ActionEquipItem(oShield, INVENTORY_SLOT_LEFTHAND);
-                }
-            }
-            // And equip most damaging (melee)
-            ActionEquipMostDamagingMelee(GlobalMeleeTarget);
-        }
+        ActionEquipMostDamagingRanged(GlobalMeleeTarget);
+        bRanged = TRUE;
     }
+    // Special near-range always attack with a bow option.
+    else if(GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_USE_BOW, AI_COMBAT_MASTER))
+    {
+        ActionEquipMostDamagingRanged(GlobalMeleeTarget);
+        bRanged = TRUE;
+    }
+    // Spcial - if we are set to always move back, 1/10 times we don't equip HTH.
+    // BUT we will attack in HTH if the last target was this target.
+    else if(GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER)
+         && d10() != 1)
+    {
+        ActionEquipMostDamagingRanged(GlobalMeleeTarget);
+        bRanged = TRUE;
+    }
+    // Else we should always be in HTH range.
+    else // if(!bRangedAttack)
+    {
+        ActionEquipMostDamagingMelee(GlobalMeleeTarget, TRUE);
+    }
+
+    oEquipped = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
+
+    // intelligent weapon/shield/etc choosing removed - pok
+
+    // we won't equip a shield if we are not effective to enemy - pok
+
     // Now, we should have equipped something :-D
     // GlobalMeleeTargetAC
 
@@ -1639,24 +1276,10 @@ int AI_EquipAndAttack()
         nOurHit += GetAbilityModifier(ABILITY_DEXTERITY);
         int nAC = GetAC(GlobalRangedTarget);
 
-        // We see if it is a weapon which we can use power attack with >:-D
-        if(GetBaseItemType(oEquipped) == BASE_ITEM_THROWINGAXE)
-        {
-            if((nOurHit - 5) >= nAC)// Power attack
-            {
-                if((nOurHit - 10) >= GlobalMeleeTargetAC)// Improved power attack
-                {
-                    AI_SetMeleeMode(ACTION_MODE_IMPROVED_POWER_ATTACK);
-                    ActionAttack(GlobalRangedTarget);
-                    return FEAT_IMPROVED_POWER_ATTACK;
-                }
-                AI_SetMeleeMode(ACTION_MODE_POWER_ATTACK);
-                ActionAttack(GlobalRangedTarget);
-                return FEAT_POWER_ATTACK;
-            }
-        }
+        // you can't use power attack with throwing axes - pok
+
         // Rapid shot - This provides another attack, at -2 to hit.
-        else if((nOurHit - 2) >= GlobalMeleeTargetAC && GetHasFeat(FEAT_RAPID_SHOT))
+        if((nOurHit - 2) >= GlobalMeleeTargetAC && GetHasFeat(FEAT_RAPID_SHOT))
         {
             AI_SetMeleeMode(ACTION_MODE_RAPID_SHOT);
             ActionAttack(GlobalRangedTarget);
@@ -1685,8 +1308,8 @@ int AI_EquipAndAttack()
             GlobalMeleeAttackers <= 1 && GetAttackTarget(GlobalMeleeTarget) == OBJECT_SELF &&
             // Not got a ranged weapon - enemy target that is
             !GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, GlobalMeleeTarget)) &&
-            // Got skill rank of at least our hit dice + 4.
-          ((GetSkillRank(SKILL_PARRY) >= (GlobalOurHitDice + 4)) ||
+            // Got skill rank of greater than 0 base.
+          ((GetSkillRank(SKILL_PARRY, OBJECT_SELF, TRUE) > 0) ||
             // Or forced
             GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_PARRYING, AI_OTHER_COMBAT_MASTER)))
     {
@@ -1732,31 +1355,30 @@ int AI_EquipAndAttack()
         nTargetCreatureRace = GetRacialType(GlobalMeleeTarget);//done later.
         nTargetAlignment = GetAlignmentGoodEvil(GlobalMeleeTarget);
         // Now, monk, can it be done...
-        if((!GetIsObjectValid(oEquipped) ||
-             GetBaseItemType(oEquipped) == BASE_ITEM_KAMA) &&
+        // weapon is removed because you can't use stunning/quivering with! - pok
+        if((!GetIsObjectValid(oEquipped)) &&
              nTargetCreatureRace != RACIAL_TYPE_CONSTRUCT &&
              nTargetCreatureRace != RACIAL_TYPE_UNDEAD)
         {
             bCanUseMonks = TRUE;
         }
-        // Smite good, or evil!
-        if(nTargetAlignment != ALIGNMENT_NEUTRAL)
+
+        // always use smite, because it gives +ab anyways regardless of alignment - pok
+        // For use against them evil pests! Top - one use only anyway.
+        if(GetHasFeat(FEAT_SMITE_EVIL))
         {
-            // For use against them evil pests! Top - one use only anyway.
-            if(nTargetAlignment == ALIGNMENT_EVIL && GetHasFeat(FEAT_SMITE_EVIL))
-            {
-                AI_SetMeleeMode();
-                ActionUseFeat(FEAT_SMITE_EVIL, GlobalMeleeTarget);
-                return FEAT_SMITE_EVIL;
-            }
-            // For use against them evil pests! Top - one use only anyway.
-            else if(nTargetAlignment == ALIGNMENT_GOOD && GetHasFeat(FEAT_SMITE_GOOD))
-            {
-                AI_SetMeleeMode();
-                ActionUseFeat(FEAT_SMITE_GOOD, GlobalMeleeTarget);
-                return FEAT_SMITE_GOOD;
-            }
+            AI_SetMeleeMode();
+            ActionUseFeat(FEAT_SMITE_EVIL, GlobalMeleeTarget);
+            return FEAT_SMITE_EVIL;
         }
+        // For use against them evil pests! Top - one use only anyway.
+        else if(GetHasFeat(FEAT_SMITE_GOOD))
+        {
+            AI_SetMeleeMode();
+            ActionUseFeat(FEAT_SMITE_GOOD, GlobalMeleeTarget);
+            return FEAT_SMITE_GOOD;
+        }
+
         // We may use Expertiese if we are being attacked, and above we tried
         // to equip a shield...
         // - Need more help around us (some allies) and people atually attacking us, or low HP.
@@ -1992,7 +1614,8 @@ int AI_EquipAndAttack()
             }
         }
         // Next, flurry of blows...
-        if(bCanUseMonks && nOurHit - 2 >= GlobalMeleeTargetAC &&
+        // removed bCanUseMonks check because it wouldnt work vs. golems
+        if((!GetIsObjectValid(oEquipped) || GetBaseItemType(oEquipped) == BASE_ITEM_KAMA || GetBaseItemType(oEquipped) == BASE_ITEM_QUARTERSTAFF) && nOurHit - 2 >= GlobalMeleeTargetAC &&
            GetHasFeat(FEAT_FLURRY_OF_BLOWS))
         {
             AI_SetMeleeMode(ACTION_MODE_FLURRY_OF_BLOWS);
