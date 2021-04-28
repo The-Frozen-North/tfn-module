@@ -405,14 +405,19 @@ int PerformSpecialAction()
             if(nRoundsRemaining == 0)
             {
                 // Rest after combat?
-                if(GetSpawnInCondition(AI_FLAG_OTHER_REST_AFTER_COMBAT, AI_OTHER_MASTER))
+                if(!GetIsInCombat() && GetLocalInt(OBJECT_SELF, "combat") == 1)
                 {
                     // 71: "[Search] Resting"
-                    DebugActionSpeakByInt(71);
-                    // Yes - we use ActionRest(). It can possibly still fail if
-                    // enemies are still around!
-                    ActionRest();
-                    ActionWait(1.0);
+                    //DebugActionSpeakByInt(71);
+                    ActionPlayAnimation(ANIMATION_LOOPING_SIT_CROSS, 1.0, 7.0);
+
+                    int nHitPointsPer = GetMaxHitPoints()/6;
+                    if (nHitPointsPer < 1) nHitPointsPer = 1;
+
+                    if (GetCurrentHitPoints() >= GetMaxHitPoints() - nHitPointsPer)
+                        ForceRest(OBJECT_SELF);
+                    else
+                        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(nHitPointsPer), OBJECT_SELF);
                 }
                 else
                 {

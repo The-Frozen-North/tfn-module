@@ -777,8 +777,46 @@ void AI_TargetingArrayDelete(string sArray);
 int AI_GetTargetSanityCheck(object oTarget);
 
 
+// my functions
 
+void PlayVoiceChatIfNotDead(int iVoice)
+{
+    if (GetIsDead(OBJECT_SELF)) return;
+    PlayVoiceChat(iVoice);
+}
 
+void DoCombatVoice()
+{
+    if (GetIsDead(OBJECT_SELF)) return;
+
+    string sBattlecryScript = GetLocalString(OBJECT_SELF, "battlecry_script");
+    if (sBattlecryScript != "")
+    {
+        ExecuteScript(sBattlecryScript, OBJECT_SELF);
+    }
+    else
+    {
+        int nRand = 40;
+        if (GetLocalInt(OBJECT_SELF, "boss") == 1) nRand = nRand/2;
+        int iVoice = -1;
+        switch (Random(nRand))
+        {
+            case 0: iVoice = VOICE_CHAT_BATTLECRY1; break;
+            case 1: iVoice = VOICE_CHAT_BATTLECRY2; break;
+            case 2: iVoice = VOICE_CHAT_BATTLECRY3; break;
+            case 3: iVoice = VOICE_CHAT_ATTACK; break;
+            case 4: iVoice = VOICE_CHAT_TAUNT; break;
+            case 5: iVoice = VOICE_CHAT_LAUGH; break;
+            case 6: iVoice = VOICE_CHAT_ENEMIES; break;
+        }
+
+        if (iVoice >= 0)
+        {
+            float fDelay = IntToFloat(Random(10) + 1) / 10.0;
+            DelayCommand(fDelay, PlayVoiceChatIfNotDead(iVoice));
+        }
+    }
+}
 
 // Buff OBJECT_SELF if OBJECT_SELF isn't already buffed with the particular spell
 void BuffIfNotBuffed(int bSpell, int bInstant)
@@ -799,6 +837,7 @@ void FastBuff(int bInstant = TRUE)
 
     if (GetLocalInt(OBJECT_SELF, "fast_buffed") == 1) return;
     SetLocalInt(OBJECT_SELF, "fast_buffed", 1);
+    SetLocalInt(OBJECT_SELF, "combat", 1);
     ClearAllActions(TRUE);
 
     // General Protections and misc buffs
@@ -1367,24 +1406,7 @@ void AI_ActionTurnOffHiding()
 //:://///////////////////////////////////////////*/
 int AI_EquipAndAttack()
 {
-    // Taunt the enemy!
-    // 5% chance each round. A d20 roll of 1.
-    if(!GetSpawnInCondition(AI_FLAG_OTHER_NO_PLAYING_VOICE_CHAT, AI_OTHER_MASTER)
-       && d20() == 1)
-    {
-        int iVoice = VOICE_CHAT_ATTACK;// Default
-        switch(Random(6)) // Random will do 0-5, so more chance of ATTACK
-        {
-            case 0: iVoice = VOICE_CHAT_LAUGH; break;
-            case 1: iVoice = VOICE_CHAT_BATTLECRY1; break;
-            case 2: iVoice = VOICE_CHAT_BATTLECRY2; break;
-            case 3: iVoice = VOICE_CHAT_BATTLECRY3; break;
-            default: iVoice = VOICE_CHAT_ATTACK; break;// Default
-        }
-        // Random delay for 0.0 to 1.0 seconds.
-        float fDelay = IntToFloat(Random(10) + 1) / 10.0;
-        DelayCommand(fDelay, PlayVoiceChat(iVoice));
-    }
+    DoCombatVoice();
 
     // - Flying
     if(GlobalRangeToMeleeTarget > 8.0 &&
@@ -14674,6 +14696,9 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
     if(GetIsObjectValid(oIntruder))
     {
         FastBuff();
+
+        DoCombatVoice();
+
         // Face the intruder.
         SetFacingPoint(GetPosition(oIntruder));
     }

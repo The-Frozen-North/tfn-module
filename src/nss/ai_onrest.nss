@@ -64,7 +64,8 @@ void main()
     FireUserEvent(AI_FLAG_UDE_RESTED_EVENT, EVENT_RESTED_EVENT);
 
     DeleteLocalInt(OBJECT_SELF, "invis");
-    DeleteLocalInt(OBJECT_SELF, "rest");
+    DeleteLocalInt(OBJECT_SELF, "combat");
+    DeleteLocalInt(OBJECT_SELF, "fast_buffed");
 }
 
 // Resets all spell triggers used for sString
