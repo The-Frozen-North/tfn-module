@@ -2153,6 +2153,10 @@ int AI_AttemptConcentrationCheck(object oTarget)
 // Input the nSpellID, oTarget in to cast the spell. TRUE if casted. No items checked.
 int AI_ActionCastSpontaeousSpell(int nSpellID, object oTarget)
 {
+    // don't cast spells on dead targets - pok
+    if (GetIsDead(oTarget))
+        return FALSE;
+
     if(GetHasSpell(nSpellID) && GetObjectSeen(oTarget))
     {
         // Note: Not stored or used in time stop
@@ -2181,6 +2185,10 @@ int AI_ActionCastSpontaeousSpell(int nSpellID, object oTarget)
 // * If bSubspell is TRUE, we will cheat-cast and derement it.
 int AI_ActionCastSpell(int nSpellID, object oTarget = OBJECT_SELF, int nRequirement = 0, int bLocation = FALSE, int bSubSpell = FALSE)
 {
+    // don't cast spells on dead targets - pok unless it is raise dead or resurrect
+    if (nSpellID != SPELL_RAISE_DEAD && nSpellID != SPELL_RESURRECTION && GetIsDead(oTarget))
+        return FALSE;
+
     // If it is not ever cast at location, but the target is ethreal, stop NOW
     if(bLocation == FALSE && (GetIsEthereal(oTarget) || !GetObjectSeen(oTarget))) return FALSE;
 
@@ -2253,6 +2261,10 @@ int AI_ActionCastSpell(int nSpellID, object oTarget = OBJECT_SELF, int nRequirem
 //     Then you can use AI_ActionCastBackupRandomSpell to see if we can cast it later.
 int AI_ActionCastSpellRandom(int nSpellID, int nRandom, object oTarget = OBJECT_SELF, int nRequirement = 0, int bLocation = FALSE)
 {
+    // don't cast spells on dead targets - pok
+    if (GetIsDead(oTarget))
+        return FALSE;
+
     // If it is not ever cast at location, but the target is ethreal, stop NOW
     if(bLocation == FALSE && (GetIsEthereal(oTarget) || !GetObjectSeen(oTarget))) return FALSE;
 
@@ -14695,6 +14707,10 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
     // attacks if we then cast something on ourselves, ETC).
     if(GetIsObjectValid(oIntruder))
     {
+        // do not continue if the intruder is dead - pok
+        if (GetIsDead(oIntruder))
+            return;
+
         FastBuff();
 
         DoCombatVoice();
