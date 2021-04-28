@@ -1243,7 +1243,7 @@ int AI_GetUDENumber();
 // We check if we are attacking anything
 // * Checks Attempted* Targets, Get the AttackTarget of us.
 // * Checks GetIsInCombat at the end. If that is TRUE, we should be doing proper rounds anyway.
-int GetIsFighting();
+//int GetIsFighting();
 // We check if we can perform a combat action currently.
 // * Checks our action list. Some things like skills, opening doors and so on
 //   we don't want to interrupt before they are done.
@@ -2221,6 +2221,7 @@ int CanSpeak()
 // Get Has Effect
 //  Checks to see if the target has a given
 //  effect, usually from a spell. Really useful this is.
+// this function is from a bio script - pok
 int GetHasEffect(int nEffectType, object oTarget = OBJECT_SELF)
 {
     effect eCheck = GetFirstEffect(oTarget);
