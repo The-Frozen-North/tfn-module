@@ -12677,10 +12677,13 @@ int AI_SetUpAllObjects(object oInputBackup)
         fSetMaxWeCanGoTo = GlobalOurReach + 1.0;// Have 1 extra as well
         // We add a lot for spring attack - 3d4 (3 to 12)
         // OR we have 13+ (IE a very high chance of suceeding) in tumble
-        if(GetHasFeat(FEAT_SPRING_ATTACK) || GetSkillRank(SKILL_TUMBLE) >= 13)
-        {
+
+        // give caster movement a higher chance regardless of spring attack or tumble - pok
+        //if(GetHasFeat(FEAT_SPRING_ATTACK) || GetSkillRank(SKILL_TUMBLE) >= 13)
+        //{
             fSetMaxWeCanGoTo += IntToFloat(d4(3));
-        }
+        //}
+        /*
         else if(GetHasSkill(SKILL_TUMBLE))
         {
             // Else we add some for tumble
@@ -12691,6 +12694,7 @@ int AI_SetUpAllObjects(object oInputBackup)
                 fSetMaxWeCanGoTo += IntToFloat(bBreak);
             }
         }
+        */
         bBreak = FALSE;
         // Start loop from array based on range.
         // - Use seen array!
