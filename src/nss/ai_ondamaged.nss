@@ -45,6 +45,11 @@ void main()
     PlayNonMeleePainSound(oDamager);
     if (GetIsPC(oDamager) || GetIsPC(GetMaster(oDamager))) SetLocalInt(OBJECT_SELF, "player_tagged", 1);
 
+    if (GetCurrentHitPoints(OBJECT_SELF) <= GetMaxHitPoints(OBJECT_SELF)/3)
+    {
+        DoMoraleCheck(OBJECT_SELF, 10);
+    }
+
     // Total up the physical damage
 
     // Polymorph check.
@@ -170,6 +175,7 @@ void main()
 
             // Morale: We may get a penalty if it does more than a cirtain amount of HP damage.
             // Other: We set highest damager and amount.
+            /*
             if(!GetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER))
             {
                 // Get penalty and how much damage at once needs to be done
@@ -183,6 +189,7 @@ void main()
                     SetMoralePenalty(nPenalty, 300.0);
                 }
             }
+            */
         }
         // If we are not attacking anything, and not in combat, react!
         if(!CannotPerformCombatRound())

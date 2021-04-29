@@ -592,7 +592,8 @@ int PerceptionFleeFrom(object oEnemy)
 void CallToArmsResponse(object oAlly)
 {
     // Shout to allies to attack, or be prepared.
-    AISpeakString(AI_SHOUT_CALL_TO_ARMS);
+    //AISpeakString(AI_SHOUT_CALL_TO_ARMS);
+    // this is commented out so it won't chain others nearby - pok
 
     // If we are over 2 meters away from oShouter, we move to them using
     // the special action
@@ -646,8 +647,11 @@ void IWasAttackedResponse(object oAlly)
         AISpeakString(AI_SHOUT_I_WAS_ATTACKED);
         return;
     }
+    // we won't do a call to arms here - pok
+
     // If invalid, we act as if it was "Call to arms" type thing.
     // Call to arms is better to use normally, of course.
+    /*
     else
     {
         // Shout to allies to attack, or be prepared.
@@ -708,7 +712,7 @@ void IWasAttackedResponse(object oAlly)
             DetermineCombatRound(oAlly);
             return;
         }
-    }
+    }*/
 }
 
 

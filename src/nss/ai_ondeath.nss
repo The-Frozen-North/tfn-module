@@ -52,7 +52,15 @@ void main()
     string sScript = GetLocalString(OBJECT_SELF, "death_script");
     if (sScript != "") ExecuteScript(sScript);
 
-    GibsNPC(OBJECT_SELF);
+    // morale check if extra spectacular death
+    if (GibsNPC(OBJECT_SELF))
+    {
+        DoMoraleCheckSphere(OBJECT_SELF, 16);
+    }
+    else
+    {
+        DoMoraleCheckSphere(OBJECT_SELF, 12);
+    }
 
 
     // Signal the death event.

@@ -114,12 +114,6 @@ void main()
     SetAIInteger(AI_INTELLIGENCE, nIntelligence);
         // Intelligence value of the creauture. Can be 1-10, read readme's for help.
 
-
-    int nMorale = FloatToInt(GetChallengeRating(OBJECT_SELF));
-    if (GetLocalInt(OBJECT_SELF, "herbivore") || GetClassByPosition(1) == CLASS_TYPE_COMMONER) nMorale = -1;
-
-    SetAIInteger(AI_MORALE, nMorale);
-        // Will save (See readme). Remember: -1 or below means they always flee.
     //SetCustomAIFileName("CUSTOM_AI_FILE");
         // Sets our custom AI file. Really, only animation settings will apply when this is set.
         // - Can sort actions against a imputted target (EG: On Percieved enemy) by
@@ -204,11 +198,23 @@ void main()
 
     pok - fleeing now happens regardless of intelligence
 ************************* [Fleeing] *******************************************/
+    int nMorale = 100;
+    if (GetLocalInt(OBJECT_SELF, "herbivore") || GetClassByPosition(1) == CLASS_TYPE_COMMONER)
+    {
+        nMorale = -100;
+    }
+    else
+    {
+        SetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER);
+    }
+
+    SetAIInteger(AI_MORALE, nMorale);
+
     //SetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER);
         // Forces them to not flee. This may be set with AI_SetMaybeFearless at the end.
     //SetSpawnInCondition(AI_FLAG_FLEEING_NEVER_FIGHT_IMPOSSIBLE_ODDS, AI_TARGETING_FLEE_MASTER);
         // This will make the creature never fight against impossible odds (8HD+ different)
-    //SetSpawnInCondition(AI_FLAG_FLEEING_TURN_OFF_GROUP_MORALE, AI_TARGETING_FLEE_MASTER);
+    SetSpawnInCondition(AI_FLAG_FLEEING_TURN_OFF_GROUP_MORALE, AI_TARGETING_FLEE_MASTER);
         // This turns OFF any sort of group morale bonuses.
 
     //SetAIInteger(AMOUNT_OF_HD_DIFFERENCE_TO_CHECK, -2);
@@ -221,9 +227,9 @@ void main()
         // This will turn off overriding HP checks. AI may decide to run even
         // not at the %HP above, this turns the checks off.
 
-    SetAIInteger(AI_DAMAGE_AT_ONCE_FOR_MORALE_PENALTY, GetMaxHitPoints()/6);
+    //SetAIInteger(AI_DAMAGE_AT_ONCE_FOR_MORALE_PENALTY, GetMaxHitPoints()/6);
         // Damage needed to be done at once to get a massive morale penalty (Below)
-    SetAIInteger(AI_DAMAGE_AT_ONCE_PENALTY, 6);
+    //SetAIInteger(AI_DAMAGE_AT_ONCE_PENALTY, 6);
         // Penalty for the above, set for some time to negativly affect morale. Added to save DC for fleeing.
 
     //SetSpawnInCondition(AI_FLAG_FLEEING_FLEE_TO_NEAREST_NONE_SEEN, AI_TARGETING_FLEE_MASTER);
@@ -508,7 +514,7 @@ void main()
         // This will stop checks for and curing of allies ailments.
     //SetSpawnInCondition(AI_FLAG_OTHER_LAG_IGNORE_HEARTBEAT, AI_OTHER_MASTER);
         // Stops the heartbeat running (Except Pre-Heartbeat-event).
-    //SetSpawnInCondition(AI_FLAG_OTHER_LAG_TARGET_NEAREST_ENEMY, AI_OTHER_MASTER);
+    SetSpawnInCondition(AI_FLAG_OTHER_LAG_TARGET_NEAREST_ENEMY, AI_OTHER_MASTER);
         // Ignores targeting settings. VERY good for lag/bad AI. Attacks nearest seen enemy.
 
 /************************ [Other - Behaviour/Generic] *************************/
@@ -616,19 +622,22 @@ void main()
     // SetSpawnInCondition(NW_FLAG_DAY_NIGHT_POSTING, NW_GENERIC_MASTER);
         // Separate the NPC's waypoints into day & night. See comment in "nw_i0_generic" for use.
 
-    // SetSpawnInCondition(NW_FLAG_IMMOBILE_AMBIENT_ANIMATIONS, NW_GENERIC_MASTER);
-        // This will cause an NPC to use common animations it possesses,
-        // and use social ones to any other nearby friendly NPCs.
-    // SetSpawnInCondition(NW_FLAG_AMBIENT_ANIMATIONS, NW_GENERIC_MASTER);
-        // Same as above, except NPC will wander randomly around the area.
+    if (GetLocalInt(OBJECT_SELF, "no_wander") != 1)
+    {
+        SetSpawnInCondition(NW_FLAG_IMMOBILE_AMBIENT_ANIMATIONS, NW_GENERIC_MASTER);
+            // This will cause an NPC to use common animations it possesses,
+            // and use social ones to any other nearby friendly NPCs.
+        SetSpawnInCondition(NW_FLAG_AMBIENT_ANIMATIONS, NW_GENERIC_MASTER);
+            // Same as above, except NPC will wander randomly around the area.
 
-    // SetAnimationCondition(NW_ANIM_FLAG_IS_CIVILIZED);
-        // Interacts with placeables + More civilized actions. See Readme.
-    // SetAnimationCondition(NW_ANIM_FLAG_CHATTER);
-        // Will use random voicechats during animations, if Civilized
-    // SetAnimationCondition(NW_ANIM_FLAG_IS_MOBILE_CLOSE_RANGE);
-        // Will move around the area a bit more, if using Immobile Animations. See readme.
 
+        SetAnimationCondition(NW_ANIM_FLAG_IS_CIVILIZED);
+            // Interacts with placeables + More civilized actions. See Readme.
+        // SetAnimationCondition(NW_ANIM_FLAG_CHATTER);
+            // Will use random voicechats during animations, if Civilized
+        SetAnimationCondition(NW_ANIM_FLAG_IS_MOBILE_CLOSE_RANGE);
+            // Will move around the area a bit more, if using Immobile Animations. See readme.
+    }
     // Treasure generating.
     //CTG_GenerateNPCTreasure();
         // SoU. Requires "x0_i0_treasure" to be uncommented. See readme.

@@ -5076,12 +5076,12 @@ void AI_ActionFleeScared()
          // added some voice chat - pok
          switch (d6())
          {
-             case 1: PlayVoiceChat(VOICE_CHAT_HELP, oCreature); break;
-             case 2: PlayVoiceChat(VOICE_CHAT_FLEE, oCreature); break;
-             case 3: PlayVoiceChat(VOICE_CHAT_NEARDEATH, oCreature); break;
+             case 1: PlayVoiceChat(VOICE_CHAT_HELP); break;
+             case 2: PlayVoiceChat(VOICE_CHAT_FLEE); break;
+             case 3: PlayVoiceChat(VOICE_CHAT_NEARDEATH); break;
              case 4:
-                if (GetCurrentHitPoints(oCreature) <= GetMaxHitPoints(oCreature)/2)
-                    PlayVoiceChat(VOICE_CHAT_HEALME, oCreature);
+                if (GetCurrentHitPoints() <= GetMaxHitPoints()/2)
+                    PlayVoiceChat(VOICE_CHAT_HEALME);
              break;
          }
     }

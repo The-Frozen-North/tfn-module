@@ -96,7 +96,12 @@ void DoMoraleCheck(object oCreature, int nDC = 10)
     {
         if (oNearbyCreature != oCreature && !GetIsDead(oCreature))
         {
-            if (GetIsFriend(oNearbyCreature, oCreature))
+            if (GetLocalInt(oNearbyCreature, "herbivore") == 1 || GetClassByPosition(1, oNearbyCreature) == CLASS_TYPE_COMMONER)
+            {
+                ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectFrightened(), oCreature, IntToFloat(d3(2)));
+                DelayCommand(IntToFloat(d10())/10.0, DoMoraleCry(oCreature));
+            }
+            else if (GetIsFriend(oNearbyCreature, oCreature))
             {
                 nFriendlies = nFriendlies + 2;
             }
@@ -106,6 +111,14 @@ void DoMoraleCheck(object oCreature, int nDC = 10)
             }
         }
         oNearbyCreature = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation, TRUE, OBJECT_TYPE_CREATURE);
+    }
+
+// these things will always morale cry
+    if (GetLocalInt(oCreature, "herbivore") == 1 || GetClassByPosition(1, oCreature) == CLASS_TYPE_COMMONER)
+    {
+        ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectFrightened(), oCreature, IntToFloat(d3(2)));
+        DelayCommand(IntToFloat(d10())/10.0, DoMoraleCry(oCreature));
+        return;
     }
 
     int nDifference = nEnemies - nFriendlies;
