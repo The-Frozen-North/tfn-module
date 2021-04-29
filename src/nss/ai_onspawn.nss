@@ -258,8 +258,10 @@ void main()
         // Set if you want them to move forwards into HTH sooner. Will always
         // if the enemy is a mage/archer, else % based on range.
 
-    if (GetLocalInt(OBJECT_SELF, "range") == 1 || GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND)))
+    if (GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND)))
     {
+        SetLocalInt(OBJECT_SELF, "range", 1);
+
         SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ATTACKING, AI_COMBAT_MASTER);
             // For archers. If they have ally support, they'd rather move back & shoot then go into HTH.
         SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER);

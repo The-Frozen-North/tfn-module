@@ -357,7 +357,8 @@ int AI_AttemptSpecialChecks();
 int AI_AttemptConcentrationCheck(object oTarget);
 // This may make the archer retreat - if they are set to, and have a ranged weapon
 // and don't have point blank shot, and has a nearby ally. (INT>=1 if set to does it more if higher).
-int AI_AttemptArcherRetreat();
+// added optional object pass through - pok
+int AI_AttemptArcherRetreat(object oIntruder = OBJECT_INVALID);
 // Will polymorph Self if not already so. Will return TRUE if it casts best on self.
 int AI_AttemptPolyMorph();
 // This will cheat-cast nSpell at oTarget. Note that we will know if we have it
@@ -1504,7 +1505,7 @@ int AI_EquipAndAttack()
     }
     // Spcial - if we are set to always move back, 1/10 times we don't equip HTH.
     // BUT we will attack in HTH if the last target was this target.
-    else if(GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER)
+    else if(GetLocalInt(OBJECT_SELF, "range") == 1
          && d10() != 1)
     {
         ActionEquipMostDamagingRanged(GlobalMeleeTarget);
@@ -5658,11 +5659,10 @@ void AI_ActionLeaderActions()
 //::///////////////////////////////////////////////
 //:: Created By: Jasperre
 //::////////////////////////////////////////////*/
-int AI_AttemptArcherRetreat()
+int AI_AttemptArcherRetreat(object oIntruder = OBJECT_INVALID)
 {
     // Many conditions - we must have it to start!
-    if(GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ATTACKING, AI_COMBAT_MASTER) ||
-       GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER))
+    if(GetLocalInt(OBJECT_SELF, "range") == 1)
     {
         // Enemy range must be close (HTH distance, roughly) and we must have
         // a close ally. ELSE we'll just get lots of AOO and die running (pointless)
@@ -5671,7 +5671,22 @@ int AI_AttemptArcherRetreat()
         //    GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER))
 
         // only retreat is enemies are close
-        if(GlobalEnemiesIn4Meters >= 1)
+        //if(GlobalEnemiesIn4Meters >= 1)
+        // only check distance and if there is a melee target
+
+        object oTarget = GlobalMeleeTarget;
+        // no global melee target or its dead?
+        // use oIntruder then
+
+        if (!GetIsObjectValid(oTarget) || GetIsDead(oTarget))
+            oTarget = oIntruder;
+
+        // return if there is no good melee target at this point
+        if (!GetIsObjectValid(oTarget) || GetIsDead(oTarget))
+            return FALSE;
+
+        float fDistance = GetDistanceToObject(GlobalMeleeTarget);
+        if(GetIsObjectValid(GlobalMeleeTarget) && fDistance >= 2.0 && fDistance <= 8.0)
         {
             // ammo and other checks removed
             // only check if main hand isn't ranged - pok
@@ -5682,7 +5697,13 @@ int AI_AttemptArcherRetreat()
             // This action will cancle next round if we are far enough
             // away from enemies.
             //ActionMoveAwayFromObject(GlobalMeleeTarget, TRUE, 15.0);
-            ActionMoveAwayFromLocation(GetLocation(GlobalMeleeTarget), TRUE, IntToFloat(8+d8()));
+
+            float fDistance = IntToFloat(8+d8());
+
+            ActionMoveAwayFromLocation(GetLocation(oTarget), TRUE, fDistance);
+
+            // start attacking after a while - pok
+            DelayCommand(fDistance/3.0, ActionAttack(oTarget));
             return TRUE;
 
         }
@@ -14160,7 +14181,7 @@ int AI_AttemptPolyMorph()
 {
     if(!GetSpawnInCondition(AI_FLAG_OTHER_NO_POLYMORPHING, AI_OTHER_MASTER) &&
        // We don't polymorph as an archer.
-       !GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ATTACKING, AI_COMBAT_MASTER))
+       GetLocalInt(OBJECT_SELF, "range") != 1)
     {
         // Spells that are tensers transformation and polymorth here.
         // Will cast 100% on all shapechanges. Need to make it check for any spells.
@@ -14910,7 +14931,7 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
             // We may move back as an archer, or even always do if set to. Normally
             // only if we have help do we retreat out of AOO range.
             // Will, if we can, cast invisibility first, or move back if we have it.
-            if(AI_AttemptArcherRetreat()){return;}
+            if(AI_AttemptArcherRetreat(oIntruder)){return;}
 
             // This may knockout dying PC's or coup de grace sleeping PC's nearby.
             if(AI_AttemptGoForTheKill()){return;}
