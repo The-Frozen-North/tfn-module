@@ -2186,7 +2186,7 @@ int AI_ActionCastSpontaeousSpell(int nSpellID, object oTarget)
 int AI_ActionCastSpell(int nSpellID, object oTarget = OBJECT_SELF, int nRequirement = 0, int bLocation = FALSE, int bSubSpell = FALSE)
 {
     // don't cast spells on dead targets - pok unless it is raise dead or resurrect
-    if (nSpellID != SPELL_RAISE_DEAD && nSpellID != SPELL_RESURRECTION && GetIsDead(oTarget))
+    if (bLocation == FALSE && nSpellID != SPELL_RAISE_DEAD && nSpellID != SPELL_RESURRECTION && GetIsDead(oTarget))
         return FALSE;
 
     // If it is not ever cast at location, but the target is ethreal, stop NOW
@@ -2262,7 +2262,7 @@ int AI_ActionCastSpell(int nSpellID, object oTarget = OBJECT_SELF, int nRequirem
 int AI_ActionCastSpellRandom(int nSpellID, int nRandom, object oTarget = OBJECT_SELF, int nRequirement = 0, int bLocation = FALSE)
 {
     // don't cast spells on dead targets - pok
-    if (GetIsDead(oTarget))
+    if (bLocation == FALSE && GetIsDead(oTarget))
         return FALSE;
 
     // If it is not ever cast at location, but the target is ethreal, stop NOW
@@ -14723,11 +14723,10 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
 
     // If oIntruder is valid, we will face them (this helps stops sneak
     // attacks if we then cast something on ourselves, ETC).
-    if(GetIsObjectValid(oIntruder))
+    // only continue if the intruder exists and is not dead
+    // - pok
+    if(GetIsObjectValid(oIntruder) && !GetIsDead(oIntruder))
     {
-        // do not continue if the intruder is dead - pok
-        if (GetIsDead(oIntruder))
-            return;
 
         FastBuff();
 
