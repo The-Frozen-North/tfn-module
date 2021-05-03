@@ -38,13 +38,14 @@ void main()
 // Take away XP only at the first death
     if (SQLocalsPlayer_GetInt(oPlayer, "DEAD") == 0)
     {
+        ExecuteScript("pc_dth_penalty", oPlayer);
+
         location lDeathSpot = GetLocation(oPlayer);
         float fFacing = GetFacing(oPlayer);
 
 // Create a blood spot on dying.
         object oBloodSpot = CreateObject(OBJECT_TYPE_PLACEABLE, "_pc_bloodstain", lDeathSpot);
         AssignCommand(oBloodSpot, SetFacing(fFacing));
-
      }
 
      DelayCommand(4.5, PopUpDeathGUIPanel(oPlayer, TRUE, TRUE, 0, sDeathMessage));

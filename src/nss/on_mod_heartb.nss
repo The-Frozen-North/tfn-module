@@ -3,6 +3,7 @@
 #include "inc_henchman"
 #include "inc_quest"
 #include "nwnx_util"
+#include "inc_sql"
 
 void DoRevive(object oDead)
 {
@@ -90,6 +91,9 @@ void main()
         DoRevive(oPC);
 
         RefreshCompletedBounties(oPC, nTime, sBounties);
+
+        if (!GetIsDead(oPC))
+            SQLocalsPlayer_DeleteInt(oPC, "DEAD");
 
         SavePCInfo(oPC);
 
