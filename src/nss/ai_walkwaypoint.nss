@@ -78,7 +78,7 @@ void main()
         if(GetIsObjectValid(oReturnArea))
         {
             if((GetArea(OBJECT_SELF) == oReturnArea &&
-                GetDistanceBetweenLocations(GetLocation(OBJECT_SELF), lReturnPoint) > 3.0) ||
+                GetDistanceBetweenLocations(GetLocation(OBJECT_SELF), lReturnPoint) > 10.0) ||
                 GetArea(OBJECT_SELF) != oReturnArea)
             {
                 // 77: "[Waypoints] Returning to spawn location. [Area] " + GetName(oInput)

@@ -389,7 +389,12 @@ int PerformSpecialAction()
             }
             // Note: Here, we will return to spawn location after moving to the
             // object, if it is a valid setting, else we do the normal randomwalk
-            if(GetSpawnInCondition(AI_FLAG_OTHER_RETURN_TO_SPAWN_LOCATION, AI_OTHER_MASTER))
+            location lReturnPoint = GetLocalLocation(OBJECT_SELF, AI_LOCATION + AI_RETURN_TO_POINT);
+            object oReturnArea = GetAreaFromLocation(lReturnPoint);
+            if (GetSpawnInCondition(AI_FLAG_OTHER_RETURN_TO_SPAWN_LOCATION, AI_OTHER_MASTER)
+                && (((GetArea(OBJECT_SELF) == oReturnArea &&
+                GetDistanceBetweenLocations(GetLocation(OBJECT_SELF), lReturnPoint) > 10.0) ||
+                GetArea(OBJECT_SELF) != oReturnArea)))
             {
                 ActionMoveToLocation(GetAILocation(AI_RETURN_TO_POINT));
             }
