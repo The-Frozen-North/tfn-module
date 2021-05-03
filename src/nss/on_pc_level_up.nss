@@ -58,6 +58,7 @@ const int MIN_CLASS_LEVEL_FOR_EPIC_FIEND = 15;
 
 #include "inc_debug"
 #include "inc_webhook"
+#include "inc_sql"
 
 /*
 Patch 1.72
@@ -135,18 +136,23 @@ void main()
 
    WriteTimestampedLogEntry(PlayerDetailedName(oPC)+" leveled up.");
 
-   LevelUpWebhook(oPC);
+   int nHitDice = GetHitDice(oPC);
 
-// Don't do any of this if leveling from level 2
+   // Only do the following if leveling up their highest level
 
-    if (GetXP(oPC) < 3000) return;
+   if (nHitDice > SQLocalsPlayer_GetInt(oPC, "highest_level"))
+   {
+        LevelUpWebhook(oPC);
 
-    PlayVoiceChat(VOICE_CHAT_CHEER, oPC);
-    switch (d3())
-    {
-       case 1: AssignCommand(oPC, ActionPlayAnimation(ANIMATION_FIREFORGET_VICTORY1)); break;
-       case 2: AssignCommand(oPC, ActionPlayAnimation(ANIMATION_FIREFORGET_VICTORY2)); break;
-       case 3: AssignCommand(oPC, ActionPlayAnimation(ANIMATION_FIREFORGET_VICTORY3)); break;
+        SQLocalsPlayer_SetInt(oPC, "highest_level", nHitDice);
+
+        PlayVoiceChat(VOICE_CHAT_CHEER, oPC);
+        switch (d3())
+        {
+           case 1: AssignCommand(oPC, ActionPlayAnimation(ANIMATION_FIREFORGET_VICTORY1)); break;
+           case 2: AssignCommand(oPC, ActionPlayAnimation(ANIMATION_FIREFORGET_VICTORY2)); break;
+           case 3: AssignCommand(oPC, ActionPlayAnimation(ANIMATION_FIREFORGET_VICTORY3)); break;
+        }
+        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_LOS_HOLY_30), oPC);
     }
-    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_LOS_HOLY_30), oPC);
 }
