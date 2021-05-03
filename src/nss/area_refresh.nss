@@ -82,7 +82,7 @@ void main()
 
      if (nTreasures > 0)
      {
-        int nTreasureChance = ((iRows*iColumns)/nTreasures)*10;
+        int nTreasureChance = ((iRows*iColumns)/nTreasures)*5;
 
         object oTreasure;
         vector vTreasurePosition;
@@ -97,9 +97,11 @@ void main()
         {
             if ((GetLocalInt(OBJECT_SELF, "treasure_keep"+IntToString(i)) == 1) || (d100() <= nTreasureChance))
             {
+
                 vTreasurePosition = Vector(GetLocalFloat(OBJECT_SELF, "treasure_x"+IntToString(i)), GetLocalFloat(OBJECT_SELF, "treasure_y"+IntToString(i)), GetLocalFloat(OBJECT_SELF, "treasure_z"+IntToString(i)));
                 lTreasureLocation = Location(OBJECT_SELF, vTreasurePosition, GetLocalFloat(OBJECT_SELF, "treasure_o"+IntToString(i)));
                 oTreasure = CreateObject(OBJECT_TYPE_PLACEABLE, GetLocalString(OBJECT_SELF, "treasure_resref"+IntToString(i)), lTreasureLocation);
+                SetLocalInt(oTreasure, "cr_bonus", GetLocalInt(oTreasure, "cr_bonus")*2);
                 ExecuteScript("treas_init", oTreasure);
 
 // store the treasure so it can deleted later on refresh
