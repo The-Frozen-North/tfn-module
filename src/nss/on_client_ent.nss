@@ -37,8 +37,6 @@ void main()
 // Do this only for PCs
     if (!GetIsPC(oPC)) return;
 
-    DetermineDeathEffectPenalty(oPC);
-
     NWNX_Damage_SetAttackEventScript("pc_attack", oPC);
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_DAMAGED, "on_pc_damaged");
 
@@ -66,6 +64,10 @@ void main()
 
         int nCurrentHP = GetCurrentHitPoints(oPC);
         int nStoredHP = SQLocalsPlayer_GetInt(oPC, "CURRENT_HP");
+
+// only do this if PCs aren't dead and this is their first log-in
+        if (!GetIsDead(oPC) && nStoredHP > 0)
+            DetermineDeathEffectPenalty(oPC, nStoredHP);
 
 // if the stored hp is 0 or less, assume some kind of error or the variable doesnt exist
 // in that case make it the current hp

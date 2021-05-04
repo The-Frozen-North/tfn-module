@@ -1,3 +1,5 @@
+#include "inc_general"
+
 void main()
 {
     object oPC = GetPCSpeaker();
@@ -11,6 +13,10 @@ void main()
 
     object oNearestRespawn = GetObjectByTag(GetLocalString(oArea, "respawn"));
     if (GetIsObjectValid(oNearestRespawn)) lRespawnLocation = GetLocation(oNearestRespawn);
+
+    SQLocalsPlayer_DeleteInt(oPC, "times_died");
+
+    DetermineDeathEffectPenalty(oPC);
 
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_RESTORATION), lRespawnLocation);
 
