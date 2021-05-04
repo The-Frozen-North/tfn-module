@@ -11,6 +11,7 @@
 //:://////////////////////////////////////////////
 #include "inc_persist"
 #include "x0_i0_spells"
+#include "inc_general"
 
 
 void main()
@@ -28,6 +29,7 @@ void main()
     }
 
     //1.72: changed to remove all effects even positive ones - as those could still be on player in case he respawned from dying
+    /*
     effect eEffect = GetFirstEffect(oRespawner);
     while(GetIsEffectValid(eEffect))
     {
@@ -35,8 +37,12 @@ void main()
         eEffect = GetNextEffect(oRespawner);
     }
     RemoveEffects(oRespawner);
+    */
 
     SQLocalsPlayer_DeleteInt(oRespawner, "DEAD");
+    SQLocalsPlayer_DeleteInt(oRespawner, "times_died");
+
+    DetermineDeathEffectPenalty(oRespawner);
 
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oRespawner);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(GetMaxHitPoints(oRespawner)), oRespawner);

@@ -4,6 +4,7 @@
 #include "inc_quest"
 #include "nwnx_util"
 #include "inc_sql"
+#include "inc_general"
 
 void DoRevive(object oDead)
 {
@@ -23,7 +24,9 @@ void DoRevive(object oDead)
             float fSize = 30.0;
 
             float fMasterDistance = GetDistanceBetween(oDead, oMaster);
-            if (fMasterDistance > 0.0 && fMasterDistance <= 90.0) bMasterFound = TRUE;
+            if (fMasterDistance <= 90.0) bMasterFound = TRUE;
+
+            if (GetArea(oMaster) != GetArea(oDead)) bMasterFound = FALSE;
 
             object oCreature = GetFirstObjectInShape(SHAPE_SPHERE, fSize, lLocation, TRUE, OBJECT_TYPE_CREATURE);
 
@@ -51,10 +54,13 @@ void DoRevive(object oDead)
 
             if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound && !bMasterDead) bFriend = TRUE;
 
-            if (!bEnemy && bFriend)
+            if (!bEnemy && bFriend && IsCreatureRevivable(oDead))
             {
                 SQLocalsPlayer_DeleteInt(oDead, "DEAD");
                 ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oDead);
+
+                DetermineDeathEffectPenalty(oDead, 1);
+
                 if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound) SetMaster(oDead, oMaster);
                 WriteTimestampedLogEntry(GetName(oDead)+" was revived by friendly "+GetName(oCreature)+".");
             }

@@ -31,14 +31,14 @@ void main()
     effect eEffect;
 
     object oKiller = GetLastHostileActor(oPlayer);
-    string sDeathMessage = "You will be automatically revived if there is a friend nearby, there are no enemies, and you are out of combat, or you can respawn at the nearest Temple of Tyr at cost of XP and gold.";
+    string sDeathMessage = "You will be automatically revived if there is an ally nearby, there are no enemies, and you are out of combat, or you can respawn at the nearest Temple of Tyr at cost of XP and gold.";
 
     RemoveMount(oPlayer);
 
-// Take away XP only at the first death
+// Apply penalty only at first death
     if (SQLocalsPlayer_GetInt(oPlayer, "DEAD") == 0)
     {
-        ExecuteScript("pc_dth_penalty", oPlayer);
+        SQLocalsPlayer_SetInt(oPlayer, "times_died", SQLocalsPlayer_GetInt(oPlayer, "times_died")+1);
 
         location lDeathSpot = GetLocation(oPlayer);
         float fFacing = GetFacing(oPlayer);
@@ -48,26 +48,31 @@ void main()
         AssignCommand(oBloodSpot, SetFacing(fFacing));
      }
 
-     DelayCommand(4.5, PopUpDeathGUIPanel(oPlayer, TRUE, TRUE, 0, sDeathMessage));
+     RemoveDeathEffectPenalty(oPlayer);
+
+     if (!IsCreatureRevivable(oPlayer))
+        sDeathMessage = "You have died too many times and cannot be revived by allies. You can respawn at the nearest Temple of Tyr at cost of XP and gold, or wait for a Raise Dead spell.";
 
      SQLocalsPlayer_SetInt(oPlayer, "DEAD", 1);
 
-    SavePCInfo(oPlayer);
+     SavePCInfo(oPlayer);
 
 
-    SetStandardFactionReputation(STANDARD_FACTION_COMMONER, 50, oPlayer);
-    SetStandardFactionReputation(STANDARD_FACTION_MERCHANT, 50, oPlayer);
-    SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 50, oPlayer);
+     SetStandardFactionReputation(STANDARD_FACTION_COMMONER, 50, oPlayer);
+     SetStandardFactionReputation(STANDARD_FACTION_MERCHANT, 50, oPlayer);
+     SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 50, oPlayer);
 
-    DeathWebhook(oPlayer, oKiller);
+     DeathWebhook(oPlayer, oKiller);
 
 // Give a gore animation if the PC took a lot of damage.
 
-    WriteTimestampedLogEntry(PlayerDetailedName(oPlayer)+" was killed by "+GetName(oKiller)+".");
+     WriteTimestampedLogEntry(PlayerDetailedName(oPlayer)+" was killed by "+GetName(oKiller)+".");
 
-    Gibs(oPlayer);
+     Gibs(oPlayer);
 
-    KillTaunt(oKiller, oPlayer);
+     KillTaunt(oKiller, oPlayer);
+
+     DelayCommand(4.5, PopUpDeathGUIPanel(oPlayer, TRUE, TRUE, 0, sDeathMessage));
 
 }
 

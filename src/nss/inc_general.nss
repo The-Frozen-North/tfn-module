@@ -1,3 +1,6 @@
+#include "inc_sql"
+#include "nwnx_creature"
+
 const float MORALE_RADIUS = 30.0;
 
 // Makes the killer play a voice sometimes. Won't work if the killer is a PC or if the killer was not hostile.
@@ -34,6 +37,76 @@ void KillTaunt(object oKiller, object oKilled)
        case 1: DelayCommand(fDelay, PlayVoiceChat(VOICE_CHAT_THREATEN, oKiller)); break;
        case 2: DelayCommand(fDelay, PlayVoiceChat(VOICE_CHAT_LAUGH, oKiller)); break;
        case 3: DelayCommand(fDelay, PlayVoiceChat(VOICE_CHAT_CHEER, oKiller)); break;
+    }
+}
+
+void RemoveDeathEffectPenalty(object oCreature)
+{
+    effect eEffect = GetFirstEffect(oCreature);
+
+// Remove all penalty effects
+    while (GetIsEffectValid(eEffect))
+    {
+        if (GetEffectTag(eEffect) == "death_penalty")
+            RemoveEffect(oCreature, eEffect);
+
+        eEffect = GetNextEffect(oCreature);
+    }
+}
+
+void DetermineDeathEffectPenalty(object oCreature, int nCurrentHP = 0)
+{
+    effect eEffect = GetFirstEffect(oCreature);
+
+    RemoveDeathEffectPenalty(oCreature);
+
+    int nTimesDied;
+    if (GetIsPC(oCreature))
+    {
+        nTimesDied = SQLocalsPlayer_GetInt(oCreature, "times_died");
+    }
+    else
+    {
+        nTimesDied = GetLocalInt(oCreature, "times_died");
+    }
+
+// Don't do anything else if they hadn't actually died
+    if (nTimesDied == 0)
+        return;
+
+    effect ePenalty = SupernaturalEffect(EffectAbilityDecrease(ABILITY_CONSTITUTION, nTimesDied*(GetAbilityScore(oCreature, ABILITY_CONSTITUTION, TRUE)/4)));
+    TagEffect(ePenalty, "death_penalty");
+
+    if (nCurrentHP == 0)
+        nCurrentHP = GetCurrentHitPoints(oCreature);
+
+// Restore all HP because con loss can cause them to die
+    SetCurrentHitPoints(oCreature, GetMaxHitPoints(oCreature));
+
+    ApplyEffectToObject(DURATION_TYPE_PERMANENT, ePenalty, oCreature);
+
+    SetCurrentHitPoints(oCreature, nCurrentHP);
+}
+
+int IsCreatureRevivable(object oCreature)
+{
+    int nTimesDied;
+    if (GetIsPC(oCreature))
+    {
+        nTimesDied = SQLocalsPlayer_GetInt(oCreature, "times_died");
+    }
+    else
+    {
+        nTimesDied = GetLocalInt(oCreature, "times_died");
+    }
+
+    if (nTimesDied >= 3)
+    {
+        return FALSE;
+    }
+    else
+    {
+        return TRUE;
     }
 }
 

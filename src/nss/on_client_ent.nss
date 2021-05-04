@@ -4,6 +4,7 @@
 #include "inc_webhook"
 #include "nwnx_damage"
 #include "inc_nwnx"
+#include "inc_general"
 
 void CreateItemIfBlank(object oPC, string sItem)
 {
@@ -35,6 +36,8 @@ void main()
 
 // Do this only for PCs
     if (!GetIsPC(oPC)) return;
+
+    DetermineDeathEffectPenalty(oPC);
 
     NWNX_Damage_SetAttackEventScript("pc_attack", oPC);
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_DAMAGED, "on_pc_damaged");
