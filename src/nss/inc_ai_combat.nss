@@ -724,9 +724,12 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
 
     float fDistance = GetDistanceToObject(oTarget);
 
-    if (GetLocalInt(OBJECT_SELF, "range") == 1 && fDistance >= 2.0 && fDistance <= 8.0)
+    if (GetLocalInt(OBJECT_SELF, "range") == 1 && fDistance >= 2.0 && fDistance <= 8.0+IntToFloat(d4()))
     {
-        ActionMoveAwayFromObject(oTarget, TRUE, 10.0);
+        float fDistanceToMove = 8.0+IntToFloat(d8());
+        ActionMoveAwayFromLocation(GetLocation(oTarget), TRUE, fDistanceToMove);
+
+        DelayCommand(fDistanceToMove/3.0, AssignCommand(OBJECT_SELF, ActionAttack(oTarget)));
     }
 
     int nBehavior   = GetLocalInt(OBJECT_SELF, "GS_CB_BEHAVIOR");

@@ -132,7 +132,7 @@ void main()
                     nFlag = TRUE;
                 }
                 break;
-
+/*
             case OBJECT_TYPE_DOOR:
                 if (! GetIsTrapped(oTarget) &&
                     ! GetLocked(oTarget) &&
@@ -157,7 +157,7 @@ void main()
                     nFlag = TRUE;
                 }
                 break;
-
+            */
             case OBJECT_TYPE_PLACEABLE:
                 if (! GetIsTrapped(oTarget) &&
                     ! GetLocked(oTarget) &&
