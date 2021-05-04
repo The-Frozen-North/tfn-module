@@ -121,6 +121,15 @@ void main()
         NWNX_Creature_RemoveFeat(OBJECT_SELF, nSneak);
     }
 
+// Reset some skills.
+    NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, 0);
+    NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_DISCIPLINE, 0);
+    NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, 0);
+    NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SEARCH, 0);
+    NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_TUMBLE, 0);
+    NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_HIDE, 0);
+    NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_MOVE_SILENTLY, 0);
+
     object oSkin = CreateCreatureItem(INVENTORY_SLOT_CARMOUR, "cre_tskin");
 
     if (nAssociateType == ASSOCIATE_TYPE_ANIMALCOMPANION)
@@ -133,7 +142,7 @@ void main()
     }
     else
     {
-        AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyBonusSpellResistance(nMasterHitDice/3), oSkin);
+        AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyBonusSpellResistance(nMasterHitDice/4), oSkin);
     }
 
     int nHitDice = nMasterHitDice-1;
@@ -181,6 +190,10 @@ void main()
 
             nDamage = 2;
 
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_TUMBLE, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, nHitDice+1);
+
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyImmunityMisc(IP_CONST_IMMUNITYMISC_FEAR), oSkin);
 
             oWeaponLeft = ApplyDamageProgression("claw", INVENTORY_SLOT_CWEAPON_L, nDamage, nMasterHitDice);
@@ -215,6 +228,9 @@ void main()
             fTranslation = -1.5;
             fTranslationLevel = -0.15;
 
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, (nHitDice+1)/2);
+
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_BLINDSIGHT_60_FEET);
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_BLIND_FIGHT);
 
@@ -224,7 +240,7 @@ void main()
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_SONIC, 1+nMasterHitDice/6), oWeaponSpecial);
         break;
         case APPEARANCE_TYPE_BOAR_DIRE:
-            nBaseAC = 4;
+            nBaseAC = 2;
 
             nStrength = 13;
             nDexterity = 10;
@@ -233,13 +249,17 @@ void main()
             nWisdom = 13;
             nCharisma = 4;
 
-            fACLevel = 1.5;
+            fACLevel = 1.25;
 
             fConstitutionLevel = 0.75;
             fStrengthLevel = 0.75;
 
             fScale = 0.9;
             fScaleLevel = 0.03;
+
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_DISCIPLINE, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, (nHitDice+1)/2);
 
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_TOUGHNESS);
 
@@ -262,6 +282,10 @@ void main()
 
             fScale = 0.7;
             fScaleLevel = 0.06;
+
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, (nHitDice+1)/2);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_DISCIPLINE, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, (nHitDice+1)/2);
 
             nDamage = 3;
 
@@ -291,7 +315,8 @@ void main()
             fTranslation = 0.0;
             fTranslationLevel = -0.075;
 
-            AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyTrueSeeing(), oSkin);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, nHitDice+1);
+
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyImmunityMisc(IP_CONST_IMMUNITYMISC_BACKSTAB), oSkin);
 
             oWeaponSpecial = ApplyDamageProgression("bite", INVENTORY_SLOT_CWEAPON_B, 1, nMasterHitDice, TRUE);
@@ -343,6 +368,9 @@ void main()
 
             nDamage = 2;
 
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, (nHitDice+1)/2);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, (nHitDice+1)/2);
+
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyRegeneration(nMephit), oSkin);
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageImmunity(IP_CONST_DAMAGETYPE_FIRE, IP_CONST_DAMAGEIMMUNITY_100_PERCENT), oSkin);
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageVulnerability(IP_CONST_DAMAGETYPE_COLD, IP_CONST_DAMAGEVULNERABILITY_50_PERCENT), oSkin);
@@ -376,6 +404,9 @@ void main()
 
             nDamage = 2;
 
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, (nHitDice+1)/2);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, (nHitDice+1)/2);
+
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyRegeneration(nMephit), oSkin);
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageImmunity(IP_CONST_DAMAGETYPE_COLD, IP_CONST_DAMAGEIMMUNITY_100_PERCENT), oSkin);
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageVulnerability(IP_CONST_DAMAGETYPE_FIRE, IP_CONST_DAMAGEVULNERABILITY_50_PERCENT), oSkin);
@@ -387,7 +418,7 @@ void main()
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, nMephit), oWeaponRight);
         break;
         case APPEARANCE_TYPE_DOG_HELL_HOUND:
-            nBaseAC = 2;
+            nBaseAC = 1;
 
             nStrength = 14;
             nDexterity = 12;
@@ -403,6 +434,12 @@ void main()
 
             fScale = 0.9;
             fScaleLevel = 0.04;
+
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_DISCIPLINE, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, (nHitDice+1)/2);
+
+            NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_KEEN_SENSE);
 
             if (nMasterHitDice >= 3) NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_CLEAVE);
             if (nMasterHitDice >= 6) NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_KNOCKDOWN);
@@ -431,6 +468,10 @@ void main()
             fScale = 0.7;
             fScaleLevel = 0.04;
 
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_HIDE, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_MOVE_SILENTLY, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, nHitDice+1);
+
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertySpellImmunitySpecific(IP_CONST_IMMUNITYSPELL_WEB), oSkin);
 
             oWeaponSpecial = ApplyDamageProgression("bite", INVENTORY_SLOT_CWEAPON_B, 1, nMasterHitDice, TRUE);
@@ -458,6 +499,13 @@ void main()
             nWisdom = 12;
             nCharisma = 6;
 
+
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_DISCIPLINE, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, nHitDice+1);
+
+            NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_KEEN_SENSE);
+
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_CLEAVE);
             if (nMasterHitDice >= 6) NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_GREAT_CLEAVE);
             if (nMasterHitDice >= 9) NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_IMPROVED_CRITICAL_CREATURE);
@@ -472,9 +520,9 @@ void main()
             oWeaponSpecial = ApplyDamageProgression("bite", INVENTORY_SLOT_CWEAPON_B, 3, nMasterHitDice);
         break;
         case APPEARANCE_TYPE_DOG_DIRE_WOLF:
-            nBaseAC = 3;
+            nBaseAC = 2;
 
-            nStrength = 14;
+            nStrength = 13;
             nDexterity = 12;
             nConstitution = 12;
             nIntelligence = 3;
@@ -488,6 +536,10 @@ void main()
 
             fScale = 0.7;
             fScaleLevel = 0.05;
+
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, (nHitDice+1)/2);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_DISCIPLINE, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, nHitDice+1);
 
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_KNOCKDOWN);
             if (nMasterHitDice >= 6) NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_IMPROVED_KNOCKDOWN);
@@ -514,6 +566,11 @@ void main()
             fScaleLevel = 0.09;
 
             nDamage = 1;
+
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_HIDE, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_TUMBLE, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_MOVE_SILENTLY, nHitDice+1);
 
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_LIGHTNING_REFLEXES);
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_HIDE_IN_PLAIN_SIGHT);
@@ -547,6 +604,14 @@ void main()
             fTranslation = 0.0;
             fTranslationLevel = -0.04;
 
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, nHitDice+1);
+
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_HIDE, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_MOVE_SILENTLY, nHitDice+1);
+
+            NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_KEEN_SENSE);
+
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_DISARM);
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_DODGE);
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_MOBILITY);
@@ -579,6 +644,12 @@ void main()
 
             nDamage = 2;
 
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, (nHitDice+1)/2);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, (nHitDice+1)/2);
+
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_HIDE, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_MOVE_SILENTLY, nHitDice+1);
+
             ApplySneakAttackFeat(nMasterHitDice);
 
             oWeaponLeft = ApplyDamageProgression("claw", INVENTORY_SLOT_CWEAPON_L, nDamage, nMasterHitDice);
@@ -605,6 +676,8 @@ void main()
             fTranslationLevel = -0.03;
 
             nDamage = 1;
+
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_CONCENTRATION, nHitDice+1);
 
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyRegeneration(nMephit), oSkin);
             AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageReduction(1+nMephit, IP_CONST_DAMAGESOAK_5_HP), oSkin);
@@ -697,6 +770,14 @@ void main()
 
             fTranslation = 0.0;
             fTranslationLevel = -0.04;
+
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_LISTEN, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_SPOT, nHitDice+1);
+
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_HIDE, nHitDice+1);
+            NWNX_Creature_SetSkillRank(OBJECT_SELF, SKILL_MOVE_SILENTLY, nHitDice+1);
+
+            NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_KEEN_SENSE);
 
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_DISARM);
             NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_DODGE);
