@@ -19,9 +19,25 @@ void main()
         string sXPLoss = IntToString(nXP - nNewXP);
 
         int nGold = GetGold(oPlayer);
+
+        object oItem = GetFirstItemInInventory(oPlayer);
+
+        while ( oItem != OBJECT_INVALID )
+        {
+            nGold = nGold + GetGoldPieceValue(oItem);
+            oItem = GetNextItemInInventory(oPlayer);
+        }
+
+        // 15 and higher are creature items
+        int nSlot;
+        for ( nSlot = 0; nSlot < 14; ++nSlot )
+        {
+            nGold = nGold + GetGoldPieceValue(GetItemInSlot(nSlot, oPlayer));
+        }
+
         int nGoldLoss = 0;
 
-        if (nGold > 1) nGoldLoss = nGold/20;
+        if (nGold > 1) nGoldLoss = nGold/30;
 
         SetXP(oPlayer, nNewXP);
         TakeGoldFromCreature(nGoldLoss, oPlayer, TRUE);
