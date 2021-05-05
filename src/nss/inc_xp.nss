@@ -6,6 +6,7 @@
 //::////////////////////////////////////////////////////
 
 #include "inc_debug"
+#include "inc_sql"
 
 // The amount of bonus or penalty XP modified by level.
 const float QUEST_XP_LEVEL_ADJUSTMENT_MODIFIER = 0.1;
@@ -79,6 +80,11 @@ int GetLevelFromXP(int nXP);
 // Courtesy of Sherincall (clippy) from discord
 int Round(float f) { return FloatToInt(f +  (f > 0.0 ? 0.5 : -0.5) ); }
 
+float Truncate(float fFloat)
+{
+    return StringToFloat(FloatToString(fFloat, 3, 2));
+}
+
 int GetLevelFromXP(int nXP)
 {
    return FloatToInt(0.5 + sqrt(0.25 + (IntToFloat(nXP) / 500 )));
@@ -140,8 +146,6 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
 
    float fAdjustedXpAmount = fModifier * fXpAmount;
 
-   int nXP = Round(fAdjustedXpAmount);
-
    if (bQuest)
    {
       int nTotal = FloatToInt(fAdjustedXpAmount - fXpAmount);
@@ -152,14 +156,42 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
       FloatingTextStringOnCreature("*XP "+sBonus+": "+IntToString(nTotal)+" (Wisdom: "+IntToString(nWisdomMod)+"%"+sFavoredBonus+")*", oPC, FALSE);
    }
 
-   SendDebugMessage("Adjusted XP: "+FloatToString(fAdjustedXpAmount));
+   SendDebugMessage("fAdjustedXP without truncation: "+FloatToString(fAdjustedXpAmount));
 
-// If the XP returned is less than or equal to 0, make it at least 1
-   if (nXP <= 0) nXP = 1;
+// truncate
+   //fAdjustedXpAmount = IntToFloat(FloatToInt(fAdjustedXpAmount*10.0))/10.0;
+   fAdjustedXpAmount = Truncate(fAdjustedXpAmount);
 
-   int oPCXP = GetXP(oPC);
+   SendMessageToPC(oPC, "Experience Points Gained:  "+FloatToString(fAdjustedXpAmount, 3, 2));
 
-   SetXP(oPC, oPCXP + nXP);
+   int iStoredRemainderXP = SQLocalsPlayer_GetInt(oPC, "xp_remainder");
+   SendDebugMessage("Stored remainder XP: "+IntToString(iStoredRemainderXP));
+
+// should never be higher than 90
+   if (iStoredRemainderXP > 99)
+        iStoredRemainderXP = 99;
+
+// vice versa
+   if (iStoredRemainderXP < 0)
+        iStoredRemainderXP = 0;
+
+   if (iStoredRemainderXP > 0)
+       fAdjustedXpAmount = fAdjustedXpAmount + Truncate(IntToFloat(iStoredRemainderXP)/100.0);
+
+   SendDebugMessage("fAdjustedXP after adding stored remainder: "+FloatToString(fAdjustedXpAmount, 3, 2));
+
+   int iWhole = FloatToInt(Truncate(fAdjustedXpAmount));
+
+   int iRemainder = FloatToInt(Truncate(((fAdjustedXpAmount - IntToFloat(iWhole))*100.0)));
+
+   SendDebugMessage("Remainder XP to store: "+IntToString(iRemainder));
+
+   SQLocalsPlayer_SetInt(oPC, "xp_remainder", iRemainder);
+
+
+
+   if (iWhole > 0)
+       SetXP(oPC, GetXP(oPC) + iWhole);
 }
 
 void GiveQuestXPToPC(object oPC, int nTier, int nLevel, int bBluff = FALSE)
@@ -214,7 +246,7 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
 {
 // If the CR is 0.0, then assume this is not a kill and do not do any XP related thingies.
    float fCR = GetChallengeRating(OBJECT_SELF);
-   int iRoundedXP; float fXP;
+   float fXP;
 
 // if tagged no xp just return 0 early
    if (GetLocalInt(oCreature, "no_xp") == 1) return 0.0;
@@ -277,14 +309,15 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
 
        fXP = (fXP / fAverageLevel) * fPartyMod;
 
-       iRoundedXP = Round(fXP);
-
     // Cap the xp
        if ((fXP*fXPPenaltyMod) > XP_MAX) fXP = XP_MAX;
    }
 
-   if (iRoundedXP == 0) fXP = 0.0;
-   SendDebugMessage("fXP (modified by average level and party, then rounded): "+FloatToString(fXP));
+   if (fXP == 0.0) return 0.0;
+
+   if (fXP < 0.01) fXP = 0.01;
+
+   SendDebugMessage("fXP (modified by average level and party): "+FloatToString(fXP));
    return fXP;
 }
 //------------------------------  END INTERNAL FUNCTIONS  -----------------------------------

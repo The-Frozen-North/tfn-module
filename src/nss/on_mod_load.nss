@@ -8,6 +8,7 @@
 #include "nwnx_util"
 #include "util_i_csvlists"
 #include "nwnx_chat"
+#include "nwnx_feedback"
 
 #include "70_inc_switches"
 
@@ -98,6 +99,9 @@ void main()
     NWNX_Weapon_SetWeaponIsMonkWeapon(BASE_ITEM_SHURIKEN);
 
     NWNX_Chat_RegisterChatScript("on_nwnx_chat");
+
+// Hide XP gained messages because we handle it ourselves
+    NWNX_Feedback_SetFeedbackMessageHidden(182, TRUE);
 
 // Events.
 

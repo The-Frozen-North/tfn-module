@@ -62,7 +62,7 @@ void ExportMinimap(object oPC)
     string sData = NWNX_Player_GetAreaExplorationState(oPC, oArea);
     string sDataTarget = "map_"+GetResRef(oArea);
 
-    SendDebugMessage("exporting minimap "+sDataTarget+": "+sData);
+    //SendDebugMessage("exporting minimap "+sDataTarget+": "+sData);
     SQLocalsPlayer_SetString(oPC, sDataTarget, sData);
 }
 
