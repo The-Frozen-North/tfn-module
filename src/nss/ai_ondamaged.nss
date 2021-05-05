@@ -6,8 +6,8 @@
 
 void main()
 {
-
-    SetLocalInt(OBJECT_SELF, "reset_timer", 1);
+    if (GetLocalInt(OBJECT_SELF, "combat") == 0)
+        SetLocalInt(OBJECT_SELF, "combat", 1);
 
     object oDamager = GetLastDamager();
 

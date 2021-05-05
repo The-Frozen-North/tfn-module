@@ -5,6 +5,11 @@ void main()
 {
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_HEART_BEAT));
 
+    int nCombatInt = GetLocalInt(OBJECT_SELF, "combat");
+
+    if (nCombatInt > 0)
+        SetLocalInt(OBJECT_SELF, "combat", nCombatInt+1);
+
     int nCombat = GetIsInCombat(OBJECT_SELF);
 
 // return to the original spawn point if it is too far

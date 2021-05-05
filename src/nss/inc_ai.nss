@@ -396,9 +396,14 @@ void gsAIActionRest()
 {
     ActionPlayAnimation(ANIMATION_LOOPING_SIT_CROSS, 1.0, 7.0);
 
-    if (GetCurrentHitPoints() >= GetMaxHitPoints() - 6)
+    int nHitPointsPer = GetMaxHitPoints(OBJECT_SELF)/6;
+
+    if (nHitPointsPer < 1)
+        nHitPointsPer = 1;
+
+    if (GetCurrentHitPoints() >= GetMaxHitPoints(OBJECT_SELF) - nHitPointsPer)
         ForceRest(OBJECT_SELF);
     else
-        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(6), OBJECT_SELF);
+        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(nHitPointsPer), OBJECT_SELF);
 }
 

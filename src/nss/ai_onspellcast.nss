@@ -9,8 +9,13 @@ void main()
     {
         object oCaster = GetLastSpellCaster();
 
+        if (GetLocalInt(OBJECT_SELF, "combat") == 0)
+            SetLocalInt(OBJECT_SELF, "combat", 1);
+
         if (gsCBGetHasAttackTarget())
         {
+            SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
+
             object oTarget = gsCBGetLastAttackTarget();
 
             if (oCaster != oTarget &&

@@ -49,10 +49,9 @@ void main()
         return;
     }
 
-    if (nMatrix & GS_AI_ACTION_TYPE_REST &&
-        GetCurrentHitPoints() < GetMaxHitPoints())
+    if (nMatrix & GS_AI_ACTION_TYPE_REST && !GetIsInCombat(OBJECT_SELF) && GetLocalInt(OBJECT_SELF, "combat") > 3)
     {
-        SetAILevel(OBJECT_SELF, AI_LEVEL_LOW);
+        //SetAILevel(OBJECT_SELF, AI_LEVEL_LOW);
         gsAIActionRest();
         return;
     }
