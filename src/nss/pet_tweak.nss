@@ -68,18 +68,6 @@ object ApplyDamageProgression(string sResRef, int nSlot, int nStart, int nLevel,
 
     AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyMonsterDamage(nProperty), oItem);
 
-    if (nLevel >= 4)
-    {
-        if (bAttackBonusOnly)
-        {
-            AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAttackBonus(nLevel/4), oItem);
-        }
-        else
-        {
-            AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyEnhancementBonus(nLevel/4), oItem);
-        }
-    }
-
     return oItem;
 }
 
