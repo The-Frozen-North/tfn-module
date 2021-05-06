@@ -242,7 +242,7 @@ int GetXPFromLevel(int nLevel)
    return nXP;
 }
 
-float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iTotalSize)
+float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iTotalSize, float fMultiplier = 1.0)
 {
 // If the CR is 0.0, then assume this is not a kill and do not do any XP related thingies.
    float fCR = GetChallengeRating(OBJECT_SELF);
@@ -276,6 +276,8 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
    else if (fCR <= 17.0) {fXP = BASE_XP + 136.0;}
    else if (fCR > 17.0) {fXP = BASE_XP + 144.0;}
    else {return 0.0;}
+
+   fXP = fXP * fMultiplier;
 
    float fXPPenaltyMod = 1.0;
 

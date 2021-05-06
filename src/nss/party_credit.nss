@@ -258,8 +258,18 @@ void main()
 // =========================
 // END LOOT CONTAINER CODE
 // =========================
+   float fMultiplier = 1.0;
 
-   float fXP = GetPartyXPValue(OBJECT_SELF, bAmbush, Party.AverageLevel, Party.TotalSize);
+   if (bBoss == 1)
+   {
+        fMultiplier = 3.0;
+   }
+   else if (bSemiBoss == 1)
+   {
+        fMultiplier = 2.0;
+   }
+
+   float fXP = GetPartyXPValue(OBJECT_SELF, bAmbush, Party.AverageLevel, Party.TotalSize, fMultiplier);
 
 // =========================
 // START LOOP
