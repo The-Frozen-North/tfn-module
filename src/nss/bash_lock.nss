@@ -14,6 +14,15 @@ void BashLock(object oAttacker)
 
     int nStrengthBonus = GetAbilityModifier(ABILITY_STRENGTH, oAttacker);
 
+    if (GetActionMode(oAttacker, ACTION_MODE_IMPROVED_POWER_ATTACK))
+    {
+        nStrengthBonus = nStrengthBonus + 4;
+    }
+    else if (GetActionMode(oAttacker, ACTION_MODE_POWER_ATTACK))
+    {
+        nStrengthBonus = nStrengthBonus + 2;
+    }
+
     if (nStrengthBonus < -7) nStrengthBonus = -7;
 
     int nRoll = d20();
