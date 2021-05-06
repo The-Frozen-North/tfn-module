@@ -218,7 +218,7 @@ void main()
    // * 1.72: Activating this switch below will allow to merge every items the character wears into
    // * every polymorph shape in game even Tenser's transformation. This automatically enables
    // * the "merge arms" switch.
-   // * Note: for unarmed shapes only defensive properties from weapon will merge. Sike! Will be changed.
+   // * Note: for unarmed shapes only defensive properties from weapon will merge.
    SetModuleSwitch (MODULE_SWITCH_POLYMORPH_MERGE_EVERYTHING, TRUE);
 
    // * 1.72: Activating this switch below will allow to merge intelligence, charisma and wisdom from
