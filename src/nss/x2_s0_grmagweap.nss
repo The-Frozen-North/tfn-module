@@ -77,6 +77,9 @@ void main()
     int nDuration = spell.Level;
     int nCasterLvl = spell.Level / 4;
 
+    if (nCasterLvl < 2)
+        nCasterLvl = 2;
+
     //Limit nCasterLvl to 5, so it max out at +5 enhancement to the weapon.
     if(nCasterLvl > spell.Limit)
     {
