@@ -218,14 +218,14 @@ void main()
             SetItemStackSize(oHealingKit, 3); // extra healing kits
         break;
         case CLASS_TYPE_SORCERER:
-            oChest = CreateItemOnObject("nw_cloth008", oPC); // sorcerer's outfit
+            oChest = CreateItemOnObject("armor120", oPC); // sorcerer's outfit
             if (!bFavoredValid || (bFavoredValid && !bFavoredMelee)) CreateItemOnObject("nw_wswdg001", oPC); //dagger
             if (!bFavoredValid || (bFavoredValid && !bFavoredRanged)) oLeftHand = CreateItemOnObject("nw_wthdt001", oPC, 50); // dart
             oWand = CreateItemOnObject("weapon59", oPC);
             SetIdentified(oWand, TRUE);
         break;
         case CLASS_TYPE_WIZARD:
-            oChest = CreateItemOnObject("nw_cloth005", oPC); // wizard's outfit
+            oChest = CreateItemOnObject("armor121", oPC); // wizard's outfit
             if (!bFavoredValid || (bFavoredValid && !bFavoredMelee)) CreateItemOnObject("nw_wswdg001", oPC); //dagger
             if (!bFavoredValid || (bFavoredValid && !bFavoredRanged))
             {
@@ -236,7 +236,7 @@ void main()
             SetIdentified(oWand, TRUE);
         break;
         case CLASS_TYPE_MONK:
-            oChest = CreateItemOnObject("nw_cloth016", oPC); // monks outfit
+            oChest = CreateItemOnObject("armor122", oPC); // monks outfit
             if (!bFavoredValid || (bFavoredValid && !bFavoredMelee)) oLeftHand = CreateItemOnObject("nw_wspka001", oPC); //kama
             if (!bFavoredValid || (bFavoredValid && !bFavoredRanged)) CreateItemOnObject("nw_wthsh001", oPC, 50); // shuriken
             SetItemStackSize(oHealingKit, 3); // extra healing kits
