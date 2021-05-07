@@ -224,6 +224,7 @@ void main()
         break;
         case REST_EVENTTYPE_REST_FINISHED:
             DeleteLocalInt(oPC, "invis");
+            DeleteLocalInt(oPC, "gsanc");
             GiveHiPSFeatSafely(oPC);
 
             if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_FAMILIAR, oPC))) DecrementRemainingFeatUses(oPC, FEAT_SUMMON_FAMILIAR);
