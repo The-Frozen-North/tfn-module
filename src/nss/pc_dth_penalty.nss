@@ -24,15 +24,21 @@ void main()
 
         while ( oItem != OBJECT_INVALID )
         {
-            nGold = nGold + GetGoldPieceValue(oItem);
+            if (!GetPlotFlag(oItem))
+                nGold = nGold + GetGoldPieceValue(oItem);
+
             oItem = GetNextItemInInventory(oPlayer);
         }
 
         // 15 and higher are creature items
         int nSlot;
+        object oSlotItem;
         for ( nSlot = 0; nSlot < 14; ++nSlot )
         {
-            nGold = nGold + GetGoldPieceValue(GetItemInSlot(nSlot, oPlayer));
+            oSlotItem = GetItemInSlot(nSlot, oPlayer);
+
+            if (!GetPlotFlag(oSlotItem))
+                nGold = nGold + GetGoldPieceValue(oSlotItem);
         }
 
         int nGoldLoss = 0;
