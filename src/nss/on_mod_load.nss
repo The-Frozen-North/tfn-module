@@ -395,6 +395,8 @@ void main()
       LoadTreasureContainer("_PotionsT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 34.0);
    }
 
+   LoadTreasureContainer("_FabricatorAmmo", IntToFloat(nIndex)*2.0, 35.0);
+
    object oArea = GetFirstArea();
    string sAreaResRef;
    location lBaseLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);

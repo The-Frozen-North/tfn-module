@@ -6,7 +6,7 @@
   },
   "BaseItem": {
     "type": "int",
-    "value": 20
+    "value": 34
   },
   "Charges": {
     "type": "byte",
@@ -18,21 +18,22 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 1485
+    "value": 6
   },
   "Cursed": {
     "type": "byte",
     "value": 0
   },
   "DescIdentified": {
-    "id": 13867,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "This appears to be some sort of contraption that can create ammunition. \n\nThe difficulty class and gold required is dependant on the type of ammunition that this device outputs."
+    }
   },
   "Description": {
     "type": "cexolocstring",
     "value": {
-      "0": ""
+      "0": "This appears to be some sort of contraption that can create ammunition. However, you won't be able to use it until it is identified."
     }
   },
   "Identified": {
@@ -40,25 +41,18 @@
     "value": 0
   },
   "LocalizedName": {
-    "id": 13868,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Ammo Fabricator"
+    }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 12
-  },
-  "ModelPart2": {
-    "type": "byte",
-    "value": 12
-  },
-  "ModelPart3": {
-    "type": "byte",
-    "value": 32
+    "value": 8
   },
   "PaletteID": {
     "type": "byte",
-    "value": 27
+    "value": 2
   },
   "Plot": {
     "type": "byte",
@@ -75,11 +69,11 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 10
+          "value": 3
         },
         "CostValue": {
           "type": "word",
-          "value": 3
+          "value": 13
         },
         "Param1": {
           "type": "byte",
@@ -91,11 +85,11 @@
         },
         "PropertyName": {
           "type": "word",
-          "value": 11
+          "value": 15
         },
         "Subtype": {
           "type": "word",
-          "value": 0
+          "value": 335
         }
       },
       {
@@ -106,34 +100,34 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 4
+          "value": 0
         },
         "CostValue": {
           "type": "word",
-          "value": 7
+          "value": 0
         },
         "Param1": {
           "type": "byte",
-          "value": 255
+          "value": 11
         },
         "Param1Value": {
           "type": "byte",
-          "value": 255
+          "value": 0
         },
         "PropertyName": {
           "type": "word",
-          "value": 16
+          "value": 81
         },
         "Subtype": {
           "type": "word",
-          "value": 6
+          "value": 0
         }
       }
     ]
   },
   "StackSize": {
     "type": "word",
-    "value": 99
+    "value": 1
   },
   "Stolen": {
     "type": "byte",
@@ -141,10 +135,10 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_WAMMAR003"
+    "value": "ammo_maker"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "weapon133"
+    "value": "ammo_maker"
   }
 }

@@ -38,7 +38,7 @@ void CopyChest(object oTarget, string sChest, int nBaseItemType = BASE_ITEM_INVA
 
         if (bMatchesDescription && (nBaseItemType == BASE_ITEM_INVALID || nBaseItemType == GetBaseItemType(oItem)))
         {
-            oNewItem = CopyItem(oItem, oTarget);
+            oNewItem = CopyItem(oItem, oTarget, TRUE);
 
             switch (GetBaseItemType(oNewItem))
             {

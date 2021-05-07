@@ -1,5 +1,41 @@
 #include "inc_treasure"
 #include "nwnx_admin"
+#include "nwnx_item"
+
+void CreateFabricator(object oAmmo, object oTargetChest)
+{
+            if (!GetIsObjectValid(oAmmo))
+                return;
+
+            SetIdentified(oAmmo, TRUE);
+
+            object oFabricator = CreateItemOnObject("ammo_maker", oTargetChest);
+            SetTag(oAmmo, "ammo_"+GetName(oAmmo));
+            SetLocalString(oFabricator, "ammo_tag", GetTag(oAmmo));
+
+            int nValue = GetGoldPieceValue(oAmmo);
+            string sAmmoName;
+            int nAppearance, nStack;
+            switch (GetBaseItemType(oAmmo))
+            {
+                case BASE_ITEM_THROWINGAXE: sAmmoName = "Throwing Axe"; nAppearance = 20; nStack = 50; break;
+                case BASE_ITEM_DART: sAmmoName = "Dart"; nAppearance = 7; nStack = 50; break;
+                case BASE_ITEM_SHURIKEN: sAmmoName = "Shuriken"; nAppearance = 9; nStack = 50; break;
+                case BASE_ITEM_ARROW: sAmmoName = "Arrow"; nAppearance = 19; nStack = 99; break;
+                case BASE_ITEM_BULLET: sAmmoName = "Bullet"; nAppearance = 18; nStack = 99; break;
+                case BASE_ITEM_BOLT: sAmmoName = "Bolt"; nAppearance = 8; nStack = 99; break;
+            }
+
+            SetItemStackSize(oAmmo, nStack);
+
+            SetTag(oAmmo, "fabricator_"+GetTag(oAmmo));
+            object oNewAmmo = CopyItemToExistingTarget(oAmmo, GetObjectByTag("_FabricatorAmmo"));
+
+            NWNX_Item_SetAddGoldPieceValue(oFabricator, nValue);
+
+            NWNX_Item_SetItemAppearance(oFabricator, ITEM_APPR_TYPE_SIMPLE_MODEL, 0, nAppearance);
+            SetName(oFabricator, sAmmoName+" Fabricator ("+GetName(oAmmo)+")");
+}
 
 object ChangeSpecialWeapon(object oItem, int nTopModel, int nTopColor)
 {
@@ -396,16 +432,6 @@ void DistributeTreasureToStores(object oItem)
        case BASE_ITEM_SPELLSCROLL:
           nValue = nValue * 4;
        break;
-       case BASE_ITEM_SHURIKEN:
-       case BASE_ITEM_THROWINGAXE:
-       case BASE_ITEM_DART:
-          nValue = nValue * 8;
-       break;
-       case BASE_ITEM_ARROW:
-       case BASE_ITEM_BULLET:
-       case BASE_ITEM_BOLT:
-          nValue = nValue * 10;
-       break;
    }
 
    switch (nBaseType)
@@ -587,7 +613,17 @@ void DistributeTreasureToStores(object oItem)
              }
           }
         SendDebugMessage("_"+sType+sRarity+sTier+sNonUnique);
-        oNewItem = CopyItemToExistingTarget(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));
+
+        // Turn these into ammo makers.
+        if (GetIsItemPropertyValid(GetFirstItemProperty(oItem)) && (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT))
+        {
+            CreateFabricator(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));
+        }
+        else
+        {
+            oNewItem = CopyItemToExistingTarget(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));
+        }
+
         if (nIdentified != 1) SetIdentified(oNewItem, FALSE);
 
         DestroyObject(oItem);
@@ -610,7 +646,10 @@ void CountItemsThroughTiers()
             while (GetIsObjectValid(oItem) == TRUE)
             {
                 nItems = nItems + 1;
-                SetItemStackSize(oItem, 1);
+
+                if (GetName(oContainer) != "_FabricatorAmmo")
+                    SetItemStackSize(oItem, 1);
+
                 oItem = GetNextItemInInventory(oContainer);
             }
 
@@ -685,17 +724,46 @@ void main()
       CreateTreasureContainer("_PotionsT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 34.0);
    }
 
+   object oFabricatorContainer = CreateObject(OBJECT_TYPE_PLACEABLE, "_treas_container", Location(GetObjectByTag("_TREASURE"), Vector(40.0, 40.0, 40.0), 0.0), FALSE, "_FabricatorAmmo");
+        SetName(oFabricatorContainer, "_FabricatorAmmo");
+
 // seed these mundane items to distribution
    CopySeedContainerToDistribution(GetObjectByTag(TREASURE_MELEE_SEED_CHEST));
    CopySeedContainerToDistribution(GetObjectByTag(TREASURE_RANGE_SEED_CHEST));
    CopySeedContainerToDistribution(GetObjectByTag(TREASURE_ARMOR_SEED_CHEST));
 
-   int i;
+   int i, nFabricatorCost;
+   object oArrow, oBolt, oBullet;
+   location lStaging = GetTreasureStagingLocation();
    for (i = 0; i < 5; i++)
    {
-        CreateItemOnObject("arrow"+IntToString(i), GetObjectByTag("_RangeCommonT"+IntToString(i+1)+"NonUnique"), 99);
-        CreateItemOnObject("bolt"+IntToString(i), GetObjectByTag("_RangeUncommonT"+IntToString(i+1)+"NonUnique"), 99);
-        CreateItemOnObject("bullet"+IntToString(i), GetObjectByTag("_RangeRareT"+IntToString(i+1)+"NonUnique"), 99);
+        if (i == 0)
+        {
+            CreateItemOnObject("arrow"+IntToString(i), GetObjectByTag("_RangeCommonT"+IntToString(i+1)+"NonUnique"), 99);
+            CreateItemOnObject("bolt"+IntToString(i), GetObjectByTag("_RangeUncommonT"+IntToString(i+1)+"NonUnique"), 99);
+            CreateItemOnObject("bullet"+IntToString(i), GetObjectByTag("_RangeRareT"+IntToString(i+1)+"NonUnique"), 99);
+        }
+        else
+        {
+            switch (i)
+            {
+                case 1: nFabricatorCost = 2000; break;
+                case 2: nFabricatorCost = 6000; break;
+                case 3: nFabricatorCost = 12000; break;
+            }
+
+            oArrow = CreateObject(OBJECT_TYPE_ITEM, "arrow"+IntToString(i), lStaging);
+            SetItemStackSize(oArrow, 99);
+            CreateFabricator(oArrow, GetObjectByTag("_RangeCommonT"+IntToString(i+1)+"NonUnique"));
+
+            oBolt = CreateObject(OBJECT_TYPE_ITEM, "bolt"+IntToString(i), lStaging);
+            SetItemStackSize(oBolt, 99);
+            CreateFabricator(oBolt, GetObjectByTag("_RangeUncommonT"+IntToString(i+1)+"NonUnique"));
+
+            oBullet = CreateObject(OBJECT_TYPE_ITEM, "bullet"+IntToString(i), lStaging);
+            SetItemStackSize(oBullet, 99);
+            CreateFabricator(oBullet, GetObjectByTag("_RangeRareT"+IntToString(i+1)+"NonUnique"));
+        }
    }
 
 // grab items from palette
@@ -733,7 +801,7 @@ void main()
 // ==============================================
     object oItem;
     string sTier;
-    location lStaging = GetTreasureStagingLocation();
+    //location lStaging = GetTreasureStagingLocation();
 
     for (nIndex = 1; nIndex < 90; nIndex++)
     {

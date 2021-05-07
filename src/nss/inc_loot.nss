@@ -258,7 +258,7 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
         oItem = GetNextItemInInventory(oChest);
     }
 
-    object oNewItem = CopyItem(oItem, oContainer);
+    object oNewItem = CopyItem(oItem, oContainer, TRUE);
 
     int nCount = GetLocalInt(GetModule(), sType);
     SetLocalInt(GetModule(), sType, nCount+1);
