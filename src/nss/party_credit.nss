@@ -143,12 +143,24 @@ void main()
     int iCR = GetLocalInt(OBJECT_SELF, "cr");
     int iAreaCR = GetLocalInt(OBJECT_SELF, "area_cr");
 
+    int nChanceThree = CHANCE_THREE;
+    int nChanceTwo = CHANCE_TWO;
+    int nChanceOne = CHANCE_ONE;
+
     if (bDestroyed)
     {
         int nTreasureChance = TREASURE_CHANCE;
 
 // destroyed treasures have double the chance of still dropping treasure
-        if (GetStringLeft(GetResRef(OBJECT_SELF), 6) == "treas_") nTreasureChance = TREASURE_CHANCE*2;
+// also double chance of items :D
+        if (GetStringLeft(GetResRef(OBJECT_SELF), 6) == "treas_")
+        {
+            nTreasureChance = TREASURE_CHANCE*2;
+
+            nChanceThree = CHANCE_THREE*2;
+            nChanceTwo = CHANCE_TWO*2;
+            nChanceOne = CHANCE_ONE*2;
+        }
 
         if (GetLocalInt(OBJECT_SELF, "half_loot") == 1) nTreasureChance = nTreasureChance/2;
 
@@ -239,18 +251,18 @@ void main()
 
    int nItemsRoll = d100();
 
-   if ((nItemsRoll <= CHANCE_THREE) || (bBoss == 1))
+   if ((nItemsRoll <= nChanceThree) || (bBoss == 1))
    {
        nItem3 = Random(nTotalSize)+1;
        nItem2 = Random(nTotalSize)+1;
        nItem1 = Random(nTotalSize)+1;
    }
-   else if (nItemsRoll <= CHANCE_TWO)
+   else if (nItemsRoll <= nChanceTwo)
    {
        nItem2 = Random(nTotalSize)+1;
        nItem1 = Random(nTotalSize)+1;
    }
-   else if ((nItemsRoll <= CHANCE_ONE) || (bSemiBoss == 1))
+   else if ((nItemsRoll <= nChanceOne) || (bSemiBoss == 1))
    {
        nItem1 = Random(nTotalSize)+1;
    }

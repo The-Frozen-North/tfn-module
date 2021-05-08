@@ -29,7 +29,7 @@ const int BASE_ADJUST_CHANCE = 25;
 
 // The chance for one, two or three items to drop, specifically. This is out of 100.
 
-const int CHANCE_ONE = 40;
+const int CHANCE_ONE = 35;
 const int CHANCE_TWO = 15;
 const int CHANCE_THREE = 5;
 
@@ -403,7 +403,7 @@ void OpenPersonalLoot(object oContainer, object oPC)
 int DetermineGoldFromCR(int iCR)
 {
     if (iCR < 1) iCR = 1;
-    int iResult = 6+d4(iCR);
+    int iResult = 3+d3(iCR);
 
     if (d10() == 10) iResult = iResult*2; // 10% chance to double gold
     return iResult;
