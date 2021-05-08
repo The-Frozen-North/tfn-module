@@ -63,7 +63,7 @@ void ApplyEWRAndInfiniteItems(object oTarget)
     object oItem = GetFirstItemInInventory(oTarget);
     while (GetIsObjectValid(oItem))
     {
-        AddEnchantedWeightReduction(oItem);
+        InitializeItem(oItem);
         SetInfiniteFlag(oItem, TRUE);
         oItem = GetNextItemInInventory(oTarget);
     }

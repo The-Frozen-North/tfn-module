@@ -196,7 +196,7 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FAL
     if (sRewardItem != "")
     {
         object oItem = CreateItemOnObject(sRewardItem, oPC, 1);
-        AddEnchantedWeightReduction(oItem);
+        InitializeItem(oItem);
         SetIdentified(oItem, TRUE);
     }
 

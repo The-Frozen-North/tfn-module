@@ -1,6 +1,7 @@
 #include "x2_i0_spells"
 #include "inc_debug"
 #include "inc_general"
+#include "nwnx_item"
 
 // Based on item value, they will be sorted on these constants
 const int MIN_VALUE_T2 = 175;
@@ -36,9 +37,10 @@ int GetEnchantValue(object oItem)
 }
 
 // =======================================================
-// ENCHANTED WEIGHT REDUCTION
+// ITEM INITIALIZATION
 // =======================================================
-void AddEnchantedWeightReduction(object oItem)
+
+void AddEWR(object oItem)
 {
 // do not add the enchanted weight reduction again
    if (GetLocalInt(oItem, "enchanted_weight_applied") == 1) return;
@@ -98,6 +100,27 @@ void AddEnchantedWeightReduction(object oItem)
    if (nWeightReduction < 1) return;
 
    AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyWeightReduction(nWeightReduction), oItem);
+}
+
+// Applies enchanted weight reduction and a value modifier based on AC (for armor)
+void InitializeItem(object oItem);
+void InitializeItem(object oItem)
+{
+// never do this again for items
+    if (GetLocalInt(oItem, "initialized") == 1)
+        return;
+
+    AddEWR(oItem);
+
+    if (GetBaseItemType(oItem) == BASE_ITEM_ARMOR)
+    {
+        int nBaseArmorAC = GetBaseArmorAC(oItem);
+    // Adjust the value of the item based on base AC. Every base AC = 10% more in value.
+        if (nBaseArmorAC > 0)
+            NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + FloatToInt( IntToFloat(GetGoldPieceValue(oItem)) * (IntToFloat(nBaseArmorAC) * 0.1) ) );
+    }
+
+    SetLocalInt(oItem, "initialized", 1);
 }
 
 

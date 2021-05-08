@@ -374,21 +374,6 @@ void CreateStagingScroll(string sResRef)
    SetIdentified(oItem, TRUE);
 }
 
-// This function determines the AC from the armor given
-int GetBaseArmorAC(object oArmor)
-{
-  return
-  StringToInt
-  (
-    Get2DAString
-    (
-      "parts_chest",
-      "ACBONUS",
-      GetItemAppearance(oArmor,ITEM_APPR_TYPE_ARMOR_MODEL,ITEM_APPR_ARMOR_MODEL_TORSO)
-    )
-  );
-}
-
 void DistributeTreasureToStores(object oItem)
 {
    object oContainer = GetObjectByTag(TREASURE_DISTRIBUTION);
@@ -422,8 +407,8 @@ void DistributeTreasureToStores(object oItem)
        nBaseArmorAC = 0;
    }
 
-// Apply the enchanted weight reduction at this point.
-   AddEnchantedWeightReduction(oItem);
+// Apply the enchanted weight reduction and value modifier based on AC.
+   InitializeItem(oItem);
 
 // only get gold value after the weight reduction
    nValue = GetGoldPieceValue(oItem);
@@ -478,6 +463,7 @@ void DistributeTreasureToStores(object oItem)
        if (sName == "Tower Shield +1") sTier = "T4";
        if (sName == "Tower Shield +2") sTier = "T5";
        if (sName == "Half Plate +1") sTier = "T4";
+       if (sName == "Full Plate +1") sTier = "T4";
        if (sName == "Full Plate +2") sTier = "T5";
 
 // Bump up items to the right tier for non-uniques

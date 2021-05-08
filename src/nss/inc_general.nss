@@ -301,4 +301,20 @@ int GibsNPC(object oCreature)
     }
 }
 
+// This function determines the AC from the armor given
+int GetBaseArmorAC(object oArmor);
+int GetBaseArmorAC(object oArmor)
+{
+  return
+  StringToInt
+  (
+    Get2DAString
+    (
+      "parts_chest",
+      "ACBONUS",
+      GetItemAppearance(oArmor,ITEM_APPR_TYPE_ARMOR_MODEL,ITEM_APPR_ARMOR_MODEL_TORSO)
+    )
+  );
+}
+
 //void main(){}
