@@ -38,19 +38,19 @@ const string  X2_CI_CRAFTSKILL_CONV ="x2_p_craftskills";
 
 const int     X2_CI_BREWPOTION_FEAT_ID        = 944;                    // Brew Potion feat simulation
 const int     X2_CI_BREWPOTION_MAXLEVEL       = 3;                      // Max Level for potions
-const int     X2_CI_BREWPOTION_COSTMODIFIER   = 75;                     // gp Brew Potion XPCost Modifier
+const int     X2_CI_BREWPOTION_COSTMODIFIER   = 50;                     // gp Brew Potion XPCost Modifier
 
 const string  X2_CI_BREWPOTION_NEWITEM_RESREF = "x2_it_pcpotion";       // ResRef for new potion item
 
 // Scribe Scroll related constants
 const int     X2_CI_SCRIBESCROLL_FEAT_ID        = 945;
-const int     X2_CI_SCRIBESCROLL_COSTMODIFIER   = 40;                 // Scribescroll Cost Modifier
+const int     X2_CI_SCRIBESCROLL_COSTMODIFIER   = 25;                 // Scribescroll Cost Modifier
 const string  X2_CI_SCRIBESCROLL_NEWITEM_RESREF = "x2_it_pcscroll";   // ResRef for new scroll item
 
 // Craft Wand related constants
 const int     X2_CI_CRAFTWAND_FEAT_ID        = 946;
 const int     X2_CI_CRAFTWAND_MAXLEVEL       = 4;
-const int     X2_CI_CRAFTWAND_COSTMODIFIER   = 1000;
+const int     X2_CI_CRAFTWAND_COSTMODIFIER   = 375;
 const string  X2_CI_CRAFTWAND_NEWITEM_RESREF = "x2_it_pcwand";
 
 // 2da for the craftskills
@@ -315,25 +315,6 @@ object CICraftCraftWand(object oCreator, int nSpellID )
             }
         }
      }
-    //1.71: new feature to specify custom wand to be created
-    string customWand = Get2DAString("des_crft_spells","CustomWand",nSpellID);
-    if(customWand != "" && customWand != "****")
-    {
-        oTarget = CreateItemOnObjectWithAuthor(customWand,oCreator);
-        if(GetIsObjectValid(oTarget))
-        {
-            // Hard core rule mode enabled
-            if (GetModuleSwitchValue(MODULE_SWITCH_ENABLE_CRAFT_WAND_50_CHARGES))
-            {
-                SetItemCharges(oTarget,50);
-            }
-            else
-            {
-                SetItemCharges(oTarget,GetLevelByClass(GetLastSpellCastClass(),OBJECT_SELF) + d20());
-            }
-            return oTarget;
-        }
-    }
 
     int nClass = GetLastSpellCastClass();
     int nPropID = IPGetIPConstCastSpellFromSpellID(nSpellID);
@@ -349,7 +330,7 @@ object CICraftCraftWand(object oCreator, int nSpellID )
 
     if (nPropID != -1)
     {
-        itemproperty ipProp = ItemPropertyCastSpell(nPropID,IP_CONST_CASTSPELL_NUMUSES_1_CHARGE_PER_USE);
+        itemproperty ipProp = ItemPropertyCastSpell(nPropID,IP_CONST_CASTSPELL_NUMUSES_5_CHARGES_PER_USE);
         oTarget = CreateItemOnObjectWithAuthor(X2_CI_CRAFTWAND_NEWITEM_RESREF,oCreator);
         AddItemProperty(DURATION_TYPE_PERMANENT,ipProp,oTarget);
 
@@ -359,43 +340,42 @@ object CICraftCraftWand(object oCreator, int nSpellID )
             nSpellID = StringToInt(sTemp);
         }
 
-        if(GetGameDifficulty() > GAME_DIFFICULTY_EASY)//1.71: no class limitation under (very) easy difficulty
+
+        AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(nClass),oTarget);
+        sTemp = Get2DAString("spells","Bard",nSpellID);
+        if(nClass != CLASS_TYPE_BARD && (StringToInt(sTemp) != 0 || sTemp == "0"))
         {
-            AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(nClass),oTarget);
-            sTemp = Get2DAString("spells","Bard",nSpellID);
-            if(nClass != CLASS_TYPE_BARD && (StringToInt(sTemp) != 0 || sTemp == "0"))
-            {
-                AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_BARD),oTarget);
-            }
-            sTemp = Get2DAString("spells","Cleric",nSpellID);
-            if(nClass != CLASS_TYPE_CLERIC && (StringToInt(sTemp) != 0 || sTemp == "0"))
-            {
-                AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_CLERIC),oTarget);
-            }
-            sTemp = Get2DAString("spells","Druid",nSpellID);
-            if(nClass != CLASS_TYPE_DRUID && (StringToInt(sTemp) != 0 || sTemp == "0"))
-            {
-                AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_DRUID),oTarget);
-            }
-            sTemp = Get2DAString("spells","Paladin",nSpellID);
-            if(nClass != CLASS_TYPE_PALADIN && (StringToInt(sTemp) != 0 || sTemp == "0"))
-            {
-                AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_PALADIN),oTarget);
-            }
-            sTemp = Get2DAString("spells","Ranger",nSpellID);
-            if(nClass != CLASS_TYPE_RANGER && (StringToInt(sTemp) != 0 || sTemp == "0"))
-            {
-                AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_RANGER),oTarget);
-            }
-            sTemp = Get2DAString("spells","Wiz_Sorc",nSpellID);
-            if(StringToInt(sTemp) != 0 || sTemp == "0")
-            {
-                if(nClass != CLASS_TYPE_WIZARD)
-                    AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_WIZARD),oTarget);
-                if(nClass != CLASS_TYPE_SORCERER)
-                    AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_SORCERER),oTarget);
-            }
+            AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_BARD),oTarget);
         }
+        sTemp = Get2DAString("spells","Cleric",nSpellID);
+        if(nClass != CLASS_TYPE_CLERIC && (StringToInt(sTemp) != 0 || sTemp == "0"))
+        {
+            AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_CLERIC),oTarget);
+        }
+        sTemp = Get2DAString("spells","Druid",nSpellID);
+        if(nClass != CLASS_TYPE_DRUID && (StringToInt(sTemp) != 0 || sTemp == "0"))
+        {
+            AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_DRUID),oTarget);
+        }
+        sTemp = Get2DAString("spells","Paladin",nSpellID);
+        if(nClass != CLASS_TYPE_PALADIN && (StringToInt(sTemp) != 0 || sTemp == "0"))
+        {
+            AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_PALADIN),oTarget);
+        }
+        sTemp = Get2DAString("spells","Ranger",nSpellID);
+        if(nClass != CLASS_TYPE_RANGER && (StringToInt(sTemp) != 0 || sTemp == "0"))
+        {
+            AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_RANGER),oTarget);
+        }
+        sTemp = Get2DAString("spells","Wiz_Sorc",nSpellID);
+        if(StringToInt(sTemp) != 0 || sTemp == "0")
+        {
+            if(nClass != CLASS_TYPE_WIZARD)
+                AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_WIZARD),oTarget);
+            if(nClass != CLASS_TYPE_SORCERER)
+                AddItemProperty(DURATION_TYPE_PERMANENT,ItemPropertyLimitUseByClass(CLASS_TYPE_SORCERER),oTarget);
+        }
+
 
         int nCharges = GetLevelByClass(nClass,OBJECT_SELF) + d20();
 
@@ -403,15 +383,12 @@ object CICraftCraftWand(object oCreator, int nSpellID )
         {
             nCharges = 10+d20();
         }
-        // Hard core rule mode enabled
-        if (GetModuleSwitchValue(MODULE_SWITCH_ENABLE_CRAFT_WAND_50_CHARGES))
-        {
-            SetItemCharges(oTarget,50);
-        }
-        else
-        {
-            SetItemCharges(oTarget,nCharges);
-        }
+
+// everything is a factor of 5 charges - pok
+        nCharges = nCharges * 5;
+
+        SetItemCharges(oTarget,nCharges);
+
     }
     return oTarget;
 }
@@ -487,18 +464,6 @@ object CICraftScribeScroll(object oCreator, int nSpellID)
         {
             oTarget = CreateItemOnObjectWithAuthor(sResRef,oCreator);
             SetName(oTarget, "Scroll of "+GetName(oTarget));
-            if(GetGameDifficulty() <= GAME_DIFFICULTY_EASY)//1.71: no class limitation under (very) easy difficulty
-            {
-                itemproperty ipProp = GetFirstItemProperty(oTarget);
-                while(GetIsItemPropertyValid(ipProp))
-                {
-                    if(GetItemPropertyType(ipProp) == ITEM_PROPERTY_USE_LIMITATION_CLASS)
-                    {
-                        RemoveItemProperty(oTarget,ipProp);
-                    }
-                    ipProp = GetNextItemProperty(oTarget);
-                }
-            }
         }
 
         if (oTarget == OBJECT_INVALID)
@@ -785,6 +750,8 @@ int CICraftCheckCraftWand(object oSpellTarget, object oCaster)
         TakeGoldFromCreature(nGoldCost, oCaster, TRUE);
         //SetXP(oCaster, nNewXP);
         DestroyObject (oSpellTarget);
+        // crafted wands are not sellable - pok
+        SetPlotFlag(oWand, TRUE);
         FloatingTextStrRefOnCreature(8502, oCaster); // Item Creation successful
         return TRUE;
      }
