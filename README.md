@@ -14,4 +14,8 @@ Feel free to hop in to the [Discord](https://discord.gg/qKqRUDZ) if you have any
 
 # License
 
-Licensed under [GNU Affero General Public License v3](https://www.gnu.org/licenses/agpl-3.0.en.html). Please [read this](https://github.com/b5635/the-frozen-north/wiki/License) for additional information.
+Licensed under [GNU Affero General Public License v3](https://www.gnu.org/licenses/agpl-3.0.en.html). 
+
+**The GNU Affero General Public License is a modified version of the ordinary GNU GPL version 3. It has one added requirement: if you run a modified program on a server and let other users communicate with it there, your server must also allow them to download the source code corresponding to the modified version running there.**
+
+Please [read this](https://github.com/b5635/the-frozen-north/wiki/License) for additional information.
