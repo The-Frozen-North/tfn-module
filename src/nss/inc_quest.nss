@@ -4,6 +4,7 @@
 #include "inc_treasure"
 #include "inc_persist"
 #include "util_i_csvlists"
+#include "nwnx_time"
 
 const float AOE_QUEST_SIZE = 75.0;
 

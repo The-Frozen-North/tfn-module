@@ -5,6 +5,7 @@
 #include "nwnx_util"
 #include "inc_sql"
 #include "inc_general"
+#include "nwnx_time"
 
 void DoRevive(object oDead)
 {

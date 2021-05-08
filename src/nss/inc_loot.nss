@@ -197,7 +197,7 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 // These types are special cases because they have rarities.
     if (sType == "Range" || sType == "Melee" || sType == "Weapon" || sType == "Armor" || sType == "Apparel")
     {
-        if (sType == "Melee" || sType == "Weapon")
+        if (sType == "Melee" || sType == "Range" || sType == "Weapon")
         {
             switch(Random(33)+1)
             {
@@ -218,10 +218,13 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
     }
 
 // These types can have either a unique, or non-unique
-    if ((sType == "Range" || sType == "Weapon" || sType == "Armor" || sType == "Potions") && d3() <= 2) sNonUnique = "NonUnique";
+    if ((sType == "Range" || sType == "Weapon" || sType == "Armor" || sType == "Melee" || sType == "Potions") && d3() <= 2) sNonUnique = "NonUnique";
 
     if (bNonUnique) sNonUnique = "NonUnique";
 
+// never NU
+    if (sType == "Misc" || sType == "Apparel" || sType == "Scrolls")
+        sNonUnique = "";
 
     if (sType == "Weapon")
     {
@@ -243,15 +246,21 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
     }
 
     object oChest = GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique);
-
 // we'll use the non-unique chest if the unique container, if applicable simply don't exist
-    if (!GetIsObjectValid(oChest)) oChest = GetObjectByTag("_"+sType+sRarity+sTier+"NonUnique");
+    if (!GetIsObjectValid(oChest))
+    {
+        //SendDebugMessage("_"+sType+sRarity+sTier+sNonUnique+" not found, falling back to NU", TRUE);
+        oChest = GetObjectByTag("_"+sType+sRarity+sTier+"NonUnique");
+    }
 
 // chest still invalid at that point? return
     if (!GetIsObjectValid(oChest)) return OBJECT_INVALID;
 
     int nRandom = Random(StringToInt(GetDescription(oChest)));
     object oItem = GetFirstItemInInventory(oChest);
+
+    //SendDebugMessage("Chosen chest: "+GetName(oChest)+"Count: "+GetDescription(oChest)+" Selected: "+IntToString(nRandom), TRUE);
+
     while (nRandom)
     {
         nRandom--;
@@ -262,6 +271,9 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 
     int nCount = GetLocalInt(GetModule(), sType);
     SetLocalInt(GetModule(), sType, nCount+1);
+
+    //int nRarityCount = GetLocalInt(GetModule(), sRarity);
+    //SetLocalInt(GetModule(), sRarity, nRarityCount+1);
 
 // Set a stack size. Don't go above 50, due to certain stack sizes.
     int nBaseType = GetBaseItemType(oNewItem);

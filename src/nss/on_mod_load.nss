@@ -9,7 +9,7 @@
 #include "util_i_csvlists"
 #include "nwnx_chat"
 #include "nwnx_feedback"
-
+#include "nwnx_time"
 #include "70_inc_switches"
 
 void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)

@@ -1,6 +1,3 @@
-#include "nwnx_time"
-
-
 // Log it to a description object that can be viewed if set for debug.
 // Optionally, put it in the log as well regardless
 void SendDebugMessage(string sMessage, int bLog = FALSE);

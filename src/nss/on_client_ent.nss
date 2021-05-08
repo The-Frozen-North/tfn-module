@@ -5,6 +5,7 @@
 #include "nwnx_damage"
 #include "inc_nwnx"
 #include "inc_general"
+#include "nwnx_time"
 
 void CreateItemIfBlank(object oPC, string sItem)
 {

@@ -83,10 +83,11 @@ void CreatePlaceholderItem(object oItem)
        case BASE_ITEM_KUKRI: sPlaceholderResRef = "nw_wspku001"; break;
        case BASE_ITEM_SICKLE: sPlaceholderResRef = "nw_wspsc001"; break;
        case BASE_ITEM_SLING: sPlaceholderResRef = "nw_wbwsl001"; break;
+       case BASE_ITEM_MAGICWAND: sPlaceholderResRef = "gamble_wand"; nMultiplier = 4; break;
        case BASE_ITEM_ARMOR:
           switch (NWNX_Item_GetBaseArmorClass(oItem))
           {
-            case 0: sPlaceholderResRef = "nw_wbwsl001"; nMultiplier = 2; break;
+            case 0: sPlaceholderResRef = "gamble_clothing"; nMultiplier = 2; break;
             case 1: sPlaceholderResRef = "nw_aarcl009"; nMultiplier = 2; break;
             case 2: sPlaceholderResRef = "nw_aarcl001"; nMultiplier = 3; break;
             case 3: sPlaceholderResRef = "nw_aarcl002"; nMultiplier = 4; break;

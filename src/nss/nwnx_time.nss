@@ -49,7 +49,8 @@ string NWNX_Time_GetSystemTime()
 
 int NWNX_Time_GetTimeStamp()
 {
-    WriteTimestampedLogEntry("WARNING:  NWNX_Time is deprecated.  You should migrate to SQLite based functions (see inc_sqlite_time).");
+    // suppress deprecation warning - pok
+    //WriteTimestampedLogEntry("WARNING:  NWNX_Time is deprecated.  You should migrate to SQLite based functions (see inc_sqlite_time).");
     return SQLite_GetTimeStamp();
 }
 
