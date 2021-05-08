@@ -8,7 +8,7 @@ There's a detailed [wiki](https://github.com/b5635/the-frozen-north/wiki), so pl
 
 If you are interested in what features the server has to offer, check it out [here](https://github.com/b5635/the-frozen-north/wiki/Features).
 
-The server is hosted 24/7. Look for "The Frozen North" in the server column with the module "and_the_Wailing_Death".
+The server is hosted 24/7. Look for "0 The Frozen North" in the server column with the module "and_the_Wailing_Death".
 
 Feel free to hop in to the [Discord](https://discord.gg/qKqRUDZ) if you have any questions.
 
