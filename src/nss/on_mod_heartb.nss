@@ -16,6 +16,7 @@ void DoRevive(object oDead)
             int bEnemy = FALSE;
             int bFriend = FALSE;
             int bMasterFound = FALSE;
+            int nFaction;
 
             object oMaster = GetMasterByUUID(oDead);
             int bMasterDead = GetIsDead(oMaster);
@@ -46,6 +47,16 @@ void DoRevive(object oDead)
                     {
                         bFriend = TRUE;
                         SendDebugMessage("Friend detected: "+GetName(oCreature));
+                    }
+                    else if (!bFriend && !GetIsInCombat(oCreature) && (GetIsFriend(oCreature, oDead) || GetIsNeutral(oCreature, oDead)))
+                    {
+                        nFaction = NWNX_Creature_GetFaction(oCreature);
+
+                        if (nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER || nFaction == STANDARD_FACTION_MERCHANT)
+                        {
+                            bFriend = TRUE;
+                            SendDebugMessage("Commoner/Defender/Merchant detected: "+GetName(oCreature));
+                        }
                     }
 
                 }
