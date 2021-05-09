@@ -23,13 +23,13 @@ void main()
   }
 
   string sVolume;
-  //int nColor;
+  int nColor;
   switch (GetPCChatVolume())
   {
      case TALKVOLUME_TALK:
         if (CheckDeadSpeak(oPC)) return;
         sVolume = "TALK";
-        //nColor = COLOR_BLUE;
+        nColor = 0x01ffff;
         break;
      case TALKVOLUME_WHISPER:
         if (CheckDeadSpeak(oPC)) return;
@@ -38,16 +38,17 @@ void main()
      case TALKVOLUME_SHOUT: sVolume = "SHOUT"; break;
      case TALKVOLUME_SILENT_SHOUT: sVolume = "SILENT_SHOUT"; break;
      case TALKVOLUME_PARTY:
-            sVolume = "PARTY";
-            //nColor = COLOR_CYAN;
+        sVolume = "PARTY";
+        nColor = COLOR_BLUE;
+     break;
   }
 
   string sMessage = GetPCChatMessage();
 
   WriteTimestampedLogEntry(PlayerDetailedName(oPC)+" ["+sVolume+"]: "+sMessage);
 
-  //if (nColor)
-  //    SetPCChatMessage(HexColorString(sMessage, nColor));
+  if (nColor)
+      SetPCChatMessage(HexColorString(sMessage, nColor));
 
   if (GetIsDead(oPC)) return;
 
