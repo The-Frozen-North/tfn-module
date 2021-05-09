@@ -98,6 +98,19 @@ void main()
     NWNX_Weapon_SetWeaponIsMonkWeapon(BASE_ITEM_QUARTERSTAFF);
     NWNX_Weapon_SetWeaponIsMonkWeapon(BASE_ITEM_SHURIKEN);
 
+// Apply weapon focus and weapon specialization to creature attacks
+    NWNX_Weapon_SetWeaponSpecializationFeat(BASE_ITEM_CSLASHWEAPON, FEAT_WEAPON_SPECIALIZATION_UNARMED_STRIKE);
+    NWNX_Weapon_SetWeaponFocusFeat(BASE_ITEM_CSLASHWEAPON, FEAT_WEAPON_FOCUS_UNARMED_STRIKE);
+
+    NWNX_Weapon_SetWeaponSpecializationFeat(BASE_ITEM_CSLSHPRCWEAP, FEAT_WEAPON_SPECIALIZATION_UNARMED_STRIKE);
+    NWNX_Weapon_SetWeaponFocusFeat(BASE_ITEM_CSLSHPRCWEAP, FEAT_WEAPON_FOCUS_UNARMED_STRIKE);
+
+    NWNX_Weapon_SetWeaponSpecializationFeat(BASE_ITEM_CBLUDGWEAPON, FEAT_WEAPON_SPECIALIZATION_UNARMED_STRIKE);
+    NWNX_Weapon_SetWeaponFocusFeat(BASE_ITEM_CBLUDGWEAPON, FEAT_WEAPON_FOCUS_UNARMED_STRIKE);
+
+    NWNX_Weapon_SetWeaponSpecializationFeat(BASE_ITEM_CPIERCWEAPON, FEAT_WEAPON_SPECIALIZATION_UNARMED_STRIKE);
+    NWNX_Weapon_SetWeaponFocusFeat(BASE_ITEM_CPIERCWEAPON, FEAT_WEAPON_FOCUS_UNARMED_STRIKE);
+
     NWNX_Chat_RegisterChatScript("on_nwnx_chat");
 
 // Hide XP gained messages because we handle it ourselves
