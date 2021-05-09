@@ -20,5 +20,6 @@ void main()
 
     CreateObject(OBJECT_TYPE_PLACEABLE, "meldanen_book", Location(oArea, vBook, 0.0));
     CreateObject(OBJECT_TYPE_PLACEABLE, "meldanen_apprent", Location(oArea, vCorpse, 0.0));
-    CreateObject(OBJECT_TYPE_CREATURE, "allip", Location(oArea, vCorpse, 0.0), FALSE, "meldanen_allip");
+    object oBoss = CreateObject(OBJECT_TYPE_CREATURE, "allip", Location(oArea, vCorpse, 0.0), FALSE, "meldanen_allip");
+    SetLocalInt(oBoss, "semiboss", 1);
 }
