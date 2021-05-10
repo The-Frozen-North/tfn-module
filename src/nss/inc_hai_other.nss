@@ -31,6 +31,388 @@
 
 // All constants.
 #include "inc_hai_constant"
+#include "inc_hai_generic"
+#include "x0_i0_voice"
+
+void ResetHenchmenState()
+{
+    SetCommandable(TRUE);
+    DeleteLocalObject(OBJECT_SELF, "NW_GENERIC_DOOR_TO_BASH");
+    DeleteLocalInt(OBJECT_SELF, "NW_GENERIC_DOOR_TO_BASH_HP");
+    SetLocalInt(OBJECT_SELF, "X2_L_MUTEXCOMBATROUND", FALSE);//1.72: fix for stuck issues
+    //SetAssociateState(NW_ASC_IS_BUSY, FALSE);
+    DeleteLocalInt(OBJECT_SELF, "busy");
+    //ClearActions(CLEAR_X0_I0_ASSOC_RESETHENCHMENSTATE);
+    ClearAllActions();
+}
+
+// Get the cosine of the angle between the two objects
+float GetCosAngleBetween(object Loc1, object Loc2)
+{
+    vector v1 = GetPositionFromLocation(GetLocation(Loc1));
+    vector v2 = GetPositionFromLocation(GetLocation(Loc2));
+    vector v3 = GetPositionFromLocation(GetLocation(OBJECT_SELF));
+
+    v1.x -= v3.x; v1.y -= v3.y; v1.z -= v3.z;
+    v2.x -= v3.x; v2.y -= v3.y; v2.z -= v3.z;
+
+    float dotproduct = v1.x*v2.x+v1.y*v2.y+v1.z*v2.z;
+
+    return dotproduct/(VectorMagnitude(v1)*VectorMagnitude(v2));
+
+}
+
+//Pausanias: Is there a closed door in the line of sight.
+// * is door in line of sight
+int GetIsDoorInLineOfSight(object oTarget)
+{
+    float fMeDoorDist;
+
+    object oView = GetFirstObjectInShape(SHAPE_SPHERE, 40.0,
+                                         GetLocation(OBJECT_SELF),
+                                         TRUE,OBJECT_TYPE_DOOR);
+
+    float fMeTrapDist = GetDistanceBetween(oTarget,OBJECT_SELF);
+
+    while (GetIsObjectValid(oView)) {
+        fMeDoorDist = GetDistanceBetween(oView,OBJECT_SELF);
+        //SpeakString("Trap3 : "+FloatToString(fMeTrapDist)+" "+FloatToString(fMeDoorDist));
+        if (fMeDoorDist < fMeTrapDist && !GetIsTrapped(oView))
+            if (GetIsDoorActionPossible(oView,DOOR_ACTION_OPEN) ||
+                GetIsDoorActionPossible(oView,DOOR_ACTION_UNLOCK)) {
+                float fAngle = GetCosAngleBetween(oView,oTarget);
+                //SpeakString("Angle: "+FloatToString(fAngle));
+                if (fAngle > 0.5) {
+                    // if (d10() > 7)
+                    // SpeakString("There's something fishy near that door...");
+                    return TRUE;
+                }
+            }
+
+        oView = GetNextObjectInShape(SHAPE_SPHERE,40.0,
+                                     GetLocation(OBJECT_SELF),
+                                     TRUE, OBJECT_TYPE_DOOR);
+    }
+
+    //SpeakString("No matches found");
+    return FALSE;
+}
+
+//Pausanias: Is Object in the line of sight of the seer
+int GetIsInLineOfSight(object oTarget,object oSeer=OBJECT_SELF)
+{
+    // * if really close, line of sight
+    // * is irrelevant
+    // * if this check is removed it gets very annoying
+    // * because the player can block line of sight
+    if (GetDistanceBetween(oTarget, oSeer) < 6.0)
+    {
+        return TRUE;
+    }
+
+    return LineOfSightObject(oSeer, oTarget);
+
+}
+
+// * attempts to disarm last trap (called from RespondToShout and heartbeat
+int AttemptToDisarmTrap(object oTrap, int bWasShout = FALSE)
+{
+    //MyPrintString("Attempting to disarm: " + GetTag(oTrap));
+
+    // * May 2003: Don't try to disarm a trap with no trap
+    if (!GetIsObjectValid(oTrap) || !GetIsTrapped(oTrap))
+    {
+        return FALSE;
+    }
+
+
+
+    //1.71: ignore if ordered to deal with trap manually
+    // * June 2003. If in 'do not disarm trap' mode, then do not disarm traps
+    if(!bWasShout) // && !GetAssociateState(NW_ASC_DISARM_TRAPS))
+    {
+        return FALSE;
+    }
+
+    int bISawTrap = GetTrapDetectedBy(oTrap, OBJECT_SELF) || GetTrapDetectedBy(oTrap, GetMaster());
+
+    int bCloseEnough = GetDistanceToObject(oTrap) <= 15.0;
+
+    int bInLineOfSight = GetIsInLineOfSight(oTrap);
+
+
+    if(!bISawTrap || !bCloseEnough || !bInLineOfSight)
+    {
+        //MyPrintString("Failed basic disarm check");
+        if (bWasShout)
+            VoiceCannotDo();
+        return FALSE;
+    }
+
+    //object oTrapSaved = GetLocalObject(OBJECT_SELF, "NW_ASSOCIATES_LAST_TRAP");
+    SetLocalObject(OBJECT_SELF, "NW_ASSOCIATES_LAST_TRAP", oTrap);
+    // We can tell we can't do it
+        string sID = ObjectToString(oTrap);
+    int nSkill = GetSkillRank(SKILL_DISABLE_TRAP);
+    int nTrapDC = GetTrapDisarmDC(oTrap);
+    if ( nSkill > 0 && (nSkill  + 20) >= nTrapDC && GetTrapDisarmable(oTrap)) {
+        //ClearActions(CLEAR_X0_INC_HENAI_AttemptToDisarmTrap);
+        ClearAllActions(TRUE);
+        ActionUseSkill(SKILL_DISABLE_TRAP, oTrap);
+        ActionDoCommand(SetCommandable(TRUE));
+        ActionDoCommand(VoiceTaskComplete());
+        SetCommandable(FALSE);
+        return TRUE;
+    } else if (GetHasSpell(SPELL_FIND_TRAPS) && GetTrapDisarmable(oTrap) && GetLocalInt(oTrap, "NW_L_IATTEMPTEDTODISARMNOWORK") ==0)
+    {
+       // SpeakString("casting");
+        //ClearActions(CLEAR_X0_INC_HENAI_AttemptToDisarmTrap);
+        ClearAllActions(TRUE);
+        ActionCastSpellAtObject(SPELL_FIND_TRAPS, oTrap);
+        SetLocalInt(oTrap, "NW_L_IATTEMPTEDTODISARMNOWORK", 10);
+        return TRUE;
+    }
+    // MODIFIED February 7 2003. Merged the 'attack object' inside of the bshout
+    // this is not really something you want the henchmen just to go and do
+    // spontaneously
+    else if (bWasShout)
+    {
+        //ClearActions(CLEAR_X0_INC_HENAI_BKATTEMPTTODISARMTRAP_ThrowSelfOnTrap);
+        ClearAllActions(TRUE);
+        //SpeakStringByStrRef(40551); // * Out of game indicator that this trap can never be disarmed by henchman.
+        if  (GetLocalInt(OBJECT_SELF, "X0_L_SAWTHISTRAPALREADY" + sID) != 10)
+        {
+            string sSpeak = GetStringByStrRef(40551);
+            SendMessageToPC(GetMaster(), sSpeak);
+            SetLocalInt(OBJECT_SELF, "X0_L_SAWTHISTRAPALREADY" + sID, 10);
+        }
+        if (GetObjectType(oTrap) != OBJECT_TYPE_TRIGGER)
+        {
+            // * because Henchmen are not allowed to switch weapons without the player's
+            // * say this needs to be removed
+            // it's an object we can destroy ranged
+            // ActionEquipMostDamagingRanged(oTrap);
+            ActionAttack(oTrap);
+            SetLocalObject(OBJECT_SELF, "NW_GENERIC_DOOR_TO_BASH", oTrap);
+            return TRUE;
+        }
+
+        // Throw ourselves on it nobly! :-)
+        vector vPos = GetPosition(OBJECT_SELF);
+        vector vTrap = GetPosition(oTrap);
+        vector vDis = vTrap-vPos;
+        vDis *= (VectorMagnitude(vDis) + 1.0)/ VectorMagnitude(vDis);
+        ActionMoveToLocation(Location(GetArea(oTrap), GetPosition(oTrap) + vDis, VectorToAngle(vDis)));
+        ActionMoveToObject(GetMaster());
+        return TRUE;
+    }
+    else if (nSkill > 0)
+    {
+
+        // * BK Feb 6 2003
+        // * Put a check in so that when a henchmen who cannot disarm a trap
+        // * sees a trap they do not repeat their voiceover forever
+        if  (GetLocalInt(OBJECT_SELF, "X0_L_SAWTHISTRAPALREADY" + sID) != 10)
+        {
+            VoiceCannotDo();
+            SetLocalInt(OBJECT_SELF, "X0_L_SAWTHISTRAPALREADY" + sID, 10);
+           string sSpeak = GetStringByStrRef(40551);
+           SendMessageToPC(GetMaster(), sSpeak);
+        }
+
+        return FALSE;
+    }
+
+    return FALSE;
+}
+//* attempts to cast knock to open the door
+int AttemptKnockSpell(object oLocked)
+{
+    // If that didn't work, let's try using a knock spell
+    if (GetHasSpell(SPELL_KNOCK)
+        && (GetIsDoorActionPossible(oLocked,
+                                    DOOR_ACTION_KNOCK)
+            || GetIsPlaceableObjectActionPossible(oLocked,
+                                                  PLACEABLE_ACTION_KNOCK)))
+    {
+        if (!GetIsDoorInLineOfSight(oLocked))
+        {
+            // For whatever reason, GetObjectSeen doesn't return seen doors.
+            //if (GetObjectSeen(oLocked))
+            if (LineOfSightObject(OBJECT_SELF, oLocked))
+            {
+                //ClearActions(CLEAR_X0_INC_HENAI_AttemptToOpenLock2);
+                ClearAllActions();
+                VoiceCanDo();
+                ActionWait(1.0);
+                ActionCastSpellAtObject(SPELL_KNOCK, oLocked);
+                ActionWait(1.0);
+                return TRUE;
+            }
+        }
+
+    }
+    return FALSE;
+}
+
+int AttemptToOpenLock(object oLocked)
+{
+
+    // * September 2003
+    // * if door is set to not be something
+    // * henchmen should bash open  (like mind flayer beds)
+    // * then ignore it.
+    if (GetLocalInt(oLocked, "X2_L_BASH_FALSE") == 1)
+    {
+        return FALSE;
+    }
+    int bNeedKey = FALSE;
+    int bInLineOfSight = TRUE;
+
+    if (GetLockKeyRequired(oLocked))
+    {
+        bNeedKey = TRUE ;
+    }
+
+    // * October 17 2003 - BK - Decided that line of sight for doors is not relevant
+    // * was causing too many errors.
+    //if (bkGetIsInLineOfSight(oLocked) == FALSE)
+    //{
+    //    bInLineOfSight = TRUE;
+   // }
+    if ( !GetIsObjectValid(oLocked)
+         || bNeedKey
+         || !bInLineOfSight)
+         //|| GetObjectSeen(oLocked) == FALSE) This check doesn't work.
+         {
+        // Can't open this, so skip the checks
+        //MyPrintString("Failed basic check");
+        VoiceCannotDo();
+        return FALSE;
+    }
+
+    // We might be able to open this
+
+    int bCanDo = FALSE;
+
+    // First, let's see if we notice that it's trapped
+    if (GetIsTrapped(oLocked) && GetTrapDetectedBy(oLocked, OBJECT_SELF))
+    {
+        // Ick! Try and disarm the trap first
+        //MyPrintString("Trap on it to disarm");
+        if (! AttemptToDisarmTrap(oLocked))
+        {
+            // * Feb 11 2003. Attempt to cast knock because its
+            // * always safe to cast it, even on a trapped object
+            if (AttemptKnockSpell(oLocked))
+            {
+                return TRUE;
+            }
+            //VoicePicklock();
+            VoiceNo();
+            return FALSE;
+        }
+    }
+
+    // Now, let's try and pick the lock first
+    int nSkill = GetSkillRank(SKILL_OPEN_LOCK);
+    if (nSkill > 0) {
+        nSkill += GetAbilityModifier(ABILITY_DEXTERITY);
+        nSkill += 20;
+    }
+
+    if (nSkill > GetLockUnlockDC(oLocked)
+        &&
+        (GetIsDoorActionPossible(oLocked,
+                                 DOOR_ACTION_UNLOCK)
+         || GetIsPlaceableObjectActionPossible(oLocked,
+                                               PLACEABLE_ACTION_UNLOCK))) {
+        //ClearActions(CLEAR_X0_INC_HENAI_AttemptToOpenLock1);
+        ClearAllActions();
+        VoiceCanDo();
+        ActionWait(1.0);
+        ActionUseSkill(SKILL_OPEN_LOCK,oLocked);
+        ActionWait(1.0);
+        bCanDo = TRUE;
+    }
+
+    if (!bCanDo)
+        bCanDo = AttemptKnockSpell(oLocked);
+
+
+    if (!bCanDo
+        //&& GetAbilityScore(OBJECT_SELF, ABILITY_STRENGTH) >= 16 Removed since you now have control over their bashing via dialog
+        && !GetPlotFlag(oLocked)
+        && (GetIsDoorActionPossible(oLocked,
+                                    DOOR_ACTION_BASH)
+            || GetIsPlaceableObjectActionPossible(oLocked,
+                                                  PLACEABLE_ACTION_BASH))) {
+        //ClearActions(CLEAR_X0_INC_HENAI_AttemptToOpenLock3);
+        ClearAllActions();
+        VoiceCanDo();
+        ActionWait(1.0);
+
+        // MODIFIED February 2003
+        // Since the player has direct control over weapon, automatic equipping is frustrating.
+        // removed.
+        //        ActionEquipMostDamagingMelee(oLocked);
+        ActionAttack(oLocked);
+        SetLocalObject(OBJECT_SELF, "NW_GENERIC_DOOR_TO_BASH", oLocked);
+        bCanDo = TRUE;
+    }
+
+    if (!bCanDo && !GetPlotFlag(oLocked) && GetHasSpell(SPELL_MAGIC_MISSILE))
+    {
+        //ClearActions(CLEAR_X0_INC_HENAI_AttemptToOpenLock3);
+        ClearAllActions();
+        ActionCastSpellAtObject(SPELL_MAGIC_MISSILE,oLocked);
+        return TRUE;
+    }
+
+    // If we did it, let the player know
+    if(!bCanDo) {
+        VoiceCannotDo();
+    } else {
+        ActionDoCommand(VoiceTaskComplete());
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+// Gets the closest locked object to the master.
+object GetLockedObject(object oMaster);
+object GetLockedObject(object oMaster)
+{
+    int nCnt = 1;
+    object oLastObject = GetNearestObjectToLocation(OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE, GetLocation(oMaster), nCnt);
+    while (GetIsObjectValid(oLastObject))
+    {
+        //COMMENT THIS BACK IN WHEN DOOR ACTION WORKS ON PLACABLE.
+        //object oItem = GetFirstItemInInventory(oLastObject);
+        if(GetLocked(oLastObject))
+        {
+            return oLastObject;
+        }
+        if(++nCnt >= 10)
+        {
+            break;
+        }
+        oLastObject = GetNearestObjectToLocation(OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE, GetLocation(oMaster), nCnt);
+    }
+    return OBJECT_INVALID;
+}
+
+// Makes the caller attempt to open the master's closest locked object.
+int ManualPickNearestLock();
+int ManualPickNearestLock()
+{
+    object oLastObject = GetLockedObject(GetMaster());
+
+    //MyPrintString("Attempting to unlock: " + GetTag(oLastObject));
+    return AttemptToOpenLock(oLastObject);
+}
+
 
 // Responds  to it (like makinging the callers attacker thier target)
 // Called in OnConversation, and thats it. Use "ShouterFriend" To stop repeated GetIsFriend calls.
@@ -57,7 +439,7 @@ void ActionMoveToEnemy(object oEnemy);
 
 // Returns TRUE if we have under 0 morale, set to flee.
 // - They then run! (Badly)
-int PerceptionFleeFrom(object oEnemy);
+//int PerceptionFleeFrom(object oEnemy);
 
 // This wrappers commonly used code for a "Call to arms" type response.
 // * We know of no enemy, so we will move to oAlly, who either called to
@@ -206,7 +588,10 @@ object GetIntruderFromShout(object oShouter)
 void RespondToShout(object oShouter, int nShoutIndex)
 {
     // We use oIntruder to set who to attack.
-    object oIntruder;
+    object oIntruder, oTarget;
+
+    object oMaster = GetMaster();
+
     // Check nShoutIndex against known constants
     switch(nShoutIndex)
     {
@@ -252,8 +637,6 @@ void RespondToShout(object oShouter, int nShoutIndex)
 
                 // Set to run
                 SetCurrentAction(AI_SPECIAL_ACTIONS_FLEE);
-                // Turn on fleeing visual effect
-                ApplyFleeingVisual();
 
                 // Ignore talk for 12 seconds
                 SetLocalTimer(AI_TIMER_SHOUT_IGNORE_ANYTHING_SAID, 12.0);
@@ -403,8 +786,265 @@ void RespondToShout(object oShouter, int nShoutIndex)
             return;
         }
         break;
+// HENCHMAN related shouts
+    // * toggle search mode for henchmen
+    case ASSOCIATE_COMMAND_TOGGLESEARCH:
+    {
+        if (GetActionMode(OBJECT_SELF, ACTION_MODE_DETECT))
+        {
+            SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, FALSE);
+        }
+        else
+        {
+            SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, TRUE);
+        }
+        break;
+    }
+    // * toggle stealth mode for henchmen
+    case ASSOCIATE_COMMAND_TOGGLESTEALTH:
+    {
+        //SpeakString(" toggle stealth");
+        if (GetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH))
+        {
+            SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, FALSE);
+        }
+        else
+        {
+            SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
+        }
+        break;
+    }
+    // * June 2003: Stop spellcasting
+    case ASSOCIATE_COMMAND_TOGGLECASTING:
+    {
+        if (GetLocalInt(OBJECT_SELF, "X2_L_STOPCASTING") == 10)
+        {
+           // SpeakString("Was in no casting mode. Switching to cast mode");
+            SetLocalInt(OBJECT_SELF, "X2_L_STOPCASTING", 0);
+            VoiceCanDo();
+        }
+        else
+        if (GetLocalInt(OBJECT_SELF, "X2_L_STOPCASTING") == 0)
+        {
+         //   SpeakString("Was in casting mode. Switching to NO cast mode");
+            SetLocalInt(OBJECT_SELF, "X2_L_STOPCASTING", 10);
+            VoiceCanDo();
+        }
+      break;
+    }
+    case ASSOCIATE_COMMAND_INVENTORY:
+    // no inventory
+          SendMessageToPCByStrRef(GetMaster(), 100895);
+        break;
+
+    case ASSOCIATE_COMMAND_PICKLOCK:
+        ManualPickNearestLock();
+        break;
+
+    case ASSOCIATE_COMMAND_DISARMTRAP: // Disarm trap
+        oTarget = GetNearestTrapToObject(oMaster);
+        //1.71: if the nearest trap the master cannot be disarmed, try disarm nearest trap from self
+        if(!GetIsObjectValid(oTarget) || !GetIsTrapped(oTarget) || !GetTrapDetectedBy(oTarget, OBJECT_SELF) || GetDistanceToObject(oTarget) > 15.0 || !GetIsInLineOfSight(oTarget))
+        {
+            oTarget = GetNearestTrapToObject();
+            if(!GetIsObjectValid(oTarget) || !GetIsTrapped(oTarget))
+            {
+                VoiceCannotDo();
+                break;
+            }
+        }
+        AttemptToDisarmTrap(oTarget, TRUE);
+        break;
+
+    case ASSOCIATE_COMMAND_ATTACKNEAREST:
+        ResetHenchmenState();
+        DeleteLocalInt(OBJECT_SELF, "guard");
+        DeleteLocalInt(OBJECT_SELF, "stand_ground");
+        DetermineCombatRound();
+
+        // * bonus feature. If master is attacking a door or container, issues VWE Attack Nearest
+        // * will make henchman join in on the fun
+        oTarget = GetAttackTarget(GetMaster());
+        if (GetIsObjectValid(oTarget))
+        {
+            if (GetObjectType(oTarget) == OBJECT_TYPE_PLACEABLE || GetObjectType(oTarget) == OBJECT_TYPE_DOOR)
+            {
+                ActionAttack(oTarget);
+            }
+        }
+        break;
+
+    case ASSOCIATE_COMMAND_FOLLOWMASTER:
+        ResetHenchmenState();
+        DeleteLocalInt(OBJECT_SELF, "stand_ground");
+        DelayCommand(2.5, VoiceCanDo());
+
+        //UseStealthMode();
+        //UseDetectMode();
+        ActionForceFollowObject(GetMaster(), 3.0);
+        SetLocalInt(OBJECT_SELF, "busy", 1);
+        DelayCommand(5.0, DeleteLocalInt(OBJECT_SELF, "busy"));
+        break;
+
+    case ASSOCIATE_COMMAND_GUARDMASTER:
+    {
+        ResetHenchmenState();
+        //DelayCommand(2.5, VoiceCannotDo());
+
+        //Companions will only attack the Masters Last Attacker
+        SetLocalInt(OBJECT_SELF, "guard", 1);
+        DeleteLocalInt(OBJECT_SELF, "stand_ground");
+        object oLastAttacker = GetLastHostileActor(GetMaster());
+        // * for some reason this is too often invalid. still the routine
+        // * works corrrectly
+        SetLocalInt(OBJECT_SELF, "X0_BATTLEJOINEDMASTER", TRUE);
+        //HenchmenCombatRound(oLastAttacker);
+        DetermineCombatRound();
+        break;
+    }
+    case ASSOCIATE_COMMAND_HEALMASTER:
+        //Ignore current healing settings and heal me now
+
+        ResetHenchmenState();
+        oMaster = GetMaster();
+
+        if(GetIsDead(oMaster))//1.71: taught henchman to resurrect his master
+        {
+            if(GetHasSpell(SPELL_RESURRECTION))
+            {
+                if(AI_ActionCastSpell(SPELL_RESURRECTION, oMaster, 17, FALSE))
+                    DelayCommand(2.0, VoiceCanDo());
+                break;
+            }
+            else if(GetHasSpell(SPELL_RAISE_DEAD))
+            {
+                if(AI_ActionCastSpell(SPELL_RAISE_DEAD, oMaster, 17, FALSE))
+                    DelayCommand(2.0, VoiceCanDo());
+                break;
+            }
+            int nRnd;
+            talent tUse = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_SINGLE,0);
+            while(GetIsTalentValid(tUse) && nRnd++ < 10)
+            {
+                if(GetTypeFromTalent(tUse) == TALENT_TYPE_SPELL && (GetIdFromTalent(tUse) == SPELL_RESURRECTION || GetIdFromTalent(tUse) == SPELL_RAISE_DEAD))
+                {
+                    ClearAllActions();
+                    ActionUseTalentOnObject(tUse,oMaster);
+                    DelayCommand(2.0, VoiceCanDo());
+                    return;
+                }
+                tUse = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_SINGLE,0);
+            }
+            VoiceCannotDo();
+            return;
+        }
+
+        //SetCommandable(TRUE);
+        // TODO: use AI_ActionHealUndeadObject for undead healing
+        if(AI_ActionHealObject(oMaster))
+        {
+            DelayCommand(2.0, VoiceCanDo());
+            return;
+        }
+
+        VoiceCannotDo();
+        break;
+
+    case ASSOCIATE_COMMAND_MASTERFAILEDLOCKPICK:
+        //Check local for re-try locked doors
+        if(GetLocalInt(OBJECT_SELF, "stand_ground") == 0)
+        {
+            oTarget = GetLockedObject(oMaster);
+            AttemptToOpenLock(oTarget);
+        }
+        break;
+
+
+    case ASSOCIATE_COMMAND_STANDGROUND:
+        //No longer follow the master or guard him
+        SetLocalInt(OBJECT_SELF, "stand_ground", 1);
+        DeleteLocalInt(OBJECT_SELF, "guard");
+        DelayCommand(2.0, VoiceCanDo());
+        ActionAttack(OBJECT_INVALID);
+        //ClearActions(CLEAR_X0_INC_HENAI_RespondToShout1);
+        ClearAllActions(TRUE);
+        break;
+
+
+
+        // ***********************************
+        // * AUTOMATIC SHOUTS - not player
+        // *   initiated
+        // ***********************************
+    case ASSOCIATE_COMMAND_MASTERSAWTRAP:
+        if(!GetIsInCombat())
+        {
+            if(GetLocalInt(OBJECT_SELF, "stand_ground") == 0)
+            {
+                oTarget = GetLastTrapDetected(oMaster);
+                AttemptToDisarmTrap(oTarget);
+            }
+        }
+        break;
+
+    case ASSOCIATE_COMMAND_MASTERUNDERATTACK:
+        // Just go to henchman combat round
+        //SpeakString("here 728");
+
+        // * July 15, 2003: Make this only happen if not
+        // * in combat, otherwise the henchman will
+        // * ping pong between targets
+        if (!GetIsInCombat(OBJECT_SELF))
+            //HenchmenCombatRound();
+            DetermineCombatRound();
+        break;
+
+    case ASSOCIATE_COMMAND_MASTERATTACKEDOTHER:
+
+        if(GetLocalInt(OBJECT_SELF, "stand_ground") == 0)
+        {
+            if(GetLocalInt(OBJECT_SELF, "guard") == 0)
+            {
+                if(!GetIsInCombat(OBJECT_SELF))
+                {
+                    //SpeakString("here 737");
+                    object oAttack = GetAttackTarget(GetMaster());
+                    // April 2003: If my master can see the enemy, then I can too.
+                    if(GetIsObjectValid(oAttack) && GetObjectSeen(oAttack, GetMaster()))
+                    {
+                        //ClearActions(CLEAR_X0_INC_HENAI_RespondToShout2); //1.71: fix for associates casting spell over and over
+                        //HenchmenCombatRound(oAttack);
+                        DetermineCombatRound();
+                    }
+                }
+            }
+        }
+        break;
+
+    case ASSOCIATE_COMMAND_MASTERGOINGTOBEATTACKED:
+        if(GetLocalInt(OBJECT_SELF, "stand_ground") == 0)
+        {
+            if(!GetIsInCombat(OBJECT_SELF))
+            {   // SpeakString("here 753");
+                object oAttacker = GetGoingToBeAttackedBy(GetMaster());
+                // April 2003: If my master can see the enemy, then I can too.
+                // Potential Side effect : Henchmen may run
+                // to stupid places, trying to get an enemy
+                if(GetIsObjectValid(oAttacker) && GetObjectSeen(oAttacker, GetMaster()))
+                {
+                   // SpeakString("Defending Master");
+                    //ClearActions(CLEAR_X0_INC_HENAI_RespondToShout3); //1.71: fix for associates casting spell over and over
+                    ActionMoveToObject(oAttacker, TRUE, 7.0);
+                    //HenchmenCombatRound(oAttacker);
+                    DetermineCombatRound();
+
+                }
+            }
+        }
+        break;
     }
 }
+
 // At 5+ intelligence, we fire off any dispells at oPlaceables location
 void SearchDispells(object oPlaceable)
 {
@@ -443,11 +1083,13 @@ void SearchDispells(object oPlaceable)
 void ActionMoveToEnemy(object oEnemy)
 {
     // Make sure that we are not fleeing badly (-1 morale from all enemies)
+    /*
     if(GetIsEnemy(oEnemy))
     {
         // -1 morale, flee
         if(PerceptionFleeFrom(oEnemy)) return;
     }
+    */
     if(GetIsPerformingSpecialAction())
     {
         // Stop if we have an action we don't want to override
@@ -527,11 +1169,8 @@ void IWasAttackedResponse(object oAlly)
         AISpeakString(AI_SHOUT_I_WAS_ATTACKED);
         return;
     }
-    // we won't do a call to arms here - pok
-
     // If invalid, we act as if it was "Call to arms" type thing.
     // Call to arms is better to use normally, of course.
-    /*
     else
     {
         // Shout to allies to attack, or be prepared.
@@ -592,7 +1231,7 @@ void IWasAttackedResponse(object oAlly)
             DetermineCombatRound(oAlly);
             return;
         }
-    }*/
+    }
 }
 
 

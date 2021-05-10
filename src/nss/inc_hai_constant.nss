@@ -155,7 +155,7 @@ const string ITEM_TALENT_VALUE                      = "ITEM_TALENT_VALUE";      
 // String constants not associated with On Spawn options. Usually values.
 /******************************************************************************/
 const string AI_INTELLIGENCE                        = "AI_INTELLIGENCE";        // S.INTEGER
-const string AI_MORALE                              = "AI_MORALE";              // S.INTEGER
+//const string AI_MORALE                              = "AI_MORALE";              // S.INTEGER
 // Used for spontaeous spells, in the combat AI include and spell files.
 const string AI_SPONTAEUOUSLY_CAST_HEALING          = "AI_SPONTAEUOUSLY_CAST_HEALING";// S.INTEGER
 // The last level of what summoned animal we cast.
@@ -348,7 +348,7 @@ const string AI_IGNORE_TOGGLE                       = "AI_IGNORE_TOGGLE";       
 /******************************************************************************/
 
 // In Other AI, this is set on high damage
-const string AI_MORALE_PENALTY                      = "AI_MORALE_PENALTY";      // S.INTEGER
+//const string AI_MORALE_PENALTY                      = "AI_MORALE_PENALTY";      // S.INTEGER
 // Set via. SetCurrentAction
 const string AI_CURRENT_ACTION                      = "AI_CURRENT_ACTION";      // S.INTEGER
 // This is set to TRUE once we have died once.
@@ -1288,12 +1288,6 @@ int GetIsPerformingSpecialAction();
 // This will, if we are set that we can, shout the string.
 void AISpeakString(string sString);
 
-// This will apply the fear visual for fleeing, if the variable
-// AI_FLAG_FLEEING_USE_VISUAL_EFFECT is on.
-void ApplyFleeingVisual();
-// This will remove the fear visual for fleeing.
-void RemoveFleeingVisual();
-
 // ETHEREALNESS:
 // Can be SEEN through with TRUESEEING. If we see a ETHEREAL person, we cannot
 // DIRECTLY attack them.
@@ -2148,41 +2142,6 @@ void AISpeakString(string sString)
         // Silent talk = "DebugMode 1" only can see, is the "talk" version of the DM
         // channel.
         SpeakString(sString, TALKVOLUME_SILENT_TALK);
-    }
-}
-// This will apply the fear visual for fleeing, if the variable
-// AI_FLAG_FLEEING_USE_VISUAL_EFFECT is on.
-void ApplyFleeingVisual()
-{
-    if(GetSpawnInCondition(AI_FLAG_FLEEING_USE_VISUAL_EFFECT, AI_TARGETING_FLEE_MASTER))
-    {
-        // Supernatural effect.
-        effect eFear = SupernaturalEffect(EffectVisualEffect(VFX_DUR_MIND_AFFECTING_FEAR));
-        ApplyEffectToObject(DURATION_TYPE_PERMANENT, eFear, OBJECT_SELF);
-    }
-}
-// This will remove the fear visual for fleeing.
-void RemoveFleeingVisual()
-{
-    // Get first effect
-    effect eCheck = GetFirstEffect(OBJECT_SELF);
-    while(GetIsEffectValid(eCheck))
-    {
-        // Must be: Not from a spell
-        if(GetEffectSpellId(eCheck) == AI_SPELL_INVALID)
-        {
-            // * Supernatural only, a visual effect, permanent, applied by us.
-            if(GetEffectType(eCheck) == EFFECT_TYPE_VISUALEFFECT &&
-               GetEffectSubType(eCheck) == SUBTYPE_SUPERNATURAL &&
-               GetEffectCreator(eCheck) == OBJECT_SELF &&
-               GetEffectDurationType(eCheck) == DURATION_TYPE_PERMANENT)
-            {
-                // Remove all effects which match this.
-                RemoveEffect(OBJECT_SELF, eCheck);
-            }
-        }
-        // Get next effect
-        eCheck = GetNextEffect(OBJECT_SELF);
     }
 }
 

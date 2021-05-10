@@ -168,48 +168,6 @@ void main()
         // The HP's are the last thing to choose a target with.
 /************************ [Targeting] *****************************************/
 
-/************************ [Fleeing] ********************************************
-    Fleeing - these are toggled on/off by FEARLESS flag.
-
-    3 or under intelligence will just run away. 4 or more will know where allies
-    are, and if there are none, will not run.
-
-    pok - fleeing now happens regardless of intelligence
-************************* [Fleeing] *******************************************/
-    SetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER);
-        // Forces them to not flee. This may be set with AI_SetMaybeFearless at the end.
-    //SetSpawnInCondition(AI_FLAG_FLEEING_NEVER_FIGHT_IMPOSSIBLE_ODDS, AI_TARGETING_FLEE_MASTER);
-        // This will make the creature never fight against impossible odds (8HD+ different)
-    SetSpawnInCondition(AI_FLAG_FLEEING_TURN_OFF_GROUP_MORALE, AI_TARGETING_FLEE_MASTER);
-        // This turns OFF any sort of group morale bonuses.
-
-    //SetAIInteger(AMOUNT_OF_HD_DIFFERENCE_TO_CHECK, -2);
-        // If enemy is within this amount of HD, we do not check morale.
-    //SetAIInteger(BASE_MORALE_SAVE, 20);
-        // Base DC of the will save. It is set to 20 + HD difference - Morale - Group morale mod.
-    //SetAIInteger(HP_PERCENT_TO_CHECK_AT, 80);
-        // %HP needed to be at to check morale. This doesn't affect "Never fight impossible odds"
-    //SetSpawnInCondition(AI_FLAG_FLEEING_NO_OVERRIDING_HP_AMOUNT, AI_TARGETING_FLEE_MASTER);
-        // This will turn off overriding HP checks. AI may decide to run even
-        // not at the %HP above, this turns the checks off.
-
-    //SetAIInteger(AI_DAMAGE_AT_ONCE_FOR_MORALE_PENALTY, GetMaxHitPoints()/6);
-        // Damage needed to be done at once to get a massive morale penalty (Below)
-    //SetAIInteger(AI_DAMAGE_AT_ONCE_PENALTY, 6);
-        // Penalty for the above, set for some time to negativly affect morale. Added to save DC for fleeing.
-
-    //SetSpawnInCondition(AI_FLAG_FLEEING_FLEE_TO_NEAREST_NONE_SEEN, AI_TARGETING_FLEE_MASTER);
-        // If set, just runs to nearest non-seen ally, and removes the loop for a good group of allies to run to.
-
-    //SetSpawnInCondition(AI_FLAG_FLEEING_FLEE_TO_OBJECT, AI_TARGETING_FLEE_MASTER);
-        // They will flee to the nearest object of the tag below, if set.
-    //SetLocalString(OBJECT_SELF, AI_FLEE_OBJECT, "BOSS_TAG_OR_WHATEVER");
-        // This needs setting if the above is to work.
-
-    //SetSpawnInCondition(AI_FLAG_FLEEING_USE_VISUAL_EFFECT, AI_TARGETING_FLEE_MASTER);
-        // If this is on, we play a visual effect while we flee.
-/************************ [Fleeing] *******************************************/
-
 /************************ [Combat - Fighters] **********************************
     Fighter (Phiscal attacks, really) specific stuff - disarmed weapons, better
     at hand to hand, and archer behaviour.
@@ -564,11 +522,6 @@ void main()
     //AI_SetSpawnInSpeakValue(AI_TALK_ON_DEATH, "Agggggg!");
         // This will ALWAYS be said, whenever the creature dies.
 
-    // Specific potion ones.
-    //AI_SetSpawnInSpeakValue(AI_TALK_WE_PASS_POTION, "Here! Catch!");
-        // This will be spoken when the creature passes a potion to an ally. See readme.
-    //AI_SetSpawnInSpeakValue(AI_TALK_WE_GOT_POTION, "Got it!");
-        // This will be spoken by the creature we pass the potion too, using AssignCommand().
 
     // Leader ones
     //AI_SetSpawnInSpeakValue(AI_TALK_ON_LEADER_SEND_RUNNER, "Quickly! We need help!");
@@ -685,12 +638,5 @@ void main()
 //    {
 //        SetSpawnInCondition(AI_FLAG_OTHER_LAG_NO_SPELLS, AI_OTHER_MASTER);
 //    }
-
-/************************ [User] **********************************************/
-
-    // Note: You shouldn't really remove this, even if they have no waypoints.
-    DelayCommand(2.0, SpawnWalkWayPoints());
-        // Delayed walk waypoints, as to not upset instant combat spawning.
-        // This will also check if to change to day/night posts during the walking, no heartbeats.
 }
 

@@ -377,19 +377,6 @@ int AI_AttemptHostileSkills();
 void AI_ActionUseSkillOnMeleeTarget(int iSkill);
 //**************************** AttemptSkills ***********************************
 
-//**************************** AttemptMorale ***********************************
-
-// Fleeing - set OnSpawn for setup. Uses a WILL save!
-// - Bonuses in groups
-// - May go get help
-// - Won't run on a CR/HD threshold.
-// - Leaders help! And all is intelligence based.
-// Includes commoners fleeing
-int AI_AttemptMoraleFlee();
-// Forces the AI to flee from the nearest enemy, or away from our position at least
-void AI_ActionFleeScared();
-//**************************** AttemptMorale ***********************************
-
 //******************************** Other ***************************************
 // Sets a value, 1-5, for what we can Dispel. Also sets a 1-5 value for breach spells.
 // The values are NOT, I repeat NOT what the spell level are. Generally, they
@@ -4839,10 +4826,62 @@ int AI_AttemptGoForTheKill()
     // modifed to use party target
     // the better alternative would be to use party target, but filter to lowest HP - pok
     object oTempEnemy = GetClosestPartyTarget();
+    int bSleepingOnly = TRUE;
+   if(!GetIsObjectValid(oTempEnemy) || AI_GetAIHaveEffect(GlobalEffectPetrify, oTempEnemy))
+    {
+        // This means we only attack in melee (no spells, no ranged)
+        bSleepingOnly = TRUE;
+        oTempEnemy = GetNearestCreature(
+                     CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY,
+                     OBJECT_SELF, 1,
+                     CREATURE_TYPE_HAS_SPELL_EFFECT, SPELL_SLEEP,
+                     CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
+        // Dragon sleep breath
+        if(!GetIsObjectValid(oTempEnemy) || GetHitDice(oTempEnemy) > 4 ||
+            AI_GetAIHaveEffect(GlobalEffectPetrify, oTempEnemy))
+        {
+            oTempEnemy = GetNearestCreature(
+                     CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY,
+                     OBJECT_SELF, 1,
+                     CREATURE_TYPE_HAS_SPELL_EFFECT, SPELLABILITY_DRAGON_BREATH_SLEEP,
+                     CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
+            // Could add something about Paralyzed people here...
+        }
+    }
+    float fDistance = GetDistanceToObject(oTempEnemy);
+     // Valid, and is not "dead dead"
+    if(GetIsObjectValid(oTempEnemy) &&
+    // -10 is TOTALLY dead.
+       GetCurrentHitPoints(oTempEnemy) > -10 &&
+     // Intelligence 9+. 10 will attack with many enemies, 9 with 1 or under
+     ((GlobalMeleeAttackers <= 3 &&
+       GlobalIntelligence >= 10) ||
+       GlobalMeleeAttackers <= 1) &&
+     // Make sure it isn't too far, and they are only sleeping
+      (bSleepingOnly == FALSE ||
+       fDistance < 6.0) &&
+     // Big AC check, but mages with +1, VS ac of 30 won't hit :-)
+       GlobalOurBaseAttackBonus >= GetAC(oTempEnemy) - 25)
+    {
+        // 26: "[DCR:GFTK] Attacking a PC who is dying/asleep! [Enemy]" + GetName(oTempEnemy)
+        DebugActionSpeakByInt(26, oTempEnemy);
+        // Attempt default most damaging to try and do most damage.
+        if(fDistance > GlobalRangeToMeleeTarget)
+        {
+            ActionEquipMostDamagingRanged(oTempEnemy);
+        }
+        else
+        {
+            ActionEquipMostDamagingMelee(oTempEnemy);
+        }
+        ActionAttack(oTempEnemy);
+        return TRUE;
+    }
 
-    // sleep, petrified, etc code has been removed.
-    // no faction calls, could be pretty expensive too. it was just used to get most damaged - pok
-
+    // Now, we check for most damaged member of the nearest enemies faction.
+    // - Uses bioware function - just...simpler
+    // - Only with 9+ int
+    oTempEnemy = GetFactionMostDamagedMember(GlobalMeleeTarget);
     // - Effect, if lots of people can attack this, like with ranged things,
     //   it can lead to some bloody deaths, especially for some classes.
     // - Note: Intelligence of 9+ shouldn't be used for low levels!
@@ -13455,6 +13494,7 @@ int AI_AttemptFeatCombatHostile()
     }
 
     // Here, we use all potions if set too...
+    /*
     if(GetSpawnInCondition(AI_FLAG_COMBAT_USE_ALL_POTIONS, AI_COMBAT_MASTER))
     {
         int nUsed = FALSE;
@@ -13483,7 +13523,7 @@ int AI_AttemptFeatCombatHostile()
             return TRUE;
         }
     }
-
+    */
     // Rage - check effects via the set effects..
     if(!AI_GetAIHaveSpellsEffect(GlobalHasRageSpells))
     {

@@ -50,11 +50,6 @@ void main()
         if ((oMyMaster != OBJECT_INVALID) && (oMyMaster == oCaster || (oMyMaster  == GetMaster(oCaster))) )
         {
             ClearPersonalReputation(oCaster, OBJECT_SELF);
-            // Send the user-defined event as appropriate
-            if(GetSpawnInCondition(NW_FLAG_SPELL_CAST_AT_EVENT))
-            {
-                SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_SPELL_CAST_AT));
-            }
             return;
         }
 

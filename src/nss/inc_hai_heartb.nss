@@ -184,8 +184,6 @@ int PerformSpecialAction()
                     // Speak to allies to come :-)
                     AISpeakString(AI_SHOUT_HELP_MY_FRIEND);
 
-                    // Also reset visual effect
-                    RemoveFleeingVisual();
 
                     // And attack/heal self
                     ClearAllActions();
@@ -228,8 +226,6 @@ int PerformSpecialAction()
                                 ResetCurrentAction();
                                 // Speak to allies to come :-)
                                 AISpeakString(AI_SHOUT_HELP_MY_FRIEND);
-                                // Also reset visual effect
-                                RemoveFleeingVisual();
                                 // And attack/heal self
                                 ClearAllActions();
                                 DetermineCombatRound();
@@ -247,8 +243,6 @@ int PerformSpecialAction()
                 ResetCurrentAction();
                 // Speak to allies to come :-)
                 AISpeakString(AI_SHOUT_HELP_MY_FRIEND);
-                // Also reset visual effect
-                RemoveFleeingVisual();
                 // And attack/heal self
                 ClearAllActions();
                 DetermineCombatRound();

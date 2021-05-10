@@ -21,6 +21,9 @@ void main()
     // Pre-attacked-event. Returns TRUE if we interrupt this script call.
     if(FirePreUserEvent(AI_FLAG_UDE_ATTACK_PRE_EVENT, EVENT_ATTACK_PRE_EVENT)) return;
 
+    if(GetLocalInt(OBJECT_SELF, "busy") == 0)
+        SetCommandable(TRUE);
+
     // AI status check. Is the AI on?
     if(GetAIOff()) return;
 
@@ -33,14 +36,6 @@ void main()
     // Check if they are valid, a DM, we are ignoring them, they are dead now, or invalid
     if(!GetIgnoreNoFriend(oAttacker))
     {
-        // Adjust automatically if set.
-        if(GetSpawnInCondition(AI_FLAG_OTHER_CHANGE_FACTIONS_TO_HOSTILE_ON_ATTACK, AI_OTHER_MASTER))
-        {
-            if(!GetIsEnemy(oAttacker))
-            {
-                AdjustReputation(oAttacker, OBJECT_SELF, -100);
-            }
-        }
 
         // If we were attacked by knockdown, for a timer of X seconds, we make
         // sure we attempt healing at a higher level.

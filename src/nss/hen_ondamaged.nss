@@ -173,23 +173,6 @@ void main()
             // * This is only set if they did damage us at all, however.
             SetAIInteger(LAST_ELEMENTAL_DAMAGE, nElemental);
 
-            // Morale: We may get a penalty if it does more than a cirtain amount of HP damage.
-            // Other: We set highest damager and amount.
-            /*
-            if(!GetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER))
-            {
-                // Get penalty and how much damage at once needs to be done
-                int nPenalty = GetBoundriedAIInteger(AI_DAMAGE_AT_ONCE_PENALTY, 6, 50, 1);
-                int nToDamage = GetBoundriedAIInteger(AI_DAMAGE_AT_ONCE_FOR_MORALE_PENALTY, GetMaxHitPoints()/6, GetMaxHitPoints(), 1);
-                if(nDamage > nToDamage)
-                {
-                    // 61: "[Damaged] Morale Penalty for 600 seconds [Penalty]" + IntToString(iPenalty)
-                    DebugActionSpeakByInt(61, OBJECT_INVALID, nPenalty);
-                    // Apply penalty
-                    SetMoralePenalty(nPenalty, 300.0);
-                }
-            }
-            */
         }
         // If we are not attacking anything, and not in combat, react!
         if(!CannotPerformCombatRound())

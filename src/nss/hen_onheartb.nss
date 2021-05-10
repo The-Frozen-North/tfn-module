@@ -43,7 +43,7 @@
 
 // - This includes J_Inc_Constants
 #include "inc_hai_heartb"
-
+#include "inc_hai_other"
 
 void DoBanter()
 {
@@ -62,7 +62,8 @@ void main()
     // - Includes door bashing stop heartbeat
     if(PerformSpecialAction()) return;
 
-    if (GetIsObjectValid(GetMaster(OBJECT_SELF)) && GetStringLeft(GetResRef(OBJECT_SELF), 3) == "hen")
+    object oMaster = GetMaster(OBJECT_SELF);
+    if (GetIsObjectValid(oMaster) && GetStringLeft(GetResRef(OBJECT_SELF), 3) == "hen")
     {
         int nBanter = GetLocalInt(OBJECT_SELF, "banter");
 
@@ -88,6 +89,112 @@ void main()
     string sScript = GetLocalString(OBJECT_SELF, "heartbeat_script");
     if (sScript != "") ExecuteScript(sScript);
 
+    if(GetLocalInt(OBJECT_SELF, "busy") == 0)
+    {
+
+        //Seek out and disable undisabled traps
+        object oTrap = GetNearestTrapToObject();
+        if (GetIsObjectValid(oTrap) && AttemptToDisarmTrap(oTrap)) return; // succesful trap found and disarmed
+
+        if(GetIsObjectValid(oMaster) &&
+            GetCurrentAction(OBJECT_SELF) != ACTION_FOLLOW &&
+            GetCurrentAction(OBJECT_SELF) != ACTION_DISABLETRAP &&
+            GetCurrentAction(OBJECT_SELF) != ACTION_OPENLOCK &&
+            GetCurrentAction(OBJECT_SELF) != ACTION_REST &&
+            GetCurrentAction(OBJECT_SELF) != ACTION_ATTACKOBJECT)
+        {
+            if(
+               !GetIsObjectValid(GetAttackTarget()) &&
+               !GetIsObjectValid(GetAttemptedSpellTarget()) &&
+               !GetIsObjectValid(GetAttemptedAttackTarget()) &&
+               !GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN))
+              )
+            {
+                if (GetIsObjectValid(oMaster) == TRUE)
+                {
+                    if(GetDistanceToObject(oMaster) > 6.0)
+                    {
+                        if(GetIsObjectValid(oMaster))
+                        {
+                            if(!GetIsFighting())
+                            {
+                                if(GetLocalInt(OBJECT_SELF, "stand_ground") == 0)
+                                {
+                                    if(GetDistanceToObject(oMaster) > 3.0)
+                                    {
+                                        ClearAllActions(TRUE);
+                                        ActionForceFollowObject(oMaster, 3.0);
+                                        /*
+                                        if(GetAssociateState(NW_ASC_AGGRESSIVE_STEALTH) || GetAssociateState(NW_ASC_AGGRESSIVE_SEARCH))
+                                        {
+                                             if(GetAssociateState(NW_ASC_AGGRESSIVE_STEALTH))
+                                             {
+                                                //ActionUseSkill(SKILL_HIDE, OBJECT_SELF);
+                                                //ActionUseSkill(SKILL_MOVE_SILENTLY,OBJECT_SELF);
+                                             }
+                                             if(GetAssociateState(NW_ASC_AGGRESSIVE_SEARCH))
+                                             {
+                                                ActionUseSkill(SKILL_SEARCH, OBJECT_SELF);
+                                             }
+                                             //MyPrintString("GENERIC SCRIPT DEBUG STRING ********** " + "Assigning Force Follow Command with Search and/or Stealth");
+                                             ActionForceFollowObject(oMaster, GetFollowDistance());
+                                        }
+                                        else
+                                        {
+                                             //MyPrintString("GENERIC SCRIPT DEBUG STRING ********** " + "Assigning Force Follow Normal");
+                                             ActionForceFollowObject(oMaster, GetFollowDistance());
+                                             //ActionForceMoveToObject(GetMaster(), TRUE, GetFollowDistance(), 5.0);
+                                        }
+                                        */
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if(GetLocalInt(OBJECT_SELF, "stand_ground") == 0)
+                {
+                    if(GetIsObjectValid(oMaster))
+                    {
+                        if(GetCurrentAction(oMaster) != ACTION_REST)
+                        {
+                            ClearAllActions(TRUE);
+                            ActionForceFollowObject(oMaster, 3.0);
+                            /*
+                            if(GetAssociateState(NW_ASC_AGGRESSIVE_STEALTH) || GetAssociateState(NW_ASC_AGGRESSIVE_SEARCH))
+                            {
+                                 if(GetAssociateState(NW_ASC_AGGRESSIVE_STEALTH))
+                                 {
+                                    //ActionUseSkill(SKILL_HIDE, OBJECT_SELF);
+                                    //ActionUseSkill(SKILL_MOVE_SILENTLY,OBJECT_SELF);
+                                 }
+                                 if(GetAssociateState(NW_ASC_AGGRESSIVE_SEARCH))
+                                 {
+                                    ActionUseSkill(SKILL_SEARCH, OBJECT_SELF);
+                                 }
+                                 //MyPrintString("GENERIC SCRIPT DEBUG STRING ********** " + "Assigning Force Follow Command with Search and/or Stealth");
+                                 ActionForceFollowObject(oMaster, GetFollowDistance());
+                            }
+                            else
+                            {
+                                 //MyPrintString("GENERIC SCRIPT DEBUG STRING ********** " + "Assigning Force Follow Normal");
+                                 ActionForceFollowObject(oMaster, GetFollowDistance());
+                            }
+                            */
+                        }
+                    }
+                }
+            }
+            else if(!GetIsObjectValid(GetAttackTarget()) &&
+               !GetIsObjectValid(GetAttemptedSpellTarget()) &&
+               !GetIsObjectValid(GetAttemptedAttackTarget()) &&
+               GetLocalInt(OBJECT_SELF, "stand_ground") == 0)
+            {
+                DetermineCombatRound();
+            }
+
+        }
+    }
     // Fire End-heartbeat-UDE
     FireUserEvent(AI_FLAG_UDE_HEARTBEAT_EVENT, EVENT_HEARTBEAT_EVENT);
 }

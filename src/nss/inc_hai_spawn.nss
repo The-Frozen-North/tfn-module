@@ -50,12 +50,6 @@ void AI_AdvancedAuras();
 // Activate the aura number (IE: Spell number), if it is possible.
 void AI_ActivateAura(int nAuraNumber);
 
-// Base for moving round thier waypoints
-// - Uses ExectuteScript to run the waypoint walking.
-// * If bRun is TRUE, we run all the waypoint.
-// * fPause is the time delay between walking to the next waypoint (default 1.0)
-void SpawnWalkWayPoints(int bRun = FALSE, float fPause = 1.0);
-
 // Sets up what we will listen to (everything!)
 void AI_SetListeningPatterns();
 // This will set what creature to create OnDeath.
@@ -73,24 +67,6 @@ void AI_SetSpawnInSpeakRandomValue(string sNameOfValue, int nPercentToSay, int n
 // - Use iPercentToSay to determine what % out of 100 it is said.
 // NOTE: If the sNameOfValue is any combat one, we make that 1/100 to 1/1000.
 void AI_SetSpawnInSpeakArray(string sNameOfValue, int nPercentToSay, int nSize, string sValue1, string sValue2, string sValue3 = "", string sValue4 = "", string sValue5 = "", string sValue6 = "", string sValue7 = "", string sValue8 = "", string sValue9 = "", string sValue10 = "", string sValue11 = "", string sValue12 = "");
-
-// This applies an increase, decrease or no change to the intended stat.
-// * Applies the effects INSTANTLY. These CANNOT be removed easily!
-void AI_ApplyStatChange(int nStat, int nAmount);
-// This will alter (magically) an ammount of random stats - nAmount
-// by a value within iLowest and nHighest.
-// * Applies the effects INSTANTLY. These CANNOT be removed easily!
-void AI_CreateRandomStats(int nLowest, int nHighest, int nAmount);
-// This will randomise other stats. Put both numbers to 0 to ignore some.
-// nHPMin, nHPMax                   = HP changes.
-// nReflexSaveMin, nReflexSaveMax   = Reflex Save changes
-// nWillSaveMin, nWillSaveMax       = Will Save changes
-// nFortSaveMin, nFortSaveMax       = Fortitude Save changes
-// nACMin, nACMax                   = AC change.
-//      Use nACType to define the AC type - default AC_DODGE_BONUS
-// * Applies the effects INSTANTLY. These CANNOT be removed easily!
-void AI_CreateRandomOther(int nHPMin, int nHPMax, int nReflexSaveMin = 0, int nReflexSaveMax = 0, int nWillSaveMin = 0, int nWillSaveMax = 0, int nFortSaveMin = 0, int nFortSaveMax = 0, int nACMin = 0, int nACMax = 0, int nACType = AC_DODGE_BONUS);
-
 // Sets up thier selection of skills, to integers, if they would ever use them.
 // NOTE: it also triggers "hide" if they have enough skill and not stopped.
 // * 1.4 Changes: Some skills are turned off automatically when they have very
@@ -111,9 +87,6 @@ void AI_SpawnInInstantVisual(int nVFX);
 // * nVFX - The visual effect constant number
 // NOTE: They will be made to be SUPERNATUAL, so are not dispelled!
 void AI_SpawnInPermamentVisual(int nVFX);
-// This should not be used!
-// * called from SetUpEndOfSpawn.
-void AI_SetMaybeFearless();
 // This will set the MAXIMUM and MINIMUM targets to pass this stage (under sName)
 // of the targeting system. IE:
 // - If we set it to min of 5, max of 10, for AC, if we cancled 5 targets on having
@@ -143,11 +116,6 @@ void SetAICheatCastSpells(int nSpell1, int nSpell2, int nSpell3, int nSpell4, in
 // Mark that the given creature has the given condition set for anitmations
 // * Bioware SoU animations thing.
 void SetAnimationCondition(int nCondition, int bValid = TRUE, object oCreature = OBJECT_SELF);
-
-// Sets we are a Beholder and use Ray attacks, and Animagic Ray.
-void SetBeholderAI();
-// Set we are a mindflayer, and uses some special AI for them.
-void SetMindflayerAI();
 
 // This will set a spell trigger up. Under cirtain conditions, spells are released
 // and cast on the caster.
@@ -311,154 +279,7 @@ void AI_SetSpawnInSpeakArray(string sNameOfValue, int nPercentToSay, int nSize, 
     SetLocalInt(OBJECT_SELF, ARRAY_SIZE + sNameOfValue, nSize);
     SetLocalInt(OBJECT_SELF, ARRAY_PERCENT + sNameOfValue, nPercentToSay);
 }
-// This applies an increase, decrease or no change to the intended stat.
-// * Applies the effects INSTANTLY. These CANNOT be removed easily!
-void AI_ApplyStatChange(int nStat, int nAmount)
-{
-    if(nAmount != 0)
-    {
-        effect eChange;
-        if(nAmount < 0)
-        {
-            nAmount = abs(nAmount);
-            eChange = SupernaturalEffect(EffectAbilityDecrease(nStat, nAmount));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
-        }
-        else
-        {
-            eChange = SupernaturalEffect(EffectAbilityIncrease(nStat, nAmount));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
-        }
-    }
-}
-// This will, eventually, choose X number of stats, and change them within the
-// range given.
-void AI_CreateRandomStats(int nLowest, int nHighest, int nAmount)
-{
-    if(nAmount > 0 && nHighest != 0 && nLowest != 0 && nHighest >= nLowest)
-    {
-        int nRange = nHighest - nLowest;
-        int nNumSlots = nAmount;
-        if(nNumSlots > 6) nNumSlots = 6;
-        int nNumLeft = 6;
-        // Walk through each stat and figure out what it's chance of being
-        // modified is.  As an example, suppose we wanted to have 4 randomized
-        // abilities.  We'd look at the first ability and it would have a 4 in 6
-        // chance of being picked.  Let's suppose it was, the next ability would
-        // have a 3 in 5 chance of being picked.  If this next ability wasn't
-        // picked to be changed, the 3rd ability woud have a 3 in 4 chance of
-        // being picked and so on.
-        int nCnt;
-        int nChange;
-        for(nCnt = 0; (nNumSlots > 0 && nCnt < 6); nCnt++)
-        {
-           if((nNumSlots == nNumLeft) || (Random(nNumLeft) < nNumSlots))
-           {
-              nChange = Random(nRange) + nLowest;
-              AI_ApplyStatChange(nCnt, nChange);
-              nNumSlots--;
-           }
-           nNumLeft--;
-        }
-    }
-}
 
-// This will randomise other stats. Put both numbers to 0 to ignore some.
-// nHPMin, nHPMax                   = HP changes.
-// nReflexSaveMin, nReflexSaveMax   = Reflex Save changes
-// nWillSaveMin, nWillSaveMax       = Will Save changes
-// nFortSaveMin, nFortSaveMax       = Fortitude Save changes
-// nACMin, nACMax                   = AC change.
-//      Use nACType to define the AC type - default AC_DODGE_BONUS
-// * Applies the effects INSTANTLY. These CANNOT be removed easily!
-void AI_CreateRandomOther(int nHPMin, int nHPMax, int nReflexSaveMin = 0, int nReflexSaveMax = 0, int nWillSaveMin = 0, int nWillSaveMax = 0, int nFortSaveMin = 0, int nFortSaveMax = 0, int nACMin = 0, int nACMax = 0, int nACType = AC_DODGE_BONUS)
-{
-    int nRange, nChange, nNewChange;
-    effect eChange;
-    if(!(nHPMin == 0 && nHPMax == 0) && nHPMax >= nHPMin)
-    {
-        nRange = nHPMax - nHPMin;
-        nChange = Random(nRange) + nHPMin;
-        if(nChange > 0)
-        {
-            eChange = SupernaturalEffect(EffectTemporaryHitpoints(nChange));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
-        }
-        // * Must have 1HP remaining at least.
-        else if(nChange < 0 && GetMaxHitPoints() > nChange)
-        {
-            eChange = EffectDamage(nChange, DAMAGE_TYPE_DIVINE, DAMAGE_POWER_PLUS_TWENTY);
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
-        }
-    }
-    if(!(nReflexSaveMin == 0 && nReflexSaveMax == 0) && nReflexSaveMax >= nReflexSaveMin)
-    {
-        nRange = nReflexSaveMax - nReflexSaveMin;
-        nChange = Random(nRange) + nReflexSaveMin;
-        if(nChange > 0)
-        {
-            eChange = SupernaturalEffect(EffectSavingThrowIncrease(SAVING_THROW_REFLEX, nChange));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
-        }
-        // Cannot apply 0 change, but can make our saves negative
-        else if(nChange < 0)
-        {
-            nNewChange = abs(nChange);
-            eChange = SupernaturalEffect(EffectSavingThrowDecrease(SAVING_THROW_REFLEX, nNewChange));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
-        }
-    }
-    if(!(nWillSaveMin == 0 && nWillSaveMax == 0) && nWillSaveMax >= nWillSaveMin)
-    {
-        nRange = nWillSaveMax - nWillSaveMin;
-        nChange = Random(nRange) + nWillSaveMin;
-        if(nChange > 0)
-        {
-            eChange = SupernaturalEffect(EffectSavingThrowIncrease(SAVING_THROW_WILL, nChange));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
-        }
-        // Cannot apply 0 change, but can make our saves negative
-        else if(nChange < 0)
-        {
-            nNewChange = abs(nChange);
-            eChange = SupernaturalEffect(EffectSavingThrowDecrease(SAVING_THROW_WILL, nNewChange));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
-        }
-    }
-    if(!(nFortSaveMin == 0 && nFortSaveMax == 0) && nFortSaveMax >= nFortSaveMin)
-    {
-        nRange = nFortSaveMax - nFortSaveMin;
-        nChange = Random(nRange) + nFortSaveMin;
-        if(nChange > 0)
-        {
-            eChange = SupernaturalEffect(EffectSavingThrowIncrease(SAVING_THROW_FORT, nChange));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
-        }
-        // Cannot apply 0 change, but can make our saves negative
-        else if(nChange < 0)
-        {
-            nNewChange = abs(nChange);
-            eChange = SupernaturalEffect(EffectSavingThrowDecrease(SAVING_THROW_FORT, nNewChange));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
-        }
-    }
-    if(!(nACMin == 0 && nACMax == 0) && nACMax >= nACMin)
-    {
-        nRange = nACMax - nACMin;
-        nChange = Random(nRange) + nACMin;
-        if(nChange > 0)
-        {
-            eChange = SupernaturalEffect(EffectACIncrease(nChange, nACType));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
-        }
-        else if(nChange < 0)
-        {
-            nNewChange = abs(nChange);
-            eChange = SupernaturalEffect(EffectACDecrease(nNewChange, nACType));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eChange, OBJECT_SELF);
-        }
-    }
-}
 
 /*::///////////////////////////////////////////////
 //:: SetListeningPatterns
@@ -496,17 +317,6 @@ void AI_SetListeningPatterns()
 
     // This will make the listener hear anything, used to react to enemy talking.
     SetListenPattern(OBJECT_SELF, "**", AI_SHOUT_ANYTHING_SAID_CONSTANT);
-}
-
-// Base for moving round thier waypoints
-// - Uses ExectuteScript to run the waypoint walking.
-// * If bRun is TRUE, we run all the waypoint.
-// * fPause is the time delay between walking to the next waypoint (default 1.0)
-void SpawnWalkWayPoints(int bRun = FALSE, float fPause = 1.0)
-{
-    SetLocalInt(OBJECT_SELF, WAYPOINT_RUN, bRun);
-    SetLocalFloat(OBJECT_SELF, WAYPOINT_PAUSE, fPause);
-    ExecuteScript(FILE_WALK_WAYPOINTS, OBJECT_SELF);
 }
 
 // This MUST be called. It fires these events:
@@ -551,17 +361,6 @@ void AI_SetUpEndOfSpawn()
     // * If we are not using a custom AI file, we do these things.
     if(GetCustomAIFileName() == "")
     {
-        // If we are a commoner of any sort, and under 10 hit dice, we are
-        // panicy - IE: We set to -1 morale, which triggers the "commoner" fleeing
-        if(GetLevelByClass(CLASS_TYPE_COMMONER) && GetHitDice(OBJECT_SELF) < 10)
-        {
-            SetAIInteger(AI_MORALE, -1);
-        }
-        // If we are not set already to fearless, we might be set to fearless
-        if(!GetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER))
-        {
-            AI_SetMaybeFearless();
-        }
         // Set if we are a beholder or mindflayer
         switch(GetAppearanceType(OBJECT_SELF))
         {
@@ -634,31 +433,6 @@ void AI_SetTurningLevel()
         SetAIInteger(AI_TURNING_LEVEL, nTurnLevel);
         // Note: Turn undead could be used for FEAT_DIVINE_MIGHT and
         // FEAT_DIVINE_SHIELD
-    }
-}
-// This should not be used!
-// * called from SetUpEndOfSpawn.
-void AI_SetMaybeFearless()
-{
-    // Cirtain races are immune to fear
-    switch(GetRacialType(OBJECT_SELF))
-    {
-        case RACIAL_TYPE_CONSTRUCT:
-        case RACIAL_TYPE_DRAGON:
-        case RACIAL_TYPE_UNDEAD:
-        case RACIAL_TYPE_OUTSIDER:
-        {
-            SetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER);
-            return;
-        }
-        break;
-    }
-    // If we are immune to fear anyway, we don't care
-    if(GetHasFeat(FEAT_AURA_OF_COURAGE) ||
-       GetHasFeat(FEAT_RESIST_NATURES_LURE) ||
-       GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_FEAR))
-    {
-        SetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER);
     }
 }
 
