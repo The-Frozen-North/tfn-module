@@ -778,7 +778,7 @@ void AI_TargetingArrayDelete(string sArray);
 int AI_GetTargetSanityCheck(object oTarget);
 
 
-// my functions
+// my functions - pok
 
 void PlayVoiceChatIfNotDead(int iVoice)
 {
@@ -819,283 +819,88 @@ void DoCombatVoice()
     }
 }
 
-// Buff OBJECT_SELF if OBJECT_SELF isn't already buffed with the particular spell
-void BuffIfNotBuffed(int bSpell, int bInstant)
+//GetIsObjectValid(oTarget) && GetIsEnemy(oTarget) && GetArea(oTarget) == OBJECT_SELF && !GetIsDead(oTarget) && GetDistanceToObject(oTarget) <= 50.0
+int GetIsValidTarget(object oTarget);
+int GetIsValidTarget(object oTarget)
 {
-    if(GetHasSpell(bSpell) && !GetHasSpellEffect(bSpell))
+    if (GetIsObjectValid(oTarget) && GetIsEnemy(oTarget) && GetArea(oTarget) == OBJECT_SELF && !GetIsDead(oTarget) && GetDistanceToObject(oTarget) <= 50.0)
     {
-      ActionCastSpellAtObject(bSpell, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
     }
 }
 
-// FAST BUFF SELF
-// * Dec 19 2002: Added the instant parameter so this could be used for 'legal' spellcasting as well
-void FastBuff(int bInstant = TRUE)
+// pok - new function to retrieve a target from either the master,
+// or from a party member in the master's faction (party)
+// we will match it to the closest target
+object GetClosestPartyTarget();
+object GetClosestPartyTarget()
 {
-    // do not continue if not a caster class
-    if (GetLevelByClass(CLASS_TYPE_SORCERER) == 0 && GetLevelByClass(CLASS_TYPE_WIZARD) == 0 && GetLevelByClass(CLASS_TYPE_DRUID) == 0 && GetLevelByClass(CLASS_TYPE_BARD) == 0 && GetLevelByClass(CLASS_TYPE_CLERIC) == 0)
-        return;
-
-    if (GetLocalInt(OBJECT_SELF, "fast_buffed") == 1) return;
-    SetLocalInt(OBJECT_SELF, "fast_buffed", 1);
-    SetLocalInt(OBJECT_SELF, "combat", 1);
-    ClearAllActions(TRUE);
-
-    // General Protections and misc buffs
-    BuffIfNotBuffed(SPELL_NEGATIVE_ENERGY_PROTECTION, bInstant);
-    BuffIfNotBuffed(SPELL_DEATH_WARD, bInstant);
-    BuffIfNotBuffed(SPELL_DARKVISION, bInstant);
-    BuffIfNotBuffed(SPELL_DEATH_WARD, bInstant);
-    BuffIfNotBuffed(SPELL_TRUE_SEEING, bInstant);
-    BuffIfNotBuffed(SPELL_FREEDOM_OF_MOVEMENT, bInstant);
-    BuffIfNotBuffed(SPELL_PROTECTION_FROM_SPELLS, bInstant);
-    BuffIfNotBuffed(SPELL_SPELL_RESISTANCE, bInstant);
-    BuffIfNotBuffed(SPELL_RESISTANCE, bInstant);
-    BuffIfNotBuffed(SPELL_VIRTUE, bInstant);
-    BuffIfNotBuffed(SPELL_CLAIRAUDIENCE_AND_CLAIRVOYANCE, bInstant);
-
-    // Cleric buffs
-    BuffIfNotBuffed(SPELL_BLESS, bInstant);
-    BuffIfNotBuffed(SPELL_PRAYER, bInstant);
-    BuffIfNotBuffed(SPELL_AID, bInstant);
-    BuffIfNotBuffed(SPELL_DIVINE_POWER, bInstant);
-    BuffIfNotBuffed(SPELL_DIVINE_FAVOR, bInstant);
-
-    // Ranger/Druid buffs
-    BuffIfNotBuffed(SPELL_CAMOFLAGE, bInstant);
-    BuffIfNotBuffed(SPELL_MASS_CAMOFLAGE, bInstant);
-    BuffIfNotBuffed(SPELL_ONE_WITH_THE_LAND, bInstant);
-
-    // Weapon Buffs
-    BuffIfNotBuffed(SPELL_DARKFIRE, bInstant);
-    BuffIfNotBuffed(SPELL_MAGIC_VESTMENT, bInstant);
-    BuffIfNotBuffed(SPELL_MAGIC_WEAPON, bInstant);
-    BuffIfNotBuffed(SPELL_GREATER_MAGIC_WEAPON, bInstant);
-    BuffIfNotBuffed(SPELL_FLAME_WEAPON, bInstant);
-    BuffIfNotBuffed(SPELL_KEEN_EDGE, bInstant);
-    BuffIfNotBuffed(SPELL_BLADE_THIRST, bInstant);
-    BuffIfNotBuffed(SPELL_BLACKSTAFF, bInstant);
-    BuffIfNotBuffed(SPELL_BLESS_WEAPON, bInstant);
-    BuffIfNotBuffed(SPELL_DEAFENING_CLANG, bInstant);
-    BuffIfNotBuffed(SPELL_HOLY_SWORD, bInstant);
-
-    // Armor buffs
-    BuffIfNotBuffed(SPELL_MAGE_ARMOR, bInstant);
-    BuffIfNotBuffed(SPELL_SHIELD, bInstant);
-    BuffIfNotBuffed(SPELL_SHIELD_OF_FAITH, bInstant);
-    BuffIfNotBuffed(SPELL_ENTROPIC_SHIELD, bInstant);
-    BuffIfNotBuffed(SPELL_BARKSKIN, bInstant);
-
-    // Stat buffs
-    BuffIfNotBuffed(SPELL_AURA_OF_VITALITY, bInstant);
-    BuffIfNotBuffed(SPELL_BULLS_STRENGTH, bInstant);
-    BuffIfNotBuffed(SPELL_OWLS_WISDOM, bInstant);
-    BuffIfNotBuffed(SPELL_OWLS_INSIGHT, bInstant);
-    BuffIfNotBuffed(SPELL_FOXS_CUNNING, bInstant);
-    BuffIfNotBuffed(SPELL_ENDURANCE, bInstant);
-    BuffIfNotBuffed(SPELL_CATS_GRACE, bInstant);
+    object oMaster = GetMaster();
 
 
-    // Alignment Protections
-    int nAlignment = GetAlignmentGoodEvil(OBJECT_SELF);
-    if (nAlignment == ALIGNMENT_EVIL)
+// no master? assume it's not in a party so no target
+    if (!GetIsObjectValid(oMaster))
+        return OBJECT_INVALID;
+
+    object oTarget = GetAttackTarget(oMaster);
+
+    object oPartyTargetPC, oPartyTargetNPC;
+    float fDistance = 1000.0;
+    float fTargetDistance;
+
+// use last hostile actor as fallback
+    if (!GetIsValidTarget(oTarget))
+        oTarget = GetLastHostileActor(oMaster);
+
+    if (GetIsValidTarget(oTarget))
+        fDistance = GetDistanceToObject(oTarget);
+
+    // loop PCs in party
+
+    object oPartyPC = GetFirstFactionMember(oMaster);
+    while (GetIsObjectValid(oPartyPC))
     {
-        BuffIfNotBuffed(SPELL_PROTECTION_FROM_GOOD, bInstant);
-        BuffIfNotBuffed(SPELL_MAGIC_CIRCLE_AGAINST_GOOD, bInstant);
-        BuffIfNotBuffed(SPELL_UNHOLY_AURA, bInstant);
-    }
-    else if (nAlignment == ALIGNMENT_GOOD || nAlignment == ALIGNMENT_NEUTRAL)
-    {
-        BuffIfNotBuffed(SPELL_PROTECTION_FROM_EVIL, bInstant);
-        BuffIfNotBuffed(SPELL_MAGIC_CIRCLE_AGAINST_EVIL, bInstant);
-        BuffIfNotBuffed(SPELL_HOLY_AURA, bInstant);
+        oPartyTargetPC = GetAttackTarget(oPartyPC);
+        fTargetDistance = GetDistanceToObject(oPartyTargetPC);
+
+        if (!GetIsValidTarget(oPartyTargetPC))
+            oPartyTargetPC = GetLastHostileActor(oPartyPC);
+
+        if (GetIsValidTarget(oPartyTargetPC) && fTargetDistance < fDistance)
+        {
+            fDistance = fTargetDistance;
+            oTarget = oPartyTargetPC;
+        }
+
+        oPartyPC = GetNextFactionMember(oMaster);
     }
 
+// loop NPCs
+    object oPartyNPC = GetFirstFactionMember(oMaster, FALSE);
+    while (GetIsObjectValid(oPartyNPC))
+    {
+        oPartyTargetNPC = GetAttackTarget(oPartyNPC);
 
-    if(GetRacialType(OBJECT_SELF) == RACIAL_TYPE_UNDEAD && GetHasSpell(SPELL_STONE_BONES) && !GetHasSpellEffect(SPELL_STONE_BONES))
-    {
-        ActionCastSpellAtObject(SPELL_STONE_BONES, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
+        if (!GetIsValidTarget(oPartyTargetNPC))
+            oPartyTargetNPC = GetLastHostileActor(oPartyNPC);
 
-    //Evasion Protections
-    if(GetHasSpell(SPELL_IMPROVED_INVISIBILITY) && !GetHasSpellEffect(SPELL_IMPROVED_INVISIBILITY))
-    {
-        ActionCastSpellAtObject(SPELL_IMPROVED_INVISIBILITY, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_DISPLACEMENT)&& !GetHasSpellEffect(SPELL_DISPLACEMENT))
-    {
-        ActionCastSpellAtObject(SPELL_DISPLACEMENT, OBJECT_SELF, METAMAGIC_ANY, 0, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
+        fTargetDistance = GetDistanceToObject(oPartyTargetNPC);
 
-    //Regeneration Protections
-    if(GetHasSpell(SPELL_REGENERATE) && !GetHasSpellEffect(SPELL_REGENERATE))
-    {
-        ActionCastSpellAtObject(SPELL_REGENERATE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_MONSTROUS_REGENERATION)&& !GetHasSpellEffect(SPELL_MONSTROUS_REGENERATION))
-    {
-        ActionCastSpellAtObject(SPELL_MONSTROUS_REGENERATION, OBJECT_SELF, METAMAGIC_ANY, 0, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
+        if (GetIsValidTarget(oPartyTargetNPC) && fTargetDistance < fDistance)
+        {
+            fDistance = fTargetDistance;
+            oTarget = oPartyTargetNPC;
+        }
+
+        oPartyNPC = GetNextFactionMember(oMaster, FALSE);
     }
 
-    //Combat Protections
-    if(GetHasSpell(SPELL_PREMONITION) && !GetHasSpellEffect(SPELL_PREMONITION))
-    {
-        ActionCastSpellAtObject(SPELL_PREMONITION, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_GREATER_STONESKIN)&& !GetHasSpellEffect(SPELL_GREATER_STONESKIN))
-    {
-        ActionCastSpellAtObject(SPELL_GREATER_STONESKIN, OBJECT_SELF, METAMAGIC_ANY, 0, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_STONESKIN)&& !GetHasSpellEffect(SPELL_STONESKIN))
-    {
-        ActionCastSpellAtObject(SPELL_STONESKIN, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    //Visage Protections
-    if(GetHasSpell(SPELL_SHADOW_SHIELD)&& !GetHasSpellEffect(SPELL_SHADOW_SHIELD))
-    {
-        ActionCastSpellAtObject(SPELL_SHADOW_SHIELD, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_ETHEREAL_VISAGE)&& !GetHasSpellEffect(SPELL_ETHEREAL_VISAGE))
-    {
-        ActionCastSpellAtObject(SPELL_ETHEREAL_VISAGE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_GHOSTLY_VISAGE)&& !GetHasSpellEffect(SPELL_GHOSTLY_VISAGE))
-    {
-        ActionCastSpellAtObject(SPELL_GHOSTLY_VISAGE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    //Mantle Protections
-    if(GetHasSpell(SPELL_GREATER_SPELL_MANTLE)&& !GetHasSpellEffect(SPELL_GREATER_SPELL_MANTLE))
-    {
-        ActionCastSpellAtObject(SPELL_GREATER_SPELL_MANTLE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_SPELL_MANTLE)&& !GetHasSpellEffect(SPELL_SPELL_MANTLE))
-    {
-        ActionCastSpellAtObject(SPELL_SPELL_MANTLE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_LESSER_SPELL_BREACH)&& !GetHasSpellEffect(SPELL_LESSER_SPELL_BREACH))
-    {
-        ActionCastSpellAtObject(SPELL_LESSER_SPELL_BREACH, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    // Globes
-    if(GetHasSpell(SPELL_GLOBE_OF_INVULNERABILITY)&& !GetHasSpellEffect(SPELL_GLOBE_OF_INVULNERABILITY))
-    {
-        ActionCastSpellAtObject(SPELL_GLOBE_OF_INVULNERABILITY, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_MINOR_GLOBE_OF_INVULNERABILITY)&& !GetHasSpellEffect(SPELL_MINOR_GLOBE_OF_INVULNERABILITY))
-    {
-        ActionCastSpellAtObject(SPELL_MINOR_GLOBE_OF_INVULNERABILITY, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-
-    //Misc Protections
-    if(GetHasSpell(SPELL_ELEMENTAL_SHIELD)&& !GetHasSpellEffect(SPELL_ELEMENTAL_SHIELD))
-    {
-        ActionCastSpellAtObject(SPELL_ELEMENTAL_SHIELD, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if (GetHasSpell(SPELL_MESTILS_ACID_SHEATH)&& !GetHasSpellEffect(SPELL_MESTILS_ACID_SHEATH))
-    {
-        ActionCastSpellAtObject(SPELL_MESTILS_ACID_SHEATH, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if (GetHasSpell(SPELL_DEATH_ARMOR)&& !GetHasSpellEffect(SPELL_DEATH_ARMOR))
-    {
-        ActionCastSpellAtObject(SPELL_DEATH_ARMOR, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-
-    //Elemental Protections
-    if(GetHasSpell(SPELL_ENERGY_BUFFER)&& !GetHasSpellEffect(SPELL_ENERGY_BUFFER))
-    {
-        ActionCastSpellAtObject(SPELL_ENERGY_BUFFER, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_PROTECTION_FROM_ELEMENTS)&& !GetHasSpellEffect(SPELL_PROTECTION_FROM_ELEMENTS))
-    {
-        ActionCastSpellAtObject(SPELL_PROTECTION_FROM_ELEMENTS, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_RESIST_ELEMENTS)&& !GetHasSpellEffect(SPELL_RESIST_ELEMENTS))
-    {
-        ActionCastSpellAtObject(SPELL_RESIST_ELEMENTS, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_ENDURE_ELEMENTS)&& !GetHasSpellEffect(SPELL_ENDURE_ELEMENTS))
-    {
-        ActionCastSpellAtObject(SPELL_ENDURE_ELEMENTS, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-
-    //Mental Protections
-    if(GetHasSpell(SPELL_MIND_BLANK)&& !GetHasSpellEffect(SPELL_MIND_BLANK))
-    {
-        ActionCastSpellAtObject(SPELL_MIND_BLANK, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_LESSER_MIND_BLANK)&& !GetHasSpellEffect(SPELL_LESSER_MIND_BLANK))
-    {
-        ActionCastSpellAtObject(SPELL_LESSER_MIND_BLANK, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_CLARITY)&& !GetHasSpellEffect(SPELL_CLARITY))
-    {
-        ActionCastSpellAtObject(SPELL_CLARITY, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-
-    //Summon Ally
-    if(GetHasSpell(SPELL_BLACK_BLADE_OF_DISASTER))
-    {
-        ActionCastSpellAtLocation(SPELL_BLACK_BLADE_OF_DISASTER, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_SUMMON_CREATURE_IX))
-    {
-        ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_IX, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELLABILITY_PM_SUMMON_GREATER_UNDEAD))
-    {
-        ActionCastSpellAtLocation(SPELLABILITY_PM_SUMMON_GREATER_UNDEAD, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_SUMMON_CREATURE_VIII))
-    {
-        ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_VIII, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_SUMMON_CREATURE_VII))
-    {
-        ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_VII, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_SUMMON_CREATURE_VI))
-    {
-        ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_VI, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_CREATE_UNDEAD))
-    {
-        ActionCastSpellAtLocation(SPELL_CREATE_UNDEAD, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_PLANAR_ALLY))
-    {
-        ActionCastSpellAtLocation(SPELL_PLANAR_ALLY, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_SUMMON_CREATURE_V))
-    {
-        ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_V, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_SUMMON_CREATURE_IV))
-    {
-        ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_IV, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_ANIMATE_DEAD))
-    {
-        ActionCastSpellAtLocation(SPELL_ANIMATE_DEAD, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_SUMMON_CREATURE_III))
-    {
-        ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_III, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_SUMMON_CREATURE_II))
-    {
-        ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_II, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-    else if(GetHasSpell(SPELL_SUMMON_CREATURE_I))
-    {
-        ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_I, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
-    }
-
-
+    return oTarget;
 }
-
-
-
-
 
 
 
@@ -1249,6 +1054,7 @@ int AI_GetWeaponSize(object oItem)
         case BASE_ITEM_QUARTERSTAFF:
         case BASE_ITEM_SCYTHE:
         case BASE_ITEM_SHORTSPEAR:
+        case BASE_ITEM_TRIDENT:
             return 4;// WEAPON_SIZE_LARGE;
         break;
     }
@@ -1410,6 +1216,8 @@ int AI_EquipAndAttack()
     DoCombatVoice();
 
     // - Flying
+    // no dragons? - pok
+    /*
     if(GlobalRangeToMeleeTarget > 8.0 &&
        GetSpawnInCondition(AI_FLAG_COMBAT_FLYING, AI_COMBAT_MASTER))
     {
@@ -1417,6 +1225,7 @@ int AI_EquipAndAttack()
         ExecuteScript(FILE_FLY_ATTACK, OBJECT_SELF);
         return TRUE;
     }
+    */
 
     // Set up the range to use weapons at, before moving into HTH
     // Default is 5.0 (+ Some for creature size) with no changes...
@@ -2420,8 +2229,9 @@ int AI_ActionCastSummonSpell(int nSpellId, int nRequirement = 0, int nSummonLeve
             // Fire ActionSpellAtLocation at the given location
             // 1.3 fix - Until ActionCastSpellAtLocation works with METAMAGIC
             //           it will cheat-cast, and decrement the spell by one, with no metamagic.
-            ActionCastSpellAtLocation(nSpellId, lTarget, METAMAGIC_NONE, TRUE);
-            DecrementRemainingSpellUses(OBJECT_SELF, nSpellId);
+            // no cheat casting - pok
+            ActionCastSpellAtLocation(nSpellId, lTarget, METAMAGIC_NONE);
+            //DecrementRemainingSpellUses(OBJECT_SELF, nSpellId);
             // Alway stop - we use else here, so we always do an action! :-D
             return TRUE;
         }
@@ -2443,6 +2253,11 @@ location AI_GetSummonLocation()
     if(GetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_SUMMON_TARGETING, AI_COMBAT_MASTER))
     {
         oTarget = GetLastHostileActor();
+
+// use party target as a fallback - pok
+        if (!GetIsObjectValid(oTarget))
+            oTarget = GetClosestPartyTarget();
+
         if(AI_GetTargetSanityCheck(oTarget) && GetDistanceToObject(oTarget) <= 16.0)
         {
             // Use oTarget (Last hostile actor)
@@ -4839,17 +4654,21 @@ int AI_AttemptHealingAlly()
     // class feats we shouldn't have access to also isn't a nice idea.
     if(AI_GetAIHaveEffect(GlobalEffectPolymorph)) return FALSE;
 
+    // leaders will alwys be the master
+    object oMaster = GetMaster();
+
     // Are we able to raise allies?
     if(GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_WILL_RAISE_ALLIES_IN_BATTLE, AI_OTHER_COMBAT_MASTER))
     {
+
         // Leader - if dead, make sure we raise them!
-        if(GetIsObjectValid(GlobalNearestLeader) &&
-           GetIsDead(GlobalNearestLeader) &&
-          !GetLocalInt(GlobalNearestLeader, AI_INTEGER + I_AM_TOTALLY_DEAD))
+        if(GetIsObjectValid(oMaster) &&
+           GetIsDead(oMaster) &&
+          !GetLocalInt(oMaster, AI_INTEGER + I_AM_TOTALLY_DEAD))
         {
             // Talent 7 - Conditional single.
-            if(AI_ActionCastSpell(SPELL_RESURRECTION, GlobalNearestLeader, 17, FALSE)) return TRUE;
-            if(AI_ActionCastSpell(SPELL_RAISE_DEAD, GlobalNearestLeader, 15, FALSE)) return TRUE;
+            if(AI_ActionCastSpell(SPELL_RESURRECTION, oMaster, 17, FALSE)) return TRUE;
+            if(AI_ActionCastSpell(SPELL_RAISE_DEAD, oMaster, 15, FALSE)) return TRUE;
         }
         // Get the nearest ally, seen, who is dead
         // - This can cause problems as no looping dead people, as there is a
@@ -4878,9 +4697,12 @@ int AI_AttemptHealingAlly()
     {
         // We always heal leaders
         // - Might make % HP checks.
-        if(GlobalValidLeader)
+
+        //if(GlobalValidLeader)
+        if (GetIsObjectValid(oMaster))
         {
-            if(AI_ActionHealObject(GlobalNearestLeader)) return TRUE;
+            //if(AI_ActionHealObject(GlobalNearestLeader)) return TRUE;
+            if(AI_ActionHealObject(oMaster)) return TRUE;
         }
         // Else we may heal a set ally
         else if(GlobalValidSeenAlly)
@@ -4946,70 +4768,8 @@ int AI_AttemptHealingAlly()
                     // healing potions, they will, if close and no cleric, pass them to
                     // people who need them. It uses ActionGiveItem so may move to target.
                     // There are extra speakstrings for these events.
-                    else if(GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_GIVE_POTIONS_TO_HELP, AI_OTHER_COMBAT_MASTER) &&
-                            // Can they use potions anyway?
-                            nAllyHealRace != RACIAL_TYPE_ABERRATION && nAllyHealRace != RACIAL_TYPE_BEAST &&
-                            nAllyHealRace != RACIAL_TYPE_ELEMENTAL && nAllyHealRace != RACIAL_TYPE_VERMIN &&
-                            nAllyHealRace != RACIAL_TYPE_MAGICAL_BEAST && nAllyHealRace != RACIAL_TYPE_DRAGON &&
-                            nAllyHealRace != RACIAL_TYPE_ANIMAL)
-                    {
-                        // So we pass over a potion. Obviously, we do not need healing,
-                        // so any potion is good!
-                        // NW_IT_MPOTION001 = Light
-                        // NW_IT_MPOTION002 = Serious
-                        // NW_IT_MPOTION003 = Critical
-                        // NW_IT_MPOTION012 = Heal
-                        // NW_IT_MPOTION020 = Moderate
 
-                        // Do we have any of the above? Eh?
-                        // Heal
-                        object oPotionToPass = GetItemPossessedBy(OBJECT_SELF, "NW_IT_MPOTION012");
-                        if(!GetIsObjectValid(oPotionToPass))
-                        {
-                            // Critical
-                            oPotionToPass = GetItemPossessedBy(OBJECT_SELF, "NW_IT_MPOTION003");
-                            if(!GetIsObjectValid(oPotionToPass))
-                            {
-                                // Serious
-                                oPotionToPass = GetItemPossessedBy(OBJECT_SELF, "NW_IT_MPOTION002");
-                                if(!GetIsObjectValid(oPotionToPass))
-                                {
-                                    // Moderate
-                                    oPotionToPass = GetItemPossessedBy(OBJECT_SELF, "NW_IT_MPOTION020");
-                                    if(!GetIsObjectValid(oPotionToPass))
-                                    {
-                                        // Light
-                                        oPotionToPass = GetItemPossessedBy(OBJECT_SELF, "NW_IT_MPOTION001");
-                                        if(!GetIsObjectValid(oPotionToPass))
-                                        {
-                                            // If NONE are valid, we delete this spawn in condition
-                                            DeleteSpawnInCondition(AI_FLAG_OTHER_COMBAT_GIVE_POTIONS_TO_HELP, AI_OTHER_COMBAT_MASTER);
-                                            // Stop - passing potions is last thing to try
-                                            return FALSE;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        // If any valid, we pass it.
-                        if(GetIsObjectValid(oPotionToPass))
-                        {
-                            // Pass it over with ActionGiveItem
-                            ActionGiveItem(oPotionToPass, oAllyToHeal);
-                            // Speak arrays.
-                            string sSpeak = GetLocalString(OBJECT_SELF, AI_TALK_WE_PASS_POTION + "1");
-                            if(sSpeak != "")
-                            {
-                                SpeakString(sSpeak);
-                            }
-                            sSpeak = GetLocalString(OBJECT_SELF, AI_TALK_WE_GOT_POTION + "1");
-                            if(sSpeak != "")
-                            {
-                                AssignCommand(oAllyToHeal, SpeakString(sSpeak));
-                            }
-                            return TRUE;
-                        }
-                    }
+                    // potion passing code removed - pok
                 }
             }
         }
@@ -5055,284 +4815,8 @@ int AI_AttemptFeatSummonFamiliar()
     }
     return FALSE;
 }
-/*::///////////////////////////////////////////////
-//:: Name AI_ActionFleeScared
-//::///////////////////////////////////////////////
-    Makes the person move away from the nearest enemy, or the defined target.
-//::///////////////////////////////////////////////
-//:: Created By: Jasperre
-//:: Created On: 13/01/03
-//:://///////////////////////////////////////////*/
-void AI_ActionFleeScared()
-{
-    // Sets to flee mode
-    SetCurrentAction(AI_SPECIAL_ACTIONS_FLEE);
-    // * Don't speak when silenced or deaf, 1.4 change.
-    if(!AI_GetAIHaveEffect(GlobalEffectDeaf) && !AI_GetAIHaveEffect(GlobalEffectSilenced))
-    {
-        SpeakArrayString(AI_TALK_ON_STUPID_RUN);
-    }
-    else
-    {
-         // added some voice chat - pok
-         switch (d6())
-         {
-             case 1: PlayVoiceChat(VOICE_CHAT_HELP); break;
-             case 2: PlayVoiceChat(VOICE_CHAT_FLEE); break;
-             case 3: PlayVoiceChat(VOICE_CHAT_NEARDEATH); break;
-             case 4:
-                if (GetCurrentHitPoints() <= GetMaxHitPoints()/2)
-                    PlayVoiceChat(VOICE_CHAT_HEALME);
-             break;
-         }
-    }
-    ClearAllActions();
-    // 24: "[DCR:Fleeing] Stupid/Panic/Flee moving from enemies/position - We are a commoner/no morale/failed < 3 int"
-    DebugActionSpeakByInt(24);
+// Morale Flee removed - pok
 
-
-    // Turn on fleeing visual effect
-    ApplyFleeingVisual();
-
-    // Get a target, or run from position
-    object oTarget = GlobalNearestEnemySeen;
-    if(!GetIsObjectValid(oTarget))
-    {
-        oTarget = GlobalNearestEnemyHeard;
-        if(!GetIsObjectValid(oTarget))
-        {
-            oTarget = GetLastHostileActor();
-            // Sanity check checks seen or heard too.
-            if(AI_GetTargetSanityCheck(oTarget))
-            {
-                // Away from position (EG: Away from an hostile AOE spell)
-                ActionMoveAwayFromLocation(GetLocation(OBJECT_SELF), TRUE, 50.0);
-                return;// Stop, no move away from enemy
-            }
-        }
-    }
-    // Default action is to move away from the nearest seen enemy - in this case,
-    // it is valid.
-    //ActionMoveAwayFromObject(oTarget, TRUE, 50.0);
-    // use location instead because its less buggy - pok
-    ActionMoveAwayFromLocation(GetLocation(oTarget), TRUE, 50.0);
-}
-/*::///////////////////////////////////////////////
-//:: Name Flee
-//::///////////////////////////////////////////////
-    Makes checks, and may flee.
-
-    SpawnInCondition(TURN_OFF_GROUP_MORALE, AI_TARGETING_FLEE_MASTER);
-        // This turns OFF any sort of group morale bonuses.
-
-
-    SpawnInCondition(FLEE_TO_NEAREST_NONE_SEEN, AI_TARGETING_FLEE_MASTER);
-        // This is a simple thing, and will, instead of moving to the best
-        // group of allies, will just move to the nearest non-seen and non-heard
-        // ally. This may help resources...if fleeing is activated.
-
-    SpawnInCondition(FLEE_TO_OBJECT, AI_TARGETING_FLEE_MASTER);
-        // This will flee to an object, with the correct tag.
-        // ONLY if they are not there already, of course. Gets nearest (but if
-        // not valid, any one). This will get any object - placeables, monsters,
-        // well - anything! Also, waypoints, so this is easily useful.
-        // Can be dynamic: Instead of "BOS.." it could be GetTag(OBJECT_SELF) + "_FLEE" or something
-        // Ideas: Fleeing to thier leader, fleeing to a cage or a door (can be other area).
-
-    LocalString(OBJECT_SELF, AI_FLEE_OBJECT, "BOSS_TAG_OR_WHATEVER");
-        // This needs setting if the above is to work.
-
-//::///////////////////////////////////////////////
-//:: Created By: Jasperre
-//:://///////////////////////////////////////////*/
-// Only true if we have a flee object.
-int AI_ActionFlee(string sArray)
-{
-    object oToFlee = AI_GetNearbyFleeObject();
-    if(GetIsObjectValid(oToFlee))
-    {
-        // Speak string...
-        if(sArray != "")
-        {
-            // * Don't speak when silenced or deaf, 1.4 change.
-            if(!AI_GetAIHaveEffect(GlobalEffectDeaf) && !AI_GetAIHaveEffect(GlobalEffectSilenced))
-            {
-                SpeakArrayString(sArray);
-            }
-        }
-        // Set it so we will not return for a bit.
-        SetAIObject(AI_FLEE_TO, oToFlee);
-        // Sets to flee mode
-        SetCurrentAction(AI_SPECIAL_ACTIONS_FLEE);
-        // Turn on fleeing visual effect
-        ApplyFleeingVisual();
-        // 25: [DCR:Fleeing] Fleeing to allies. [ID Array] " + sArray + " [Ally] " + GetName(oToFlee)
-        DebugActionSpeakByInt(25, oToFlee, FALSE, sArray);
-        // Move too them.
-        ActionMoveToObject(oToFlee, TRUE);
-        return TRUE;
-    }
-    return FALSE;
-}
-// Fleeing - set OnSpawn for setup. Uses a WILL save!
-// - Bonuses in groups
-// - May go get help
-// - Won't run on a CR/HD threshold.
-// - Leaders help! And all is intelligence based.
-int AI_AttemptMoraleFlee()
-{
-    // If we are immune to fleeing somehow, break
-    if(GetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER)) return FALSE;
-
-    // Get our morale value (Higher = Break less often)
-    int nMoraleValue = GetAIInteger(AI_MORALE);
-    // Commoner flee. Commoners have AI_MORALE set to -1.
-    if(nMoraleValue < FALSE)
-    {
-        AI_ActionFleeScared();
-        return TRUE;
-    }
-    // Declare vaiables...
-    // We only flee every few rounds, or at least check too!
-    // - Its on a timer.
-    if(!GetLocalTimer(AI_TIMER_FLEE) ||
-    // - We check each round if under 40 and under 10% HP
-      (GlobalOurCurrentHP <= 40 && GlobalOurPercentHP <= 10))
-    {
-        // Re-set timer even if we don't do the morale check.
-        if(!GetLocalTimer(AI_TIMER_FLEE))
-        {
-            SetLocalTimer(AI_TIMER_FLEE, 20.0);
-        }
-        // Bosses, when they flee, make others flee.
-        int bBoss = GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_GROUP_LEADER, AI_OTHER_COMBAT_MASTER);
-        // Specials first: Never fight against impossible odds...or leader sense.
-        if(GlobalAverageEnemyHD > GlobalOurHitDice + 8)
-        {
-            // If we don't fight against impossible odds, we will flee given that
-            // they are very powerful (compared to us). Bosses automatically
-            // have this Spawn condition set (IE: Says || bBoss)
-            if(GetSpawnInCondition(AI_FLAG_FLEEING_NEVER_FIGHT_IMPOSSIBLE_ODDS, AI_TARGETING_FLEE_MASTER) || bBoss)
-            {
-                // You see, if there is no valid object ,we stop the script so not to call GetNearbyFleeObject more then once
-                if(AI_ActionFlee(AI_TALK_ON_MORALE_BREAK))
-                {
-                    // Are we a boss? If we are, and we want to flee, we force
-                    // the men we command to run away too!
-                    if(bBoss)
-                    {
-                        // AI command - makes everyone flee.
-                        // * This isn't spoken, just generally "Done", as we
-                        //   normally see in the movies and so on...
-                        AISpeakString(AI_SHOUT_LEADER_FLEE_NOW);
-                    }
-                    return TRUE;
-                }
-                else
-                {
-                    // Didn't want to flee, don't do anything special.
-                    return FALSE;
-                }
-            }
-        }
-        // HP check
-        int nHPBeAt = GetBoundriedAIInteger(HP_PERCENT_TO_CHECK_AT, 80, 100, 1);
-        // Do the check
-        if(GlobalOurPercentHP <= nHPBeAt ||
-        // Either HP OR one of these:
-          (!GetSpawnInCondition(AI_FLAG_FLEEING_NO_OVERRIDING_HP_AMOUNT, AI_TARGETING_FLEE_MASTER) &&
-        // - If the enemy is very strong, we do a will save (8 HD over us)
-          (GlobalAverageEnemyHD > GlobalOurHitDice + 8 ||
-        // - If we have a morerate morale penalty (Set by massive damage/many deaths around us)
-        // - We are alone
-           GetAIInteger(AI_MORALE_PENALTY) >= 10 ||
-           GlobalTotalAllies < 1)))
-        {
-            // Difference of HD to cancle out check...
-            int nDifference = GetBoundriedAIInteger(AMOUNT_OF_HD_DIFFERENCE_TO_CHECK, -2, -50, 50);// Default to -2.
-            int nAlliesBonus = FALSE;
-            // We add X amount per ally present.
-            // - We can add up to a minimum of 6, maximum of our hit dice/2.
-            if(!GetSpawnInCondition(AI_FLAG_FLEEING_TURN_OFF_GROUP_MORALE, AI_TARGETING_FLEE_MASTER) &&
-                GlobalTotalAllies >= 1)
-            {
-                if(GlobalTotalAllies > 6)
-                {
-                    nAlliesBonus = 6;
-                }
-                else if(nAlliesBonus > GlobalOurHitDice/2)
-                {
-                    nAlliesBonus = GlobalOurHitDice/2;
-                }
-                else
-                {
-                    nAlliesBonus = GlobalTotalAllies;
-                }
-                nMoraleValue += nAlliesBonus;
-            }
-            // Double value if leader present!
-            if(GlobalValidLeader) nMoraleValue *= 2;
-            // Check...
-            if((GlobalOurHitDice - nDifference) < GlobalAverageEnemyHD)
-            {
-                // Save DC from 0 to 50. Default 20. This is the base.
-                int nSaveDC = GetBoundriedAIInteger(BASE_MORALE_SAVE, 20, 100, 1);
-                // Change it as with our leader, morale and group morale bonuses.
-                nSaveDC -= nMoraleValue;
-                // Note we will add DC based on difference in HD between us
-                // and our Global Melee Target (as the fact is, it is normally
-                // the nearest, and is always valid. Also, if you are fighting
-                // something you can defeat (EG: Badger summon) you don't run,
-                // but you will run against the level 20 mage who summoned it, if
-                // you were levle 5 or so.
-
-                // Add thiers to DC, take ours. Basically Ours - Theres added on.
-                nSaveDC += GetHitDice(GlobalMeleeTarget);
-                nSaveDC -= GlobalOurHitDice;
-
-                // If we have a save DC of over 1...we check!
-                if(nSaveDC >= 1)
-                {
-                    // This reports the will save to the enemy - who we check against,
-                    // and thusly might well be immune to fear (such as via.
-                    // protection from evil and so on).
-                    if(!WillSave(OBJECT_SELF, nSaveDC, SAVING_THROW_TYPE_FEAR, GlobalMeleeTarget))
-                    {
-                        // fleeing will happen regardless of intelligence if it fails - pok
-                        AI_ActionFleeScared();
-                        /*
-                        // If we fail the will save, VS fear...
-                        // You see, if there is no valid object ,we stop the script so not to call GetNearbyFleeObject more then once
-                        if(AI_ActionFlee(AI_TALK_ON_MORALE_BREAK))
-                        {
-                            return TRUE;
-                        }
-                        // Intelligence 1-3 runs when we fail and no allies.
-                        // 4+ means we don't run, and stay and fight (IE FALSE)
-                        else if(GlobalIntelligence <= 3)
-                        {
-                            // Stupid run
-                            AI_ActionFleeScared();
-                            return TRUE;
-                        }
-                        else
-                        // Higher intelligence don't run from them, but does say something
-                        {
-                            // * Don't speak when silenced or deaf, 1.4 change.
-                            if(!AI_GetAIHaveEffect(GlobalEffectDeaf) && !AI_GetAIHaveEffect(GlobalEffectSilenced))
-                            {
-                                SpeakArrayString(AI_TALK_ON_CANNOT_RUN);
-                            }
-                        }
-                        */
-                        return FALSE;
-                    }
-                }
-            }
-        }
-    }
-    return FALSE;
-}
 /*::///////////////////////////////////////////////
 //:: Name: GoForTheKill
 //::///////////////////////////////////////////////
@@ -5350,71 +4834,15 @@ int AI_AttemptGoForTheKill()
     {
         return FALSE;
     }
-    // TRUE means melee only
-    int bSleepingOnly = FALSE;
-    // Finish off a dead PC, or dying one, out of combat.
-    object oTempEnemy = GetNearestCreature(
-                        CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY,
-                        OBJECT_SELF, 1,
-                        CREATURE_TYPE_IS_ALIVE, FALSE,
-                        CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
-    // Check if valid. If not, check for one with the spell "sleep" on them.
-    if(!GetIsObjectValid(oTempEnemy) || AI_GetAIHaveEffect(GlobalEffectPetrify, oTempEnemy) ||
-        GetCurrentHitPoints(oTempEnemy) <= -10)
-    {
-        // This means we only attack in melee (no spells, no ranged)
-        bSleepingOnly = TRUE;
-        oTempEnemy = GetNearestCreature(
-                     CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY,
-                     OBJECT_SELF, 1,
-                     CREATURE_TYPE_HAS_SPELL_EFFECT, SPELL_SLEEP,
-                     CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
-        // Dragon sleep breath
-        if(!GetIsObjectValid(oTempEnemy) || GetHitDice(oTempEnemy) > 4 ||
-            AI_GetAIHaveEffect(GlobalEffectPetrify, oTempEnemy))
-        {
-            oTempEnemy = GetNearestCreature(
-                     CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY,
-                     OBJECT_SELF, 1,
-                     CREATURE_TYPE_HAS_SPELL_EFFECT, SPELLABILITY_DRAGON_BREATH_SLEEP,
-                     CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
-            // Could add something about Paralyzed people here...
-        }
-    }
-    float fDistance = GetDistanceToObject(oTempEnemy);
-     // Valid, and is not "dead dead"
-    if(GetIsObjectValid(oTempEnemy) &&
-    // -10 is TOTALLY dead.
-       GetCurrentHitPoints(oTempEnemy) > -10 &&
-     // Intelligence 9+. 10 will attack with many enemies, 9 with 1 or under
-     ((GlobalMeleeAttackers <= 3 &&
-       GlobalIntelligence >= 10) ||
-       GlobalMeleeAttackers <= 1) &&
-     // Make sure it isn't too far, and they are only sleeping
-      (bSleepingOnly == FALSE ||
-       fDistance < 6.0) &&
-     // Big AC check, but mages with +1, VS ac of 30 won't hit :-)
-       GlobalOurBaseAttackBonus >= GetAC(oTempEnemy) - 25)
-    {
-        // 26: "[DCR:GFTK] Attacking a PC who is dying/asleep! [Enemy]" + GetName(oTempEnemy)
-        DebugActionSpeakByInt(26, oTempEnemy);
-        // Attempt default most damaging to try and do most damage.
-        if(fDistance > GlobalRangeToMeleeTarget)
-        {
-            ActionEquipMostDamagingRanged(oTempEnemy);
-        }
-        else
-        {
-            ActionEquipMostDamagingMelee(oTempEnemy);
-        }
-        ActionAttack(oTempEnemy);
-        return TRUE;
-    }
 
-    // Now, we check for most damaged member of the nearest enemies faction.
-    // - Uses bioware function - just...simpler
-    // - Only with 9+ int
-    oTempEnemy = GetFactionMostDamagedMember(GlobalMeleeTarget);
+    // Finish off a dead PC, or dying one, out of combat.
+    // modifed to use party target
+    // the better alternative would be to use party target, but filter to lowest HP - pok
+    object oTempEnemy = GetClosestPartyTarget();
+
+    // sleep, petrified, etc code has been removed.
+    // no faction calls, could be pretty expensive too. it was just used to get most damaged - pok
+
     // - Effect, if lots of people can attack this, like with ranged things,
     //   it can lead to some bloody deaths, especially for some classes.
     // - Note: Intelligence of 9+ shouldn't be used for low levels!
@@ -11181,7 +10609,8 @@ int AI_DragonBreathOrWing(object oTarget)
             SetAIInteger(AI_WING_BUFFET, 0);
             SetAIInteger(AI_DRAGONS_BREATH, nBreath);
             // - Not action do command, just Execute Script
-            ExecuteScript(FILE_DRAGON_WING_BUFFET, OBJECT_SELF);
+            // no dragon associates! - pok
+            //ExecuteScript(FILE_DRAGON_WING_BUFFET, OBJECT_SELF);
             return TRUE;
         }
         // Breath final...
@@ -14026,7 +13455,7 @@ int AI_AttemptFeatCombatHostile()
     }
 
     // Here, we use all potions if set too...
-/*    if(GetSpawnInCondition(AI_FLAG_COMBAT_USE_ALL_POTIONS, AI_COMBAT_MASTER))
+    if(GetSpawnInCondition(AI_FLAG_COMBAT_USE_ALL_POTIONS, AI_COMBAT_MASTER))
     {
         int nUsed = FALSE;
         // Check protection potion
@@ -14053,7 +13482,7 @@ int AI_AttemptFeatCombatHostile()
             DebugActionSpeakByInt(43, OBJECT_INVALID, nUsed);
             return TRUE;
         }
-    }*/
+    }
 
     // Rage - check effects via the set effects..
     if(!AI_GetAIHaveSpellsEffect(GlobalHasRageSpells))
@@ -14154,8 +13583,10 @@ int AI_ActionPolymorph(int nMaster, int nFirstSpell, int nAmount, int bFeat = FA
         }
 
         // Cast it
-        ActionCastSpellAtObject(nCast, OBJECT_SELF, METAMAGIC_NONE, TRUE);
+        // no cheat casting bruh - pok
+        ActionCastSpellAtObject(nCast, OBJECT_SELF, METAMAGIC_NONE);
 
+        /*
         if(bRemove)
         {
             // Decrement one or the other
@@ -14170,6 +13601,7 @@ int AI_ActionPolymorph(int nMaster, int nFirstSpell, int nAmount, int bFeat = FA
                 DecrementRemainingSpellUses(OBJECT_SELF, nMaster);
             }
         }
+        */
         // Add Action Attack melee target :-D
         ActionAttack(GlobalMeleeTarget);
         return TRUE;
@@ -14716,6 +14148,7 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         // Equip best shield for most AC
         AI_EquipBestShield();
         // Move away from the nearest heard enemy
+
         GlobalNearestEnemyHeard = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD, CREATURE_TYPE_IS_ALIVE, TRUE);
         if(GetIsObjectValid(GlobalNearestEnemyHeard))
         {
@@ -14744,12 +14177,17 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
 
     // If oIntruder is valid, we will face them (this helps stops sneak
     // attacks if we then cast something on ourselves, ETC).
+
+    object oPartyTarget = GetClosestPartyTarget();
+
+    // use master' party target if oIntruder isn't valid or is dead - pok
+    if ((!GetIsObjectValid(oIntruder) || GetIsDead(oIntruder)) && GetIsObjectValid(oPartyTarget))
+        oIntruder = oPartyTarget;
+
     // only continue if the intruder exists and is not dead
     // - pok
     if(GetIsObjectValid(oIntruder) && !GetIsDead(oIntruder))
     {
-
-        FastBuff();
 
         DoCombatVoice();
 
@@ -14767,6 +14205,11 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
     // 1.4 - Simple loop here, we need to check AI_GetTargetSanityCheck().
     nTempInt = 1;
     object oEnemy = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, nTempInt);
+
+// replace enemy if invalid or dead with party target - pok
+    if ((!GetIsObjectValid(oEnemy) || GetIsDead(oEnemy)) && GetIsObjectValid(oPartyTarget))
+        oEnemy = oPartyTarget;
+
     while(GetIsObjectValid(oEnemy) &&
          !GetIsObjectValid(GlobalNearestEnemyHeard) &&
          !GetIsObjectValid(GlobalNearestEnemySeen))
@@ -14880,25 +14323,10 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         AI_ActionAbilityAura();
 
         // We may flee from massive odds, or if we panic...or commoner fleeing
-        if(AI_AttemptMoraleFlee()){return;}
+        // no morale panic - pok
+        //if(AI_AttemptMoraleFlee()){return;}
 
-        // Beholder and Mindflayer special AI
-        switch(GetAIInteger(AI_SPECIAL_AI))
-        {
-            case AI_SPECIAL_AI_BEHOLDER:
-            {
-                // Beholder attacks. Should always return TRUE. Uses eye rays,
-                // casts spells, and teleports/flee's.
-                if(AI_AttemptBeholderCombat()){return;}
-            }
-            break;
-            case AI_SPECIAL_AI_MINDFLAYER:
-            {
-                // Special mindflayer things. This can fall through.
-                if(AI_AttemptMindflayerCombat()){return;}
-            }
-            break;
-        }
+        //no beholders or mindflayers - pok
 
         // We will attempt to heal ourselves first as a prioritory.
         // Dragons may use this.
@@ -14914,44 +14342,37 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         // This is a good thing to use first. Dragons may use this.
         if(AI_AttemptFeatBardSong()){return;}
         // We may summon our monster. Always first, because its our's and personal. Dragons may use this (though small chance)
-        if(AI_AttemptFeatSummonFamiliar()){return;}
+        // we won't summon pets. and if we do, i'll handle it on a heartbeat - pok
+        //if(AI_AttemptFeatSummonFamiliar()){return;}
         // Turning, any sort of unturned and non-resistant creatures.
         // Used about every 3 rounds. Dragons may use this.
         if(AI_AttemptFeatTurning()){return;}
 
-        // Special Dragon things now, else other monsters.
-        if(AI_GetIsDragon())
-        {
-            // We may attempt a high level spells, wing buffet, and
-            // always attack with this.
-            if(AI_AttemptDragonCombat()){return;}
-        }
-        else
-        {
-            // We may move back as an archer, or even always do if set to. Normally
-            // only if we have help do we retreat out of AOO range.
-            // Will, if we can, cast invisibility first, or move back if we have it.
-            if(AI_AttemptArcherRetreat(oIntruder)){return;}
+        // no dragons conditional - pok
 
-            // This may knockout dying PC's or coup de grace sleeping PC's nearby.
-            if(AI_AttemptGoForTheKill()){return;}
+        // We may move back as an archer, or even always do if set to. Normally
+        // only if we have help do we retreat out of AOO range.
+        // Will, if we can, cast invisibility first, or move back if we have it.
+        if(AI_AttemptArcherRetreat(oIntruder)){return;}
 
-            // Spells attempt
-            if(AI_AttemptAllSpells()){return;}
+        // This may knockout dying PC's or coup de grace sleeping PC's nearby.
+        if(AI_AttemptGoForTheKill()){return;}
 
-            // We will attempt pickpocket/taunt/animal empathy after spells, before polymorph
-            if(AI_AttemptHostileSkills()){return;}
+        // Spells attempt
+        if(AI_AttemptAllSpells()){return;}
 
-            // Attempt to cast all the buffing spells for melee - EG: Divine power,
-            // magical weapons, and ability enchanters.
-            if(AI_AttemptFeatCombatHostile()){return;}
+        // We will attempt pickpocket/taunt/animal empathy after spells, before polymorph
+        if(AI_AttemptHostileSkills()){return;}
 
-            // We polymorph before attacking, if set so we can.
-            if(AI_AttemptPolyMorph()){return;}
+        // Attempt to cast all the buffing spells for melee - EG: Divine power,
+        // magical weapons, and ability enchanters.
+        if(AI_AttemptFeatCombatHostile()){return;}
 
-            // This is called to attack, and should always attack something really.
-            if(AI_AttemptMeleeAttackWrapper()){return;}
-        }
+        // We polymorph before attacking, if set so we can.
+        if(AI_AttemptPolyMorph()){return;}
+
+        // This is called to attack, and should always attack something really.
+        if(AI_AttemptMeleeAttackWrapper()){return;}
     }
     // Else behavnOur - we don't have a target. Any healing, extra or anything
     // here. Then searching, and finally walking waypoints.
@@ -14994,7 +14415,6 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
     SetAIObject(AI_SEARCH_TARGET, oIntruder);
     SetCurrentAction(AI_SPECIAL_ACTIONS_SEARCH_AROUND);
 }
-
 
 // Debug: To compile this script full, uncomment all of the below.
 /* - Add two "/"'s at the start of this line

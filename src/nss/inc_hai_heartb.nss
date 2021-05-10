@@ -424,11 +424,7 @@ int PerformSpecialAction()
                     else
                         ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(nHitPointsPer), OBJECT_SELF);
                 }
-                else
-                {
-                    // Else, just execute Walk Waypoints
-                    ExecuteScript(FILE_WALK_WAYPOINTS, OBJECT_SELF);
-                }
+                // no waypoint stuff - pok
                 // Delete this special action
                 ResetCurrentAction();
             }

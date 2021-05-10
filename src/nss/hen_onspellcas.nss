@@ -88,8 +88,6 @@ void main()
         // 1.4: Faction equal check in GetIgnoreNoFriend()
         if(bHarmful || GetIsEnemy(oCaster))
         {
-            if (GetIsPC(oCaster) || GetIsPC(GetMaster(oCaster))) SetLocalInt(OBJECT_SELF, "player_tagged", 1);
-
             // Spawn in condition hostile thingy
             if(GetSpawnInCondition(AI_FLAG_OTHER_CHANGE_FACTIONS_TO_HOSTILE_ON_ATTACK, AI_OTHER_MASTER))
             {

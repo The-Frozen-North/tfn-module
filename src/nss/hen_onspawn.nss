@@ -76,30 +76,8 @@
 
 // This is required for all spawn in options!
 #include "inc_hai_spawn"
-
-#include "inc_respawn"
-#include "nwnx_creature"
 #include "inc_loot"
-
-void CopyKey()
-{
-// duplicate the key but make it unpickpocketable/undroppable
-    object oItem = GetFirstItemInInventory();
-    object oNewItem;
-
-    while (GetIsObjectValid(oItem))
-    {
-        if (GetBaseItemType(oItem) == BASE_ITEM_KEY)
-        {
-            oNewItem = CopyItem(oItem, OBJECT_SELF, TRUE);
-            SetDroppableFlag(oNewItem, FALSE);
-            SetPickpocketableFlag(oNewItem, FALSE);
-            break;
-        }
-
-        oItem = GetNextItemInInventory();
-    }
-}
+#include "nwnx_creature"
 
 void main()
 {
@@ -198,19 +176,7 @@ void main()
 
     pok - fleeing now happens regardless of intelligence
 ************************* [Fleeing] *******************************************/
-    int nMorale = 100;
-    if (GetLocalInt(OBJECT_SELF, "herbivore") || GetClassByPosition(1) == CLASS_TYPE_COMMONER)
-    {
-        nMorale = -100;
-    }
-    else
-    {
-        SetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER);
-    }
-
-    SetAIInteger(AI_MORALE, nMorale);
-
-    //SetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER);
+    SetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER);
         // Forces them to not flee. This may be set with AI_SetMaybeFearless at the end.
     //SetSpawnInCondition(AI_FLAG_FLEEING_NEVER_FIGHT_IMPOSSIBLE_ODDS, AI_TARGETING_FLEE_MASTER);
         // This will make the creature never fight against impossible odds (8HD+ different)
@@ -434,16 +400,13 @@ void main()
     Leaders/Bosses can be set to issue some orders and inspire more morale - and bring
     a lot of allies to a battle at once!
 ************************* [Combat Other - Leaders] ****************************/
-    if (GetLocalInt(OBJECT_SELF, "boss") == 1 || GetLocalInt(OBJECT_SELF, "semiboss") == 1)
-    {
-        SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_GROUP_LEADER, AI_OTHER_COMBAT_MASTER);
+       //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_GROUP_LEADER, AI_OTHER_COMBAT_MASTER);
             // Special leader. Can issuse some orders. See readme for details.
 
-        SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_BOSS_MONSTER_SHOUT, AI_OTHER_COMBAT_MASTER);
+        //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_BOSS_MONSTER_SHOUT, AI_OTHER_COMBAT_MASTER);
             // Boss shout. 1 time use - calls all creatures in X meters (below) for battle!
         //SetAIInteger(AI_BOSS_MONSTER_SHOUT_RANGE, 60);
             // Defaults to a 60 M range. This can change it. Note: 1 toolset square = 10M.
-    }
 /************************ [Combat Other - Leaders] ****************************/
 
 /************************ [Other - Behaviour/Generic] **************************
@@ -465,9 +428,9 @@ void main()
     //AI_CreateRandomOther(-2, 2, -2, 2, -2, 2, -2, 2);
         // Create (Effect-applied) random HP, saves, AC.
 
-    SetSpawnInCondition(AI_FLAG_OTHER_RETURN_TO_SPAWN_LOCATION, AI_OTHER_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_RETURN_TO_SPAWN_LOCATION, AI_OTHER_MASTER);
         // This will store our spawn location, and then move back there after combat.
-    SetSpawnInCondition(AI_FLAG_OTHER_DONT_RESPOND_TO_EMOTES, AI_OTHER_MASTER);
+    //SetSpawnInCondition(AI_FLAG_OTHER_DONT_RESPOND_TO_EMOTES, AI_OTHER_MASTER);
         // This will ignore ALL chat by PC's (Enemies) who speak actions in Stars - *Bow*
 
     //SetSpawnInCondition(AI_FLAG_OTHER_DONT_SHOUT, AI_OTHER_MASTER);
@@ -708,18 +671,9 @@ void main()
        NWNX_Creature_SetCorpseDecayTime(OBJECT_SELF, 1200000);
        NWNX_Creature_SetDisarmable(OBJECT_SELF, TRUE);
 
-// Set cr integer on self. This is used for determining treasure.
-    SetLocalInt(OBJECT_SELF, "cr", FloatToInt(GetChallengeRating(OBJECT_SELF)));
-    SetLocalInt(OBJECT_SELF, "area_cr", iAreaCR);
 
-    object oItem = GetFirstItemInInventory();
-    object oNewItem;
-
-    DelayCommand(3.0, CopyKey());
 
     //int nRace = GetRacialType(oCreature);
-
-    SetSpawn();
 
     string sScript = GetLocalString(OBJECT_SELF, "spawn_script");
     if (sScript != "") ExecuteScript(sScript);

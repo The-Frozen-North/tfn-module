@@ -30,8 +30,6 @@ void main()
     //int nMode = GetLastAttackMode(oAttacker);       // Currently unused
     int nAttackType = GetLastAttackType(oAttacker);
 
-    if (GetIsPC(oAttacker) || GetIsPC(GetMaster(oAttacker))) SetLocalInt(OBJECT_SELF, "player_tagged", 1);
-
     // Check if they are valid, a DM, we are ignoring them, they are dead now, or invalid
     if(!GetIgnoreNoFriend(oAttacker))
     {

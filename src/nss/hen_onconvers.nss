@@ -66,25 +66,7 @@ void main()
             // Make sure it is a PC and we are not fighting.
             if(!GetIsFighting() && (GetIsPC(oShouter) || GetIsDMPossessed(oShouter)))
             {
-                // If we have something random (or not) to say instead of
-                // the conversation, we will say that.
-                if(GetLocalInt(OBJECT_SELF, ARRAY_SIZE + AI_TALK_ON_CONVERSATION))
-                {
-                    ClearAllActions();// Stop
-                    SetFacingPoint(GetPosition(oShouter));// Face
-                    SpeakArrayString(AI_TALK_ON_CONVERSATION);// Speak string
-                    PlayAnimation(ANIMATION_LOOPING_TALK_NORMAL, 1.0, 3.0);// "Talk", then resume potitions.
-                    ActionDoCommand(ExecuteScript(FILE_WALK_WAYPOINTS, OBJECT_SELF));
-                }
-                else
-                {
-                    // If we are set to NOT clear all actions, we won't.
-                    if(!GetSpawnInCondition(AI_FLAG_OTHER_NO_CLEAR_ACTIONS_BEFORE_CONVERSATION, AI_OTHER_MASTER))
-                    {
-                        ClearAllActions();
-                    }
-                    BeginConversation();
-                }
+                BeginConversation();
             }
         }
     }
@@ -95,21 +77,15 @@ void main()
     // 1.4 - Deafness (or they are seen) check, for fun.
             (!GetHasEffect(EFFECT_TYPE_DEAF) || GetObjectSeen(oShouter)))
     {
-        if(GetIsFriend(oShouter) || GetFactionEqual(oShouter))
+        if(GetFactionEqual(oShouter))
         {
-            // If they are a friend, not a PC, and a valid number, react.
-            // In the actual RespondToShout call, we do check to see if we bother.
-            // - Is PC - or is...master?
-            // - Shouts which are not negative, and not AI_ANYTHING_SAID_CONSTANT.
-            if(nMatch >= 0 && nMatch != AI_SHOUT_ANYTHING_SAID_CONSTANT &&
-              !GetIsPC(oShouter) && !GetIsPC(GetMaster(oShouter)))
-            {
-                // Respond to the shout
-                RespondToShout(oShouter, nMatch);
-            }
+            // only respond to shouts that is a party member - pok
+            RespondToShout(oShouter, nMatch);
+
             // Else either is PC or is shout 0 (everything!)
             // - not if we are in combat, or they are not.
-            else if(!CannotPerformCombatRound() &&
+            /*
+            if(!CannotPerformCombatRound() &&
                      GetIsInCombat(oShouter) &&
                      GetObjectType(oShouter) == OBJECT_TYPE_CREATURE)
             {
@@ -119,6 +95,7 @@ void main()
                 // Respond to oShouter
                 IWasAttackedResponse(oShouter);
             }
+            */
         }
         else if(GetIsEnemy(oShouter) && GetObjectType(oShouter) == OBJECT_TYPE_CREATURE)
         {
@@ -127,19 +104,8 @@ void main()
                 // the negatives are associate shouts, Normally (!)
                 // 0+ are my shouts. 0 is anything
             {
-                // We make sure it isn't an emote (set by default)
-                if(nMatch == AI_SHOUT_ANYTHING_SAID_CONSTANT &&
-                   GetSpawnInCondition(AI_FLAG_OTHER_DONT_RESPOND_TO_EMOTES, AI_OTHER_MASTER))
-                {
-                    // Jump out if its an emote - "*Nods*"
-                    if(GetStringLeft(sSpoken, 1) == EMOTE_STAR &&
-                       GetStringRight(sSpoken, 1) == EMOTE_STAR)
-                    {
-                        // Fire End of Dialogue event
-                        FireUserEvent(AI_FLAG_UDE_ON_DIALOGUE_EVENT, EVENT_ON_DIALOGUE_EVENT);
-                        return;
-                    }
-                }
+                // emote disable removed - pok
+
                 // 58: "[Shout] Responding to shout [Enemy] " + GetName(oShouter) + " Who has spoken!"
                 DebugActionSpeakByInt(58, oShouter);
 

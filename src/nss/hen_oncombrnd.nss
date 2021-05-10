@@ -23,8 +23,6 @@ void main()
     // Pre-combat-round-event. Returns TRUE if we interrupt this script call.
     if(FirePreUserEvent(AI_FLAG_UDE_END_COMBAT_ROUND_PRE_EVENT, EVENT_END_COMBAT_ROUND_PRE_EVENT)) return;
 
-    SetLocalInt(OBJECT_SELF, "combat", 1);
-
     // AI status check. Is the AI on?
     if(GetAIOff()) return;
 

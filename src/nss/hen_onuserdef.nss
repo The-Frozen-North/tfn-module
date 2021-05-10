@@ -65,9 +65,7 @@
 //  - Constant values
 //  - Get/Set spawn in values.
 #include "inc_hai_other"
-//  This contains some useful things to get NPC's to attack and so on.
-#include "inc_hai_attack"
-#include "x2_inc_spellhook"
+//#include "x2_inc_spellhook"
 
 /************************ [UDE Values] *****************************************
     These are uneeded, but here for reference. Use the constants in the file
@@ -101,6 +99,7 @@ void main()
     // Events.
     switch(nEvent)
     {
+        /* WITHOUT THIS BLACK BLADE OF DISASTER MAY BE BROKEN!!
         case X2_EVENT_CONCENTRATION_BROKEN:
         {
             effect eVis = EffectVisualEffect(VFX_IMP_UNSUMMON);
@@ -109,6 +108,7 @@ void main()
             DestroyObject(OBJECT_SELF,0.1f);
         }
         break;
+        */
         // Event Heartbeat
         // Arguments: Basically, none. Nothing activates this script. Fires every 6 seconds.
         case EVENT_HEARTBEAT_PRE_EVENT:

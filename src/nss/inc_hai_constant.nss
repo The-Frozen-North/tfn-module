@@ -49,16 +49,16 @@ const string COMBAT_FILE                            = "hen_detercombat";       /
 // file will make it full-proof.
 //nw_walk_wp
 // - FILE_
-const string FILE_WALK_WAYPOINTS                    = "hen_walkwaypoint";       // FILENAME
+//const string FILE_WALK_WAYPOINTS                    = "hen_walkwaypoint";       // FILENAME
 //const string FILE_RE_SET_WEAPONS                    = "j_ai_setweapons";        // FILENAME
 // If we are dead when this fires, it destroys us
 //const string FILE_DEATH_CLEANUP                     = "j_ai_destroyself";       // FILENAME
 
 // Heartbeat files. Speeds up (hopefully!) heartbeat calls and cirtainly heartbeat file size.
-const string FILE_HEARTBEAT_TALENT_BUFF             = "hen_heartb_buff";
+//const string FILE_HEARTBEAT_TALENT_BUFF             = "hen_heartb_buff";
 //const string FILE_HEARTBEAT_LOOT                    = "j_ai_heart_loot";
 const string FILE_HEARTBEAT_ANIMATIONS              = "hen_heartb_anim";
-const string FILE_HEARTBEAT_WALK_TO_PC              = "hen_heartb_serch";
+//const string FILE_HEARTBEAT_WALK_TO_PC              = "hen_heartb_serch";
 
 //const string FILE_DRAGON_WING_BUFFET                = "ai_wingbuffet";
 //const string FILE_FLY_ATTACK                        = "ai_wingflying";

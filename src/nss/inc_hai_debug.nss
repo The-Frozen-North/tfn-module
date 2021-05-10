@@ -175,7 +175,7 @@ void DebugActionSpeak(string sString)
 // This writes the entry to the log, very important, if debugging
 // Futher: - If left up for a long time, logs can get very big with the AI
 //         - Use to find problems in the AI and report to me :-D (Jasperre)
-    WriteTimestampedLogEntry(sNew);
+    //WriteTimestampedLogEntry(sNew);
 }
 
 // Debug: To compile this script full, uncomment all of the below.

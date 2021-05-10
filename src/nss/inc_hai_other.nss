@@ -39,14 +39,6 @@ void RespondToShout(object oShouter, int nShoutIndex);
 // or who oShouter is attacking. oShouter should be a ally.
 object GetIntruderFromShout(object oShouter);
 
-// Shouts, or really brings all people in 60.0M(by default) to the "shouter"
-void ShoutBossShout(object oEnemy);
-// This sets a morale penalty, to the exsisting one, if there is one.
-// It will reduce itself after fDuration (or if we die, ETC, it is deleted).
-// It is deleted at the end of combat as well.
-void SetMoralePenalty(int nPenalty, float fDuration = 0.0);
-// Removes nPenalty amount if it can.
-void RemoveMoralePenalty(int nPenalty);
 // At 5+ intelligence, we fire off any dispells at oPlaceables location
 void SearchDispells(object oPlaceable);
 
@@ -79,61 +71,6 @@ void CallToArmsResponse(object oAlly);
 // * Calls out AI_SHOUT_I_WAS_ATTACKED, or AI_SHOUT_CALL_TO_ARMS too.
 void IWasAttackedResponse(object oAlly);
 
-/*::///////////////////////////////////////////////
-//:: Name: ShoutBossShout
-//::///////////////////////////////////////////////
- This is used in the OnPercieve, and if we are set to,
- we will "shout" and bring lots of allies a running
-//:://///////////////////////////////////////////*/
-void ShoutBossShout(object oEnemy)
-{
-    // 1.4 - Added a 5 minute cooldown timer for this. Thusly, if the boss lingers,
-    // so will the big shout they do.
-    if(GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_BOSS_MONSTER_SHOUT, AI_OTHER_COMBAT_MASTER) &&
-      !GetLocalTimer(AI_TIMER_BOSS_SHOUT_COOLDOWN))
-    {
-        // Get the range (and default to 60.0 M)
-        float fRange = IntToFloat(GetBoundriedAIInteger(AI_BOSS_MONSTER_SHOUT_RANGE, 60, 370));
-        // We loop through nearest not-seen, not-heard allies and get them
-        // to attack the person.
-        int nCnt = 1;
-        // Not seen, not heard...
-        object oAlly = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND,
-                                          OBJECT_SELF, nCnt, CREATURE_TYPE_IS_ALIVE, TRUE,
-                                          CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN_AND_NOT_HEARD);
-        // Get who thier target is.
-        object oThierTarget;
-        while(GetIsObjectValid(oAlly) && GetDistanceToObject(oAlly) <= fRange)
-        {
-            oThierTarget = GetLocalObject(oAlly, AI_TO_ATTACK);
-            // If they are not attacking the enemy, we assing them to attack.
-            if(oThierTarget != oEnemy)
-            {
-                // Can't be in combat.
-                if(!GetIsInCombat(oAlly))
-                {
-                    // Set them to move to this
-                    SetLocalObject(oAlly, AI_TO_ATTACK, oEnemy);
-                    // Make them attack the person
-                    SetLocalObject(oAlly, AI_TEMP_SET_TARGET, oEnemy);
-                    ExecuteScript(COMBAT_FILE, oAlly);
-                }
-            }
-            nCnt++;
-            oAlly = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND,
-                                       OBJECT_SELF, nCnt, CREATURE_TYPE_IS_ALIVE, TRUE,
-                                       CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN_AND_NOT_HEARD);
-        }
-        // * Don't speak when dead. 1.4 change (an obvious one to make)
-        if(CanSpeak())
-        {
-            // Speak a string associated with this action being carried out
-            SpeakArrayString(AI_TALK_ON_LEADER_BOSS_SHOUT);
-        }
-        // Remove it for 5 minutes.
-        SetLocalTimer(AI_TIMER_BOSS_SHOUT_COOLDOWN, 300.0);
-    }
-}
 // This MAY make us set a local timer to turn off hiding.
 // Turn of hiding, a timer to activate Hiding in the main file. This is
 // done in each of the events, with the opposition checking seen/heard.
@@ -449,12 +386,7 @@ void RespondToShout(object oShouter, int nShoutIndex)
         case AI_SHOUT_I_WAS_ATTACKED_CONSTANT:
         case AI_SHOUT_I_WAS_KILLED_CONSTANT:
         {
-            // If it was "I was killed", we apply a short morale penatly
-            // Penalty is "Hit dice / 4 + 1" (so always 1 minimum) for 18 seconds.
-            if(nShoutIndex == AI_SHOUT_I_WAS_KILLED_CONSTANT)
-            {
-                SetMoralePenalty(GetHitDice(oShouter)/4 + 1, 18.0);
-            }
+            // morale stuff removed - pok
 
             // If we are already attacking, we ignore this shout.
             if(CannotPerformCombatRound()) return;
@@ -504,28 +436,7 @@ void SearchDispells(object oPlaceable)
     }
 }
 
-// This sets a morale penalty, to the exsisting one, if there is one.
-// It will reduce itself (by the penalty) after fDuration (or if we die, ETC, it is deleted).
-// It is deleted at the end of combat as well.
-void SetMoralePenalty(int nPenalty, float fDuration = 0.0)
-{
-    int nNewPenalty = GetAIInteger(AI_MORALE_PENALTY) + nPenalty;
-    SetAIInteger(AI_MORALE_PENALTY, nNewPenalty);
-    DelayCommand(fDuration, RemoveMoralePenalty(nPenalty));
-}
-// Removes nPenalty amount if it can.
-void RemoveMoralePenalty(int nPenalty)
-{
-    int nNewPenalty = GetAIInteger(AI_MORALE_PENALTY) - nPenalty;
-    if(nNewPenalty > 0 && !GetIsDead(OBJECT_SELF))
-    {
-        SetAIInteger(AI_MORALE_PENALTY, nNewPenalty);
-    }
-    else
-    {
-        DeleteAIInteger(AI_MORALE_PENALTY);
-    }
-}
+// morale stuff removed - pok
 
 // This MIGHT move to oEnemy
 // - Checks special actions, such as fleeing, and may run instead!
@@ -552,39 +463,8 @@ void ActionMoveToEnemy(object oEnemy)
     }
 }
 
-// Returns TRUE if we have under 0 morale, set to flee.
-// - They then run! (Badly)
-int PerceptionFleeFrom(object oEnemy)
-{
-    object oRunTarget = oEnemy;
-    if(GetAIInteger(AI_INTELLIGENCE) < FALSE)
-    {
-        // Valid run from target
-        if(!GetIsObjectValid(oRunTarget))
-        {
-            oRunTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN, CREATURE_TYPE_IS_ALIVE, TRUE);
-            if(!GetIsObjectValid(oRunTarget))
-            {
-                oRunTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD, CREATURE_TYPE_IS_ALIVE, TRUE);
-                if(!GetIsObjectValid(oRunTarget))
-                {
-                    oRunTarget = GetLastHostileActor();
-                    if(!GetIsObjectValid(oRunTarget) || GetIsDead(oRunTarget))
-                    {
-                        // Stop - nothing to flee from!
-                        return FALSE;
-                    }
-                }
-            }
-        }
-        // Run from enemy
-        ClearAllActions();
-        ActionMoveAwayFromObject(oRunTarget, TRUE, 50.0);
-        return TRUE;
-    }
-    // 0 or more morale.
-    return FALSE;
-}
+// morale stuff removed
+
 // This wrappers commonly used code for a "Call to arms" type response.
 // * We know of no enemy, so we will move to oAlly, who either called to
 //   us, or, well, we know of.

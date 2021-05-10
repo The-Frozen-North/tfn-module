@@ -55,9 +55,6 @@ void main()
         LoopResetTriggers(SPELLTRIGGER_IMMOBILE, oTrigger);
         LoopResetTriggers(SPELLTRIGGER_START_OF_COMBAT, oTrigger);
     }
-    // Some sitting for a few seconds.
-    ActionPlayAnimation(ANIMATION_LOOPING_SIT_CROSS, 1.0, 6.0);
-    DelayCommand(9.0, ExecuteScript(FILE_WALK_WAYPOINTS, OBJECT_SELF));
 
     // Fire End-heartbeat-UDE
     FireUserEvent(AI_FLAG_UDE_RESTED_EVENT, EVENT_RESTED_EVENT);

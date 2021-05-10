@@ -158,12 +158,7 @@ void main()
                     // Stop stuff because of facing point - New enemy
                     HideOrClear();
 
-                    // Get all allies in 60M to come to thier aid. Talkvolume silent
-                    // shout does not seem to work well.
-                    // - void function. Checks for the spawn int. in it.
-                    // - Turns it off in it too (5 minutes - 1.4)
-                    // - Variable range On Spawn
-                    ShoutBossShout(oPerceived);
+                    // boss shout removed - pok
 
                     // 54: "[Perception] Enemy Seen. Not in combat, attacking. [Percieved] " + GetName(oPerceived)
                     DebugActionSpeakByInt(54, oPerceived);
