@@ -152,6 +152,9 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_STORE_REQUEST_BUY_BEFORE", "on_pc_buyb");
 
+    NWNX_Events_SubscribeEvent("NWNX_ON_EXAMINE_OBJECT_BEFORE", "on_pc_examineb");
+    NWNX_Events_SubscribeEvent("NWNX_ON_EXAMINE_OBJECT_AFTER", "on_pc_examinea");
+
 // We must skip this if polymorphed or bartering.
     NWNX_Events_SubscribeEvent("NWNX_ON_SERVER_CHARACTER_SAVE_BEFORE", "on_pc_save");
 
