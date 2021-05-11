@@ -6,6 +6,7 @@
 #include "inc_nwnx"
 #include "inc_general"
 #include "nwnx_time"
+#include "inc_mappin"
 
 void CreateItemIfBlank(object oPC, string sItem)
 {
@@ -28,6 +29,9 @@ void main()
     string sType = "player";
 
     string sMessage = PlayerDetailedName(oPC)+" has entered the game as a "+sType;
+
+    // Map Pins
+    MapPin_LoadPCMapPins(oPC);
 
     WriteTimestampedLogEntry(sMessage);
     LogWebhook(oPC, LOG_IN);
