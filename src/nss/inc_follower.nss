@@ -21,7 +21,7 @@ void AssignHenchmanScripts(object oCreature)
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_BLOCKED_BY_DOOR, "hen_onblocked");
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DAMAGED, "hen_ondamaged");
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DIALOGUE, "hen_onconvers");
-    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DISTURBED, "ai_ondisturb");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DISTURBED, "hen_ondisturb");
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_END_COMBATROUND, "hen_oncombrnd");
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_HEARTBEAT, "hen_onheartb");
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED, "hen_onattacked");
@@ -29,6 +29,8 @@ void AssignHenchmanScripts(object oCreature)
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_RESTED, "hen_onrest");
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_SPELLCASTAT, "hen_onspellcas");
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_USER_DEFINED_EVENT, "hen_onuserdef");
+
+    ExecuteScript("hen_onspawne", oCreature);
 }
 
 int GetFollowerCount(object oPlayer)

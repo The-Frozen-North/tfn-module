@@ -31,7 +31,7 @@
 
 // All constants.
 #include "inc_hai_constant"
-#include "inc_hai_generic"
+//#include "inc_hai_generic"
 #include "x0_i0_voice"
 
 void ResetHenchmenState()
@@ -860,7 +860,8 @@ void RespondToShout(object oShouter, int nShoutIndex)
         ResetHenchmenState();
         DeleteLocalInt(OBJECT_SELF, "guard");
         DeleteLocalInt(OBJECT_SELF, "stand_ground");
-        DetermineCombatRound();
+        ExecuteScript("hen_detercombat");
+        //DetermineCombatRound();
 
         // * bonus feature. If master is attacking a door or container, issues VWE Attack Nearest
         // * will make henchman join in on the fun
@@ -912,14 +913,14 @@ void RespondToShout(object oShouter, int nShoutIndex)
         {
             if(GetHasSpell(SPELL_RESURRECTION))
             {
-                if(AI_ActionCastSpell(SPELL_RESURRECTION, oMaster, 17, FALSE))
-                    DelayCommand(2.0, VoiceCanDo());
+                ActionCastSpellAtObject(SPELL_RESURRECTION, oMaster);
+                DelayCommand(2.0, VoiceCanDo());
                 break;
             }
             else if(GetHasSpell(SPELL_RAISE_DEAD))
             {
-                if(AI_ActionCastSpell(SPELL_RAISE_DEAD, oMaster, 17, FALSE))
-                    DelayCommand(2.0, VoiceCanDo());
+                ActionCastSpellAtObject(SPELL_RAISE_DEAD, oMaster);
+                DelayCommand(2.0, VoiceCanDo());
                 break;
             }
             int nRnd;
@@ -941,12 +942,13 @@ void RespondToShout(object oShouter, int nShoutIndex)
 
         //SetCommandable(TRUE);
         // TODO: use AI_ActionHealUndeadObject for undead healing
+        /*
         if(AI_ActionHealObject(oMaster))
         {
             DelayCommand(2.0, VoiceCanDo());
             return;
         }
-
+        */
         VoiceCannotDo();
         break;
 

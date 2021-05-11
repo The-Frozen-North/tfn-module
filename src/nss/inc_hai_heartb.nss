@@ -278,6 +278,8 @@ int PerformSpecialAction()
         break;
         // If this is the one, we will search around for enemies - usually done
         // at the end of a combat round, it is more reliable here.
+        // no searching for enemies - pok
+        /*
         case AI_SPECIAL_ACTIONS_SEARCH_AROUND:
         {
             // If we are in combat, delete this special thing, and return FALSE
@@ -427,6 +429,7 @@ int PerformSpecialAction()
             return TRUE;
         }
         break;
+        */
         // Move to combat - we buff (and only buff again after 1 minute of running)
         // and either follow the person who wants us to help them, or we will run to the
         // location set.

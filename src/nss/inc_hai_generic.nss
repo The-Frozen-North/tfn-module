@@ -6020,12 +6020,12 @@ int AI_AttemptAllSpells(int nLowestSpellLevel = 0, int nBABCheckHighestLevel = 3
        !GetIsObjectValid(GlobalSpellTarget) || GetIsDead(GlobalSpellTarget)) // check dead - pok
     {
         // 31: "[DCR: All Spells] Error! No casting (No spells, items, target Etc)."
-        //DebugActionSpeakByInt(31);
+        DebugActionSpeakByInt(31);
         return FALSE;
     }
     // 11: "[DCR: All Spells] [Modifier|BaseDC|SRA] " + IntToString(iInput)
     // Input: 100 * GlobalSpellAbilityModifier) + 10 * GlobalSpellBaseSaveDC + SRA
-    //DebugActionSpeakByInt(32, OBJECT_INVALID, (100 * GlobalSpellAbilityModifier) + (10 * GlobalSpellBaseSaveDC) + (SRA));
+    DebugActionSpeakByInt(32, OBJECT_INVALID, (100 * GlobalSpellAbilityModifier) + (10 * GlobalSpellBaseSaveDC) + (SRA));
 
     // All the inputs (plus for SRA a few extra ones) for the spells function
     // we calculate now. SRA is quite common, so useful not to do repetitive
@@ -11570,11 +11570,11 @@ int AI_GetTargetSanityCheck(object oTarget)
     // Ethereal check
     if(GetIsEthereal(oTarget)) return FALSE;
 
-    if(!GetIsObjectValid(oTarget) && // Isn't valid
+    if(!GetIsObjectValid(oTarget) || //&& - and statement removed - pok  // Isn't valid
         GetIsDead(oTarget) ||        // Is dead
         GetIsDM(oTarget) ||          // Is DM
         GetIgnore(oTarget) ||        // Is ignored
-        AI_GetAIHaveEffect(GlobalEffectPetrify, oTarget) ||  // Is petrified
+        //AI_GetAIHaveEffect(GlobalEffectPetrify, oTarget) ||  // Is petrified - this check was removed by pok
       (!GetObjectSeen(oTarget) && !GetObjectHeard(oTarget))) // Is not seen nor heard.
     {
         // If we cannot see or hear the target, or they are an invalid target,
@@ -14160,6 +14160,9 @@ int AI_StopWhatWeAreDoing()
 ************************* [AI_DetermineCombatRound] ***************************/
 void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
 {
+    if (GetLocalInt(OBJECT_SELF, "busy") == 1)
+        return;
+
     // 46: "[DRC] START [Intruder]" + GetName(oIntruder)
     DebugActionSpeakByInt(46, oIntruder);
 

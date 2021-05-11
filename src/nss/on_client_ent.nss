@@ -40,7 +40,8 @@ void main()
 
     NWNX_Damage_SetAttackEventScript("pc_attack", oPC);
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_DAMAGED, "on_pc_damaged");
-
+    SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED, "on_pc_spellcast");
+    SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_SPELLCASTAT, "on_pc_attacked");
     GiveHiPSFeatSafely(oPC);
 
 // this item is deprecated
