@@ -48,4 +48,20 @@ void main()
     {
         gsCBDetermineCombatRound(oHighestDamager);
     }
+
+    if (GetImmortal() && GetLocalInt(OBJECT_SELF, "unconscious") == 0)
+    {
+        int nKnockdownHP = GetMaxHitPoints()/10;
+        if (nKnockdownHP < 1)
+            nKnockdownHP = 1;
+        if (GetCurrentHitPoints() <= nKnockdownHP)
+        {
+            effect eKnockdown = EffectKnockdown();
+            float fDuration = 60.0;
+            //FloatingTextStringOnCreature(GetName(OBJECT_SELF)+" is now unconscious.", OBJECT_SELF, FALSE);
+            SetLocalInt(OBJECT_SELF, "unconscious", 1);
+            ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eKnockdown, OBJECT_SELF, fDuration);
+            DelayCommand(fDuration, DeleteLocalInt(OBJECT_SELF, "unconscious"));
+        }
+    }
 }

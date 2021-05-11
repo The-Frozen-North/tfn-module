@@ -49,7 +49,7 @@ void main()
         return;
     }
 
-    if (nMatrix & GS_AI_ACTION_TYPE_REST && !GetIsInCombat(OBJECT_SELF) && GetLocalInt(OBJECT_SELF, "combat") > 3)
+    if (nMatrix & GS_AI_ACTION_TYPE_REST && !GetIsInCombat(OBJECT_SELF) && GetLocalInt(OBJECT_SELF, "unconscious") == 0 && GetLocalInt(OBJECT_SELF, "combat") > 3)
     {
         //SetAILevel(OBJECT_SELF, AI_LEVEL_LOW);
         gsAIActionRest();
