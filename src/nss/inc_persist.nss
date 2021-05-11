@@ -1,5 +1,6 @@
 #include "inc_debug"
 #include "inc_sql"
+#include "inc_mappin"
 #include "nwnx_player"
 
 // -------------------------------------------------------------------------
@@ -108,6 +109,7 @@ void SavePCInfo(object oPC)
     }
 
     ExportMinimap(oPC);
+    MapPin_SavePCMapPins(oPC);
 
     SQLocalsPlayer_SetInt(oPC, "CURRENT_HP", GetCurrentHitPoints(oPC));
 }
