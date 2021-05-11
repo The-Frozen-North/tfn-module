@@ -34,9 +34,9 @@ const int CHANCE_TWO = 15;
 const int CHANCE_THREE = 5;
 
 // Lower these to decrease the base chance of getting certain tiers.
-const int BASE_T1_WEIGHT = 3000;
-const int BASE_T2_WEIGHT = 160;
-const int BASE_T3_WEIGHT = 40;
+const int BASE_T1_WEIGHT = 4000;
+const int BASE_T2_WEIGHT = 200;
+const int BASE_T3_WEIGHT = 50;
 const int BASE_T4_WEIGHT = 20;
 const int BASE_T5_WEIGHT = 5;
 
