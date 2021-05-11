@@ -734,7 +734,7 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
 
     float fDistance = GetDistanceToObject(oTarget);
 
-    if (GetLocalInt(OBJECT_SELF, "range") == 1 && fDistance >= 2.0 && fDistance <= 8.0+IntToFloat(d4()))
+    if (GetLocalInt(OBJECT_SELF, "melee_attacked") == 0 && GetLocalInt(OBJECT_SELF, "range") == 1 && fDistance >= 2.0 && fDistance <= 8.0+IntToFloat(d4()))
     {
         float fDistanceToMove = 8.0+IntToFloat(d8());
         ActionMoveAwayFromLocation(GetLocation(oTarget), TRUE, fDistanceToMove);
