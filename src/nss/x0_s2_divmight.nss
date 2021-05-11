@@ -61,7 +61,7 @@ void main()
             SignalEvent(oTarget, EventSpellCastAt(OBJECT_SELF, SPELL_DIVINE_MIGHT, FALSE));
 
             //Apply Link and VFX effects to the target
-            ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, TurnsToSeconds(nCharismaBonus)/2);
+            ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, TurnsToSeconds(nCharismaBonus)/2.0);
             ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
         }
 

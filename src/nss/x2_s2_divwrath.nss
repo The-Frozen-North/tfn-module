@@ -131,6 +131,6 @@ void main()
 
 
     //Apply the armor bonuses and the VFX impact
-    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, TurnsToSeconds(nDuration));
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, TurnsToSeconds(nDuration)/2.0);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
 }
