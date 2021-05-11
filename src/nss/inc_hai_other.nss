@@ -882,7 +882,8 @@ void RespondToShout(object oShouter, int nShoutIndex)
 
         //UseStealthMode();
         //UseDetectMode();
-        ActionForceFollowObject(GetMaster(), 3.0);
+        SetAIObject(AI_FLEE_TO, oMaster);
+        ActionForceFollowObject(oMaster, 2.0);
         SetLocalInt(OBJECT_SELF, "busy", 1);
         DelayCommand(5.0, DeleteLocalInt(OBJECT_SELF, "busy"));
         break;
@@ -1119,9 +1120,9 @@ void CallToArmsResponse(object oAlly)
     //AISpeakString(AI_SHOUT_CALL_TO_ARMS);
     // this is commented out so it won't chain others nearby - pok
 
-    // If we are over 2 meters away from oShouter, we move to them using
+    // If we are over 20 (pok) meters away from oShouter, we move to them using
     // the special action
-    if(GetDistanceToObject(oAlly) > 2.0 || !GetObjectSeen(oAlly))
+    if(GetDistanceToObject(oAlly) > 20.0 || !GetObjectSeen(oAlly))
     {
         // New special action, but one that is overrided by combat
         location lAlly = GetLocation(oAlly);
@@ -1188,6 +1189,15 @@ void IWasAttackedResponse(object oAlly)
         // If valid, we will move to a point bisecting the intruder and oAlly, or
         // move to oAlly. Should get interrupted once we see the attack target.
         // * NEED TO TEST
+        // this doesn't get interrupted! make DCR now - pok
+        if (GetIsObjectValid(oIntruder) && !GetIsDead(oIntruder))
+        {
+            // Determine it anyway - we will search around oShouter
+            // if nothing is found...but we are near to the shouter
+            DetermineCombatRound(oAlly);
+            return;
+        }
+        /*
         if(GetIsObjectValid(oIntruder))
         {
             // New special action, but one that is overrided by combat
@@ -1205,13 +1215,17 @@ void IWasAttackedResponse(object oAlly)
             // Move to the location of the fight, attack.
             ClearAllActions();
             // Move to the fights location
-            ActionMoveToLocation(lTarget, TRUE);
+            //ActionMoveToLocation(lTarget, TRUE);
+            // move to master's location - pok
+            ActionMoveToLocation(GetLocation(oMaster), TRUE);
             // When we see someone fighting, we'll DCR
             return;
         }
+        */
         // If we are over 2 meters away from oShouter, we move to them using
         // the special action
-        else if(GetDistanceToObject(oAlly) > 2.0 || !GetObjectSeen(oAlly))
+        // actually lets make it so that if we are about 20m away
+        else if(GetDistanceToObject(oAlly) > 20.0 || !GetObjectSeen(oAlly))
         {
             // New special action, but one that is overrided by combat
             location lAlly = GetLocation(oAlly);
@@ -1224,13 +1238,6 @@ void IWasAttackedResponse(object oAlly)
             // Move to the fights location
             ActionMoveToLocation(lAlly, TRUE);
             // When we see someone fighting, we'll DCR
-            return;
-        }
-        else
-        {
-            // Determine it anyway - we will search around oShouter
-            // if nothing is found...but we are near to the shouter
-            DetermineCombatRound(oAlly);
             return;
         }
     }

@@ -1214,63 +1214,6 @@ int AI_EquipAndAttack()
     }
     */
 
-    // Set up the range to use weapons at, before moving into HTH
-    // Default is 5.0 (+ Some for creature size) with no changes...
-    float fRange = 5.0;
-    // Might have some pre-set range OnSpawn
-    int nRangeFromSetup = GetAIInteger(AI_RANGED_WEAPON_RANGE);
-    if(nRangeFromSetup >= 1)
-    {
-        fRange = IntToFloat(nRangeFromSetup);
-    }
-    // If our intelligence is enough, we make it 3.0.
-    else if(GlobalIntelligence >= 5)
-    {
-        fRange = 3.0;
-    }
-    // We add a base of X for monster sizes
-    fRange += (IntToFloat(GetCreatureSize(OBJECT_SELF))/4.0);
-
-    // bRangedAttack = TRUE, then equip ranged weapons
-    int bRangedAttack = FALSE;
-
-    // Now check for it...
-    // If range to melee target is OVER fRange...
-    // - Or setting to always use bow
-    if(GlobalRangeToMeleeTarget > fRange ||
-       GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_USE_BOW, AI_COMBAT_MASTER))
-    {
-        bRangedAttack = TRUE;
-    }
-
-    // Special check for AI_FLAG_COMBAT_BETTER_AT_HAND_TO_HAND.
-    // Either a % chance, or that they have no enemy in X distance, and we are
-    // in Y distance.
-    // We always run in at 8 or less M too.
-    if(bRangedAttack == TRUE && GetSpawnInCondition(AI_FLAG_COMBAT_BETTER_AT_HAND_TO_HAND, AI_COMBAT_MASTER))
-    {
-        // If they are under 8M away, always run in - 80% chance
-        if(GlobalRangeToMeleeTarget < 8.0 && d10() <= 8)
-        {
-            bRangedAttack = FALSE;
-        }
-        else
-        {
-            // Get distance from melee target to nearest ally to it.
-            float fAllyToMelee = GetDistanceBetween(GlobalMeleeTarget, GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND, GlobalMeleeTarget, 1, CREATURE_TYPE_IS_ALIVE, TRUE));
-
-            // Check thier range to ours
-            // - Basically, if GlobalRangeToMeleeTarget - fAllyToMelee, is
-            //   a difference of Random(4) + 4;, we move in.
-            // + 60% chance!
-            if((GlobalRangeToMeleeTarget - fAllyToMelee) <= (IntToFloat(Random(4) + 4)) &&
-               d10() <= 6)
-            {
-                bRangedAttack = FALSE;
-            }
-        }
-    }
-
     // Declare everything
     object oEquipped;
     int bRanged, bNeedMoreAC;
@@ -1283,26 +1226,13 @@ int AI_EquipAndAttack()
     // SPECIAL: We will just use default calls FIRST and stop IF we have this set
     // same checks to choose between them though :-P
 
+    // conditional melee/range logic removed
 
     // 1: "[DCR:Melee] Most Damaging Weapon. Target: " + GetName(GlobalMeleeTarget)
     //DebugActionSpeakByInt(1, GlobalMeleeTarget);
-
+    int nRange = GetLocalInt(OBJECT_SELF, "range") == 1;
     // bRangedAttack = 1 then ranged.
-    if(bRangedAttack)
-    {
-        ActionEquipMostDamagingRanged(GlobalMeleeTarget);
-        bRanged = TRUE;
-    }
-    // Special near-range always attack with a bow option.
-    else if(GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_USE_BOW, AI_COMBAT_MASTER))
-    {
-        ActionEquipMostDamagingRanged(GlobalMeleeTarget);
-        bRanged = TRUE;
-    }
-    // Spcial - if we are set to always move back, 1/10 times we don't equip HTH.
-    // BUT we will attack in HTH if the last target was this target.
-    else if(GetLocalInt(OBJECT_SELF, "range") == 1
-         && d10() != 1)
+    if(nRange == 1)
     {
         ActionEquipMostDamagingRanged(GlobalMeleeTarget);
         bRanged = TRUE;
