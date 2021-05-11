@@ -146,6 +146,7 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_CAST_SPELL_BEFORE", "on_pc_spcastb");
     NWNX_Events_SubscribeEvent("NWNX_ON_BROADCAST_CAST_SPELL_BEFORE", "on_pc_spcastb");
 
+    NWNX_Events_SubscribeEvent("NWNX_ON_ELC_VALIDATE_CHARACTER_BEFORE", "on_validateb");
     NWNX_Events_SubscribeEvent("NWNX_ON_ELC_VALIDATE_CHARACTER_AFTER", "on_validatea");
 
     NWNX_Events_SubscribeEvent("NWNX_ON_STORE_REQUEST_SELL_AFTER", "on_storesella");

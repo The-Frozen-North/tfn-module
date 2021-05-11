@@ -2,7 +2,6 @@
 
 #include "nwnx_player"
 #include "nwnx_object"
-#include "nwnx_item"
 #include "inc_sql"
 #include "util_i_csvlists"
 
@@ -42,15 +41,6 @@ void MigrateString(object oPC, string sVarName)
 
 void main()
 {
-    int nSlot;
-    object oItem;
-    int nHitDice = GetHitDice(OBJECT_SELF);
-    for ( nSlot = 0; nSlot < 14; ++nSlot )
-    {
-        oItem = GetItemInSlot(nSlot, OBJECT_SELF);
-        if (NWNX_Item_GetMinEquipLevel(oItem) > nHitDice)
-            ActionUnequipItem(oItem);
-    }
 
 // assume 0 XP characters are new
     if (GetXP(OBJECT_SELF) == 0) return;
