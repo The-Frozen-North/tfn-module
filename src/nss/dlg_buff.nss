@@ -12,5 +12,6 @@ void main()
         ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectHaste(), oPC);
         ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectSkillIncrease(SKILL_SEARCH, 50), oPC);
         ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectSkillIncrease(SKILL_LORE, 50), oPC);
+        ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectSkillIncrease(SKILL_PERSUADE, 50), oPC);
     }
 }

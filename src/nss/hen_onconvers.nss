@@ -16,106 +16,110 @@
 #include "inc_hai_monsho"
 #include "x0_i0_henchman"
 
+// * This function checks to make sure no
+// * dehibilating effects are on the player that should
+// * Don't use getcommandable for this since the dying system
+// * will sometimes leave a player in a noncommandable state
+int AbleToTalk(object oSelf)
+{
+    if (GetLocalInt(oSelf, "pending_destroy")) return FALSE;
+
+    effect eSearch = GetFirstEffect(oSelf);
+    while(GetIsEffectValid(eSearch))
+    {
+        switch(GetEffectType(eSearch))
+        {
+            case EFFECT_TYPE_CONFUSED:
+            case EFFECT_TYPE_DOMINATED:
+            case EFFECT_TYPE_PETRIFY:
+            case EFFECT_TYPE_PARALYZE:
+            case EFFECT_TYPE_STUNNED:
+            case EFFECT_TYPE_FRIGHTENED:
+            case EFFECT_TYPE_DAZED:
+            case EFFECT_TYPE_CHARMED:
+            case EFFECT_TYPE_TURNED:
+            case EFFECT_TYPE_CUTSCENE_PARALYZE:
+            case EFFECT_TYPE_SLEEP:
+            return FALSE;
+        }
+        switch(GetEffectSpellId(eSearch))
+        {
+            case SPELL_BIGBYS_FORCEFUL_HAND:
+            case SPELL_BALAGARNSIRONHORN:
+            return FALSE;
+        }
+        eSearch = GetNextEffect(oSelf);
+    }
+    return TRUE;
+}
 
 void main()
 {
-    // * XP2, special handling code for interjections
-    // * This script only fires if someone inits with me.
-    // * with that in mind, I am now clearing any interjections
-    // * that the character might have on themselves.
-    if (GetLocalInt(GetModule(), "X2_L_XP2") == TRUE)
-    {
-        SetLocalInt(OBJECT_SELF, "X2_BANTER_TRY", 0);
-        SetHasInterjection(GetMaster(OBJECT_SELF), FALSE);
-        SetLocalInt(OBJECT_SELF, "X0_L_BUSY_SPEAKING_ONE_LINER", 0);
-        SetOneLiner(FALSE, 0);
-    }
+    if (GetLocalInt(OBJECT_SELF, "pending_destroy")) return;
 
     object oShouter = GetLastSpeaker();
-    if (GetTag(OBJECT_SELF) == "x0_hen_dee")
-    {
-        string sCall = GetCampaignString("Deekin", "q6_Deekin_Call"+ GetName(oShouter), oShouter);
-
-        if (sCall == "")
-        {
-            SetCustomToken(1001, GetStringByStrRef(40570));
-        }
-        else SetCustomToken(1001, sCall);
-    }
-
-//    int i = GetLocalInt(OBJECT_SELF, sAssociateMasterConditionVarname);
-//    SendMessageToPC(GetFirstPC(), IntToHexString(i));
-    if (GetIsHenchmanDying() == TRUE)
-    {
-        return;
-    }
 
     object oMaster = GetMaster();
     int nMatch = GetListenPatternNumber();
 
+    if (nMatch == ASSOCIATE_COMMAND_LEAVEPARTY)
+    {
+        DelayCommand(0.1, AddHenchman(oMaster));
+        SendMessageToPC(oMaster, "Henchmen cannot be dismissed from the radial menu");
+    }
+
+    if (nMatch == -1 && AbleToTalk(OBJECT_SELF) && GetCurrentAction() != ACTION_OPENLOCK)
+    {
+        ClearActions(CLEAR_NW_CH_AC4_28);
+
+        BeginConversation();
+    }
+
     object oIntruder;
 
-    if (nMatch == -1)
+    // listening pattern matched
+    if (GetIsObjectValid(oMaster))
     {
-        if(GetCommandable() && !GetIsDisabled(OBJECT_SELF) &&
-            (GetCurrentAction() != ACTION_OPENLOCK))
+        // we have a master, only listen to them
+        if (GetIsObjectValid(oShouter) && oMaster == oShouter && !GetIsDisabled(OBJECT_SELF))
         {
-            ClearActions(CLEAR_X0_CH_HEN_CONV_26);
-            string sDialogFileToUse = GetDialogFileToUse(GetLastSpeaker());
-            // special code for last henchman
-            if (GetTag(OBJECT_SELF) == "H2_Aribeth")
-            {
-                sDialogFileToUse = "xp2_hen_last";
-            }
-            BeginConversation(sDialogFileToUse);
+            SetCommandable(TRUE);
+            HenchChRespondToShout(oShouter, nMatch, oIntruder);
+            // bkRespondToHenchmenShout(oShouter, nMatch, oIntruder);
         }
     }
-    else
-    {
-        // listening pattern matched
-        if (GetIsObjectValid(oMaster))
-        {
-            // we have a master, only listen to them
-            if (GetIsObjectValid(oShouter) && oMaster == oShouter && !GetIsDisabled(OBJECT_SELF))
-            {
-                SetCommandable(TRUE);
-                HenchChRespondToShout(oShouter, nMatch, oIntruder);
-                // bkRespondToHenchmenShout(oShouter, nMatch, oIntruder);
-            }
-        }
 
-        // we don't have a master, behave in default way
-        else if (GetIsObjectValid(oShouter)
-                 && !GetIsPC(oShouter)
-                 && GetIsFriend(oShouter))
-        {
-             object oIntruder = OBJECT_INVALID;
-             // Determine the intruder if any
-             if(nMatch == 4)
-             {
-                 oIntruder = GetLocalObject(oShouter, "NW_BLOCKER_INTRUDER");
-             }
-             else if (nMatch == 5)
-             {
-                oIntruder = GetLocalObject(oShouter, sHenchLastTarget);
-                if(!GetIsObjectValid(oIntruder))
-                {
-                     oIntruder = GetLastHostileActor(oShouter);
+    // we don't have a master, behave in default way
+    else if (GetIsObjectValid(oShouter)
+             && !GetIsPC(oShouter)
+             && GetIsFriend(oShouter))
+    {
+         object oIntruder = OBJECT_INVALID;
+         // Determine the intruder if any
+         if(nMatch == 4)
+         {
+             oIntruder = GetLocalObject(oShouter, "NW_BLOCKER_INTRUDER");
+         }
+         else if (nMatch == 5)
+         {
+            oIntruder = GetLocalObject(oShouter, sHenchLastTarget);
+            if(!GetIsObjectValid(oIntruder))
+            {
+                 oIntruder = GetLastHostileActor(oShouter);
+                 if(!GetIsObjectValid(oIntruder))
+                 {
+                     oIntruder = GetAttemptedAttackTarget();
                      if(!GetIsObjectValid(oIntruder))
                      {
-                         oIntruder = GetAttemptedAttackTarget();
-                         if(!GetIsObjectValid(oIntruder))
-                         {
-                             oIntruder = GetAttemptedSpellTarget();
-                         }
+                         oIntruder = GetAttemptedSpellTarget();
                      }
                  }
              }
-
-             // Actually respond to the shout
-             HenchMonRespondToShout(oShouter, nMatch, oIntruder);
          }
-    }
+
+         // Actually respond to the shout
+         HenchMonRespondToShout(oShouter, nMatch, oIntruder);
+     }
 
     // Signal user-defined event
     if(GetSpawnInCondition(NW_FLAG_ON_DIALOGUE_EVENT))

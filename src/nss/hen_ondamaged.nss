@@ -13,7 +13,7 @@
 //:://////////////////////////////////////////////
 
 #include "inc_hai"
-
+#include "inc_general"
 
 void main()
 {
@@ -22,6 +22,8 @@ void main()
     object oDamager = oAttacker;
     object oMe=OBJECT_SELF;
     int nHPBefore;
+
+    PlayNonMeleePainSound(oDamager);
 
     if(!GetAssociateState(NW_ASC_IS_BUSY))
     {

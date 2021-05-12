@@ -142,6 +142,88 @@ void MoveToLastSeenOrHeard(int bDoSearch = TRUE)
     }
 }
 
+//GetIsObjectValid(oTarget) && GetIsEnemy(oTarget) && GetArea(oTarget) == OBJECT_SELF && !GetIsDead(oTarget) && GetDistanceToObject(oTarget) <= 50.0
+int GetIsValidTarget(object oTarget);
+int GetIsValidTarget(object oTarget)
+{
+    if (GetIsObjectValid(oTarget) && GetIsEnemy(oTarget) && GetArea(oTarget) == OBJECT_SELF && !GetIsDead(oTarget) && GetDistanceToObject(oTarget) <= 50.0)
+    {
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
+// pok - new function to retrieve a target from either the master,
+// or from a party member in the master's faction (party)
+// we will match it to the closest target
+object GetClosestPartyTarget();
+object GetClosestPartyTarget()
+{
+    object oMaster = GetMaster();
+
+
+// no master? assume it's not in a party so no target
+    if (!GetIsObjectValid(oMaster))
+        return OBJECT_INVALID;
+
+    object oTarget = GetAttackTarget(oMaster);
+
+    object oPartyTargetPC, oPartyTargetNPC;
+    float fDistance = 1000.0;
+    float fTargetDistance;
+
+// use last hostile actor as fallback
+    if (!GetIsValidTarget(oTarget))
+        oTarget = GetLastHostileActor(oMaster);
+
+    if (GetIsValidTarget(oTarget))
+        fDistance = GetDistanceToObject(oTarget);
+
+    // loop PCs in party
+
+    object oPartyPC = GetFirstFactionMember(oMaster);
+    while (GetIsObjectValid(oPartyPC))
+    {
+        oPartyTargetPC = GetAttackTarget(oPartyPC);
+        fTargetDistance = GetDistanceToObject(oPartyTargetPC);
+
+        if (!GetIsValidTarget(oPartyTargetPC))
+            oPartyTargetPC = GetLastHostileActor(oPartyPC);
+
+        if (GetIsValidTarget(oPartyTargetPC) && fTargetDistance < fDistance)
+        {
+            fDistance = fTargetDistance;
+            oTarget = oPartyTargetPC;
+        }
+
+        oPartyPC = GetNextFactionMember(oMaster);
+    }
+
+// loop NPCs
+    object oPartyNPC = GetFirstFactionMember(oMaster, FALSE);
+    while (GetIsObjectValid(oPartyNPC))
+    {
+        oPartyTargetNPC = GetAttackTarget(oPartyNPC);
+
+        if (!GetIsValidTarget(oPartyTargetNPC))
+            oPartyTargetNPC = GetLastHostileActor(oPartyNPC);
+
+        fTargetDistance = GetDistanceToObject(oPartyTargetNPC);
+
+        if (GetIsValidTarget(oPartyTargetNPC) && fTargetDistance < fDistance)
+        {
+            fDistance = fTargetDistance;
+            oTarget = oPartyTargetNPC;
+        }
+
+        oPartyNPC = GetNextFactionMember(oMaster, FALSE);
+    }
+
+    return oTarget;
+}
 
 void HenchDetermineCombatRound(object oIntruder = OBJECT_INVALID, int bForceInterrupt = FALSE)
 {
@@ -152,11 +234,14 @@ void HenchDetermineCombatRound(object oIntruder = OBJECT_INVALID, int bForceInte
         return;
     }
 
-    string sAIScript = GetLocalString(OBJECT_SELF, "AIScript");
-    if (sAIScript == "")
-    {
-        sAIScript = "hench_o0_ai";
-    }
+    //string sAIScript = GetLocalString(OBJECT_SELF, "AIScript");
+   // if (sAIScript == "")
+    //{
+      string sAIScript = "hen_ai";
+    //}
+
+    if (!GetIsValidTarget(oIntruder))
+        oIntruder = GetClosestPartyTarget();
 
     SetLocalObject(OBJECT_SELF, HENCH_AI_SCRIPT_INTRUDER_OBJ, oIntruder);
     SetLocalInt(OBJECT_SELF, HENCH_AI_SCRIPT_FORCE, bForceInterrupt);
@@ -214,7 +299,7 @@ void HenchDetermineCombatRound(object oIntruder = OBJECT_INVALID, int bForceInte
 void HenchStartAttack(object oIntruder)
 {
     SetLocalObject(OBJECT_SELF, HENCH_AI_SCRIPT_INTRUDER_OBJ, oIntruder);
-    ExecuteScript("hench_o0_att", OBJECT_SELF);
+    ExecuteScript("hen_attack", OBJECT_SELF);
 }
 
 

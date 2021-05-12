@@ -11,7 +11,7 @@
 #include "inc_hai"
 #include "inc_hai_assoc"
 #include "x0_i0_henchman"
-
+#include "nwnx_player"
 
 // void main() {}
 
@@ -115,10 +115,14 @@ void HenchChRespondToShout(object oShouter, int nShoutIndex, object oIntruder = 
     }
     // * MODIFIED February 19 2003
     // * Do not respond to shouts if in dying mode
+
+    /*
     if (GetAssociateState(NW_ASC_MODE_DYING))
     {
         return;
     }
+    */
+
     // Pausanias: Do not respond to shouts if you've surrendered.
     int iSurrendered = GetLocalInt(OBJECT_SELF,"Generic_Surrender");
     if (iSurrendered) return;
@@ -156,59 +160,21 @@ void HenchChRespondToShout(object oShouter, int nShoutIndex, object oIntruder = 
             if (GetLocalInt(OBJECT_SELF, "X2_L_STOPCASTING") == 10)
             {
                // SpeakString("Was in no casting mode. Switching to cast mode");
+                NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, GetName(OBJECT_SELF)+" will now cast spells when possible");
                 SetLocalInt(OBJECT_SELF, "X2_L_STOPCASTING", 0);
                 VoiceCanDo();
             }
             else if (GetLocalInt(OBJECT_SELF, "X2_L_STOPCASTING") == 0)
             {
              //   SpeakString("Was in casting mode. Switching to NO cast mode");
+                NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, GetName(OBJECT_SELF)+" will no longer cast spells");
                 SetLocalInt(OBJECT_SELF, "X2_L_STOPCASTING", 10);
                 VoiceCanDo();
             }
             break;
         case ASSOCIATE_COMMAND_INVENTORY:
-            if (GetLocalInt(OBJECT_SELF,"bX3_HAS_SADDLEBAGS")&&GetLocalInt(GetModule(),"X3_HORSE_ENABLE_SADDLEBAGS")&&GetMaster(OBJECT_SELF)==oShouter)
-            { // open horse saddlebags
-                OpenInventory(OBJECT_SELF, oShouter);
-            } // open horse saddlebags
-            else if (GetHenchmanOptions(HENCH_HENAI_INVENTORY) & HENCH_HENAI_INVENTORY)
-            {
-                if (!GetLocalInt(OBJECT_SELF, "X2_JUST_A_DISABLEEQUIP"))
-                {
-                    ClearWeaponStates();
-                    // fix problem with unidentified equipped items
-                    int i;
-                    for(i = 0; i < NUM_INVENTORY_SLOTS; ++i)
-                    {
-                        object oItem = GetItemInSlot(i);
-                        if (oItem != OBJECT_INVALID)
-                        {
-                            switch (GetBaseItemType(oItem))
-                            {
-                            case BASE_ITEM_CREATUREITEM:
-                            case BASE_ITEM_CBLUDGWEAPON:
-                            case BASE_ITEM_CSLASHWEAPON:
-                            case BASE_ITEM_CSLSHPRCWEAP:
-                            case BASE_ITEM_CPIERCWEAPON:
-                                break;
-                            default:
-                                SetIdentified(oItem, TRUE);
-                                break;
-                            }
-                        }
-                    }
-                    OpenInventory(OBJECT_SELF, oShouter);
-                }
-                else
-                {
-                    // * feedback as to why
-                    SendMessageToPCByStrRef(oMaster, 100895);
-                }
-            }
-            else
-            {
-                SpeakStringByStrRef(9066);
-            }
+            // no inventory stuff - pok
+            SendMessageToPCByStrRef(oMaster, 100895);
             break;
 
         case ASSOCIATE_COMMAND_ATTACKNEAREST: //Used to de-activate AGGRESSIVE DEFEND MODE
@@ -220,7 +186,8 @@ void HenchChRespondToShout(object oShouter, int nShoutIndex, object oIntruder = 
                 if (GetLocalInt(OBJECT_SELF, sHenchDontAttackFlag))
                 {
                     DeleteLocalInt(OBJECT_SELF, sHenchDontAttackFlag);
-                    SpeakString(sHenchPeacefulModeCancel);
+                    NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, GetName(OBJECT_SELF)+" will now attack enemies on sight");
+                    //SpeakString(sHenchPeacefulModeCancel);
                 }
                 object oClosest = GetNearestSeenOrHeardEnemyNotDead();
                 DeleteLocalObject(OBJECT_SELF, sHenchLastTarget);
@@ -269,6 +236,7 @@ void HenchChRespondToShout(object oShouter, int nShoutIndex, object oIntruder = 
             {
                 if (!GetAssociateState(NW_ASC_MODE_STAND_GROUND))
                 {
+                    /*
                     int nAssocType = GetAssociateType(OBJECT_SELF);
                     if (nAssocType == ASSOCIATE_TYPE_HENCHMAN)
                         SpeakString(sHenchHenchmanFollow);
@@ -278,6 +246,9 @@ void HenchChRespondToShout(object oShouter, int nShoutIndex, object oIntruder = 
                         SpeakString("<" + GetName(OBJECT_SELF) + sHenchAnCompFollow);
                     else
                         SpeakString(sHenchOtherFollow1 + GetName(OBJECT_SELF) + sHenchOtherFollow2);
+                    */
+
+                    NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, GetName(OBJECT_SELF)+" will follow and avoid attacking enemies");
 
                     SetLocalInt(OBJECT_SELF, sHenchDontAttackFlag, TRUE);
                     SetLocalInt(OBJECT_SELF, sHenchShouldIAttackMessageGiven, TRUE);
@@ -308,6 +279,12 @@ void HenchChRespondToShout(object oShouter, int nShoutIndex, object oIntruder = 
                 SetAssociateState(NW_ASC_MODE_DEFEND_MASTER);
                 SetAssociateState(NW_ASC_MODE_STAND_GROUND, FALSE);
                 object oRealMaster = GetRealMaster();
+
+                // remove this flag! - pok
+                DeleteLocalInt(OBJECT_SELF, sHenchDontAttackFlag);
+
+                NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, GetName(OBJECT_SELF)+" will only retaliate against your last attacker");
+
                 if(GetIsObjectValid(GetLastHostileActor(oRealMaster)))
                 {
                     HenchDetermineCombatRound(GetLastHostileActor(oRealMaster), TRUE);
@@ -319,7 +296,7 @@ void HenchChRespondToShout(object oShouter, int nShoutIndex, object oIntruder = 
                 RelayCommandToAssociates(nShoutIndex);
             }
             break;
-
+        case -900: // "MASTER_WAS_ATTACKED"
         case ASSOCIATE_COMMAND_MASTERUNDERATTACK:  //Check whether the master has you in AGGRESSIVE DEFEND MODE
             if(!GetAssociateState(NW_ASC_MODE_STAND_GROUND))
             {
@@ -356,6 +333,9 @@ void HenchChRespondToShout(object oShouter, int nShoutIndex, object oIntruder = 
 
         case ASSOCIATE_COMMAND_STANDGROUND: //No longer follow the master or guard him
             SetAssociateState(NW_ASC_MODE_STAND_GROUND);
+
+            NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, GetName(OBJECT_SELF)+" is waiting");
+
             SetAssociateState(NW_ASC_MODE_DEFEND_MASTER, FALSE);
             DelayCommand(2.0, VoiceCanDo());
             ActionAttack(OBJECT_INVALID);
@@ -399,7 +379,7 @@ void HenchChRespondToShout(object oShouter, int nShoutIndex, object oIntruder = 
         case ASSOCIATE_COMMAND_HEALMASTER: //Ignore current healing settings and heal me now
             HenchResetHenchmenState();
             SetLocalInt(OBJECT_SELF, henchHealCountStr, -1);
-            ExecuteScript("hench_o0_heal", OBJECT_SELF);
+            ExecuteScript("hen_heal", OBJECT_SELF);
             break;
 
         case ASSOCIATE_COMMAND_PICKLOCK:
@@ -426,12 +406,7 @@ void HenchChRespondToShout(object oShouter, int nShoutIndex, object oIntruder = 
 
         case ASSOCIATE_COMMAND_LEAVEPARTY:
             {
-                string sTag = GetTag(GetArea(oMaster));
-                // * henchman cannot be kicked out in the reaper realm
-                // * Followers can never be kicked out
-                if (sTag == "GatesofCania" || GetIsFollower(OBJECT_SELF) == TRUE)
-                    return;
-
+                /* don't do this at all, make henchman leave via dialogue - pok
                 if(GetIsObjectValid(oMaster))
                 {
                     ClearActions(CLEAR_X0_INC_HENAI_RespondToShout4);
@@ -441,6 +416,7 @@ void HenchChRespondToShout(object oShouter, int nShoutIndex, object oIntruder = 
                     }
                 }
                 break;
+                */
             }
 
     }

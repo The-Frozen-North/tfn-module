@@ -47,7 +47,8 @@ void main()
     }
 
     // Auldar: Don't want anything to disturb the Taunt attempt.
-    if(GetAssociateState(NW_ASC_IS_BUSY) || GetAssociateState(NW_ASC_MODE_DYING) || nCurAction == ACTION_TAUNT || nCurAction == ACTION_HEAL || nCurAction == ACTION_ANIMALEMPATHY)
+    // dying condition removed - pok
+    if(GetAssociateState(NW_ASC_IS_BUSY) || nCurAction == ACTION_TAUNT || nCurAction == ACTION_HEAL || nCurAction == ACTION_ANIMALEMPATHY)
     {
         DeleteLocalInt(OBJECT_SELF, HENCH_AI_SCRIPT_RUN_STATE);
         return;
@@ -145,24 +146,10 @@ void main()
         iAmCompanion = nAssocType == ASSOCIATE_TYPE_ANIMALCOMPANION;
     }
 
-    // special code for Helmed Horror in Host Tower level 4
-    if (GetTag(OBJECT_SELF) == "2Q6_HelmHorror")
-    {
-        oIntruder = GetNearestObjectByTag("2q6_sanctumgolem");
-        if (!GetIsObjectValid(oIntruder))
-        {
-            ClearAllActions();
-            DestroyObject(OBJECT_SELF);
-            return;
-        }
-        ActionAttack(oIntruder);
-        return;
-    }
-
-    if (!iAmMonster)
-    {
+    //if (!iAmMonster)
+    //{
         HenchGetDefSettings();
-    }
+    //}
 
     object oClosestSeen;
     object oClosestHeard;
@@ -197,10 +184,12 @@ void main()
             oClosestSummoned = oClosestSeen;
         }
         // never consider dying henchman
+        /*
         else if (!GetAssociateState(NW_ASC_MODE_DYING, oClosestSeen))
         {
             break;
         }
+        */
         curCount++;
     }
 
@@ -225,11 +214,13 @@ void main()
                 oClosestNonActive = oClosestHeard;
             }
         }
+        /*
         // never consider dying henchman
         else if (!GetAssociateState(NW_ASC_MODE_DYING, oClosestHeard))
         {
             break;
         }
+        */
         curCount++;
     }
     // find dying creatures to finish off
@@ -525,12 +516,12 @@ void main()
 //        Jug_Debug(GetName(OBJECT_SELF) + " checking heal count " + IntToString(GetLocalInt(OBJECT_SELF, henchHealCountStr)));
         if (GetLocalInt(OBJECT_SELF, henchHealCountStr))
         {
-            ExecuteScript("hench_o0_heal", OBJECT_SELF);
+            ExecuteScript("hen_heal", OBJECT_SELF);
             return;
         }
         if (GetLocalInt(OBJECT_SELF, henchBuffCountStr))
         {
-            ExecuteScript("hench_o0_enhanc", OBJECT_SELF);
+            ExecuteScript("hen_enhance", OBJECT_SELF);
             return;
         }
         if(HenchBashDoorCheck(iEffectsOnSelf & HENCH_HAS_POLYMORPH_EFFECT))

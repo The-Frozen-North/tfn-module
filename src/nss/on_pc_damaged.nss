@@ -1,6 +1,5 @@
 #include "inc_horse"
 #include "inc_general"
-#include "inc_hai_constant"
 
 void main()
 {
@@ -19,5 +18,5 @@ void main()
     }
 
     if (GetIsEnemy(GetLastDamager()))
-        AISpeakString(AI_SHOUT_I_WAS_ATTACKED);
+        SpeakString("MASTER_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
 }

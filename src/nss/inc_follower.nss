@@ -14,6 +14,10 @@ void AssignNormalScripts(object oCreature)
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_RESTED, "ai_onrest");
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_SPELLCASTAT, "ai_onspellcast");
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_USER_DEFINED_EVENT, "ai_onuserdef");
+
+    DeleteLocalInt(oCreature,"NW_COM_MODE_COMBAT");
+    DeleteLocalInt(oCreature,"NW_COM_MODE_MOVEMENT");
+    DeleteLocalObject(oCreature, "NW_L_FORMERMASTER");
 }
 
 void AssignHenchmanScripts(object oCreature)
@@ -30,7 +34,7 @@ void AssignHenchmanScripts(object oCreature)
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_SPELLCASTAT, "hen_onspellcas");
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_USER_DEFINED_EVENT, "hen_onuserdef");
 
-    ExecuteScript("hen_onspawne", oCreature);
+    ExecuteScript("hen_onspawn", oCreature);
 }
 
 int GetFollowerCount(object oPlayer)

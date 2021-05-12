@@ -1,6 +1,8 @@
+#include "x0_inc_henai"
+
 void main()
 {
-    SetLocalInt(OBJECT_SELF, "range", 1);
+    SetAssociateState(NW_ASC_USE_RANGED_WEAPON, TRUE);
     ClearAllActions();
     AssignCommand(OBJECT_SELF, ActionEquipMostDamagingRanged());
 }

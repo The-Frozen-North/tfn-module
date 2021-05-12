@@ -49,7 +49,7 @@ void OpenLock(object oLock)
     if (GetIsObjectValid(oLock))
     {
         SetLocalObject(OBJECT_SELF, sLockMasterFailed, oLock);
-        ExecuteScript("hench_o0_act", OBJECT_SELF);
+        ExecuteScript("hen_act", OBJECT_SELF);
     }
 }
 
@@ -60,7 +60,7 @@ void ForceTrap(object oTrap)
     {
         SetLocalObject(OBJECT_SELF, sLockMasterFailed, oTrap);
         SetLocalInt(OBJECT_SELF, sForceTrap, TRUE);
-        ExecuteScript("hench_o0_act", OBJECT_SELF);
+        ExecuteScript("hen_act", OBJECT_SELF);
     }
 }
 
@@ -96,12 +96,12 @@ int HenchCheckArea(int nClearActions = FALSE)
     {
         if (!GetLocalInt(OBJECT_SELF, "tk_doing_action"))
         {
-            ExecuteScript("hench_o0_act", OBJECT_SELF);
+            ExecuteScript("hen_act", OBJECT_SELF);
             return GetLocalInt(OBJECT_SELF, "tk_action_result");
         }
         else
         {
-            ActionDoCommand(ExecuteScript("hench_o0_act", OBJECT_SELF));
+            ActionDoCommand(ExecuteScript("hen_act", OBJECT_SELF));
             return TRUE;
         }
     }

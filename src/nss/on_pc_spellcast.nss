@@ -1,10 +1,8 @@
-#include "inc_hai_constant"
-
 void main()
 {
     object oCaster = GetLastSpellCaster();
 
     if (GetLastSpellHarmful() && GetIsEnemy(oCaster))
-        AISpeakString(AI_SHOUT_I_WAS_ATTACKED);
+        SpeakString("MASTER_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
 
 }

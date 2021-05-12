@@ -819,7 +819,7 @@ void main()
     if (nCurAction)
     {
         ActionDoCommand(ActionWait(0.5));
-        ActionDoCommand(ExecuteScript("hench_o0_act", OBJECT_SELF));
+        ActionDoCommand(ExecuteScript("hen_act", OBJECT_SELF));
         SetLocalInt(OBJECT_SELF, "tk_doing_action", FALSE);
         return;
     }
@@ -844,7 +844,7 @@ void main()
             SetLocalInt(OBJECT_SELF, "tk_doing_action", FALSE);
         }
         ActionDoCommand(ActionWait(0.5));
-        ActionDoCommand(ExecuteScript("hench_o0_act", OBJECT_SELF));
+        ActionDoCommand(ExecuteScript("hen_act", OBJECT_SELF));
     }
     SetLocalInt(OBJECT_SELF, "tk_action_result", result);
 }

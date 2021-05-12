@@ -755,7 +755,7 @@ void HenchEquipDefaultWeapons(object oCreature = OBJECT_SELF, int bShowStatus = 
     {
         SetLocalInt(oCreature, sHenchShowWeaponStatus, TRUE);
     }
-    ExecuteScript("hench_o0_equip", oCreature);
+    ExecuteScript("hen_equip", oCreature);
 }
 
 

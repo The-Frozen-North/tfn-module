@@ -17,12 +17,6 @@
 
 void main()
 {
-    if (!GetLocalInt(GetModule(),"X3_NO_MOUNTED_COMBAT_FEAT"))
-    { // set variables on target for mounted combat
-        SetLocalInt(OBJECT_SELF,"bX3_LAST_ATTACK_PHYSICAL",TRUE);
-        SetLocalInt(OBJECT_SELF,"nX3_HP_BEFORE",GetCurrentHitPoints(OBJECT_SELF));
-    } // set variables on target for mounted combat
-
     if(!GetAssociateState(NW_ASC_IS_BUSY))
     {
         SetCommandable(TRUE);

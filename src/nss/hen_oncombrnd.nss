@@ -1,61 +1,30 @@
 //::///////////////////////////////////////////////
-//:: On Blocked
-//:: NW_CH_ACE
+//:: Associate: End of Combat End
+//:: NW_CH_AC3
 //:: Copyright (c) 2001 Bioware Corp.
 //:://////////////////////////////////////////////
 /*
-    This will cause blocked creatures to open
-    or smash down doors depending on int and
-    str.
+    Calls the end of combat script every round
 */
 //:://////////////////////////////////////////////
 //:: Created By: Preston Watamaniuk
-//:: Created On: Nov 23, 2001
+//:: Created On: Oct 16, 2001
 //:://////////////////////////////////////////////
-
-#include "inc_hai_generic"
-#include "inc_hai_assoc"
 #include "inc_hai"
-
 
 void main()
 {
-    object oDoor = GetBlockingDoor();
+//    Jug_Debug("*****" + GetName(OBJECT_SELF) + " end combat round action " + IntToString(GetCurrentAction()) + " busy " + IntToString(GetAssociateState(NW_ASC_IS_BUSY)));
 
-//    Jug_Debug(GetName(OBJECT_SELF) + " is blocked by " + GetName(oDoor));
+    DeleteLocalInt(OBJECT_SELF, HENCH_AI_SCRIPT_RUN_STATE);
 
-    object oRealMaster = GetRealMaster();
-
-    if (GetObjectType(oDoor) == OBJECT_TYPE_DOOR && GetIsObjectValid(oRealMaster)
-        && !GetLocalInt(OBJECT_SELF, sHenchScoutingFlag) && !IsOnOppositeSideOfDoor(oDoor, oRealMaster, OBJECT_SELF))
+    if(!GetSpawnInCondition(NW_FLAG_SET_WARNINGS))
     {
-        ClearAllActions();
-        ClearForceOptions();
-        if (GetAssociateType(OBJECT_SELF) == ASSOCIATE_TYPE_HENCHMAN && (GetIsObjectValid(GetLocalObject(OBJECT_SELF, sHenchLastTarget)) || GetLocalInt(OBJECT_SELF, sHenchLastHeardOrSeen)))
-        {
-            DeleteLocalObject(OBJECT_SELF, sHenchLastTarget);
-            ClearEnemyLocation();
-            if (!GetLocalInt(oDoor, "tkDoorWarning"))
-            {
-                SpeakString(sHenchMonsterOnOtherSide);
-                SetLocalInt(oDoor, "tkDoorWarning", TRUE);
-            }
-        }
-        ActionForceFollowObject(oRealMaster, GetFollowDistance());
-        return;
+        HenchDetermineCombatRound();
     }
-
-    if(GetIsDoorActionPossible(oDoor, DOOR_ACTION_OPEN) && GetAbilityScore(OBJECT_SELF, ABILITY_INTELLIGENCE) >= 3)
+    if(GetSpawnInCondition(NW_FLAG_END_COMBAT_ROUND_EVENT))
     {
-        DoDoorAction(oDoor, DOOR_ACTION_OPEN);
-    }
-    else if (GetIsDoorActionPossible(oDoor, DOOR_ACTION_UNLOCK))
-    {
-        DoDoorAction(oDoor, DOOR_ACTION_UNLOCK);
-    }
-    else if(GetIsDoorActionPossible(oDoor, DOOR_ACTION_BASH) && GetAbilityScore(OBJECT_SELF, ABILITY_STRENGTH) >= 16)
-    {
-        DoDoorAction(oDoor, DOOR_ACTION_BASH);
+        SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_END_COMBAT_ROUND));
     }
 }
 

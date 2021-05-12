@@ -16,6 +16,13 @@
 #include "inc_hai"
 #include "inc_hai_assoc"
 
+void DoBanter()
+{
+    if (GetIsDead(OBJECT_SELF) || GetIsInCombat(OBJECT_SELF) || IsInConversation(OBJECT_SELF) || GetIsFighting(OBJECT_SELF) || GetIsResting(OBJECT_SELF)) return;
+
+    ExecuteScript("hen_banter", OBJECT_SELF);
+}
+
 void TestItemProperties()
 {
     Jug_Debug(GetName(OBJECT_SELF) + " checking properties");
@@ -207,31 +214,27 @@ void GetBestItemSpells()
 
 void main()
 {
-//    Jug_Debug("*****" + GetName(OBJECT_SELF) + " heartbeat " + IntToString(GetCurrentAction()) + " busy " + IntToString(GetAssociateState(NW_ASC_IS_BUSY)));
+    string sScript = GetLocalString(OBJECT_SELF, "heartbeat_script");
+    if (sScript != "") ExecuteScript(sScript);
 
-    // If the henchman is in dying mode, make sure
-    // they are non commandable. Sometimes they seem to
-    // 'slip' out of this mode
-    int bDying = GetIsHenchmanDying();
-
-    if (bDying)
+    if (GetIsObjectValid(GetMaster(OBJECT_SELF)) && GetStringLeft(GetResRef(OBJECT_SELF), 3) == "hen")
     {
-        int bCommandable = GetCommandable();
-        if (bCommandable == TRUE)
+        int nBanter = GetLocalInt(OBJECT_SELF, "banter");
+
+        if (nBanter >= 100)
         {
-            // lie down again
-            ActionPlayAnimation(ANIMATION_LOOPING_DEAD_FRONT,
-                                          1.0, 65.0);
-           SetCommandable(FALSE);
+            DelayCommand(IntToFloat(d20())+IntToFloat(d10())/10.0, DoBanter());
+            DeleteLocalInt(OBJECT_SELF, "banter");
+        }
+        else
+        {
+            SetLocalInt(OBJECT_SELF, "banter", nBanter+d4());
         }
     }
 
-    // If we're dying or busy, we return
-    // (without sending the user-defined event)
-    if(GetAssociateState(NW_ASC_IS_BUSY) || bDying)
-    {
-        return;
-    }
+//    Jug_Debug("*****" + GetName(OBJECT_SELF) + " heartbeat " + IntToString(GetCurrentAction()) + " busy " + IntToString(GetAssociateState(NW_ASC_IS_BUSY)));
+
+   // dying script removed -pok
 
     //    GetBestItemSpells();
 //    if (GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR,PLAYER_CHAR_IS_PC, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION,  PERCEPTION_HEARD)))
@@ -375,13 +378,13 @@ void main()
 
     if (GetLocalInt(OBJECT_SELF, henchHealCountStr))
     {
-        ExecuteScript("hench_o0_heal", OBJECT_SELF);
+        ExecuteScript("hen_heal", OBJECT_SELF);
         return;
     }
     if (GetLocalInt(OBJECT_SELF, henchBuffCountStr))
     {
         ActionDoCommand(ActionWait(2.0));
-        ActionDoCommand(ExecuteScript("hench_o0_enhanc", OBJECT_SELF));
+        ActionDoCommand(ExecuteScript("hen_enhance", OBJECT_SELF));
         return;
     }
 

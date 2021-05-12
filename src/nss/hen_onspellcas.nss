@@ -23,50 +23,6 @@ void main()
 {
     object oCaster = GetLastSpellCaster();
 
-
-    // **************************************
-    // * CHAPTER 1
-    // * Player brings back a dead henchmen
-    // * for the first time
-    // *
-    // **************************************
-    //This should only fire the first time they are raised - when they have
-        //first been discovered in Undermountain
-    if (GetLocalInt(OBJECT_SELF, "X2_SavedInUndermountain") == FALSE && GetTag(GetModule()) == "x0_module1")
-    {
-        if (GetLastSpell() == SPELL_RAISE_DEAD || GetLastSpell() == SPELL_RESURRECTION)
-        {
-            SetLocalInt(OBJECT_SELF, "X2_SavedInUndermountain", 1);
-
-            object oPC = oCaster;
-
-            if (GetTag(OBJECT_SELF) == "x2_hen_sharwyn")
-            {
-                AddJournalQuestEntry("q2sharwyn", 20, oPC);
-            }
-            else if (GetTag(OBJECT_SELF) == "x2_hen_tomi")
-            {
-                AddJournalQuestEntry("q2tomi", 20, oPC);
-            }
-            else if (GetTag(OBJECT_SELF) == "x2_hen_daelan")
-            {
-                AddJournalQuestEntry("q2daelan", 20, oPC);
-            }
-
-
-            if (GetHitDice(oPC) < 15)
-            {
-                Reward_2daXP(oPC, 12, TRUE); //600 xp reward if PC is less than 15th level
-            }
-            else
-            {
-                Reward_2daXP(oPC, 11, TRUE); //200 xp reward if PC is 15th level or higher
-
-            }
-
-        }
-    }   // special case, first time being raised (if original henches
-
     if(GetLastSpellHarmful())
     {
 
