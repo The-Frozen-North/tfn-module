@@ -1,38 +1,61 @@
-/*/////////////////////// [On Combat Round End] ////////////////////////////////
-    Filename: nw_c2_default3 or J_AI_OnCombatrou
-///////////////////////// [On Combat Round End] ////////////////////////////////
-    This is run every 3 or 6 seconds, if the creature is in combat. It is
-    executed only in combat automatically.
+//::///////////////////////////////////////////////
+//:: On Blocked
+//:: NW_CH_ACE
+//:: Copyright (c) 2001 Bioware Corp.
+//:://////////////////////////////////////////////
+/*
+    This will cause blocked creatures to open
+    or smash down doors depending on int and
+    str.
+*/
+//:://////////////////////////////////////////////
+//:: Created By: Preston Watamaniuk
+//:: Created On: Nov 23, 2001
+//:://////////////////////////////////////////////
 
-    It runs what the AI should do, bascially.
-///////////////////////// [History] ////////////////////////////////////////////
-    1.3 - Executes same script as the other parts of the AI to cuase a new action
-    1.4 -
-///////////////////////// [Workings] ///////////////////////////////////////////
-    Calls the combat AI file using the J_INC_OTHER_AI include function,
-    DetermineCombatRound.
-///////////////////////// [Arguments] //////////////////////////////////////////
-    Arguments: GetAttackTarget, GetLastHostileActor, GetAttemptedAttackTarget,
-               GetAttemptedSpellTarget (Or these are useful at least!)
-///////////////////////// [On Combat Round End] //////////////////////////////*/
+#include "inc_hai_generic"
+#include "inc_hai_assoc"
+#include "inc_hai"
 
-#include "inc_hai_other"
 
 void main()
 {
-    // Pre-combat-round-event. Returns TRUE if we interrupt this script call.
-    if(FirePreUserEvent(AI_FLAG_UDE_END_COMBAT_ROUND_PRE_EVENT, EVENT_END_COMBAT_ROUND_PRE_EVENT)) return;
+    object oDoor = GetBlockingDoor();
 
-    // AI status check. Is the AI on?
-    if(GetAIOff()) return;
+//    Jug_Debug(GetName(OBJECT_SELF) + " is blocked by " + GetName(oDoor));
 
-    // It is our normal call (every 3 or 6 seconds, when we can change actions)
-    // so no need to delete, and we fire the UDE's.
+    object oRealMaster = GetRealMaster();
 
-    // Determine combat round against an invalid target (as default)
-    DetermineCombatRound();
+    if (GetObjectType(oDoor) == OBJECT_TYPE_DOOR && GetIsObjectValid(oRealMaster)
+        && !GetLocalInt(OBJECT_SELF, sHenchScoutingFlag) && !IsOnOppositeSideOfDoor(oDoor, oRealMaster, OBJECT_SELF))
+    {
+        ClearAllActions();
+        ClearForceOptions();
+        if (GetAssociateType(OBJECT_SELF) == ASSOCIATE_TYPE_HENCHMAN && (GetIsObjectValid(GetLocalObject(OBJECT_SELF, sHenchLastTarget)) || GetLocalInt(OBJECT_SELF, sHenchLastHeardOrSeen)))
+        {
+            DeleteLocalObject(OBJECT_SELF, sHenchLastTarget);
+            ClearEnemyLocation();
+            if (!GetLocalInt(oDoor, "tkDoorWarning"))
+            {
+                SpeakString(sHenchMonsterOnOtherSide);
+                SetLocalInt(oDoor, "tkDoorWarning", TRUE);
+            }
+        }
+        ActionForceFollowObject(oRealMaster, GetFollowDistance());
+        return;
+    }
 
-    // Fire End of end combat round event
-    FireUserEvent(AI_FLAG_UDE_END_COMBAT_ROUND_EVENT, EVENT_END_COMBAT_ROUND_EVENT);
+    if(GetIsDoorActionPossible(oDoor, DOOR_ACTION_OPEN) && GetAbilityScore(OBJECT_SELF, ABILITY_INTELLIGENCE) >= 3)
+    {
+        DoDoorAction(oDoor, DOOR_ACTION_OPEN);
+    }
+    else if (GetIsDoorActionPossible(oDoor, DOOR_ACTION_UNLOCK))
+    {
+        DoDoorAction(oDoor, DOOR_ACTION_UNLOCK);
+    }
+    else if(GetIsDoorActionPossible(oDoor, DOOR_ACTION_BASH) && GetAbilityScore(OBJECT_SELF, ABILITY_STRENGTH) >= 16)
+    {
+        DoDoorAction(oDoor, DOOR_ACTION_BASH);
+    }
 }
 

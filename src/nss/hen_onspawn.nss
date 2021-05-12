@@ -1,150 +1,188 @@
-/*/////////////////////// [On Spawn] ///////////////////////////////////////////
-    Filename: J_AI_OnSpawn or nw_c2_default9
-///////////////////////// [On Spawn] ///////////////////////////////////////////
-    This file contains options that will determine some AI behaviour, and a lot
-    of toggles for turning things on/off. A big read, but might be worthwhile.
+//:://////////////////////////////////////////////////
+//:: X0_CH_HEN_SPAWN
+//:: Copyright (c) 2002 Floodgate Entertainment
+//:://////////////////////////////////////////////////
+/*
+Henchman-specific OnSpawn handler for XP1. Based on NW_CH_AC9 by Bioware.
+ */
+//:://////////////////////////////////////////////////
+//:: Created By: Naomi Novik
+//:: Created On: 10/09/2002
+//:://////////////////////////////////////////////////
 
-    The documentation is actually fully in the readme files, under the name
-    "On Spawn.html", under "AI File Explanations".
+#include "x0_inc_henai"
+#include "x2_inc_banter"
+#include "x2_inc_globals"
 
-    The order of the options:
-
-    - Important Spawn Settings                   N/A
-    - Targeting & Fleeing                       (AI_TARGETING_FLEE_MASTER)
-    - Fighting & Spells                         (AI_COMBAT_MASTER)
-    - Other Combat - Healing, Skills & Bosses   (AI_OTHER_COMBAT_MASTER)
-    - Other - Death corpses, minor things       (AI_OTHER_MASTER)
-    - User Defined                              (AI_UDE_MASTER)
-    - Shouts                                     N/A
-    - Default Bioware settings (WP's, Anims)    (NW_GENERIC_MASTER)
-
-    The OnSpawn file is a settings file. These things are set onto a creature, to
-    define cirtain actions. If more than one creature has this script, they all
-    use the settings, unless If/Else statements are used somehow. There is also
-    the process of setting any spells/feats availible, and hiding and walk waypoints
-    are started.
-
-    Other stuff:
-    - Targeting is imporant :-D
-    - If you delete this script, there is a template for the On Spawn file
-      in the zip it came in, for use in the "scripttemplate" directory.
-///////////////////////// [History] ////////////////////////////////////////////
-    Note: I have removed:
-    - Default "Teleporting" and exit/return (this seemed bugged anyway, or useless)
-    - Spawn in animation. This can be, of course, re-added.
-    - Day/night posting. This is uneeded, with a changed walk waypoints that does it automatically.
-
-    1.0-1.2 - Used short amount of spawn options.
-    1.3 - All constants names are changed, I am afraid.
-        - Added Set/Delete/GetAIInteger/Constant/Object. This makes sure that the AI
-          doesn't ever interfere with other things - it pre-fixes all stored things
-          with AI_INTEGER_ (and so on)
-    1.4 - TO DO: Clear up some old non-working ones
-        - Added in User Defined part of the script, an auto-turn-off-spells for
-          Ranger and Paladin classes. Need to test - perhaps 1.64 fixed it?
-
-
-        Spawn options changed:
-        - Removed AI level settings (can still be done manually)
-        - Added optional (and off by default) fear-visual for fleeing
-
-
-///////////////////////// [Workings] ///////////////////////////////////////////
-    Note: You can do without all the comments (it may be that you don't want
-    the extra KB it adds or something, although it does not at all slow down a module)
-    so as long as you have these at the end:
-
-    AI_SetUpEndOfSpawn();
-    DelayCommand(2.0, SpawnWalkWayPoints());
-
-    Oh, and the include file (Below, "j_inc_spawnin") must be at the top like
-    here. Also recommended is the AI_INTELLIGENCE and AI_MORALE being set (if
-    not using custom AI).
-///////////////////////// [Arguments] //////////////////////////////////////////
-    Arguments: GetIsEncounterCreature
-///////////////////////// [On Spawn] /////////////////////////////////////////*/
-
-// Treasure Includes - See end of spawn for uncomment options.
-
-//#include "nw_o2_coninclude"
-// Uncomment this if you want default NwN Treasure - Uses line "GenerateNPCTreasure()" at the end of spawn.
-// - This generates random things from the default pallet based on the creatures level + race
-
-//#include "x0_i0_treasure"
-// Uncomment this if you want the SoU Treasure - Uses line "CTG_GenerateNPCTreasure()" at the end of spawn.
-// - This will spawn treasure based on chests placed in the module. See "x0_i0_treasure" for more information.
-
-// This is required for all spawn in options!
-#include "inc_hai_spawn"
-#include "inc_loot"
-#include "nwnx_creature"
+// * there are only a couple potential interjections henchmen can say in c3
+void StrikeOutStrings(object oNathyrra)
+{
+    SetLocalString(oNathyrra, "X2_L_RANDOMONELINERS", "26|27|28|29|30|");
+    SetLocalString(oNathyrra, "X2_L_RANDOM_INTERJECTIONS", "6|7|");
+}
 
 void main()
 {
-    ExecuteScript("hen_onspawne");
+    string sAreaTag = GetTag(GetArea(OBJECT_SELF));
+    string sModuleTag = GetTag(GetModule());
+    string sMyTag = GetTag(OBJECT_SELF);
 
-/************************ [User] ***********************************************
-    This is the ONLY place you should add user things, on spawn, such as
-    visual effects or anything, as it is after SetUpEndOfSpawn. By default, this
-    does have encounter animations on. This is here, so is easily changed :-D
 
-    Be careful otherwise.
-
-    Notes:
-    - SetListening is already set to TRUE, unless AI_FLAG_OTHER_LAG_NO_LISTENING is on.
-    - SetListenPattern's are set from 0 to 7.
-    - You can use the wrappers AI_SpawnInInstantVisual and AI_SpawnInPermamentVisual
-      for visual effects (Instant/Permament as appropriate).
-************************* [User] **********************************************/
-    // Example (and default) of user addition:
-    // - If we are from an encounter, set mobile (move around) animations.
-    int iAreaCR = GetLocalInt(GetArea(OBJECT_SELF), "cr");
-
-    switch (GetRacialType(OBJECT_SELF))
+    // * Setup how many random interjectiosn and popups they have
+    if (sMyTag == "x2_hen_deekin")
     {
-        case RACIAL_TYPE_DWARF:
-        case RACIAL_TYPE_ELF:
-        case RACIAL_TYPE_GNOME:
-        case RACIAL_TYPE_HALFLING:
-        case RACIAL_TYPE_HALFORC:
-        case RACIAL_TYPE_HUMAN:
-        case RACIAL_TYPE_HALFELF:
-            if (GetLocalInt(OBJECT_SELF, "no_potion") != 1 && d4() == 1)
-            {
-                object oPotion = CreateItemOnObject("cure_potion1", OBJECT_SELF);
-                SetDroppableFlag(oPotion, FALSE);
-                SetPickpocketableFlag(oPotion, TRUE);
-            }
+        SetNumberOfRandom("X2_L_RANDOMONELINERS", OBJECT_SELF, 50);
+        SetNumberOfRandom("X2_L_RANDOM_INTERJECTIONS", OBJECT_SELF, 10);
+    }
+    else
+    if (sMyTag == "x2_hen_daelan")
+    {
+        SetNumberOfRandom("X2_L_RANDOMONELINERS", OBJECT_SELF, 20);
+        SetNumberOfRandom("X2_L_RANDOM_INTERJECTIONS", OBJECT_SELF, 2);
+    }
+    else
+    if (sMyTag == "x2_hen_linu")
+    {
+        SetNumberOfRandom("X2_L_RANDOMONELINERS", OBJECT_SELF, 20);
+        SetNumberOfRandom("X2_L_RANDOM_INTERJECTIONS", OBJECT_SELF, 2);
+    }
+    else
+    if (sMyTag == "x2_hen_sharwyn")
+    {
+        SetNumberOfRandom("X2_L_RANDOMONELINERS", OBJECT_SELF, 20);
+        SetNumberOfRandom("X2_L_RANDOM_INTERJECTIONS", OBJECT_SELF, 4);
+    }
+    else
+    if (sMyTag == "x2_hen_tomi")
+    {
+        SetNumberOfRandom("X2_L_RANDOMONELINERS", OBJECT_SELF, 20);
+        SetNumberOfRandom("X2_L_RANDOM_INTERJECTIONS", OBJECT_SELF, 4);
+    }
+    else
+    if (sMyTag == "H2_Aribeth")
+    {
+        SetNumberOfRandom("X2_L_RANDOMONELINERS", OBJECT_SELF, 20);
+        SetNumberOfRandom("X2_L_RANDOM_INTERJECTIONS", OBJECT_SELF, 2);
+    }
+    else
+    // * valen and Nathyrra have certain random lines that only show up in
+    // * in Chapter 2 (Chapter 3 they'll get this variable set on them
+    // * as well, with different numbers)
+    // * Basically #1-5 are Chapter 2 only, 26-30 are Chapter 3 only. The rest can show up anywhere
+    if (sMyTag == "x2_hen_nathyra" || sMyTag == "x2_hen_valen")
+    {
+        // * only fire this in Chapter 2. THey setup differently in the transition from C2 to C3
+        if (GetTag(GetModule()) == "x0_module2")
+        {
+            SetNumberOfRandom("X2_L_RANDOMONELINERS", OBJECT_SELF, 25);
+            SetNumberOfRandom("X2_L_RANDOM_INTERJECTIONS", OBJECT_SELF, 3);
+        }
+        else
+        {
+            StrikeOutStrings(OBJECT_SELF);
+        }
 
-            if (d10() == 1)
-            {
-                object oItem = GenerateTierItem(GetHitDice(OBJECT_SELF), iAreaCR, OBJECT_SELF, "Misc");
-                SetDroppableFlag(oItem, FALSE);
-                SetPickpocketableFlag(oItem, TRUE);
-            }
-
-            object oGold = CreateItemOnObject("nw_it_gold001", OBJECT_SELF, d2(GetHitDice(OBJECT_SELF)));
-            SetDroppableFlag(oGold, FALSE);
-            SetPickpocketableFlag(oGold, TRUE);
-        break;
     }
 
-       NWNX_Creature_SetCorpseDecayTime(OBJECT_SELF, 1200000);
-       NWNX_Creature_SetDisarmable(OBJECT_SELF, TRUE);
+    //Sets up the special henchmen listening patterns
+    SetAssociateListenPatterns();
+
+    // Set additional henchman listening patterns
+    bkSetListeningPatterns();
+
+    // Default behavior for henchmen at start
+    SetAssociateState(NW_ASC_POWER_CASTING);
+    SetAssociateState(NW_ASC_HEAL_AT_50);
+    SetAssociateState(NW_ASC_RETRY_OPEN_LOCKS);
+    SetAssociateState(NW_ASC_DISARM_TRAPS);
+
+    // * July 2003. Set this to true so henchmen
+    // * will hopefully run off a little less often
+    // * by default
+    // * September 2003. Bad decision. Reverted back
+    // * to original. This mode too often looks like a bug
+    // * because they hang back and don't help each other out.
+    //SetAssociateState(NW_ASC_MODE_DEFEND_MASTER, TRUE);
+    SetAssociateState(NW_ASC_DISTANCE_2_METERS);
+
+    //Use melee weapons by default
+    SetAssociateState(NW_ASC_USE_RANGED_WEAPON, FALSE);
+
+    // Set starting location
+    SetAssociateStartLocation();
+
+    // Set respawn location
+    SetRespawnLocation();
+
+    // For some general behavior while we don't have a master,
+    // let's do some immobile animations
+    SetSpawnInCondition(NW_FLAG_IMMOBILE_AMBIENT_ANIMATIONS);
+
+    // **************************************
+    // * CHAPTER 1
+    // * Kill henchmen who spawn in
+    // * to any area for the first time
+    // * in Undermountain.
+    // **************************************
+    SetIsDestroyable(FALSE, TRUE, TRUE);
+
+    // * September 2003
+    // * Scan through all equipped items and make
+    // * sure they are identified
+    int i = 0;
+    object oItem;
+    for (i = INVENTORY_SLOT_HEAD; i<=INVENTORY_SLOT_CARMOUR; i++)
+    {
+        oItem = GetItemInSlot(i, OBJECT_SELF);
+        if (GetIsObjectValid(oItem) == TRUE)
+            SetIdentified( oItem, TRUE);
+    }
+
+    // *
+    // * Special CHAPTER 1 - XP2
+    // * Levelup code
+    // *
+    if (sModuleTag == "x0_module1" && GetLocalInt(GetModule(), "X2_L_XP2") == TRUE)
+    {
+        if (GetLocalInt(OBJECT_SELF, "X2_KilledInUndermountain") == 1)
+            return;
+        SetLocalInt(OBJECT_SELF, "X2_KilledInUndermountain", 1);
+
+        //Level up henchman to level 13   if in Starting Room
+        //Join script will level them up correctly once hired
+        if (sAreaTag == "q2a_yawningportal" )
+        {
+            int nLevel = 1;
+            for (nLevel = 1; nLevel < 14; nLevel++)
+            {
+                LevelUpHenchman(OBJECT_SELF);
+            }
+        }
+        //'kill the henchman'
+
+        // * do not kill if spawning in main room
+        string szAreaTag = GetTag(GetArea(OBJECT_SELF));
+        if (szAreaTag != "q2a_yawningportal" && szAreaTag != "q2c_um2east")
+        {
+            effect eDamage = EffectDamage(500);
+            DelayCommand(10.0, ApplyEffectToObject(DURATION_TYPE_INSTANT, eDamage, OBJECT_SELF));
+        }
+    }
+
+    // * Nathyrra in Chapter 1 is not allowed to have her inventory fiddled with
+    if (sMyTag == "x2_hen_nathyrra" && sModuleTag == "x0_module1")
+    {
+        SetLocalInt(OBJECT_SELF, "X2_JUST_A_DISABLEEQUIP", 1);
+    }
 
 
-
-    //int nRace = GetRacialType(oCreature);
-
-    string sScript = GetLocalString(OBJECT_SELF, "spawn_script");
-    if (sScript != "") ExecuteScript(sScript);
-
-    // If we are a ranger or paladin class, do not cast spells. This can be
-    // manually removed if wished. To get the spells they have working correctly,
-    // remove this, and use Monster Abilties instead of thier normal class spells.
-//    if(GetLevelByClass(CLASS_TYPE_RANGER) >= 1 || GetLevelByClass(CLASS_TYPE_PALADIN) >= 1)
-//    {
-//        SetSpawnInCondition(AI_FLAG_OTHER_LAG_NO_SPELLS, AI_OTHER_MASTER);
-//    }
+    // *
+    // * if I am Aribeth then do my special level-up
+    // *
+    if (sMyTag == "H2_Aribeth")
+    {
+        LevelUpAribeth(OBJECT_SELF);
+    }
 }
+
 

@@ -1,202 +1,450 @@
-/*/////////////////////// [On Heartbeat] ///////////////////////////////////////
-    Filename: nw_c2_default1 or J_AI_OnHeartbeat
-///////////////////////// [On Heartbeat] ///////////////////////////////////////
-    Removed stupid stuff, special behaviour, sleep.
+//:://////////////////////////////////////////////////
+//:: X0_CH_HEN_HEART
+/*
 
-    Also, note please, I removed waypoints and day/night posting from this.
-    It can be re-added if you like, but it does reduce heartbeats.
+  OnHeartbeat event handler for henchmen/associates.
 
-    Added in better checks to see if we should fire this script. Stops early if
-    some conditions (like we can't move, low AI settings) are set.
+ */
+//:://////////////////////////////////////////////////
+//:: Copyright (c) 2002 Floodgate Entertainment
+//:: Created By: Naomi Novik
+//:: Created On: 01/05/2003
+//:://////////////////////////////////////////////////
+#include "X0_INC_HENAI"
+#include "inc_hai_generic"
+#include "inc_hai_act"
+#include "inc_hai"
+#include "inc_hai_assoc"
 
-    Hint: If nothing is used within this script, either remove it from creatures
-          or create one witch is blank, with just a "void main(){}" at the top.
-
-    Hint 2: You could add this very small file to your catche of scripts in the
-            module properties, as it runs on every creature every 6 seconds (ow!)
-
-    This also uses a system of Execute Script :-D This means the heartbeat, when
-    compiled, should be very tiny.
-
-    Note: NO Debug strings!
-    Note 2: Remember, I use default SoU Animations/normal animations. As it is
-            executed, we can check the prerequisists here, and then do it VIA
-            execute script.
-
-    -Working- Best possible, fast compile.
-///////////////////////// [History] ////////////////////////////////////////////
-    1.3 - Added more "buffs" to fast buff.
-        - Fixed animations (they both WORK and looping ones do loop right!)
-        - Loot behaviour!
-        - Randomly moving nearer a PC in 25M if set.
-        - Removed silly day/night optional setting. Anything we can remove, is a good idea.
-    1.4 - Removed AI level setting. Not good to use, I mistakenly added it.
-///////////////////////// [Workings] ///////////////////////////////////////////
-    This fires off every 6 seconds (with PCs in the area, or AI_LEVEL_HIGH without)
-    and therefore is intensive.
-
-    It fires of ExecutesScript things for the different parts - saves CPU stuff
-    if the bits are not used.
-///////////////////////// [Arguments] //////////////////////////////////////////
-    Arguments: Basically, none. Nothing activates this script. Fires every 6 seconds.
-///////////////////////// [On Heartbeat] /////////////////////////////////////*/
-
-// - This includes J_Inc_Constants
-#include "inc_hai_heartb"
-#include "inc_hai_other"
-
-void DoBanter()
+void TestItemProperties()
 {
-    if (GetIsDead(OBJECT_SELF) || GetIsInCombat(OBJECT_SELF) || IsInConversation(OBJECT_SELF) || GetIsFighting() || GetIsResting(OBJECT_SELF)) return;
+    Jug_Debug(GetName(OBJECT_SELF) + " checking properties");
+    int i;
+    itemproperty oProp;
 
-    ExecuteScript("hen_banter", OBJECT_SELF);
+    for (i = 0; i < NUM_INVENTORY_SLOTS; i++)
+    {
+        object oItem = GetItemInSlot(i, OBJECT_SELF);
+
+        if (GetIsObjectValid(oItem))
+        {
+            Jug_Debug("Checking item slot " + IntToString(i));
+            oProp = GetFirstItemProperty(oItem);
+            while (GetIsItemPropertyValid(oProp))
+            {
+
+                Jug_Debug("prop type " + IntToString(GetItemPropertyType(oProp)) + " duration " + IntToString(GetItemPropertyDurationType(oProp))  + " sub type " + IntToString(GetItemPropertySubType(oProp)) + " cost table " + IntToString(GetItemPropertyCostTable(oProp)) + " cost table value " + IntToString(GetItemPropertyCostTableValue(oProp)));
+
+                oProp = GetNextItemProperty(oItem);
+            }
+
+        }
+    }
+}
+
+
+int FindCategoryBest(object oTarget, int nCategory, int nCurSpellCount)
+{
+// really want arrays
+    int spell1, spell2, spell3;
+    int spell1Repeat, spell2Repeat, spell3Repeat;
+    int spell1Feat, spell2Feat, spell3Feat;
+    int spellsFound;
+
+    Jug_Debug(GetName(OBJECT_SELF) + " searching category " + IntToString(nCategory));
+    int nTry;
+
+    while (nTry < 10)
+    {
+        talent tBest = GetCreatureTalentRandom(nCategory, oTarget);
+        if(!GetIsTalentValid(tBest))
+        {
+            break;
+        }
+
+        int nNewSpellID = GetIdFromTalent(tBest);
+        int nType = GetTypeFromTalent(tBest);
+
+//        Jug_Debug(GetName(OBJECT_SELF) + " test talent " + IntToString(nType) + " " + IntToString(nNewSpellID));
+
+        if (spellsFound == 0)
+        {
+            Jug_Debug(GetName(OBJECT_SELF) + " found talent " + IntToString(nType) + " " + IntToString(nNewSpellID));
+            spell1 = nNewSpellID;
+            spell1Feat = nType;
+            spellsFound ++;
+        }
+        else if (spellsFound == 1)
+        {
+            if (spell1 == nNewSpellID && spell1Feat == nType)
+            {
+                spell1Repeat ++;
+                if (spell1Repeat > 2)
+                {
+                    break;
+                }
+            }
+            else
+            {
+                Jug_Debug(GetName(OBJECT_SELF) + " found talent " + IntToString(nType) + " " + IntToString(nNewSpellID));
+                spell2 = nNewSpellID;
+                spell2Feat = nType;
+                spellsFound ++;
+            }
+        }
+        else if (spellsFound == 2)
+        {
+            if (spell1 == nNewSpellID && spell1Feat == nType)
+            {
+                spell1Repeat ++;
+                if (spell1Repeat > 2)
+                {
+                    break;
+                }
+            }
+            else if (spell2 == nNewSpellID && spell2Feat == nType)
+            {
+                spell2Repeat ++;
+                if (spell2Repeat > 2)
+                {
+                    break;
+                }
+            }
+            else
+            {
+                Jug_Debug(GetName(OBJECT_SELF) + " found talent " + IntToString(nType) + " " + IntToString(nNewSpellID));
+                spell3 = nNewSpellID;
+                spell3Feat = nType;
+                spellsFound ++;
+            }
+            // at most three
+            break;
+        }
+        nTry ++;
+    }
+    return spellsFound;
+}
+
+
+void TestSpells()
+{
+//    if (!GetHasEffect(EFFECT_TYPE_ABILITY_DECREASE))
+//    {
+//        effect eDrain = EffectAbilityDecrease(ABILITY_CHARISMA, 10);
+//        ApplyEffectToObject(DURATION_TYPE_PERMANENT, eDrain, OBJECT_SELF);
+//    }
+//    RemoveEffects(OBJECT_SELF);
+    Jug_Debug(GetName(OBJECT_SELF) + " has 6 spell " + IntToString(GetHasSpell(SPELL_CHAIN_LIGHTNING)));
+    Jug_Debug(GetName(OBJECT_SELF) + " has 5 spell " + IntToString(GetHasSpell(SPELL_CONE_OF_COLD)));
+    Jug_Debug(GetName(OBJECT_SELF) + " has 4 spell " + IntToString(GetHasSpell(SPELL_ICE_STORM)));
+    Jug_Debug(GetName(OBJECT_SELF) + " has 3 spell " + IntToString(GetHasSpell(SPELL_FIREBALL)));
+    Jug_Debug(GetName(OBJECT_SELF) + " has 2 spell " + IntToString(GetHasSpell(SPELL_BULLS_STRENGTH)));
+    Jug_Debug(GetName(OBJECT_SELF) + " has 1 spell " + IntToString(GetHasSpell(SPELL_BURNING_HANDS)));
+    Jug_Debug(GetName(OBJECT_SELF) + " has 0 spell " + IntToString(GetHasSpell(SPELL_DAZE)));
+}
+
+
+void TestSpells2()
+{
+    Jug_Debug(GetName(OBJECT_SELF) + " has 4 spell " + IntToString(GetHasSpell(SPELL_CURE_CRITICAL_WOUNDS)) + " check spell id " +  IntToString(GetCreatureHasTalent(TalentSpell(SPELL_CURE_CRITICAL_WOUNDS))));
+    Jug_Debug(GetName(OBJECT_SELF) + " has 3 spell " + IntToString(GetHasSpell(SPELL_CURE_SERIOUS_WOUNDS)) + " check spell id " +  IntToString(GetCreatureHasTalent(TalentSpell(SPELL_CURE_SERIOUS_WOUNDS))));
+    Jug_Debug(GetName(OBJECT_SELF) + " has 2 spell " + IntToString(GetHasSpell(SPELL_CURE_MODERATE_WOUNDS)) + " check spell id " +  IntToString(GetCreatureHasTalent(TalentSpell(SPELL_CURE_MODERATE_WOUNDS))));
+    Jug_Debug(GetName(OBJECT_SELF) + " has 1 spell " + IntToString(GetHasSpell(SPELL_CURE_LIGHT_WOUNDS)) + " check spell id " +  IntToString(GetCreatureHasTalent(TalentSpell(SPELL_CURE_LIGHT_WOUNDS))));
+    Jug_Debug(GetName(OBJECT_SELF) + " has 0 spell " + IntToString(GetHasSpell(SPELL_CURE_MINOR_WOUNDS)) + " check spell id " +  IntToString(GetCreatureHasTalent(TalentSpell(SPELL_CURE_MINOR_WOUNDS))));
+}
+
+void TestSpells3()
+{
+    Jug_Debug(GetName(OBJECT_SELF) + " has prot vs evil " + IntToString(GetHasSpell(SPELL_PROTECTION_FROM_EVIL)));
+    Jug_Debug(GetName(OBJECT_SELF) + " has prot vs good " + IntToString(GetHasSpell(SPELL_PROTECTION_FROM_GOOD)));
+    Jug_Debug(GetName(OBJECT_SELF) + " has propt vs align " + IntToString(GetHasSpell(321)));
+    Jug_Debug(GetName(OBJECT_SELF) + " has gate " + IntToString(GetHasSpell(SPELL_GATE)));
+    Jug_Debug(GetName(OBJECT_SELF) + " check spell id " +  IntToString(GetCreatureHasTalent(TalentSpell(SPELL_PROTECTION_FROM_EVIL))));
+    Jug_Debug(GetName(OBJECT_SELF) + " check main spell id " + IntToString(GetCreatureHasTalent(TalentSpell(321))));
+}
+
+
+void GetBestItemSpells()
+{
+    object oTarget = GetMaster();
+    if (!GetIsObjectValid(oTarget))
+    {
+        return;
+    }
+    oTarget = OBJECT_SELF;
+
+    // check if already silenced
+    int nAlreadySilenced = GetHasEffect(EFFECT_TYPE_SILENCE);
+
+    if (!nAlreadySilenced)
+    {
+//        ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectSilence(), oTarget);
+        ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectCutsceneImmobilize(), oTarget);
+         // ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectParalyze(), OBJECT_SELF);
+    }
+
+    int nStep;
+    for (nStep = 0; nStep <= 22; nStep++)
+    {
+        FindCategoryBest(oTarget, nStep, 0);
+    }
+
+    if (!nAlreadySilenced)
+    {
+        effect eSilence = GetFirstEffect(oTarget);
+        while(GetIsEffectValid(eSilence))
+        {
+            if(GetEffectType(eSilence) == EFFECT_TYPE_CUTSCENEIMMOBILIZE)
+            {
+                RemoveEffect(oTarget, eSilence);
+       //         break;
+            }
+            eSilence = GetNextEffect(oTarget);
+        }
+    }
 }
 
 
 void main()
 {
-    // Special - Runner from the leader shouts, each heartbeat, to others to get thier
-    // attention that they are being attacked.
-    // - Includes fleeing making sure (so it resets the ActionMoveTo each 6 seconds -
-    //   this is not too bad)
-    // - Includes door bashing stop heartbeat
-    if(PerformSpecialAction()) return;
+//    Jug_Debug("*****" + GetName(OBJECT_SELF) + " heartbeat " + IntToString(GetCurrentAction()) + " busy " + IntToString(GetAssociateState(NW_ASC_IS_BUSY)));
 
-    object oMaster = GetMaster(OBJECT_SELF);
-    if (GetIsObjectValid(oMaster) && GetStringLeft(GetResRef(OBJECT_SELF), 3) == "hen")
+    // If the henchman is in dying mode, make sure
+    // they are non commandable. Sometimes they seem to
+    // 'slip' out of this mode
+    int bDying = GetIsHenchmanDying();
+
+    if (bDying)
     {
-        int nBanter = GetLocalInt(OBJECT_SELF, "banter");
-
-        if (nBanter >= 100)
+        int bCommandable = GetCommandable();
+        if (bCommandable == TRUE)
         {
-            DelayCommand(IntToFloat(d20())+IntToFloat(d10())/10.0, DoBanter());
-            DeleteLocalInt(OBJECT_SELF, "banter");
+            // lie down again
+            ActionPlayAnimation(ANIMATION_LOOPING_DEAD_FRONT,
+                                          1.0, 65.0);
+           SetCommandable(FALSE);
+        }
+    }
+
+    // If we're dying or busy, we return
+    // (without sending the user-defined event)
+    if(GetAssociateState(NW_ASC_IS_BUSY) || bDying)
+    {
+        return;
+    }
+
+    //    GetBestItemSpells();
+//    if (GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR,PLAYER_CHAR_IS_PC, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION,  PERCEPTION_HEARD)))
+//    {
+//        Jug_Debug("*****" + GetName(OBJECT_SELF) + " heartbeat action " + IntToString(GetCurrentAction()));
+//    }
+
+//    if (GetIsObjectValid(GetMaster()))
+//    {
+//        TestItemProperties();
+//        Jug_Debug(GetName(OBJECT_SELF) + " challenge rating is " + FloatToString(GetChallengeRating(OBJECT_SELF)));
+//        Jug_Debug(GetName(GetMaster()) + " challenge rating is " + FloatToString(GetChallengeRating(GetMaster())));
+//    }
+//    TestSpells();
+//    TestSpells2();
+//    TestSpells3();
+
+    DeleteLocalInt(OBJECT_SELF, HENCH_AI_SCRIPT_RUN_STATE);
+
+    object oRealMaster = GetRealMaster();
+        // destory self if pseudo summons and master not valid
+    if (GetLocalInt(OBJECT_SELF, sHenchPseudoSummon))
+    {
+        oRealMaster = GetLocalObject(OBJECT_SELF, sHenchPseudoSummon);
+        if (!GetIsObjectValid(oRealMaster))
+        {
+            DestroyObject(OBJECT_SELF, 0.1);
+            ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, EffectVisualEffect(VFX_IMP_UNSUMMON), GetLocation(OBJECT_SELF));
+            return;
+        }
+    }
+
+    // GZ: Fallback for timing issue sometimes preventing epic summoned creatures from leveling up to their master's level.
+    // There is a timing issue with the GetMaster() function not returning the fof a creature
+    // immediately after spawn. Some code which might appear to make no sense has been added
+    // to the nw_ch_ac1 and x2_inc_summon files to work around this
+    // This code is only run at the first hearbeat
+    /*
+    int nLevel = SSMGetSummonFailedLevelUp(OBJECT_SELF);
+    if (nLevel != 0)
+    {
+        int nRet;
+        if (nLevel == -1) // special shadowlord treatment
+        {
+            SSMScaleEpicShadowLord(OBJECT_SELF);
+        }
+        else if  (nLevel == -2)
+        {
+            SSMScaleEpicFiendishServant(OBJECT_SELF);
         }
         else
         {
-            SetLocalInt(OBJECT_SELF, "banter", nBanter+d4());
+            nRet = SSMLevelUpCreature(OBJECT_SELF, nLevel, CLASS_TYPE_INVALID);
+            if (nRet == FALSE)
+            {
+                WriteTimestampedLogEntry("WARNING - nw_ch_ac1:: could not level up " + GetTag(OBJECT_SELF) + "!");
+            }
         }
+
+        // regardless if the actual levelup worked, we give up here, because we do not
+        // want to run through this script more than once.
+        SSMSetSummonLevelUpOK(OBJECT_SELF);
     }
+    */
+    // Check if concentration is required to maintain this creature
+    //X2DoBreakConcentrationCheck();
 
-    // Pre-heartbeat-event. Returns TRUE if we interrupt this script call.
-    if(FirePreUserEvent(AI_FLAG_UDE_HEARTBEAT_PRE_EVENT, EVENT_HEARTBEAT_PRE_EVENT)) return;
+    // * if I am dominated, ask for some help
+    // TK removed SendForHelp
+//    if (GetHasEffect(EFFECT_TYPE_DOMINATED, OBJECT_SELF) == TRUE && GetIsEncounterCreature(OBJECT_SELF) == FALSE)
+//    {
+//        SendForHelp();
+//    }
 
-    // AI status check. Is the AI on?
-    if(GetAIOff()) return;
+        // restore associate settings
+    HenchGetDefSettings();
 
-    // no waypoint stuff - pok
-
-    string sScript = GetLocalString(OBJECT_SELF, "heartbeat_script");
-    if (sScript != "") ExecuteScript(sScript);
-
-    if(GetLocalInt(OBJECT_SELF, "busy") == 0)
+    if(GetAssociateState(NW_ASC_IS_BUSY))
     {
+        return;
+    }
+    int iAmNotDoingAnything = GetIAmNotDoingAnything();
+    if (!iAmNotDoingAnything)
+    {
+        return;
+    }
+    if (!GetIsObjectValid(oRealMaster))
+    {
+        return;
+    }
 
-        //Seek out and disable undisabled traps
-        object oTrap = GetNearestTrapToObject();
-        if (GetIsObjectValid(oTrap) && AttemptToDisarmTrap(oTrap)) return; // succesful trap found and disarmed
-
-        if(GetIsObjectValid(oMaster) &&
-            GetCurrentAction(OBJECT_SELF) != ACTION_FOLLOW &&
-            GetCurrentAction(OBJECT_SELF) != ACTION_DISABLETRAP &&
-            GetCurrentAction(OBJECT_SELF) != ACTION_OPENLOCK &&
-            GetCurrentAction(OBJECT_SELF) != ACTION_REST &&
-            GetCurrentAction(OBJECT_SELF) != ACTION_ATTACKOBJECT)
+    if(!GetAssociateState(NW_ASC_MODE_STAND_GROUND))
+    {
+        if (HenchGetIsEnemyPerceived())
         {
-            if(
-               !GetIsObjectValid(GetAttackTarget()) &&
-               !GetIsObjectValid(GetAttemptedSpellTarget()) &&
-               !GetIsObjectValid(GetAttemptedAttackTarget()) &&
-               !GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN))
-              )
-            {
-                if (GetIsObjectValid(oMaster) == TRUE)
-                {
-                    if(GetDistanceToObject(oMaster) > 6.0)
-                    {
-                        if(GetIsObjectValid(oMaster))
-                        {
-                            if(!GetIsFighting())
-                            {
-                                if(GetLocalInt(OBJECT_SELF, "stand_ground") == 0)
-                                {
-                                    if(GetDistanceToObject(oMaster) > 3.0)
-                                    {
-                                        ClearAllActions(TRUE);
-                                        ActionForceFollowObject(oMaster, 3.0);
-                                        /*
-                                        if(GetAssociateState(NW_ASC_AGGRESSIVE_STEALTH) || GetAssociateState(NW_ASC_AGGRESSIVE_SEARCH))
-                                        {
-                                             if(GetAssociateState(NW_ASC_AGGRESSIVE_STEALTH))
-                                             {
-                                                //ActionUseSkill(SKILL_HIDE, OBJECT_SELF);
-                                                //ActionUseSkill(SKILL_MOVE_SILENTLY,OBJECT_SELF);
-                                             }
-                                             if(GetAssociateState(NW_ASC_AGGRESSIVE_SEARCH))
-                                             {
-                                                ActionUseSkill(SKILL_SEARCH, OBJECT_SELF);
-                                             }
-                                             //MyPrintString("GENERIC SCRIPT DEBUG STRING ********** " + "Assigning Force Follow Command with Search and/or Stealth");
-                                             ActionForceFollowObject(oMaster, GetFollowDistance());
-                                        }
-                                        else
-                                        {
-                                             //MyPrintString("GENERIC SCRIPT DEBUG STRING ********** " + "Assigning Force Follow Normal");
-                                             ActionForceFollowObject(oMaster, GetFollowDistance());
-                                             //ActionForceMoveToObject(GetMaster(), TRUE, GetFollowDistance(), 5.0);
-                                        }
-                                        */
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                else if(GetLocalInt(OBJECT_SELF, "stand_ground") == 0)
-                {
-                    if(GetIsObjectValid(oMaster))
-                    {
-                        if(GetCurrentAction(oMaster) != ACTION_REST)
-                        {
-                            ClearAllActions(TRUE);
-                            ActionForceFollowObject(oMaster, 3.0);
-                            /*
-                            if(GetAssociateState(NW_ASC_AGGRESSIVE_STEALTH) || GetAssociateState(NW_ASC_AGGRESSIVE_SEARCH))
-                            {
-                                 if(GetAssociateState(NW_ASC_AGGRESSIVE_STEALTH))
-                                 {
-                                    //ActionUseSkill(SKILL_HIDE, OBJECT_SELF);
-                                    //ActionUseSkill(SKILL_MOVE_SILENTLY,OBJECT_SELF);
-                                 }
-                                 if(GetAssociateState(NW_ASC_AGGRESSIVE_SEARCH))
-                                 {
-                                    ActionUseSkill(SKILL_SEARCH, OBJECT_SELF);
-                                 }
-                                 //MyPrintString("GENERIC SCRIPT DEBUG STRING ********** " + "Assigning Force Follow Command with Search and/or Stealth");
-                                 ActionForceFollowObject(oMaster, GetFollowDistance());
-                            }
-                            else
-                            {
-                                 //MyPrintString("GENERIC SCRIPT DEBUG STRING ********** " + "Assigning Force Follow Normal");
-                                 ActionForceFollowObject(oMaster, GetFollowDistance());
-                            }
-                            */
-                        }
-                    }
-                }
-            }
-            else if(!GetIsObjectValid(GetAttackTarget()) &&
-               !GetIsObjectValid(GetAttemptedSpellTarget()) &&
-               !GetIsObjectValid(GetAttemptedAttackTarget()) &&
-               GetLocalInt(OBJECT_SELF, "stand_ground") == 0)
-            {
-                DetermineCombatRound();
-            }
-
+            HenchDetermineCombatRound();
+            return;
+        }
+        if (GetLocalInt(OBJECT_SELF, sHenchLastHeardOrSeen))
+        {
+            // continue to move to target
+            MoveToLastSeenOrHeard(FALSE);
+            return;
         }
     }
-    // Fire End-heartbeat-UDE
-    FireUserEvent(AI_FLAG_UDE_HEARTBEAT_EVENT, EVENT_HEARTBEAT_EVENT);
+
+    if ((GetLocalObject(OBJECT_SELF,"NW_L_FORMERMASTER") != OBJECT_INVALID)
+        && (GetLocalInt(OBJECT_SELF, "haveCheckedFM") != 1))
+    {
+        // Auldar: For a little OnHeartbeat efficiency, I'll set a localint so we don't
+        // keep checking stealth mode etc. This will be cleared in NW_CH_JOIN, as will
+        // the LocalObject for NW_L_FORMERMASTER.
+        // A little quirk with this behaviour - the ActionUseSkill's do not execute until the henchman rejoins
+        // however if the player re-loads, or leaves the area and returns, the henchman will no longer be in stealth etc.
+        // I couldn't find any way around that odd behaviour, but this works for the most part.
+        SetLocalInt(OBJECT_SELF, "haveCheckedFM", 1);
+        SetAssociateState(NW_ASC_AGGRESSIVE_SEARCH, FALSE);
+        SetLocalInt(OBJECT_SELF, sHenchStealthMode, 0);
+        SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, FALSE);
+        SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, FALSE);
+    }
+
+    // Check to see if should re-enter stealth mode
+    int nStealth = GetLocalInt(GetTopAssociate(), sHenchStealthMode);
+    if (nStealth == 1 || nStealth == 2)
+    {
+        if(!GetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH))
+        {
+            SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
+        }
+    }
+    else
+    {
+        if(!GetActionMode(oRealMaster, ACTION_MODE_STEALTH))
+        {
+            SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, FALSE);
+        }
+    }
+
+    CleanCombatVars();
+
+    if (GetLocalInt(OBJECT_SELF, henchHealCountStr))
+    {
+        ExecuteScript("hench_o0_heal", OBJECT_SELF);
+        return;
+    }
+    if (GetLocalInt(OBJECT_SELF, henchBuffCountStr))
+    {
+        ActionDoCommand(ActionWait(2.0));
+        ActionDoCommand(ExecuteScript("hench_o0_enhanc", OBJECT_SELF));
+        return;
+    }
+
+    if (HenchCheckArea())
+    {
+        return;
+    }
+        // Pausanias: Hench tends to get stuck on follow.
+    if (GetCurrentAction(OBJECT_SELF) == ACTION_FOLLOW)
+    {
+        if (GetDistanceToObject(oRealMaster) >= 2.2 &&
+            GetAssociateState(NW_ASC_DISTANCE_2_METERS)) return;
+        if (GetDistanceToObject(oRealMaster) >= 4.2 &&
+            GetAssociateState(NW_ASC_DISTANCE_4_METERS)) return;
+        if (GetDistanceToObject(oRealMaster) >= 6.2 &&
+            GetAssociateState(NW_ASC_DISTANCE_6_METERS)) return;
+        ClearAllActions();
+    }
+
+    if (GetLocalInt(OBJECT_SELF,"SwitchedToMelee") &&
+        GetAssociateState(NW_ASC_USE_RANGED_WEAPON))
+    {
+        ClearAllActions();
+        ClearWeaponStates();
+        HenchEquipDefaultWeapons(OBJECT_SELF, TRUE);
+        return;
+    }
+
+    int bIsScouting = GetLocalInt(OBJECT_SELF, sHenchScoutingFlag);
+    if (bIsScouting)
+    {
+        if (GetDistanceToObject(oRealMaster) < 6.0)
+        {
+            SpeakString(sHenchGetOutofWay);
+        }
+        object oScoutTarget = GetLocalObject(OBJECT_SELF, sHenchScoutTarget);
+        if (GetDistanceBetween(oScoutTarget, oRealMaster) > henchMaxScoutDistance)
+        {
+            DeleteLocalInt(OBJECT_SELF, sHenchScoutingFlag);
+            bIsScouting = FALSE;
+        }
+        else
+        {
+            if (CheckStealth() && !GetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH))
+            {
+                SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
+            }
+            ActionMoveToObject(oScoutTarget, FALSE, 1.0);
+        }
+    }
+
+    if(!bIsScouting && !GetAssociateState(NW_ASC_MODE_STAND_GROUND) &&
+        (GetAssociateState(NW_ASC_HAVE_MASTER) && !GetIsFighting(OBJECT_SELF) &&
+        GetDistanceToObject(oRealMaster) > GetFollowDistance()))
+    {
+        ClearAllActions();
+        ActionForceFollowObject(oRealMaster, GetFollowDistance());
+    }
+
+    if(GetSpawnInCondition(NW_FLAG_HEARTBEAT_EVENT))
+    {
+        SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_HEARTBEAT));
+    }
 }
 
 

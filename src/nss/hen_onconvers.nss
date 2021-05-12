@@ -1,127 +1,127 @@
-/*/////////////////////// [On Conversation] ////////////////////////////////////
-    Filename: J_AI_OnConversat or nw_c2_default4
-///////////////////////// [On Conversation] ////////////////////////////////////
-    OnConversation/ Listen to shouts.
-    Documented, and checked. -Working-
+//:://////////////////////////////////////////////////
+//:: X0_CH_HEN_CONV
+/*
 
-    Added spawn in condition - Never clear actions when talking.
-///////////////////////// [History] ////////////////////////////////////////////
-    1.3 - Added in conversation thing - IE we can set speakstrings, no need for conversation file.
-        - Sorted more shouts out.
-        - Should work right, and not cause too many actions (as we ignore
-          shouts for normally 12 or so seconds before letting them affect us again).
-    1.4 - Deafness incorpreated.
-///////////////////////// [Workings] ///////////////////////////////////////////
-    Uses RespondToShout to react to allies' shouts, and just attacks any enemy
-    who speaks, or at least moves to them. (OK, dumb if they are invisible, but
-    oh well, they shouldn't talk so loud!)
+  OnDialogue event handler for henchmen/associates.
 
-    Remember, whispers are never heard if too far away, speakstrings don't go
-    through walls, and shouts are always heard (so we don't go off to anyone
-    not in our area, remember)
+ */
+//:://////////////////////////////////////////////////
+//:: Copyright (c) 2002 Floodgate Entertainment
+//:: Created By: Naomi Novik
+//:: Created On: 01/05/2003
+//:://////////////////////////////////////////////////
 
-    Deafness causes us to never hear battle, so unless we see the target speaking
-    we do not react. Doesn't apply to normal conversations - although if we cannot
-    talk (also restricted by deafness) then so be it.
-///////////////////////// [Arguments] //////////////////////////////////////////
-    Arguments: GetListenPatternNumber, GetLastSpeaker, TestStringAgainstPattern,
-               GetMatchedSubstring
-///////////////////////// [On Conversation] //////////////////////////////////*/
 
-#include "inc_hai_other"
+#include "inc_hai_hensho"
+#include "inc_hai_monsho"
+#include "x0_i0_henchman"
+
 
 void main()
 {
-    // Pre-conversation-event. Returns TRUE if we interrupt this script call.
-    if(FirePreUserEvent(AI_FLAG_UDE_ON_DIALOGUE_PRE_EVENT, EVENT_ON_DIALOGUE_PRE_EVENT)) return;
-
-    // AI status check. Is the AI on?
-    if(GetAIOff()) return;
-
-    // Declarations
-    int nMatch = GetListenPatternNumber();
-    object oShouter = GetLastSpeaker();
-    string sSpoken = GetMatchedSubstring(0);
-
-    // We can ignore everything under special cases - EG no valid shouter,
-    // we are fleeing, its us, or we are not in the same area.
-    // - We break out of the script if this happens.
-    if(!GetIsObjectValid(oShouter) ||     /* Must be a valid speaker! */
-        oShouter == OBJECT_SELF ||        /* Not us!     */
-        GetIsPerformingSpecialAction() || /* Not fleeing */
-        GetIgnore(oShouter) ||            /* Not ignoring the shouter */
-        GetArea(oShouter) != GetArea(OBJECT_SELF))/* Same area (Stops loud yellow shouts getting NPCs) */
+    // * XP2, special handling code for interjections
+    // * This script only fires if someone inits with me.
+    // * with that in mind, I am now clearing any interjections
+    // * that the character might have on themselves.
+    if (GetLocalInt(GetModule(), "X2_L_XP2") == TRUE)
     {
-        // Fire End of Dialogue event
-        FireUserEvent(AI_FLAG_UDE_ON_DIALOGUE_EVENT, EVENT_ON_DIALOGUE_EVENT);
+        SetLocalInt(OBJECT_SELF, "X2_BANTER_TRY", 0);
+        SetHasInterjection(GetMaster(OBJECT_SELF), FALSE);
+        SetLocalInt(OBJECT_SELF, "X0_L_BUSY_SPEAKING_ONE_LINER", 0);
+        SetOneLiner(FALSE, 0);
+    }
+
+    object oShouter = GetLastSpeaker();
+    if (GetTag(OBJECT_SELF) == "x0_hen_dee")
+    {
+        string sCall = GetCampaignString("Deekin", "q6_Deekin_Call"+ GetName(oShouter), oShouter);
+
+        if (sCall == "")
+        {
+            SetCustomToken(1001, GetStringByStrRef(40570));
+        }
+        else SetCustomToken(1001, sCall);
+    }
+
+//    int i = GetLocalInt(OBJECT_SELF, sAssociateMasterConditionVarname);
+//    SendMessageToPC(GetFirstPC(), IntToHexString(i));
+    if (GetIsHenchmanDying() == TRUE)
+    {
         return;
     }
 
-    // Conversation if not a shout.
-    if(nMatch == -1)
+    object oMaster = GetMaster();
+    int nMatch = GetListenPatternNumber();
+
+    object oIntruder;
+
+    if (nMatch == -1)
     {
-        // * Don't speak when dead. 1.4 change (an obvious one to make)
-        if(CanSpeak())
+        if(GetCommandable() && !GetIsDisabled(OBJECT_SELF) &&
+            (GetCurrentAction() != ACTION_OPENLOCK))
         {
-            // Make sure it is a PC and we are not fighting.
-            if(!GetIsFighting() && (GetIsPC(oShouter) || GetIsDMPossessed(oShouter)))
+            ClearActions(CLEAR_X0_CH_HEN_CONV_26);
+            string sDialogFileToUse = GetDialogFileToUse(GetLastSpeaker());
+            // special code for last henchman
+            if (GetTag(OBJECT_SELF) == "H2_Aribeth")
             {
-                BeginConversation();
+                sDialogFileToUse = "xp2_hen_last";
             }
+            BeginConversation(sDialogFileToUse);
         }
     }
-    // If it is a valid shout...and a valid shouter.
-    // - Not a DM. Not ignoring shouting. Not a Debug String.
-    else if(!GetLocalTimer(AI_TIMER_SHOUT_IGNORE_ANYTHING_SAID) &&// Not listening (IE heard already)
-            !GetIsDM(oShouter) && FindSubString(sSpoken, "[Debug]") == -1 &&
-    // 1.4 - Deafness (or they are seen) check, for fun.
-            (!GetHasEffect(EFFECT_TYPE_DEAF) || GetObjectSeen(oShouter)))
+    else
     {
-        if(GetFactionEqual(oShouter))
+        // listening pattern matched
+        if (GetIsObjectValid(oMaster))
         {
-            // only respond to shouts that is a party member - pok
-            RespondToShout(oShouter, nMatch);
-
-            // Else either is PC or is shout 0 (everything!)
-            // - not if we are in combat, or they are not.
-            /*
-            if(!CannotPerformCombatRound() &&
-                     GetIsInCombat(oShouter) &&
-                     GetObjectType(oShouter) == OBJECT_TYPE_CREATURE)
+            // we have a master, only listen to them
+            if (GetIsObjectValid(oShouter) && oMaster == oShouter && !GetIsDisabled(OBJECT_SELF))
             {
-                // 57: "[Shout] Friend (may be PC) in combat. Attacking! [Friend] " + GetName(oShouter)
-                DebugActionSpeakByInt(57, oShouter);
-
-                // Respond to oShouter
-                IWasAttackedResponse(oShouter);
-            }
-            */
-        }
-        else if(GetIsEnemy(oShouter) && GetObjectType(oShouter) == OBJECT_TYPE_CREATURE)
-        {
-            // If we hear anything said by an enemy, and are not fighting, attack them!
-            if(!CannotPerformCombatRound())
-                // the negatives are associate shouts, Normally (!)
-                // 0+ are my shouts. 0 is anything
-            {
-                // emote disable removed - pok
-
-                // 58: "[Shout] Responding to shout [Enemy] " + GetName(oShouter) + " Who has spoken!"
-                DebugActionSpeakByInt(58, oShouter);
-
-                // Short non-respond
-                SetLocalTimer(AI_TIMER_SHOUT_IGNORE_ANYTHING_SAID, 6.0);
-
-                // Attack the enemy!
-                ClearAllActions();
-                DetermineCombatRound(oShouter);
-
-                // Shout to allies to attack the shouter
-                AISpeakString(AI_SHOUT_I_WAS_ATTACKED);
+                SetCommandable(TRUE);
+                HenchChRespondToShout(oShouter, nMatch, oIntruder);
+                // bkRespondToHenchmenShout(oShouter, nMatch, oIntruder);
             }
         }
+
+        // we don't have a master, behave in default way
+        else if (GetIsObjectValid(oShouter)
+                 && !GetIsPC(oShouter)
+                 && GetIsFriend(oShouter))
+        {
+             object oIntruder = OBJECT_INVALID;
+             // Determine the intruder if any
+             if(nMatch == 4)
+             {
+                 oIntruder = GetLocalObject(oShouter, "NW_BLOCKER_INTRUDER");
+             }
+             else if (nMatch == 5)
+             {
+                oIntruder = GetLocalObject(oShouter, sHenchLastTarget);
+                if(!GetIsObjectValid(oIntruder))
+                {
+                     oIntruder = GetLastHostileActor(oShouter);
+                     if(!GetIsObjectValid(oIntruder))
+                     {
+                         oIntruder = GetAttemptedAttackTarget();
+                         if(!GetIsObjectValid(oIntruder))
+                         {
+                             oIntruder = GetAttemptedSpellTarget();
+                         }
+                     }
+                 }
+             }
+
+             // Actually respond to the shout
+             HenchMonRespondToShout(oShouter, nMatch, oIntruder);
+         }
     }
-    // Fire End of Dialogue event
-    FireUserEvent(AI_FLAG_UDE_ON_DIALOGUE_EVENT, EVENT_ON_DIALOGUE_EVENT);
+
+    // Signal user-defined event
+    if(GetSpawnInCondition(NW_FLAG_ON_DIALOGUE_EVENT))
+    {
+        SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_DIALOGUE));
+    }
 }
+
 

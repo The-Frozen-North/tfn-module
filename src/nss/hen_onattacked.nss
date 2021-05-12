@@ -1,132 +1,61 @@
-/*/////////////////////// [On Phisical Attacked] ///////////////////////////////
-    Filename: J_AI_OnPhiAttack or nw_c2_default5
-///////////////////////// [On Phisical Attacked] ///////////////////////////////
-    On Attacked
-    No checking for fleeing or warnings.
-    Very boring really!
-///////////////////////// [History] ////////////////////////////////////////////
-    1.3 - Added hiding things
-    1.4 - Missing Silent Shouts have been added.
-///////////////////////// [Workings] ///////////////////////////////////////////
-    Got some simple Knockdown timer, so that we use heal sooner if we keep getting
-    a creature who is attempting to knock us down.
-///////////////////////// [Arguments] //////////////////////////////////////////
-    Arguments: GetLastAttacker, GetLastWeaponUsed, GetLastAttackMode, GetLastAttackType
-///////////////////////// [On Phisical Attacked] /////////////////////////////*/
+//::///////////////////////////////////////////////
+//:: Associate On Attacked
+//:: NW_CH_AC5
+//:: Copyright (c) 2001 Bioware Corp.
+//:://////////////////////////////////////////////
+/*
+    If already fighting then ignore, else determine
+    combat round
+*/
+//:://////////////////////////////////////////////
+//:: Created By: Preston Watamaniuk
+//:: Created On: Oct 16, 2001
+//:://////////////////////////////////////////////
 
-#include "inc_hai_other"
+#include "inc_hai"
+
 
 void main()
 {
-    // Pre-attacked-event. Returns TRUE if we interrupt this script call.
-    if(FirePreUserEvent(AI_FLAG_UDE_ATTACK_PRE_EVENT, EVENT_ATTACK_PRE_EVENT)) return;
+    if (!GetLocalInt(GetModule(),"X3_NO_MOUNTED_COMBAT_FEAT"))
+    { // set variables on target for mounted combat
+        SetLocalInt(OBJECT_SELF,"bX3_LAST_ATTACK_PHYSICAL",TRUE);
+        SetLocalInt(OBJECT_SELF,"nX3_HP_BEFORE",GetCurrentHitPoints(OBJECT_SELF));
+    } // set variables on target for mounted combat
 
-    if(GetLocalInt(OBJECT_SELF, "busy") == 0)
+    if(!GetAssociateState(NW_ASC_IS_BUSY))
+    {
         SetCommandable(TRUE);
-
-    // AI status check. Is the AI on?
-    if(GetAIOff()) return;
-
-    // Set up objects.
-    object oAttacker = GetLastAttacker();
-    object oWeapon = GetLastWeaponUsed(oAttacker);
-    //int nMode = GetLastAttackMode(oAttacker);       // Currently unused
-    int nAttackType = GetLastAttackType(oAttacker);
-
-    // Check if they are valid, a DM, we are ignoring them, they are dead now, or invalid
-    if(!GetIgnoreNoFriend(oAttacker))
-    {
-
-        // If we were attacked by knockdown, for a timer of X seconds, we make
-        // sure we attempt healing at a higher level.
-        if(!GetLocalTimer(AI_TIMER_KNOCKDOWN) &&
-          (nAttackType == SPECIAL_ATTACK_IMPROVED_KNOCKDOWN ||
-           nAttackType == SPECIAL_ATTACK_KNOCKDOWN) &&
-          !GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_KNOCKDOWN) &&
-           GetBaseAttackBonus(oAttacker) + 20 >= GetAC(OBJECT_SELF))
+        // Auldar: Don't want anything to interupt a Taunt attempt.
+        if(!GetAssociateState(NW_ASC_MODE_STAND_GROUND) &&  (GetCurrentAction() != ACTION_TAUNT))
         {
-            SetLocalTimer(AI_TIMER_KNOCKDOWN, 30.0);
-        }
-
-        // Set last hostile, valid attacker (Used in the On Damaged event)
-        SetAIObject(AI_STORED_LAST_ATTACKER, oAttacker);
-
-        // * Don't speak when dead. 1.4 change (an obvious one to make)
-        if(CanSpeak())
-        {
-            // Speak the phisically attacked string, if applicable.
-            // Speak the damaged string, if applicable.
-            SpeakArrayString(AI_TALK_ON_PHISICALLY_ATTACKED);
-        }
-
-        // Turn of hiding, a timer to activate Hiding in the main file. This is
-        // done in each of the events, with the opposition checking seen/heard.
-        TurnOffHiding(oAttacker);
-
-        // We set if we are attacked in HTH onto a low-delay timer.
-        // - Not currently used
-        /*if(!GetLocalTimer(AI_TIMER_ATTACKED_IN_HTH))
-        {
-            // If the weapon is not ranged, or is not valid, set the timer.
-            if(!GetIsObjectValid(oWeapon) ||
-               !GetWeaponRanged(oWeapon))
+            CheckRemoveStealth();
+            // Auldar: Use checks from OnPerceive so we don't run DCR if we have a target.
+            if(!GetIsObjectValid(GetAttemptedAttackTarget()) &&
+               !GetIsObjectValid(GetAttackTarget()) &&
+               !GetIsObjectValid(GetAttemptedSpellTarget()))
             {
-                SetLocalTimer(AI_TIMER_ATTACKED_IN_HTH, f18);
+                if(GetIsObjectValid(GetLastAttacker()))
+                {
+                    if(GetAssociateState(NW_ASC_MODE_DEFEND_MASTER))
+                    {
+                        if(!GetIsObjectValid(GetLastAttacker(GetRealMaster())))
+                        {
+                            HenchDetermineCombatRound();
+                        }
+                    }
+                    else
+                    {
+                        HenchDetermineCombatRound(GetLastAttacker());
+                    }
+                }
             }
-        }*/
-
-        // If we are not fighting, and they are in the area, attack. Else, determine anyway.
-        if(!CannotPerformCombatRound())
-        {
-            // Must be in our area to go after now.
-            if(GetArea(oAttacker) == GetArea(OBJECT_SELF))
+            if(GetSpawnInCondition(EVENT_ATTACKED))
             {
-                // 59: "[Phisically Attacked] Attacking back. [Attacker(enemy)] " + GetName(oAttacker)
-                DebugActionSpeakByInt(59, oAttacker);
-
-                // Attack the attacker
-                DetermineCombatRound(oAttacker);
-
-                // Shout to allies to attack the enemy who attacked me
-                AISpeakString(AI_SHOUT_I_WAS_ATTACKED);
+                SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_ATTACKED));
             }
-            else
-            {
-                // Shout to allies to attack, or be prepared.
-                AISpeakString(AI_SHOUT_CALL_TO_ARMS);
-
-                // 60: "[Phisically Attacked] Not same area. [Attacker(enemy)] " + GetName(oAttacker)
-                DebugActionSpeakByInt(60, oAttacker);
-
-                // May find another hostile to attack...
-                DetermineCombatRound();
-            }
-        }
-        else
-        {
-            // Shout to allies to attack, or be prepared.
-            AISpeakString(AI_SHOUT_CALL_TO_ARMS);
         }
     }
-    // Else, invalid, DM, ally, etc...must be prepared at least (could be
-    // they are charmed or something!)
-    else
-    {
-        // If we are not fighting, prepare for battle. Something bad must have
-        // happened.
-        if(!CannotPerformCombatRound())
-        {
-            // Respond to oAttacker as if they shouted for help.
-            IWasAttackedResponse(oAttacker);
-        }
-        else
-        {
-            // Shout to allies to attack, or be prepared.
-            AISpeakString(AI_SHOUT_CALL_TO_ARMS);
-        }
-    }
-
-    // Fire End of Attacked event
-    FireUserEvent(AI_FLAG_UDE_ATTACK_EVENT, EVENT_ATTACK_EVENT);
 }
+
 
