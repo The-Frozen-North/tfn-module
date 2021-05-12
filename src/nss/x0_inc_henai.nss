@@ -939,22 +939,7 @@ void bkRespondToHenchmenShout(object oShouter, int nShoutIndex, object oIntruder
 
     case ASSOCIATE_COMMAND_LEAVEPARTY:
         {
-            oMaster = GetMaster();
-
-            string sTag = GetTag(GetArea(oMaster));
-            // * henchman cannot be kicked out in the reaper realm
-            // * Followers can never be kicked out
-            if (sTag == "GatesofCania" || GetIsFollower(OBJECT_SELF))
-                return;
-
-            if(GetIsObjectValid(oMaster))
-            {
-                ClearActions(CLEAR_X0_INC_HENAI_RespondToShout4);
-                if(GetAssociateType(OBJECT_SELF) == ASSOCIATE_TYPE_HENCHMAN)
-                {
-                    FireHenchman(GetMaster(), OBJECT_SELF);
-                }
-            }
+            // do nothing
             break;
         }
     }

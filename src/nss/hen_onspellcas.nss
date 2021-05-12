@@ -11,22 +11,42 @@
 //:: Created By: Preston Watamaniuk
 //:: Created On: Dec 6, 2001
 //:://////////////////////////////////////////////
+//:://////////////////////////////////////////////
+//:: Modified By: Deva Winblood
+//:: Modified On: Jan 4th, 2008
+//:: Added Support for Mounted Combat Feat Support
+//:://////////////////////////////////////////////
+/*
+Patch 1.70
 
+- fixed attacking from disabled states like fear
+- fixed teleporting when struck by AOE in different area
+- fixed flat-foot issue when target of multiple AOEs
+- fixed cancel when struck by own spell
++ better AOE behavior
+*/
 
-#include "X0_INC_HENAI"
-//#include "x2_i0_spells"
-
-#include "inc_hai"
-
+#include "x0_inc_henai"
+#include "x2_i0_spells"
 
 void main()
 {
-    object oCaster = GetLastSpellCaster();
+    if(!GetCommandable())
+        return;
+
+    object oAOE, oCaster = GetLastSpellCaster();
+    if(GetObjectType(oCaster) == OBJECT_TYPE_AREA_OF_EFFECT)
+    {
+        oAOE = oCaster;
+        oCaster = GetAreaOfEffectCreator(oAOE);
+    }
+    int nSpell = GetLastSpell();
 
     if(GetLastSpellHarmful())
     {
+        if (GetIsEnemy(GetLastSpellCaster()))
+                SpeakString("PARTY_I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
 
-        SetCommandable(TRUE);
         // * GZ Oct 3, 2003
         // * Really, the engine should handle this, but hey, this world is not perfect...
         // * If I was hurt by my master or the creature hurting me has
@@ -35,7 +55,7 @@ void main()
         // * After all, we're all just trying to do our job here
         // * if we singe some eyebrow hair, oh well.
         object oMyMaster = GetMaster(OBJECT_SELF);
-        if ((oMyMaster != OBJECT_INVALID) && (oMyMaster == oCaster || (oMyMaster  == GetMaster(oCaster)))  )
+        if ((oMyMaster != OBJECT_INVALID) && (oMyMaster == oCaster || (oMyMaster  == GetMaster(oCaster))) )
         {
             ClearPersonalReputation(oCaster, OBJECT_SELF);
             // Send the user-defined event as appropriate
@@ -46,56 +66,68 @@ void main()
             return;
         }
 
-        if (GetIsEnemy(oCaster))
-            SpeakString("I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
+        int bAttack = TRUE;
+        // * AOE Behavior
 
-        if (
-// Auldar: Don't react if we are Taunting.
-         GetCurrentAction() != ACTION_TAUNT &&
-         !GetIsObjectValid(GetAttackTarget()) &&
+        if (MatchAreaOfEffectSpell(nSpell) && !GetIsHenchmanDying() && !GetHasEffect(EFFECT_TYPE_POLYMORPH))
+        {
+            //* GZ 2003-Oct-02 : New AoE Behavior AI
+            int nAI = (GetBestAOEBehavior(GetLastSpell()));
+            switch(nAI)
+            {
+                case X2_SPELL_AOEBEHAVIOR_DISPEL_L:
+                case X2_SPELL_AOEBEHAVIOR_DISPEL_N:
+                case X2_SPELL_AOEBEHAVIOR_DISPEL_M:
+                case X2_SPELL_AOEBEHAVIOR_DISPEL_G:
+                case X2_SPELL_AOEBEHAVIOR_DISPEL_C:
+                    bAttack = FALSE;
+                    ClearAllActions();
+                    ActionCastSpellAtLocation(nAI, GetLocation(GetIsObjectValid(oAOE) ? oAOE : OBJECT_SELF));
+                    ActionDoCommand(SetCommandable(TRUE));
+                    SetCommandable(FALSE);
+                break;
+                case X2_SPELL_AOEBEHAVIOR_FLEE:
+                    bAttack = FALSE;
+                    if(!GetIsObjectValid(oCaster) || GetArea(oCaster) != GetArea(OBJECT_SELF))
+                    {
+                        oCaster = GetNearestEnemy();
+                    }
+                    if(!GetIsObjectValid(oCaster))
+                    {
+                        ClearActions(CLEAR_NW_C2_DEFAULTB_GUSTWIND);
+                        ActionMoveAwayFromLocation(GetLocation(GetIsObjectValid(oAOE) ? oAOE : OBJECT_SELF), TRUE, 10.0);
+                    }
+                    else if(GetAttackTarget() == OBJECT_INVALID || GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND)))
+                    {
+                        ClearActions(CLEAR_NW_C2_DEFAULTB_GUSTWIND);
+                        ActionMoveToObject(oCaster, TRUE, 2.0);//no teleporting anymore
+                        ActionDoCommand(HenchmenCombatRound(oCaster));
+                    }
+                break;
+                case X2_SPELL_AOEBEHAVIOR_GUST:
+                    bAttack = FALSE;
+                    ClearAllActions();
+                    ActionCastSpellAtLocation(SPELL_GUST_OF_WIND, GetLocation(GetObjectType(oCaster) == OBJECT_TYPE_AREA_OF_EFFECT ? oCaster : OBJECT_SELF));
+                    ActionDoCommand(SetCommandable(TRUE));
+                    SetCommandable(FALSE);
+                break;
+            }
+        }
+
+        if(bAttack &&
+         (!GetIsObjectValid(GetAttackTarget()) &&
          !GetIsObjectValid(GetAttemptedSpellTarget()) &&
          !GetIsObjectValid(GetAttemptedAttackTarget()) &&
          !GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN)) &&
          !GetIsFriend(oCaster))
+        )
         {
-            SetCommandable(TRUE);
-            HenchDetermineCombatRound(oCaster);
+            //Shout Attack my target, only works with the On Spawn In setup
+            SpeakString("NW_ATTACK_MY_TARGET", TALKVOLUME_SILENT_TALK);
+            //Shout that I was attacked
+            SpeakString("NW_I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
+            HenchmenCombatRound(oCaster);
         }
     }
-    // * Make a henchman initiate with the player if they've just been raised or resurrected
-    /*
-    else if(GetLastSpell() == SPELL_RAISE_DEAD || GetLastSpell()  == SPELL_RESURRECTION)
-    {
-       // * restore merchant faction to neutral
-       SetStandardFactionReputation(STANDARD_FACTION_MERCHANT, 100, oCaster);
-       SetStandardFactionReputation(STANDARD_FACTION_COMMONER, 100, oCaster);
-       SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 100, oCaster);
-       ClearPersonalReputation(oCaster, OBJECT_SELF);
-       AssignCommand(OBJECT_SELF, SurrenderToEnemies());
-        object oHench = OBJECT_SELF;
-        AssignCommand(oHench, ClearAllActions(TRUE));
-        string sFile = GetDialogFileToUse(oCaster);
-
-        // * reset henchmen attack state - Oct 28 (BK)
-        SetAssociateState(NW_ASC_MODE_DEFEND_MASTER, FALSE, oHench);
-        SetAssociateState(NW_ASC_MODE_STAND_GROUND, FALSE, oHench);
-
-        // * Oct 30 - If player previously hired this hench
-        // * then just have them rejoin automatically
-        if (GetPlayerHasHired(oCaster, oHench) == TRUE)
-        {
-            // Feb 11, 2004 - Jon: Don't fire the HireHenchman function if the
-            // henchman is already oCaster's associate. Fixes a silly little problem
-            // that occured when you try to raise a henchman who wasn't actually dead.
-            if(GetMaster(oHench)!=oCaster) HireHenchman(oCaster, oHench, TRUE);
-        }
-        // * otherwise, they talk
-        else
-        {
-            AssignCommand(oCaster, ActionStartConversation(oHench, sFile));
-        }
-    }
-    */
-
 }
 

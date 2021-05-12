@@ -1,21 +1,26 @@
-//:://////////////////////////////////////////////////
-//:: X0_CH_HEN_CONV
+//::///////////////////////////////////////////////
+//:: Associate: On Dialogue
+//:: NW_CH_AC4
+//:: Copyright (c) 2001 Bioware Corp.
+//:://////////////////////////////////////////////
 /*
+    Determines the course of action to be taken
+    by the generic script after dialogue or a
+    shout is initiated.
+*/
+//:://////////////////////////////////////////////
+//:: Created By: Preston Watamaniuk
+//:: Created On: Oct 24, 2001
+//:://////////////////////////////////////////////
+/*
+Patch 1.72
+- fixed bug that allowed to speak with associate in disable states such as petrify
+- HotU associate conversation will now be used even outside of the HotU campaign
+*/
 
-  OnDialogue event handler for henchmen/associates.
-
- */
-//:://////////////////////////////////////////////////
-//:: Copyright (c) 2002 Floodgate Entertainment
-//:: Created By: Naomi Novik
-//:: Created On: 01/05/2003
-//:://////////////////////////////////////////////////
-
-
-#include "inc_hai_hensho"
-#include "inc_hai_monsho"
-#include "x0_i0_henchman"
-
+#include "x0_inc_henai"
+#include "inc_henchman"
+#include "x2_inc_switches"
 // * This function checks to make sure no
 // * dehibilating effects are on the player that should
 // * Don't use getcommandable for this since the dying system
@@ -55,12 +60,10 @@ int AbleToTalk(object oSelf)
 
 void main()
 {
-    if (GetLocalInt(OBJECT_SELF, "pending_destroy")) return;
-
-    object oShouter = GetLastSpeaker();
-
     object oMaster = GetMaster();
     int nMatch = GetListenPatternNumber();
+    object oShouter = GetLastSpeaker();
+    object oIntruder;
 
     if (nMatch == ASSOCIATE_COMMAND_LEAVEPARTY)
     {
@@ -68,70 +71,36 @@ void main()
         SendMessageToPC(oMaster, "Henchmen cannot be dismissed from the radial menu");
     }
 
-    if (nMatch == -1 && AbleToTalk(OBJECT_SELF) && GetCurrentAction() != ACTION_OPENLOCK)
+    if (nMatch == 200 && GetIsFriend(oShouter)) // PARTY_I_WAS_ATTACKED
     {
-        ClearActions(CLEAR_NW_CH_AC4_28);
-
-        BeginConversation();
+        HenchmenCombatRound(GetLastHostileActor(oShouter));
     }
 
-    // respond to friendly party members - pok
-    if (nMatch == 901 && GetIsFriend(oShouter))
-    {
-        HenchDetermineCombatRound(GetLastHostileActor(oShouter));
-    }
+    if (nMatch == -1) {
+        if(AbleToTalk(OBJECT_SELF) && GetCurrentAction() != ACTION_OPENLOCK)
+        {
+            ClearActions(CLEAR_NW_CH_AC4_28);
 
-    object oIntruder;
-
-    // listening pattern matched
-    if (GetIsObjectValid(oMaster))
-    {
-        // we have a master, only listen to them
-        if (GetIsObjectValid(oShouter) && oMaster == oShouter && !GetIsDisabled(OBJECT_SELF))
+            // * if in XP2, use an alternative dialog file
+            string sDialog = "";
+            if (GetLocalInt(GetModule(), "X2_L_XP2") ==  1 || (GetAssociateType(OBJECT_SELF) != ASSOCIATE_TYPE_NONE && GetAssociateType(OBJECT_SELF) != ASSOCIATE_TYPE_HENCHMAN))
+            {
+                sDialog = "x2_associate";
+            }
+            BeginConversation(sDialog);
+        }
+    } else {
+        // listening pattern matched
+        if (GetIsObjectValid(oShouter) && oMaster == oShouter)
         {
             SetCommandable(TRUE);
-            HenchChRespondToShout(oShouter, nMatch, oIntruder);
-            // bkRespondToHenchmenShout(oShouter, nMatch, oIntruder);
+            bkRespondToHenchmenShout(oShouter, nMatch, oIntruder, TRUE);
         }
     }
 
-    // we don't have a master, behave in default way
-    else if (GetIsObjectValid(oShouter)
-             && !GetIsPC(oShouter)
-             && GetIsFriend(oShouter))
-    {
-         object oIntruder = OBJECT_INVALID;
-         // Determine the intruder if any
-         if(nMatch == 4)
-         {
-             oIntruder = GetLocalObject(oShouter, "NW_BLOCKER_INTRUDER");
-         }
-         else if (nMatch == 5)
-         {
-            oIntruder = GetLocalObject(oShouter, sHenchLastTarget);
-            if(!GetIsObjectValid(oIntruder))
-            {
-                 oIntruder = GetLastHostileActor(oShouter);
-                 if(!GetIsObjectValid(oIntruder))
-                 {
-                     oIntruder = GetAttemptedAttackTarget();
-                     if(!GetIsObjectValid(oIntruder))
-                     {
-                         oIntruder = GetAttemptedSpellTarget();
-                     }
-                 }
-             }
-         }
-
-         // Actually respond to the shout
-         HenchMonRespondToShout(oShouter, nMatch, oIntruder);
-     }
-
     // Signal user-defined event
-    if(GetSpawnInCondition(NW_FLAG_ON_DIALOGUE_EVENT))
-    {
+    if(GetSpawnInCondition(NW_FLAG_ON_DIALOGUE_EVENT)) {
         SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_DIALOGUE));
     }
 }
-
 

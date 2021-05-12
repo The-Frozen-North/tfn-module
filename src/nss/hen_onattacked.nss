@@ -11,49 +11,45 @@
 //:: Created By: Preston Watamaniuk
 //:: Created On: Oct 16, 2001
 //:://////////////////////////////////////////////
+//:://////////////////////////////////////////////
+//:: Modified By: Deva Winblood
+//:: Modified On: Jan 4th, 2008
+//:: Added Support for Mounted Combat Feat Support
+//:://////////////////////////////////////////////
 
-#include "inc_hai"
-
+#include "x0_inc_henai"
 
 void main()
 {
-
     if (GetIsEnemy(GetLastAttacker()))
-        SpeakString("I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
+        SpeakString("PARTY_I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
 
     if(!GetAssociateState(NW_ASC_IS_BUSY))
     {
         SetCommandable(TRUE);
-        // Auldar: Don't want anything to interupt a Taunt attempt.
-        if(!GetAssociateState(NW_ASC_MODE_STAND_GROUND) &&  (GetCurrentAction() != ACTION_TAUNT))
+        if(!GetAssociateState(NW_ASC_MODE_STAND_GROUND))
         {
-            CheckRemoveStealth();
-            // Auldar: Use checks from OnPerceive so we don't run DCR if we have a target.
-            if(!GetIsObjectValid(GetAttemptedAttackTarget()) &&
-               !GetIsObjectValid(GetAttackTarget()) &&
-               !GetIsObjectValid(GetAttemptedSpellTarget()))
+            if(!GetIsObjectValid(GetAttackTarget()) && !GetIsObjectValid(GetAttemptedSpellTarget()))
             {
                 if(GetIsObjectValid(GetLastAttacker()))
                 {
                     if(GetAssociateState(NW_ASC_MODE_DEFEND_MASTER))
                     {
-                        if(!GetIsObjectValid(GetLastAttacker(GetRealMaster())))
-                        {
-                            HenchDetermineCombatRound();
-                        }
+                        //1.72: TODO possible !GetIsFighting check too
+                        object oTarget = GetLastAttacker(GetMaster());
+                        HenchmenCombatRound(oTarget);
                     }
-                    else
+                    else if(!GetIsFighting(OBJECT_SELF))//1.72: fix for constant combat round re-starting when surrounded by many attackers that led to attacking sporadically or not at all
                     {
-                        HenchDetermineCombatRound(GetLastAttacker());
+                        HenchmenCombatRound(OBJECT_INVALID);
                     }
                 }
             }
-            if(GetSpawnInCondition(EVENT_ATTACKED))
+            if(GetSpawnInCondition(NW_FLAG_ATTACK_EVENT))
             {
-                SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_ATTACKED));
+                SignalEvent(OBJECT_SELF, EventUserDefined(1005));
             }
         }
     }
 }
-
 

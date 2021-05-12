@@ -18,6 +18,10 @@ void DoCombatVoice()
 {
     if (GetIsDead(OBJECT_SELF)) return;
 
+// don't proceed if there is a cooldown
+    if (GetLocalInt(OBJECT_SELF, "battlecry_cd") == 1)
+        return;
+
     string sBattlecryScript = GetLocalString(OBJECT_SELF, "battlecry_script");
     if (sBattlecryScript != "")
     {
@@ -37,6 +41,10 @@ void DoCombatVoice()
             case 4: PlayVoiceChat(VOICE_CHAT_TAUNT, OBJECT_SELF); break;
             case 5: PlayVoiceChat(VOICE_CHAT_LAUGH, OBJECT_SELF); break;
         }
+
+        SetLocalInt(OBJECT_SELF, "battlecry_cd", 1);
+
+        DelayCommand(10.0+IntToFloat(d10()), DeleteLocalInt(OBJECT_SELF, "battlecry_cd"));
     }
 }
 

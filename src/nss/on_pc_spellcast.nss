@@ -4,7 +4,6 @@ void main()
 
     if (GetLastSpellHarmful() && GetIsEnemy(oCaster))
     {
-        SpeakString("I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
-        SpeakString("MASTER_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
+        SpeakString("PARTY_I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
     }
 }

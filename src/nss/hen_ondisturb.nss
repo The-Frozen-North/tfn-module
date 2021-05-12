@@ -15,8 +15,7 @@
 //  AdjustReputation(OBJECT_SELF,GetFaction(GetLastAttacker()),-100);
 // * Determined Combat Round
 
-#include "inc_hai"
-
+#include "x0_inc_henai"
 
 void main()
 {
@@ -26,12 +25,12 @@ void main()
     {
         if(GetIsObjectValid(oTarget))
         {
-            HenchDetermineCombatRound(oTarget);
+            HenchmenCombatRound(oTarget);
         }
     }
     if(GetSpawnInCondition(NW_FLAG_DISTURBED_EVENT))
     {
-        SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_DISTURBED));
+        SignalEvent(OBJECT_SELF, EventUserDefined(1008));
     }
 }
 

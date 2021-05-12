@@ -11,9 +11,17 @@
 //:: Created By: Preston Watamaniuk
 //:: Created On: Nov 19, 2001
 //:://////////////////////////////////////////////
+//:://////////////////////////////////////////////
+//:: Modified By: Deva Winblood
+//:: Modified On: Jan 17th, 2008
+//:: Added Support for Mounted Combat Feat Support
+//:://////////////////////////////////////////////
 
-#include "inc_hai"
+#include "x0_inc_henai"
 #include "inc_general"
+
+// Determine whether to switch to new attacker
+int SwitchTargets(object oCurTarget, object oNewEnemy);
 
 void main()
 {
@@ -25,50 +33,55 @@ void main()
 
     PlayNonMeleePainSound(oDamager);
 
-    if (GetIsEnemy(oAttacker))
-        SpeakString("I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
+    // UNINTERRUPTIBLE ACTIONS
+    if(GetAssociateState(NW_ASC_IS_BUSY)
+       || GetAssociateState(NW_ASC_MODE_STAND_GROUND)
+       || GetCurrentAction() == ACTION_FOLLOW) {
+        // We're busy, don't do anything
+    }
 
-    if(!GetAssociateState(NW_ASC_IS_BUSY))
-    {
-        // Auldar: Make a check for taunting before running Ondamaged.
-        if(!GetAssociateState(NW_ASC_MODE_STAND_GROUND) && (GetCurrentAction() != ACTION_FOLLOW)
-            && (GetCurrentAction() != ACTION_TAUNT))
-        {
-            if ((GetLocalInt(OBJECT_SELF, HENCH_HEAL_SELF_STATE) == HENCH_HEAL_SELF_WAIT) &&
-                (GetPercentageHPLoss(OBJECT_SELF) < 30))
-            {
-                // force heal
-                HenchDetermineCombatRound(OBJECT_INVALID, TRUE);
-            }
-            else
-            {
-                // Auldar: Use combat checks from OnPerceive.
-                if(!GetIsObjectValid(GetAttemptedAttackTarget()) &&
-                   !GetIsObjectValid(GetAttackTarget()) &&
-                   !GetIsObjectValid(GetAttemptedSpellTarget()))
-                {
-                    if(GetIsObjectValid(GetLastHostileActor()))
-                    {
-                        if(GetAssociateState(NW_ASC_MODE_DEFEND_MASTER))
-                        {
-                            if(!GetIsObjectValid(GetLastHostileActor(GetRealMaster())))
-                            {
-                                HenchDetermineCombatRound(GetLastHostileActor(GetRealMaster()));
-                            }
-                        }
-                        else
-                        {
-                            HenchDetermineCombatRound(oAttacker);
-                        }
-                    }
-                }
-            }
+    // DEFEND MASTER
+    // Priority is to protect our master
+    else if(GetAssociateState(NW_ASC_MODE_DEFEND_MASTER)) {
+        object oMasterEnemy = GetLastHostileActor(GetMaster());
+
+        // defend our master first
+        if (GetIsObjectValid(oMasterEnemy)) {
+            HenchmenCombatRound(oMasterEnemy);
+
+        } else if ( !GetIsObjectValid(oTarget)
+                || SwitchTargets(oTarget, oAttacker)) {
+            HenchmenCombatRound(oAttacker);
         }
     }
 
+    // SWITCH TO MORE DANGEROUS ATTACKER
+    // If we're already fighting, possibly switch to our new attacker
+    else if (GetIsObjectValid(oTarget) && SwitchTargets(oTarget, oAttacker)) {
+        // Switch to the attacker
+        HenchmenCombatRound(oAttacker);
+    }
+
+    // Signal the user-defined event
     if(GetSpawnInCondition(NW_FLAG_DAMAGED_EVENT))
     {
-        SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_DAMAGED));
+        SignalEvent(OBJECT_SELF, EventUserDefined(1006));
     }
+}
+
+
+// Determine whether to switch to new attacker
+int SwitchTargets(object oCurTarget, object oNewEnemy)
+{
+    return (GetIsObjectValid(oNewEnemy) && oCurTarget != oNewEnemy
+            &&
+            (
+             // The new enemy is of a higher level
+             GetHitDice(oNewEnemy) > GetHitDice(oCurTarget)
+             ||
+             // or we just received more than 25% of our hp in damage
+             GetTotalDamageDealt() > (GetMaxHitPoints(OBJECT_SELF) / 4)
+             )
+            );
 }
 

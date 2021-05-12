@@ -3,6 +3,8 @@
 
 void main()
 {
+    SpeakString("PARTY_I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
+
     SetLocalInt(OBJECT_SELF, "times_died", GetLocalInt(OBJECT_SELF, "times_died")+1);
 
     string sText = "*Your henchman has died*";
