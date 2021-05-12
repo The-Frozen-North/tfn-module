@@ -324,11 +324,13 @@ void main()
         oNotHeardOrSeen = oIntruder;
         oIntruder = OBJECT_INVALID;
     }
+    // don't remove if it isnt forced - pok
+    /*
     if (!bForce)
     {
         oIntruder = OBJECT_INVALID;
     }
-
+    */
     if (iHaveMaster)
     {
            // TODO more checks for allies

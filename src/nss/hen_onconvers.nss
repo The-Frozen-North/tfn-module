@@ -75,6 +75,12 @@ void main()
         BeginConversation();
     }
 
+    // respond to friendly party members - pok
+    if (nMatch == 901 && GetIsFriend(oShouter))
+    {
+        HenchDetermineCombatRound(GetLastHostileActor(oShouter));
+    }
+
     object oIntruder;
 
     // listening pattern matched

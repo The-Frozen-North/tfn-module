@@ -34,6 +34,27 @@ void main()
         // TODO HotU added check for stealth
     if (!GetAssociateState(NW_ASC_MODE_STAND_GROUND))
     {
+  // using CPP logic - pok
+ //Check if the last percieved creature was actually seen
+            if(GetLastPerceptionSeen())
+            {
+                if(GetIsEnemy(GetLastPerceived()))
+                {
+                    SetFacingPoint(GetPosition(GetLastPerceived()));
+                    //HenchmenCombatRound(OBJECT_INVALID);
+                    HenchDetermineCombatRound(oLastPerceived, TRUE);
+                }
+                //Linked up to the special conversation check to initiate a special one-off conversation
+                //to get the PCs attention
+                /*
+                else if(GetSpawnInCondition(NW_FLAG_SPECIAL_CONVERSATION) && GetIsPC(GetLastPerceived()))
+                {
+                    ActionStartConversation(OBJECT_SELF);
+                }
+                */
+            }
+
+        /*
         //If the last perception event was hearing based or if someone vanished then go to search mode
         if (GetLastPerceptionVanished() || GetLastPerceptionInaudible())
         {
@@ -74,6 +95,7 @@ void main()
                 }
             }
         }
+        */
     }
     if(GetSpawnInCondition(NW_FLAG_PERCIEVE_EVENT))
     {

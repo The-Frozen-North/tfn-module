@@ -45,6 +45,10 @@ void main()
             }
             return;
         }
+
+        if (GetIsEnemy(oCaster))
+            SpeakString("I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
+
         if (
 // Auldar: Don't react if we are Taunting.
          GetCurrentAction() != ACTION_TAUNT &&
@@ -59,6 +63,7 @@ void main()
         }
     }
     // * Make a henchman initiate with the player if they've just been raised or resurrected
+    /*
     else if(GetLastSpell() == SPELL_RAISE_DEAD || GetLastSpell()  == SPELL_RESURRECTION)
     {
        // * restore merchant faction to neutral
@@ -90,6 +95,7 @@ void main()
             AssignCommand(oCaster, ActionStartConversation(oHench, sFile));
         }
     }
+    */
 
 }
 

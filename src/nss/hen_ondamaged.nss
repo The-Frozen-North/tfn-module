@@ -25,6 +25,9 @@ void main()
 
     PlayNonMeleePainSound(oDamager);
 
+    if (GetIsEnemy(oAttacker))
+        SpeakString("I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
+
     if(!GetAssociateState(NW_ASC_IS_BUSY))
     {
         // Auldar: Make a check for taunting before running Ondamaged.
@@ -50,7 +53,7 @@ void main()
                         {
                             if(!GetIsObjectValid(GetLastHostileActor(GetRealMaster())))
                             {
-                                HenchDetermineCombatRound();
+                                HenchDetermineCombatRound(GetLastHostileActor(GetRealMaster()));
                             }
                         }
                         else
@@ -62,6 +65,7 @@ void main()
             }
         }
     }
+
     if(GetSpawnInCondition(NW_FLAG_DAMAGED_EVENT))
     {
         SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_DAMAGED));

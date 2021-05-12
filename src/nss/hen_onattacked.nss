@@ -17,6 +17,10 @@
 
 void main()
 {
+
+    if (GetIsEnemy(GetLastAttacker()))
+        SpeakString("I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
+
     if(!GetAssociateState(NW_ASC_IS_BUSY))
     {
         SetCommandable(TRUE);
