@@ -45,6 +45,11 @@ void main()
 
         if (nGold > 1) nGoldLoss = nGold/30;
 
+        int nCap = nHD*125;
+
+        if (nGoldLoss > nCap)
+            nGoldLoss = nCap;
+
         SetXP(oPlayer, nNewXP);
         TakeGoldFromCreature(nGoldLoss, oPlayer, TRUE);
 }

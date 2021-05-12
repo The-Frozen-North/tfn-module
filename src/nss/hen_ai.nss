@@ -692,7 +692,9 @@ void main()
     DeleteLocalInt(OBJECT_SELF, henchHealCountStr);
 
     // fail safe set of last target
-    SetLocalObject(OBJECT_SELF, sHenchLastTarget, oIntruder);
+    // only change target if it is no longer valid - pok
+    if (!GetIsValidTarget(GetLocalObject(OBJECT_SELF, sHenchLastTarget)))
+        SetLocalObject(OBJECT_SELF, sHenchLastTarget, oIntruder);
 
     int combatRoundCount;
     combatRoundCount = GetLocalInt(OBJECT_SELF, henchCombatRoundStr);
