@@ -1,15 +1,5 @@
-#include "nwnx_creature"
-
 void main()
 {
-    switch (d2())
-    {
-        case 2:
-            SetPortraitResRef(OBJECT_SELF, "po_sk_war02_");
-            SetCreatureAppearanceType(OBJECT_SELF, APPEARANCE_TYPE_SKELETON_WARRIOR_2);
-        break;
-    }
-
     object oWeapon;
 
     switch (d6())

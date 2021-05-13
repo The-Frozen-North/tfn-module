@@ -1,20 +1,96 @@
 {
   "__data_type": "UTC ",
+  "Appearance_Head": {
+    "type": "byte",
+    "value": 155
+  },
   "Appearance_Type": {
     "type": "word",
-    "value": 77
+    "value": 6
+  },
+  "ArmorPart_RFoot": {
+    "type": "byte",
+    "value": 1
   },
   "BodyBag": {
     "type": "byte",
     "value": 0
   },
+  "BodyPart_Belt": {
+    "type": "byte",
+    "value": 0
+  },
+  "BodyPart_LBicep": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LFArm": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LFoot": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LHand": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LShin": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LShoul": {
+    "type": "byte",
+    "value": 0
+  },
+  "BodyPart_LThigh": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_Neck": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_Pelvis": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RBicep": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RFArm": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RHand": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RShin": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RShoul": {
+    "type": "byte",
+    "value": 0
+  },
+  "BodyPart_RThigh": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_Torso": {
+    "type": "byte",
+    "value": 1
+  },
   "Cha": {
     "type": "byte",
-    "value": 16
+    "value": 14
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 7.0
+    "value": 12.0
   },
   "ClassList": {
     "type": "list",
@@ -27,10 +103,26 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 6
+          "value": 12
         }
       }
     ]
+  },
+  "Color_Hair": {
+    "type": "byte",
+    "value": 1
+  },
+  "Color_Skin": {
+    "type": "byte",
+    "value": 1
+  },
+  "Color_Tattoo1": {
+    "type": "byte",
+    "value": 1
+  },
+  "Color_Tattoo2": {
+    "type": "byte",
+    "value": 1
   },
   "Comment": {
     "type": "cexostring",
@@ -38,7 +130,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 12
+    "value": 14
   },
   "Conversation": {
     "type": "resref",
@@ -46,11 +138,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 0
+    "value": -2
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 56
+    "value": 96
   },
   "DecayTime": {
     "type": "dword",
@@ -61,47 +153,61 @@
     "value": ""
   },
   "Description": {
-    "id": 12555,
+    "id": 12793,
     "type": "cexolocstring",
     "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 18
+    "value": 15
   },
   "Disarmable": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "Equip_ItemList": {
     "type": "list",
     "value": [
       {
-        "__struct_id": 16384,
+        "__struct_id": 1,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp025"
+          "value": "cre_evampirehelm"
         }
       },
       {
-        "__struct_id": 32768,
+        "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp025"
+          "value": "cre_evampirearmo"
+        }
+      },
+      {
+        "__struct_id": 16,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "cre_vampw"
+        }
+      },
+      {
+        "__struct_id": 64,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "cre_evampirecloa"
         }
       },
       {
         "__struct_id": 65536,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewps027"
+          "value": "nw_crewpvbt"
         }
       },
       {
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_creitemunc"
+          "value": "cre_vampires"
         }
       }
     ]
@@ -117,21 +223,63 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 228
+          "value": 2
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 292
+          "value": 3
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 42
+          "value": 4
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 6
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 391
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 68
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 258
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 32
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 106
         }
       },
       {
@@ -140,14 +288,35 @@
           "type": "word",
           "value": 289
         }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 44
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 45
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 46
+        }
       }
     ]
   },
   "FirstName": {
-    "id": 12556,
+    "id": 12794,
     "type": "cexolocstring",
     "value": {
-      "0": "Ghoul Lord"
+      "0": "Ebony Vampire"
     }
   },
   "fortbonus": {
@@ -164,11 +333,11 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 56
+    "value": 96
   },
   "Int": {
     "type": "byte",
-    "value": 13
+    "value": 12
   },
   "Interruptable": {
     "type": "byte",
@@ -181,6 +350,30 @@
   "IsPC": {
     "type": "byte",
     "value": 0
+  },
+  "ItemList": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "InventoryRes": {
+          "type": "resref",
+          "value": "key_ebony"
+        },
+        "Pickpocketable": {
+          "type": "byte",
+          "value": 1
+        },
+        "Repos_PosX": {
+          "type": "word",
+          "value": 0
+        },
+        "Repos_Posy": {
+          "type": "word",
+          "value": 0
+        }
+      }
+    ]
   },
   "LastName": {
     "type": "cexolocstring",
@@ -196,11 +389,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 62
+    "value": 120
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 3
+    "value": 6
   },
   "NoPermDeath": {
     "type": "byte",
@@ -208,7 +401,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 27
+    "value": 0
   },
   "PerceptionRange": {
     "type": "byte",
@@ -224,7 +417,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 214
+    "value": 941
   },
   "Race": {
     "type": "byte",
@@ -314,7 +507,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 7
+          "value": 15
         }
       },
       {
@@ -335,28 +528,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 7
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 15
         }
       },
       {
@@ -391,7 +563,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 6
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
         }
       },
       {
@@ -412,7 +591,21 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 7
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 15
         }
       },
       {
@@ -489,7 +682,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 41
+    "value": 434
   },
   "SpecAbilityList": {
     "type": "list",
@@ -498,7 +691,22 @@
         "__struct_id": 4,
         "Spell": {
           "type": "word",
-          "value": 200
+          "value": 623
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 0
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 258
         },
         "SpellCasterLevel": {
           "type": "byte",
@@ -513,11 +721,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 0
+    "value": 81
   },
   "Str": {
     "type": "byte",
-    "value": 14
+    "value": 20
   },
   "Subrace": {
     "type": "cexostring",
@@ -525,7 +733,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_GHOULLORD"
+    "value": "NW_VAMPIRE001"
   },
   "Tail_New": {
     "type": "dword",
@@ -537,7 +745,27 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "ghoul_lord"
+    "value": "vampire_ebony"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "semiboss"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",

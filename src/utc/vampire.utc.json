@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 12
+    "value": 14
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 6.0
+    "value": 10.0
   },
   "ClassList": {
     "type": "list",
@@ -27,18 +27,18 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 5
+          "value": 10
         }
       }
     ]
   },
   "Comment": {
     "type": "cexostring",
-    "value": "This is the respawn vampire. He is the only vampire to be used with the coffin and vampire_shad. \r\n\r\nIf any of the other vampires are used, when the vampire_shad spawns in a new vampire it will be this one. This would look bad."
+    "value": ""
   },
   "Con": {
     "type": "byte",
-    "value": 10
+    "value": 12
   },
   "Conversation": {
     "type": "resref",
@@ -46,11 +46,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 0
+    "value": -1
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 32
+    "value": 80
   },
   "DecayTime": {
     "type": "dword",
@@ -67,7 +67,7 @@
   },
   "Dex": {
     "type": "byte",
-    "value": 17
+    "value": 15
   },
   "Disarmable": {
     "type": "byte",
@@ -77,10 +77,17 @@
     "type": "list",
     "value": [
       {
+        "__struct_id": 2,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "nw_maarcl066"
+        }
+      },
+      {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wswbs001"
+          "value": "cre_vampired"
         }
       },
       {
@@ -94,14 +101,14 @@
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_creitemvam"
+          "value": "cre_vampires"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 1
+    "value": 5
   },
   "FeatList": {
     "type": "list",
@@ -110,42 +117,56 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 0
+          "value": 2
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 228
+          "value": 3
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 10
+          "value": 4
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 24
+          "value": 6
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 26
+          "value": 391
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 123
+          "value": 258
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 32
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 90
         }
       },
       {
@@ -173,13 +194,13 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 161
+          "value": 46
         }
       }
     ]
   },
   "FirstName": {
-    "id": 5637,
+    "id": 12794,
     "type": "cexolocstring",
     "value": {
       "0": "Vampire"
@@ -199,7 +220,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 32
+    "value": 80
   },
   "Int": {
     "type": "byte",
@@ -231,7 +252,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 32
+    "value": 90
   },
   "NaturalAC": {
     "type": "byte",
@@ -271,55 +292,55 @@
   },
   "ScriptAttacked": {
     "type": "resref",
-    "value": "nw_c2_default5"
+    "value": "ai_onattacked"
   },
   "ScriptDamaged": {
     "type": "resref",
-    "value": "nw_c2_default6"
+    "value": "ai_ondamaged"
   },
   "ScriptDeath": {
     "type": "resref",
-    "value": "nw_c2_vampire7"
+    "value": "ai_ondeath"
   },
   "ScriptDialogue": {
     "type": "resref",
-    "value": "nw_c2_default4"
+    "value": "ai_onconverse"
   },
   "ScriptDisturbed": {
     "type": "resref",
-    "value": "nw_c2_default8"
+    "value": "ai_ondisturb"
   },
   "ScriptEndRound": {
     "type": "resref",
-    "value": "nw_c2_default3"
+    "value": "ai_oncombrnd"
   },
   "ScriptHeartbeat": {
     "type": "resref",
-    "value": "nw_c2_default1"
+    "value": "ai_onheartb"
   },
   "ScriptOnBlocked": {
     "type": "resref",
-    "value": "nw_c2_defaulte"
+    "value": "ai_onblocked"
   },
   "ScriptOnNotice": {
     "type": "resref",
-    "value": "nw_c2_default2"
+    "value": "ai_onpercep"
   },
   "ScriptRested": {
     "type": "resref",
-    "value": "nw_c2_defaulta"
+    "value": "ai_onrest"
   },
   "ScriptSpawn": {
     "type": "resref",
-    "value": "nw_c2_default9"
+    "value": "ai_onspawn"
   },
   "ScriptSpellAt": {
     "type": "resref",
-    "value": "nw_c2_defaultb"
+    "value": "ai_onspellcast"
   },
   "ScriptUserDefine": {
     "type": "resref",
-    "value": "nw_c2_defaultd"
+    "value": "ai_onuserdef"
   },
   "SkillList": {
     "type": "list",
@@ -349,7 +370,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 13
         }
       },
       {
@@ -363,20 +384,6 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 11
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 17
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
           "value": 0
         }
       },
@@ -384,14 +391,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 11
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 13
         }
       },
       {
@@ -426,7 +426,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
         }
       },
       {
@@ -447,7 +454,21 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 17
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 13
         }
       },
       {
@@ -533,11 +554,11 @@
         "__struct_id": 4,
         "Spell": {
           "type": "word",
-          "value": 45
+          "value": 258
         },
         "SpellCasterLevel": {
           "type": "byte",
-          "value": 5
+          "value": 1
         },
         "SpellFlags": {
           "type": "byte",
@@ -548,11 +569,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 0
+    "value": 81
   },
   "Str": {
     "type": "byte",
-    "value": 22
+    "value": 18
   },
   "Subrace": {
     "type": "cexostring",
@@ -560,7 +581,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_VAMPIRE"
+    "value": "NW_VAMPIRE001"
   },
   "Tail_New": {
     "type": "dword",
@@ -573,6 +594,26 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "vampire"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "spawn_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "rand_vampire"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
@@ -588,6 +629,6 @@
   },
   "Wis": {
     "type": "byte",
-    "value": 16
+    "value": 14
   }
 }
