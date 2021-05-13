@@ -11,10 +11,16 @@ void HealDesther()
 
 void main()
 {
+    object oDesther = GetObjectByTag("desther");
+
     if (GetIsDead(OBJECT_SELF))
         return;
 
-    object oDesther = GetObjectByTag("desther");
+    if (GetIsDead(oDesther))
+        return;
+
+    if (GetCurrentHitPoints(oDesther) >= GetMaxHitPoints(oDesther))
+        return;
 
     ActionCastFakeSpellAtObject(SPELL_CURE_SERIOUS_WOUNDS, OBJECT_SELF);
 
