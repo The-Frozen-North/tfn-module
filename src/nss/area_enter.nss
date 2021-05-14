@@ -8,7 +8,7 @@ void WarningMessage(object oPC)
     string sMessage = "";
     int nQuest = GetQuestEntry(oPC, "q_wailing");
 
-    if (nQuest == 4 && GetQuestEntry(oPC, "q_sword_coast_boys") == 3 && GetQuestEntry(oPC, "q_prison_riot") == 3 && GetQuestEntry(oPC, "q_undead_infestation") == 3)
+    if (nQuest == 4 && GetQuestEntry(oPC, "q_sword_coast_boys") == 4 && GetQuestEntry(oPC, "q_prison_riot") == 4 && GetQuestEntry(oPC, "q_undead_infestation") == 4)
     {
         sMessage = "You should return to the academy and speak to Sedos as the districts are now in order.";
     }
