@@ -99,6 +99,7 @@ void main()
     // ----------------------------------------------------------------------------------------
     if(GetAssociateState(NW_ASC_IS_BUSY))
     {
+        ActionForceFollowObject(GetMaster(), GetFollowDistance()); // make associates follow at this point - pok
         return;
     }
 

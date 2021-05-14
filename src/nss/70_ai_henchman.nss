@@ -76,7 +76,13 @@ void main()
     // * BK: stop fighting if something bizarre that shouldn't happen, happens
     if (bkEvaluationSanityCheck(oIntruder, GetFollowDistance())) return;
 
-    if(GetAssociateState(NW_ASC_IS_BUSY) || GetAssociateState(NW_ASC_MODE_DYING))
+    if(GetAssociateState(NW_ASC_IS_BUSY))
+    {
+        ActionForceFollowObject(GetMaster(), GetFollowDistance()); // make associates follow in this state - pok
+        return;
+    }
+
+    if(GetAssociateState(NW_ASC_MODE_DYING))
     {
         return;
     }

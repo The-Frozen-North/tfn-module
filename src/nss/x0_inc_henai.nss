@@ -48,6 +48,7 @@
 
 #include "70_inc_main"
 #include "x0_i0_henchman"
+#include "nwnx_player"
 
 // ****************************
 // CONSTANTS
@@ -203,7 +204,13 @@ void HenchmenCombatRound(object oIntruder)
     // * BK: stop fighting if something bizarre that shouldn't happen, happens
     if (bkEvaluationSanityCheck(oIntruder, GetFollowDistance())) return;
 
-    if(GetAssociateState(NW_ASC_IS_BUSY) || GetAssociateState(NW_ASC_MODE_DYING))
+    if(GetAssociateState(NW_ASC_IS_BUSY))
+    {
+        ActionForceFollowObject(GetMaster(), GetFollowDistance()); // make associates follow in this state - pok
+        return;
+    }
+
+    if(GetAssociateState(NW_ASC_MODE_DYING))
     {
         return;
     }
@@ -653,7 +660,7 @@ void bkRespondToHenchmenShout(object oShouter, int nShoutIndex, object oIntruder
 
     object oLastObject;
     object oTrap;
-    object oMaster;
+    object oMaster = GetMaster();
     object oTarget;
 
     //ASSOCIATE SHOUT RESPONSES
@@ -692,7 +699,8 @@ void bkRespondToHenchmenShout(object oShouter, int nShoutIndex, object oIntruder
     {
         if (GetLocalInt(OBJECT_SELF, "X2_L_STOPCASTING") == 10)
         {
-           // SpeakString("Was in no casting mode. Switching to cast mode");
+            // SpeakString("Was in no casting mode. Switching to cast mode");
+            NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, GetName(OBJECT_SELF)+" will now cast spells when possible");
             SetLocalInt(OBJECT_SELF, "X2_L_STOPCASTING", 0);
             VoiceCanDo();
         }
@@ -700,36 +708,15 @@ void bkRespondToHenchmenShout(object oShouter, int nShoutIndex, object oIntruder
         if (GetLocalInt(OBJECT_SELF, "X2_L_STOPCASTING") == 0)
         {
          //   SpeakString("Was in casting mode. Switching to NO cast mode");
+            NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, GetName(OBJECT_SELF)+" will no longer cast spells");
             SetLocalInt(OBJECT_SELF, "X2_L_STOPCASTING", 10);
             VoiceCanDo();
         }
       break;
     }
     case ASSOCIATE_COMMAND_INVENTORY:
-        if (GetLocalInt(OBJECT_SELF,"bX3_HAS_SADDLEBAGS")&&GetLocalInt(GetModule(),"X3_HORSE_ENABLE_SADDLEBAGS")&&GetMaster(OBJECT_SELF)==oShouter)
-        { // open horse saddlebags
-            OpenInventory(OBJECT_SELF, oShouter);
-        } // open horse saddlebags
-        // feb 18. You are now allowed to access inventory during combat.
-        else if (nBanInventory)
-        {
-            SpeakStringByStrRef(9066);
-        }
-        else
-        {
-            // * cannot modify disabled equipment
-            if (GetLocalInt(OBJECT_SELF, "X2_JUST_A_DISABLEEQUIP") == FALSE)
-            {
-                OpenInventory(OBJECT_SELF, oShouter);
-            }
-            else
-            {
-                // * feedback as to why
-                SendMessageToPCByStrRef(GetMaster(), 100895);
-            }
-
-        }
-
+        // no inventory
+        SpeakStringByStrRef(9066);
         break;
 
     case ASSOCIATE_COMMAND_PICKLOCK:
@@ -752,6 +739,11 @@ void bkRespondToHenchmenShout(object oShouter, int nShoutIndex, object oIntruder
         break;
 
     case ASSOCIATE_COMMAND_ATTACKNEAREST:
+        if (GetAssociateState(NW_ASC_IS_BUSY) || GetAssociateState(NW_ASC_MODE_DEFEND_MASTER) || GetAssociateState(NW_ASC_MODE_STAND_GROUND))
+        {
+            SetAssociateState(NW_ASC_IS_BUSY, FALSE); // make them stop doing the follow command - pok
+            NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, GetName(OBJECT_SELF)+" will now attack enemies on sight");
+        }
         ResetHenchmenState();
         SetAssociateState(NW_ASC_MODE_DEFEND_MASTER, FALSE);
         SetAssociateState(NW_ASC_MODE_STAND_GROUND, FALSE);
@@ -776,9 +768,12 @@ void bkRespondToHenchmenShout(object oShouter, int nShoutIndex, object oIntruder
 
         //UseStealthMode();
         //UseDetectMode();
+
+        NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, GetName(OBJECT_SELF)+" will follow and avoid any actions for 30 seconds until ordered otherwise");
+
         ActionForceFollowObject(GetMaster(), GetFollowDistance());
         SetAssociateState(NW_ASC_IS_BUSY);
-        DelayCommand(5.0, SetAssociateState(NW_ASC_IS_BUSY, FALSE));
+        DelayCommand(30.0, SetAssociateState(NW_ASC_IS_BUSY, FALSE));
         break;
 
     case ASSOCIATE_COMMAND_GUARDMASTER:
@@ -787,6 +782,9 @@ void bkRespondToHenchmenShout(object oShouter, int nShoutIndex, object oIntruder
         //DelayCommand(2.5, VoiceCannotDo());
 
         //Companions will only attack the Masters Last Attacker
+
+        NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, GetName(OBJECT_SELF)+" will only retaliate against your last attacker");
+
         SetAssociateState(NW_ASC_MODE_DEFEND_MASTER);
         SetAssociateState(NW_ASC_MODE_STAND_GROUND, FALSE);
         object oLastAttacker = GetLastHostileActor(GetMaster());
@@ -862,6 +860,7 @@ void bkRespondToHenchmenShout(object oShouter, int nShoutIndex, object oIntruder
 
     case ASSOCIATE_COMMAND_STANDGROUND:
         //No longer follow the master or guard him
+        NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, GetName(OBJECT_SELF)+" will wait here until ordered otherwise");
         SetAssociateState(NW_ASC_MODE_STAND_GROUND);
         SetAssociateState(NW_ASC_MODE_DEFEND_MASTER, FALSE);
         DelayCommand(2.0, VoiceCanDo());
