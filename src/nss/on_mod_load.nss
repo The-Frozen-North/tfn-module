@@ -146,7 +146,6 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_CAST_SPELL_BEFORE", "on_pc_spcastb");
     NWNX_Events_SubscribeEvent("NWNX_ON_BROADCAST_CAST_SPELL_BEFORE", "on_pc_spcastb");
 
-    NWNX_Events_SubscribeEvent("NWNX_ON_ELC_VALIDATE_CHARACTER_BEFORE", "on_validateb");
     NWNX_Events_SubscribeEvent("NWNX_ON_ELC_VALIDATE_CHARACTER_AFTER", "on_validatea");
 
     NWNX_Events_SubscribeEvent("NWNX_ON_STORE_REQUEST_SELL_AFTER", "on_storesella");
@@ -175,6 +174,9 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_GIVE_LEVEL_BEFORE", "dm_chk_dev");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_GIVE_ALIGNMENT_BEFORE", "dm_chk_dev");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SET_VARIABLE_BEFORE", "dm_chk_dev");
+
+// Log barters as a developer
+    NWNX_Events_SubscribeEvent("NWNX_ON_BARTER_END_BEFORE", "dm_barter_endb");
 
 // Following actions will not work on dm_immune objects (merchants or quests)
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_KILL_BEFORE", "dm_chk_actions");

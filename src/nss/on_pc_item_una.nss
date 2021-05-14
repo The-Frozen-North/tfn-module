@@ -46,6 +46,8 @@ doing so, do this only if running original event has no longer sense.
 //:: Created By: Shadooow for Community Patch 1.72
 //:: Created On: 31-05-2017
 //:://////////////////////////////////////////////
+#include "inc_debug"
+
 
 void main()
 {
@@ -54,15 +56,18 @@ void main()
     object oOwner = GetItemPossessor(oItem);
     int nStackSize = GetItemStackSize(oItem);
 
+    if (GetIsDM(oPC) && !GetIsDeveloper(oPC))
+    {
+        SendMessageToPC(oPC, "You cannot drop or transfer items as a DM unless you are a developer.");
+        DestroyObject(oItem);
+        return;
+    }
+
+
     //1.71: fix for automatic unarmed attack when stack of throwing weapons gets destroyed
     if(!GetIsObjectValid(oItem) && oItem != OBJECT_INVALID && GetAttackTarget(oPC) != OBJECT_INVALID && GetItemInSlot(INVENTORY_SLOT_RIGHTHAND,oPC) == OBJECT_INVALID)
     {
         AssignCommand(oPC,ClearAllActions());
-    }
-    //1.72: support for OC henchman inventory across levelling
-    if(GetAssociateType(oPC) == ASSOCIATE_TYPE_HENCHMAN && !GetLocalInt(oItem,"70_ACQUIRED_FROM_MASTER") && oOwner == GetMaster(oPC))
-    {
-        SetLocalInt(oItem,"70_MY_ORIGINAL_POSSESSION",TRUE);
     }
 
     //1.70 Patch by Mavrixio, solution for overfilled stores causing huge lags
