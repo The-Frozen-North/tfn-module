@@ -73,7 +73,7 @@ void main()
 //    if (gsAIBehaviorWalkWaypoint())    return;
 //    if (gsAIBehaviorAnchor())          return;
     if (Random(100) >= 25)             return;
-
+    if (GetCurrentAction() == ACTION_CASTSPELL) return; // dont cancel out casting
     ClearAllActions();
 
     //action matrix
