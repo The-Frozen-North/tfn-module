@@ -54,13 +54,10 @@ void RemoveDeathEffectPenalty(object oCreature)
     }
 }
 
-void DetermineDeathEffectPenalty(object oCreature, int nCurrentHP = 0)
+int GetTimesRevived(object oCreature)
 {
-    effect eEffect = GetFirstEffect(oCreature);
+    int nTimesDied = 0;
 
-    RemoveDeathEffectPenalty(oCreature);
-
-    int nTimesDied;
     if (GetIsPC(oCreature))
     {
         nTimesDied = SQLocalsPlayer_GetInt(oCreature, "times_died");
@@ -69,6 +66,17 @@ void DetermineDeathEffectPenalty(object oCreature, int nCurrentHP = 0)
     {
         nTimesDied = GetLocalInt(oCreature, "times_died");
     }
+
+    return nTimesDied;
+}
+
+void DetermineDeathEffectPenalty(object oCreature, int nCurrentHP = 0)
+{
+    effect eEffect = GetFirstEffect(oCreature);
+
+    RemoveDeathEffectPenalty(oCreature);
+
+    int nTimesDied = GetTimesRevived(oCreature);
 
 // Don't do anything else if they hadn't actually died
     if (nTimesDied == 0)
@@ -90,17 +98,9 @@ void DetermineDeathEffectPenalty(object oCreature, int nCurrentHP = 0)
 
 int IsCreatureRevivable(object oCreature)
 {
-    int nTimesDied;
-    if (GetIsPC(oCreature))
-    {
-        nTimesDied = SQLocalsPlayer_GetInt(oCreature, "times_died");
-    }
-    else
-    {
-        nTimesDied = GetLocalInt(oCreature, "times_died");
-    }
+    int nTimesDied = GetTimesRevived(oCreature);
 
-    if (nTimesDied >= 3)
+    if (nTimesDied >= 4)
     {
         return FALSE;
     }

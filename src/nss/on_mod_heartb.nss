@@ -6,6 +6,7 @@
 #include "inc_sql"
 #include "inc_general"
 #include "nwnx_time"
+#include "nwnx_player"
 
 void DoRevive(object oDead)
 {
@@ -18,8 +19,27 @@ void DoRevive(object oDead)
             int bMasterFound = FALSE;
             int nFaction;
 
+            string sReviveMessage = "";
+
+            int nTimesRevived = GetTimesRevived(oDead);
+
+            if (nTimesRevived >= 3)
+            {
+                sReviveMessage = " can no longer be revived without raise dead*";
+            }
+            else if (nTimesRevived == 2)
+            {
+                sReviveMessage = " can be revived one more time*";
+            }
+            else if (nTimesRevived == 1)
+            {
+                sReviveMessage = " can be revived two more times*";
+            }
+
             object oMaster = GetMasterByUUID(oDead);
             int bMasterDead = GetIsDead(oMaster);
+
+            object oLastFriend;
 
             location lLocation = GetLocation(oDead);
 
@@ -46,6 +66,7 @@ void DoRevive(object oDead)
                     else if (!bFriend && GetIsFriend(oCreature, oDead) && !GetIsInCombat(oCreature))
                     {
                         bFriend = TRUE;
+                        oLastFriend = oCreature;
                         SendDebugMessage("Friend detected: "+GetName(oCreature));
                     }
                     else if (!bFriend && !GetIsInCombat(oCreature) && (GetIsFriend(oCreature, oDead) || GetIsNeutral(oCreature, oDead)))
@@ -55,6 +76,7 @@ void DoRevive(object oDead)
                         if (nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER || nFaction == STANDARD_FACTION_MERCHANT)
                         {
                             bFriend = TRUE;
+                            oLastFriend = oCreature;
                             SendDebugMessage("Commoner/Defender/Merchant detected: "+GetName(oCreature));
                         }
                     }
@@ -64,7 +86,11 @@ void DoRevive(object oDead)
                 oCreature = GetNextObjectInShape(SHAPE_SPHERE, fSize, lLocation, TRUE, OBJECT_TYPE_CREATURE);
             }
 
-            if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound && !bMasterDead) bFriend = TRUE;
+            if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound && !bMasterDead)
+            {
+                oLastFriend = oMaster;
+                bFriend = TRUE;
+            }
 
             if (!bEnemy && bFriend && IsCreatureRevivable(oDead))
             {
@@ -74,7 +100,19 @@ void DoRevive(object oDead)
                 DetermineDeathEffectPenalty(oDead, 1);
 
                 if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound) SetMaster(oDead, oMaster);
-                WriteTimestampedLogEntry(GetName(oDead)+" was revived by friendly "+GetName(oCreature)+".");
+
+                object oFactionPC = GetFirstFactionMember(oDead);
+                while (GetIsObjectValid(oFactionPC))
+                {
+                    if (GetIsObjectValid(oLastFriend))
+                        NWNX_Player_FloatingTextStringOnCreature(oFactionPC, oDead, "*"+GetName(oDead)+" was revived by "+GetName(oLastFriend)+".");
+
+                    if (sReviveMessage != "")
+                        DelayCommand(3.0, NWNX_Player_FloatingTextStringOnCreature(oFactionPC, oDead, "*"+GetName(oDead)+sReviveMessage));
+
+                    oFactionPC = GetNextFactionMember(oDead);
+                }
+                WriteTimestampedLogEntry(GetName(oDead)+" was revived by friendly "+GetName(oLastFriend)+".");
             }
 
 // destroy henchman if still not alive and master isn't found
