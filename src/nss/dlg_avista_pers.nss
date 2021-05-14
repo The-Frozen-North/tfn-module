@@ -13,12 +13,12 @@ int StartingConditional()
 
     if(!(GetIsSkillSuccessful(oPC, nSkill, nDC)))
     {
-        TakeGoldFromCreature(nCost, oPC, TRUE);
         SetTemporaryInt(GetPCPublicCDKey(oPC, TRUE)+GetName(oPC)+GetTag(OBJECT_SELF), 1, 900.0);
         return FALSE;
     }
     else
     {
+        TakeGoldFromCreature(nCost, oPC, TRUE);
         return TRUE;
     }
 }
