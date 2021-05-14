@@ -149,6 +149,15 @@ void main()
 
                     nAmbushRoll = d100();
 
+                    object oSafeRest = GetNearestObjectByTag("_safe_rest", oPC);
+                    float fDistanceToSafeRest = GetDistanceBetween(oPC, oSafeRest);
+                    if (GetIsObjectValid(oSafeRest) && fDistanceToSafeRest > 0.0 && fDistanceToSafeRest < 50.0)
+                    {
+                        SendDebugMessage("Setting ambush chance and roll to 20 due safe rest WP");
+                        nAmbushChance = 0;
+                        nAmbushRoll = 20; // this is set so "hiding from enemies" text isnt shown
+                    }
+
                     SendDebugMessage("Ambush roll: "+IntToString(nAmbushRoll));
                     SendDebugMessage("Ambush chance: "+IntToString(nAmbushChance));
                     SendDebugMessage("Hide chance: "+IntToString(nHideChance));
