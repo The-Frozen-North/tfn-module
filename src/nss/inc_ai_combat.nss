@@ -1714,8 +1714,16 @@ void gsCBTalentAttack(object oTarget)
 {
     int nDistance = GetDistanceToObject(oTarget) > 5.0;
 
-    if (nDistance) ActionEquipMostDamagingRanged(oTarget);
-    else           ActionEquipMostDamagingMelee(oTarget);
+    if (nDistance)
+    {
+        ActionEquipMostDamagingRanged(oTarget);
+    }
+    else
+    {
+        ActionEquipMostDamagingMelee(oTarget);
+        if (GetLocalInt(OBJECT_SELF, "offhand") == 1)
+            ActionEquipMostDamagingMelee(oTarget, TRUE);
+    }
 
     ActionDoCommand(_gsCBTalentAttack(oTarget, nDistance));
 }
@@ -1730,6 +1738,9 @@ void _gsCBTalentAttack(object oTarget, int nDistance)
                GetWeaponRanged(oWeapon)))
         {
             ActionEquipMostDamagingMelee(oTarget);
+            if (GetLocalInt(OBJECT_SELF, "offhand") == 1)
+                ActionEquipMostDamagingMelee(oTarget, TRUE);
+
             ActionDoCommand(_gsCBTalentAttack(oTarget, FALSE));
             return;
         }

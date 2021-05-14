@@ -16,6 +16,9 @@ void main()
     {
         SetLocalInt(OBJECT_SELF, "melee_attacked", 1);
         ActionEquipMostDamagingMelee(oAttacker);
+        if (GetLocalInt(OBJECT_SELF, "offhand") == 1)
+            ActionEquipMostDamagingMelee(oAttacker, TRUE);
+
         DelayCommand(7.0, DeleteLocalInt(OBJECT_SELF, "melee_attacked"));
     }
 
