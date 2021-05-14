@@ -161,12 +161,12 @@ void main()
     if(GetIsObjectValid(oIntruder))
     {
         DelayCommand(IntToFloat(d10())/10.0, DoCombatVoice());
-
+        /*
         if(GetActionMode(OBJECT_SELF,ACTION_MODE_DEFENSIVE_CAST))//1.72: needs to be disabled after every cast
         {
             SetActionMode(OBJECT_SELF,ACTION_MODE_DEFENSIVE_CAST,FALSE);
         }
-
+        */
         if(TalentPersistentAbilities()) // * Will put up things like Auras quickly
         {
             __TurnCombatRoundOn(FALSE);

@@ -111,10 +111,12 @@ void main()
     // * Do henchmen specific things if I am a henchman otherwise run default AI
     if (GetIsObjectValid(oMaster))
     {
+        /*
         if(GetActionMode(OBJECT_SELF,ACTION_MODE_DEFENSIVE_CAST))//1.72: needs to be disabled after every cast
         {
             SetActionMode(OBJECT_SELF,ACTION_MODE_DEFENSIVE_CAST,FALSE);
         }
+        */
         // *******************************************
         // Healing
         // *******************************************
