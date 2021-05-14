@@ -39,7 +39,8 @@ void main()
      case TALKVOLUME_SILENT_SHOUT: sVolume = "SILENT_SHOUT"; break;
      case TALKVOLUME_PARTY:
         sVolume = "PARTY";
-        nColor = COLOR_BLUE;
+        nColor = GetLocalInt(oPC, "PARTY_CHAT_COLOR");
+        if (nColor == 0) nColor = COLOR_BLUE;
      break;
   }
 
