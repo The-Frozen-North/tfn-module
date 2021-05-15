@@ -8,7 +8,18 @@ int DetermineAmmoCraftingCost(object oAmmo)
 {
     int nValue = GetGoldPieceValue(oAmmo);
 
-    return nValue/50;
+    int nBaseItemType = GetBaseItemType(oAmmo);
+
+    if (nBaseItemType == BASE_ITEM_BOLT || nBaseItemType == BASE_ITEM_BULLET || nBaseItemType == BASE_ITEM_ARROW)
+    {
+        nValue = nValue/80;
+    }
+    else
+    {
+        nValue = nValue/50;
+    }
+
+    return nValue;
 }
 
 int DetermineAmmoCraftingDC(object oAmmo)
