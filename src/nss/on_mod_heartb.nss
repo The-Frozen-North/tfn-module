@@ -17,7 +17,7 @@ void DoRevive(object oDead)
             int bEnemy = FALSE;
             int bFriend = FALSE;
             int bMasterFound = FALSE;
-            int nFaction;
+            int nFaction, nRace;
 
             string sReviveMessage = "";
 
@@ -57,19 +57,20 @@ void DoRevive(object oDead)
 // do not count self and count only if alive
                 if (!GetIsDead(oCreature) && (oCreature != oDead))
                 {
+                    nRace = GetRacialType(oCreature);
                     if (GetIsEnemy(oCreature, oDead))
                     {
                         bEnemy = TRUE;
                         SendDebugMessage("Enemy detected, breaking from revive loop: "+GetName(oCreature));
                         break;
                     }
-                    else if (!bFriend && GetIsFriend(oCreature, oDead) && !GetIsInCombat(oCreature))
+                    else if (!bFriend && GetIsFriend(oCreature, oDead) && nRace != RACIAL_TYPE_ANIMAL && nRace != RACIAL_TYPE_VERMIN && !GetIsInCombat(oCreature))
                     {
                         bFriend = TRUE;
                         oLastFriend = oCreature;
                         SendDebugMessage("Friend detected: "+GetName(oCreature));
                     }
-                    else if (!bFriend && !GetIsInCombat(oCreature) && (GetIsFriend(oCreature, oDead) || GetIsNeutral(oCreature, oDead)))
+                    else if (nRace != RACIAL_TYPE_ANIMAL && nRace != RACIAL_TYPE_VERMIN && !bFriend && !GetIsInCombat(oCreature) && (GetIsFriend(oCreature, oDead) || GetIsNeutral(oCreature, oDead)))
                     {
                         nFaction = NWNX_Creature_GetFaction(oCreature);
 
