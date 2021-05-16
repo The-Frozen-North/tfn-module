@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 164
+    "value": 165
   },
   "BodyBag": {
     "type": "byte",
@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 9.0
+    "value": 12.0
   },
   "ClassList": {
     "type": "list",
@@ -38,7 +38,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 2
+          "value": 6
         }
       }
     ]
@@ -49,7 +49,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 23
+    "value": 25
   },
   "Conversation": {
     "type": "resref",
@@ -61,7 +61,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 84
+    "value": 132
   },
   "DecayTime": {
     "type": "dword",
@@ -80,7 +80,7 @@
   },
   "Dex": {
     "type": "byte",
-    "value": 14
+    "value": 16
   },
   "Disarmable": {
     "type": "byte",
@@ -144,7 +144,28 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 326
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 228
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 292
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 62
         }
       },
       {
@@ -165,6 +186,13 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 251
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 289
         }
       }
@@ -174,7 +202,7 @@
     "id": 12786,
     "type": "cexolocstring",
     "value": {
-      "0": "Troll Berserker"
+      "0": "Troll Chieftain"
     }
   },
   "fortbonus": {
@@ -191,7 +219,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 84
+    "value": 132
   },
   "Int": {
     "type": "byte",
@@ -223,7 +251,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 132
+    "value": 216
   },
   "NaturalAC": {
     "type": "byte",
@@ -235,7 +263,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 37
+    "value": 1
   },
   "PerceptionRange": {
     "type": "byte",
@@ -251,7 +279,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 307
+    "value": 308
   },
   "Race": {
     "type": "byte",
@@ -516,7 +544,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 93
+    "value": 94
   },
   "SpecAbilityList": {
     "type": "list",
@@ -528,7 +556,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 23
+    "value": 25
   },
   "Subrace": {
     "type": "cexostring",
@@ -548,7 +576,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "troll_berserker"
+    "value": "troll_chieftain"
   },
   "VarTable": {
     "type": "list",
@@ -565,7 +593,52 @@
         },
         "Value": {
           "type": "cexostring",
-          "value": "size_120"
+          "value": "size_140"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "boss"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest_item"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "b_troll_head"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest1"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "02_b_troll"
         }
       }
     ]

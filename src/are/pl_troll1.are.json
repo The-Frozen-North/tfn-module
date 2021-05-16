@@ -30,7 +30,11 @@
   },
   "Flags": {
     "type": "dword",
-    "value": 7
+    "value": 5
+  },
+  "FogClipDist": {
+    "type": "float",
+    "value": 45.0
   },
   "Height": {
     "type": "int",
@@ -50,7 +54,7 @@
   },
   "LoadScreenID": {
     "type": "word",
-    "value": 0
+    "value": 21
   },
   "ModListenCheck": {
     "type": "int",
@@ -83,7 +87,9 @@
   "Name": {
     "id": 64456,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Port Llast Northeast Plains - Cave"
+    }
   },
   "NoRest": {
     "type": "byte",
@@ -111,11 +117,15 @@
   },
   "ResRef": {
     "type": "resref",
-    "value": "m2q2b1"
+    "value": "pl_troll1"
   },
   "ShadowOpacity": {
     "type": "byte",
     "value": 50
+  },
+  "SkyBox": {
+    "type": "byte",
+    "value": 0
   },
   "SunAmbientColor": {
     "type": "dword",
@@ -139,7 +149,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "MAP_M2Q2B1"
+    "value": "pl_troll1"
   },
   "Tile_List": {
     "type": "list",
@@ -594,11 +604,11 @@
         },
         "Tile_ID": {
           "type": "int",
-          "value": 198
+          "value": 155
         },
         "Tile_MainLight1": {
           "type": "byte",
-          "value": 19
+          "value": 0
         },
         "Tile_MainLight2": {
           "type": "byte",
@@ -606,7 +616,7 @@
         },
         "Tile_Orientation": {
           "type": "int",
-          "value": 2
+          "value": 3
         },
         "Tile_SrcLight1": {
           "type": "byte",
@@ -2013,7 +2023,7 @@
         },
         "Tile_ID": {
           "type": "int",
-          "value": 0
+          "value": 156
         },
         "Tile_MainLight1": {
           "type": "byte",
@@ -2021,7 +2031,7 @@
         },
         "Tile_MainLight2": {
           "type": "byte",
-          "value": 3
+          "value": 0
         },
         "Tile_Orientation": {
           "type": "int",
@@ -2056,7 +2066,7 @@
         },
         "Tile_ID": {
           "type": "int",
-          "value": 5
+          "value": 153
         },
         "Tile_MainLight1": {
           "type": "byte",
@@ -2068,7 +2078,7 @@
         },
         "Tile_Orientation": {
           "type": "int",
-          "value": 1
+          "value": 3
         },
         "Tile_SrcLight1": {
           "type": "byte",
@@ -2658,7 +2668,7 @@
         },
         "Tile_ID": {
           "type": "int",
-          "value": 156
+          "value": 108
         },
         "Tile_MainLight1": {
           "type": "byte",
@@ -2666,11 +2676,11 @@
         },
         "Tile_MainLight2": {
           "type": "byte",
-          "value": 3
+          "value": 0
         },
         "Tile_Orientation": {
           "type": "int",
-          "value": 0
+          "value": 2
         },
         "Tile_SrcLight1": {
           "type": "byte",
@@ -2701,11 +2711,11 @@
         },
         "Tile_ID": {
           "type": "int",
-          "value": 5
+          "value": 117
         },
         "Tile_MainLight1": {
           "type": "byte",
-          "value": 13
+          "value": 0
         },
         "Tile_MainLight2": {
           "type": "byte",
@@ -2713,7 +2723,7 @@
         },
         "Tile_Orientation": {
           "type": "int",
-          "value": 2
+          "value": 3
         },
         "Tile_SrcLight1": {
           "type": "byte",
@@ -3303,19 +3313,19 @@
         },
         "Tile_ID": {
           "type": "int",
-          "value": 158
+          "value": 155
         },
         "Tile_MainLight1": {
           "type": "byte",
-          "value": 13
+          "value": 0
         },
         "Tile_MainLight2": {
           "type": "byte",
-          "value": 14
+          "value": 0
         },
         "Tile_Orientation": {
           "type": "int",
-          "value": 0
+          "value": 1
         },
         "Tile_SrcLight1": {
           "type": "byte",
@@ -3346,11 +3356,11 @@
         },
         "Tile_ID": {
           "type": "int",
-          "value": 239
+          "value": 151
         },
         "Tile_MainLight1": {
           "type": "byte",
-          "value": 14
+          "value": 0
         },
         "Tile_MainLight2": {
           "type": "byte",
@@ -4765,11 +4775,11 @@
         },
         "Tile_ID": {
           "type": "int",
-          "value": 198
+          "value": 155
         },
         "Tile_MainLight1": {
           "type": "byte",
-          "value": 15
+          "value": 0
         },
         "Tile_MainLight2": {
           "type": "byte",
@@ -4777,7 +4787,7 @@
         },
         "Tile_Orientation": {
           "type": "int",
-          "value": 0
+          "value": 1
         },
         "Tile_SrcLight1": {
           "type": "byte",
@@ -5195,7 +5205,7 @@
         },
         "Tile_ID": {
           "type": "int",
-          "value": 198
+          "value": 156
         },
         "Tile_MainLight1": {
           "type": "byte",
@@ -5203,11 +5213,11 @@
         },
         "Tile_MainLight2": {
           "type": "byte",
-          "value": 3
+          "value": 0
         },
         "Tile_Orientation": {
           "type": "int",
-          "value": 0
+          "value": 1
         },
         "Tile_SrcLight1": {
           "type": "byte",

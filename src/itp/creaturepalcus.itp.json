@@ -259,6 +259,25 @@
                     "__struct_id": 0,
                     "CR": {
                       "type": "float",
+                      "value": 0.5
+                    },
+                    "FACTION": {
+                      "type": "cexostring",
+                      "value": "Commoner"
+                    },
+                    "NAME": {
+                      "type": "cexostring",
+                      "value": "Darius"
+                    },
+                    "RESREF": {
+                      "type": "resref",
+                      "value": "darius"
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "CR": {
+                      "type": "float",
                       "value": 13.0
                     },
                     "FACTION": {
@@ -329,6 +348,25 @@
                     "RESREF": {
                       "type": "resref",
                       "value": "gulnan"
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "CR": {
+                      "type": "float",
+                      "value": 5.0
+                    },
+                    "FACTION": {
+                      "type": "cexostring",
+                      "value": ""
+                    },
+                    "NAME": {
+                      "type": "cexostring",
+                      "value": "Janis"
+                    },
+                    "RESREF": {
+                      "type": "resref",
+                      "value": "janis"
                     }
                   },
                   {
@@ -639,6 +677,25 @@
                     "__struct_id": 0,
                     "CR": {
                       "type": "float",
+                      "value": 12.0
+                    },
+                    "FACTION": {
+                      "type": "cexostring",
+                      "value": "Giant"
+                    },
+                    "NAME": {
+                      "type": "cexostring",
+                      "value": "Troll Chieftain"
+                    },
+                    "RESREF": {
+                      "type": "resref",
+                      "value": "troll_chieftain"
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "CR": {
+                      "type": "float",
                       "value": 5.0
                     },
                     "FACTION": {
@@ -919,6 +976,25 @@
               "RESREF": {
                 "type": "resref",
                 "value": "adventurer"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "CR": {
+                "type": "float",
+                "value": 3.0
+              },
+              "FACTION": {
+                "type": "cexostring",
+                "value": "Commoner"
+              },
+              "NAME": {
+                "type": "cexostring",
+                "value": "Archeologist"
+              },
+              "RESREF": {
+                "type": "resref",
+                "value": "archeologist"
               }
             },
             {
@@ -2815,6 +2891,49 @@
                       "type": "byte",
                       "value": 34
                     },
+                    "LIST": {
+                      "type": "list",
+                      "value": [
+                        {
+                          "__struct_id": 0,
+                          "CR": {
+                            "type": "float",
+                            "value": 10.0
+                          },
+                          "FACTION": {
+                            "type": "cexostring",
+                            "value": "Giant"
+                          },
+                          "NAME": {
+                            "type": "cexostring",
+                            "value": "Ettin"
+                          },
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "ettin"
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "CR": {
+                            "type": "float",
+                            "value": 12.0
+                          },
+                          "FACTION": {
+                            "type": "cexostring",
+                            "value": "Giant"
+                          },
+                          "NAME": {
+                            "type": "cexostring",
+                            "value": "Hill Giant"
+                          },
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "giant_hill"
+                          }
+                        }
+                      ]
+                    },
                     "STRREF": {
                       "type": "dword",
                       "value": 6727
@@ -2936,7 +3055,7 @@
                           "__struct_id": 0,
                           "CR": {
                             "type": "float",
-                            "value": 8.0
+                            "value": 9.0
                           },
                           "FACTION": {
                             "type": "cexostring",
