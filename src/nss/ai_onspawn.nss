@@ -93,9 +93,6 @@ void main()
     SetLocalInt(OBJECT_SELF, "cr", FloatToInt(GetChallengeRating(OBJECT_SELF)));
     SetLocalInt(OBJECT_SELF, "area_cr", iAreaCR);
 
-    object oItem = GetFirstItemInInventory();
-    object oNewItem;
-
     DelayCommand(3.0, CopyKey());
 
     //int nRace = GetRacialType(oCreature);

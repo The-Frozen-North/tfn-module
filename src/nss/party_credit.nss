@@ -338,7 +338,7 @@ void main()
 
       }
    }
-   DestroyObject(oKey);
+   //DestroyObject(oKey);
 
 // =========================
 // END LOOP
