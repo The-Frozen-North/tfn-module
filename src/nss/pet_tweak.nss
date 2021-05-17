@@ -432,8 +432,8 @@ void main()
             if (nMasterHitDice >= 3) NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_CLEAVE);
             if (nMasterHitDice >= 6) NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_KNOCKDOWN);
 
-            AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageImmunity(IP_CONST_DAMAGETYPE_COLD, IP_CONST_DAMAGEIMMUNITY_100_PERCENT), oSkin);
-            AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageVulnerability(IP_CONST_DAMAGETYPE_FIRE, IP_CONST_DAMAGEVULNERABILITY_50_PERCENT), oSkin);
+            AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageImmunity(IP_CONST_DAMAGETYPE_FIRE, IP_CONST_DAMAGEIMMUNITY_100_PERCENT), oSkin);
+            AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageVulnerability(IP_CONST_DAMAGETYPE_COLD, IP_CONST_DAMAGEVULNERABILITY_50_PERCENT), oSkin);
 
             oWeaponSpecial = ApplyDamageProgression("bite", INVENTORY_SLOT_CWEAPON_B, 3, nMasterHitDice, FALSE, TRUE);
 
