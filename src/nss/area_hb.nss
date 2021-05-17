@@ -60,10 +60,17 @@ void main()
 
 // This is the number to fall back to if a refresh was to be started, but there were players
     int nRefreshRestart = 400;
+    int nRefreshAt = 600;
+
+    if (FindSubString(GetName(OBJECT_SELF), "Neverwinter") > -1)
+    {
+        nRefreshRestart = 200;
+        nRefreshAt = 300;
+    }
 
 // only start counting if the refresh counter is there
     int nRefresh = GetLocalInt(OBJECT_SELF, "refresh");
-    if (nRefresh >= 600)
+    if (nRefresh >= nRefreshAt)
     {
 
         if (!bPlayersInInvalidArea && !bPlayersInArea && !bPlayersInLinkedArea)
