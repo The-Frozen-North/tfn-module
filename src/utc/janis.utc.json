@@ -417,7 +417,7 @@
   },
   "Conversation": {
     "type": "resref",
-    "value": "m2q2ajanis"
+    "value": "janis"
   },
   "CRAdjust": {
     "type": "int",
@@ -456,7 +456,7 @@
   },
   "FactionID": {
     "type": "word",
-    "value": 118
+    "value": 3
   },
   "FeatList": {
     "type": "list",
@@ -891,6 +891,56 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "janis"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "no_credit"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "heartbeat_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "hb_q_talktome"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest1"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "02_q_mother"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
