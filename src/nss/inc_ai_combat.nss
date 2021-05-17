@@ -1720,9 +1720,18 @@ void gsCBTalentAttack(object oTarget)
     }
     else
     {
-        ActionEquipMostDamagingMelee(oTarget);
-        if (GetLocalInt(OBJECT_SELF, "offhand") == 1)
-            ActionEquipMostDamagingMelee(oTarget, TRUE);
+        object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
+
+        if (! (GetIsObjectValid(oWeapon) ||
+               GetWeaponRanged(oWeapon)))
+        {
+            ActionEquipMostDamagingMelee(oTarget);
+            if (GetLocalInt(OBJECT_SELF, "offhand") == 1)
+                ActionEquipMostDamagingMelee(oTarget, TRUE);
+
+            ActionDoCommand(_gsCBTalentAttack(oTarget, FALSE));
+            return;
+        }
     }
 
     ActionDoCommand(_gsCBTalentAttack(oTarget, nDistance));

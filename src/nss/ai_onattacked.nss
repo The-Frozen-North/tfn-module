@@ -15,9 +15,19 @@ void main()
     if  (GetLocalInt(OBJECT_SELF, "range") == 1 && d2() == 1 && GetDistanceToObject(oAttacker) < 2.0 && GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oAttacker)))
     {
         SetLocalInt(OBJECT_SELF, "melee_attacked", 1);
-        ActionEquipMostDamagingMelee(oAttacker);
-        if (GetLocalInt(OBJECT_SELF, "offhand") == 1)
-            ActionEquipMostDamagingMelee(oAttacker, TRUE);
+
+                object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
+
+        if (! (GetIsObjectValid(oWeapon) ||
+               GetWeaponRanged(oWeapon)))
+        {
+            ActionEquipMostDamagingMelee(oAttacker);
+            if (GetLocalInt(OBJECT_SELF, "offhand") == 1)
+                ActionEquipMostDamagingMelee(oAttacker, TRUE);
+
+            ActionDoCommand(_gsCBTalentAttack(oAttacker, FALSE));
+            return;
+        }
 
         DelayCommand(7.0, DeleteLocalInt(OBJECT_SELF, "melee_attacked"));
     }
