@@ -196,6 +196,12 @@ void main()
         oItem = GetNextItemInInventory(OBJECT_SELF);
     }
 
+    if (GetLocalString(OBJECT_SELF, "quest1") != "")
+        bNoTreasure = FALSE;
+
+    if (GetLocalString(OBJECT_SELF, "quest_item") != "")
+        bNoTreasure = FALSE;
+
 // only proceed if there is treasure or a key
     if (!bNoTreasure || GetIsObjectValid(oKey))
     {
