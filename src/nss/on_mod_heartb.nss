@@ -161,4 +161,6 @@ void main()
     DoRevive(GetObjectByTag("hen_daelan"));
     DoRevive(GetObjectByTag("hen_sharwyn"));
     DoRevive(GetObjectByTag("hen_linu"));
+    DoRevive(GetObjectByTag("hen_boddyknock"));
+    DoRevive(GetObjectByTag("hen_grimgnaw"));
 }
