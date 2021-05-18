@@ -18,6 +18,11 @@ void main()
             SendMessageToPC(OBJECT_SELF, "You cannot pickpocket players.");
             NWNX_Events_SkipEvent();
         }
+        else if (GetIsDead(oTarget))
+        {
+            SendMessageToPC(OBJECT_SELF, "You cannot pickpocket dead creatures.");
+            NWNX_Events_SkipEvent();
+        }
         else if (GetStringLeft(GetResRef(oTarget), 3) == "hen" && GetMaster(oTarget) != OBJECT_SELF)
         {
             SendMessageToPC(OBJECT_SELF, "You cannot pickpocket other player's henchman.");

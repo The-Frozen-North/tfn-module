@@ -118,6 +118,8 @@ void main()
 
 // Events.
 
+    NWNX_Events_SubscribeEvent("NWNX_ON_TRAP_ENTER_BEFORE", "on_trap_enterb");
+
 // Whitelist DMs.
     NWNX_Events_SubscribeEvent("NWNX_ON_CLIENT_CONNECT_BEFORE", "on_pc_connectb");
 
