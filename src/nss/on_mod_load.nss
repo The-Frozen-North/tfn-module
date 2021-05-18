@@ -155,6 +155,12 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_EXAMINE_OBJECT_BEFORE", "on_pc_examineb");
     NWNX_Events_SubscribeEvent("NWNX_ON_EXAMINE_OBJECT_AFTER", "on_pc_examinea");
 
+// Party chat multi-coloring
+    NWNX_Events_SubscribeEvent("NWNX_ON_PARTY_ACCEPT_INVITATION_AFTER", "on_pc_party");
+    NWNX_Events_SubscribeEvent("NWNX_ON_PARTY_LEAVE_AFTER", "on_pc_party");
+    NWNX_Events_SubscribeEvent("NWNX_ON_PARTY_KICK_AFTER", "on_pc_party");
+    NWNX_Events_SubscribeEvent("NWNX_ON_CLIENT_DISCONNECT_BEFORE", "on_pc_party");
+
 // We must skip this if polymorphed or bartering.
     NWNX_Events_SubscribeEvent("NWNX_ON_SERVER_CHARACTER_SAVE_BEFORE", "on_pc_save");
 
