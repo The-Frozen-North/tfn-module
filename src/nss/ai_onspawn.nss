@@ -90,7 +90,18 @@ void main()
     NWNX_Creature_SetDisarmable(OBJECT_SELF, TRUE);
 
 // Set cr integer on self. This is used for determining treasure.
-    SetLocalInt(OBJECT_SELF, "cr", FloatToInt(GetChallengeRating(OBJECT_SELF)));
+    float fCR = GetChallengeRating(OBJECT_SELF);
+
+    if (GetLocalInt(OBJECT_SELF, "boss"))
+    {
+        fCR = fCR * 2.0; // double CR for bosses
+    }
+    else if (GetLocalInt(OBJECT_SELF, "semiboss"))
+    {
+        fCR = fCR * 1.5; // 50% increase for semibosses
+    }
+
+    SetLocalInt(OBJECT_SELF, "cr", FloatToInt(fCR));
     SetLocalInt(OBJECT_SELF, "area_cr", iAreaCR);
 
     DelayCommand(3.0, CopyKey());

@@ -244,8 +244,8 @@ void main()
     {
         nGold = DetermineGoldFromCR(iCR);
 
-        if (bBoss == 1) nGold = nGold*3;
-        else if (bSemiBoss == 1) nGold = nGold*2;
+        if (bBoss == 1) nGold = nGold*6;
+        else if (bSemiBoss == 1) nGold = nGold*3;
 
         nGoldToDistribute = nGold/nTotalSize;
 // remove henchman gold now, if they exist
