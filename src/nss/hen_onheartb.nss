@@ -22,6 +22,12 @@ void DoBanter()
 
 void main()
 {
+    if (!GetIsInCombat() && GetLocalInt(OBJECT_SELF, "pending_destroy") == 1)
+    {
+        AssignCommand(OBJECT_SELF, ActionMoveToObject(GetNearestObject(OBJECT_TYPE_DOOR)));
+        return;
+    }
+
 
     string sScript = GetLocalString(OBJECT_SELF, "heartbeat_script");
     if (sScript != "") ExecuteScript(sScript);

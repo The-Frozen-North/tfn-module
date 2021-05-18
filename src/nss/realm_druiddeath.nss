@@ -2,6 +2,9 @@ void main()
 {
     object oDruid;
     int i, nDruids;
+
+    object oSpirit = GetObjectByTag("realm_spirit");
+
     for (i = 0; i < 30; i++)
     {
         object oDruid = GetObjectByTag("realm_druid", i);
@@ -15,10 +18,19 @@ void main()
     {
         FloatingTextStringOnCreature("All of the shadow druids are dead and peace has returned to the Spirit of the Wood.", GetLastKiller());
 
-        SetFogColor(FOG_TYPE_ALL, FOG_COLOR_WHITE, GetArea(OBJECT_SELF));
-        object oSpirit = GetObjectByTag("realm_spirit");
+        object oArea = GetArea(oSpirit);
+
+        SetFogColor(FOG_TYPE_ALL, FOG_COLOR_WHITE, GetArea(oSpirit));
 
         ChangeToStandardFaction(oSpirit, STANDARD_FACTION_DEFENDER);
+
+        object oObject = GetFirstObjectInArea(oArea);
+        {
+             if (GetObjectType(oObject) == OBJECT_TYPE_AREA_OF_EFFECT)
+                DestroyObject(oObject);
+
+             oObject = GetNextObjectInArea(oArea);
+        }
 
         object oPC = GetFirstPC();
 
@@ -36,6 +48,7 @@ void main()
     }
     else
     {
+        AssignCommand(oSpirit, ClearAllActions(TRUE));
         FloatingTextStringOnCreature("The death of the shadow druid seems to have a pacifying effect on the Spirit of the Wood.", GetLastKiller());
     }
 }

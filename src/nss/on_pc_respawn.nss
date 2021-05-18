@@ -13,7 +13,6 @@
 #include "x0_i0_spells"
 #include "inc_general"
 
-
 void main()
 {
     object oRespawner = GetLastRespawnButtonPresser();
@@ -49,8 +48,10 @@ void main()
 
     location lRespawnLocation = GetLocation(GetObjectByTag("RESPAWN_NEVERWINTER"));
 
-    object oNearestRespawn = GetObjectByTag(GetLocalString(oArea, "respawn"));
-    if (GetIsObjectValid(oNearestRespawn)) lRespawnLocation = GetLocation(oNearestRespawn);
+    object oChosenRespawn = GetObjectByTag(GetLocalString(oArea, "RESPAWN_"+SQLocalsPlayer_GetString(oRespawner, "respawn")));
+
+    if (GetIsObjectValid(oChosenRespawn))
+        lRespawnLocation = GetLocation(oChosenRespawn);
 
 // Apply a visual effect
     effect eVisual = EffectVisualEffect(VFX_IMP_RESTORATION);

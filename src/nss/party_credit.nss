@@ -2,6 +2,7 @@
 #include "inc_quest"
 #include "inc_loot"
 #include "inc_henchman"
+#include "inc_nwnx"
 
 // The max distance in meters a party member can be from
 // a target killed by oKiller and still get xp. (no lower than 5!)
@@ -33,6 +34,146 @@ object GetLocalArrayObject(object oObject, string sArrayName, int nIndex)
 void SetLocalArrayObject(object oObject, string sArrayName, int nIndex, object oValue)
 {
    SetLocalObject(oObject, sArrayName + IntToString(nIndex), oValue);
+}
+
+void SendLootMessage(object oItem)
+{
+    if (!GetIsObjectValid(oItem))
+        return;
+
+    object oOwner = GetItemPossessor(oItem);
+
+    if (GetIsDead(oOwner))
+        return;
+
+    int nBaseItem = GetBaseItemType(oItem);
+
+    switch (nBaseItem)
+    {
+        case BASE_ITEM_CSLASHWEAPON:          return; break;
+        case BASE_ITEM_CPIERCWEAPON:          return; break;
+        case BASE_ITEM_CBLUDGWEAPON:          return; break;
+        case BASE_ITEM_CSLSHPRCWEAP:          return; break;
+        case BASE_ITEM_CREATUREITEM:          return; break;
+        case BASE_ITEM_GOLD:                  return; break;
+        case BASE_ITEM_CRAFTMATERIALMED:      return; break;
+        case BASE_ITEM_CRAFTMATERIALSML:      return; break;
+    }
+
+    string sName = GetName(oItem);
+
+    if (!GetIdentified(oItem))
+    {
+        switch (nBaseItem)
+        {
+            case BASE_ITEM_SHORTSWORD:            sName = "shortsword"; break;
+            case BASE_ITEM_LONGSWORD:             sName = "longsword"; break;
+            case BASE_ITEM_BATTLEAXE:             sName = "battleaxe"; break;
+            case BASE_ITEM_BASTARDSWORD:          sName = "bastard sword"; break;
+            case BASE_ITEM_LIGHTFLAIL:            sName = "light flail"; break;
+            case BASE_ITEM_WARHAMMER:             sName = "warhammer"; break;
+            case BASE_ITEM_HEAVYCROSSBOW:         sName = "heavy crossbow"; break;
+            case BASE_ITEM_LIGHTCROSSBOW:         sName = "light crossbow"; break;
+            case BASE_ITEM_LONGBOW:               sName = "longbow"; break;
+            case BASE_ITEM_LIGHTMACE:             sName = "mace"; break;
+            case BASE_ITEM_HALBERD:               sName = "halberd"; break;
+            case BASE_ITEM_SHORTBOW:              sName = "shortbow"; break;
+            case BASE_ITEM_TWOBLADEDSWORD:        sName = "two-bladed sword"; break;
+            case BASE_ITEM_GREATSWORD:            sName = "greatsword"; break;
+            case BASE_ITEM_SMALLSHIELD:           sName = "small shield"; break;
+            case BASE_ITEM_TORCH:                 sName = "torch"; break;
+            case BASE_ITEM_ARMOR:                 sName = "armor"; break;
+            case BASE_ITEM_HELMET:                sName = "helmet"; break;
+            case BASE_ITEM_GREATAXE:              sName = "greataxe"; break;
+            case BASE_ITEM_AMULET:                sName = "amulet"; break;
+            case BASE_ITEM_ARROW:                 sName = "arrow"; break;
+            case BASE_ITEM_BELT:                  sName = "belt"; break;
+            case BASE_ITEM_DAGGER:                sName = "dagger"; break;
+            case BASE_ITEM_MISCSMALL:             sName = "misc item"; break;
+            case BASE_ITEM_BOLT:                  sName = "bolt"; break;
+            case BASE_ITEM_BOOTS:                 sName = "boots"; break;
+            case BASE_ITEM_BULLET:                sName = "bullet"; break;
+            case BASE_ITEM_CLUB:                  sName = "club"; break;
+            case BASE_ITEM_MISCMEDIUM:            sName = "misc item"; break;
+            case BASE_ITEM_DART:                  sName = "dart"; break;
+            case BASE_ITEM_DIREMACE:              sName = "dire mace"; break;
+            case BASE_ITEM_DOUBLEAXE:             sName = "doubleaxe"; break;
+            case BASE_ITEM_MISCLARGE:             sName = "misc item"; break;
+            case BASE_ITEM_HEAVYFLAIL:            sName = "heavy flail"; break;
+            case BASE_ITEM_GLOVES:                sName = "gloves"; break;
+            case BASE_ITEM_LIGHTHAMMER:           sName = "light hammer"; break;
+            case BASE_ITEM_HANDAXE:               sName = "handaxe"; break;
+            case BASE_ITEM_HEALERSKIT:            sName = "healer's kit"; break;
+            case BASE_ITEM_KAMA:                  sName = "kama"; break;
+            case BASE_ITEM_KATANA:                sName = "katana"; break;
+            case BASE_ITEM_KUKRI:                 sName = "kukri"; break;
+            case BASE_ITEM_MISCTALL:              sName = "misc item"; break;
+            case BASE_ITEM_MAGICROD:              sName = "rod"; break;
+            case BASE_ITEM_MAGICSTAFF:            sName = "staff"; break;
+            case BASE_ITEM_MAGICWAND:             sName = "wand"; break;
+            case BASE_ITEM_MORNINGSTAR:           sName = "morningstar"; break;
+            case BASE_ITEM_POTIONS:               sName = "potion"; break;
+            case BASE_ITEM_QUARTERSTAFF:          sName = "quarterstaff"; break;
+            case BASE_ITEM_RAPIER:                sName = "rapier"; break;
+            case BASE_ITEM_RING:                  sName = "ring"; break;
+            case BASE_ITEM_SCIMITAR:              sName = "scimitar"; break;
+            case BASE_ITEM_SCROLL:                sName = "scroll"; break;
+            case BASE_ITEM_SCYTHE:                sName = "scythe"; break;
+            case BASE_ITEM_LARGESHIELD:           sName = "large shield"; break;
+            case BASE_ITEM_TOWERSHIELD:           sName = "tower shield"; break;
+            case BASE_ITEM_SHORTSPEAR:            sName = "spear"; break;
+            case BASE_ITEM_SHURIKEN:              sName = "shuriken"; break;
+            case BASE_ITEM_SICKLE:                sName = "sickle"; break;
+            case BASE_ITEM_SLING:                 sName = "sling"; break;
+            case BASE_ITEM_THIEVESTOOLS:          sName = "thieve's tool"; break;
+            case BASE_ITEM_THROWINGAXE:           sName = "throwing axe"; break;
+            case BASE_ITEM_TRAPKIT:               sName = "trap kit"; break;
+            case BASE_ITEM_KEY:                   sName = "key"; break;
+            case BASE_ITEM_LARGEBOX:              sName = "large box"; break;
+            case BASE_ITEM_MISCWIDE:              sName = "misc item"; break;
+            case BASE_ITEM_CSLASHWEAPON:          return; break;
+            case BASE_ITEM_CPIERCWEAPON:          return; break;
+            case BASE_ITEM_CBLUDGWEAPON:          return; break;
+            case BASE_ITEM_CSLSHPRCWEAP:          return; break;
+            case BASE_ITEM_CREATUREITEM:          return; break;
+            case BASE_ITEM_BOOK:                  sName = "book"; break;
+            case BASE_ITEM_SPELLSCROLL:           sName = "scroll"; break;
+            case BASE_ITEM_GOLD:                  return; break;
+            case BASE_ITEM_GEM:                   sName = "gem"; break;
+            case BASE_ITEM_BRACER:                sName = "bracer"; break;
+            case BASE_ITEM_MISCTHIN:              sName = "misc item"; break;
+            case BASE_ITEM_CLOAK:                 sName = "cloak"; break;
+            case BASE_ITEM_GRENADE:               sName = "grenade"; break;
+            case BASE_ITEM_TRIDENT:               sName = "trident"; break;
+            case BASE_ITEM_BLANK_POTION:          sName = "potion"; break;
+            case BASE_ITEM_BLANK_SCROLL:          sName = "scroll"; break;
+            case BASE_ITEM_BLANK_WAND:           sName = "wand"; break;
+            case BASE_ITEM_ENCHANTED_POTION:      sName = "potion"; break;
+            case BASE_ITEM_ENCHANTED_SCROLL:      sName = "scroll"; break;
+            case BASE_ITEM_ENCHANTED_WAND:        sName = "wand"; break;
+            case BASE_ITEM_DWARVENWARAXE:         sName = "dwarvern waraxe"; break;
+            case BASE_ITEM_CRAFTMATERIALMED:      return; break;
+            case BASE_ITEM_CRAFTMATERIALSML:      return; break;
+            case BASE_ITEM_WHIP:                  sName = "whip"; break;
+        }
+
+        switch (d4())
+        {
+            case 1: PlayVoiceChat(VOICE_CHAT_LOOKHERE, oOwner); break;
+            case 2: PlayVoiceChat(VOICE_CHAT_CHEER, oOwner); break;
+        }
+
+        sName = sName+" (unidentified)";
+    }
+
+    object oPC = GetFirstPC();
+    while (GetIsObjectValid(oPC))
+    {
+        if (GetArea(oPC) == GetArea(oOwner))
+            NWNX_Player_FloatingTextStringOnCreature(oPC, oOwner, "*"+GetName(oOwner)+" receives "+sName+"*");
+
+        oPC = GetNextPC();
+    }
 }
 
 // This global variable is used to store party data during the first loop
@@ -70,10 +211,14 @@ void SetPartyData()
       }
 // checking if it isn't dead and that the heartbeat event is henchman heartbeat is enough
 // for us to tell
-      else if (!GetIsDead(oMbr) && GetEventScript(oMbr, EVENT_SCRIPT_CREATURE_ON_HEARTBEAT) == "hen_onheartb")
+      else if (!GetIsDead(oMbr) && !GetIsPC(oMbr) && GetEventScript(oMbr, EVENT_SCRIPT_CREATURE_ON_HEARTBEAT) == "hen_onheartb")
       {
           nTotalSize++;
-          if (GetStringLeft(GetResRef(oMbr), 3) == "hen") nHenchmanSize++;
+          if (GetStringLeft(GetResRef(oMbr), 3) == "hen")
+          {
+            nHenchmanSize++;
+            SetLocalArrayObject(OBJECT_SELF, "Henchmans", nHenchmanSize, oMbr);
+          }
           nLevel = GetHitDice(oMbr);
           nTotalLevels = nTotalLevels + nLevel;
       }
@@ -273,6 +418,15 @@ void main()
        nItem1 = Random(nTotalSize)+1;
    }
 
+   if (nItem1 > 0)
+    SendDebugMessage("Item 1: "+IntToString(nItem1));
+
+   if (nItem2 > 0)
+    SendDebugMessage("Item 2: "+IntToString(nItem2));
+
+   if (nItem3 > 0)
+    SendDebugMessage("Item 3: "+IntToString(nItem3));
+
 // =========================
 // END LOOT CONTAINER CODE
 // =========================
@@ -344,6 +498,51 @@ void main()
 
       }
    }
+
+   if (bNoTreasure == FALSE && Party.HenchmanSize > 0)
+   {
+       nNth = 1;
+       for(nNth = 1; nNth <= Party.HenchmanSize; nNth++)
+       {
+          object oHenchman = GetLocalArrayObject(OBJECT_SELF, "Henchmans", nNth);
+
+          if (GetObjectType(oHenchman) == OBJECT_TYPE_CREATURE && GetStringLeft(GetResRef(oHenchman), 3) == "hen")
+          {
+// have to be set for treasure to function properly
+               SetLocalInt(oHenchman, "cr", GetLocalInt(oContainer, "cr"));
+               SetLocalInt(oHenchman, "area_cr", GetLocalInt(oContainer, "area_cr"));
+
+               object oItem1, oItem2, oItem3;
+// assumed to be out of bounds (henchman)
+               if (Party.PlayerSize+nNth == nItem1)
+               {
+                   oItem1 = GenerateLoot(oHenchman);
+                   SetDroppableFlag(oItem1, FALSE);
+                   SetPickpocketableFlag(oItem1, TRUE);
+                   AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oItem1)));
+               }
+               if (Party.PlayerSize+nNth == nItem2)
+               {
+                   oItem2 = GenerateLoot(oHenchman);
+                   SetDroppableFlag(oItem2, FALSE);
+                   SetPickpocketableFlag(oItem2, TRUE);
+                   AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+2.0+(IntToFloat(d8())*0.1), SendLootMessage(oItem2)));
+               }
+               if (Party.PlayerSize+nNth == nItem3)
+               {
+                   oItem3 = GenerateLoot(oHenchman);
+                   SetDroppableFlag(oItem3, FALSE);
+                   SetPickpocketableFlag(oItem3, TRUE);
+                   AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+3.0+(IntToFloat(d8())*0.1), SendLootMessage(oItem3)));
+               }
+
+// clear these out afterwards
+               DeleteLocalInt(oHenchman, "cr");
+               DeleteLocalInt(oHenchman, "area_cr");
+          }
+       }
+   }
+
    //DestroyObject(oKey);
 
 // =========================

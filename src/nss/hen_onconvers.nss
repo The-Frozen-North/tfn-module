@@ -21,13 +21,18 @@ Patch 1.72
 #include "x0_inc_henai"
 #include "inc_henchman"
 #include "x2_inc_switches"
+
 // * This function checks to make sure no
 // * dehibilating effects are on the player that should
 // * Don't use getcommandable for this since the dying system
 // * will sometimes leave a player in a noncommandable state
 int AbleToTalk(object oSelf)
 {
-    if (GetLocalInt(oSelf, "pending_destroy")) return FALSE;
+    if (GetLocalInt(oSelf, "pending_destroy") == 1)
+    {
+        AssignCommand(OBJECT_SELF, ActionMoveToObject(GetNearestObject(OBJECT_TYPE_DOOR)));
+        return FALSE;
+    }
 
     effect eSearch = GetFirstEffect(oSelf);
     while(GetIsEffectValid(eSearch))
@@ -64,6 +69,8 @@ void main()
     int nMatch = GetListenPatternNumber();
     object oShouter = GetLastSpeaker();
     object oIntruder;
+
+
 
     if (nMatch == ASSOCIATE_COMMAND_LEAVEPARTY)
     {

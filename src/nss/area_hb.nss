@@ -62,7 +62,7 @@ void main()
     int nRefreshRestart = 400;
     int nRefreshAt = 600;
 
-    if (FindSubString(GetName(OBJECT_SELF), "Neverwinter") > -1)
+    if (FindSubString(GetName(OBJECT_SELF), "Neverwinter") > -1 && FindSubString(GetName(OBJECT_SELF), "Neverwinter Wood") == -1)
     {
         nRefreshRestart = 200;
         nRefreshAt = 300;

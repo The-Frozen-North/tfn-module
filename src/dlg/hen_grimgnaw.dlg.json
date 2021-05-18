@@ -1196,12 +1196,61 @@
           "type": "cexolocstring",
           "value": {}
         }
+      },
+      {
+        "__struct_id": 18,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": "vs_favhen5m_warn"
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Beware, lest I deliver you to the Silent Lord."
+          }
+        }
       }
     ]
   },
   "NumWords": {
     "type": "dword",
-    "value": 508
+    "value": 517
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -2098,6 +2147,21 @@
         "__struct_id": 0,
         "Active": {
           "type": "resref",
+          "value": "dlg_chk_pp"
+        },
+        "ConditionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Index": {
+          "type": "dword",
+          "value": 18
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Active": {
+          "type": "resref",
           "value": "hen_chk_hired"
         },
         "ConditionParams": {
@@ -2110,7 +2174,7 @@
         }
       },
       {
-        "__struct_id": 1,
+        "__struct_id": 2,
         "Active": {
           "type": "resref",
           "value": "hen_chk_master"
@@ -2125,7 +2189,7 @@
         }
       },
       {
-        "__struct_id": 2,
+        "__struct_id": 3,
         "Active": {
           "type": "resref",
           "value": "dlg_chk_talked"
@@ -2140,7 +2204,7 @@
         }
       },
       {
-        "__struct_id": 3,
+        "__struct_id": 4,
         "Active": {
           "type": "resref",
           "value": ""

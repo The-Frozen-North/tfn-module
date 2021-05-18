@@ -285,20 +285,20 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 // ---------------------------------------------------------
 // Generates loot. Typically used for creatures or containers.
 // ---------------------------------------------------------
-void GenerateLoot(object oContainer, int nBonusItems = 0)
+object GenerateLoot(object oContainer)
 {
-   if (!GetHasInventory(oContainer)) return; // stop if the container has no inventory
+   if (!GetHasInventory(oContainer)) return OBJECT_INVALID; // stop if the container has no inventory
 
    if (GetLocalInt(GetModule(), "treasure_ready") != 1)
    {
        SendMessageToAllPCs("Treasure isn't ready. No treasure will be generated.");
-       return;
+       return OBJECT_INVALID;
    }
 
    if (GetLocalInt(GetModule(), "treasure_tainted") == 1)
    {
        SendMessageToAllPCs("Treasure is tainted. No treasure will be generated.");
-       return;
+       return OBJECT_INVALID;
    }
 
    int iCR = GetLocalInt(oContainer, "cr");
@@ -325,27 +325,29 @@ void GenerateLoot(object oContainer, int nBonusItems = 0)
    nCombinedWeight = nMiscWeight + nScrollsWeight + nPotionsWeight + nWeaponWeight + nArmorWeight + nApparelWeight;
 
    int nItemRoll = Random(nCombinedWeight)+1;
+   object oItem;
    while (TRUE)
    {
        nItemRoll = nItemRoll - nMiscWeight;
-       if (nItemRoll <= 0) {GenerateTierItem(iCR, iAreaCR, oContainer, "Misc");break;}
+       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Misc");break;}
 
        nItemRoll = nItemRoll - nScrollsWeight;
-       if (nItemRoll <= 0) {GenerateTierItem(iCR, iAreaCR, oContainer, "Scrolls");break;}
+       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Scrolls");break;}
 
        nItemRoll = nItemRoll - nPotionsWeight;
-       if (nItemRoll <= 0) {GenerateTierItem(iCR, iAreaCR, oContainer, "Potions");break;}
+       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Potions");break;}
 
        nItemRoll = nItemRoll - nWeaponWeight;
-       if (nItemRoll <= 0) {GenerateTierItem(iCR, iAreaCR, oContainer, "Weapon");break;}
+       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Weapon");break;}
 
        nItemRoll = nItemRoll - nArmorWeight;
-       if (nItemRoll <= 0) {GenerateTierItem(iCR, iAreaCR, oContainer, "Armor");break;}
+       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Armor");break;}
 
        nItemRoll = nItemRoll - nApparelWeight;
-       if (nItemRoll <= 0) {GenerateTierItem(iCR, iAreaCR, oContainer, "Apparel");break;}
+       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Apparel");break;}
    }
 
+    return oItem;
 }
 
 void DecrementLootAndDestroyIfEmpty(object oOpener, object oLootParent, object oPersonalLoot)
