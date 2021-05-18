@@ -475,7 +475,7 @@ object gsCBGetAttackTarget(object oObject = OBJECT_SELF, object oTarget = OBJECT
                                          CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
 
             if (! GetIsObjectValid(oTarget) ||
-                GetPlotFlag(oTarget))
+                GetPlotFlag(oTarget) || GetLocalInt(oTarget, "unconscious") == 1)
             {
                 oTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY,
                                              oObject, 1,
@@ -483,7 +483,7 @@ object gsCBGetAttackTarget(object oObject = OBJECT_SELF, object oTarget = OBJECT
                                              CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD);
 
                 if (! GetIsObjectValid(oTarget) ||
-                    GetPlotFlag(oTarget))
+                    GetPlotFlag(oTarget) || GetLocalInt(oTarget, "unconscious") == 1)
                 {
                     gsCBClearAttackTarget(oObject);
                     return OBJECT_INVALID;
@@ -689,6 +689,13 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
     oTarget = gsCBGetAttackTarget(OBJECT_SELF, oTarget);
 
     if (! GetIsObjectValid(oTarget))
+    {
+        ClearAllActions();
+        return;
+    }
+
+// dont attack unconscious targets - pok
+    if (GetLocalInt(oTarget, "unconscious") == 1)
     {
         ClearAllActions();
         return;
