@@ -27,7 +27,11 @@ Patch 1.72
 // * will sometimes leave a player in a noncommandable state
 int AbleToTalk(object oSelf)
 {
-    if (GetLocalInt(oSelf, "pending_destroy")) return FALSE;
+    if (GetLocalInt(oSelf, "pending_destroy") == 1)
+    {
+        AssignCommand(OBJECT_SELF, ActionMoveToObject(GetNearestObject(OBJECT_TYPE_DOOR)));
+        return FALSE;
+    }
 
     effect eSearch = GetFirstEffect(oSelf);
     while(GetIsEffectValid(eSearch))

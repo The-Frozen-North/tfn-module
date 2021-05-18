@@ -16,6 +16,7 @@
 // * Determined Combat Round
 
 #include "x0_inc_henai"
+#include "inc_henchman"
 
 void main()
 {
@@ -25,6 +26,15 @@ void main()
     {
         if(GetIsObjectValid(oTarget))
         {
+            if (GetIsObjectValid(GetMaster()))
+            {
+                ClearMaster(OBJECT_SELF);
+                SetIsTemporaryEnemy(oTarget);
+                PlayVoiceChat(VOICE_CHAT_CUSS, OBJECT_SELF);
+                DestroyObject(OBJECT_SELF, 60.0);
+            }
+
+
             HenchmenCombatRound(oTarget);
         }
     }
