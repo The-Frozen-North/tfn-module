@@ -11,8 +11,10 @@ void main()
 
     location lRespawnLocation = GetLocation(GetObjectByTag("RESPAWN_NEVERWINTER"));
 
-    object oNearestRespawn = GetObjectByTag(GetLocalString(oArea, "respawn"));
-    if (GetIsObjectValid(oNearestRespawn)) lRespawnLocation = GetLocation(oNearestRespawn);
+    object oChosenRespawn = GetObjectByTag(GetLocalString(oArea, "RESPAWN_"+SQLocalsPlayer_GetString(oPC, "respawn")));
+
+    if (GetIsObjectValid(oChosenRespawn))
+        lRespawnLocation = GetLocation(oChosenRespawn);
 
     SQLocalsPlayer_DeleteInt(oPC, "times_died");
 
