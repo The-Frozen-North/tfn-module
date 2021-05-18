@@ -21,6 +21,7 @@ Patch 1.72
 #include "x0_inc_henai"
 #include "inc_henchman"
 #include "x2_inc_switches"
+
 // * This function checks to make sure no
 // * dehibilating effects are on the player that should
 // * Don't use getcommandable for this since the dying system
@@ -68,6 +69,8 @@ void main()
     int nMatch = GetListenPatternNumber();
     object oShouter = GetLastSpeaker();
     object oIntruder;
+
+
 
     if (nMatch == ASSOCIATE_COMMAND_LEAVEPARTY)
     {
