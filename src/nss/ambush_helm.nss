@@ -22,9 +22,11 @@ void SpawnAttacker(int nTarget, int nTargetKey)
 
 void main()
 {
-    if (GetLocalInt(GetArea(OBJECT_SELF), "ambushed") == 1) return;
+    object oArea = GetObjectByTag("beg_helm1"); // get area by tag instead, because this script can be called from different areas
 
-    SetLocalInt(GetArea(OBJECT_SELF), "ambushed", 1);
+    if (GetLocalInt(oArea, "ambushed") == 1) return;
+
+    SetLocalInt(oArea, "ambushed", 1);
 
     object oDoor = GetObjectByTag("HelmToBeggars");
     AssignCommand(oDoor, ActionCloseDoor(oDoor));
