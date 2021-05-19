@@ -110,8 +110,14 @@ void main()
 
     SetSpawn();
 
-    if (GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0)
+    if (d8() == 1)
+    {
+        SetLocalInt(OBJECT_SELF, "no_stealth", 1);
+    }
+    else if (GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0)
+    {
         SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
+    }
 
     string sScript = GetLocalString(OBJECT_SELF, "spawn_script");
     if (sScript != "") ExecuteScript(sScript);

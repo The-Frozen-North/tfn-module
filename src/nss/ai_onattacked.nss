@@ -12,15 +12,16 @@ void main()
     if (GetIsPC(oAttacker) || GetIsPC(GetMaster(oAttacker))) SetLocalInt(OBJECT_SELF, "player_tagged", 1);
 
 // 50% chance for range attackers to go melee immediately if attacked in melee
-    if  (GetLocalInt(OBJECT_SELF, "range") == 1 && d2() == 1 && GetDistanceToObject(oAttacker) < 2.0 && GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oAttacker)))
+    if  (d2() == 1 && GetDistanceToObject(oAttacker) < 3.0 && GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oAttacker)))
     {
         SetLocalInt(OBJECT_SELF, "melee_attacked", 1);
 
-                object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
+        object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
 
         if (! (GetIsObjectValid(oWeapon) ||
                GetWeaponRanged(oWeapon)))
         {
+            //ClearAllActions(TRUE);
             ActionEquipMostDamagingMelee(oAttacker);
             if (GetLocalInt(OBJECT_SELF, "offhand") == 1)
                 ActionEquipMostDamagingMelee(oAttacker, TRUE);

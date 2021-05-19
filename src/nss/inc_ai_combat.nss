@@ -1721,6 +1721,10 @@ void gsCBTalentAttack(object oTarget)
 {
     int nDistance = GetDistanceToObject(oTarget) > 5.0;
 
+// attacked in melee? always go melee - pok
+    if (GetLocalInt(OBJECT_SELF, "melee_attacked") == 1)
+        nDistance = FALSE;
+
     if (nDistance)
     {
         ActionEquipMostDamagingRanged(oTarget);
