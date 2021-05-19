@@ -195,6 +195,11 @@ void ClearMaster(object oHench)
 
     DeleteLocalString(GetModule(), sResRef+"_master");
 
+    object oMerchant = GetLocalObject(oHench, "merchant");
+
+    if (GetIsObjectValid(oMerchant))
+        DestroyObject(oMerchant);
+
     RemoveHenchman(GetMaster(oHench), oHench);
 
     SetLocalInt(oHench, "pending_destroy", 1);
@@ -207,6 +212,12 @@ void SetMaster(object oHench, object oPlayer)
 
 // Make sure oPlayer is actually a player
     if (!GetIsPC(oPlayer)) return;
+
+    if (!GetIsObjectValid(GetLocalObject(oHench, "merchant")))
+    {
+        object oMerchant = CreateObject(OBJECT_TYPE_STORE, "mer_henchman", GetLocation(oHench));
+        SetLocalObject(oHench, "merchant", oMerchant);
+    }
 
     SetLocalString(GetModule(), GetResRef(oHench)+"_master", GetObjectUUID(oPlayer));
 

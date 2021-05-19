@@ -176,6 +176,23 @@ void SendLootMessage(object oItem)
     }
 }
 
+void DetermineItem(object oItem, object oMerchant, object oHench, int nNth)
+{
+   if (GetBaseItemType(oItem) == BASE_ITEM_POTIONS)
+   {
+       SetDroppableFlag(oItem, FALSE);
+       SetPickpocketableFlag(oItem, FALSE);
+       object oNewItem = CopyItem(oItem, oHench, TRUE);
+       DestroyObject(oItem);
+       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oNewItem)));
+   }
+   else
+   {
+       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oItem)));
+   }
+}
+
+
 // This global variable is used to store party data during the first loop
 struct Party Party;
 
@@ -511,29 +528,23 @@ void main()
 // have to be set for treasure to function properly
                SetLocalInt(oHenchman, "cr", GetLocalInt(oContainer, "cr"));
                SetLocalInt(oHenchman, "area_cr", GetLocalInt(oContainer, "area_cr"));
-
+               object oMerchant = GetLocalObject(oHenchman, "merchant");
                object oItem1, oItem2, oItem3;
 // assumed to be out of bounds (henchman)
                if (Party.PlayerSize+nNth == nItem1)
                {
-                   oItem1 = GenerateLoot(oHenchman);
-                   SetDroppableFlag(oItem1, FALSE);
-                   SetPickpocketableFlag(oItem1, TRUE);
-                   AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oItem1)));
+                   oItem1 = GenerateLoot(oMerchant);
+                   DetermineItem(oItem1, oMerchant, oHenchman, nNth);
                }
                if (Party.PlayerSize+nNth == nItem2)
                {
-                   oItem2 = GenerateLoot(oHenchman);
-                   SetDroppableFlag(oItem2, FALSE);
-                   SetPickpocketableFlag(oItem2, TRUE);
-                   AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+2.0+(IntToFloat(d8())*0.1), SendLootMessage(oItem2)));
+                   oItem2 = GenerateLoot(oMerchant);
+                   DetermineItem(oItem2, oMerchant, oHenchman, nNth);
                }
                if (Party.PlayerSize+nNth == nItem3)
                {
-                   oItem3 = GenerateLoot(oHenchman);
-                   SetDroppableFlag(oItem3, FALSE);
-                   SetPickpocketableFlag(oItem3, TRUE);
-                   AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+3.0+(IntToFloat(d8())*0.1), SendLootMessage(oItem3)));
+                   oItem3 = GenerateLoot(oMerchant);
+                   DetermineItem(oItem3, oMerchant, oHenchman, nNth);
                }
 
 // clear these out afterwards

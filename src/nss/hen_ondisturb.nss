@@ -27,6 +27,7 @@ void main()
     {
         if(GetIsObjectValid(oTarget))
         {
+            /*
             if (GetIsPC(oTarget) && GetIsObjectValid(GetMaster()))
             {
                 SetTemporaryInt(GetPCPublicCDKey(oTarget, TRUE)+GetName(oTarget)+GetResRef(OBJECT_SELF)+"_pp", 1, 3600.0);
@@ -35,7 +36,7 @@ void main()
                 PlayVoiceChat(VOICE_CHAT_CUSS, OBJECT_SELF);
                 DestroyObject(OBJECT_SELF, 60.0);
             }
-
+            */
 
             HenchmenCombatRound(oTarget);
         }
