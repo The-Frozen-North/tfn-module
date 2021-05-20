@@ -46,8 +46,6 @@ void main()
     //set action matrix
     gsAISetActionMatrix(gsAIGetDefaultActionMatrix());
 
-    if (GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND))) SetLocalInt(OBJECT_SELF, "range", 1);
-    if (IPGetIsMeleeWeapon(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND))) SetLocalInt(OBJECT_SELF, "offhand", 1);
     //set random facing
     //SetFacing(IntToFloat(Random(360)));
 
@@ -100,6 +98,48 @@ void main()
     {
         fCR = fCR * 1.5; // 50% increase for semibosses
     }
+
+// Scan and store weapons.
+    object oItemInSlot = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
+    object oRange, oMelee, oItem;
+
+    if (GetWeaponRanged(oItemInSlot))
+    {
+        SetLocalInt(OBJECT_SELF, "range", 1);
+        oRange = oItemInSlot;
+    }
+    else if (GetIsObjectValid(oItemInSlot) && IPGetIsMeleeWeapon(oItemInSlot))
+    {
+        oMelee = oItemInSlot;
+    }
+
+    oItem = GetFirstItemInInventory(OBJECT_SELF);
+
+    while (GetIsObjectValid(oItem) && (!GetIsObjectValid(oMelee) || !GetIsObjectValid(oRange)))
+    {
+        if (!GetIsObjectValid(oRange) && GetWeaponRanged(oItem))
+        {
+            oRange = oItem;
+        }
+        else if (!GetIsObjectValid(oMelee) && IPGetIsMeleeWeapon(oItem))
+        {
+            oMelee = oItem;
+        }
+
+        oItem = GetNextItemInInventory(OBJECT_SELF);
+    }
+
+    if (GetIsObjectValid(oMelee))
+        SetLocalObject(OBJECT_SELF, "melee_weapon", oMelee);
+
+    if (GetIsObjectValid(oRange))
+        SetLocalObject(OBJECT_SELF, "range_weapon", oRange);
+
+    object oOffhand = GetItemInSlot(INVENTORY_SLOT_LEFTHAND);
+    if (GetIsObjectValid(oOffhand))
+        SetLocalObject(OBJECT_SELF, "offhand", oOffhand);
+
+
 
     SetLocalInt(OBJECT_SELF, "cr", FloatToInt(fCR));
     SetLocalInt(OBJECT_SELF, "area_cr", iAreaCR);

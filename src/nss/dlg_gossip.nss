@@ -174,7 +174,6 @@ int StartingConditional()
             nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "They say plague-corpses walk the streets in the Beggar's Nest, feasting on the living!");
             nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "There's anarchy in the Docks district! I heard criminals are coming from the sewers and the city guard are afraid to delve down there now.");
             nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I heard the Blacklake nobles have a cure for the plague, but they won't share it with us common folk! I hear a lot of things, though.");
-            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Not sure if it's because of some city ordinance, but the only place you can sell stuff is at Olgerd's pawnshop.");
             nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "You can sell off that junk to Olgerd. He's in the markets in the docks.");
             nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Need a blade? You should talk to Durga at the Shining Knights Arms and Armor.");
             nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "If you need an item identified, head on over to the Cloaktower.");

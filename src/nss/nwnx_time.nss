@@ -37,20 +37,19 @@ struct NWNX_Time_HighResTimestamp NWNX_Time_GetHighResTimeStamp();
 
 string NWNX_Time_GetSystemDate()
 {
-    WriteTimestampedLogEntry("WARNING:  NWNX_Time is deprecated.  You should migrate to SQLite based functions (see inc_sqlite_time).");
+    //WriteTimestampedLogEntry("WARNING:  NWNX_Time is deprecated.  You should migrate to SQLite based functions (see inc_sqlite_time).");
     return SQLite_GetSystemDate();
 }
 
 string NWNX_Time_GetSystemTime()
 {
-    WriteTimestampedLogEntry("WARNING:  NWNX_Time is deprecated.  You should migrate to SQLite based functions (see inc_sqlite_time).");
+    //WriteTimestampedLogEntry("WARNING:  NWNX_Time is deprecated.  You should migrate to SQLite based functions (see inc_sqlite_time).");
     return SQLite_GetSystemTime();
 }
 
 int NWNX_Time_GetTimeStamp()
 {
-    // suppress deprecation warning - pok
-    //WriteTimestampedLogEntry("WARNING:  NWNX_Time is deprecated.  You should migrate to SQLite based functions (see inc_sqlite_time).");
+   //WriteTimestampedLogEntry("WARNING:  NWNX_Time is deprecated.  You should migrate to SQLite based functions (see inc_sqlite_time).");
     return SQLite_GetTimeStamp();
 }
 

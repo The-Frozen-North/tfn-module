@@ -3,6 +3,7 @@
 #include "inc_ai_combat2"
 #include "inc_ai_combat3"
 //#include "gs_inc_flag"
+#include "nwnx_creature"
 
 //void main() {}
 
@@ -418,6 +419,49 @@ void gsCBSetReinforcementRequestedBy(object oObject);
 //return TRUE if caller follows reinforcement request
 int gsCBReinforce();
 
+// my functions - pok
+
+// equips their melee weapon and possible offhand
+void EquipMelee();
+void EquipMelee()
+{
+    object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
+    object oMeleeWeapon = GetLocalObject(OBJECT_SELF, "melee_weapon");
+
+// only go melee if you don't have a weapon or if your current weapon is ranged
+    if (GetIsObjectValid(oMeleeWeapon) && (!GetIsObjectValid(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND)) || GetWeaponRanged(oWeapon)))
+    {
+        NWNX_Creature_RunEquip(OBJECT_SELF, oMeleeWeapon, INVENTORY_SLOT_RIGHTHAND);
+
+        object oOffhand = GetLocalObject(OBJECT_SELF, "offhand");
+        if (!GetIsObjectValid(GetItemInSlot(INVENTORY_SLOT_LEFTHAND)) && GetIsObjectValid(oOffhand)&& GetIsObjectValid(oWeapon))
+        {
+            NWNX_Creature_RunEquip(OBJECT_SELF, oOffhand, INVENTORY_SLOT_LEFTHAND);
+        }
+    }
+}
+
+// equips their range weapon
+void EquipRange(object oEquipper = OBJECT_SELF, object oTarget = OBJECT_INVALID);
+void EquipRange(object oEquipper = OBJECT_SELF, object oTarget = OBJECT_INVALID)
+{
+    object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oEquipper);
+
+// only go range if you don't have a weapon or if your current weapon is ranged
+    if (!GetIsObjectValid(oWeapon) || !GetWeaponRanged(oWeapon))
+    {
+        AssignCommand(oEquipper, ActionEquipItem(GetLocalObject(oEquipper, "range_weapon"), INVENTORY_SLOT_RIGHTHAND));
+
+        // todo: slings and throwing weapons with shields
+        /*
+        object oOffhand = GetLocalObject(oEquipper, "offhand");
+
+        if (GetIsObjectValid(oOffhand))
+            AssignCommand(oEquipper, ActionEquipItem(oOffhand));
+        */
+    }
+}
+
 int gsCBDetermineClass()
 {
     int nClass1      = GetClassByPosition(1);
@@ -741,8 +785,10 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
 
     float fDistance = GetDistanceToObject(oTarget);
 
-    if (GetLocalInt(OBJECT_SELF, "melee_attacked") == 0 && GetLocalInt(OBJECT_SELF, "range") == 1 && fDistance >= 2.0 && fDistance <= 8.0+IntToFloat(d4()))
+    if (GetLocalInt(OBJECT_SELF, "melee_attacked") == 0 && GetLocalInt(OBJECT_SELF, "range") == 1 && fDistance >= 3.0 && fDistance <= 8.0+IntToFloat(d4()))
     {
+        EquipRange();
+
         float fDistanceToMove = 8.0+IntToFloat(d8());
         ActionMoveAwayFromLocation(GetLocation(oTarget), TRUE, fDistanceToMove);
 
@@ -1038,7 +1084,7 @@ int gsCBTalentOthers(int nTalentCategoryArea,
             nCount  = gsCBGetCreatureCountAtLocation(GetLocation(oTarget),
                                                      TRUE, FALSE, FALSE);
 
-            if (d3() >= nCount && gsCBUseTalentOnObject(tTalent, oTarget)) return TRUE;
+            if (d3() >= nCount && !GetIsDead(oTarget) && gsCBUseTalentOnObject(tTalent, oTarget)) return TRUE;
             if (++nNth > 3)                                                break;
 
             oTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND,
@@ -1063,7 +1109,7 @@ int gsCBTalentOthers(int nTalentCategoryArea,
             while (GetIsObjectValid(oTarget) &&
                    GetDistanceToObject(oTarget) <= 10.0)
             {
-                if (gsCBUseTalentOnObject(tTalent, oTarget)) return TRUE;
+                if (!GetIsDead(oTarget) && gsCBUseTalentOnObject(tTalent, oTarget)) return TRUE;
                 if (++nNth > 3)                              break;
 
                 oTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND,
@@ -1719,15 +1765,16 @@ int gsCBTalentSpellAttack(object oTarget)
 //----------------------------------------------------------------
 void gsCBTalentAttack(object oTarget)
 {
-    int nDistance = GetDistanceToObject(oTarget) > 5.0;
+// 5.0 to 3.0 - pok
+   int nDistance = GetDistanceToObject(oTarget) > 3.0;
 
-// attacked in melee? always go melee - pok
+// attacked in melee? always go melee
     if (GetLocalInt(OBJECT_SELF, "melee_attacked") == 1)
         nDistance = FALSE;
 
     if (nDistance)
     {
-        ActionEquipMostDamagingRanged(oTarget);
+        EquipRange();
     }
     else
     {
@@ -1736,9 +1783,7 @@ void gsCBTalentAttack(object oTarget)
         if (! (GetIsObjectValid(oWeapon) ||
                GetWeaponRanged(oWeapon)))
         {
-            ActionEquipMostDamagingMelee(oTarget);
-            if (GetLocalInt(OBJECT_SELF, "offhand") == 1)
-                ActionEquipMostDamagingMelee(oTarget, TRUE);
+            EquipMelee();
 
             ActionDoCommand(_gsCBTalentAttack(oTarget, FALSE));
             return;
@@ -1757,9 +1802,7 @@ void _gsCBTalentAttack(object oTarget, int nDistance)
         if (! (GetIsObjectValid(oWeapon) ||
                GetWeaponRanged(oWeapon)))
         {
-            ActionEquipMostDamagingMelee(oTarget);
-            if (GetLocalInt(OBJECT_SELF, "offhand") == 1)
-                ActionEquipMostDamagingMelee(oTarget, TRUE);
+            EquipMelee();
 
             ActionDoCommand(_gsCBTalentAttack(oTarget, FALSE));
             return;
