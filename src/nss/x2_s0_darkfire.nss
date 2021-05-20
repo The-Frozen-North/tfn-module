@@ -56,7 +56,7 @@ void main()
 {
     //1.72: pre-declare some of the spell informations to be able to process them
     spell.DamageType = DAMAGE_TYPE_FIRE;
-    spell.DurationType = SPELL_DURATION_TYPE_TURNS;
+    spell.DurationType = SPELL_DURATION_TYPE_HOURS;
     spell.Limit = 20;
 
     if (!X2PreSpellCastCode())
@@ -70,7 +70,7 @@ void main()
     effect eVis = EffectVisualEffect(VFX_IMP_PULSE_FIRE);
     eVis = EffectLinkEffects(EffectVisualEffect(spell.DmgVfxL),eVis);
     effect eDur = ExtraordinaryEffect(EffectVisualEffect(VFX_DUR_CESSATE_POSITIVE));
-    int nDuration = 2 * spell.Level;
+    int nDuration = spell.Level;
     int nCasterLvl = spell.Level;
 
     //Limit nCasterLvl to 10, so it max out at +10 to the damage.
