@@ -11,24 +11,16 @@ void main()
     object oAttacker = GetLastAttacker();
     if (GetIsPC(oAttacker) || GetIsPC(GetMaster(oAttacker))) SetLocalInt(OBJECT_SELF, "player_tagged", 1);
 
-// 50% chance for range attackers to go melee immediately if attacked in melee
-    if  (d2() == 1 && GetDistanceToObject(oAttacker) < 3.0 && GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oAttacker)))
+    object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
+
+    if  (GetLocalInt(OBJECT_SELF, "melee_attacked") == 0 && GetDistanceToObject(oAttacker) < 3.0 && (!GetIsObjectValid(oWeapon) || GetWeaponRanged(oWeapon)))
     {
         SetLocalInt(OBJECT_SELF, "melee_attacked", 1);
+        //SendMessageToPC(oAttacker, GetName(oAttacker)+" attempting to go melee");
+        EquipMelee();
 
-        object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
-
-        if (! (GetIsObjectValid(oWeapon) ||
-               GetWeaponRanged(oWeapon)))
-        {
-            //ClearAllActions(TRUE);
-            ActionEquipMostDamagingMelee(oAttacker);
-            if (GetLocalInt(OBJECT_SELF, "offhand") == 1)
-                ActionEquipMostDamagingMelee(oAttacker, TRUE);
-
-            ActionDoCommand(_gsCBTalentAttack(oAttacker, FALSE));
-            return;
-        }
+        ActionDoCommand(_gsCBTalentAttack(oAttacker, FALSE));
+        return;
 
         DelayCommand(7.0, DeleteLocalInt(OBJECT_SELF, "melee_attacked"));
     }
