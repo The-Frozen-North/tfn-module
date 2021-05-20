@@ -1084,7 +1084,7 @@ int gsCBTalentOthers(int nTalentCategoryArea,
             nCount  = gsCBGetCreatureCountAtLocation(GetLocation(oTarget),
                                                      TRUE, FALSE, FALSE);
 
-            if (d3() >= nCount && gsCBUseTalentOnObject(tTalent, oTarget)) return TRUE;
+            if (d3() >= nCount && !GetIsDead(oTarget) && gsCBUseTalentOnObject(tTalent, oTarget)) return TRUE;
             if (++nNth > 3)                                                break;
 
             oTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND,
@@ -1109,7 +1109,7 @@ int gsCBTalentOthers(int nTalentCategoryArea,
             while (GetIsObjectValid(oTarget) &&
                    GetDistanceToObject(oTarget) <= 10.0)
             {
-                if (gsCBUseTalentOnObject(tTalent, oTarget)) return TRUE;
+                if (!GetIsDead(oTarget) && gsCBUseTalentOnObject(tTalent, oTarget)) return TRUE;
                 if (++nNth > 3)                              break;
 
                 oTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND,
