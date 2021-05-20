@@ -149,11 +149,21 @@ void main()
 
                     nAmbushRoll = d100();
 
-                    object oSafeRest = GetNearestObjectByTag("_safe_rest", oPC);
+                    int bSafeRest = FALSE;
+                    object oSafeRest;
                     float fDistanceToSafeRest = GetDistanceBetween(oPC, oSafeRest);
                     if (GetIsObjectValid(oSafeRest) && fDistanceToSafeRest > 0.0 && fDistanceToSafeRest < 50.0)
                     {
-                        SendDebugMessage("Setting ambush chance and roll to 20 due safe rest WP");
+                        bSafeRest = TRUE;
+                    }
+                    else if (!GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, oPC, 1, CREATURE_TYPE_IS_ALIVE, TRUE)))
+                    {
+                        bSafeRest = TRUE;
+                    }
+
+                    if (bSafeRest)
+                    {
+                        SendDebugMessage("Setting ambush chance and roll to 20 due safe rest");
                         nAmbushChance = 0;
                         nAmbushRoll = 20; // this is set so "hiding from enemies" text isnt shown
                     }
