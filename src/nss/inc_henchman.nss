@@ -1,5 +1,6 @@
 #include "inc_xp"
 #include "inc_gold"
+#include "nwnx_visibility"
 
 // =======================================================
 // PROTOTYPES
@@ -200,9 +201,12 @@ void ClearMaster(object oHench)
     if (GetIsObjectValid(oMerchant))
         DestroyObject(oMerchant);
 
-    RemoveHenchman(GetMaster(oHench), oHench);
+    object oPlayer = GetMaster(oHench);
+    RemoveHenchman(oPlayer, oHench);
 
     SetLocalInt(oHench, "pending_destroy", 1);
+
+    NWNX_Visibility_SetVisibilityOverride(oPlayer, oHench, NWNX_VISIBILITY_DEFAULT);
 }
 
 void SetMaster(object oHench, object oPlayer)
@@ -223,6 +227,8 @@ void SetMaster(object oHench, object oPlayer)
 
     AddHenchman(oPlayer, oHench);
     ScaleHenchman(oHench);
+
+    NWNX_Visibility_SetVisibilityOverride(oPlayer, oHench, NWNX_VISIBILITY_VISIBLE);
 }
 
 //void main(){}
