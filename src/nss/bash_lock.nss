@@ -1,3 +1,5 @@
+#include "nwnx_player"
+
 void BashLock(object oAttacker)
 {
     int nUnlockDC = GetLockUnlockDC(OBJECT_SELF);
@@ -74,7 +76,17 @@ void BashLock(object oAttacker)
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(nEffect), OBJECT_SELF);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(nEffect), OBJECT_SELF);
 
-    FloatingTextStringOnCreature("Bash Lock: *"+sOutcome+"* : ("+IntToString(nRoll)+" "+sSign+" "+IntToString(abs(nStrengthBonus))+" = "+IntToString(nTotal)+" vs. DC: "+IntToString(nUnlockDC)+")", oAttacker, FALSE);
+    string sMessage = GetName(OBJECT_SELF)+" : Bash Lock: *"+sOutcome+"* : ("+IntToString(nRoll)+" "+sSign+" "+IntToString(abs(nStrengthBonus))+" = "+IntToString(nTotal)+" vs. DC: "+IntToString(nUnlockDC)+")";
+
+    object oMaster = GetMaster(OBJECT_SELF);
+    if (GetIsPC(oMaster) && GetIsObjectValid(oMaster))
+    {
+        NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, sMessage);
+    }
+    else
+    {
+        FloatingTextStringOnCreature(sMessage, oAttacker, FALSE);
+    }
 }
 
 void main()
