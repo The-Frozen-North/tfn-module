@@ -8,5 +8,12 @@ void main()
 {
     object oPC = GetPCSpeaker();
 
-    AdvanceQuest(OBJECT_SELF, oPC, 1);
+    if (GetScriptParam("aoe") == "1")
+    {
+        AdvanceQuestSphere(OBJECT_SELF, 1);
+    }
+    else
+    {
+        AdvanceQuest(OBJECT_SELF, oPC, 1);
+    }
 }
