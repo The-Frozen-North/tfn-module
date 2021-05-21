@@ -1,5 +1,6 @@
 #include "inc_xp"
 #include "inc_gold"
+#include "nwnx_visibility"
 
 // =======================================================
 // PROTOTYPES
@@ -200,9 +201,18 @@ void ClearMaster(object oHench)
     if (GetIsObjectValid(oMerchant))
         DestroyObject(oMerchant);
 
-    RemoveHenchman(GetMaster(oHench), oHench);
+    object oPlayer = GetMaster(oHench);
+    RemoveHenchman(oPlayer, oHench);
 
     SetLocalInt(oHench, "pending_destroy", 1);
+
+// Reset the henchman visibility override
+    object oParty = GetFirstFactionMember(oPlayer);
+    while (GetIsObjectValid(oParty))
+    {
+        NWNX_Visibility_SetVisibilityOverride(oPlayer, oHench, NWNX_VISIBILITY_DEFAULT);
+        oParty = GetNextFactionMember(oPlayer);
+    }
 }
 
 void SetMaster(object oHench, object oPlayer)
@@ -223,6 +233,14 @@ void SetMaster(object oHench, object oPlayer)
 
     AddHenchman(oPlayer, oHench);
     ScaleHenchman(oHench);
+
+// Ensure the henchman is always visible to the player
+    object oParty = GetFirstFactionMember(oPlayer);
+    while (GetIsObjectValid(oParty))
+    {
+        NWNX_Visibility_SetVisibilityOverride(oPlayer, oHench, NWNX_VISIBILITY_VISIBLE);
+        oParty = GetNextFactionMember(oPlayer);
+    }
 }
 
 //void main(){}
