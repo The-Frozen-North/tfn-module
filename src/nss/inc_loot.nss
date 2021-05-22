@@ -101,8 +101,6 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
    if (nT4Weight < 0) nT4Weight = 0;
    if (nT5Weight < 0) nT5Weight = 0;
 
-// if the CR is greater than the area CR, override it
-   if (iCR > iAreaCR) iAreaCR = iCR;
 
 // modify weight by area CR
     if (iAreaCR < MIN_T3_AREA_CR)
