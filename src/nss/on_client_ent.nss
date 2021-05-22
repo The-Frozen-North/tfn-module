@@ -26,6 +26,12 @@ void main()
 {
     object oPC = GetEnteringObject();
 
+    if (!GetHasEffect(EFFECT_TYPE_POLYMORPH))
+    {
+        SetLocalInt(OBJECT_SELF, "BASE_RACE_SET", 1);
+        SetLocalInt(OBJECT_SELF, "BASE_RACE", GetRacialType(oPC));
+    }
+
     string sType = "player";
 
     string sMessage = PlayerDetailedName(oPC)+" has entered the game as a "+sType;

@@ -101,6 +101,10 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
 // Calculate favored bonus
    float fFavoredModifier = 1.0;
    int nRace = GetRacialType(oPC);
+
+   if (GetLocalInt(oPC, "BASE_RACE_SET") == 1)
+       nRace = GetLocalInt(oPC, "BASE_RACE");
+
    switch (nRace)
    {
         case RACIAL_TYPE_DWARF:
