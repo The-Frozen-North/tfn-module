@@ -13,7 +13,7 @@ void main()
 
     object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
 
-    if  (GetLocalInt(OBJECT_SELF, "melee_attacked") == 0 && GetDistanceToObject(oAttacker) < 3.0 && (!GetIsObjectValid(oWeapon) || GetWeaponRanged(oWeapon)))
+    if  (d2() == 1 && GetLocalInt(OBJECT_SELF, "melee_attacked") == 0 && GetDistanceToObject(oAttacker) < 3.0 && (!GetIsObjectValid(oWeapon) || GetWeaponRanged(oWeapon)))
     {
         SetLocalInt(OBJECT_SELF, "melee_attacked", 1);
         //SendMessageToPC(oAttacker, GetName(oAttacker)+" attempting to go melee");
