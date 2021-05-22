@@ -260,8 +260,8 @@ void SetPartyData()
 
 void main()
 {
-// this should never trigger on a PC
-   if (GetIsPC(OBJECT_SELF)) return;
+// this should never trigger on a PC, nunless it's DM-possessed
+   if (GetIsPC(OBJECT_SELF) == TRUE && GetIsDMPossessed(OBJECT_SELF) == FALSE) return;
 
 // if it is tagged for no credit, also stop
    if (GetLocalInt(OBJECT_SELF, "no_credit") == 1) return;
