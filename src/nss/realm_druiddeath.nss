@@ -32,15 +32,8 @@ void main()
              oObject = GetNextObjectInArea(oArea);
         }
 
-        object oPC = GetFirstPC();
-
-        while (GetIsObjectValid(oPC))
-        {
-            ClearPersonalReputation(oPC, oSpirit);
-            SetIsTemporaryFriend(oPC, oSpirit);
-            oPC = GetNextPC();
-        }
-
+        ExecuteScript("hb_friendify", oSpirit);
+        SetLocalString(OBJECT_SELF, "heartbeat_script", "hb_friendify");
 
 
         SetPlotFlag(oSpirit, TRUE);
@@ -48,7 +41,9 @@ void main()
     }
     else
     {
-        AssignCommand(oSpirit, ClearAllActions(TRUE));
+        ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectCutsceneParalyze(), oSpirit, 6.0);
         FloatingTextStringOnCreature("The death of the shadow druid seems to have a pacifying effect on the Spirit of the Wood.", GetLastKiller());
     }
+
+    ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_NATURES_BALANCE), GetLocation(oSpirit));
 }
