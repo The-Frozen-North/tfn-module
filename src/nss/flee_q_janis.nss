@@ -7,7 +7,7 @@ void main()
 
     SetEventScript(OBJECT_SELF, EVENT_SCRIPT_CREATURE_ON_HEARTBEAT, "flee_q_janis");
 
-    NWNX_Creature_SetMovementRate(OBJECT_SELF, 100);
+    NWNX_Creature_SetMovementRate(OBJECT_SELF, 500);
     SetPlotFlag(OBJECT_SELF, FALSE);
 
     if (!GetHasEffect(EFFECT_TYPE_HASTE))
