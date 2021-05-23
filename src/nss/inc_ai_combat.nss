@@ -730,9 +730,13 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
 //    }
 
 // herbivores instantly go into fear and dont do anything else
-    if (GetLocalInt(OBJECT_SELF, "herbivore") == 1)
+    if (GetLocalInt(OBJECT_SELF, "fear_cd") == 0 && GetLocalInt(OBJECT_SELF, "herbivore") == 1)
     {
+        float fDuration = RoundsToSeconds(d3());
+
+        SetLocalInt(OBJECT_SELF, "fear_cd", 1);
         ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectFrightened(), OBJECT_SELF, RoundsToSeconds(d3()));
+        DelayCommand(fDuration, DeleteLocalInt(OBJECT_SELF, "fear_cd"));
         return;
     }
 
