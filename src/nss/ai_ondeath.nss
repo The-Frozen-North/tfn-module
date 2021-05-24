@@ -44,6 +44,9 @@ void main()
             oMurderer = oKiller;
         }
 
+        if (GetIsPC(oMurderer))
+            AdjustAlignment(oMurderer, ALIGNMENT_EVIL, 5, FALSE);
+
         if (GetIsObjectValid(oMurderer))
         {
             object oHench = GetFirstFactionMember(oMurderer, FALSE);
@@ -53,8 +56,8 @@ void main()
 
                 if (GetMaster(oHench) == oMurderer)
                 {
-
-                    if (GetLocalInt(oHench, "follower") == 1) { DismissFollower(oHench); }
+                    // skip grimgnaw
+                    if (GetLocalInt(oHench, "follower") == 1 && GetResRef(oHench) != "hen_grimgnaw") { DismissFollower(oHench); }
                     else if (GetStringLeft(GetResRef(oHench), 3) == "hen") { DismissHenchman(oHench); }
                 }
 
