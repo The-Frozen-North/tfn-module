@@ -56,7 +56,8 @@ void main()
     string sHideAppend = " bonus).";
     string sHide = "You manage to hide away from enemies.";
     string sSpotted = "You have been spotted by enemies!";
-    int i;
+    int i, nSlot;
+    object oItem = GetFirstItemInInventory(oPC);
 
     float fSize = 30.0;
 
@@ -245,6 +246,15 @@ void main()
             DeleteLocalInt(oPC, "invis");
             DeleteLocalInt(oPC, "gsanc");
             GiveHiPSFeatSafely(oPC);
+
+            while ( oItem != OBJECT_INVALID ) {
+                IPRemoveAllItemProperties(oItem,DURATION_TYPE_TEMPORARY);
+                oItem = GetNextItemInInventory(oPC);
+            }
+
+            for ( nSlot = 0; nSlot < NUM_INVENTORY_SLOTS; ++nSlot )
+                IPRemoveAllItemProperties(GetItemInSlot(nSlot, oPC));
+
 
             if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_FAMILIAR, oPC))) DecrementRemainingFeatUses(oPC, FEAT_SUMMON_FAMILIAR);
             if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION, oPC)))  DecrementRemainingFeatUses(oPC, FEAT_ANIMAL_COMPANION);
