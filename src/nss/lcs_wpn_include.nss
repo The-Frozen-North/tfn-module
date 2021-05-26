@@ -309,7 +309,7 @@ int lcs_GetPreviousValidWeaponColor(object oItem, int nPart)
 void lcs_ModifyColorandEquipNewWeapon(object oItem, int nPart, int nAppearance)
 {
     object oPC = GetItemPossessor(oItem);
-    object oNewItem = CopyItemAndModify(oItem, ITEM_APPR_TYPE_WEAPON_COLOR, nPart, nAppearance);
+    object oNewItem = CopyItemAndModify(oItem, ITEM_APPR_TYPE_WEAPON_COLOR, nPart, nAppearance, TRUE);
     DestroyObject(oItem);
     SetCommandable(TRUE, oPC);
     AssignCommand(oPC, ActionEquipItem(oNewItem, INVENTORY_SLOT_RIGHTHAND));
@@ -325,7 +325,7 @@ void lcs_ModifyandEquipNewWeapon(object oItem, int nPart, int nAppearance)
         //SendMessageToPC(oPC, ("Your current weapon color is " + IntToString(nAppearance) + ". Please change the color to be set to 3 or lower before changing the weapon model."));
         //return;
     //}
-    object oNewItem = CopyItemAndModify(oItem, ITEM_APPR_TYPE_WEAPON_MODEL, nPart, nAppearance);
+    object oNewItem = CopyItemAndModify(oItem, ITEM_APPR_TYPE_WEAPON_MODEL, nPart, nAppearance, TRUE);
     DestroyObject(oItem);
     SetCommandable(TRUE, oPC);
     AssignCommand(oPC, ActionEquipItem(oNewItem, INVENTORY_SLOT_RIGHTHAND));

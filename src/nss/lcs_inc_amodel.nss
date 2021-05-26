@@ -21,7 +21,7 @@ object set_armor_model_next(object item, int index, string s2da, object user)
     SendMessageToPC(user, "part number: " + IntToString(apart_row));
 
     DestroyObject(item);
-    return CopyItemAndModify(item, ITEM_APPR_TYPE_ARMOR_MODEL, index, apart_row);
+    return CopyItemAndModify(item, ITEM_APPR_TYPE_ARMOR_MODEL, index, apart_row, TRUE);
     }
 
 //==========================================/
@@ -45,5 +45,5 @@ object set_armor_model_prev(object item, int index, string s2da, object user)
     SendMessageToPC(user, "part number: " + IntToString(apart_row));
 
     DestroyObject(item);
-    return CopyItemAndModify(item, ITEM_APPR_TYPE_ARMOR_MODEL, index, apart_row);
+    return CopyItemAndModify(item, ITEM_APPR_TYPE_ARMOR_MODEL, index, apart_row, TRUE);
     }

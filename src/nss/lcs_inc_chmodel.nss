@@ -50,7 +50,7 @@ object set_chest_model_next(object item, object user)
 
     DestroyObject(item);
     return CopyItemAndModify(item, ITEM_APPR_TYPE_ARMOR_MODEL, index,
-apart_row);
+apart_row, TRUE);
     }
 
 //==========================================/
@@ -97,6 +97,6 @@ object set_chest_model_prev(object item, object user)
 
     DestroyObject(item);
     return CopyItemAndModify(item, ITEM_APPR_TYPE_ARMOR_MODEL, index,
-apart_row);
+apart_row, TRUE);
     }
 

@@ -39,7 +39,7 @@ void set_model_next(object item, int type, int index, object user, int val_min, 
             {
             val = val_min;
             }
-        new_item = CopyItemAndModify(item, type, index, val);
+        new_item = CopyItemAndModify(item, type, index, val, TRUE);
         }
     DestroyObject(item);
 

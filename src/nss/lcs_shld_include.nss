@@ -79,7 +79,7 @@ int lcs_GetPreviousValidShieldColor(object oItem)
 void lcs_ModifyandEquipNewShield(object oItem, int nAppearance)
 {
     object oPC = GetItemPossessor(oItem);
-    object oNewItem = CopyItemAndModify(oItem, ITEM_APPR_TYPE_WEAPON_MODEL, 0, nAppearance);
+    object oNewItem = CopyItemAndModify(oItem, ITEM_APPR_TYPE_WEAPON_MODEL, 0, nAppearance, TRUE);
     DestroyObject(oItem);
     SetCommandable(TRUE, oPC);
     AssignCommand(oPC, ActionEquipItem(oNewItem, INVENTORY_SLOT_LEFTHAND));
@@ -88,7 +88,7 @@ void lcs_ModifyandEquipNewShield(object oItem, int nAppearance)
 void lcs_ModifyColorandEquipNewShield(object oItem, int nAppearance)
 {
     object oPC = GetItemPossessor(oItem);
-    object oNewItem = CopyItemAndModify(oItem, ITEM_APPR_TYPE_WEAPON_COLOR, 0, nAppearance);
+    object oNewItem = CopyItemAndModify(oItem, ITEM_APPR_TYPE_WEAPON_COLOR, 0, nAppearance, TRUE);
     DestroyObject(oItem);
     SetCommandable(TRUE, oPC);
     AssignCommand(oPC, ActionEquipItem(oNewItem, INVENTORY_SLOT_LEFTHAND));
