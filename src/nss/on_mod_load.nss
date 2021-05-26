@@ -181,13 +181,6 @@ void main()
 // Log barters as a developer
     NWNX_Events_SubscribeEvent("NWNX_ON_BARTER_END_BEFORE", "dm_barter_endb");
 
-// Following actions will not work on dm_immune objects (merchants or quests)
-    NWNX_Events_SubscribeEvent("NWNX_ON_DM_KILL_BEFORE", "dm_chk_actions");
-    NWNX_Events_SubscribeEvent("NWNX_ON_DM_TOGGLE_INVULNERABLE_BEFORE", "dm_chk_actions");
-    NWNX_Events_SubscribeEvent("NWNX_ON_DM_LIMBO_BEFORE", "dm_chk_actions");
-    NWNX_Events_SubscribeEvent("NWNX_ON_DM_TOGGLE_AI_BEFORE", "dm_chk_actions");
-    NWNX_Events_SubscribeEvent("NWNX_ON_DM_TOGGLE_IMMORTAL_BEFORE", "dm_chk_actions");
-
 // Check certain areas and do not allow system areas except by developer
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_JUMP_TO_POINT_BEFORE", "dm_chk_area_dev");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_JUMP_TARGET_TO_POINT_BEFORE", "dm_chk_area_dev");
