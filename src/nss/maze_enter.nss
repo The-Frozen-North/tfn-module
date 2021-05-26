@@ -8,5 +8,5 @@ void main()
     ApplyEffectAtLocation(DURATION_TYPE_PERMANENT, EffectVisualEffect(VFX_IMP_UNSUMMON), GetLocation(oPC));
     ApplyEffectAtLocation(DURATION_TYPE_PERMANENT, EffectVisualEffect(VFX_IMP_UNSUMMON), lLocation);
 
-    AssignCommand(oPC, DelayCommand(0.5, JumpToLocation(lLocation)));
+    AssignCommand(oPC, DelayCommand(1.5, JumpToLocation(lLocation)));
 }
