@@ -175,9 +175,9 @@ int StartingConditional()
             nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "There's anarchy in the Docks district! I heard criminals are coming from the sewers and the city guard are afraid to delve down there now.");
             nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I heard the Blacklake nobles have a cure for the plague, but they won't share it with us common folk! I hear a lot of things, though.");
             nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "You can sell off that junk to Olgerd. He's in the markets in the docks.");
-            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Need a blade? You should talk to Durga at the Shining Knights Arms and Armor.");
-            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "If you need an item identified, head on over to the Cloaktower.");
-            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Need supplies? See Olgerd at his store. Sleazy little man, but he has good stock.");
+            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Need a blade? You should talk to Durga at the Shining Knights Arms and Armor at the City Core.");
+            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "If you need an item identified, head on over to the Cloaktower in the Beggar's Nest.");
+            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Need supplies? See Olgerd at his store in the Docks. Sleazy little man, but he has good stock.");
 
             if (GetAbilityScore(oPC, ABILITY_INTELLIGENCE) <= 8) // low intelligence
             {
