@@ -151,7 +151,7 @@ void main()
                     nAmbushRoll = d100();
 
                     int bSafeRest = FALSE;
-                    object oSafeRest;
+                    object oSafeRest = GetNearestObjectByTag("_safe_rest");
                     float fDistanceToSafeRest = GetDistanceBetween(oPC, oSafeRest);
                     if (GetIsObjectValid(oSafeRest) && fDistanceToSafeRest > 0.0 && fDistanceToSafeRest < 50.0)
                     {
