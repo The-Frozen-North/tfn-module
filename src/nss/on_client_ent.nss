@@ -33,8 +33,21 @@ void main()
     }
 
     string sType = "player";
-
     string sMessage = PlayerDetailedName(oPC)+" has entered the game as a "+sType;
+
+    // Remove DM entangle effects
+    if (GetIsDM(oPC))
+    {
+        effect e = GetFirstEffect(oPC);
+        while (GetIsEffectValid(e))
+        {
+            if (GetEffectType(e) == EFFECT_TYPE_VISUALEFFECT &&
+                GetEffectInteger(e, 0) == VFX_DUR_ENTANGLE)
+                RemoveEffect(oPC, e);
+            
+            e = GetNextEffect(oPC);
+        }
+    }
 
     // Map Pins
     MapPin_LoadPCMapPins(oPC);
