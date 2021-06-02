@@ -150,7 +150,8 @@ void main()
 
     SetSpawn();
 
-    if (d8() == 1)
+// 1 in 6 chance of never stealthing. Bosses and semibosses will always stealth, if possible.
+    if (GetLocalInt(OBJECT_SELF, "boss") == 0 && GetLocalInt(OBJECT_SELF, "semiboss") == 0 && d6() == 1)
     {
         SetLocalInt(OBJECT_SELF, "no_stealth", 1);
     }

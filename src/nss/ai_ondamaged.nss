@@ -64,4 +64,8 @@ void main()
             DelayCommand(fDuration, DeleteLocalInt(OBJECT_SELF, "unconscious"));
         }
     }
+
+    string sScript = GetLocalString(OBJECT_SELF, "damage_script");
+    if (sScript != "")
+        ExecuteScript(sScript);
 }

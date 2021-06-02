@@ -189,7 +189,7 @@
   },
   "Conversation": {
     "type": "resref",
-    "value": ""
+    "value": "wyvern"
   },
   "CRAdjust": {
     "type": "int",
@@ -240,7 +240,7 @@
   },
   "FactionID": {
     "type": "word",
-    "value": 1
+    "value": 11
   },
   "FeatList": {
     "type": "list",
@@ -418,7 +418,7 @@
   },
   "GoodEvil": {
     "type": "byte",
-    "value": 0
+    "value": 50
   },
   "HitPoints": {
     "type": "short",
@@ -496,7 +496,7 @@
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "Lootable": {
     "type": "byte",
@@ -830,6 +830,71 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "wyvern"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "semiboss"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest1"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "02_q_convict_wyvern"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest_item"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "q_ear_wyvern"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "damage_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "damage_surrender"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",

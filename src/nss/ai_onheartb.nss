@@ -12,7 +12,7 @@ void main()
 
     int nCombat = GetIsInCombat(OBJECT_SELF);
 
-    if (GetLocalInt(OBJECT_SELF, "no_stealth") == 0 && !nCombat && GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0)
+    if (GetLocalInt(OBJECT_SELF, "no_stealth") == 0 && GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0 && (!nCombat || GetHasFeat(FEAT_HIDE_IN_PLAIN_SIGHT)))
         SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
 
 // return to the original spawn point if it is too far
