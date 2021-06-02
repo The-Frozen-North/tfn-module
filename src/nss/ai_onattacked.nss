@@ -45,5 +45,9 @@ void main()
     {
         gsCBDetermineCombatRound(oAttacker);
     }
+
+    string sAttackScript = GetLocalString(OBJECT_SELF, "attack_script");
+    if (sAttackScript != "")
+        ExecuteScript(sAttackScript);
 }
 

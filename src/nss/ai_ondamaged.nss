@@ -64,6 +64,9 @@ void main()
             DelayCommand(fDuration, DeleteLocalInt(OBJECT_SELF, "unconscious"));
         }
     }
+    string sAttackScript = GetLocalString(OBJECT_SELF, "attack_script");
+    if (sAttackScript != "")
+        ExecuteScript(sAttackScript);
 
     string sScript = GetLocalString(OBJECT_SELF, "damage_script");
     if (sScript != "")
