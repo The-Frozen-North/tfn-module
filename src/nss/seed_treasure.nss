@@ -80,6 +80,7 @@ object ChangeWeaponModel(object oItem, int nModelType, int nModel)
 {
         int nBaseType = GetBaseItemType(oItem);
         object oRet;
+        int nSelectedModel;
 
         switch (nBaseType)
         {
@@ -90,6 +91,16 @@ object ChangeWeaponModel(object oItem, int nModelType, int nModel)
             case BASE_ITEM_KAMA:
             {
                oRet = oItem;
+               break;
+            }
+            case BASE_ITEM_DWARVENWARAXE:
+            {
+               nSelectedModel = nModel + 5;
+               if (nSelectedModel > 8)
+                   nSelectedModel = 8;
+
+               oRet = CopyItemAndModify(oItem, ITEM_APPR_TYPE_WEAPON_MODEL, nModelType, nSelectedModel, TRUE);
+               DestroyObject(oItem); // remove old item
                break;
             }
             default:
