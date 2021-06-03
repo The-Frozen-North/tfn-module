@@ -28,6 +28,20 @@ void main()
         return;
     }
 
+    if (GetCurrentAction() != ACTION_REST)
+    {
+        if (GetHasFeat(FEAT_SUMMON_FAMILIAR) && !GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_FAMILIAR)))
+        {
+            DecrementRemainingFeatUses(OBJECT_SELF, FEAT_SUMMON_FAMILIAR);
+            SummonFamiliar();
+        }
+
+        if (GetHasFeat(FEAT_ANIMAL_COMPANION) && !GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION)))
+        {
+            DecrementRemainingFeatUses(OBJECT_SELF, FEAT_ANIMAL_COMPANION);
+            SummonAnimalCompanion();
+        }
+    }
 
     string sScript = GetLocalString(OBJECT_SELF, "heartbeat_script");
     if (sScript != "") ExecuteScript(sScript);

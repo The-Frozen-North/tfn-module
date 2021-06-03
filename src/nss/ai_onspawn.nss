@@ -35,7 +35,13 @@ void main()
 {
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_SPAWN));
 
+    int nFamiliar = GetLocalInt(OBJECT_SELF, "familiar");
+    if (nFamiliar > 0)
+        NWNX_Creature_SetFamiliarCreatureType(OBJECT_SELF, nFamiliar);
 
+    int nCompanion = GetLocalInt(OBJECT_SELF, "companion");
+    if (nCompanion > 0)
+        NWNX_Creature_SetAnimalCompanionCreatureType(OBJECT_SELF, nCompanion);
 
     //listen
     SetListenPattern(OBJECT_SELF, "GS_AI_ATTACK_TARGET",         10000);
