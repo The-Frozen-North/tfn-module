@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 129
+    "value": 209
   },
   "BodyBag": {
     "type": "byte",
@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 17
+    "value": 19
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 9.0
+    "value": 11.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 8
+          "value": 10
         },
         "KnownList1": {
           "type": "list",
@@ -186,7 +186,42 @@
               "__struct_id": 3,
               "Spell": {
                 "type": "word",
+                "value": 368
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 1
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
                 "value": 447
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 1
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "KnownList5": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
+                "value": 440
               },
               "SpellFlags": {
                 "type": "byte",
@@ -231,7 +266,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 42
+    "value": 50
   },
   "DecayTime": {
     "type": "dword",
@@ -268,14 +303,14 @@
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wswmka010"
+          "value": "nw_wswmbs009"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 12
+    "value": 13
   },
   "FeatList": {
     "type": "list",
@@ -292,6 +327,13 @@
         "Feat": {
           "type": "word",
           "value": 4
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 7
         }
       },
       {
@@ -335,7 +377,7 @@
     "id": 12666,
     "type": "cexolocstring",
     "value": {
-      "0": "Ogre Mage"
+      "0": "Ogre Lord"
     }
   },
   "fortbonus": {
@@ -352,7 +394,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 42
+    "value": 50
   },
   "Int": {
     "type": "byte",
@@ -384,7 +426,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 87
+    "value": 105
   },
   "NaturalAC": {
     "type": "byte",
@@ -396,7 +438,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 36
+    "value": 1
   },
   "PerceptionRange": {
     "type": "byte",
@@ -412,7 +454,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 264
+    "value": 545
   },
   "Race": {
     "type": "byte",
@@ -709,7 +751,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "ogre_mage"
+    "value": "ogre_lord"
   },
   "VarTable": {
     "type": "list",
@@ -718,22 +760,7 @@
         "__struct_id": 0,
         "Name": {
           "type": "cexostring",
-          "value": "spawn_script"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 3
-        },
-        "Value": {
-          "type": "cexostring",
-          "value": "rand_ogrem"
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "semiboss"
+          "value": "boss"
         },
         "Type": {
           "type": "dword",
@@ -742,6 +769,51 @@
         "Value": {
           "type": "int",
           "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "familiar"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 2
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest1"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "02_b_hobgoblin"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest_item"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "b_ogre_head"
         }
       }
     ]
