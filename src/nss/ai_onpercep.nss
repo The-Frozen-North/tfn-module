@@ -24,6 +24,8 @@ void main()
     {
         FastBuff();
         SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
-        gsCBDetermineCombatRound(oPerceived);
+// only determine a new combat round if they currently don't have a target
+        if (!gsCBGetHasAttackTarget())
+            gsCBDetermineCombatRound(oPerceived);
     }
 }
