@@ -169,29 +169,7 @@
   },
   "Equip_ItemList": {
     "type": "list",
-    "value": [
-      {
-        "__struct_id": 2,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_aarcl001"
-        }
-      },
-      {
-        "__struct_id": 16,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_wbwsh001"
-        }
-      },
-      {
-        "__struct_id": 2048,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_wamar001"
-        }
-      }
-    ]
+    "value": []
   },
   "FactionID": {
     "type": "word",
@@ -282,26 +260,6 @@
   "IsPC": {
     "type": "byte",
     "value": 0
-  },
-  "ItemList": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "InventoryRes": {
-          "type": "resref",
-          "value": "nw_wswss001"
-        },
-        "Repos_PosX": {
-          "type": "word",
-          "value": 0
-        },
-        "Repos_Posy": {
-          "type": "word",
-          "value": 0
-        }
-      }
-    ]
   },
   "LastName": {
     "type": "cexolocstring",
@@ -660,6 +618,21 @@
         "Value": {
           "type": "cexostring",
           "value": "rand_bandit"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "range"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
         }
       }
     ]

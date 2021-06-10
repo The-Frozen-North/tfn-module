@@ -110,7 +110,7 @@
   },
   "Color_Hair": {
     "type": "byte",
-    "value": 23
+    "value": 15
   },
   "Color_Skin": {
     "type": "byte",
@@ -168,29 +168,7 @@
   },
   "Equip_ItemList": {
     "type": "list",
-    "value": [
-      {
-        "__struct_id": 2,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_aarcl002"
-        }
-      },
-      {
-        "__struct_id": 16,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_waxbt001"
-        }
-      },
-      {
-        "__struct_id": 32,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_ashsw001"
-        }
-      }
-    ]
+    "value": []
   },
   "FactionID": {
     "type": "word",
@@ -692,6 +670,26 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "bandit_fighter"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "spawn_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "rand_banditf"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
