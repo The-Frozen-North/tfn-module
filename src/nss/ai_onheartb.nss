@@ -5,16 +5,19 @@ void main()
 {
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_HEART_BEAT));
 
-    if (GetHasFeat(FEAT_SUMMON_FAMILIAR) && !GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_FAMILIAR)))
+    if (GetLocalInt(OBJECT_SELF, "no_pet") == 0)
     {
-        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_SUMMON_FAMILIAR);
-        SummonFamiliar();
-    }
+        if (GetHasFeat(FEAT_SUMMON_FAMILIAR) && !GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_FAMILIAR)))
+        {
+            DecrementRemainingFeatUses(OBJECT_SELF, FEAT_SUMMON_FAMILIAR);
+            SummonFamiliar();
+        }
 
-    if (GetHasFeat(FEAT_ANIMAL_COMPANION) && !GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION)))
-    {
-        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_ANIMAL_COMPANION);
-        SummonAnimalCompanion();
+        if (GetHasFeat(FEAT_ANIMAL_COMPANION) && !GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION)))
+        {
+            DecrementRemainingFeatUses(OBJECT_SELF, FEAT_ANIMAL_COMPANION);
+            SummonAnimalCompanion();
+        }
     }
 
     int nCombatInt = GetLocalInt(OBJECT_SELF, "combat");
