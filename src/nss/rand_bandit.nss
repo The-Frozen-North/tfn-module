@@ -85,7 +85,7 @@ void main()
     }
 
     AssignCommand(OBJECT_SELF, ActionEquipItem(oRange, INVENTORY_SLOT_RIGHTHAND));
-    AssignCommand(OBJECT_SELF, ActionEquipItem(oArmor, INVENTORY_SLOT_CHEST));
+    NWNX_Creature_RunEquip(OBJECT_SELF, oArmor, INVENTORY_SLOT_CHEST);
 
     SetDroppableFlag(oRange, FALSE);
     SetPickpocketableFlag(oRange, FALSE);
