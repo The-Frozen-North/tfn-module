@@ -183,7 +183,7 @@ void main()
      {
 
         int nDoors = GetLocalInt(OBJECT_SELF, "doors");
-        object oDoor;
+        object oDoor, oTransitionDoor;
 
         int i;
         for (i = 1; i <= nDoors; i++)
@@ -192,6 +192,13 @@ void main()
 
 // close all doors
             AssignCommand(oDoor, ActionCloseDoor(oDoor));
+
+            oTransitionDoor = GetTransitionTarget(oDoor);
+
+            if (GetIsObjectValid(oTransitionDoor) && GetObjectType(oTransitionDoor) == OBJECT_TYPE_DOOR)
+            {
+                AssignCommand(oTransitionDoor, ActionCloseDoor(oTransitionDoor));
+            }
 
 // lock door if set
             if (GetLocalInt(OBJECT_SELF, "door_locked"+IntToString(i)) == 1)
