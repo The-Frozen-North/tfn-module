@@ -49,12 +49,15 @@ void main()
         return;
     }
 
-    if (nMatrix & GS_AI_ACTION_TYPE_REST && !GetIsInCombat(OBJECT_SELF) && GetLocalInt(OBJECT_SELF, "unconscious") == 0 && GetLocalInt(OBJECT_SELF, "combat") > 3)
+    if (nMatrix & GS_AI_ACTION_TYPE_REST && GetLocalInt(OBJECT_SELF, "no_rest") == 0 && !GetIsInCombat(OBJECT_SELF) && GetLocalInt(OBJECT_SELF, "unconscious") == 0 && GetLocalInt(OBJECT_SELF, "combat") > 3)
     {
         //SetAILevel(OBJECT_SELF, AI_LEVEL_LOW);
         gsAIActionRest();
         return;
     }
+
+    if (GetLocalInt(OBJECT_SELF, "no_wander") == 1) return;
+
 
 //    if (! gsARGetIsAreaActive(GetArea(OBJECT_SELF)))
 //    {

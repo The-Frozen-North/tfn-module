@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Head": {
     "type": "byte",
-    "value": 3
+    "value": 1
   },
   "Appearance_Type": {
     "type": "word",
@@ -26,7 +26,7 @@
   },
   "BodyPart_LFArm": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "BodyPart_LFoot": {
     "type": "byte",
@@ -176,13 +176,6 @@
           "type": "resref",
           "value": "nw_aarcl008"
         }
-      },
-      {
-        "__struct_id": 16,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_wplss001"
-        }
       }
     ]
   },
@@ -193,13 +186,6 @@
   "FeatList": {
     "type": "list",
     "value": [
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 2
-        }
-      },
       {
         "__struct_id": 1,
         "Feat": {
@@ -219,6 +205,13 @@
         "Feat": {
           "type": "word",
           "value": 195
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 44
         }
       },
       {
@@ -616,6 +609,26 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "bandit_brute"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "spawn_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "rand_banditb"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",

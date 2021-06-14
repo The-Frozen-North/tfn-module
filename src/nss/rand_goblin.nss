@@ -57,6 +57,8 @@ void main()
                     oShield = CreateItemOnObject("nw_ashsw001", OBJECT_SELF); // small shield
                 break;
             }
+
+            SetLocalObject(OBJECT_SELF, "melee_weapon", oWeapon);
         break;
 // range
         case 2:
@@ -82,6 +84,8 @@ void main()
 
             SetDroppableFlag(oAmmo, FALSE);
             SetPickpocketableFlag(oAmmo, FALSE);
+
+            SetLocalObject(OBJECT_SELF, "range_weapon", oWeapon);
 
             SetLocalInt(OBJECT_SELF, "range", 1);
         break;

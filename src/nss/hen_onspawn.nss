@@ -24,9 +24,18 @@ Patch 1.70
 
 #include "x0_inc_henai"
 #include "x2_inc_switches"
+#include "nwnx_creature"
 
 void main()
 {
+    int nFamiliar = GetLocalInt(OBJECT_SELF, "familiar");
+    if (nFamiliar > 0)
+        NWNX_Creature_SetFamiliarCreatureType(OBJECT_SELF, nFamiliar);
+
+    int nCompanion = GetLocalInt(OBJECT_SELF, "companion");
+    if (nCompanion > 0)
+        NWNX_Creature_SetAnimalCompanionCreatureType(OBJECT_SELF, nCompanion);
+
     string sTag;
     object oNPC;
     SetAssociateListenPatterns();//Sets up the special henchmen listening patterns

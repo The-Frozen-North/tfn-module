@@ -60,25 +60,6 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_chkk2"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
                 "value": 1
               },
               "IsChild": {
@@ -87,7 +68,7 @@
               }
             },
             {
-              "__struct_id": 2,
+              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -109,7 +90,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "hb_rangerhelpme"
         },
         "Sound": {
           "type": "resref",
@@ -122,7 +103,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I'm the captain of the Sea Witch. Are you looking to hire a ship, <lad/lass>? I can take you to all around the northern Sword Coast."
+            "0": "I thank you for your aid. Were it not for your intervention, I surely would have perished in this treacherous place. What say you and me team up? It's the least I can do since you saved my life."
           }
         }
       },
@@ -171,7 +152,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "As you will. Crew and meself will still be here, as always."
+            "0": "Of course. I'll be here for a little while to get my bearings if you change your mind. Farewell, and thank you again."
           }
         }
       },
@@ -203,92 +184,11 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_chkc2"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 5
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_chkp2"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 3
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 2
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 8
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "fol_hire"
         },
         "Sound": {
           "type": "resref",
@@ -301,7 +201,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Ah, that's a bit farther than Neverwinter. That's going to set you back <CUSTOM4501>."
+            "0": "I will do my best to protect you from peril during our adventure together."
           }
         }
       },
@@ -333,7 +233,84 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "fol_chk_range"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 5
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": "fol_chk_melee"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 4
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 3
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 2
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
@@ -350,7 +327,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<Lad/Lass>, I don't do charity. No gold, no ride. Go pawn some stuff off to Branson and then we'll talk, eh?"
+            "0": "Did you need something?"
           }
         }
       },
@@ -382,77 +359,7 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_chkc2"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 5
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 2
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 8
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
@@ -469,7 +376,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Failure]</Start> Listen, if I start giving you discounts, everyone's going to start asking. You're going to have to pay the standard fare."
+            "0": "Okay, moving on."
           }
         }
       },
@@ -501,31 +408,11 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 4
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "fol_dismiss"
         },
         "Sound": {
           "type": "resref",
@@ -538,7 +425,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Success]</Start> Fine, but just this once. Now hurry along into the ship."
+            "0": "Thank you again for saving me. Farewell!"
           }
         }
       },
@@ -562,7 +449,7 @@
         },
         "Delay": {
           "type": "dword",
-          "value": 0
+          "value": 4294967295
         },
         "Quest": {
           "type": "cexostring",
@@ -570,31 +457,11 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 6
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "fol_range"
         },
         "Sound": {
           "type": "resref",
@@ -605,9 +472,10 @@
           "value": ""
         },
         "Text": {
+          "id": 62516,
           "type": "cexolocstring",
           "value": {
-            "0": "Climb on in and get comfortable."
+            "0": "That is an excellent tactic. I will only attack enemies from afar with my flaming arrows."
           }
         }
       },
@@ -639,88 +507,11 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_chkc1"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 13
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_chkp1"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 11
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 10
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 8
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "fol_melee"
         },
         "Sound": {
           "type": "resref",
@@ -731,9 +522,10 @@
           "value": ""
         },
         "Text": {
+          "id": 62516,
           "type": "cexolocstring",
           "value": {
-            "0": "I hope they will let you inside, as that city's rejected a whole lot of ships. Either way, that's going to set you back <CUSTOM4501>."
+            "0": "If that is what you want."
           }
         }
       },
@@ -765,73 +557,7 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_chkk2"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 1
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 9
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
@@ -848,7 +574,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Fine. Where do you want to go, then?"
+            "0": "I'm sorry, but I have already joined up with someone else."
           }
         }
       },
@@ -880,88 +606,28 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "<Lad/Lass>, I don't do charity. No gold, no ride. Go pawn some stuff off to Branson and then we'll talk, eh?"
-          }
-        }
-      },
-      {
-        "__struct_id": 10,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
           "value": [
             {
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "dlg_ship_chkc1"
+                "value": "dlg_chk_potion"
               },
               "ConditionParams": {
                 "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 13
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "tag"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "NW_IT_MPOTION004"
+                    }
+                  }
+                ]
               },
               "Index": {
                 "type": "dword",
@@ -969,15 +635,104 @@
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_chk_potion"
               },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "tag"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "NW_IT_MPOTION003"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 9
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
               }
             },
             {
               "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_chk_potion"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "tag"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "NW_IT_MPOTION002"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 8
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_chk_potion"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "tag"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "NW_IT_MPOTION001"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 7
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 4,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -988,15 +743,11 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 8
+                "value": 6
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+                "value": 0
               }
             }
           ]
@@ -1004,6 +755,67 @@
         "Script": {
           "type": "resref",
           "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": "as_pl_coughm2"
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartAction>This elven man seems to be gravely wounded. If you have a healing potion, you can administer it to him. Otherwise, you can attempt to heal him through spells or a healing kit.</Start>"
+          }
+        }
+      },
+      {
+        "__struct_id": 10,
+        "ActionParams": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "tag"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "NW_IT_MPOTION001"
+              }
+            }
+          ]
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_give_potion"
         },
         "Sound": {
           "type": "resref",
@@ -1016,12 +828,195 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Failure]</Start> Listen, if I start giving you discounts, everyone's going to start asking. You're going to have to pay the standard fare."
+            "0": "Thank you."
           }
         }
       },
       {
         "__struct_id": 11,
+        "ActionParams": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "tag"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "NW_IT_MPOTION002"
+              }
+            }
+          ]
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_give_potion"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Thank you."
+          }
+        }
+      },
+      {
+        "__struct_id": 12,
+        "ActionParams": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "tag"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "NW_IT_MPOTION003"
+              }
+            }
+          ]
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_give_potion"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Thank you."
+          }
+        }
+      },
+      {
+        "__struct_id": 13,
+        "ActionParams": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "tag"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "NW_IT_MPOTION004"
+              }
+            }
+          ]
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_give_potion"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Thank you."
+          }
+        }
+      },
+      {
+        "__struct_id": 14,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1048,104 +1043,15 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 12
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "<StartCheck>[Success]</Start> Fine, but just this once. Now hurry along into the ship."
-          }
-        }
-      },
-      {
-        "__struct_id": 12,
-        "ActionParams": {
-          "type": "list",
           "value": []
         },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 0
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 14
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "hb_rangerhelpme"
         },
         "Sound": {
           "type": "resref",
-          "value": ""
+          "value": "vs_nrangem1_062"
         },
         "Speaker": {
           "type": "cexostring",
@@ -1154,7 +1060,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Climb on in and get comfortable."
+            "0": "Ha! It seems another fool has taken my bait! Kill them all, my creatures!"
           }
         }
       }
@@ -1162,7 +1068,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 278
+    "value": 264
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -1232,7 +1138,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Not right now."
+            "0": "That's okay, I'm just glad I could help. Goodbye."
           }
         }
       },
@@ -1288,7 +1194,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_ship_init2"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -1297,7 +1203,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Take me to Port Llast."
+            "0": "Good idea. Welcome to the party."
           }
         }
       },
@@ -1338,7 +1244,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 3
+                "value": 4
               },
               "IsChild": {
                 "type": "byte",
@@ -1362,7 +1268,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I don't have that kind of gold on me right now."
+            "0": "Not at the moment, no."
           }
         }
       },
@@ -1395,25 +1301,6 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "dlg_ship_pers2"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 5
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
                 "value": ""
               },
               "ConditionParams": {
@@ -1422,7 +1309,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
+                "value": 5
               },
               "IsChild": {
                 "type": "byte",
@@ -1446,7 +1333,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Persuade]</Start> That's a bit steep. How about for <CUSTOM4502>?"
+            "0": "I think it's best if we split up."
           }
         }
       },
@@ -1458,52 +1345,7 @@
         },
         "Animation": {
           "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
           "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": []
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": "dlg_ship_sape2"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": ""
-          }
-        }
-      },
-      {
-        "__struct_id": 5,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
         },
         "AnimLoop": {
           "type": "byte",
@@ -1547,73 +1389,27 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "fol_range"
         },
         "Sound": {
           "type": "resref",
           "value": ""
         },
         "Text": {
+          "id": 62513,
           "type": "cexolocstring",
-          "value": {
-            "0": "Here's the gold. Let's set sail."
-          }
+          "value": {}
         }
       },
       {
-        "__struct_id": 6,
+        "__struct_id": 5,
         "ActionParams": {
           "type": "list",
           "value": []
         },
         "Animation": {
           "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
           "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": []
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": "dlg_ship_sail2"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": ""
-          }
-        }
-      },
-      {
-        "__struct_id": 7,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
         },
         "AnimLoop": {
           "type": "byte",
@@ -1657,21 +1453,20 @@
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_ship_init1"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
           "value": ""
         },
         "Text": {
+          "id": 62514,
           "type": "cexolocstring",
-          "value": {
-            "0": "Take me to Neverwinter."
-          }
+          "value": {}
         }
       },
       {
-        "__struct_id": 8,
+        "__struct_id": 6,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1694,27 +1489,7 @@
         },
         "EntriesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 8
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
+          "value": []
         },
         "Quest": {
           "type": "cexostring",
@@ -1731,84 +1506,27 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I've changed my mind."
+            "0": "<StartAction>Leave.</Start>"
           }
         }
       },
       {
-        "__struct_id": 9,
+        "__struct_id": 7,
         "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
           "type": "list",
           "value": [
             {
               "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 1
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
+              "Key": {
                 "type": "cexostring",
-                "value": ""
+                "value": "tag"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "NW_IT_MPOTION001"
               }
             }
           ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Nowhere for now."
-          }
-        }
-      },
-      {
-        "__struct_id": 10,
-        "ActionParams": {
-          "type": "list",
-          "value": []
         },
         "Animation": {
           "type": "dword",
@@ -1831,90 +1549,6 @@
           "value": [
             {
               "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 9
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "I don't have that kind of gold on me right now."
-          }
-        }
-      },
-      {
-        "__struct_id": 11,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_ship_pers1"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 11
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -1949,15 +1583,27 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Persuade]</Start> That's a bit steep. How about for <CUSTOM4502>?"
+            "0": "<StartAction>Give him a Potion of Cure Light Wounds.</Start>"
           }
         }
       },
       {
-        "__struct_id": 12,
+        "__struct_id": 8,
         "ActionParams": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "tag"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "NW_IT_MPOTION002"
+              }
+            }
+          ]
         },
         "Animation": {
           "type": "dword",
@@ -1977,7 +1623,27 @@
         },
         "EntriesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 11
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Quest": {
           "type": "cexostring",
@@ -1985,7 +1651,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_ship_sape1"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -1994,15 +1660,27 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": ""
+            "0": "<StartAction>Give him a Potion of Cure Moderate Wounds.</Start>"
           }
         }
       },
       {
-        "__struct_id": 13,
+        "__struct_id": 9,
         "ActionParams": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "tag"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "NW_IT_MPOTION003"
+              }
+            }
+          ]
         },
         "Animation": {
           "type": "dword",
@@ -2059,15 +1737,27 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Here's the gold. Let's set sail."
+            "0": "<StartAction>Give him a Potion of Cure Serious Wounds.</Start>"
           }
         }
       },
       {
-        "__struct_id": 14,
+        "__struct_id": 10,
         "ActionParams": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "tag"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "NW_IT_MPOTION004"
+              }
+            }
+          ]
         },
         "Animation": {
           "type": "dword",
@@ -2087,7 +1777,27 @@
         },
         "EntriesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 13
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Quest": {
           "type": "cexostring",
@@ -2095,7 +1805,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_ship_sail1"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
@@ -2104,7 +1814,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": ""
+            "0": "<StartAction>Give him a Potion of Cure Critical Wounds.</Start>"
           }
         }
       }
@@ -2115,6 +1825,66 @@
     "value": [
       {
         "__struct_id": 0,
+        "Active": {
+          "type": "resref",
+          "value": "dlg_chk_semiboss"
+        },
+        "ConditionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Index": {
+          "type": "dword",
+          "value": 14
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Active": {
+          "type": "resref",
+          "value": "dlg_chk_hp"
+        },
+        "ConditionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Index": {
+          "type": "dword",
+          "value": 9
+        }
+      },
+      {
+        "__struct_id": 2,
+        "Active": {
+          "type": "resref",
+          "value": "fol_chk_hired"
+        },
+        "ConditionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Index": {
+          "type": "dword",
+          "value": 8
+        }
+      },
+      {
+        "__struct_id": 3,
+        "Active": {
+          "type": "resref",
+          "value": "fol_chkmaster"
+        },
+        "ConditionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Index": {
+          "type": "dword",
+          "value": 3
+        }
+      },
+      {
+        "__struct_id": 4,
         "Active": {
           "type": "resref",
           "value": ""

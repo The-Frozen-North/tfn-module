@@ -17,6 +17,8 @@ void main()
         case 1:
         case 2:
             oWeapon = CreateItemOnObject("nw_wswls001", OBJECT_SELF);
+
+            SetLocalObject(OBJECT_SELF, "melee_weapon", oWeapon);
         break;
         case 3:
             oWeapon = CreateItemOnObject("nw_wbwxl001", OBJECT_SELF);
@@ -27,6 +29,8 @@ void main()
             SetPickpocketableFlag(oBackup, FALSE);
             SetDroppableFlag(oAmmo, FALSE);
             SetPickpocketableFlag(oAmmo, FALSE);
+
+            SetLocalObject(OBJECT_SELF, "range_weapon", oWeapon);
 
             AssignCommand(OBJECT_SELF, ActionEquipItem(oAmmo, INVENTORY_SLOT_BOLTS));
             SetLocalInt(OBJECT_SELF, "range", 1);

@@ -30,6 +30,11 @@ void main()
         {
             gsCBDetermineCombatRound(oCaster);
         }
+
+
+        string sAttackScript = GetLocalString(OBJECT_SELF, "attack_script");
+        if (sAttackScript != "")
+            ExecuteScript(sAttackScript);
     }
 }
 

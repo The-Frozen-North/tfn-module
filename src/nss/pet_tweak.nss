@@ -74,14 +74,29 @@ object ApplyDamageProgression(string sResRef, int nSlot, int nStart, int nLevel,
 
 void main()
 {
-    if (GetIsPC(OBJECT_SELF)) return;
+    if (GetIsPC(OBJECT_SELF))
+        return;
+
+    int nAssociateType = GetAssociateType(OBJECT_SELF);
 
     object oMaster = GetMaster(OBJECT_SELF);
+
+    if (!GetIsPC(oMaster))
+    {
+        // for some reason NPC familiars are treated as if the PC is their master
+        SetLocalInt(OBJECT_SELF, "npc_pet", 1);
+
+        switch (nAssociateType)
+        {
+            case ASSOCIATE_TYPE_ANIMALCOMPANION: SetName(OBJECT_SELF, "Animal Companion"); break;
+            case ASSOCIATE_TYPE_FAMILIAR: SetName(OBJECT_SELF, "Familiar"); break;
+            default: return; break; // Stop if not familiar or animal companion
+        }
+    }
 
 // stop if no master
     if (oMaster == OBJECT_INVALID) return;
 
-    int nAssociateType = GetAssociateType(OBJECT_SELF);
 
     int nMasterHitDice;
     switch (nAssociateType)

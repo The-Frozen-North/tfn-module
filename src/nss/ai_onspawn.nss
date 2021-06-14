@@ -35,7 +35,13 @@ void main()
 {
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_SPAWN));
 
+    int nFamiliar = GetLocalInt(OBJECT_SELF, "familiar");
+    if (nFamiliar > 0)
+        NWNX_Creature_SetFamiliarCreatureType(OBJECT_SELF, nFamiliar);
 
+    int nCompanion = GetLocalInt(OBJECT_SELF, "companion");
+    if (nCompanion > 0)
+        NWNX_Creature_SetAnimalCompanionCreatureType(OBJECT_SELF, nCompanion);
 
     //listen
     SetListenPattern(OBJECT_SELF, "GS_AI_ATTACK_TARGET",         10000);
@@ -150,7 +156,8 @@ void main()
 
     SetSpawn();
 
-    if (d8() == 1)
+// 1 in 6 chance of never stealthing. Bosses and semibosses will always stealth, if possible.
+    if (GetLocalInt(OBJECT_SELF, "boss") == 0 && GetLocalInt(OBJECT_SELF, "semiboss") == 0 && d6() == 1)
     {
         SetLocalInt(OBJECT_SELF, "no_stealth", 1);
     }

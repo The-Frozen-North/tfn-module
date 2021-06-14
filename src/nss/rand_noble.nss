@@ -32,7 +32,7 @@ void main()
             NWNX_Creature_SetGender(OBJECT_SELF, GENDER_FEMALE);
             SetPortraitResRef(OBJECT_SELF, "po_hu_f_17_");
             SetCreatureAppearanceType(OBJECT_SELF, 224);
-            NWNX_Creature_SetSoundset(OBJECT_SELF, 159);
+            NWNX_Creature_SetSoundset(OBJECT_SELF, 154);
         break;
     }
 }
