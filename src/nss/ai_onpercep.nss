@@ -20,7 +20,7 @@ void main()
         return;
     }
 
-    if (GetIsEnemy(oPerceived)&&(!gsCBGetIsInCombat());
+    if (GetIsEnemy(oPerceived)&& !gsCBGetIsInCombat())
     {
         FastBuff();
         SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
