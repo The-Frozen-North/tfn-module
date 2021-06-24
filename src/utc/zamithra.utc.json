@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Head": {
     "type": "byte",
-    "value": 1
+    "value": 7
   },
   "Appearance_Type": {
     "type": "word",
@@ -90,7 +90,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 3.0
+    "value": 6.0
   },
   "ClassList": {
     "type": "list",
@@ -103,14 +103,25 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 3
+          "value": 2
+        }
+      },
+      {
+        "__struct_id": 2,
+        "Class": {
+          "type": "int",
+          "value": 4
+        },
+        "ClassLevel": {
+          "type": "short",
+          "value": 4
         }
       }
     ]
   },
   "Color_Hair": {
     "type": "byte",
-    "value": 23
+    "value": 3
   },
   "Color_Skin": {
     "type": "byte",
@@ -130,7 +141,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 12
+    "value": 14
   },
   "Conversation": {
     "type": "resref",
@@ -138,11 +149,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 0
+    "value": 1
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 36
+    "value": 64
   },
   "DecayTime": {
     "type": "dword",
@@ -156,7 +167,7 @@
     "id": 57343,
     "type": "cexolocstring",
     "value": {
-      "0": "Bandits rove in gangs and are sometimes led by thugs, veterans, or spellcasters. Not all bandits are evil. Oppression, drought, disease, or famine can often drive otherwise honest folk to a life of banditry."
+      "0": "This warrior looks like she is ready to battle entire armies single handedly."
     }
   },
   "Dex": {
@@ -174,7 +185,14 @@
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_aarcl008"
+          "value": "nw_maarcl052"
+        }
+      },
+      {
+        "__struct_id": 16,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "nw_waxmgr002"
         }
       }
     ]
@@ -186,6 +204,13 @@
   "FeatList": {
     "type": "list",
     "value": [
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 2
+        }
+      },
       {
         "__struct_id": 1,
         "Feat": {
@@ -225,6 +250,13 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 111
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 44
         }
       },
@@ -241,6 +273,13 @@
           "type": "word",
           "value": 46
         }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 149
+        }
       }
     ]
   },
@@ -248,7 +287,7 @@
     "id": 24586,
     "type": "cexolocstring",
     "value": {
-      "0": "Bandit Brute"
+      "0": "Zamithra"
     }
   },
   "fortbonus": {
@@ -257,7 +296,7 @@
   },
   "Gender": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "GoodEvil": {
     "type": "byte",
@@ -265,7 +304,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 36
+    "value": 64
   },
   "Int": {
     "type": "byte",
@@ -297,7 +336,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 39
+    "value": 76
   },
   "NaturalAC": {
     "type": "byte",
@@ -309,7 +348,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 38
+    "value": 1
   },
   "PerceptionRange": {
     "type": "byte",
@@ -325,7 +364,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 138
+    "value": 130
   },
   "Race": {
     "type": "byte",
@@ -590,7 +629,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 114
+    "value": 112
   },
   "SpecAbilityList": {
     "type": "list",
@@ -602,7 +641,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 12
+    "value": 16
   },
   "Subrace": {
     "type": "cexostring",
@@ -622,7 +661,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "bandit_brute"
+    "value": "zamithra"
   },
   "VarTable": {
     "type": "list",
@@ -631,7 +670,22 @@
         "__struct_id": 0,
         "Name": {
           "type": "cexostring",
-          "value": "spawn_script"
+          "value": "semiboss"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest1"
         },
         "Type": {
           "type": "dword",
@@ -639,7 +693,22 @@
         },
         "Value": {
           "type": "cexostring",
-          "value": "rand_banditb"
+          "value": "02_q_serpent_zamithra"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest_item"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "q_gem_serpent"
         }
       }
     ]

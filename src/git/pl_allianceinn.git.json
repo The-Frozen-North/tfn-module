@@ -31,7 +31,7 @@
       },
       "MusicDay": {
         "type": "int",
-        "value": 23
+        "value": 114
       },
       "MusicDelay": {
         "type": "int",
@@ -39,7 +39,7 @@
       },
       "MusicNight": {
         "type": "int",
-        "value": 56
+        "value": 114
       }
     }
   },
@@ -3182,7 +3182,7 @@
         },
         "Conversation": {
           "type": "resref",
-          "value": ""
+          "value": "elaith"
         },
         "CRAdjust": {
           "type": "int",
@@ -3401,106 +3401,6 @@
                 "type": "float",
                 "value": -1.0
               }
-            },
-            {
-              "__struct_id": 16,
-              "AddCost": {
-                "type": "dword",
-                "value": 0
-              },
-              "BaseItem": {
-                "type": "int",
-                "value": 0
-              },
-              "Charges": {
-                "type": "byte",
-                "value": 50
-              },
-              "Cost": {
-                "type": "dword",
-                "value": 35
-              },
-              "Cursed": {
-                "type": "byte",
-                "value": 0
-              },
-              "DescIdentified": {
-                "type": "cexolocstring",
-                "value": {}
-              },
-              "Description": {
-                "type": "cexolocstring",
-                "value": {}
-              },
-              "Dropable": {
-                "type": "byte",
-                "value": 1
-              },
-              "Identified": {
-                "type": "byte",
-                "value": 1
-              },
-              "LocalizedName": {
-                "id": 25130,
-                "type": "cexolocstring",
-                "value": {}
-              },
-              "ModelPart1": {
-                "type": "byte",
-                "value": 11
-              },
-              "ModelPart2": {
-                "type": "byte",
-                "value": 11
-              },
-              "ModelPart3": {
-                "type": "byte",
-                "value": 11
-              },
-              "Plot": {
-                "type": "byte",
-                "value": 0
-              },
-              "PropertiesList": {
-                "type": "list",
-                "value": []
-              },
-              "StackSize": {
-                "type": "word",
-                "value": 1
-              },
-              "Stolen": {
-                "type": "byte",
-                "value": 0
-              },
-              "Tag": {
-                "type": "cexostring",
-                "value": "NW_WSWSS001"
-              },
-              "TemplateResRef": {
-                "type": "resref",
-                "value": "nw_wswss001"
-              },
-              "XOrientation": {
-                "type": "float",
-                "value": 0.0
-              },
-              "XPosition": {
-                "type": "float",
-                "value": -1.0
-              },
-              "YOrientation": {
-                "type": "float",
-                "value": 1.0
-              },
-              "YPosition": {
-                "type": "float",
-                "value": -1.0
-              },
-              "ZPosition": {
-                "type": "float",
-                "value": -1.0
-              }
             }
           ]
         },
@@ -3691,7 +3591,7 @@
         },
         "GoodEvil": {
           "type": "byte",
-          "value": 50
+          "value": 0
         },
         "HitPoints": {
           "type": "short",
@@ -3724,7 +3624,7 @@
               },
               "BaseItem": {
                 "type": "int",
-                "value": 65
+                "value": 0
               },
               "Charges": {
                 "type": "byte",
@@ -3732,14 +3632,14 @@
               },
               "Cost": {
                 "type": "dword",
-                "value": 0
+                "value": 15173
               },
               "Cursed": {
                 "type": "byte",
                 "value": 0
               },
               "DescIdentified": {
-                "id": 41192,
+                "id": 14403,
                 "type": "cexolocstring",
                 "value": {}
               },
@@ -3747,26 +3647,22 @@
                 "type": "cexolocstring",
                 "value": {}
               },
-              "Dropable": {
-                "type": "byte",
-                "value": 1
-              },
               "Identified": {
                 "type": "byte",
                 "value": 1
               },
               "LocalizedName": {
-                "id": 41193,
+                "id": 14404,
                 "type": "cexolocstring",
                 "value": {}
               },
               "ModelPart1": {
                 "type": "byte",
-                "value": 23
+                "value": 32
               },
               "ModelPart2": {
                 "type": "byte",
-                "value": 13
+                "value": 12
               },
               "ModelPart3": {
                 "type": "byte",
@@ -3774,11 +3670,43 @@
               },
               "Plot": {
                 "type": "byte",
-                "value": 1
+                "value": 0
               },
               "PropertiesList": {
                 "type": "list",
-                "value": []
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "ChanceAppear": {
+                      "type": "byte",
+                      "value": 100
+                    },
+                    "CostTable": {
+                      "type": "byte",
+                      "value": 2
+                    },
+                    "CostValue": {
+                      "type": "word",
+                      "value": 3
+                    },
+                    "Param1": {
+                      "type": "byte",
+                      "value": 255
+                    },
+                    "Param1Value": {
+                      "type": "byte",
+                      "value": 255
+                    },
+                    "PropertyName": {
+                      "type": "word",
+                      "value": 6
+                    },
+                    "Subtype": {
+                      "type": "word",
+                      "value": 0
+                    }
+                  }
+                ]
               },
               "Repos_PosX": {
                 "type": "word",
@@ -3798,11 +3726,11 @@
               },
               "Tag": {
                 "type": "cexostring",
-                "value": "M2Q3IWANEVCOTKEY"
+                "value": "NW_WSWMSS011"
               },
               "TemplateResRef": {
                 "type": "resref",
-                "value": "m2q3iwanevcotkey"
+                "value": "nw_wswmss011"
               },
               "XOrientation": {
                 "type": "float",
@@ -4164,6 +4092,371 @@
         "TemplateResRef": {
           "type": "resref",
           "value": "m2q1celaith"
+        },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest1"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "01_q_serpent_wanev"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest2"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "01_q_serpent_zamithra"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest3"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "01_q_serpent_setara"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "heartbeat_script"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "hb_q_talktome"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest4"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "03_q_serpent_wanev"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest5"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "03_q_serpent_zamithra"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest6"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "03_q_serpent_setara"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest4_reward_gold"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 600
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest5_reward_gold"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 600
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest6_reward_gold"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 600
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest6_reward_xp_level"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 5
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest5_reward_xp_level"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 5
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest4_reward_xp_level"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 5
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest4_reward_xp_tier"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 2
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest5_reward_xp_tier"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 2
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest6_reward_xp_tier"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 2
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest7_reward_gold"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 900
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest7_reward_xp_level"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 5
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest7_reward_xp_tier"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 3
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest7"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "01_q_serpent_reward"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest7_prereq1"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "03_q_serpent_wanev"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest7_prereq2"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "03_q_serpent_zamithra"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest7_prereq3"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "03_q_serpent_setara"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest7_pc_script"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "reward_elaith"
+              }
+            }
+          ]
         },
         "WalkRate": {
           "type": "int",
@@ -12288,7 +12581,7 @@
         },
         "LinkedToFlags": {
           "type": "byte",
-          "value": 1
+          "value": 0
         },
         "LoadScreenID": {
           "type": "word",
