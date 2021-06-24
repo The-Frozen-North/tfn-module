@@ -143,17 +143,18 @@ void main()
 // ==============================
 
      int iCR = GetLocalInt(OBJECT_SELF, "cr");
+     int nTrapChance = (iRows*iColumns)/12;
+// cap the density of traps
+     if (nTrapChance >= 30) nTrapChance = 30;
+     int bTrapped = GetLocalInt(OBJECT_SELF, "trapped");
 
-     if (GetLocalInt(OBJECT_SELF, "trapped") == 1)
+     if (bTrapped == 1)
      {
         int nTrapChance = (iRows*iColumns)/12;
 
         object oTrap, oTrapWP;
 
         int nTrapSpawns = GetLocalInt(OBJECT_SELF, "trap_spawns");
-
-// cap the density of traps
-        if (nTrapChance >= 30) nTrapChance = 30;
 
         int i;
         for (i = 1; i <= nTrapSpawns; i++)
@@ -198,6 +199,12 @@ void main()
             if (GetIsObjectValid(oTransitionDoor) && GetObjectType(oTransitionDoor) == OBJECT_TYPE_DOOR)
             {
                 AssignCommand(oTransitionDoor, ActionCloseDoor(oTransitionDoor));
+            }
+
+            if (bTrapped == 1 && d100() <= nTrapChance)
+            {
+                CreateTrapOnObject(DetermineTrap(iCR), oDoor, STANDARD_FACTION_HOSTILE, "on_trap_disarm");
+                TrapLogic(oDoor);
             }
 
 // lock door if set
