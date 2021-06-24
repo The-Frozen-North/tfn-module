@@ -222,6 +222,52 @@
               "__struct_id": 6,
               "Active": {
                 "type": "resref",
+                "value": "dlg_chk_skill"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "skill"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "7"
+                    }
+                  },
+                  {
+                    "__struct_id": 1,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "value"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "6"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 16
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 7,
+              "Active": {
+                "type": "resref",
                 "value": ""
               },
               "ConditionParams": {
@@ -1029,7 +1075,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "nw_d1_shopevil2"
+          "value": "merchant"
         },
         "Sound": {
           "type": "resref",
@@ -1647,7 +1693,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "m2q1atelaith04"
+          "value": "dlg_set_elaith"
         },
         "Sound": {
           "type": "resref",
@@ -1713,29 +1759,6 @@
             },
             {
               "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 25
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": " (Charisma 14+, Intelligence 9+)"
-              }
-            },
-            {
-              "__struct_id": 2,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -2165,7 +2188,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "nw_d1_shopevil2"
+          "value": "merchant"
         },
         "Sound": {
           "type": "resref",
