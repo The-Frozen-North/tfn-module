@@ -58,7 +58,8 @@ void DoRevive(object oDead)
                 if (!GetIsDead(oCreature) && (oCreature != oDead))
                 {
                     nRace = GetRacialType(oCreature);
-                    if (GetIsEnemy(oCreature, oDead))
+                    // added check to see if they have a master, if so check if it is an enemy to their master as well
+                    if (GetIsEnemy(oCreature, oDead) || (GetIsObjectValid(oMaster) && GetIsEnemy(oCreature, oMaster)))
                     {
                         bEnemy = TRUE;
                         SendDebugMessage("Enemy detected, breaking from revive loop: "+GetName(oCreature));
