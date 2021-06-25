@@ -23,7 +23,8 @@ void main()
 
     case 10000: //GS_AI_ATTACK_TARGET
         if (! (GetLevelByClass(CLASS_TYPE_COMMONER) ||
-               gsCBGetHasAttackTarget()))
+               gsCBGetHasAttackTarget()) &&
+            gsCBGetIsPerceived(oSpeaker))
         {
             gsCBDetermineAttackTarget(oSpeaker);
         }
@@ -33,7 +34,8 @@ void main()
         oTarget = GetLocalObject(oSpeaker, "GS_PVP_TARGET");
 
         if (GetIsObjectValid(oTarget) &&
-            ! GetIsEnemy(oTarget))
+            ! GetIsEnemy(oTarget) &&
+            gsCBGetIsPerceived(oSpeaker))
         {
             gsCBDetermineCombatRound(oSpeaker);
         }
@@ -47,7 +49,8 @@ void main()
         break;
 
     case 10003: //GS_AI_REQUEST_REINFORCEMENT
-        if (! GetIsEnemy(oSpeaker)) gsCBSetReinforcementRequestedBy(oSpeaker);
+        if (! GetIsEnemy(oSpeaker) &&
+            gsCBGetIsPerceived(oSpeaker)) gsCBSetReinforcementRequestedBy(oSpeaker);
         break;
     case 10100: // GS_AI_INNOCENT_ATTACKED
     // commoners always run away
