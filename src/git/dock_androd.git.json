@@ -20694,7 +20694,7 @@
         "__struct_id": 4,
         "Appearance_Type": {
           "type": "word",
-          "value": 281
+          "value": 256
         },
         "BodyBag": {
           "type": "byte",
@@ -20702,11 +20702,11 @@
         },
         "Cha": {
           "type": "byte",
-          "value": 10
+          "value": 8
         },
         "ChallengeRating": {
           "type": "float",
-          "value": 1.0
+          "value": 0.25
         },
         "ClassList": {
           "type": "list",
@@ -20726,11 +20726,11 @@
         },
         "Con": {
           "type": "byte",
-          "value": 10
+          "value": 8
         },
         "Conversation": {
           "type": "resref",
-          "value": "gossip"
+          "value": ""
         },
         "CRAdjust": {
           "type": "int",
@@ -20738,11 +20738,11 @@
         },
         "CurrentHitPoints": {
           "type": "short",
-          "value": 8
+          "value": 2
         },
         "DecayTime": {
           "type": "dword",
-          "value": 300000
+          "value": 0
         },
         "Deity": {
           "type": "cexostring",
@@ -20750,9 +20750,7 @@
         },
         "Description": {
           "type": "cexolocstring",
-          "value": {
-            "0": "A common peasant of Neverwinter, this person wears simple clothes and the harried look of someone living in the shadow of plague."
-          }
+          "value": {}
         },
         "Dex": {
           "type": "byte",
@@ -20777,11 +20775,11 @@
               },
               "ArmorPart_LBicep": {
                 "type": "byte",
-                "value": 1
+                "value": 4
               },
               "ArmorPart_LFArm": {
                 "type": "byte",
-                "value": 1
+                "value": 11
               },
               "ArmorPart_LFoot": {
                 "type": "byte",
@@ -20793,7 +20791,7 @@
               },
               "ArmorPart_LShin": {
                 "type": "byte",
-                "value": 16
+                "value": 13
               },
               "ArmorPart_LShoul": {
                 "type": "byte",
@@ -20809,15 +20807,15 @@
               },
               "ArmorPart_Pelvis": {
                 "type": "byte",
-                "value": 3
+                "value": 37
               },
               "ArmorPart_RBicep": {
                 "type": "byte",
-                "value": 1
+                "value": 4
               },
               "ArmorPart_RFArm": {
                 "type": "byte",
-                "value": 1
+                "value": 11
               },
               "ArmorPart_RFoot": {
                 "type": "byte",
@@ -20833,7 +20831,7 @@
               },
               "ArmorPart_RShin": {
                 "type": "byte",
-                "value": 16
+                "value": 13
               },
               "ArmorPart_RShoul": {
                 "type": "byte",
@@ -20857,11 +20855,11 @@
               },
               "Cloth1Color": {
                 "type": "byte",
-                "value": 11
+                "value": 14
               },
               "Cloth2Color": {
                 "type": "byte",
-                "value": 7
+                "value": 25
               },
               "Cost": {
                 "type": "dword",
@@ -20885,24 +20883,24 @@
               },
               "Leather1Color": {
                 "type": "byte",
-                "value": 11
+                "value": 25
               },
               "Leather2Color": {
                 "type": "byte",
-                "value": 14
+                "value": 11
               },
               "LocalizedName": {
-                "id": 12923,
+                "id": 12925,
                 "type": "cexolocstring",
                 "value": {}
               },
               "Metal1Color": {
                 "type": "byte",
-                "value": 23
+                "value": 15
               },
               "Metal2Color": {
                 "type": "byte",
-                "value": 6
+                "value": 15
               },
               "Plot": {
                 "type": "byte",
@@ -20922,11 +20920,11 @@
               },
               "Tag": {
                 "type": "cexostring",
-                "value": "NW_CLOTH022"
+                "value": "NW_CLOTH024"
               },
               "TemplateResRef": {
                 "type": "resref",
-                "value": "nw_cloth022"
+                "value": "nw_cloth024"
               },
               "XOrientation": {
                 "type": "float",
@@ -20964,15 +20962,20 @@
                 "type": "word",
                 "value": 258
               }
+            },
+            {
+              "__struct_id": 1,
+              "Feat": {
+                "type": "word",
+                "value": 40
+              }
             }
           ]
         },
         "FirstName": {
-          "id": 12423,
+          "id": 12422,
           "type": "cexolocstring",
-          "value": {
-            "0": "Commoner"
-          }
+          "value": {}
         },
         "fortbonus": {
           "type": "short",
@@ -20980,7 +20983,7 @@
         },
         "Gender": {
           "type": "byte",
-          "value": 0
+          "value": 1
         },
         "GoodEvil": {
           "type": "byte",
@@ -20988,11 +20991,11 @@
         },
         "HitPoints": {
           "type": "short",
-          "value": 8
+          "value": 2
         },
         "Int": {
           "type": "byte",
-          "value": 10
+          "value": 8
         },
         "Interruptable": {
           "type": "byte",
@@ -21020,7 +21023,7 @@
         },
         "MaxHitPoints": {
           "type": "short",
-          "value": 8
+          "value": 2
         },
         "NaturalAC": {
           "type": "byte",
@@ -21044,7 +21047,7 @@
         },
         "PortraitId": {
           "type": "word",
-          "value": 100
+          "value": 92
         },
         "Race": {
           "type": "byte",
@@ -21056,55 +21059,55 @@
         },
         "ScriptAttacked": {
           "type": "resref",
-          "value": "ai_onattacked"
+          "value": "nw_c2_default5"
         },
         "ScriptDamaged": {
           "type": "resref",
-          "value": "ai_ondamaged"
+          "value": "nw_c2_default6"
         },
         "ScriptDeath": {
           "type": "resref",
-          "value": "ai_ondeath"
+          "value": "nw_c2_default7"
         },
         "ScriptDialogue": {
           "type": "resref",
-          "value": "ai_onconverse"
+          "value": "nw_c2_default4"
         },
         "ScriptDisturbed": {
           "type": "resref",
-          "value": "ai_ondisturb"
+          "value": "nw_c2_default8"
         },
         "ScriptEndRound": {
           "type": "resref",
-          "value": "ai_oncombrnd"
+          "value": "nw_c2_default3"
         },
         "ScriptHeartbeat": {
           "type": "resref",
-          "value": "ai_onheartb"
+          "value": "nw_c2_default1"
         },
         "ScriptOnBlocked": {
           "type": "resref",
-          "value": "ai_onblocked"
+          "value": "nw_c2_defaulte"
         },
         "ScriptOnNotice": {
           "type": "resref",
-          "value": "ai_onpercep"
+          "value": "nw_c2_default2"
         },
         "ScriptRested": {
           "type": "resref",
-          "value": "ai_onrest"
+          "value": "nw_c2_defaulta"
         },
         "ScriptSpawn": {
           "type": "resref",
-          "value": "ai_onspawn"
+          "value": "nw_c2_default9"
         },
         "ScriptSpellAt": {
           "type": "resref",
-          "value": "ai_onspellcast"
+          "value": "nw_c2_defaultb"
         },
         "ScriptUserDefine": {
           "type": "resref",
-          "value": "ai_onuserdef"
+          "value": "nw_c2_defaultd"
         },
         "SkillList": {
           "type": "list",
@@ -21162,7 +21165,7 @@
               "__struct_id": 0,
               "Rank": {
                 "type": "byte",
-                "value": 0
+                "value": 2
               }
             },
             {
@@ -21239,7 +21242,7 @@
               "__struct_id": 0,
               "Rank": {
                 "type": "byte",
-                "value": 0
+                "value": 2
               }
             },
             {
@@ -21309,7 +21312,7 @@
         },
         "SoundSetFile": {
           "type": "word",
-          "value": 184
+          "value": 65535
         },
         "SpecAbilityList": {
           "type": "list",
@@ -21321,7 +21324,7 @@
         },
         "Str": {
           "type": "byte",
-          "value": 10
+          "value": 8
         },
         "Subrace": {
           "type": "cexostring",
@@ -21329,7 +21332,7 @@
         },
         "Tag": {
           "type": "cexostring",
-          "value": "NW_COMMALE"
+          "value": "NW_COMFEMALE"
         },
         "Tail_New": {
           "type": "dword",
@@ -21341,57 +21344,7 @@
         },
         "TemplateResRef": {
           "type": "resref",
-          "value": "commoner"
-        },
-        "VarTable": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "no_credit"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 1
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "respawn"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 1
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "spawn_script"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 3
-              },
-              "Value": {
-                "type": "cexostring",
-                "value": "rand_commoner"
-              }
-            }
-          ]
+          "value": "nw_comfemale"
         },
         "WalkRate": {
           "type": "int",
@@ -21411,23 +21364,23 @@
         },
         "XOrientation": {
           "type": "float",
-          "value": -0.4714
+          "value": -0.741
         },
         "XPosition": {
           "type": "float",
-          "value": 31.6452
+          "value": 31.7831
         },
         "YOrientation": {
           "type": "float",
-          "value": 0.8819
+          "value": 0.6716
         },
         "YPosition": {
           "type": "float",
-          "value": 75.9679
+          "value": 75.7419
         },
         "ZPosition": {
           "type": "float",
-          "value": 0.0
+          "value": -0.0
         }
       },
       {
@@ -21562,7 +21515,7 @@
         },
         "Conversation": {
           "type": "resref",
-          "value": "perica"
+          "value": ""
         },
         "CRAdjust": {
           "type": "int",
@@ -21869,7 +21822,7 @@
           "id": 24718,
           "type": "cexolocstring",
           "value": {
-            "0": "Perica"
+            "0": "Perica [Golden]"
           }
         },
         "fortbonus": {
@@ -22207,7 +22160,7 @@
         },
         "SoundSetFile": {
           "type": "word",
-          "value": 158
+          "value": 183
         },
         "SpecAbilityList": {
           "type": "list",
@@ -22227,7 +22180,7 @@
         },
         "Tag": {
           "type": "cexostring",
-          "value": "M1S2MrsGolden"
+          "value": "M1S2AndrodMrs"
         },
         "Tail_New": {
           "type": "dword",
@@ -22239,27 +22192,7 @@
         },
         "TemplateResRef": {
           "type": "resref",
-          "value": "perica"
-        },
-        "VarTable": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "no_credit"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 1
-              }
-            }
-          ]
+          "value": "androd001"
         },
         "WalkRate": {
           "type": "int",
@@ -22283,7 +22216,7 @@
         },
         "XPosition": {
           "type": "float",
-          "value": 31.547
+          "value": 31.2421
         },
         "YOrientation": {
           "type": "float",
@@ -22291,11 +22224,11 @@
         },
         "YPosition": {
           "type": "float",
-          "value": 73.9816
+          "value": 74.0288
         },
         "ZPosition": {
           "type": "float",
-          "value": 0.0
+          "value": -0.0
         }
       }
     ]
