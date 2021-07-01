@@ -16473,7 +16473,7 @@
         },
         "LinkedTo": {
           "type": "cexostring",
-          "value": "m1q2C_m1q2B"
+          "value": "ContainmentToPrisonMainFloor"
         },
         "LinkedToFlags": {
           "type": "byte",
@@ -16570,7 +16570,7 @@
         },
         "Tag": {
           "type": "cexostring",
-          "value": "m1q2B_m1q2C"
+          "value": "PrisonMainFloorToContaiment"
         },
         "TemplateResRef": {
           "type": "resref",
@@ -24377,6 +24377,21 @@
           "type": "int",
           "value": 1
         }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "heartbeat_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "area_prison"
+        }
       }
     ]
   },
@@ -24476,7 +24491,7 @@
         },
         "Tag": {
           "type": "cexostring",
-          "value": "WP_StairsDown"
+          "value": "WP_PRISONERS"
         },
         "TemplateResRef": {
           "type": "resref",
@@ -24496,7 +24511,7 @@
         },
         "YPosition": {
           "type": "float",
-          "value": 35.112
+          "value": 35.1349
         },
         "ZPosition": {
           "type": "float",
