@@ -22,6 +22,9 @@ const float QUEST_XP_T4 = 400.0;
 // The maximum XP limit for a single kill
 const float XP_MAX = 20.0;
 
+// The amount of XP rewarded per target level for quests
+const float XP_BONUS_PER_LEVEL = 0.1;
+
 // The maximum XP limit for a boss
 const float XP_MAX_BOSS = 50.0;
 
@@ -229,6 +232,11 @@ void GiveQuestXPToPC(object oPC, int nTier, int nLevel, int bBluff = FALSE)
    }
 
    SendDebugMessage("Quest base XP: "+FloatToString(fXP));
+
+   if (nLevel > 0)
+   {
+       fXP = fXP + (fXP * (IntToFloat(nLevel)*XP_BONUS_PER_LEVEL));
+   }
 
    fXP = fXP * fMod;
 
