@@ -48,7 +48,7 @@ void main()
 
     location lRespawnLocation = GetLocation(GetObjectByTag("RESPAWN_NEVERWINTER"));
 
-    object oChosenRespawn = GetObjectByTag(GetLocalString(oArea, "RESPAWN_"+SQLocalsPlayer_GetString(oRespawner, "respawn")));
+    object oChosenRespawn = GetObjectByTag("RESPAWN_"+SQLocalsPlayer_GetString(oRespawner, "respawn"));
 
     if (GetIsObjectValid(oChosenRespawn))
         lRespawnLocation = GetLocation(oChosenRespawn);
