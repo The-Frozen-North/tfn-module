@@ -79,6 +79,25 @@ void FastBuff(int bInstant = TRUE)
     BuffIfNotBuffed(SPELL_CATS_GRACE, bInstant);
 
 
+    // Aura buffs
+    BuffIfNotBuffed(SPELLABILITY_AURA_BLINDING, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_COLD, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_ELECTRICITY, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_FEAR, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_ELECTRICITY, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_FEAR, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_FIRE, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_HORRIFICAPPEARANCE, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_MENACE, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_MENACE, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_OF_COURAGE, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_PROTECTION, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_STUN, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_UNEARTHLY_VISAGE, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_AURA_UNNATURAL, bInstant);
+    BuffIfNotBuffed(SPELL_HOLY_AURA, bInstant);
+    BuffIfNotBuffed(SPELL_UNHOLY_AURA, bInstant);
+
     // Alignment Protections
     int nAlignment = GetAlignmentGoodEvil(OBJECT_SELF);
     if (nAlignment == ALIGNMENT_EVIL)
