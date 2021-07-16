@@ -81,7 +81,7 @@ void BashLock(object oAttacker)
     object oMaster = GetMaster(OBJECT_SELF);
     if (GetIsPC(oMaster) && GetIsObjectValid(oMaster))
     {
-        NWNX_Player_FloatingTextStringOnCreature(oMaster, OBJECT_SELF, sMessage);
+        NWNX_Player_FloatingTextStringOnCreature(oMaster, oAttacker, sMessage);
     }
     else
     {
@@ -91,6 +91,9 @@ void BashLock(object oAttacker)
 
 void main()
 {
+    if (GetLockKeyRequired(OBJECT_SELF))
+        return;
+
     object oAttacker = GetLastAttacker();
 
 // range weapons cannot be used for lock bashing
