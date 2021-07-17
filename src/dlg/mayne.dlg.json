@@ -72,7 +72,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -134,110 +134,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I'm the local healer of this little hamlet. What can I do for you, dear?"
+            "0": "Welcome to Highcliff. What can I do for you?"
           }
         }
       },
       {
         "__struct_id": 1,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": []
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Stay safe out there."
-          }
-        }
-      },
-      {
-        "__struct_id": 2,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": []
-        },
-        "Script": {
-          "type": "resref",
-          "value": "dlg_heal"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "I'll patch you right up."
-          }
-        }
-      },
-      {
-        "__struct_id": 3,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -277,7 +179,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 3
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
@@ -301,12 +203,120 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Ah, Neverwinter you say? I have some family there, hope they're doing well. Anyways, I think we can provide some medicine and herbs. Luckily, our relationship with the druids in Neverwinter Woods is strong and they have given us plenty of supply."
+            "0": "It looks to be a poor harvest season. The farmers call it a blight, but I tend to think it's just part of the natural course of things. We were overdue for a weak season."
           }
         }
       },
       {
-        "__struct_id": 4,
+        "__struct_id": 2,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_q_chk_eli"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "target"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "1"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 3
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 0
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "The villagers will have to cut back on spending for awhile, but no one will be going hungry. At least not yet."
+          }
+        }
+      },
+      {
+        "__struct_id": 3,
         "ActionParams": {
           "type": "list",
           "value": [
@@ -362,7 +372,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "You can tell your officials that I'll send some medicine and care packages downstream, as soon as the next river boat departs. Good luck."
+            "0": "I see. Very well, we will send a shipment of lumber as soon as we can. It is the least we can do, considering the suffering that you all had to endure. Please tell them to expect a delivery of lumber by ship within the next day or two."
           }
         }
       }
@@ -370,7 +380,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 110
+    "value": 133
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -381,6 +391,51 @@
     "value": [
       {
         "__struct_id": 0,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Farewell."
+          }
+        }
+      },
+      {
+        "__struct_id": 1,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -440,12 +495,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Farewell."
+            "0": "How are things in town?"
           }
         }
       },
       {
-        "__struct_id": 1,
+        "__struct_id": 2,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -505,12 +560,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Can you please heal me?"
+            "0": ""
           }
         }
       },
       {
-        "__struct_id": 2,
+        "__struct_id": 3,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -570,72 +625,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I was sent here to get some medicine for Neverwinter. <StartAction>[Give her the letter.]</Start>"
-          }
-        }
-      },
-      {
-        "__struct_id": 3,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 4
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": ""
+            "0": "I have a request for lumber from Neverwinter. <StartAction>[Give him the letter.]</Start>"
           }
         }
       }
