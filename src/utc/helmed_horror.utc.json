@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 91
+    "value": 100
   },
   "BodyBag": {
     "type": "byte",
@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 3
+    "value": 12
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 10.0
+    "value": 9.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 10
+          "value": 8
         }
       }
     ]
@@ -50,7 +50,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 100
+    "value": 80
   },
   "DecayTime": {
     "type": "dword",
@@ -61,33 +61,40 @@
     "value": ""
   },
   "Description": {
-    "id": 12571,
+    "id": 12601,
     "type": "cexolocstring",
     "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 9
+    "value": 13
   },
   "Disarmable": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "Equip_ItemList": {
     "type": "list",
     "value": [
       {
-        "__struct_id": 65536,
+        "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpb017"
+          "value": "nw_maarcl053"
+        }
+      },
+      {
+        "__struct_id": 16,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "nw_wplmhb010"
         }
       },
       {
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_golemclaysk"
+          "value": "nw_it_creitemco6"
         }
       }
     ]
@@ -103,6 +110,13 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 2
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 228
         }
       },
@@ -112,15 +126,20 @@
           "type": "word",
           "value": 289
         }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 45
+        }
       }
     ]
   },
   "FirstName": {
-    "id": 12572,
+    "id": 12602,
     "type": "cexolocstring",
-    "value": {
-      "0": "Clay Golem"
-    }
+    "value": {}
   },
   "fortbonus": {
     "type": "short",
@@ -136,11 +155,11 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 100
+    "value": 80
   },
   "Int": {
     "type": "byte",
-    "value": 3
+    "value": 10
   },
   "Interruptable": {
     "type": "byte",
@@ -168,11 +187,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 100
+    "value": 80
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 10
+    "value": 0
   },
   "NoPermDeath": {
     "type": "byte",
@@ -196,7 +215,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 227
+    "value": 235
   },
   "Race": {
     "type": "byte",
@@ -286,7 +305,28 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
+          "value": 11
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
           "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 11
         }
       },
       {
@@ -363,28 +403,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 11
         }
       },
       {
@@ -461,27 +480,11 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 50
+    "value": 54
   },
   "SpecAbilityList": {
     "type": "list",
-    "value": [
-      {
-        "__struct_id": 4,
-        "Spell": {
-          "type": "word",
-          "value": 78
-        },
-        "SpellCasterLevel": {
-          "type": "byte",
-          "value": 10
-        },
-        "SpellFlags": {
-          "type": "byte",
-          "value": 1
-        }
-      }
-    ]
+    "value": []
   },
   "StartingPackage": {
     "type": "byte",
@@ -489,7 +492,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 23
+    "value": 16
   },
   "Subrace": {
     "type": "cexostring",
@@ -497,11 +500,11 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_GolClay"
+    "value": "NW_HELMHORR"
   },
   "Tail_New": {
     "type": "dword",
-    "value": 68
+    "value": 205
   },
   "TemplateList": {
     "type": "list",
@@ -509,42 +512,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "golem_clay"
-  },
-  "VarTable": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "semiboss"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "no_wander"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      }
-    ]
+    "value": "helmed_horror"
   },
   "WalkRate": {
     "type": "int",
@@ -556,10 +524,10 @@
   },
   "Wings_New": {
     "type": "dword",
-    "value": 51
+    "value": 205
   },
   "Wis": {
     "type": "byte",
-    "value": 11
+    "value": 16
   }
 }
