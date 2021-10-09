@@ -1,18 +1,16 @@
-version: "3.7"
-
 services:
-    tfn-server-dev:
-        hostname: tfn_server_dev
-        container_name: tfn_server_dev
-        image:  nwnxee/unified:519ec3c
-        env_file: 
-            - ${PWD-.}/config/common.env
-            - ${PWD-.}/config/nwserver_dev_seed.env
-        stdin_open: true
-        tty: true
-        volumes:
-            - ${PWD-.}/logs:/nwn/run/logs.0
-            - ${PWD-.}/:/nwn/home
-            - ${PWD-.}/logs:/nwn/data/bin/linux-x86/logs.0
-        ports:
-            - "5134:5134/udp"
+  tfn-server-dev:
+    image: nwnxee/unified:bf22a47
+    tty: true
+    stdin_open: true
+    env_file: ${PWD-.}/config/common.env
+    environment:
+    - NWN_PUBLICSERVER=0
+    - NWN_SERVERNAME="The Frozen North DEV SEED"
+    - NWN_PORT=5134
+    - NWNX_SERVERLOGREDIRECTOR_LOG_LEVEL=6
+    ports:
+    - '5134:5134/udp'
+    volumes:
+    - ${PWD-.}/logs:/nwn/run/logs.0
+    - ${PWD-.}/:/nwn/home

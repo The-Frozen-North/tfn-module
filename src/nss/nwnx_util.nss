@@ -58,6 +58,10 @@ string NWNX_Util_GetAsciiTableString();
 /// @return The hashed string as an integer.
 int NWNX_Util_Hash(string str);
 
+/// @brief Gets the last modified timestamp (mtime) of the module file in seconds.
+/// @return The mtime of the module file.
+int NWNX_Util_GetModuleMtime();
+
 /// @brief Gets the value of customTokenNumber.
 /// @param customTokenNumber The token number to query.
 /// @return The string representation of the token value.
@@ -254,6 +258,10 @@ struct NWNX_Util_HighResTimestamp NWNX_Util_GetHighResTimeStamp();
 /// @return Return name of a terminal, "" if not a TTY
 string NWNX_Util_GetTTY();
 
+/// @brief Set the currently running script event.
+/// @param nEventID The ID of the event.
+void NWNX_Util_SetCurrentlyRunningEvent(int nEventID);
+
 /// @}
 
 string NWNX_Util_GetCurrentScriptName(int depth = 0)
@@ -276,6 +284,12 @@ int NWNX_Util_Hash(string str)
     string sFunc = "Hash";
     NWNX_PushArgumentString(str);
     NWNX_CallFunction(NWNX_Util, sFunc);
+    return NWNX_GetReturnValueInt();
+}
+
+int NWNX_Util_GetModuleMtime()
+{
+    NWNX_CallFunction(NWNX_Util, "GetModuleMtime");
     return NWNX_GetReturnValueInt();
 }
 
@@ -633,3 +647,10 @@ string NWNX_Util_GetTTY()
     return NWNX_GetReturnValueString();
 }
 
+void NWNX_Util_SetCurrentlyRunningEvent(int nEventID)
+{
+    string sFunc = "SetCurrentlyRunningEvent";
+
+    NWNX_PushArgumentInt(nEventID);
+    NWNX_CallFunction(NWNX_Util, sFunc);
+}

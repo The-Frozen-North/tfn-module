@@ -95,8 +95,8 @@ void main()
     NWNX_Administration_SetPlayerPassword(GetRandomUUID());
 
 // Initialize monk weapons
-    NWNX_Weapon_SetWeaponIsMonkWeapon(BASE_ITEM_QUARTERSTAFF);
-    NWNX_Weapon_SetWeaponIsMonkWeapon(BASE_ITEM_SHURIKEN);
+    //NWNX_Weapon_SetWeaponIsMonkWeapon(BASE_ITEM_QUARTERSTAFF);
+    //NWNX_Weapon_SetWeaponIsMonkWeapon(BASE_ITEM_SHURIKEN);
 
 // Apply weapon focus and weapon specialization to creature attacks
     NWNX_Weapon_SetWeaponSpecializationFeat(BASE_ITEM_CSLASHWEAPON, FEAT_WEAPON_SPECIALIZATION_UNARMED_STRIKE);

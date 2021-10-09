@@ -51,9 +51,8 @@ const int K_DEBUG_TEXT = 0;
 // Only the members within distance are included in gap
 const int PARTY_GAP_MAX = 4;
 
-// 4 / (2 + party size*1) = 60% xp with pc size of 2 and 0 henchman
-const float PARTY_SIZE_BASE_MOD = 2.0;
-const float PARTY_SIZE = 1.0;
+// PARTY_SIZE_BASE_MOD / PARTY_SIZE_BASE_MOD - 1.0 + party size = 75% xp with a party size of 2 and a base mod of 3
+const float PARTY_SIZE_BASE_MOD = 3.0; // increase
 
 
 // **** SYSTEM SETTINGS END - YOU SHOULD NOT MODIFY ANYTHING BELOW THIS! *******************************************
@@ -312,7 +311,9 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
        float fTotalSize = IntToFloat(iTotalSize);
        if (fTotalSize < 1.0) fTotalSize = 1.0; //failsafe is party total size was 0 or less
 
-       float fPartyMod = PARTY_SIZE_BASE_MOD/(PARTY_SIZE+(fTotalSize*PARTY_SIZE));
+       float fPartyMod = PARTY_SIZE_BASE_MOD/(PARTY_SIZE_BASE_MOD-1.0+fTotalSize);
+
+       if (fPartyMod > 1.0) fPartyMod = 1.0; //failsafe is party mod is greater than 1
 
        fXP = fXP*fXPPenaltyMod;
 

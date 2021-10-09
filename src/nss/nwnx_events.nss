@@ -236,6 +236,18 @@ _______________________________________
     NUMBER_SPLIT_OFF      | int    | |
 
 _______________________________________
+    ## Item Merge Events
+    - NWNX_ON_ITEM_MERGE_BEFORE
+    - NWNX_ON_ITEM_MERGE_AFTER
+
+    `OBJECT_SELF` = The player attempting to merge an item
+
+    Event Data Tag        | Type   | Notes                                                                             |
+    ----------------------|--------|-----------------------------------------------------------------------------------|
+    ITEM_TO_MERGE_INTO    | object | Convert to object with StringToObject()                                           |
+    ITEM_TO_MERGE         | object | Convert to object with StringToObject() (May be OBJECT_INVALID in the AFTER event)|
+
+_______________________________________
     ## Acquire Item Events
     - NWNX_ON_ITEM_ACQUIRE_BEFORE
     - NWNX_ON_ITEM_ACQUIRE_AFTER
@@ -697,8 +709,6 @@ _______________________________________
     DEFENSIVE_CASTING     | 9
     DIRTY_FIGHTING        | 10
     DEFENSIVE_STANCE      | 11
-
-    @note Requires @ref combatmodes "NWNX_CombatModes" plugin to work.
 
 _______________________________________
     ## Use Skill Events
@@ -1383,6 +1393,18 @@ _______________________________________
     Event Data Tag        | Type   | Notes
     ----------------------|--------|-------
     TARGET                | object | Convert to object with StringToObject() |
+_______________________________________
+    ## Player Device Property Events
+    - NWNX_ON_CLIENT_SET_DEVICE_PROPERTY_BEFORE
+    - NWNX_ON_CLIENT_SET_DEVICE_PROPERTY_AFTER
+
+    `OBJECT_SELF` = The player changing a device property (window size/gui scale)
+
+    Event Data Tag        | Type   | Notes
+    ----------------------|--------|-------
+    PROPERTY              | string | A PLAYER_DEVICE_PROPERTY_GUI_* constant |
+    OLD_VALUE             | int    | |
+    NEW_VALUE             | int    | |
 _______________________________________
 */
 /*
