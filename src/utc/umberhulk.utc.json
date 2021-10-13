@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 9.0
+    "value": 8.0
   },
   "ClassList": {
     "type": "list",
@@ -50,7 +50,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 80
+    "value": 64
   },
   "DecayTime": {
     "type": "dword",
@@ -110,7 +110,21 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 488
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 228
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 14
         }
       },
       {
@@ -143,7 +157,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 80
+    "value": 64
   },
   "Int": {
     "type": "byte",
@@ -175,7 +189,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 104
+    "value": 88
   },
   "NaturalAC": {
     "type": "byte",
@@ -473,21 +487,6 @@
   "SpecAbilityList": {
     "type": "list",
     "value": [
-      {
-        "__struct_id": 4,
-        "Spell": {
-          "type": "word",
-          "value": 251
-        },
-        "SpellCasterLevel": {
-          "type": "byte",
-          "value": 8
-        },
-        "SpellFlags": {
-          "type": "byte",
-          "value": 1
-        }
-      },
       {
         "__struct_id": 4,
         "Spell": {
