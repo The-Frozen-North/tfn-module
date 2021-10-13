@@ -52,13 +52,22 @@ void main()
 
        ValidateMount(oPC);
 
-       if (GetLocalInt(OBJECT_SELF, "explored") == 1)
+       if (GetLocalInt(OBJECT_SELF, "underdark") == 1)
        {
-            ExploreAreaForPlayer(OBJECT_SELF, oPC);
+           SetGuiPanelDisabled(oPC, GUI_PANEL_MINIMAP, TRUE);
        }
        else
        {
-            ImportMinimap(oPC);
+           SetGuiPanelDisabled(oPC, GUI_PANEL_MINIMAP, FALSE);
+
+           if (GetLocalInt(OBJECT_SELF, "explored") == 1)
+           {
+                ExploreAreaForPlayer(OBJECT_SELF, oPC);
+           }
+           else if (GetLocalInt(OBJECT_SELF, "underdark") != 1)
+           {
+                ImportMinimap(oPC);
+           }
        }
 
        string sScript = GetLocalString(OBJECT_SELF, "enter_script");
