@@ -92,12 +92,19 @@ void OpenMerchant(object oMerchant, object oStore, object oPC)
     int nAdjust = 0;
     nAdjust = nPCAppraise + nPCCharisma;
 
+    string sCharm = "";
+    if (GetLocalInt(oMerchant, "charmed") == 1)
+    {
+        sCharm = ", Charmed: 5";
+        nAdjust = nAdjust + 5;
+    }
+
     if (nAdjust != 0) nAdjust = nAdjust/2;
 
     if (nAdjust > nCap) nAdjust = nCap;
     if (nAdjust < -nCap) nAdjust = -nCap;
 
-    FloatingTextStringOnCreature("*Merchant Reaction: " + IntToString(nAdjust)+" (Appraise: "+IntToString(nPCAppraise)+", Charisma: "+IntToString(nPCCharisma)+")*", oPC, FALSE);
+    FloatingTextStringOnCreature("*Merchant Reaction: " + IntToString(nAdjust)+" (Appraise: "+IntToString(nPCAppraise)+", Charisma: "+IntToString(nPCCharisma)+sCharm+")*", oPC, FALSE);
 
     OpenStore(oStore, oPC, -nAdjust, nAdjust);
 }
