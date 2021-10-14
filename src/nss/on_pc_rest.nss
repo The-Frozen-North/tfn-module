@@ -3,6 +3,8 @@
 #include "inc_horse"
 #include "inc_nwnx"
 #include "util_i_csvlists"
+#include "x0_i0_position"
+#include "nwnx_area"
 
 string ChooseSpawnRef(object oArea, int nTarget)
 {
@@ -42,8 +44,10 @@ void main()
 {
     object oPC = GetLastPCRested();
     object oArea = GetArea(oPC);
-    object oObjectLoop, oCurrentPC, oRestWP;
+    object oObjectLoop, oCurrentPC, oCampfire, oValidator;
     location lLocation = GetLocation(oPC);
+    float fFacing = GetFacing(oPC);
+    location lTarget = GenerateNewLocation(oPC, 1.5, fFacing, fFacing);
     int bRanger = FALSE;
     int bHarperScout = FALSE;
     int nAmbushRoll, nAmbushChance, nEnemyGroup;
@@ -96,32 +100,42 @@ void main()
             {
                 if (GetLocalString(oArea, "random"+IntToString(i)) != "") nEnemyGroups++;
             }
-
-// only do ambushes if there are random enemy groups
-            if ((GetLocalInt(oArea, "ambush") == 1) && (nEnemyGroups > 0))
+            SendDebugMessage("pvp area: "+IntToString(NWNX_Area_GetPVPSetting(oArea)));
+            if (NWNX_Area_GetPVPSetting(oArea) > 0)
             {
-
-                nAmbushChance = 40;
+// only do ambushes if there are random enemy groups
+                if ((GetLocalInt(oArea, "ambush") == 1) && (nEnemyGroups > 0))
+                {
+                    nAmbushChance = 40;
+                }
+                else
+                {
+                    nAmbushChance = 0;
+                }
 
 // loop through waypoints to see if there is a rest in progress, in which case we will use if exists
-                oObjectLoop = GetFirstObjectInShape(SHAPE_SPHERE, fSize, lLocation, FALSE, OBJECT_TYPE_WAYPOINT);
+                oObjectLoop = GetFirstObjectInShape(SHAPE_SPHERE, fSize, lLocation, FALSE, OBJECT_TYPE_PLACEABLE);
                 while (GetIsObjectValid(oObjectLoop))
                 {
-                    if (GetTag(oObjectLoop) == "_rest_wp")
+                    if (GetTag(oObjectLoop) == "_campfire")
                     {
-                        SendDebugMessage("oRestWP found, rest in progress.");
-                        oRestWP = oObjectLoop;
+                        SendDebugMessage("oCampfire found, rest in progress.");
+                        oCampfire = oObjectLoop;
                         break;
                     }
 
-                    oObjectLoop = GetNextObjectInShape(SHAPE_SPHERE, fSize, lLocation, FALSE, OBJECT_TYPE_WAYPOINT);
+                    oObjectLoop = GetNextObjectInShape(SHAPE_SPHERE, fSize, lLocation, FALSE, OBJECT_TYPE_PLACEABLE);
                 }
 
 // if it doesnt exist, create a rest in progress
-                if (!GetIsObjectValid(oRestWP))
+                if (!GetIsObjectValid(oCampfire))
                 {
-                   SendDebugMessage("oRestWP was not found, creating a rest in progress.");
-                   oRestWP = CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lLocation, FALSE, "_rest_wp");
+                   SendDebugMessage("oCampfire was not found, creating a rest in progress.");
+                   oValidator = CreateObject(OBJECT_TYPE_CREATURE, "_cf_validator", lTarget);
+
+                   oCampfire = CreateObject(OBJECT_TYPE_PLACEABLE, "_campfire", GetLocation(oValidator), FALSE, "_campfire");
+
+                   DestroyObject(oValidator);
 
 // loop through PCs in the same vicinity to check if there is a ranger or harper scout
                    oCurrentPC = GetFirstPC();
@@ -176,7 +190,7 @@ void main()
 // 10% of the time the ambush will never trigger with a message
                     if (nAmbushRoll <= 10)
                     {
-                        SetLocalInt(oRestWP, "hide", 1);
+                        SetLocalInt(oCampfire, "hide", 1);
                     }
 // if there is a ranger or harper scout, decrease the chance of an ambush
                     if (nAmbushRoll <= nHideChance)
@@ -192,7 +206,7 @@ void main()
                         else if (bRanger) {sHideClass = "Ranger";}
                         else if (bHarperScout) {sHideClass = "Harper Scout";}
 
-                        SetLocalString(oRestWP, "hide_class", sHideClass);
+                        SetLocalString(oCampfire, "hide_class", sHideClass);
                     }
 // otherwise, trigger an ambush
                     else if (nAmbushRoll <= nAmbushChance)
@@ -200,22 +214,22 @@ void main()
                         fAmbushTime = IntToFloat(4+d6());
                         SendDebugMessage("Ambush will be created in: "+FloatToString(fAmbushTime)+" seconds");
 
+                        DelayCommand(fAmbushTime+1.0, AssignCommand(oCampfire, PlayAnimation(ANIMATION_PLACEABLE_DEACTIVATE)));
+                        DestroyObject(oCampfire, fAmbushTime+10.0);
                         DelayCommand(fAmbushTime, CreateAmbush(Random(nEnemyGroups)+1, oArea, lLocation));
                         DelayCommand(fAmbushTime, FloatingTextStringOnCreature(sSpotted, oPC, FALSE));
                     }
-
-                    DestroyObject(oRestWP, 15.0);
+                    else
+                    {
+                        DelayCommand(30.0, AssignCommand(oCampfire, PlayAnimation(ANIMATION_PLACEABLE_DEACTIVATE)));
+                        DestroyObject(oCampfire, 60.0);
+                    }
                  }
-                 sHideClass = GetLocalString(oRestWP, "hide_class");
+                 sHideClass = GetLocalString(oCampfire, "hide_class");
 
-                 if (GetLocalInt(oRestWP, "hide") == 1) {FloatingTextStringOnCreature(sHide, oPC, TRUE);}
+                 if (GetLocalInt(oCampfire, "hide") == 1) {FloatingTextStringOnCreature(sHide, oPC, TRUE);}
                  else if ((sHideClass == "Ranger") || (sHideClass == "Harper Scout")) {FloatingTextStringOnCreature(sHidePrepend+sHideClass+sHideAppend, oPC, FALSE);}
-
-             }
-             else
-             {
-                SendDebugMessage("No random enemy spawns were found, so skipping ambush.");
-             }
+            }
 // =======================================
 // END REST AMBUSH CODE
 // =======================================
