@@ -120,6 +120,8 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_TRAP_ENTER_BEFORE", "on_trap_enterb");
 
+    NWNX_Events_SubscribeEvent("NWNX_ON_SPELL_INTERRUPTED_AFTER", "on_spellinta");
+
 // Whitelist DMs.
     NWNX_Events_SubscribeEvent("NWNX_ON_CLIENT_CONNECT_BEFORE", "on_pc_connectb");
 
