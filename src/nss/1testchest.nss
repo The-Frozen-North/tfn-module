@@ -18,7 +18,7 @@ void main()
     int i;
     for (i = 0; i < 100; i++)
     {
-        GenerateTierItem(6, 6, OBJECT_SELF, "Armor");
+        GenerateTierItem(6, 6, OBJECT_SELF, "Weapon");
     }
 
     SendMessageToPC(oPC, "T1: "+IntToString(GetLocalInt(GetModule(), "T1")));

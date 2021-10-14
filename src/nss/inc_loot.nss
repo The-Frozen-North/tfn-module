@@ -265,6 +265,11 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
         oItem = GetNextItemInInventory(oChest);
     }
 
+    if (GetPlotFlag(oItem) && GetObjectType(oContainer) == OBJECT_TYPE_STORE)
+    {
+        return OBJECT_INVALID; // do not allow plot items to be created on stores
+    }
+
     object oNewItem = CopyItem(oItem, oContainer, TRUE);
 
     int nCount = GetLocalInt(GetModule(), sType);

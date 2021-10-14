@@ -615,11 +615,11 @@ void DistributeTreasureToStores(object oItem)
         if (GetIsItemPropertyValid(GetFirstItemProperty(oItem)) && (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT))
         {
             CreateFabricator(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));
+            SetTag(oItem, "crafted_ammo");
+            SetPlotFlag(oItem, TRUE);
         }
-        else
-        {
-            oNewItem = CopyItemToExistingTarget(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));
-        }
+
+        oNewItem = CopyItemToExistingTarget(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));
 
         if (nIdentified != 1) SetIdentified(oNewItem, FALSE);
 
