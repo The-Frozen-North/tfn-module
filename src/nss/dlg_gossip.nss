@@ -150,7 +150,7 @@ int StartingConditional()
 // ====================================
 // COMMONER
 // ====================================
-    else if (sResRef == "commoner")
+    else if (FindSubString(sResRef, "commoner") > -1)
     {
         if (GetItemInSlot(INVENTORY_SLOT_CHEST, oPC) == OBJECT_INVALID) // naked
         {
@@ -306,7 +306,7 @@ int StartingConditional()
 // ====================================
 // NOBLEMAN/NOBLEWOMAN
 // ====================================
-    else if (GetStringLeft(sResRef, 5) == "noble")
+    else if (FindSubString(sResRef, "noble") > -1)
     {
         if (GetItemInSlot(INVENTORY_SLOT_CHEST, oPC) == OBJECT_INVALID) // naked
         {
