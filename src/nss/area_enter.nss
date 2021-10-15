@@ -73,16 +73,16 @@ void main()
        string sScript = GetLocalString(OBJECT_SELF, "enter_script");
        if (sScript != "") ExecuteScript(sScript, OBJECT_SELF);
 
-       if (GetLocalInt(OBJECT_SELF, "instance") == 1)
-       {
-           string sResRef = GetResRef(OBJECT_SELF);
+       //if (GetLocalInt(OBJECT_SELF, "instance") == 1)
+       //{
+           //string sResRef = GetResRef(OBJECT_SELF);
 
            int nRefresh = GetLocalInt(OBJECT_SELF, "refresh");
            if (nRefresh == 0)
            {
-                SendDebugMessage(sResRef+" refresh started", TRUE);
+                SendDebugMessage(GetResRef(OBJECT_SELF)+" refresh started", TRUE);
                 SetLocalInt(OBJECT_SELF, "refresh", 1);
            }
-       }
+       //}
 }
 

@@ -1,6 +1,6 @@
 #include "inc_ai_event"
 #include "inc_ai_time"
-#include "inc_respawn"
+//#include "inc_respawn"
 #include "inc_general"
 #include "inc_henchman"
 #include "inc_follower"
@@ -19,7 +19,7 @@ void main()
     if (GetIsObjectValid(oKiller))
         SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
 
-    StartRespawn();
+    //StartRespawn();
 
 // only give credit if a PC or their associate killed it or if it was already tagged
     if (GetIsPC(GetMaster(oKiller)) || GetIsPC(oKiller) || (GetLocalInt(OBJECT_SELF, "player_tagged") == 1))

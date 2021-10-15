@@ -56,7 +56,7 @@ void main()
     if (sScript != "") ExecuteScript(sScript, OBJECT_SELF);
 
 // only proceed below if this area has instanced objects
-    if (GetLocalInt(OBJECT_SELF, "instance") != 1) return;
+    //if (GetLocalInt(OBJECT_SELF, "instance") != 1) return;
 
 // This is the number to fall back to if a refresh was to be started, but there were players
     int nRefreshRestart = 400;

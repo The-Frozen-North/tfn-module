@@ -66,7 +66,7 @@ void main()
 
      int iRows = GetAreaSize(AREA_WIDTH, OBJECT_SELF);
      int iColumns = GetAreaSize(AREA_HEIGHT, OBJECT_SELF);
-     int bInstance = GetLocalInt(OBJECT_SELF, "instance");
+     //int bInstance = GetLocalInt(OBJECT_SELF, "instance");
 
 // ==============================
 // Treasures
@@ -184,8 +184,8 @@ void main()
 // Doors
 // ==============================
 
-     if (bInstance == 1)
-     {
+     //if (bInstance == 1)
+     //{
 
         int nDoors = GetLocalInt(OBJECT_SELF, "doors");
         object oDoor, oTransitionDoor;
@@ -217,17 +217,17 @@ void main()
                 SetLocked(oDoor, TRUE);
             }
         }
-}
+    //}
 
 // ==============================
 // Hand-placed creatures
 // ==============================
 
-    if (bInstance == 1)
-    {
+    //if (bInstance == 1)
+    //{
 // clean up old creatures
         int nOldCreature;
-        for (nOldCreature = 0; nOldCreature < 50; nOldCreature++)
+        for (nOldCreature = 0; nOldCreature < 200; nOldCreature++)
             DestroyObject(GetLocalObject(OBJECT_SELF, "creature"+IntToString(nOldCreature)));
 
          int nCreatures = GetLocalInt(OBJECT_SELF, "creatures");
@@ -249,14 +249,14 @@ void main()
                 SetLocalObject(OBJECT_SELF, "creature"+IntToString(i), oCreature);
             }
          }
-     }
+     //}
 
 // ==============================
 // Random Creature Spawns
 // ==============================
      string sEncounter;
      int nRandomSpawnPointTotal;
-     int i;
+     //int i;
      for (i = 1; i < 10; i++)
      {
         sEncounter = GetLocalString(OBJECT_SELF, "random"+IntToString(i));

@@ -340,6 +340,21 @@
                     "__struct_id": 3,
                     "Spell": {
                       "type": "word",
+                      "value": 10
+                    },
+                    "SpellFlags": {
+                      "type": "byte",
+                      "value": 0
+                    },
+                    "SpellMetaMagic": {
+                      "type": "byte",
+                      "value": 1
+                    }
+                  },
+                  {
+                    "__struct_id": 3,
+                    "Spell": {
+                      "type": "word",
                       "value": 58
                     },
                     "SpellFlags": {
@@ -399,26 +414,6 @@
                     "SpellMetaMagic": {
                       "type": "byte",
                       "value": 0
-                    }
-                  }
-                ]
-              },
-              "MemorizedList5": {
-                "type": "list",
-                "value": [
-                  {
-                    "__struct_id": 3,
-                    "Spell": {
-                      "type": "word",
-                      "value": 10
-                    },
-                    "SpellFlags": {
-                      "type": "byte",
-                      "value": 1
-                    },
-                    "SpellMetaMagic": {
-                      "type": "byte",
-                      "value": 1
                     }
                   }
                 ]
@@ -1146,7 +1141,7 @@
         },
         "IsImmortal": {
           "type": "byte",
-          "value": 0
+          "value": 1
         },
         "IsPC": {
           "type": "byte",
@@ -1187,7 +1182,7 @@
         },
         "Plot": {
           "type": "byte",
-          "value": 1
+          "value": 0
         },
         "PortraitId": {
           "type": "word",

@@ -137,7 +137,7 @@ void main()
        int nDoors = 0;
        object oObject = GetFirstObjectInArea(oArea);
        int nType, nQuestLoop, nSpawnCount;
-       int bInstance = GetLocalInt(oArea, "instance");
+       //int bInstance = GetLocalInt(oArea, "instance");
        vector vTreasureVector, vCreatureVector;
        float fTreasureOrientation;
        object oModule = GetModule();
@@ -168,6 +168,20 @@ void main()
 
                    if ( (GetLocalString(oObject, "quest1") != "" || GetLocalString(oObject, "merchant") != "") && (GetPlotFlag(oObject) || GetImmortal(oObject)) )
                           SetLocalInt(oObject, "dm_immune", 1);
+
+                   // always skip immortals. assume they are special NPCs that are not instances
+                   if (GetImmortal(oObject))
+                   {
+                       oObject = GetNextObjectInArea(oArea);
+                       continue;
+                   }
+
+                   // always skip henchman
+                   if (GetStringLeft(GetResRef(oObject), 4) == "hen_")
+                   {
+                       oObject = GetNextObjectInArea(oArea);
+                       continue;
+                   }
                }
 
                if (GetLocalInt(oObject, "skip") == 1)
@@ -194,14 +208,15 @@ void main()
                     SetPlotFlag(oObject, TRUE);
 
 // instance doors get new scriptz and added to collection of doors
-                    if (bInstance == 1)
-                    {
+                    //if (bInstance == 1)
+                    //{
+                    // every area is instanced now!
                         SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_UNLOCK, "unlock");
                         SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_MELEE_ATTACKED, "bash_lock");
                         nDoors = nDoors + 1;
                         if (GetLocked(oObject)) SetLocalInt(oArea, "door_locked"+IntToString(nDoors), 1);
                         SetLocalObject(oArea, "door"+IntToString(nDoors), oObject);
-                    }
+                    //}
                  break;
                  case OBJECT_TYPE_CREATURE:
                      if (GetStringLeft(GetResRef(oObject), 6) == "random")
@@ -212,8 +227,8 @@ void main()
                         SetLocalLocation(oArea, sSpawnTarget+"_spawn_point"+IntToString(nSpawnCount), GetLocation(oObject));
                         DestroyObject(oObject);
                      }
-                     else if (bInstance == 1)
-                     {
+                     //else if (bInstance == 1)
+                     else {
                           nCreatures = nCreatures + 1;
 
                           vCreatureVector = GetPosition(oObject);
@@ -240,7 +255,8 @@ void main()
                           DestroyObject(oObject);
                    }
 // If it is a treasure, count it, create the treasure WP, store the resref on it, then delete the treasure
-                   else if (bInstance == 1 && GetStringLeft(GetResRef(oObject), 6) == "treas_")
+                   //else if (bInstance == 1 && GetStringLeft(GetResRef(oObject), 6) == "treas_")
+                   else if (GetStringLeft(GetResRef(oObject), 6) == "treas_")
                    {
                        nTreasures = nTreasures + 1;
 

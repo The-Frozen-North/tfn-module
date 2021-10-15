@@ -9836,7 +9836,7 @@
         },
         "ChallengeRating": {
           "type": "float",
-          "value": 3.0
+          "value": 4.0
         },
         "ClassList": {
           "type": "list",
@@ -10071,7 +10071,7 @@
         },
         "Conversation": {
           "type": "resref",
-          "value": "terari_home"
+          "value": "terari"
         },
         "CRAdjust": {
           "type": "int",
@@ -10092,9 +10092,7 @@
         "Description": {
           "id": 59507,
           "type": "cexolocstring",
-          "value": {
-            "0": "This elf seems to be blushing, probably because of his friends joking about his encounter with the sirines."
-          }
+          "value": {}
         },
         "Dex": {
           "type": "byte",
@@ -10494,7 +10492,7 @@
         },
         "IsImmortal": {
           "type": "byte",
-          "value": 0
+          "value": 1
         },
         "IsPC": {
           "type": "byte",
@@ -10534,7 +10532,7 @@
         },
         "Plot": {
           "type": "byte",
-          "value": 1
+          "value": 0
         },
         "PortraitId": {
           "type": "word",
@@ -10823,7 +10821,7 @@
         },
         "Tag": {
           "type": "cexostring",
-          "value": "TERARI_HOME"
+          "value": "TERARI"
         },
         "Tail_New": {
           "type": "dword",
@@ -10844,21 +10842,6 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "quest1_prereq"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 3
-              },
-              "Value": {
-                "type": "cexostring",
-                "value": "02_q_druid_terari"
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
                 "value": "quest1"
               },
               "Type": {
@@ -10867,157 +10850,7 @@
               },
               "Value": {
                 "type": "cexostring",
-                "value": "01_b_sirine"
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "quest2"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 3
-              },
-              "Value": {
-                "type": "cexostring",
-                "value": "03_b_sirine"
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "quest2_bluff_dc"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 27
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "quest2_reward_xp_level"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 5
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "quest2_reward_xp_tier"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 2
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "quest2_reward_gold"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 400
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "quest2_prereq"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 3
-              },
-              "Value": {
-                "type": "cexostring",
                 "value": "02_q_druid_terari"
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "quest1_reward_item"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 3
-              },
-              "Value": {
-                "type": "cexostring",
-                "value": "potion7"
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "skip"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 1
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "heartbeat_script"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 3
-              },
-              "Value": {
-                "type": "cexostring",
-                "value": "hb_q_talktome"
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
-                "value": "companion"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 4
               }
             }
           ]
