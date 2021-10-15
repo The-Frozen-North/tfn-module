@@ -599,11 +599,21 @@ int bkAttemptToOpenLock(object oLocked)
 
     if (!bCanDo
         //&& GetAbilityScore(OBJECT_SELF, ABILITY_STRENGTH) >= 16 Removed since you now have control over their bashing via dialog
-        && !GetPlotFlag(oLocked)
-        && (GetIsDoorActionPossible(oLocked,
-                                    DOOR_ACTION_BASH)
-            || GetIsPlaceableObjectActionPossible(oLocked,
-                                                  PLACEABLE_ACTION_BASH))) {
+        //&& !GetPlotFlag(oLocked)
+        // pok - modify for tfn lock bashing
+        // check if they have enough strength to bash it open...
+        && (GetLockUnlockDC(oLocked) <= 20+GetAbilityModifier(ABILITY_STRENGTH, OBJECT_SELF))
+        // henchman with ranged weapons cannot lock bash!
+        && !(GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, OBJECT_SELF)))
+        // let's also check to see if the door is locked
+        && (GetLocked(oLocked))
+        //&& (GetIsDoorActionPossible(oLocked,
+        //                            DOOR_ACTION_BASH)
+        //    || GetIsPlaceableObjectActionPossible(oLocked,
+        //                                          PLACEABLE_ACTION_BASH))) {
+        // this had to be commented out because it checks for plotness of doors/placeables
+        // which we do set in our system
+        ){
         ClearActions(CLEAR_X0_INC_HENAI_AttemptToOpenLock3);
         VoiceCanDo();
         ActionWait(1.0);
