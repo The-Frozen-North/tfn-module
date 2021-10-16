@@ -102,7 +102,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 156
+    "value": 160
   },
   "Cursed": {
     "type": "byte",
@@ -110,7 +110,9 @@
   },
   "DescIdentified": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Wizards don these robes to keep them warm as they pore over musty tomes of magical lore in cold dank basement libraries, and it also increases their insight into magical arts."
+    }
   },
   "Description": {
     "type": "cexolocstring",
@@ -131,7 +133,9 @@
   "LocalizedName": {
     "id": 12906,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Lesser Wizard's Robe"
+    }
   },
   "Metal1Color": {
     "type": "byte",
@@ -160,11 +164,42 @@
         },
         "CostTable": {
           "type": "byte",
+          "value": 13
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 0
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 13
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 10
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
           "value": 25
         },
         "CostValue": {
           "type": "word",
-          "value": 3
+          "value": 1
         },
         "Param1": {
           "type": "byte",
@@ -181,6 +216,37 @@
         "Subtype": {
           "type": "word",
           "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 25
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 1
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 52
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 16
         }
       },
       {

@@ -38,7 +38,7 @@
   },
   "ArmorPart_Neck": {
     "type": "byte",
-    "value": 1
+    "value": 4
   },
   "ArmorPart_Pelvis": {
     "type": "byte",
@@ -90,11 +90,11 @@
   },
   "Cloth1Color": {
     "type": "byte",
-    "value": 25
+    "value": 103
   },
   "Cloth2Color": {
     "type": "byte",
-    "value": 25
+    "value": 102
   },
   "Comment": {
     "type": "cexostring",
@@ -102,7 +102,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 331
+    "value": 1587
   },
   "Cursed": {
     "type": "byte",
@@ -116,34 +116,36 @@
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": ""
+    }
   },
   "Identified": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "Leather1Color": {
     "type": "byte",
-    "value": 46
+    "value": 103
   },
   "Leather2Color": {
     "type": "byte",
-    "value": 46
+    "value": 102
   },
   "LocalizedName": {
     "id": 12909,
     "type": "cexolocstring",
     "value": {
-      "0": "Lesser Sorcerer's Robe"
+      "0": "Sorcerer's Robe"
     }
   },
   "Metal1Color": {
     "type": "byte",
-    "value": 12
+    "value": 8
   },
   "Metal2Color": {
     "type": "byte",
-    "value": 12
+    "value": 8
   },
   "PaletteID": {
     "type": "byte",
@@ -226,6 +228,37 @@
         },
         "CostTable": {
           "type": "byte",
+          "value": 13
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 2
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 13
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 9
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
           "value": 0
         },
         "CostValue": {
@@ -265,6 +298,6 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "armor120"
+    "value": "armor123"
   }
 }
