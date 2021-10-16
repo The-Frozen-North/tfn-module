@@ -103,6 +103,7 @@ void DismissFollower(object oFollower)
     PlayVoiceChat(VOICE_CHAT_GOODBYE, oFollower);
     AssignNormalScripts(oFollower);
     AssignCommand(oFollower, ActionMoveToLocation(GetLocalLocation(oFollower, "spawn")));
+    DestroyObject(oFollower, 10.0);
 }
 
 void CheckOrRehireFollowerMasterAssignment(object oFollower)

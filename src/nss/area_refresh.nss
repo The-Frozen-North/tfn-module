@@ -227,9 +227,15 @@ void main()
     //{
 // clean up old creatures
         int nOldCreature;
+        object oOldCreature;
         for (nOldCreature = 0; nOldCreature < 200; nOldCreature++)
-            DestroyObject(GetLocalObject(OBJECT_SELF, "creature"+IntToString(nOldCreature)));
+         {
+            oOldCreature = GetLocalObject(OBJECT_SELF, "creature"+IntToString(nOldCreature));
 
+// do not clean up creatures that have a PC master
+            if (GetIsObjectValid(oOldCreature) && GetLocalString(oOldCreature, "master") == "")
+                DestroyObject(oOldCreature);
+         }
          int nCreatures = GetLocalInt(OBJECT_SELF, "creatures");
 
          if (nCreatures > 0)
