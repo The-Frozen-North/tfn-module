@@ -2680,7 +2680,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 38
+                "value": 36
               },
               "IsChild": {
                 "type": "byte",
@@ -2699,7 +2699,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 36
+                "value": 35
               },
               "IsChild": {
                 "type": "byte",
@@ -2793,7 +2793,31 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "fol_chknone"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 37
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
@@ -2810,7 +2834,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Indeed it is. I hope you have this written down, because I'm not saying it twice. On your way, recruit. And don't forget to get help from another militia member or a henchman from the Trade of Blades."
+            "0": "Indeed it is. I hope you have this written down, because I'm not saying it twice. On your way, recruit. And don't forget to get help from a henchman from the Trade of Blades."
           }
         }
       },
@@ -2847,7 +2871,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "fol_chknone"
               },
               "ConditionParams": {
                 "type": "list",
@@ -2855,11 +2879,15 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 35
+                "value": 37
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
             }
           ]
@@ -2879,7 +2907,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Is gold truly what motivates you? Fine. You'll get a reward for each district you bring order too, and you'll also get a larger reward when all three are saved. Be sure to get help from another militia member or a henchman from the Trade of Blades."
+            "0": "Is gold truly what motivates you? Fine. You'll get a reward for each district you bring order too, and you'll also get a larger reward when all three are saved. Be sure to team up with a henchman from the Trade of Blades."
           }
         }
       },
@@ -2916,7 +2944,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "fol_chknone"
               },
               "ConditionParams": {
                 "type": "list",
@@ -2928,7 +2956,11 @@
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
             }
           ]
@@ -2948,7 +2980,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "We don't have any other options. If you don't think you can handle it yourself, try enlisting a henchman from the Trade of Blades or working with another recruit."
+            "0": "We don't have any other options. If you don't think you can handle it yourself, try enlisting a henchman from the Trade of Blades."
           }
         }
       },
@@ -2980,7 +3012,27 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "fol_chknone"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 37
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
@@ -2997,7 +3049,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Now, on your way, recruit. And don't forget to get help from another militia member, as they are on the same mission as you."
+            "0": "On your way, recruit. Be sure to get help from a henchman from the Trade of Blades -  they are on the same mission as you."
           }
         }
       },
@@ -3033,7 +3085,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_hire_militia"
         },
         "Sound": {
           "type": "resref",
@@ -3046,7 +3098,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "On your way, recruit. Be sure to get help from another militia member or perhaps a henchman from the Trade of Blades -  they are on the same mission as you."
+            "0": "Ah, I see we have another fresh recruit from the academy. You guys should team up and be on your way. Good luck out there!"
           }
         }
       }
@@ -3054,7 +3106,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 1108
+    "value": 1091
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -5348,51 +5400,6 @@
         },
         "EntriesList": {
           "type": "list",
-          "value": []
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": ""
-          }
-        }
-      },
-      {
-        "__struct_id": 36,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
           "value": [
             {
               "__struct_id": 0,
@@ -5435,7 +5442,7 @@
         }
       },
       {
-        "__struct_id": 37,
+        "__struct_id": 36,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -5495,12 +5502,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": ""
+            "0": "I'll see what I can do."
           }
         }
       },
       {
-        "__struct_id": 38,
+        "__struct_id": 37,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -5560,7 +5567,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I'll see what I can do."
+            "0": ""
           }
         }
       }
