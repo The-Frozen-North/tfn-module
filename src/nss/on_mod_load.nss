@@ -91,6 +91,9 @@ void main()
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_PVP_SETTING, 2);
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_VALIDATE_SPELLS, TRUE);
 
+    SetCustomToken(25000, "</c>");
+    SetCustomToken(25001, "<c þþ>"); // cyan
+
 // Set a password until everything is initialized and ready
     NWNX_Administration_SetPlayerPassword(GetRandomUUID());
 

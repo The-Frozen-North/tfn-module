@@ -32,6 +32,8 @@ void main()
         SetLocalInt(OBJECT_SELF, "BASE_RACE", GetRacialType(oPC));
     }
 
+    SetTlkOverride(10303, "<CUSTOM25001>"+GetStringByStrRef(10303)+"<CUSTOM25000>");
+
     string sType = "player";
     string sMessage = PlayerDetailedName(oPC)+" has entered the game as a "+sType;
 
@@ -44,7 +46,7 @@ void main()
             if (GetEffectType(e) == EFFECT_TYPE_VISUALEFFECT &&
                 GetEffectInteger(e, 0) == VFX_DUR_ENTANGLE)
                 RemoveEffect(oPC, e);
-            
+
             e = GetNextEffect(oPC);
         }
     }
