@@ -1,12 +1,11 @@
 #include "nwnx_events"
-#include "nwnx_object"
 #include "inc_horse"
 
 void main()
 {
     if (StringToInt(NWNX_Events_GetEventData("SKILL_ID")) == SKILL_PICK_POCKET)
     {
-        object oTarget = NWNX_Object_StringToObject(NWNX_Events_GetEventData("TARGET_OBJECT_ID"));
+        object oTarget = StringToObject(NWNX_Events_GetEventData("TARGET_OBJECT_ID"));
 
         if (GetIsMounted(OBJECT_SELF))
         {

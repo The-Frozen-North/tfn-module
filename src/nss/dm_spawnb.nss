@@ -1,10 +1,9 @@
 #include "nwnx_events"
-#include "nwnx_object"
 #include "inc_debug"
 
 void main()
 {
-    object oArea = NWNX_Object_StringToObject(NWNX_Events_GetEventData("AREA"));
+    object oArea = StringToObject(NWNX_Events_GetEventData("AREA"));
 
     int nObjectType = StringToInt(NWNX_Events_GetEventData("OBJECT_TYPE"));
 

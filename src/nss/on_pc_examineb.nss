@@ -1,11 +1,10 @@
 #include "nwnx_admin"
 #include "nwnx_events"
-#include "nwnx_object"
 #include "inc_craft"
 
 void main()
 {
-    object oObject = NWNX_Object_StringToObject(NWNX_Events_GetEventData("EXAMINEE_OBJECT_ID"));
+    object oObject = StringToObject(NWNX_Events_GetEventData("EXAMINEE_OBJECT_ID"));
 
     if (GetObjectType(oObject) == OBJECT_TYPE_CREATURE && GetFactionEqual(oObject))
     {

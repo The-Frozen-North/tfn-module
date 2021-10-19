@@ -4,7 +4,7 @@
 #include "inc_treasure"
 #include "inc_persist"
 #include "util_i_csvlists"
-#include "nwnx_time"
+#include "inc_sqlite_time"
 
 const float AOE_QUEST_SIZE = 75.0;
 
@@ -213,7 +213,7 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FAL
     {
         string sVar = sQuestName+"_reset";
 
-        if (SQLocalsPlayer_GetInt(oPC, sVar) == 0) SQLocalsPlayer_SetInt(oPC, sVar, NWNX_Time_GetTimeStamp()+BOUNTY_RESET_TIME);
+        if (SQLocalsPlayer_GetInt(oPC, sVar) == 0) SQLocalsPlayer_SetInt(oPC, sVar, SQLite_GetTimeStamp()+BOUNTY_RESET_TIME);
     }
 
     FloatingTextStringOnCreature("*Your journal has been updated*", oPC, FALSE);

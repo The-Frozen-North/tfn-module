@@ -1,12 +1,11 @@
 #include "nwnx_events"
-#include "nwnx_object"
 
 void main()
 {
     int nPrice = StringToInt(NWNX_Events_GetEventData("PRICE"));
     if (GetIsPC(OBJECT_SELF) && GetGold(OBJECT_SELF) >= nPrice)
     {
-        object oItem = NWNX_Object_StringToObject(NWNX_Events_GetEventData("ITEM"));
+        object oItem = StringToObject(NWNX_Events_GetEventData("ITEM"));
         object oKhadala = GetObjectByTag("khadala");
         if (GetTag(oItem) == "gamble")
         {

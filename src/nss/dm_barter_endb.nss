@@ -1,10 +1,9 @@
 #include "nwnx_events"
-#include "nwnx_object"
 #include "inc_nwnx"
 
 void main()
 {
-    object oTarget = NWNX_Object_StringToObject(NWNX_Events_GetEventData("BARTER_TARGET"));
+    object oTarget = StringToObject(NWNX_Events_GetEventData("BARTER_TARGET"));
     object oInitiator = OBJECT_SELF;
 
     object oDM;
@@ -31,13 +30,13 @@ void main()
         string sTargetItems, sInitiatorItems;
         for (i = 0; i < 32; i++)
         {
-            oInitiatorItem = NWNX_Object_StringToObject(NWNX_Events_GetEventData("BARTER_INITIATOR_ITEM"+IntToString(i)));
+            oInitiatorItem = StringToObject(NWNX_Events_GetEventData("BARTER_INITIATOR_ITEM"+IntToString(i)));
             if (GetIsObjectValid(oInitiatorItem))
             {
                 sInitiatorItems = sInitiatorItems + IntToString(GetItemStackSize(oInitiatorItem))+"x "+GetName(oInitiatorItem)+" ";
             }
 
-            oTargetItem = NWNX_Object_StringToObject(NWNX_Events_GetEventData("BARTER_TARGET_ITEM"+IntToString(i)));
+            oTargetItem = StringToObject(NWNX_Events_GetEventData("BARTER_TARGET_ITEM"+IntToString(i)));
             if (GetIsObjectValid(oTargetItem))
             {
                 sTargetItems = sTargetItems + IntToString(GetItemStackSize(oTargetItem))+"x "+GetName(oTargetItem)+" ";

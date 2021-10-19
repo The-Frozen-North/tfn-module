@@ -5,7 +5,7 @@
 #include "nwnx_damage"
 #include "inc_nwnx"
 #include "inc_general"
-#include "nwnx_time"
+#include "inc_sqlite_time"
 #include "inc_mappin"
 
 void CreateItemIfBlank(object oPC, string sItem)
@@ -33,6 +33,8 @@ void main()
     }
 
     SetTlkOverride(10303, "<CUSTOM25001>"+GetStringByStrRef(10303)+"<CUSTOM25000>");
+
+    SetCampaignString(GetPCPublicCDKey(oPC), "player_name", GetPCPlayerName(oPC));
 
     string sType = "player";
     string sMessage = PlayerDetailedName(oPC)+" has entered the game as a "+sType;
@@ -84,7 +86,7 @@ void main()
     if (GetXP(oPC) > 0)
     {
         GetQuestEntries(oPC);
-        RefreshCompletedBounties(oPC, NWNX_Time_GetTimeStamp(), GetLocalString(GetModule(), "bounties"));
+        RefreshCompletedBounties(oPC, SQLite_GetTimeStamp(), GetLocalString(GetModule(), "bounties"));
 
 // henchman need to be rehired as they are "fired" when logging out
         RehireHenchman(oPC);

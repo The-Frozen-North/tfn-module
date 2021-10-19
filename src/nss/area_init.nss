@@ -202,10 +202,13 @@ void main()
                  break;
                  case OBJECT_TYPE_DOOR:
 // nullify this, doors with an on click script do not function
-                   SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLICKED, "");
+                 SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLICKED, "");
 
 // all doors are plot
-                    SetPlotFlag(oObject, TRUE);
+                 SetPlotFlag(oObject, TRUE);
+
+                 if (GetStringLeft(GetResRef(oObject), 5) != "_home")
+                 {
 
 // instance doors get new scriptz and added to collection of doors
                     //if (bInstance == 1)
@@ -217,6 +220,7 @@ void main()
                         if (GetLocked(oObject)) SetLocalInt(oArea, "door_locked"+IntToString(nDoors), 1);
                         SetLocalObject(oArea, "door"+IntToString(nDoors), oObject);
                     //}
+                 }
                  break;
                  case OBJECT_TYPE_CREATURE:
                      if (GetStringLeft(GetResRef(oObject), 6) == "random")

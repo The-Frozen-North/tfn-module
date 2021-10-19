@@ -2,6 +2,7 @@
 #include "x2_inc_restsys"
 #include "inc_treasure"
 #include "inc_webhook"
+#include "inc_housing"
 #include "nwnx_admin"
 #include "nwnx_weapon"
 #include "nwnx_events"
@@ -9,13 +10,53 @@
 #include "util_i_csvlists"
 #include "nwnx_chat"
 #include "nwnx_feedback"
-#include "nwnx_time"
+#include "inc_sqlite_time"
 #include "70_inc_switches"
+#include "util_i_csvlists"
 
 void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)
 {
     object oContainer = RetrieveCampaignObject("treasures", sTag, Location(GetObjectByTag("_TREASURE"), Vector(x, y, z), 0.0));
     if (GetIsObjectValid(oContainer)) SendDebugMessage("loaded "+GetName(oContainer));
+}
+
+void InitializeHouses(string sArea)
+{
+    object oArea = GetObjectByTag(sArea);
+
+    object oDoor = GetFirstObjectInArea(oArea);
+    string sResRef, sCoordinates, sTag;
+    vector vVector;
+
+    string sList;
+
+    while (GetIsObjectValid(oDoor))
+    {
+        sResRef = GetResRef(oDoor);
+
+        if (GetObjectType(oDoor) == OBJECT_TYPE_DOOR && GetStringLeft(sResRef, 5) == "_home")
+        {
+            vVector = GetPosition(oDoor);
+            sCoordinates = IntToString(FloatToInt(vVector.x))+IntToString(FloatToInt(vVector.y));
+            // use the x and y coordinates to determine the unique location of a door
+            // it's okay to convert it from a float to int as we don't need/want the decimals
+
+            sTag = GetTag(oArea)+"_"+GetTag(oDoor)+sCoordinates;
+
+            sList = AddListItem(sList, sTag, TRUE);
+
+            SetTag(oDoor, sTag+"_exterior_door");
+
+            SetLocalString(oDoor, "coordinates", sCoordinates);
+            SetLocalString(oDoor, "area", sTag);
+
+            InstanceHouseArea(sCoordinates, sTag, GetFacing(oDoor));
+        }
+
+        oDoor = GetNextObjectInArea(oArea);
+    }
+
+    SetCampaignString("housing", sArea, sList);
 }
 
 void main()
@@ -24,7 +65,7 @@ void main()
     NWNX_Util_SetInstructionLimit(52428888);
 
 // We do some things different on DEV and local (without NWNX), such as ignoring webhooks and having verbose debug messages
-    if ((NWNX_Time_GetTimeStamp() == 0) || FindSubString(NWNX_Administration_GetServerName(), "DEV") > -1)
+    if ((SQLite_GetTimeStamp() == 0) || FindSubString(NWNX_Administration_GetServerName(), "DEV") > -1)
     {
         SetLocalInt(OBJECT_SELF, "dev", 1);
         SetLocalInt(OBJECT_SELF, "debug_verbose", 1);
@@ -461,6 +502,8 @@ void main()
     }
     SetLocalInt(GetModule(), "treasure_ready", 1);
     SendDebugMessage("Merchants created", TRUE);
+
+    InitializeHouses("begg");
 
 // Treasures cause heavy delay on starting a module
 // It can be skipped, but it will cause merchants to lose most of their inventory

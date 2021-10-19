@@ -1,10 +1,9 @@
 #include "nwnx_events"
-#include "nwnx_object"
 #include "inc_debug"
 
 void main()
 {
-    object oArea = NWNX_Object_StringToObject(NWNX_Events_GetEventData("TARGET_AREA"));
+    object oArea = StringToObject(NWNX_Events_GetEventData("TARGET_AREA"));
 
     if (!GetIsObjectValid(oArea))
     {

@@ -5,7 +5,7 @@
 #include "nwnx_util"
 #include "inc_sql"
 #include "inc_general"
-#include "nwnx_time"
+#include "inc_sqlite_time"
 #include "nwnx_player"
 
 void DoRevive(object oDead)
@@ -142,7 +142,7 @@ void main()
         if (nTickCount <= 50) SendDebugMessage("Low tick count detected: "+IntToString(nTickCount), TRUE);
     }
 
-    int nTime = NWNX_Time_GetTimeStamp();
+    int nTime = SQLite_GetTimeStamp();
 
     while(GetIsObjectValid(oPC))
     {

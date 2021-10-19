@@ -1,11 +1,10 @@
 #include "nwnx_events"
-#include "nwnx_object"
 #include "inc_debug"
 #include "inc_nwnx"
 
 void main()
 {
-    object oObject = NWNX_Object_StringToObject(NWNX_Events_GetEventData("OBJECT"));
+    object oObject = StringToObject(NWNX_Events_GetEventData("OBJECT"));
 
     string sResRef = GetResRef(oObject);
 

@@ -1,6 +1,5 @@
 #include "inc_debug"
 #include "nwnx_events"
-#include "nwnx_object"
 #include "inc_nwnx"
 
 void main()
@@ -13,6 +12,6 @@ void main()
     }
     else if (GetIsDeveloper(OBJECT_SELF))
     {
-         SendDiscordLogMessage("DM: "+GetName(OBJECT_SELF)+" has executed "+NWNX_Events_GetCurrentEvent()+", target: "+GetName(NWNX_Object_StringToObject(NWNX_Events_GetEventData("OBJECT")))+", amount: "+NWNX_Events_GetEventData("AMOUNT"));
+         SendDiscordLogMessage("DM: "+GetName(OBJECT_SELF)+" has executed "+NWNX_Events_GetCurrentEvent()+", target: "+GetName(StringToObject(NWNX_Events_GetEventData("OBJECT")))+", amount: "+NWNX_Events_GetEventData("AMOUNT"));
     }
 }
