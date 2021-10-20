@@ -412,9 +412,9 @@ object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
             SetTransitionTarget(oExteriorDoor, oObject);
             SetTransitionTarget(oObject, oExteriorDoor);
 
-            oWaypoint = CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", GetLocation(oObject));
-            NWNX_Object_SetMapNote(oWaypoint, "Exit");
-            SetMapPinEnabled(oWaypoint, TRUE);
+            //oWaypoint = CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", GetLocation(oObject));
+            //NWNX_Object_SetMapNote(oWaypoint, "Exit");
+            //SetMapPinEnabled(oWaypoint, TRUE);
         }
         else if (sNewDoorTag == "level1_to_level2")
         {
@@ -436,12 +436,11 @@ object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
             SetTag(oObject, sTag+"_level3_to_level2");
             oLevel3ToLevel2 = oObject;
         }
-
-        if (GetStringLeft(sNewResRef, 7) == "storage")
+        else if (GetStringLeft(sNewResRef, 7) == "storage" || GetStringLeft(sNewResRef, 12) == "gold_storage")
         {
-            oWaypoint = CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", GetLocation(oObject));
-            NWNX_Object_SetMapNote(oWaypoint, GetName(oObject));
-            SetMapPinEnabled(oWaypoint, TRUE);
+            //oWaypoint = CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", GetLocation(oObject));
+            //NWNX_Object_SetMapNote(oWaypoint, GetName(oObject));
+            //SetMapPinEnabled(oWaypoint, TRUE);
         }
 
         oObject = GetNextObjectInArea(oNewArea);
