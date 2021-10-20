@@ -1,6 +1,6 @@
 #include "inc_debug"
 #include "util_i_csvlists"
-
+#include "nwnx_object"
 
 
 
@@ -392,14 +392,16 @@ object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
     SetLocalString(oNewArea, "coordinates", sCoordinates);
     object oObject = GetFirstObjectInArea(oNewArea);
     string sNewDoorTag;
+    string sNewResRef;
 
-    object oLevel1ToLevel2, oLevel2ToLevel1, oLevel2ToLevel3, oLevel3ToLevel2;
+    object oLevel1ToLevel2, oLevel2ToLevel1, oLevel2ToLevel3, oLevel3ToLevel2, oWaypoint;
 
     object oExteriorDoor = GetObjectByTag(sTag+"_exterior_door");
     SendDebugMessage(sTag+"_exterior_door found: "+IntToString(GetIsObjectValid(oExteriorDoor)), TRUE);
 
     while (GetIsObjectValid(oObject))
     {
+        sNewResRef = GetResRef(oObject);
         sNewDoorTag = GetTag(oObject);
         if (sNewDoorTag == "interior_door")
         {
@@ -409,6 +411,10 @@ object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
 
             SetTransitionTarget(oExteriorDoor, oObject);
             SetTransitionTarget(oObject, oExteriorDoor);
+
+            oWaypoint = CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", GetLocation(oObject));
+            NWNX_Object_SetMapNote(oWaypoint, "Exit");
+            SetMapPinEnabled(oWaypoint, TRUE);
         }
         else if (sNewDoorTag == "level1_to_level2")
         {
@@ -429,6 +435,13 @@ object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
         {
             SetTag(oObject, sTag+"_level3_to_level2");
             oLevel3ToLevel2 = oObject;
+        }
+
+        if (GetStringLeft(sNewResRef, 7) == "storage")
+        {
+            oWaypoint = CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", GetLocation(oObject));
+            NWNX_Object_SetMapNote(oWaypoint, GetName(oObject));
+            SetMapPinEnabled(oWaypoint, TRUE);
         }
 
         oObject = GetNextObjectInArea(oNewArea);
