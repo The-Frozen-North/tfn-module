@@ -1,6 +1,94 @@
 #include "inc_debug"
 #include "util_i_csvlists"
 
+
+
+
+/* Declarations */
+// Return iPinID of the first deleted map pin within the personal map pin array
+int GetFirstDeletedMapPin(object oPC);
+
+// Set a personal map pin on oPC. Returns iPinID.
+// Defaults: GetArea(oPC) and fX/fY from GetPosition(oPC)
+int SetMapPin(object oPC, string sPinText, float fX=-1.0, float fY=-1.0, object oArea=OBJECT_INVALID);
+
+// Mark a map pin as deleted. Not a real delete to maintain the array
+void DeleteMapPin(object oPC, int iPinID);
+
+// Returns oArea from iPinID
+object GetAreaOfMapPin(object oPC, int iPinID);
+
+/* Implementation */
+int GetFirstDeletedMapPin(object oPC)
+{
+   int i;
+   int iPinID = 0;
+   int iTotal = GetLocalInt(oPC, "NW_TOTAL_MAP_PINS");
+   if(iTotal > 0) {
+       for(i=1; i<=iTotal; i++) {
+           if(GetLocalString(oPC, "NW_MAP_PIN_NTRY_" + IntToString(i)) == "DELETED") {
+               iPinID = i;
+               break;
+           }
+       }
+   }
+   return iPinID;
+}
+
+int SetMapPin(object oPC, string sPinText, float fX=-1.0, float fY=-1.0, object oArea=OBJECT_INVALID)
+{
+   // If oArea is not valid, we use the current area.
+   // nope, we stop
+   if(oArea == OBJECT_INVALID) {
+        //oArea = GetArea(oPC);
+        return FALSE;
+   }
+   // if fX and fY are both -1.0, we use the position of oPC
+   // nope, we stop
+   if(fX == -1.0 && fY == -1.0) {
+       //vector vPos=GetPosition(oPC);
+       //fX = vPos.x;
+       //fY = vPos.y;
+       return FALSE;
+   }
+   // Find out if we can reuse a deleted map pin
+   int iUpdateDeleted = TRUE;
+   int iPinID = 0;
+   int iTotal = GetLocalInt(oPC, "NW_TOTAL_MAP_PINS");
+   if(iTotal > 0) { iPinID = GetFirstDeletedMapPin(oPC); }
+   // Otherwise use a new one
+   if(iPinID == 0) { iPinID = iTotal + 1; iUpdateDeleted = FALSE; }
+   // Set the pin
+   string sPinID = IntToString(iPinID);
+   SetLocalString(oPC, "NW_MAP_PIN_NTRY_" + sPinID, sPinText);
+   SetLocalFloat(oPC, "NW_MAP_PIN_XPOS_" + sPinID, fX);
+   SetLocalFloat(oPC, "NW_MAP_PIN_YPOS_" + sPinID, fY);
+   SetLocalObject(oPC, "NW_MAP_PIN_AREA_" + sPinID, oArea);
+   if(!iUpdateDeleted) { SetLocalInt(oPC, "NW_TOTAL_MAP_PINS", iPinID); }
+   return iPinID;
+}
+
+void DeleteMapPin(object oPC, int iPinID)
+{
+   string sPinID = IntToString(iPinID);
+   // Only mark as deleted if set
+   if(GetLocalString(oPC, "NW_MAP_PIN_NTRY_" + sPinID) != "") {
+       SetLocalString(oPC, "NW_MAP_PIN_NTRY_" + sPinID, "DELETED");
+       SetLocalFloat(oPC, "NW_MAP_PIN_XPOS_" + sPinID, 0.0);
+       SetLocalFloat(oPC, "NW_MAP_PIN_YPOS_" + sPinID, 0.0);
+       SetLocalObject(oPC, "NW_MAP_PIN_AREA_" + sPinID, OBJECT_INVALID);
+   }
+}
+
+
+
+
+
+
+
+
+
+
 // 1/SELL_HOUSE_LOSS_FACTOR = how much gold is lost from the buy price when selling a house
 int SELL_HOUSE_LOSS_FACTOR = 5;
 
@@ -37,24 +125,50 @@ string GetHouseCDKey(string sTag)
     return GetCampaignString("housing", sTag);
 }
 
-int GetIsHomelessInDistrict(string sPlayerCDKey, string sAreaTag)
+string GetHomeTagInDistrict(string sPlayerCDKey, string sAreaTag)
 {
     string sList = GetCampaignString("housing", sAreaTag);
+    string sListItem;
     string sCDKey;
-    SendDebugMessage(sList, TRUE);
 
     int i, nCount = CountList(sList);
     for (i = 0; i < nCount; i++)
     {
-         sCDKey = GetCampaignString("housing", GetListItem(sList, i));
+         sListItem = GetListItem(sList, i);
+         sCDKey = GetCampaignString("housing", sListItem);
 
-         SendDebugMessage(sAreaTag+" list"+IntToString(i)+" cd key "+sCDKey, TRUE);
-// if there's a matching cd key, they aren't homeless in that district
          if (sCDKey != "" && sCDKey == sPlayerCDKey)
-            return FALSE;
+            return sListItem;
     }
 
-    return TRUE;
+    return "";
+}
+
+string GetHomeTag(object oPC);
+string GetHomeTag(object oPC)
+{
+    string sPlayerCDKey = GetPCPublicCDKey(oPC);
+
+    if (GetHomeTagInDistrict(sPlayerCDKey, "begg") != "")
+    {
+        return GetHomeTagInDistrict(sPlayerCDKey, "begg");
+    }
+    else if (GetHomeTagInDistrict(sPlayerCDKey, "core") != "")
+    {
+        return GetHomeTagInDistrict(sPlayerCDKey, "core");
+    }
+    else if (GetHomeTagInDistrict(sPlayerCDKey, "dock") != "")
+    {
+        return GetHomeTagInDistrict(sPlayerCDKey, "dock");
+    }
+    else if (GetHomeTagInDistrict(sPlayerCDKey, "blak") != "")
+    {
+        return GetHomeTagInDistrict(sPlayerCDKey, "blak");
+    }
+    else
+    {
+        return "";
+    }
 }
 
 // returns true if the PC is a homeless bum :P
@@ -62,9 +176,7 @@ int GetIsHomelessInDistrict(string sPlayerCDKey, string sAreaTag)
 int GetIsPlayerHomeless(object oPC);
 int GetIsPlayerHomeless(object oPC)
 {
-    string sPlayerCDKey = GetPCPublicCDKey(oPC);
-
-    if (GetIsHomelessInDistrict(sPlayerCDKey, "begg") && GetIsHomelessInDistrict(sPlayerCDKey, "blak") && GetIsHomelessInDistrict(sPlayerCDKey, "dock") && GetIsHomelessInDistrict(sPlayerCDKey, "blak"))
+    if (GetHomeTag(oPC) == "")
     {
         return TRUE;
     }
@@ -84,6 +196,28 @@ string GetHousePlayerName(string sTag)
         return "";
 
     return GetCampaignString(sCDKey, "player_name");
+}
+
+// creates or deletes
+void InitializeHouseMapPin(object oPC);
+void InitializeHouseMapPin(object oPC)
+{
+   object oDoor = GetObjectByTag(GetHomeTag(oPC)+"_exterior_door");
+   int nHouseMapPin = GetLocalInt(oPC, "house_map_pin");
+
+   //SendDebugMessage("home tag: "+GetHomeTag(oPC), TRUE);
+   //SendDebugMessage("home door exists: "+IntToString(GetIsObjectValid(oDoor)), TRUE);
+
+   if (GetIsObjectValid(oDoor) && GetLocalString(oPC, "NW_MAP_PIN_NTRY_"+IntToString(nHouseMapPin)) != "Home")
+   {
+       vector vDoor = GetPosition(oDoor);
+
+       SetLocalInt(oPC, "house_map_pin", SetMapPin(oPC, "Home", vDoor.x, vDoor.y, GetArea(oDoor)));
+   }
+   else
+   {
+       DeleteMapPin(oPC, nHouseMapPin);
+   }
 }
 
 

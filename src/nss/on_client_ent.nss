@@ -7,6 +7,7 @@
 #include "inc_general"
 #include "inc_sqlite_time"
 #include "inc_mappin"
+#include "inc_housing"
 
 void CreateItemIfBlank(object oPC, string sItem)
 {
@@ -35,6 +36,8 @@ void main()
     SetTlkOverride(10303, "<CUSTOM25001>"+GetStringByStrRef(10303)+"<CUSTOM25000>");
 
     SetCampaignString(GetPCPublicCDKey(oPC), "player_name", GetPCPlayerName(oPC));
+
+    InitializeHouseMapPin(oPC);
 
     string sType = "player";
     string sMessage = PlayerDetailedName(oPC)+" has entered the game as a "+sType;

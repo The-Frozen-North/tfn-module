@@ -7,6 +7,7 @@ void main()
     if (!GetIsPlayerHomeless(oPC))
     {
         ClearHouseOwnership(OBJECT_SELF, oPC);
+        InitializeHouseMapPin(oPC);
         GiveGoldToCreature(oPC, GetHouseSellPrice(oPC));
     }
 }

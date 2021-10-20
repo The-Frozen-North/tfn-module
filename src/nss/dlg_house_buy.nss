@@ -7,7 +7,9 @@ void main()
 
     if (GetGold(oPC) >= nGold && TakeHouseOwnership(oPC, OBJECT_SELF))
     {
+        ActionOpenDoor(OBJECT_SELF);
         TakeGoldFromCreature(nGold, oPC, TRUE);
         SetCampaignInt(GetPCPublicCDKey(oPC), "house_cost", nGold);
+        InitializeHouseMapPin(oPC);
     }
 }
