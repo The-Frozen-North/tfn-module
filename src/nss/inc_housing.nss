@@ -356,13 +356,13 @@ object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
     {
         sFacing = "north";
     }
-    else if (fOrientation > -5.0 && fOrientation < 5.0)
+    else if ((fOrientation > -5.0 && fOrientation < 5.0) || fOrientation == 360.0)
     {
         sFacing = "west";
     }
     else
     {
-        SendDebugMessage("Invalid orientation for "+sTag, TRUE);
+        SendDebugMessage("Invalid orientation for "+sTag+": "+FloatToString(fOrientation), TRUE);
         return OBJECT_INVALID; // stop here, the orientation is really wack
     }
 

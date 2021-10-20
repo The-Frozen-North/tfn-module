@@ -991,12 +991,61 @@
             "0": "Are you sure you wish to sell this house for <CUSTOM23450> gold? Warning: If you are downgrading to a house with less storage, you will not be able to access the missing storage containers until you move back to a house with at least an equivalent amount of storage."
           }
         }
+      },
+      {
+        "__struct_id": 10,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "This house is invalid. Please report this to the Discord and/or GitHub."
+          }
+        }
       }
     ]
   },
   "NumWords": {
     "type": "dword",
-    "value": 202
+    "value": 214
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -2128,6 +2177,21 @@
         "__struct_id": 0,
         "Active": {
           "type": "resref",
+          "value": "dlg_house_chkerr"
+        },
+        "ConditionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Index": {
+          "type": "dword",
+          "value": 10
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Active": {
+          "type": "resref",
           "value": "dlg_house_chkcd"
         },
         "ConditionParams": {
@@ -2140,7 +2204,7 @@
         }
       },
       {
-        "__struct_id": 1,
+        "__struct_id": 2,
         "Active": {
           "type": "resref",
           "value": "dlg_house_chkcdo"
@@ -2155,7 +2219,7 @@
         }
       },
       {
-        "__struct_id": 2,
+        "__struct_id": 3,
         "Active": {
           "type": "resref",
           "value": "dlg_house_chktyp"
@@ -2182,7 +2246,7 @@
         }
       },
       {
-        "__struct_id": 3,
+        "__struct_id": 4,
         "Active": {
           "type": "resref",
           "value": "dlg_house_chktyp"
@@ -2209,7 +2273,7 @@
         }
       },
       {
-        "__struct_id": 4,
+        "__struct_id": 5,
         "Active": {
           "type": "resref",
           "value": "dlg_house_chktyp"
