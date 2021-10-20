@@ -504,6 +504,9 @@ void main()
     SendDebugMessage("Merchants created", TRUE);
 
     InitializeHouses("begg");
+    InitializeHouses("dock");
+    InitializeHouses("blak");
+    InitializeHouses("core");
 
 // Treasures cause heavy delay on starting a module
 // It can be skipped, but it will cause merchants to lose most of their inventory

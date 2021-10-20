@@ -9,6 +9,7 @@ void main()
         if (nClose > 3)
         {
             ActionCloseDoor(OBJECT_SELF);
+            DeleteLocalInt(OBJECT_SELF, "close");
         }
         else
         {

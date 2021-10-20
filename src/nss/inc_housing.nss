@@ -391,23 +391,59 @@ object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
     SendDebugMessage("_home"+sDoorTag+"_"+sFacing+" created: "+IntToString(GetIsObjectValid(oNewArea)), TRUE);
     SetLocalString(oNewArea, "coordinates", sCoordinates);
     object oObject = GetFirstObjectInArea(oNewArea);
+    string sNewDoorTag;
+
+    object oLevel1ToLevel2, oLevel2ToLevel1, oLevel2ToLevel3, oLevel3ToLevel2;
 
     object oExteriorDoor = GetObjectByTag(sTag+"_exterior_door");
     SendDebugMessage(sTag+"_exterior_door found: "+IntToString(GetIsObjectValid(oExteriorDoor)), TRUE);
 
     while (GetIsObjectValid(oObject))
     {
-        if (GetTag(oObject) == "interior_door")
+        sNewDoorTag = GetTag(oObject);
+        if (sNewDoorTag == "interior_door")
         {
-            SendDebugMessage("interior_door found", TRUE);
+            //SendDebugMessage("interior_door found", TRUE);
 
             SetTag(oObject, sTag+"_interior_door");
 
             SetTransitionTarget(oExteriorDoor, oObject);
             SetTransitionTarget(oObject, oExteriorDoor);
         }
+        else if (sNewDoorTag == "level1_to_level2")
+        {
+            SetTag(oObject, sTag+"_level1_to_level2");
+            oLevel1ToLevel2 = oObject;
+        }
+        else if (sNewDoorTag == "level2_to_level1")
+        {
+            SetTag(oObject, sTag+"_level2_to_level1");
+            oLevel2ToLevel1 = oObject;
+        }
+        else if (sNewDoorTag == "level2_to_level3")
+        {
+            SetTag(oObject, sTag+"_level2_to_level3");
+            oLevel2ToLevel3 = oObject;
+        }
+        else if (sNewDoorTag == "level3_to_level2")
+        {
+            SetTag(oObject, sTag+"_level3_to_level2");
+            oLevel3ToLevel2 = oObject;
+        }
 
         oObject = GetNextObjectInArea(oNewArea);
+    }
+
+    if (GetIsObjectValid(oLevel1ToLevel2))
+    {
+        SetTransitionTarget(oLevel1ToLevel2, oLevel2ToLevel1);
+        SetTransitionTarget(oLevel2ToLevel1, oLevel1ToLevel2);
+    }
+
+    if (GetIsObjectValid(oLevel2ToLevel3))
+    {
+        SetTransitionTarget(oLevel2ToLevel3, oLevel3ToLevel2);
+        SetTransitionTarget(oLevel3ToLevel2, oLevel2ToLevel3);
     }
 
     InitializeHouse(oNewArea);
