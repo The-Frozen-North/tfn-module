@@ -163,7 +163,7 @@ void main()
 // Events.
 
     NWNX_Events_SubscribeEvent("NWNX_ON_TRAP_ENTER_BEFORE", "on_trap_enterb");
-
+    NWNX_Events_SubscribeEvent("NWNX_ON_ITEM_USE_LORE_AFTER", "on_pc_lorea");
     NWNX_Events_SubscribeEvent("NWNX_ON_SPELL_INTERRUPTED_AFTER", "on_spellinta");
 
 // Whitelist DMs.

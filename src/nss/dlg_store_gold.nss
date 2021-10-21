@@ -10,6 +10,7 @@ void main()
         TakeGoldFromCreature(nGold, oPC, TRUE);
         SetCampaignInt(sCDKey, "gold", GetCampaignInt(sCDKey, "gold")+nGold);
         SetCustomToken(29901, IntToString(GetCampaignInt(sCDKey, "gold")));
+        ExportSingleCharacter(oPC);
         PlaySound("it_coins");
     }
 }
