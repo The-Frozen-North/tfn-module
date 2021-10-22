@@ -12,4 +12,5 @@ void main()
 
         oObject = GetNextObjectInArea(oArea);
     }
+    AssignCommand(GetLastClosedBy(), ClearAllActions());
 }
