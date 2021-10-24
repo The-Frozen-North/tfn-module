@@ -487,11 +487,11 @@ int bkAttemptToDisarmTrap(object oTrap, int bWasShout = FALSE)
 int AttemptKnockSpell(object oLocked)
 {
     // If that didn't work, let's try using a knock spell
-    if (GetHasSpell(SPELL_KNOCK)
-        && (GetIsDoorActionPossible(oLocked,
-                                    DOOR_ACTION_KNOCK)
-            || GetIsPlaceableObjectActionPossible(oLocked,
-                                                  PLACEABLE_ACTION_KNOCK)))
+    if (GetHasSpell(SPELL_KNOCK))
+        //&& (GetIsDoorActionPossible(oLocked,
+        //                            DOOR_ACTION_KNOCK)
+        //    || GetIsPlaceableObjectActionPossible(oLocked,
+        //                                          PLACEABLE_ACTION_KNOCK)))
     {
         if (!bkGetIsDoorInLineOfSight(oLocked))
         {
@@ -581,10 +581,11 @@ int bkAttemptToOpenLock(object oLocked)
 
     if (nSkill > GetLockUnlockDC(oLocked)
         &&
-        (GetIsDoorActionPossible(oLocked,
-                                 DOOR_ACTION_UNLOCK)
-         || GetIsPlaceableObjectActionPossible(oLocked,
-                                               PLACEABLE_ACTION_UNLOCK))) {
+        GetLocked(oLocked)) {
+        //(GetIsDoorActionPossible(oLocked,
+        //                         DOOR_ACTION_UNLOCK)
+        // || GetIsPlaceableObjectActionPossible(oLocked,
+        //                                       PLACEABLE_ACTION_UNLOCK))) {
         ClearActions(CLEAR_X0_INC_HENAI_AttemptToOpenLock1);
         VoiceCanDo();
         ActionWait(1.0);

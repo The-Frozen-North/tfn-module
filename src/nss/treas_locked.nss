@@ -1,10 +1,3 @@
-#include "x0_inc_henai"
-
-void bkAttemptToOpenLockVoid(object oLock)
-{
-    bkAttemptToOpenLock(oLock);
-}
-
 // since it's not really a container, just emulate the lock UX
 void main()
 {
@@ -21,7 +14,7 @@ void main()
     while (GetIsObjectValid(oParty))
     {
         if (GetMaster(oParty) == oPC)
-            AssignCommand(oParty, bkAttemptToOpenLockVoid(OBJECT_SELF));
+            ExecuteScript("hen_picknearest", oParty);
 
        oParty = GetNextFactionMember(oPC, FALSE);
     }
