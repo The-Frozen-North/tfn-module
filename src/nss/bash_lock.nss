@@ -65,6 +65,27 @@ void BashLock(object oAttacker)
             case OBJECT_TYPE_DOOR: ActionOpenDoor(OBJECT_SELF); break;
             case OBJECT_TYPE_PLACEABLE: ActionPlayAnimation(ANIMATION_PLACEABLE_OPEN); break;
         }
+
+        object oPartyPC = GetFirstFactionMember(oAttacker);
+        while (GetIsObjectValid(oPartyPC))
+        {
+            if (GetAttackTarget(oPartyPC) == OBJECT_SELF)
+                AssignCommand(oPartyPC, ClearAllActions(TRUE));
+
+            oPartyPC = GetNextFactionMember(oAttacker);
+        }
+
+        object oPartyNPC = GetFirstFactionMember(oAttacker, FALSE);
+        while (GetIsObjectValid(oPartyNPC))
+        {
+            if (GetAttackTarget(oPartyNPC) == OBJECT_SELF)
+            {
+                AssignCommand(oPartyNPC, ClearAllActions(TRUE));
+                DeleteLocalObject(oPartyNPC, "NW_GENERIC_DOOR_TO_BASH");
+            }
+
+            oPartyNPC = GetNextFactionMember(oAttacker, FALSE);
+        }
     }
     else
     {
