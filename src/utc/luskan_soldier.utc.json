@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 210
+    "value": 211
   },
   "BodyBag": {
     "type": "byte",
@@ -38,15 +38,15 @@
   },
   "Con": {
     "type": "byte",
-    "value": 16
+    "value": 14
   },
   "Conversation": {
     "type": "resref",
-    "value": "gossip"
+    "value": ""
   },
   "CRAdjust": {
     "type": "int",
-    "value": 0
+    "value": 1
   },
   "CurrentHitPoints": {
     "type": "short",
@@ -62,13 +62,11 @@
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {
-      "0": "This man is one of the many soldiers that protect Neverwinter."
-    }
+    "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 16
+    "value": 14
   },
   "Disarmable": {
     "type": "byte",
@@ -88,14 +86,14 @@
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_longswordp1"
+          "value": "cre_baxep1"
         }
       },
       {
         "__struct_id": 32,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_nwshield"
+          "value": "cre_shieldluskan"
         }
       }
     ]
@@ -139,20 +137,6 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 27
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 411
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
           "value": 32
         }
       },
@@ -167,14 +151,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 92
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 106
+          "value": 110
         }
       },
       {
@@ -195,14 +172,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 130
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 144
+          "value": 148
         }
       }
     ]
@@ -211,7 +181,7 @@
     "id": 12657,
     "type": "cexolocstring",
     "value": {
-      "0": "Neverwinter Guard"
+      "0": "Luskan Soldier"
     }
   },
   "fortbonus": {
@@ -246,33 +216,13 @@
     "type": "byte",
     "value": 0
   },
-  "ItemList": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "InventoryRes": {
-          "type": "resref",
-          "value": "cre_infhxbow"
-        },
-        "Repos_PosX": {
-          "type": "word",
-          "value": 0
-        },
-        "Repos_Posy": {
-          "type": "word",
-          "value": 0
-        }
-      }
-    ]
-  },
   "LastName": {
     "type": "cexolocstring",
     "value": {}
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 100
+    "value": 0
   },
   "Lootable": {
     "type": "byte",
@@ -280,7 +230,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 84
+    "value": 78
   },
   "NaturalAC": {
     "type": "byte",
@@ -308,7 +258,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 93
+    "value": 108
   },
   "Race": {
     "type": "byte",
@@ -573,7 +523,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 190
+    "value": 119
   },
   "SpecAbilityList": {
     "type": "list",
@@ -585,7 +535,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 16
+    "value": 14
   },
   "Subrace": {
     "type": "cexostring",
@@ -593,7 +543,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "nwguard"
+    "value": "luskan_soldier"
   },
   "Tail_New": {
     "type": "dword",
@@ -605,57 +555,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "nwguard"
-  },
-  "VarTable": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "no_credit"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "respawn"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "no_wander"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      }
-    ]
+    "value": "luskan_soldier"
   },
   "WalkRate": {
     "type": "int",

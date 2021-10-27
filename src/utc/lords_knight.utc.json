@@ -1,12 +1,88 @@
 {
   "__data_type": "UTC ",
+  "Appearance_Head": {
+    "type": "byte",
+    "value": 1
+  },
   "Appearance_Type": {
     "type": "word",
-    "value": 210
+    "value": 495
+  },
+  "ArmorPart_RFoot": {
+    "type": "byte",
+    "value": 1
   },
   "BodyBag": {
     "type": "byte",
     "value": 0
+  },
+  "BodyPart_Belt": {
+    "type": "byte",
+    "value": 0
+  },
+  "BodyPart_LBicep": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LFArm": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LFoot": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LHand": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LShin": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LShoul": {
+    "type": "byte",
+    "value": 0
+  },
+  "BodyPart_LThigh": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_Neck": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_Pelvis": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RBicep": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RFArm": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RHand": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RShin": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RShoul": {
+    "type": "byte",
+    "value": 0
+  },
+  "BodyPart_RThigh": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_Torso": {
+    "type": "byte",
+    "value": 1
   },
   "Cha": {
     "type": "byte",
@@ -14,7 +90,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 6.0
+    "value": 8.0
   },
   "ClassList": {
     "type": "list",
@@ -27,10 +103,26 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 6
+          "value": 8
         }
       }
     ]
+  },
+  "Color_Hair": {
+    "type": "byte",
+    "value": 1
+  },
+  "Color_Skin": {
+    "type": "byte",
+    "value": 1
+  },
+  "Color_Tattoo1": {
+    "type": "byte",
+    "value": 1
+  },
+  "Color_Tattoo2": {
+    "type": "byte",
+    "value": 1
   },
   "Comment": {
     "type": "cexostring",
@@ -42,15 +134,15 @@
   },
   "Conversation": {
     "type": "resref",
-    "value": "gossip"
+    "value": ""
   },
   "CRAdjust": {
     "type": "int",
-    "value": 0
+    "value": -1
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 60
+    "value": 80
   },
   "DecayTime": {
     "type": "dword",
@@ -62,13 +154,11 @@
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {
-      "0": "This man is one of the many soldiers that protect Neverwinter."
-    }
+    "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 16
+    "value": 14
   },
   "Disarmable": {
     "type": "byte",
@@ -78,24 +168,24 @@
     "type": "list",
     "value": [
       {
+        "__struct_id": 1,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "cre_lordshelm"
+        }
+      },
+      {
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_aarcl004"
+          "value": "cre_lordsplate"
         }
       },
       {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_longswordp1"
-        }
-      },
-      {
-        "__struct_id": 32,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "cre_nwshield"
+          "value": "nw_wplmhb002"
         }
       }
     ]
@@ -132,21 +222,14 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 17
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 23
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 27
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 411
         }
       },
       {
@@ -167,14 +250,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 92
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 106
+          "value": 112
         }
       },
       {
@@ -195,14 +271,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 130
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 144
+          "value": 150
         }
       }
     ]
@@ -211,7 +280,7 @@
     "id": 12657,
     "type": "cexolocstring",
     "value": {
-      "0": "Neverwinter Guard"
+      "0": "Lords Alliance Knight"
     }
   },
   "fortbonus": {
@@ -228,7 +297,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 60
+    "value": 80
   },
   "Int": {
     "type": "byte",
@@ -246,26 +315,6 @@
     "type": "byte",
     "value": 0
   },
-  "ItemList": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "InventoryRes": {
-          "type": "resref",
-          "value": "cre_infhxbow"
-        },
-        "Repos_PosX": {
-          "type": "word",
-          "value": 0
-        },
-        "Repos_Posy": {
-          "type": "word",
-          "value": 0
-        }
-      }
-    ]
-  },
   "LastName": {
     "type": "cexolocstring",
     "value": {}
@@ -280,7 +329,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 84
+    "value": 112
   },
   "NaturalAC": {
     "type": "byte",
@@ -300,7 +349,7 @@
   },
   "Phenotype": {
     "type": "int",
-    "value": 0
+    "value": 3
   },
   "Plot": {
     "type": "byte",
@@ -308,7 +357,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 93
+    "value": 941
   },
   "Race": {
     "type": "byte",
@@ -573,7 +622,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 190
+    "value": 156
   },
   "SpecAbilityList": {
     "type": "list",
@@ -597,7 +646,7 @@
   },
   "Tail_New": {
     "type": "dword",
-    "value": 0
+    "value": 19
   },
   "TemplateList": {
     "type": "list",
@@ -605,7 +654,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "nwguard"
+    "value": "lords_knight"
   },
   "VarTable": {
     "type": "list",
@@ -615,36 +664,6 @@
         "Name": {
           "type": "cexostring",
           "value": "no_credit"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "respawn"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "no_wander"
         },
         "Type": {
           "type": "dword",
