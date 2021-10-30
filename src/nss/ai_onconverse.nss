@@ -8,6 +8,8 @@ void main()
     object oSpeaker = GetLastSpeaker();
     object oTarget  = OBJECT_INVALID;
 
+    int bCanRespond = GetAbilityScore(OBJECT_SELF, ABILITY_INTELLIGENCE) >= 6;
+
     SetListening(OBJECT_SELF, FALSE);
 
     switch (GetListenPatternNumber())
@@ -22,7 +24,7 @@ void main()
         break;
 
     case 10000: //GS_AI_ATTACK_TARGET
-        if (! (GetLevelByClass(CLASS_TYPE_COMMONER) ||
+        if (bCanRespond && ! (GetLevelByClass(CLASS_TYPE_COMMONER) ||
                gsCBGetHasAttackTarget()) &&
             gsCBGetIsPerceived(oSpeaker))
         {
@@ -33,7 +35,7 @@ void main()
     case 10001: //GS_AI_PVP
         oTarget = GetLocalObject(oSpeaker, "GS_PVP_TARGET");
 
-        if (GetIsObjectValid(oTarget) &&
+        if (bCanRespond && GetIsObjectValid(oTarget) &&
             ! GetIsEnemy(oTarget) &&
             gsCBGetIsPerceived(oSpeaker))
         {
@@ -49,7 +51,7 @@ void main()
         break;
 
     case 10003: //GS_AI_REQUEST_REINFORCEMENT
-        if (! GetIsEnemy(oSpeaker) &&
+        if (bCanRespond && ! GetIsEnemy(oSpeaker) &&
             gsCBGetIsPerceived(oSpeaker)) gsCBSetReinforcementRequestedBy(oSpeaker);
         break;
     case 10100: // GS_AI_INNOCENT_ATTACKED
