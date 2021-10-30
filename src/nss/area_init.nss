@@ -43,7 +43,17 @@ void main()
 // never do this for system areas, which always start with an underscore
        if (GetStringLeft(sResRef, 1) == "_") return;
 
-       if (!GetIsAreaInterior(oArea)) SetSkyBox(SKYBOX_GRASS_CLEAR, oArea);
+       if (!GetIsAreaInterior(oArea))
+       {
+            if (NWNX_Area_GetWeatherChance(oArea, NWNX_AREA_WEATHER_CHANCE_SNOW) > 75)
+            {
+                SetSkyBox(SKYBOX_WINTER_CLEAR, oArea);
+            }
+            else
+            {
+                SetSkyBox(SKYBOX_GRASS_CLEAR, oArea);
+            }
+       }
 
        NWNX_Area_SetFogClipDistance(oArea, 90.0);
 
