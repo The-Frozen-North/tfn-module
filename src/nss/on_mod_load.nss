@@ -166,6 +166,8 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_ITEM_USE_LORE_AFTER", "on_pc_lorea");
     NWNX_Events_SubscribeEvent("NWNX_ON_SPELL_INTERRUPTED_AFTER", "on_spellinta");
 
+    NWNX_Events_SubscribeEvent("NWNX_ON_USE_ITEM_AFTER", "on_use_itema");
+
 // Whitelist DMs.
     NWNX_Events_SubscribeEvent("NWNX_ON_CLIENT_CONNECT_BEFORE", "on_pc_connectb");
 
