@@ -2483,6 +2483,10 @@
             },
             {
               "__struct_id": 1,
+              "Comment": {
+                "type": "cexostring",
+                "value": ""
+              },
               "X": {
                 "type": "float",
                 "value": 1.7191
@@ -7859,7 +7863,7 @@
         },
         "Difficulty": {
           "type": "int",
-          "value": 2
+          "value": 0
         },
         "DifficultyIndex": {
           "type": "int",
@@ -20614,6 +20618,250 @@
         "YPosition": {
           "type": "float",
           "value": 75.52719999999999
+        },
+        "ZPosition": {
+          "type": "float",
+          "value": 0.0
+        }
+      },
+      {
+        "__struct_id": 7,
+        "Active": {
+          "type": "byte",
+          "value": 1
+        },
+        "CreatureList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Appearance": {
+                "type": "int",
+                "value": 159
+              },
+              "CR": {
+                "type": "float",
+                "value": 3.0
+              },
+              "ResRef": {
+                "type": "resref",
+                "value": "spider"
+              },
+              "SingleSpawn": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Appearance": {
+                "type": "int",
+                "value": 166
+              },
+              "CR": {
+                "type": "float",
+                "value": 4.0
+              },
+              "ResRef": {
+                "type": "resref",
+                "value": "ettercap"
+              },
+              "SingleSpawn": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Appearance": {
+                "type": "int",
+                "value": 160
+              },
+              "CR": {
+                "type": "float",
+                "value": 4.0
+              },
+              "ResRef": {
+                "type": "resref",
+                "value": "spider_phase"
+              },
+              "SingleSpawn": {
+                "type": "byte",
+                "value": 1
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Appearance": {
+                "type": "int",
+                "value": 161
+              },
+              "CR": {
+                "type": "float",
+                "value": 6.0
+              },
+              "ResRef": {
+                "type": "resref",
+                "value": "spider_sword"
+              },
+              "SingleSpawn": {
+                "type": "byte",
+                "value": 1
+              }
+            }
+          ]
+        },
+        "Difficulty": {
+          "type": "int",
+          "value": 5
+        },
+        "DifficultyIndex": {
+          "type": "int",
+          "value": 3
+        },
+        "Faction": {
+          "type": "dword",
+          "value": 2
+        },
+        "Geometry": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 1,
+              "X": {
+                "type": "float",
+                "value": 0.0
+              },
+              "Y": {
+                "type": "float",
+                "value": 0.0
+              },
+              "Z": {
+                "type": "float",
+                "value": 0.025
+              }
+            },
+            {
+              "__struct_id": 1,
+              "X": {
+                "type": "float",
+                "value": 1.7191
+              },
+              "Y": {
+                "type": "float",
+                "value": 0.1859
+              },
+              "Z": {
+                "type": "float",
+                "value": 0.025
+              }
+            },
+            {
+              "__struct_id": 1,
+              "X": {
+                "type": "float",
+                "value": 0.7899000000000001
+              },
+              "Y": {
+                "type": "float",
+                "value": 1.2545
+              },
+              "Z": {
+                "type": "float",
+                "value": 0.025
+              }
+            },
+            {
+              "__struct_id": 1,
+              "X": {
+                "type": "float",
+                "value": 0.7434
+              },
+              "Y": {
+                "type": "float",
+                "value": 1.208
+              },
+              "Z": {
+                "type": "float",
+                "value": 0.025
+              }
+            }
+          ]
+        },
+        "LocalizedName": {
+          "id": 14525,
+          "type": "cexolocstring",
+          "value": {
+            "0": "Encounter"
+          }
+        },
+        "MaxCreatures": {
+          "type": "int",
+          "value": 1
+        },
+        "OnEntered": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnExhausted": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnExit": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnHeartbeat": {
+          "type": "resref",
+          "value": ""
+        },
+        "OnUserDefined": {
+          "type": "resref",
+          "value": ""
+        },
+        "PlayerOnly": {
+          "type": "byte",
+          "value": 1
+        },
+        "RecCreatures": {
+          "type": "int",
+          "value": 1
+        },
+        "Reset": {
+          "type": "byte",
+          "value": 0
+        },
+        "ResetTime": {
+          "type": "int",
+          "value": 60
+        },
+        "Respawns": {
+          "type": "int",
+          "value": 0
+        },
+        "SpawnOption": {
+          "type": "int",
+          "value": 1
+        },
+        "SpawnPointList": {
+          "type": "list",
+          "value": []
+        },
+        "Tag": {
+          "type": "cexostring",
+          "value": "spider_forest"
+        },
+        "TemplateResRef": {
+          "type": "resref",
+          "value": "nw_zombiegrp"
+        },
+        "XPosition": {
+          "type": "float",
+          "value": 15.0107
+        },
+        "YPosition": {
+          "type": "float",
+          "value": 55.2633
         },
         "ZPosition": {
           "type": "float",

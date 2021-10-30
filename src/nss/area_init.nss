@@ -2,6 +2,7 @@
 #include "util_i_csvlists"
 #include "nwnx_area"
 #include "nwnx_encounter"
+#include "nwnx_object"
 
 vector StringToVector(string sVector)
 {
@@ -257,7 +258,7 @@ void main()
                      }
                  break;
                  case OBJECT_TYPE_PLACEABLE:
-// any object with an inventory is removed, including it's items
+// any object has its items removed and converted to static
                    if (GetHasInventory(oObject))
                    {
                           object oItem = GetFirstItemInInventory(oObject);
@@ -266,7 +267,10 @@ void main()
                               DestroyObject(oItem);
                               oItem = GetNextItemInInventory(oObject);
                           }
-                          DestroyObject(oObject);
+                          NWNX_Object_SetHasInventory(oObject, FALSE);
+                          NWNX_Object_SetPlaceableIsStatic(oObject, TRUE);
+                          SetPlotFlag(oObject, TRUE);
+                          NWNX_Object_SetDialogResref(oObject, "");
                    }
 // If it is a treasure, count it, create the treasure WP, store the resref on it, then delete the treasure
                    //else if (bInstance == 1 && GetStringLeft(GetResRef(oObject), 6) == "treas_")
