@@ -1,4 +1,9 @@
 void main()
 {
-    ActionStartConversation(GetLastUsedBy(), "alterator", TRUE);
+    object oUser = GetLastUsedBy();
+
+    if (!GetIsPC(oUser))
+        return;
+
+    ActionStartConversation(oUser, "alterator", TRUE);
 }

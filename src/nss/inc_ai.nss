@@ -230,7 +230,7 @@ int gsAIBehaviorInteract()
 
     if (GetIsObjectValid(oTarget))
     {
-        //if (! GetIsObjectValid(GetSittingCreature(oTarget)))       ActionInteractObject(oTarget);
+        if (! GetIsObjectValid(GetSittingCreature(oTarget)))       ActionInteractObject(oTarget);
         //if (Random(100) >= 50 && GetCurrentAction() == ACTION_SIT) SpeakOneLinerConversation();
 
         return TRUE;
@@ -380,16 +380,10 @@ void gsAIActionPlaceable(object oTarget)
 
     ActionDoCommand(SetFacingPoint(GetPosition(oTarget)));
 
-    if (GetHasInventory(oTarget))
+    if (GetStringLeft(GetResRef(oTarget), 6) != "treas_")
     {
-        ActionPlayAnimation(ANIMATION_LOOPING_GET_MID, 1.0, 2.5);
-        DelayCommand(1.0, AssignCommand(oTarget, ActionPlayAnimation(ANIMATION_PLACEABLE_OPEN)));
-        DelayCommand(5.0, AssignCommand(oTarget, ActionPlayAnimation(ANIMATION_PLACEABLE_CLOSE)));
+        ActionInteractObject(oTarget);
     }
-    //else
-    //{
-    //    ActionInteractObject(oTarget);
-    //}
 }
 //----------------------------------------------------------------
 void gsAIActionRest()
