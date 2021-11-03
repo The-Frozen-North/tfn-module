@@ -12,6 +12,7 @@ void main()
     if (!IsCreatureRevivable(OBJECT_SELF))
         sText = "*Your henchman has died, and can only be revived by Raise Dead*";
 
+
     FloatingTextStringOnCreature(sText, GetMaster(OBJECT_SELF), FALSE);
 
     KillTaunt(GetLastHostileActor(OBJECT_SELF), OBJECT_SELF);

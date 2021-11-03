@@ -1,7 +1,9 @@
 #include "inc_sql"
 #include "nwnx_creature"
+#include "nwnx_effect"
 
 const float MORALE_RADIUS = 30.0;
+const float REMAINS_DECAY = 120.0;
 
 // Makes the killer play a voice sometimes. Won't work if the killer is a PC or if the killer was not hostile.
 void KillTaunt(object oKiller, object oKilled);
@@ -244,21 +246,27 @@ void PlayNonMeleePainSound(object oDamager)
     }
 }
 
-int Gibs(object oCreature)
+int Gibs(object oCreature, int bForce = FALSE)
 {
     int nHP = GetCurrentHitPoints(oCreature);
 
-    if (!(nHP <= -11 && nHP <= -(GetMaxHitPoints(oCreature)/2))) return FALSE;
-    if (GetLocalInt(OBJECT_SELF, "gibbed") == 1) return FALSE;
+    if (!bForce && !(nHP <= -11 && nHP <= -(GetMaxHitPoints(oCreature)/2))) return FALSE;
+    if (GetLocalInt(oCreature, "gibbed") == 1) return FALSE;
 
     int nAppearanceType = GetAppearanceType(oCreature);
 
     string sBlood = Get2DAString("appearance", "BLOODCOLR", GetAppearanceType(oCreature));
 
+    location lLocation = GetLocation(oCreature);
+
     int nGib;
     if (sBlood == "R")
     {
         nGib = VFX_COM_CHUNK_RED_MEDIUM;
+
+        object oBlood = CreateObject(OBJECT_TYPE_PLACEABLE, "_frblood"+IntToString(d3()), lLocation);
+        AssignCommand(GetModule(), DelayCommand(300.0, DestroyObject(oBlood)));
+
         PlaySound("bf_med_insect");
     }
     else if (sBlood == "Y")
@@ -281,16 +289,107 @@ int Gibs(object oCreature)
         return FALSE;
     }
 
-    ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(nGib), GetLocation(oCreature));
+    ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(nGib), lLocation);
     return TRUE;
 }
 
 int GibsNPC(object oCreature)
 {
-    if (Gibs(oCreature))
+    int iCold = GetDamageDealtByType(DAMAGE_TYPE_COLD);
+    int iAcid = GetDamageDealtByType(DAMAGE_TYPE_ACID);
+    int iElectric = GetDamageDealtByType(DAMAGE_TYPE_ELECTRICAL);
+    int iFire = GetDamageDealtByType(DAMAGE_TYPE_FIRE);
+    int iNegative = GetDamageDealtByType(DAMAGE_TYPE_NEGATIVE);
+    int iDivine = GetDamageDealtByType(DAMAGE_TYPE_DIVINE);
+    int iPositive = GetDamageDealtByType(DAMAGE_TYPE_POSITIVE);
+    int iPhysical = GetDamageDealtByType(DAMAGE_TYPE_PIERCING)+GetDamageDealtByType(DAMAGE_TYPE_BLUDGEONING)+GetDamageDealtByType(DAMAGE_TYPE_SLASHING);
+    int iMagic = GetDamageDealtByType(DAMAGE_TYPE_MAGICAL);
+
+    object oModule = GetModule();
+    location lLocation = GetLocation(oCreature);
+    int nSize = GetCreatureSize(oCreature);
+    float fSize = IntToFloat(nSize);
+
+    int nMaxHP = GetMaxHitPoints(oCreature);
+
+    int bNoElementalDeath = d4() == 1;
+
+    if (!bNoElementalDeath && (iCold > 0) && (iCold >= Random(nMaxHP)) && (nSize < CREATURE_SIZE_HUGE) && (iCold > iAcid) && (iCold > iElectric) && (iCold > iFire) && (iCold > iNegative) && (iCold > iDivine) && (iCold > iPositive) && (iCold > iMagic))
+    {
+        object oIce = CreateObject(OBJECT_TYPE_PLACEABLE, "_dth_cold", lLocation);
+        object oRemains = CreateObject(OBJECT_TYPE_PLACEABLE, "_remains_cold", lLocation);
+        SetObjectVisualTransform(oRemains, OBJECT_VISUAL_TRANSFORM_SCALE, 0.2*fSize);
+        SetObjectVisualTransform(oIce, OBJECT_VISUAL_TRANSFORM_SCALE, 0.3*fSize);
+        AssignCommand(oRemains, SetFacing(IntToFloat(Random(360))));
+
+        AssignCommand(oModule, DelayCommand(0.1, ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_FROST_L, FALSE, 0.3*fSize), GetLocation(oIce))));
+        AssignCommand(oModule, DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(1), oIce)));
+        AssignCommand(oModule, DelayCommand(REMAINS_DECAY, DestroyObject(oRemains)));
+
+        DestroyObject(oCreature, 0.1);
+
+        SetLocalInt(oCreature, "gibbed", 1);
+        return TRUE;
+    }
+    else if (!bNoElementalDeath && (iAcid > 0) && (iAcid >= Random(nMaxHP)) && (nSize < CREATURE_SIZE_HUGE) && (iAcid > iCold) && (iAcid > iElectric) && (iAcid > iFire) && (iAcid > iNegative) && (iAcid > iDivine) && (iAcid > iPositive) && (iAcid > iMagic))
+    {
+        object oCloud = CreateObject(OBJECT_TYPE_PLACEABLE, "_cloud_acid", lLocation);
+        object oRemains = CreateObject(OBJECT_TYPE_PLACEABLE, "_remains_acid", lLocation);
+        SetObjectVisualTransform(oRemains, OBJECT_VISUAL_TRANSFORM_SCALE, 0.3*fSize);
+        SetObjectVisualTransform(oCloud, OBJECT_VISUAL_TRANSFORM_SCALE, 0.2*fSize);
+        AssignCommand(oRemains, SetFacing(IntToFloat(Random(360))));
+
+        AssignCommand(oModule, DelayCommand(0.1, ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_ACID_S, FALSE, 0.3*fSize), lLocation)));
+        AssignCommand(oModule, DelayCommand(REMAINS_DECAY/2.0, DestroyObject(oCloud)));
+        AssignCommand(oModule, DelayCommand(REMAINS_DECAY, DestroyObject(oRemains)));
+
+        DestroyObject(oCreature, 0.1);
+
+        SetLocalInt(oCreature, "gibbed", 1);
+        return TRUE;
+    }
+    else if (!bNoElementalDeath && (iElectric > 0) && (iElectric >= Random(nMaxHP)) && (nSize < CREATURE_SIZE_HUGE) && (iElectric > iCold) && (iElectric > iAcid) && (iElectric > iFire) && (iElectric > iNegative) && (iElectric > iDivine) && (iElectric > iPositive) && (iElectric > iMagic))
+    {
+        object oCloud = CreateObject(OBJECT_TYPE_PLACEABLE, "_cloud_electri", lLocation);
+        object oRemains = CreateObject(OBJECT_TYPE_PLACEABLE, "_remains_electri", lLocation);
+        SetObjectVisualTransform(oRemains, OBJECT_VISUAL_TRANSFORM_SCALE, 0.5*fSize);
+        SetObjectVisualTransform(oCloud, OBJECT_VISUAL_TRANSFORM_SCALE, 0.6*fSize);
+        AssignCommand(oRemains, SetFacing(IntToFloat(Random(360))));
+
+        AssignCommand(oModule, DelayCommand(0.1, ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_LIGHTNING_S, FALSE, 0.3*fSize), lLocation)));
+
+        AssignCommand(oModule, DelayCommand(0.6+(IntToFloat(d20(5))*0.01), ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_COM_HIT_ELECTRICAL, TRUE, 0.3*fSize), lLocation)));
+        AssignCommand(oModule, DelayCommand(1.0+(IntToFloat(d20(5))*0.01), ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_COM_HIT_ELECTRICAL, TRUE, 0.3*fSize), lLocation)));
+        AssignCommand(oModule, DelayCommand(1.4+(IntToFloat(d20(5))*0.01), ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_COM_HIT_ELECTRICAL, TRUE, 0.3*fSize), lLocation)));
+        AssignCommand(oModule, DelayCommand(2.0+(IntToFloat(d20(5))*0.01), ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_COM_HIT_ELECTRICAL, TRUE, 0.3*fSize), lLocation)));
+        AssignCommand(oModule, DelayCommand(2.4+(IntToFloat(d20(5))*0.01), ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_COM_HIT_ELECTRICAL, TRUE, 0.3*fSize), lLocation)));
+
+
+
+        AssignCommand(oModule, DelayCommand(REMAINS_DECAY/2.0, DestroyObject(oCloud)));
+        AssignCommand(oModule, DelayCommand(REMAINS_DECAY, DestroyObject(oRemains)));
+
+        Gibs(oCreature, TRUE);
+
+        return TRUE;
+    }
+    else if (!bNoElementalDeath && (iFire > 0) && (iFire >= Random(nMaxHP)) && (nSize < CREATURE_SIZE_HUGE) && (iFire > iCold) && (iFire > iElectric) && (iFire > iAcid) && (iFire > iNegative) && (iFire > iDivine) && (iFire > iPositive) && (iFire > iMagic))
+    {
+        object oRemains = CreateObject(OBJECT_TYPE_PLACEABLE, "_remains_fire"+IntToString(nSize), lLocation);
+        AssignCommand(oRemains, SetFacing(IntToFloat(Random(360))));
+
+        AssignCommand(oModule, DelayCommand(0.1, ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_FLAME_M, FALSE, 0.3*fSize), lLocation)));
+        AssignCommand(oModule, DelayCommand(REMAINS_DECAY/2.0, DestroyObject(oRemains)));
+
+        DestroyObject(oCreature, 0.1);
+
+        SetLocalInt(oCreature, "gibbed", 1);
+        return TRUE;
+    }
+    else if (Gibs(oCreature))
     {
 // Prevent gibs from happening more than once in the case of many APR.
-        SetLocalInt(OBJECT_SELF, "gibbed", 1);
+        SetLocalInt(oCreature, "gibbed", 1);
 // Some sort of delay must be used, otherwise the sound won't play.
         DestroyObject(oCreature, 0.1);
         return TRUE;
