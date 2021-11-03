@@ -35,6 +35,8 @@ void main()
 {
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_SPAWN));
 
+    NWNX_Creature_SetNoPermanentDeath(OBJECT_SELF, TRUE);
+
     int nFamiliar = GetLocalInt(OBJECT_SELF, "familiar");
     if (nFamiliar > 0)
         NWNX_Creature_SetFamiliarCreatureType(OBJECT_SELF, nFamiliar);

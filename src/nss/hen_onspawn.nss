@@ -36,6 +36,8 @@ void main()
     if (nCompanion > 0)
         NWNX_Creature_SetAnimalCompanionCreatureType(OBJECT_SELF, nCompanion);
 
+    NWNX_Creature_SetNoPermanentDeath(OBJECT_SELF, TRUE);
+
     string sTag;
     object oNPC;
     SetAssociateListenPatterns();//Sets up the special henchmen listening patterns
