@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 1.0
+    "value": 0.5
   },
   "ClassList": {
     "type": "list",
@@ -512,12 +512,27 @@
           "type": "int",
           "value": 1
         }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "heartbeat_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "hb_plaguev"
+        }
       }
     ]
   },
   "WalkRate": {
     "type": "int",
-    "value": 7
+    "value": 3
   },
   "willbonus": {
     "type": "short",
