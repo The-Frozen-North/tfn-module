@@ -276,7 +276,7 @@ void DoSpasm(object oCreature)
 
 void RotAway(object oCreature)
 {
-    SetObjectVisualTransform(oCreature, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, GetPosition(oCreature).z-5.0, OBJECT_VISUAL_TRANSFORM_LERP_LINEAR, 20.0);
+    SetObjectVisualTransform(oCreature, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, GetPosition(oCreature).z-10.0, OBJECT_VISUAL_TRANSFORM_LERP_LINEAR, 30.0);
     DestroyObject(oCreature, 10.0);
 }
 
@@ -284,6 +284,7 @@ int Gibs(object oCreature, int bForce = FALSE)
 {
     int nHP = GetCurrentHitPoints(oCreature);
 
+    if (GetCreatureSize(oCreature) == CREATURE_SIZE_HUGE) return FALSE;
     if (!bForce && !(nHP <= -11 && nHP <= -(GetMaxHitPoints(oCreature)/2))) return FALSE;
     if (GetLocalInt(oCreature, "gibbed") == 1) return FALSE;
 
@@ -297,9 +298,6 @@ int Gibs(object oCreature, int bForce = FALSE)
     if (sBlood == "R")
     {
         nGib = VFX_COM_CHUNK_RED_MEDIUM;
-
-        object oBlood = CreateObject(OBJECT_TYPE_PLACEABLE, "_frblood"+IntToString(d3()), lLocation);
-        AssignCommand(GetModule(), DelayCommand(300.0, DestroyObject(oBlood)));
 
         PlaySound("bf_med_insect");
     }
@@ -323,7 +321,12 @@ int Gibs(object oCreature, int bForce = FALSE)
         return FALSE;
     }
 
-    SetObjectVisualTransform(oCreature, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, -500.0);
+    if (!GetIsPC(oCreature))
+    {
+        SetObjectVisualTransform(oCreature, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, -500.0);
+        SetObjectVisualTransform(oCreature, OBJECT_VISUAL_TRANSFORM_SCALE, 0.01);
+    }
+
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(nGib), lLocation);
 
     return TRUE;
@@ -391,9 +394,9 @@ int GibsNPC(object oCreature)
         //DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectParalyze(), oCreature));
         //DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectCutsceneParalyze(), oCreature));
         DelayCommand(0.17, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectVisualEffect(VFX_DUR_FREEZE_ANIMATION), oCreature, 0.01));
-        DelayCommand(0.2, AssignCommand(oCreature, ActionPlayAnimation(ANIMATION_LOOPING_SPASM, 1.0, 15.0)));
-        DelayCommand(0.3, AssignCommand(oCreature, ActionPlayAnimation(ANIMATION_LOOPING_SPASM, 1.0, 15.0)));
-        DelayCommand(0.4, AssignCommand(oCreature, ActionPlayAnimation(ANIMATION_LOOPING_SPASM, 1.0, 15.0)));
+        DelayCommand(0.2, AssignCommand(oCreature, ActionPlayAnimation(ANIMATION_LOOPING_SPASM, 2.0, 15.0)));
+        DelayCommand(0.3, AssignCommand(oCreature, ActionPlayAnimation(ANIMATION_LOOPING_SPASM, 2.0, 15.0)));
+        DelayCommand(0.4, AssignCommand(oCreature, ActionPlayAnimation(ANIMATION_LOOPING_SPASM, 2.0, 15.0)));
         DelayCommand(2.0+IntToFloat(d2(1)), ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDeath(TRUE, FALSE), oCreature));
 
         AssignCommand(oModule, DelayCommand(0.6+(IntToFloat(d10(5))*0.01), DoSpasm(oCreature)));
@@ -414,6 +417,7 @@ int GibsNPC(object oCreature)
 
         if (!Gibs(oCreature))
         {
+            SetObjectVisualTransform(oCreature, OBJECT_VISUAL_TRANSFORM_SCALE, 0.01);
             SetObjectVisualTransform(oCreature, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, -500.0);
             DestroyObject(oCreature);
         }

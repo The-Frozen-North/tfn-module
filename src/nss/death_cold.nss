@@ -16,6 +16,7 @@ void main()
     AssignCommand(oModule, DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(1), oIce)));
     AssignCommand(oModule, DelayCommand(REMAINS_DECAY, DestroyObject(oRemains)));
 
+    SetObjectVisualTransform(OBJECT_SELF, OBJECT_VISUAL_TRANSFORM_SCALE, 0.01);
     SetObjectVisualTransform(OBJECT_SELF, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, -500.0);
 
     DestroyObject(OBJECT_SELF);

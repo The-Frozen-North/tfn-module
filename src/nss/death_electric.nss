@@ -17,6 +17,7 @@ void main()
     AssignCommand(oModule, DelayCommand(REMAINS_DECAY/2.0, DestroyObject(oCloud)));
     AssignCommand(oModule, DelayCommand(REMAINS_DECAY, DestroyObject(oRemains)));
 
+    SetObjectVisualTransform(OBJECT_SELF, OBJECT_VISUAL_TRANSFORM_SCALE, 0.01);
     SetObjectVisualTransform(OBJECT_SELF, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, -500.0);
 
     DestroyObject(OBJECT_SELF);
