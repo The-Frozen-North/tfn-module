@@ -419,7 +419,6 @@ int GibsNPC(object oCreature)
         {
             SetObjectVisualTransform(oCreature, OBJECT_VISUAL_TRANSFORM_SCALE, 0.01);
             SetObjectVisualTransform(oCreature, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, -500.0);
-            DestroyObject(oCreature);
         }
 
         SetLocalInt(oCreature, "gibbed", 1);
@@ -429,8 +428,6 @@ int GibsNPC(object oCreature)
     {
 // Prevent gibs from happening more than once in the case of many APR.
         SetLocalInt(oCreature, "gibbed", 1);
-// Some sort of delay must be used, otherwise the sound won't play.
-        DestroyObject(oCreature, 0.1);
         return TRUE;
     }
     else
