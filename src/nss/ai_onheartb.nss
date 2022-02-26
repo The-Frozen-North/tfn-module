@@ -37,8 +37,8 @@ void main()
 
     if (GetLocalString(OBJECT_SELF, "merchant") != "") fMaxDistance = fMaxDistance * 0.5;
 
-// enemies have a much farther distance before they need to reset
-    if (GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) <= 10) fMaxDistance = fMaxDistance*10.0;
+// enemies and herbivores have a much farther distance before they need to reset
+    if ((GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) <= 10) || GetLocalInt(OBJECT_SELF, "herbivore") == 1) fMaxDistance = fMaxDistance*10.0;
 
     if (GetLocalInt(OBJECT_SELF, "no_wander") == 1) fMaxDistance = 0.0;
 // Not in combat? Different/Invalid area? Too far from spawn?

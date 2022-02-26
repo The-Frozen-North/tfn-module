@@ -401,3 +401,28 @@ void gsAIActionRest()
         ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(nHitPointsPer), OBJECT_SELF);
 }
 
+void HerbivoreRunAway()
+{
+
+    // random chance of playing a battlecry
+    if (d3() == 1) PlayVoiceChat(10+d3(), OBJECT_SELF);
+
+    int nTarget = 1;
+    object oTarget = GetNearestCreature(CREATURE_TYPE_PERCEPTION,PERCEPTION_SEEN,OBJECT_SELF,nTarget,CREATURE_TYPE_REPUTATION,REPUTATION_TYPE_NEUTRAL,CREATURE_TYPE_IS_ALIVE,TRUE);
+    // neutral creature, too close
+    while(GetIsObjectValid(oTarget) && GetDistanceToObject(oTarget) <= 7.0) // only consider close creatures
+    {
+        if((GetAppearanceType(OBJECT_SELF) != GetAppearanceType(oTarget)) && !GetLevelByClass(CLASS_TYPE_DRUID, oTarget) && !GetLevelByClass(CLASS_TYPE_RANGER, oTarget) && GetAssociateType(oTarget) != ASSOCIATE_TYPE_ANIMALCOMPANION)
+        {
+            // oTarget has neutral reputation, and is NOT a druid or ranger or Animal Companion
+            // AND not same appearance (easiest way to check same species)
+
+            ClearAllActions();
+            ActionMoveAwayFromLocation(GetLocation(oTarget), TRUE, IntToFloat(d2(20)));
+
+            return;
+        }
+        oTarget = GetNearestCreature(CREATURE_TYPE_PERCEPTION,PERCEPTION_SEEN,OBJECT_SELF,++nTarget,CREATURE_TYPE_REPUTATION,REPUTATION_TYPE_NEUTRAL,CREATURE_TYPE_IS_ALIVE,TRUE);
+    }
+}
+

@@ -1,9 +1,16 @@
 #include "inc_ai_combat"
 #include "inc_ai_event"
+#include "inc_ai"
 
 void main()
 {
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_CONVERSATION));
+
+    if (GetLocalInt(OBJECT_SELF, "herbivore") == 1)
+    {
+        HerbivoreRunAway();
+        return;
+    }
 
     object oSpeaker = GetLastSpeaker();
     object oTarget  = OBJECT_INVALID;

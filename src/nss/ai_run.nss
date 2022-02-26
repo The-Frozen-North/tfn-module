@@ -58,6 +58,12 @@ void main()
 
     if (GetLocalInt(OBJECT_SELF, "no_wander") == 1) return;
 
+    if (GetLocalInt(OBJECT_SELF, "herbivore") == 1)
+    {
+        HerbivoreRunAway();
+        return;
+    }
+
 
 //    if (! gsARGetIsAreaActive(GetArea(OBJECT_SELF)))
 //    {
