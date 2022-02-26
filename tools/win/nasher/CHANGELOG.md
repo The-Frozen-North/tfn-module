@@ -1,5 +1,67 @@
 # nasher changelog
 
+## 0.16.3: January 01, 2022
+
+Added error handling for out-of-range int values on choice prompts. Previously,
+choice prompts only covered non-int values and out-of-range int values would
+throw an exception. ([#91](https://github.com/squattingmonk/nasher/issues/91))
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.16.2...0.16.3
+
+
+## 0.16.2:
+
+- json output no longer uses carriage returns at line endings
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.16.1...0.16.2
+
+
+## 0.16.1: December 18, 2021
+
+- nasher now requires nim 1.6.0 and neverwinter.nim 1.5.4
+- added build args to configure the version of nwserver and nwn data location
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.16.0...0.16.1
+
+
+## 0.16.0: October 24, 2021
+
+### Added `--onMultipleSources` option
+
+Previously, when trying to pack a target that had multiple files of the same
+name within its source tree, nasher would ask the user to choose which file to
+use.  This was easy to miss if the `--yes` flag was passed.
+
+This adds the `--onMultipleSources` option with possible values of `choose`
+(manually choose a file), `default` (automatically select the first file
+found), or `error` (abort with an error message). The default value is `choose`
+in order to preserve the existing behavior.
+
+This option is supported for packing operations only. The `unpack` command will
+still require users to choose where to extract a file when multiple options are
+found.
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.15.3...0.16.0
+
+
+## 0.15.3: October 15, 2021
+
+Fixed an issue that caused an `OSError` on Windows when nasher could not find a
+Steam or GOG install. ([#87](https://github.com/squattingmonk/nasher/issues/87))
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.15.2...0.15.3
+
+
 ## 0.15.2: September 26, 2021
 
 Fixed an issue that prevented nasher from reading the `modName` and
