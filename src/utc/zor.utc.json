@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 217
+    "value": 121
   },
   "BodyBag": {
     "type": "byte",
@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 6
+    "value": 8
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 6.0
+    "value": 11.0
   },
   "ClassList": {
     "type": "list",
@@ -23,11 +23,22 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 4
+          "value": 15
         },
         "ClassLevel": {
           "type": "short",
           "value": 6
+        }
+      },
+      {
+        "__struct_id": 2,
+        "Class": {
+          "type": "int",
+          "value": 0
+        },
+        "ClassLevel": {
+          "type": "short",
+          "value": 5
         }
       }
     ]
@@ -38,19 +49,19 @@
   },
   "Con": {
     "type": "byte",
-    "value": 12
+    "value": 16
   },
   "Conversation": {
     "type": "resref",
-    "value": ""
+    "value": "zor"
   },
   "CRAdjust": {
     "type": "int",
-    "value": 1
+    "value": 0
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 60
+    "value": 120
   },
   "DecayTime": {
     "type": "dword",
@@ -61,13 +72,13 @@
     "value": ""
   },
   "Description": {
-    "id": 63230,
+    "id": 12644,
     "type": "cexolocstring",
     "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 11
+    "value": 12
   },
   "Disarmable": {
     "type": "byte",
@@ -77,49 +88,28 @@
     "type": "list",
     "value": [
       {
-        "__struct_id": 2,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_maarcl053"
-        }
-      },
-      {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_waxmbt002"
+          "value": "nw_waxmgr009"
         }
       },
       {
-        "__struct_id": 32,
+        "__struct_id": 65536,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_ashmto002"
-        }
-      },
-      {
-        "__struct_id": 131072,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "cre_duergars"
+          "value": "nw_it_crewpp010"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 25
+    "value": 26
   },
   "FeatList": {
     "type": "list",
     "value": [
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 2
-        }
-      },
       {
         "__struct_id": 1,
         "Feat": {
@@ -138,6 +128,27 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 194
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 293
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 326
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 6
         }
       },
@@ -145,21 +156,14 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 228
+          "value": 391
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 229
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 230
+          "value": 73
         }
       },
       {
@@ -173,21 +177,14 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 234
+          "value": 195
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 227
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 110
+          "value": 289
         }
       },
       {
@@ -203,21 +200,14 @@
           "type": "word",
           "value": 46
         }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 148
-        }
       }
     ]
   },
   "FirstName": {
-    "id": 12508,
+    "id": 12648,
     "type": "cexolocstring",
     "value": {
-      "0": "Duergar Warrior"
+      "0": "Zor"
     }
   },
   "fortbonus": {
@@ -234,11 +224,11 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 60
+    "value": 120
   },
   "Int": {
     "type": "byte",
-    "value": 10
+    "value": 9
   },
   "Interruptable": {
     "type": "byte",
@@ -266,11 +256,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 72
+    "value": 153
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 0
+    "value": 6
   },
   "NoPermDeath": {
     "type": "byte",
@@ -278,7 +268,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 45
+    "value": 1
   },
   "PerceptionRange": {
     "type": "byte",
@@ -294,11 +284,11 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 973
+    "value": 253
   },
   "Race": {
     "type": "byte",
-    "value": 0
+    "value": 13
   },
   "refbonus": {
     "type": "short",
@@ -384,7 +374,28 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 10
+          "value": 15
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 15
         }
       },
       {
@@ -468,28 +479,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 15
         }
       },
       {
@@ -559,7 +549,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 382
+    "value": 198
   },
   "SpecAbilityList": {
     "type": "list",
@@ -567,11 +557,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 4
+    "value": 0
   },
   "Str": {
     "type": "byte",
-    "value": 14
+    "value": 22
   },
   "Subrace": {
     "type": "cexostring",
@@ -579,7 +569,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_DUEFIGHT001"
+    "value": "NW_MINOTAUR"
   },
   "Tail_New": {
     "type": "dword",
@@ -591,7 +581,72 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "duergar_warrior"
+    "value": "zor"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest1"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "02_q_convict_zor"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest_item"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "q_ear_zor"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "semiboss"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "damage_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "damage_surrender"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
