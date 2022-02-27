@@ -164,4 +164,23 @@ void main()
     DoRevive(GetObjectByTag("hen_linu"));
     DoRevive(GetObjectByTag("hen_boddyknock"));
     DoRevive(GetObjectByTag("hen_grimgnaw"));
+
+// only do this if there isn't a yesgar in the module yet
+    if (!GetIsObjectValid(GetObjectByTag("yesgar")))
+    {
+        object oModule = GetModule();
+        int nYesgarCount = GetLocalInt(oModule, "yesgar_count");
+
+// only spawn yesgar if 250 module heartbeats have passed
+        if (nYesgarCount > 250)
+        {
+// yesgar will spawn on a random location
+            CreateObject(OBJECT_TYPE_CREATURE, "yesgar", GetLocation(GetObjectByTag("YESGAR_SPAWN"+IntToString(d4()))));
+            DeleteLocalInt(oModule, "yesgar_count");
+        }
+        else
+        {
+            SetLocalInt(oModule, "yesgar_count", nYesgarCount++);
+        }
+    }
 }
