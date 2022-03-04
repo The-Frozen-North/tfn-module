@@ -12,4 +12,8 @@ void main()
         CreateObject(OBJECT_TYPE_CREATURE, "hen_grimgnaw", GetLocation(GetObjectByTag("hen_grimgnaw_spawn_point")));
     if (!GetIsObjectValid(GetObjectByTag("hen_boddyknock")))
         CreateObject(OBJECT_TYPE_CREATURE, "hen_boddyknock", GetLocation(GetObjectByTag("hen_boddyknock_spawn_point")));
+    if (!GetIsObjectValid(GetObjectByTag("hen_valen")))
+        CreateObject(OBJECT_TYPE_CREATURE, "hen_valen", GetLocation(GetObjectByTag("hen_valen_spawn_point")));
+    if (!GetIsObjectValid(GetObjectByTag("hen_nathyrra")))
+        CreateObject(OBJECT_TYPE_CREATURE, "hen_nathyrra", GetLocation(GetObjectByTag("hen_nathyrra_spawn_point")));
 }

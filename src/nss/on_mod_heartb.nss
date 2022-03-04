@@ -164,6 +164,8 @@ void main()
     DoRevive(GetObjectByTag("hen_linu"));
     DoRevive(GetObjectByTag("hen_boddyknock"));
     DoRevive(GetObjectByTag("hen_grimgnaw"));
+    DoRevive(GetObjectByTag("hen_valen"));
+    DoRevive(GetObjectByTag("hen_nathyrra"));
 
 // only do this if there isn't a yesgar in the module yet
     if (!GetIsObjectValid(GetObjectByTag("yesgar")))

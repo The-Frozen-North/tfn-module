@@ -1,6 +1,7 @@
 #include "inc_xp"
 #include "inc_gold"
 #include "nwnx_visibility"
+#include "nwnx_creature"
 
 // =======================================================
 // PROTOTYPES
@@ -81,6 +82,8 @@ void RehireHenchman(object oPlayer)
     if (GetLocalString(oModule, "hen_sharwyn_master") == sUUID) SetMaster(GetObjectByTag("hen_sharwyn"), oPlayer);
     if (GetLocalString(oModule, "hen_boddyknock_master") == sUUID) SetMaster(GetObjectByTag("hen_boddyknock"), oPlayer);
     if (GetLocalString(oModule, "hen_grimgnaw_master") == sUUID) SetMaster(GetObjectByTag("hen_grimgnaw"), oPlayer);
+    if (GetLocalString(oModule, "hen_valen_master") == sUUID) SetMaster(GetObjectByTag("hen_valen"), oPlayer);
+    if (GetLocalString(oModule, "hen_nathyrra_master") == sUUID) SetMaster(GetObjectByTag("hen_nathyrra"), oPlayer);
 }
 
 void DismissHenchman(object oHench)
@@ -128,10 +131,35 @@ void ScaleHenchman(object oHench)
 // Henchman cannot be higher than level 12
     if (nHenchmanLevel > 12) return;
 
+    string sResRef = GetResRef(oHench);
+
+    int nClass = CLASS_TYPE_INVALID;
+    int nPackage = PACKAGE_INVALID;
+
     while ((nHenchmanLevel < nTargetLevel))
     {
+        if (sResRef == "hen_valen" && nHenchmanLevel == 6)
+        {
+            NWNX_Creature_AddFeatByLevel(oHench, FEAT_WHIRLWIND_ATTACK, 6);
+        }
+        else if (sResRef == "hen_valen" && nHenchmanLevel > 6)
+        {
+            nClass = CLASS_TYPE_WEAPON_MASTER;
+            nPackage = 139;
+        }
+        else if (sResRef == "hen_nathyrra" && nHenchmanLevel == 8)
+        {
+            nClass = CLASS_TYPE_SHADOWDANCER;
+            nPackage = 141;
+        }
+        else
+        {
+            nClass = CLASS_TYPE_INVALID;
+            nPackage = PACKAGE_INVALID;
+        }
+
 // return early if it fails
-        if (LevelUpHenchman(oHench) == 0)
+        if (LevelUpHenchman(oHench, nClass, FALSE, nPackage) == 0)
         {
             SendDebugMessage("Henchman failed to level up");
             return;
@@ -145,40 +173,53 @@ void ScaleHenchman(object oHench)
             break;
             case 4:
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(1), GetItemInSlot(INVENTORY_SLOT_CLOAK, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyBonusSavingThrowVsX(IP_CONST_SAVEVS_UNIVERSAL, 1), GetItemInSlot(INVENTORY_SLOT_CLOAK, oHench));
             break;
             case 5:
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(1), GetItemInSlot(INVENTORY_SLOT_CHEST, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyRegeneration(1), GetItemInSlot(INVENTORY_SLOT_NECK, oHench));
+AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAbilityBonus(GetLocalInt(oHench, "ability"), 1), GetItemInSlot(INVENTORY_SLOT_CHEST, oHench));
             break;
             case 6:
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(2), GetItemInSlot(INVENTORY_SLOT_NECK, oHench));
+
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyEnhancementBonus(1), GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAttackBonus(1), GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(1), GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench));
 
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAttackBonus(1), GetItemInSlot(INVENTORY_SLOT_ARMS, oHench));
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, 1), GetItemInSlot(INVENTORY_SLOT_ARMS, oHench));
             break;
             case 7:
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(2), GetItemInSlot(INVENTORY_SLOT_CLOAK, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyBonusSavingThrowVsX(IP_CONST_SAVEVS_UNIVERSAL, 1), GetItemInSlot(INVENTORY_SLOT_CLOAK, oHench));
             break;
             case 8:
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(2), GetItemInSlot(INVENTORY_SLOT_CHEST, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAbilityBonus(GetLocalInt(oHench, "ability"), 1), GetItemInSlot(INVENTORY_SLOT_CHEST, oHench));
             break;
             case 9:
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(3), GetItemInSlot(INVENTORY_SLOT_NECK, oHench));
 
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyEnhancementBonus(2), GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench));
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAttackBonus(2), GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(2), GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench));
 
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAttackBonus(2), GetItemInSlot(INVENTORY_SLOT_ARMS, oHench));
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, 2), GetItemInSlot(INVENTORY_SLOT_ARMS, oHench));
             break;
             case 10:
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(3), GetItemInSlot(INVENTORY_SLOT_CLOAK, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyBonusSavingThrowVsX(IP_CONST_SAVEVS_UNIVERSAL, 1), GetItemInSlot(INVENTORY_SLOT_CLOAK, oHench));
             break;
             case 11:
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(3), GetItemInSlot(INVENTORY_SLOT_CHEST, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAbilityBonus(GetLocalInt(oHench, "ability"), 1), GetItemInSlot(INVENTORY_SLOT_CHEST, oHench));
             break;
             case 12:
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyEnhancementBonus(3), GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench));
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAttackBonus(3), GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(3), GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench));
 
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAttackBonus(3), GetItemInSlot(INVENTORY_SLOT_ARMS, oHench));
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, 3), GetItemInSlot(INVENTORY_SLOT_ARMS, oHench));

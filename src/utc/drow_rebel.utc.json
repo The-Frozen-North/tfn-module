@@ -38,11 +38,11 @@
   },
   "Con": {
     "type": "byte",
-    "value": 16
+    "value": 12
   },
   "Conversation": {
     "type": "resref",
-    "value": "q2arebtraining"
+    "value": "drow_rebel"
   },
   "CRAdjust": {
     "type": "int",
@@ -67,7 +67,7 @@
   },
   "Dex": {
     "type": "byte",
-    "value": 16
+    "value": 14
   },
   "Disarmable": {
     "type": "byte",
@@ -80,7 +80,7 @@
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "x2_mdrowar015"
+          "value": "x2_mdrowar022"
         }
       },
       {
@@ -131,13 +131,6 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 374
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
           "value": 236
         }
       },
@@ -159,6 +152,13 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 23
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 354
         }
       },
@@ -167,13 +167,6 @@
         "Feat": {
           "type": "word",
           "value": 27
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 411
         }
       },
       {
@@ -215,7 +208,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 93
+          "value": 101
         }
       },
       {
@@ -257,7 +250,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 131
+          "value": 139
         }
       }
     ]
@@ -308,7 +301,7 @@
         "__struct_id": 0,
         "InventoryRes": {
           "type": "resref",
-          "value": "cre_inflcxbow1"
+          "value": "cre_infclbow1"
         },
         "Repos_PosX": {
           "type": "word",
@@ -335,7 +328,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 72
+    "value": 60
   },
   "NaturalAC": {
     "type": "byte",
@@ -640,7 +633,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 16
+    "value": 14
   },
   "Subrace": {
     "type": "cexostring",
@@ -661,6 +654,41 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "drow_rebel"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "no_credit"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest1"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "01_q_underdark"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
