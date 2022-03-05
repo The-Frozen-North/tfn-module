@@ -800,6 +800,25 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
 
     if (gsCBReinforce()) oTarget = gsCBGetLastAttackTarget();
 
+    // ----------------------------------------------------------------------------------------
+    // July 27/2003 - Georg Zoeller,
+    // Added to allow a replacement for determine combat round
+    // If a creature has a local string variable named X2_SPECIAL_COMBAT_AI_SCRIPT
+    // set, the script name specified in the variable gets run instead
+    // see x2_ai_behold for details:
+    // ----------------------------------------------------------------------------------------
+    string sSpecialAI = GetLocalString(OBJECT_SELF,"X2_SPECIAL_COMBAT_AI_SCRIPT");
+    if (sSpecialAI != "")
+    {
+        SetLocalObject(OBJECT_SELF,"X2_NW_I0_GENERIC_INTRUDER", oTarget);
+        ExecuteScript(sSpecialAI, OBJECT_SELF);
+        if (GetLocalInt(OBJECT_SELF,"X2_SPECIAL_COMBAT_AI_SCRIPT_OK"))
+        {
+            DeleteLocalInt(OBJECT_SELF,"X2_SPECIAL_COMBAT_AI_SCRIPT_OK");
+            return;
+        }
+    }
+
     if (GetCurrentAction() != ACTION_CASTSPELL) ClearAllActions();
 
 //    //no magic area
