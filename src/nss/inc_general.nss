@@ -5,6 +5,13 @@
 const float MORALE_RADIUS = 30.0;
 const float REMAINS_DECAY = 120.0;
 
+const int MORALE_PANIC_GIB_DC = 12;
+const int MORALE_PANIC_DEATH_DC = 8;
+const int MORALE_PANIC_DAMAGE_DC = 6;
+// Threshold = Max HP / MORALE_PANIC_HEALTH_DIVIDE_FACTOR
+const int MORALE_PANIC_HEALTH_DIVIDE_FACTOR = 3;
+const int MORALE_PANIC_GROUP_FACTOR_CAP = 5;
+
 // Makes the killer play a voice sometimes. Won't work if the killer is a PC or if the killer was not hostile.
 void KillTaunt(object oKiller, object oKilled);
 
@@ -125,10 +132,15 @@ void SendMessageToAllPCs(string sMessage)
 
 void DoMoraleCry(object oCreature)
 {
+     if (GetIsPC(oCreature)) return;
      if (GetIsDead(oCreature)) return;
      if (GetLocalInt(oCreature, "morale_cried") == 1) return;
+     if (GetIsImmune(oCreature, IMMUNITY_TYPE_FEAR)) return;
+     if (GetIsImmune(oCreature, IMMUNITY_TYPE_MIND_SPELLS)) return;
 
      SetLocalInt(oCreature, "morale_cried", 1);
+
+     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectFrightened(), oCreature, IntToFloat(d3(2)));
 
      switch (d6())
      {
@@ -140,6 +152,8 @@ void DoMoraleCry(object oCreature)
                 PlayVoiceChat(VOICE_CHAT_HEALME, oCreature);
          break;
      }
+
+     FloatingTextStringOnCreature("*" + GetName(oCreature) + ": Morale Failure*", oCreature);
 
      DelayCommand(30.0, DeleteLocalInt(oCreature, "morale_cried"));
 }
@@ -167,17 +181,19 @@ void DoMoraleCheck(object oCreature, int nDC = 10)
     int nEnemies = 0;
     float fRadius = MORALE_RADIUS;
 
+    // these things will always morale cry
+    if (GetLocalInt(oCreature, "herbivore") == 1 || GetClassByPosition(1, oCreature) == CLASS_TYPE_COMMONER)
+    {
+        DelayCommand(IntToFloat(d10())/10.0, DoMoraleCry(oCreature));
+        return;
+    }
+
     object oNearbyCreature = GetFirstObjectInShape(SHAPE_SPHERE, fRadius, lLocation, TRUE, OBJECT_TYPE_CREATURE);
     while (GetIsObjectValid(oNearbyCreature))
     {
         if (oNearbyCreature != oCreature && !GetIsDead(oCreature))
         {
-            if (GetLocalInt(oNearbyCreature, "herbivore") == 1 || GetClassByPosition(1, oNearbyCreature) == CLASS_TYPE_COMMONER)
-            {
-                ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectFrightened(), oCreature, IntToFloat(d3(2)));
-                DelayCommand(IntToFloat(d10())/10.0, DoMoraleCry(oCreature));
-            }
-            else if (GetIsFriend(oNearbyCreature, oCreature))
+            if (GetIsFriend(oNearbyCreature, oCreature))
             {
                 nFriendlies++;
             }
@@ -189,24 +205,21 @@ void DoMoraleCheck(object oCreature, int nDC = 10)
         oNearbyCreature = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation, TRUE, OBJECT_TYPE_CREATURE);
     }
 
-// these things will always morale cry
-    if (GetLocalInt(oCreature, "herbivore") == 1 || GetClassByPosition(1, oCreature) == CLASS_TYPE_COMMONER)
-    {
-        ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectFrightened(), oCreature, IntToFloat(d3(2)));
-        DelayCommand(IntToFloat(d10())/10.0, DoMoraleCry(oCreature));
-        return;
-    }
+    if (nEnemies > MORALE_PANIC_GROUP_FACTOR_CAP) nEnemies = MORALE_PANIC_GROUP_FACTOR_CAP;
+    if (nFriendlies > MORALE_PANIC_GROUP_FACTOR_CAP) nFriendlies = MORALE_PANIC_GROUP_FACTOR_CAP;
 
     int nDifference = nEnemies - nFriendlies;
 
-    nDC = nDC + nDifference - GetHitDice(oCreature);
+    nDC = nDC + nDifference;
 
-// do not continue if the DC is less than 1
-    if (nDC < 1) return;
+    if (GetLocalInt(oCreature, "semiboss") == 1) nDC = nDC - 1;
+    else if (GetLocalInt(oCreature, "boss") == 1) nDC = nDC - 2;
+    else if (GetStringLeft(GetResRef(oCreature), 3) == "hen") nDC = nDC - 1;
+
+    if (nDC < 1) nDC = 1;
 
     if (WillSave(oCreature, nDC, SAVING_THROW_TYPE_FEAR) == 0)
     {
-        ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectFrightened(), oCreature, IntToFloat(d3(2)));
         DelayCommand(IntToFloat(d10())/10.0, DoMoraleCry(oCreature));
     }
 }

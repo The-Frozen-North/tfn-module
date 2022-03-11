@@ -16,9 +16,9 @@ void main()
     if (GetIsPC(oDamager) || GetIsPC(GetMaster(oDamager))) SetLocalInt(OBJECT_SELF, "player_tagged", 1);
 
 
-    if (GetCurrentHitPoints(OBJECT_SELF) <= GetMaxHitPoints(OBJECT_SELF)/3)
+    if (GetCurrentHitPoints(OBJECT_SELF) <= GetMaxHitPoints(OBJECT_SELF)/MORALE_PANIC_HEALTH_DIVIDE_FACTOR)
     {
-        DoMoraleCheck(OBJECT_SELF, 8);
+        DoMoraleCheck(OBJECT_SELF, MORALE_PANIC_DAMAGE_DC);
     }
 
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_DAMAGED));

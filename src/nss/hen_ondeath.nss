@@ -19,10 +19,10 @@ void main()
 
     if (GibsNPC(OBJECT_SELF))
     {
-        DoMoraleCheckSphere(OBJECT_SELF, 12);
+        DoMoraleCheckSphere(OBJECT_SELF, MORALE_PANIC_GIB_DC);
     }
     else
     {
-        DoMoraleCheckSphere(OBJECT_SELF, 10);
+        DoMoraleCheckSphere(OBJECT_SELF, MORALE_PANIC_DEATH_DC);
     }
 }

@@ -63,7 +63,14 @@ void main()
 
      WriteTimestampedLogEntry(PlayerDetailedName(oPlayer)+" was killed by "+GetName(oKiller)+".");
 
-     Gibs(oPlayer);
+     if (Gibs(oPlayer))
+     {
+        DoMoraleCheckSphere(oPlayer, MORALE_PANIC_GIB_DC);
+     }
+     else
+     {
+        DoMoraleCheckSphere(oPlayer, MORALE_PANIC_DEATH_DC);
+     }
 
      KillTaunt(oKiller, oPlayer);
 

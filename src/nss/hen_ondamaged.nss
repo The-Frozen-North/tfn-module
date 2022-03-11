@@ -33,9 +33,9 @@ void main()
 
     PlayNonMeleePainSound(oDamager);
 
-    if (GetCurrentHitPoints(OBJECT_SELF) <= GetMaxHitPoints(OBJECT_SELF)/3)
+    if (GetCurrentHitPoints(OBJECT_SELF) <= GetMaxHitPoints(OBJECT_SELF)/MORALE_PANIC_HEALTH_DIVIDE_FACTOR)
     {
-        DoMoraleCheck(OBJECT_SELF, 8);
+        DoMoraleCheck(OBJECT_SELF, MORALE_PANIC_DAMAGE_DC);
     }
 
     // UNINTERRUPTIBLE ACTIONS
