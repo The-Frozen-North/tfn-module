@@ -70,15 +70,15 @@ void main()
 
 //    if (gsFLGetFlag(GS_FL_MORTAL)) gsCMDestroyInventory();
 
-        string sScript = GetLocalString(OBJECT_SELF, "death_script");
+    string sScript = GetLocalString(OBJECT_SELF, "death_script");
     if (sScript != "") ExecuteScript(sScript);
 
     if (GibsNPC(OBJECT_SELF))
     {
-        DoMoraleCheckSphere(OBJECT_SELF, 16);
+        DoMoraleCheckSphere(OBJECT_SELF, 12);
     }
     else
     {
-        DoMoraleCheckSphere(OBJECT_SELF, 12);
+        DoMoraleCheckSphere(OBJECT_SELF, 10);
     }
 }

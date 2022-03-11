@@ -151,7 +151,12 @@ void main()
         RefreshCompletedBounties(oPC, nTime, sBounties);
 
         if (!GetIsDead(oPC))
+        {
             SQLocalsPlayer_DeleteInt(oPC, "DEAD");
+
+            if (GetCurrentHitPoints(oPC) >= GetMaxHitPoints(oPC)/2)
+                DeleteLocalInt(oPC, "dying_voice");
+        }
 
         SavePCInfo(oPC);
 

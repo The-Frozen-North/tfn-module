@@ -160,6 +160,7 @@ void DoMoraleCheck(object oCreature, int nDC = 10)
     }
 
     SetLocalInt(oCreature, "morale_checked", 1);
+    DelayCommand(6.0, DeleteLocalInt(oCreature, "morale_checked"));
 
     location lLocation = GetLocation(oCreature);
     int nFriendlies = 0;
@@ -178,11 +179,11 @@ void DoMoraleCheck(object oCreature, int nDC = 10)
             }
             else if (GetIsFriend(oNearbyCreature, oCreature))
             {
-                nFriendlies = nFriendlies + 2;
+                nFriendlies++;
             }
             else if (GetIsEnemy(oNearbyCreature, oCreature))
             {
-                nEnemies = nEnemies + 2;
+                nEnemies++;
             }
         }
         oNearbyCreature = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation, TRUE, OBJECT_TYPE_CREATURE);
@@ -198,20 +199,16 @@ void DoMoraleCheck(object oCreature, int nDC = 10)
 
     int nDifference = nEnemies - nFriendlies;
 
-// if they have at least 3 allies over the player, never run
-    if (nDifference <= -6) return;
-
     nDC = nDC + nDifference - GetHitDice(oCreature);
 
-    if (nDC < 1) nDC = 1;
+// do not continue if the DC is less than 1
+    if (nDC < 1) return;
 
     if (WillSave(oCreature, nDC, SAVING_THROW_TYPE_FEAR) == 0)
     {
         ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectFrightened(), oCreature, IntToFloat(d3(2)));
         DelayCommand(IntToFloat(d10())/10.0, DoMoraleCry(oCreature));
     }
-
-    DelayCommand(5.0, DeleteLocalInt(oCreature, "morale_checked"));
 }
 
 void DoMoraleCheckSphere(object oCreature, int nDC = 10, float fRadius = MORALE_RADIUS)
@@ -225,6 +222,18 @@ void DoMoraleCheckSphere(object oCreature, int nDC = 10, float fRadius = MORALE_
 
         oNearbyCreature = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation, TRUE, OBJECT_TYPE_CREATURE);
     }
+}
+
+void DoDyingVoice()
+{
+    if (GetIsDead(OBJECT_SELF)) return;
+
+     switch (d6())
+     {
+         case 1: PlayVoiceChat(VOICE_CHAT_HELP); break;
+         case 2: PlayVoiceChat(VOICE_CHAT_HEALME); break;
+         case 3: PlayVoiceChat(VOICE_CHAT_NEARDEATH); break;
+     }
 }
 
 void PlayNonMeleePainSound(object oDamager)
@@ -243,6 +252,12 @@ void PlayNonMeleePainSound(object oDamager)
             case 2: PlayVoiceChat(VOICE_CHAT_PAIN2); break;
             case 3: PlayVoiceChat(VOICE_CHAT_PAIN3); break;
         }
+    }
+
+    if (!GetIsDead(OBJECT_SELF) && GetIsPC(OBJECT_SELF) && (GetCurrentHitPoints() <= GetMaxHitPoints()/4) && GetLocalInt(OBJECT_SELF, "dying_voice") != 1)
+    {
+        SetLocalInt(OBJECT_SELF, "dying_voice", 1);
+        DelayCommand(0.8, DoDyingVoice());
     }
 }
 

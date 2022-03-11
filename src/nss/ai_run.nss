@@ -114,6 +114,21 @@ void main()
 
     while (GetIsObjectValid(oTarget) && nNth > 1)
     {
+        if (GetSittingCreature(oTarget) == OBJECT_SELF)
+        {
+            int nSitting = GetLocalInt(OBJECT_SELF, "sitting");
+
+            if (nSitting < 10)
+            {
+                SetLocalInt(OBJECT_SELF, "sitting", nSitting++);
+                return;
+            }
+            else
+            {
+                DeleteLocalInt(OBJECT_SELF, "sitting");
+            }
+        }
+
         if (Random(100) >= 80)
         {
             if (nMatrix & GS_AI_ACTION_TYPE_WALK && Random(100) < 65) gsAIActionWalk();

@@ -33,6 +33,11 @@ void main()
 
     PlayNonMeleePainSound(oDamager);
 
+    if (GetCurrentHitPoints(OBJECT_SELF) <= GetMaxHitPoints(OBJECT_SELF)/3)
+    {
+        DoMoraleCheck(OBJECT_SELF, 8);
+    }
+
     // UNINTERRUPTIBLE ACTIONS
     if(GetAssociateState(NW_ASC_IS_BUSY)
        || GetAssociateState(NW_ASC_MODE_STAND_GROUND)

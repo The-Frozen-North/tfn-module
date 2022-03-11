@@ -92,7 +92,7 @@ void main()
                !GetIsObjectValid(GetAttackTarget()) &&
                !GetIsObjectValid(GetAttemptedSpellTarget()) &&
                !GetIsObjectValid(GetAttemptedAttackTarget()) &&
-               !GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN))
+               !GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN, CREATURE_TYPE_IS_ALIVE, TRUE))
               )
             {
                 if (GetIsObjectValid(oMaster) == TRUE)

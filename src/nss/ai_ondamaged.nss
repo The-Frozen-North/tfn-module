@@ -18,7 +18,7 @@ void main()
 
     if (GetCurrentHitPoints(OBJECT_SELF) <= GetMaxHitPoints(OBJECT_SELF)/3)
     {
-        DoMoraleCheck(OBJECT_SELF, 10);
+        DoMoraleCheck(OBJECT_SELF, 8);
     }
 
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_DAMAGED));

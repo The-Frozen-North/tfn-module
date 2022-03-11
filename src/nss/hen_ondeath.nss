@@ -16,4 +16,13 @@ void main()
     FloatingTextStringOnCreature(sText, GetMaster(OBJECT_SELF), FALSE);
 
     KillTaunt(GetLastHostileActor(OBJECT_SELF), OBJECT_SELF);
+
+    if (GibsNPC(OBJECT_SELF))
+    {
+        DoMoraleCheckSphere(OBJECT_SELF, 12);
+    }
+    else
+    {
+        DoMoraleCheckSphere(OBJECT_SELF, 10);
+    }
 }
