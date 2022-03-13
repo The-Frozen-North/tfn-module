@@ -136,7 +136,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 6
+                "value": 7
               },
               "IsChild": {
                 "type": "byte",
@@ -155,7 +155,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 5
+                "value": 6
               },
               "IsChild": {
                 "type": "byte",
@@ -174,7 +174,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
+                "value": 5
               },
               "IsChild": {
                 "type": "byte",
@@ -193,7 +193,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 4
               },
               "IsChild": {
                 "type": "byte",
@@ -212,7 +212,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 1
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -221,6 +221,25 @@
             },
             {
               "__struct_id": 9,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 1
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 10,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -300,80 +319,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 17
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Raivynn's Potions\nMysterX's Forgotten Realms Art Items\nRarosu Ambient Commoners\nSpe - Testing/Bug Finding\nWes Baran's Destroy/Rebuke Undead\nVoidsent's Swamp of Sorrows"
-          }
-        }
-      },
-      {
-        "__struct_id": 2,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 3
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
@@ -425,7 +371,153 @@
         }
       },
       {
+        "__struct_id": 2,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 17
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Raivynn's Potions\nMysterX's Forgotten Realms Art Items\nRarosu Ambient Commoners\nSpe - Testing/Bug Finding\nWes Baran's Destroy/Rebuke Undead\nVoidsent's Swamp of Sorrows"
+          }
+        }
+      },
+      {
         "__struct_id": 3,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 0
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 17
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "You can customize the appearance of your items in a shop in the Blacklake district of Neverwinter."
+          }
+        }
+      },
+      {
+        "__struct_id": 4,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -498,7 +590,7 @@
         }
       },
       {
-        "__struct_id": 4,
+        "__struct_id": 5,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -671,25 +763,6 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 8,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
                 "value": 17
               },
               "IsChild": {
@@ -719,79 +792,6 @@
           "type": "cexolocstring",
           "value": {
             "0": "What section would you like to look at?"
-          }
-        }
-      },
-      {
-        "__struct_id": 5,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 17
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Quarterstaves and shurikens now count as monk weapons alongside kamas."
           }
         }
       },
@@ -864,7 +864,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Mounted Combat is required to attack while mounted.\n\nMounted Archery is required to use range attacks while mounted.\n\nWhenever you take damage while mounted, you must make a ride check vs 10 + damage/3 or be knocked down."
+            "0": "Quarterstaves and shurikens now count as monk weapons alongside kamas."
           }
         }
       },
@@ -937,7 +937,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Items can only be identified by Eltoora in the Cloaktower. Items can be sold to Olgerd in the Dock's district."
+            "0": "Mounted Combat is required to attack while mounted.\n\nMounted Archery is required to use range attacks while mounted.\n\nWhenever you take damage while mounted, you must make a ride check vs 10 + damage/3 or be knocked down."
           }
         }
       },
@@ -1083,7 +1083,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Gold is equally divided amongst the party, and items are randomly rewarded. Only players that are present when mobs are killed or when the treasure is opened will be eligible to loot."
+            "0": "Gold is equally divided amongst the party, and items are randomly rewarded. Only players that are present when mobs are killed or when the treasure is opened will be eligible to loot. Any recruited henchman (except generic ones like adventurers or militia) count as party members."
           }
         }
       },
@@ -1115,7 +1115,31 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 17
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
@@ -1205,7 +1229,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Henchman can be hired from the \"Trade of Blades\" in the city core. They automatically scale to your level, and will respawn there when killed or dismissed. They will take some share of the loot and gold, however."
+            "0": "Starting henchman can be hired from the \"Trade of Blades\" in the city core. They automatically scale to your level, and will respawn there when killed or dismissed. They will take some share of the loot and gold, however."
           }
         }
       },
@@ -1420,7 +1444,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Level 12 cap.\n\nHeavy emphasis on quest and story based on the original campaign, roleplay not enforced.\n\nMax HP rolls.\nChallenging encounters.\n\nClose to vanilla with minimal class/spell changes.\n\n+3 item enhancement cap, no permanent \"True Seeing\", \"Haste\", \"Freedom of Movement\" etc. item properties.\n\nHenchman available.\n\n"
+            "0": "Level 12 cap.\n\nHeavy emphasis on quest and story based on the original campaign and Hordes of the Underdark, roleplay encouraged but not enforced.\n\nMax HP rolls.\nChallenging encounters.\n\nClose to vanilla with minimal class/spell changes.\n\n+3 item enhancement cap, no permanent \"True Seeing\", \"Haste\", \"Freedom of Movement\" etc. item properties.\n\nHenchman available.\n\n"
           }
         }
       },
@@ -2043,7 +2067,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 653
+    "value": 677
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -2158,12 +2182,102 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>Credits.</Start>"
+            "0": "<StartAction>Examine the \"Teleport\" button.</Start>"
           }
         }
       },
       {
         "__struct_id": 2,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dev_tyr_tp"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartAction>Press the button.</Start>"
+          }
+        }
+      },
+      {
+        "__struct_id": 3,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_unstuck"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartAction>Press the \"Unstuck\" button.</Start>"
+          }
+        }
+      },
+      {
+        "__struct_id": 4,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -2223,97 +2337,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>Examine the \"Teleport\" button.</Start>"
-          }
-        }
-      },
-      {
-        "__struct_id": 3,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": []
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": "dev_tyr_tp"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "<StartAction>Press the button.</Start>"
-          }
-        }
-      },
-      {
-        "__struct_id": 4,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": []
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": "dlg_unstuck"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "<StartAction>Unstuck.</Start>"
+            "0": "<StartAction>Credits.</Start>"
           }
         }
       },
@@ -2378,7 +2402,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>Server Rules</Start>"
+            "0": "<StartAction>Customize item appearance.</Start>"
           }
         }
       },
@@ -2443,7 +2467,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>Game Mechanics.</Start>"
+            "0": "<StartAction>Server Rules</Start>"
           }
         }
       },
@@ -2508,7 +2532,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Monk weapons."
+            "0": "<StartAction>Game Mechanics.</Start>"
           }
         }
       },
@@ -2573,7 +2597,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Horses."
+            "0": "Monk weapons."
           }
         }
       },
@@ -2638,7 +2662,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Stores."
+            "0": "Horses."
           }
         }
       },
