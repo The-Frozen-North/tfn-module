@@ -23,6 +23,7 @@
 #include "inc_horse"
 #include "inc_webhook"
 #include "inc_sql"
+#include "inc_penalty"
 
 void main()
 {
@@ -31,7 +32,10 @@ void main()
     effect eEffect;
 
     object oKiller = GetLastHostileActor(oPlayer);
-    string sDeathMessage = "You will be automatically revived if there is an ally nearby, there are no enemies, and you are out of combat, or you can respawn at your chosen temple at cost of XP and gold.";
+
+    string sPenalty = IntToString(GetXP(oPlayer) - GetXPOnRespawn(oPlayer)) + " XP and " + IntToString(GetGoldLossOnRespawn(oPlayer)) + " gold";
+
+    string sDeathMessage = "You will be automatically revived if there is an ally nearby, there are no enemies, and you are out of combat, or you can respawn at your chosen temple for " + sPenalty + ".";
 
     RemoveMount(oPlayer);
 
@@ -51,7 +55,7 @@ void main()
      RemoveDeathEffectPenalty(oPlayer);
 
      if (!IsCreatureRevivable(oPlayer))
-        sDeathMessage = "You have died too many times and cannot be revived by allies. You can respawn at your chosen temple at cost of XP and gold, or wait for a Raise Dead spell.";
+        sDeathMessage = "You have died too many times and cannot be revived by allies. You can respawn at your chosen temple for " + sPenalty + ", or wait for a Raise Dead spell.";
 
      SQLocalsPlayer_SetInt(oPlayer, "DEAD", 1);
 
