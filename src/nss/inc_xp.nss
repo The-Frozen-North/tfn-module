@@ -317,22 +317,26 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
 
        fXP = fXP*fXPPenaltyMod;
 
-       SendDebugMessage("Party XP mod: "+FloatToString(fPartyMod));
-       SendDebugMessage("fXP penalty mod: "+FloatToString(fXPPenaltyMod));
-       SendDebugMessage("fCR: "+FloatToString(fCR));
-       SendDebugMessage("fXP: "+FloatToString(fXP));
+       //SendDebugMessage("Party XP mod: "+FloatToString(fPartyMod));
+       //SendDebugMessage("fXP penalty mod: "+FloatToString(fXPPenaltyMod));
+       //SendDebugMessage("fCR: "+FloatToString(fCR));
+       //SendDebugMessage("fXP: "+FloatToString(fXP));
 
        fXP = (fXP / fAverageLevel) * fPartyMod;
 
     // Cap the xp
        if ((fXP*fXPPenaltyMod) > XP_MAX) fXP = XP_MAX;
+
+    // award more XP if the enemy is a caster or can summon pets
+       if (GetLevelByClass(CLASS_TYPE_DRUID, OBJECT_SELF) >= 1 || GetLevelByClass(CLASS_TYPE_SORCERER, OBJECT_SELF) > 1 || GetLevelByClass(CLASS_TYPE_WIZARD, OBJECT_SELF) >= 1 || GetLevelByClass(CLASS_TYPE_CLERIC, OBJECT_SELF) > 1 || GetLevelByClass(CLASS_TYPE_RANGER, OBJECT_SELF) >= 6 )
+           fXP = fXP * 1.25;
    }
 
    if (fXP == 0.0) return 0.0;
 
    if (fXP < 0.01) fXP = 0.01;
 
-   SendDebugMessage("fXP (modified by average level and party): "+FloatToString(fXP));
+   //SendDebugMessage("fXP (modified by average level and party): "+FloatToString(fXP));
    return fXP;
 }
 //------------------------------  END INTERNAL FUNCTIONS  -----------------------------------
