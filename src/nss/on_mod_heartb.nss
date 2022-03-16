@@ -88,10 +88,18 @@ void DoRevive(object oDead)
                 oCreature = GetNextObjectInShape(SHAPE_SPHERE, fSize, lLocation, TRUE, OBJECT_TYPE_CREATURE);
             }
 
-            if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound && !bMasterDead)
+            if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound && !bMasterDead && !GetIsInCombat(oMaster))
             {
                 oLastFriend = oMaster;
                 bFriend = TRUE;
+            }
+
+            // don't revive if there's an enemy to the last friend
+            object oLastEnemy = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, oLastFriend, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN, CREATURE_TYPE_IS_ALIVE, TRUE);
+            if (GetIsObjectValid(oLastEnemy) && GetDistanceBetween(oLastFriend, oLastEnemy) < fSize)
+            {
+                SendDebugMessage("Friend has enemy detected, breaking from revive loop: "+GetName(oLastEnemy));
+                bEnemy = TRUE;
             }
 
             if (!bEnemy && bFriend && IsCreatureRevivable(oDead))
