@@ -17,6 +17,7 @@ int StartingConditional()
     else
     {
         SetMaster(OBJECT_SELF, oPC);
+        ForceRest(OBJECT_SELF);
         return TRUE;
     }
 }
