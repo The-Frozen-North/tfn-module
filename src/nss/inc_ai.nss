@@ -405,7 +405,7 @@ void HerbivoreRunAway()
 {
 
     // random chance of playing a battlecry
-    if (d3() == 1) PlayVoiceChat(10+d3(), OBJECT_SELF);
+    if (d4() == 1) PlayVoiceChat(10+d3(), OBJECT_SELF);
 
     int nTarget = 1;
     object oTarget = GetNearestCreature(CREATURE_TYPE_PERCEPTION,PERCEPTION_SEEN,OBJECT_SELF,nTarget,CREATURE_TYPE_REPUTATION,REPUTATION_TYPE_NEUTRAL,CREATURE_TYPE_IS_ALIVE,TRUE);
