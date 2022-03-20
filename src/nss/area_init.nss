@@ -56,6 +56,55 @@ void main()
             }
        }
 
+       string sName = GetName(oArea);
+
+        if (GetLocalString(oArea, "climate") == "")
+       {
+           string sTilesetResRef = GetTilesetResRef(oArea);
+
+           if (FindSubString(sName, "Neverwinter") > -1)
+           {
+               SetLocalString(oArea, "climate", "moderate");
+           }
+           else if (FindSubString(sName, "Port Llast") > -1)
+           {
+               SetLocalString(oArea, "climate", "highland");
+           }
+           else if (FindSubString(sName, "Luskan") > -1 || sTilesetResRef == TILESET_RESREF_RURAL_WINTER || sTilesetResRef == TILESET_RESREF_FROZEN_WASTES || sTilesetResRef == TILESET_RESREF_RURAL_WINTER_FACELIFT)
+           {
+               SetLocalString(oArea, "climate", "polar");
+           }
+           else if (sTilesetResRef == TILESET_RESREF_DESERT)
+           {
+               SetLocalString(oArea, "climate", "desert");
+           }
+       }
+
+       string sClimate = GetLocalString(oArea, "climate");
+       if (GetLocalString(oArea, "climate") != "")
+       {
+           if (sClimate == "moderate")
+           {
+               NWNX_Area_SetWindPower(oArea, 1);
+           }
+           else if (sClimate == "highland")
+           {
+               NWNX_Area_SetWindPower(oArea, 2);
+           }
+           else if (sClimate == "polar")
+           {
+               NWNX_Area_SetWindPower(oArea, 2);
+           }
+           else if (sClimate == "desert")
+           {
+               NWNX_Area_SetWindPower(oArea, 0);
+           }
+            else if (sClimate == "jungle")
+           {
+               NWNX_Area_SetWindPower(oArea, 0);
+           }
+       }
+
        NWNX_Area_SetFogClipDistance(oArea, 90.0);
 
 

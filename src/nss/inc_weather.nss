@@ -13,6 +13,8 @@
     changes to this script you must recompile
     the scripts which use it.
 */
+#include "inc_debug"
+#include "nwnx_area"
 
 //------------------------------------------------------------------------------
 // Returns a random location within the specified area.
@@ -124,7 +126,6 @@ const int SEASON_FALL   = 4;
 //              2) Blizard
 //              3) Sandstorm
 const string VAR_SEASON_STORE = "SEASON";
-const string CLIMATE_DESIGNATOR_TAG = "climate_designator";
 const string VAR_STORM = "STORM_STORE";
 const string WEATHER_FACTOR = "Weather_Factor";
 
@@ -529,244 +530,205 @@ void WeatherSandStorm()
 // Set the global weather.
 void SetGlobalWeather()
 {
-    int nDuration = nMin + Random(nMax - nMin);
+    int nDuration = (nMin + Random(nMax - nMin)) * 10;
     object oMod = GetModule();
 
     // Global Weather Variables
-    int nClearChance, nRainChance, nSnowChance, nWeather, nSky, nWind;
+    int nClearChance, nRainChance, nSnowChance, nLightningChance, nWeather, nSky, nWind;
     // Climate Variables
-    int nJungleClear, nJungleRain, nJungleSnow, nJungleSky;
-    int nModerateClear, nModerateRain, nModerateSnow, nModerateSky;
-    int nPolarClear, nPolarRain, nPolarSnow, nPolarSky;
-    int nDesertClear, nDesertRain, nDesertSnow, nDesertSky;
-    int nHighlandClear, nHighlandRain, nHighlandSnow, nHighlandSky;
+    int nJungleClear, nJungleRain, nJungleSnow, nJungleSky, nJungleLightning;
+    int nModerateClear, nModerateRain, nModerateSnow, nModerateSky, nModerateLightning;
+    int nPolarClear, nPolarRain, nPolarSnow, nPolarSky, nPolarLightning;
+    int nDesertClear, nDesertRain, nDesertSnow, nDesertSky, nDesertLightning;
+    int nHighlandClear, nHighlandRain, nHighlandSnow, nHighlandSky, nHighlandLightning;
     // Climate Weather Variables
     int nJungleWeather, nModerateWeather, nPolarWeather, nDesertWeather, nHighlandWeather;
 
-    if (WEATHER_SYSTEM == TRUE) {
+    int bJungleLightning, bModerateLightning, bPolarLightning, bDesertLightning, bHighlandLightning, bLightning;
 
-        // Determine Season for Module
-        SetGlobalSeason();
+    // Determine Season for Module
+    SetGlobalSeason();
 
-        // Determine Seasonal Base Modifier. This is the % chance of a given weather pattern.
-        // nClearChance, nRainChance, nSnowChance: must add up to 60
-        switch (GetLocalInt(oMod, VAR_SEASON_STORE))
-        {
-            case SEASON_WINTER:
-                SendMessageToAllDMs("Season: Winter");
-                nClearChance = 5;
-                nRainChance =  5;
-                nSnowChance =  50;
-                break;
-            case SEASON_SPRING:
-                SendMessageToAllDMs("Season: Spring");
-                nClearChance = 20;
-                nRainChance =  35;
-                nSnowChance =  5;
-                break;
-            case SEASON_SUMMER:
-                SendMessageToAllDMs("Season: Summer");
-                nClearChance = 50;
-                nRainChance =  10;
-                nSnowChance =  0;
-                break;
-            case SEASON_FALL:
-                SendMessageToAllDMs("Season: Fall");
-                nClearChance = 40;
-                nRainChance =  10;
-                nSnowChance =  10;
-                break;
+    // Determine Seasonal Base Modifier. This is the % chance of a given weather pattern.
+    // nClearChance, nRainChance, nSnowChance: must add up to 60
+    switch (GetLocalInt(oMod, VAR_SEASON_STORE))
+    {
+        case SEASON_WINTER:
+            SendMessageToAllDMs("Season: Winter");
+            nClearChance = 5;
+            nRainChance =  5;
+            nSnowChance =  50;
+            nLightningChance = 1;
+            break;
+        case SEASON_SPRING:
+            SendMessageToAllDMs("Season: Spring");
+            nClearChance = 20;
+            nRainChance =  35;
+            nSnowChance =  5;
+            nLightningChance = 10;
+            break;
+        case SEASON_SUMMER:
+            SendMessageToAllDMs("Season: Summer");
+            nClearChance = 50;
+            nRainChance =  10;
+            nSnowChance =  0;
+            nLightningChance = 5;
+            break;
+        case SEASON_FALL:
+            SendMessageToAllDMs("Season: Fall");
+            nClearChance = 40;
+            nRainChance =  10;
+            nSnowChance =  10;
+            nLightningChance = 10;
+            break;
+    }
+
+    // Set up base % for climates
+    // Must add up to 40
+        // Moderate - Summer Season
+        if (GetLocalInt(oMod, VAR_SEASON_STORE) == SEASON_SUMMER) {
+            nModerateClear = nClearChance + 20;
+            nModerateRain = nRainChance + nSnowChance + 20;
+            nModerateSnow = 0;
+        }
+        // Moderate - Winter/Fall/Spring Seasons
+        else {
+            nModerateClear = nClearChance + 18;
+            nModerateRain = nRainChance + 17;
+            nModerateSnow = nSnowChance + 5;
+        }
+        nModerateLightning = nLightningChance + 5;
+        // Jungle
+        nJungleClear = nClearChance + 10;
+        nJungleRain = nRainChance + nSnowChance + 30;
+        nJungleSnow = 0;
+        nJungleLightning = nLightningChance + 15;
+        // Polar
+        nPolarClear = nClearChance + 5;
+        nPolarRain = nRainChance + 5;
+        nPolarSnow = nSnowChance + 30;
+        nPolarLightning = nLightningChance + 1;
+        // Desert - no base needed. Add in if rain/snow possible in desert.
+        // Highland
+        nHighlandClear = nClearChance + 5;
+        nHighlandRain = nRainChance + 30;
+        nHighlandSnow = nSnowChance + 5;
+        nHighlandLightning = nLightningChance + 10;
+
+    // Calculate Climate Base percents
+        // Moderate
+        nModerateRain += nModerateClear;
+        nModerateSnow += nModerateRain;
+        // Jungle
+        nJungleRain += nJungleClear;
+        nJungleSnow += nJungleRain;
+        // Polar
+        nPolarRain += nPolarClear;
+        nPolarSnow += nPolarRain;
+        // Desert - no need to calculate. Add in if rain/snow possible in desert.
+        nHighlandRain += nHighlandClear;
+        nHighlandSnow += nHighlandRain;
+
+    // Determine Random number for all weather paterns to use.
+    int nRandom =  d100();
+
+    // Determine Weather/Sky in each climate zone
+        // Moderate
+        if (nRandom < nModerateClear) {
+            nModerateWeather = WEATHER_CLEAR;
+            nModerateSky = SKYBOX_GRASS_CLEAR;
+        }
+        else if (nRandom < nModerateRain) {
+            nModerateWeather = WEATHER_RAIN;
+            nModerateSky = SKYBOX_GRASS_STORM;
+            if (nRandom < nModerateLightning) bModerateLightning = TRUE;
+        }
+        else {
+            nModerateWeather = WEATHER_SNOW;
+            nModerateSky = SKYBOX_WINTER_CLEAR;
+        }
+        // Jungle
+        if (nRandom < nJungleClear) {
+            nJungleWeather = WEATHER_CLEAR;
+            nJungleSky = SKYBOX_GRASS_CLEAR;
+        }
+        else if (nRandom < nJungleRain) {
+            nJungleWeather = WEATHER_RAIN;
+            nJungleSky = SKYBOX_GRASS_STORM;
+            if (nRandom < nJungleLightning) bJungleLightning = TRUE;
+        }
+        else {
+            nJungleWeather = WEATHER_SNOW;
+            nJungleSky = SKYBOX_ICY;
+        }
+        // Polar
+        if (nRandom < nPolarClear) {
+            nPolarWeather = WEATHER_CLEAR;
+            nPolarSky = SKYBOX_WINTER_CLEAR;
+        }
+        else if (nRandom < nPolarRain) {
+            nPolarWeather = WEATHER_RAIN;
+            nPolarSky = SKYBOX_ICY;
+            if (nRandom < nPolarLightning) bPolarLightning = TRUE;
+        }
+        else {
+            nPolarWeather = WEATHER_SNOW;
+            nPolarSky = SKYBOX_ICY;
+        }
+        // Desert - no rain/snow
+        nDesertWeather = WEATHER_CLEAR;
+        nDesertSky = SKYBOX_DESERT_CLEAR;
+        // Highland
+        if (nRandom < nHighlandClear) {
+            nHighlandWeather = WEATHER_CLEAR;
+            nHighlandSky = SKYBOX_GRASS_CLEAR;
+        }
+        else if (nRandom < nHighlandRain ) {
+            nHighlandWeather = WEATHER_RAIN;
+            nHighlandSky = SKYBOX_GRASS_STORM;
+            if (nRandom < nHighlandLightning) bHighlandLightning = TRUE;
+        }
+        else {
+            nHighlandWeather = WEATHER_SNOW;
+            nHighlandSky = SKYBOX_ICY;
         }
 
-        // Set up base % for climates
-        // Must add up to 40
-            // Moderate - Summer Season
-            if (GetLocalInt(oMod, VAR_SEASON_STORE) == SEASON_SUMMER) {
-                nModerateClear = nClearChance + 20;
-                nModerateRain = nRainChance + nSnowChance + 20;
-                nModerateSnow = 0;
-            }
-            // Moderate - Winter/Fall/Spring Seasons
-            else {
-                nModerateClear = nClearChance + 18;
-                nModerateRain = nRainChance + 17;
-                nModerateSnow = nSnowChance + 5;
-            }
-            // Jungle
-            nJungleClear = nClearChance + 10;
-            nJungleRain = nRainChance + nSnowChance + 30;
-            nJungleSnow = 0;
-            // Polar
-            nPolarClear = nClearChance + 5;
-            nPolarRain = nRainChance + 5;
-            nPolarSnow = nSnowChance + 30;
-            // Desert - no base needed. Add in if rain/snow possible in desert.
-            // Highland
-            nHighlandClear = nClearChance + 5;
-            nHighlandRain = nRainChance + 30;
-            nHighlandSnow = nSnowChance + 5;
+    // Cycle through all areas setting weather by zone
+    object oArea = GetFirstArea();
+    while (GetIsObjectValid(oArea))
+    {
+        string sClimate = GetLocalString(oArea, "climate");
 
-        // Calculate Climate Base percents
-            // Moderate
-            nModerateRain += nModerateClear;
-            nModerateSnow += nModerateRain;
-            // Jungle
-            nJungleRain += nJungleClear;
-            nJungleSnow += nJungleRain;
-            // Polar
-            nPolarRain += nPolarClear;
-            nPolarSnow += nPolarRain;
-            // Desert - no need to calculate. Add in if rain/snow possible in desert.
-            nHighlandRain += nHighlandClear;
-            nHighlandSnow += nHighlandRain;
-
-        // Determine Random number for all weather paterns to use.
-        int nRandom =  d100();
-
-        // Determine Weather/Sky in each climate zone
-            // Moderate
-            if (nRandom < nModerateClear) {
-                nModerateWeather = WEATHER_CLEAR;
-                nModerateSky = SKYBOX_GRASS_CLEAR;
-            }
-            else if (nRandom < nModerateRain) {
-                nModerateWeather = WEATHER_RAIN;
-                nModerateSky = SKYBOX_GRASS_STORM;
-            }
-            else {
-                nModerateWeather = WEATHER_SNOW;
-                nModerateSky = SKYBOX_ICY;
-            }
-            // Jungle
-            if (nRandom < nJungleClear) {
-                nJungleWeather = WEATHER_CLEAR;
-                nJungleSky = SKYBOX_GRASS_CLEAR;
-            }
-            else if (nRandom < nJungleRain) {
-                nJungleWeather = WEATHER_RAIN;
-                nJungleSky = SKYBOX_GRASS_STORM;
-            }
-            else {
-                nJungleWeather = WEATHER_SNOW;
-                nJungleSky = SKYBOX_ICY;
-            }
-            // Polar
-            if (nRandom < nPolarClear) {
-                nPolarWeather = WEATHER_CLEAR;
-                nPolarSky = SKYBOX_WINTER_CLEAR;
-            }
-            else if (nRandom < nPolarRain) {
-                nPolarWeather = WEATHER_RAIN;
-                nPolarSky = SKYBOX_ICY;
-            }
-            else {
-                nPolarWeather = WEATHER_SNOW;
-                nPolarSky = SKYBOX_ICY;
-            }
-            // Desert - no rain/snow
-            nDesertWeather = WEATHER_CLEAR;
-            nDesertSky = SKYBOX_DESERT_CLEAR;
-            // Highland
-            if (nRandom < nHighlandClear) {
-                nHighlandWeather = WEATHER_CLEAR;
-                nHighlandSky = SKYBOX_GRASS_CLEAR;
-            }
-            else if (nRandom < nHighlandRain ) {
-                nHighlandWeather = WEATHER_RAIN;
-                nHighlandSky = SKYBOX_GRASS_STORM;
-            }
-            else {
-                nHighlandWeather = WEATHER_SNOW;
-                nHighlandSky = SKYBOX_ICY;
-            }
-
-        // Cycle through all areas setting weather by zone
-        object oArea = GetFirstArea();
-        while (GetIsObjectValid(oArea))
+        // only proceed if there is a climate
+        if (sClimate != "" && !GetIsAreaInterior(oArea))
         {
-            // System is using TAGS to determine climate
-            if (WEATHER_TAGS == TRUE)
-            {
-                string sStringValue1 = GetStringLeft(GetTag(oArea), 2);
-                string sStringValue2 = GetSubString(GetTag(oArea), 2, 3);
-                if (sStringValue1 == "ZN") { // Area has a climate
-                    int iStringValue = StringToInt(sStringValue2);
-                    switch (iStringValue) {
-                    case 100: // Moderate Climate
-                        nWeather = nModerateWeather;
-                        nSky = nModerateSky;
-                    break;
-                    case 101: // Jungle Climate
-                        nWeather =  nJungleWeather;
-                        nSky = nJungleSky;
-                    break;
-                    case 102: // Polar Climate
-                        nWeather = nPolarWeather;
-                        nSky = nPolarSky;
-                    break;
-                    case 103: // Desert Climate
-                        nWeather = nDesertWeather;
-                        nSky = nDesertSky;
-                    break;
-                    case 104: // Highland Climate
-                        nWeather = nHighlandWeather;
-                        nSky = nHighlandSky;
-                    break;
-                    }
-                    SetWeather(oArea, nWeather);
-                    if (WEATHER_SKYBOX == TRUE)
-                        SetSkyBox(nSky, oArea);
-                    // SendMessageToAllDMs("Setting Area: " + GetName(oArea) + " to climate: " +IntToString(nWeather));
-                }
-                else { // Area uses default climate (Moderate)
+            if (sClimate == "moderate") { // Moderate Climate
                     nWeather = nModerateWeather;
                     nSky = nModerateSky;
-                    SetWeather(oArea, nWeather);
-                    if (WEATHER_SKYBOX == TRUE)
-                        SetSkyBox(nSky,oArea);
-                    // SendMessageToAllDMs("Area: " + GetName(oArea) + " is using default climate.");
-                }
-            // System is using area variables to determine climate
-            } else if (WEATHER_TAGS == FALSE)
-            {
-                int nClimateZone = GetLocalInt(oArea, "CLIMATEZONE");
-                if (nClimateZone != 0) { // Area has a climate
-                    switch (nClimateZone) {
-                    case 100: // Moderate Climate
-                        nWeather = nModerateWeather;
-                        nSky = nModerateSky;
-                    break;
-                    case 101: // Jungle Climate
-                        nWeather =  nJungleWeather;
-                        nSky = nJungleSky;
-                    break;
-                    case 102: // Polar Climate
-                        nWeather = nPolarWeather;
-                        nSky = nPolarSky;
-                    break;
-                    case 103: // Desert Climate
-                        nWeather = nDesertWeather;
-                        nSky = nDesertSky;
-                    break;
-                    case 104: // Highland Climate
-                        nWeather = nHighlandWeather;
-                        nSky = nHighlandSky;
-                    break;
-                    }
-                    SetWeather(oArea, nWeather);
-                    if (WEATHER_SKYBOX == TRUE)
-                        SetSkyBox(nSky, oArea);
-                    // SendMessageToAllDMs("Setting Area: " + GetName(oArea) + " to climate: " +IntToString(nWeather));
-                }
-                else { // Area uses default climate (Moderate)
-                    nWeather = nModerateWeather;
-                    nSky = nModerateSky;
-                    SetWeather(oArea, nWeather);
-                    if (WEATHER_SKYBOX == TRUE)
-                        SetSkyBox(nSky,oArea);
-                    // SendMessageToAllDMs("Area: " + GetName(oArea) + " is using default climate.");
-                }
+                    bLightning = bModerateLightning;
             }
+            else if (sClimate == "jungle") { // Jungle Climate
+                    nWeather =  nJungleWeather;
+                    nSky = nJungleSky;
+                    bLightning = bJungleLightning;
+            }
+            else if (sClimate == "polar") { // Polar Climate
+                    nWeather = nPolarWeather;
+                    nSky = nPolarSky;
+                    bLightning = bPolarLightning;
+            }
+            else if (sClimate == "desert") { // Desert Climate
+                    nWeather = nDesertWeather;
+                    nSky = nDesertSky;
+            }
+            else if (sClimate == "highland") { // Highland Climate
+                nWeather = nHighlandWeather;
+                nSky = nHighlandSky;
+                bLightning = bHighlandLightning;
+            }
+            SetWeather(oArea, nWeather);
+            SetSkyBox(nSky, oArea);
+            // SendMessageToAllDMs("Setting Area: " + GetName(oArea) + " to climate: " +IntToString(nWeather));
 
             // Fog Effects
             int nFogChance = d100();
@@ -810,27 +772,45 @@ void SetGlobalWeather()
             }
 
             // Storm System
-                // Default area to no storm if resulting weather is clear.
-                if (GetWeather(oArea) == WEATHER_CLEAR)
-                    SetLocalInt(oArea, VAR_STORM, 0);
-
-            oArea = GetNextArea();
+            // Default area to no storm if resulting weather is clear.
+            if (GetWeather(oArea) == WEATHER_RAIN && bLightning)
+            {
+                NWNX_Area_SetWeatherChance(oArea, NWNX_AREA_WEATHER_CHANCE_LIGHTNING, 50);
+            }
+            else
+            {
+                NWNX_Area_SetWeatherChance(oArea, NWNX_AREA_WEATHER_CHANCE_LIGHTNING, 0);
+            }
+            /*
+            if (GetWeather(oArea) == WEATHER_CLEAR)
+            {
+                SetLocalInt(oArea, VAR_STORM, 0);
+            } */
         }
+        /*
+        else { // Area uses default climate (Moderate)
+            nWeather = nModerateWeather;
+            nSky = nModerateSky;
+            SetWeather(oArea, nWeather);
+            if (WEATHER_SKYBOX == TRUE)
+                SetSkyBox(nSky,oArea);
+            // SendMessageToAllDMs("Area: " + GetName(oArea) + " is using default climate.");
+        }*/
 
-        // Storm System
-            // Thunderstorm
-            WeatherThunderStorm();
-            // Blizzard
-            WeatherBlizzard();
-            // Sandstorm
-            WeatherSandStorm();
-
-        // Process exceptions
-        WeatherExceptions();
-
-        // run the weather function again after a certain amount of time
-        DelayCommand(60.0 * IntToFloat(nDuration), SetGlobalWeather());
-        // SendMessageToAllDMs("The next check occurs in: " + IntToString(nDuration));
+        oArea = GetNextArea();
     }
+
+    // Storm System
+        // Thunderstorm
+        //WeatherThunderStorm();
+        // Blizzard
+        //WeatherBlizzard();
+        // Sandstorm
+        //WeatherSandStorm();
+
+    // Process exceptions
+    //WeatherExceptions();
+    SetLocalInt(oMod, "weather_duration", nDuration);
+    SendDebugMessage("The next weather check occurs in: " + IntToString(nDuration)+" heartbeats");
 }
 

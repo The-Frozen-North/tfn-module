@@ -6,6 +6,7 @@
 #include "inc_sql"
 #include "inc_general"
 #include "inc_sqlite_time"
+#include "inc_weather"
 #include "nwnx_player"
 
 void DoRevive(object oDead)
@@ -142,7 +143,9 @@ void main()
 
     ExportAllCharacters();
 
-    string sBounties = GetLocalString(GetModule(), "bounties");
+    object oModule = GetModule();
+
+    string sBounties = GetLocalString(oModule, "bounties");
 
     if (GetIsObjectValid(oPC))
     {
@@ -179,6 +182,24 @@ void main()
     DoRevive(GetObjectByTag("hen_grimgnaw"));
     DoRevive(GetObjectByTag("hen_valen"));
     DoRevive(GetObjectByTag("hen_nathyrra"));
+
+    int nWeatherCount = GetLocalInt(oModule, "weather_count");
+    int nWeatherDuration = GetLocalInt(oModule, "weather_duration");
+
+    if (nWeatherDuration < 10)
+        nWeatherDuration = nWeatherCount;
+
+    SendDebugMessage("weather count: "+IntToString(nWeatherCount)+" weather duration: "+IntToString(nWeatherDuration));
+
+    if (nWeatherCount > nWeatherDuration)
+    {
+        SetGlobalWeather();
+        DeleteLocalInt(oModule, "weather_count");
+    }
+    else
+    {
+        SetLocalInt(oModule, "weather_count", nWeatherCount+1);
+    }
 
 // only do this if there isn't a yesgar in the module yet
     if (!GetIsObjectValid(GetObjectByTag("yesgar")))

@@ -122,6 +122,9 @@ void main()
 
     }
 
+    SetCalendar(1372, d12(), 1);
+    SetTime(d12(2), 0, 0, 0);
+
 // Set up some server options
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_ENFORCE_LEGAL_CHARACTERS, TRUE);
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_ITEM_LEVEL_RESTRICTIONS, TRUE);
@@ -132,9 +135,6 @@ void main()
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_HIDE_HITPOINTS_GAINED, FALSE);
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_PVP_SETTING, 2);
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_VALIDATE_SPELLS, TRUE);
-
-    SetCustomToken(25000, "</c>");
-    SetCustomToken(25001, "<c þþ>"); // cyan
 
 // Set a password until everything is initialized and ready
     NWNX_Administration_SetPlayerPassword(GetRandomUUID());

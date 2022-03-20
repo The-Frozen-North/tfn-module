@@ -44,7 +44,7 @@ void main()
        string sResRef = GetStringLeft(GetResRef(OBJECT_SELF), 4);
        if (sResRef != "acad") DelayCommand(0.5, WarningMessage(oPC));
 
-       SendDebugMessage(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+", tag: "+GetTag(OBJECT_SELF)+", resref: "+GetResRef(OBJECT_SELF), TRUE);
+       SendDebugMessage(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+", tag: "+GetTag(OBJECT_SELF)+", resref: "+GetResRef(OBJECT_SELF)+", climate: "+GetLocalString(OBJECT_SELF, "climate"));
 
        SetStandardFactionReputation(STANDARD_FACTION_COMMONER, 50, oPC);
        SetStandardFactionReputation(STANDARD_FACTION_MERCHANT, 50, oPC);
