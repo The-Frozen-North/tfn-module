@@ -189,7 +189,7 @@ void main()
     if (nWeatherDuration < 10)
         nWeatherDuration = nWeatherCount;
 
-    SendDebugMessage("weather count: "+IntToString(nWeatherCount)+" weather duration: "+IntToString(nWeatherDuration));
+    //SendDebugMessage("weather count: "+IntToString(nWeatherCount)+" weather duration: "+IntToString(nWeatherDuration));
 
     if (nWeatherCount > nWeatherDuration)
     {

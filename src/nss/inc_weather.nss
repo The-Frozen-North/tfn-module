@@ -622,6 +622,7 @@ void SetGlobalWeather()
 
     // Calculate Climate Base percents
         // Moderate
+        /*
         nModerateRain += nModerateClear;
         nModerateSnow += nModerateRain;
         // Jungle
@@ -633,50 +634,48 @@ void SetGlobalWeather()
         // Desert - no need to calculate. Add in if rain/snow possible in desert.
         nHighlandRain += nHighlandClear;
         nHighlandSnow += nHighlandRain;
+        */
 
     // Determine Random number for all weather paterns to use.
     int nRandom =  d100();
 
     // Determine Weather/Sky in each climate zone
         // Moderate
-        if (nRandom < nModerateClear) {
-            nModerateWeather = WEATHER_CLEAR;
-            nModerateSky = SKYBOX_GRASS_CLEAR;
-        }
+        nModerateWeather = WEATHER_CLEAR;
+        nModerateSky = SKYBOX_GRASS_CLEAR;
+        if (nRandom < nModerateClear) {}
         else if (nRandom < nModerateRain) {
             nModerateWeather = WEATHER_RAIN;
             nModerateSky = SKYBOX_GRASS_STORM;
             if (nRandom < nModerateLightning) bModerateLightning = TRUE;
         }
-        else {
+        else if (nRandom < nModerateSnow) {
             nModerateWeather = WEATHER_SNOW;
             nModerateSky = SKYBOX_WINTER_CLEAR;
         }
         // Jungle
-        if (nRandom < nJungleClear) {
-            nJungleWeather = WEATHER_CLEAR;
-            nJungleSky = SKYBOX_GRASS_CLEAR;
-        }
+        nJungleWeather = WEATHER_CLEAR;
+        nJungleSky = SKYBOX_GRASS_CLEAR;
+        if (nRandom < nJungleClear) {}
         else if (nRandom < nJungleRain) {
             nJungleWeather = WEATHER_RAIN;
             nJungleSky = SKYBOX_GRASS_STORM;
             if (nRandom < nJungleLightning) bJungleLightning = TRUE;
         }
-        else {
+        else if (nRandom < nJungleSnow) {
             nJungleWeather = WEATHER_SNOW;
             nJungleSky = SKYBOX_ICY;
         }
         // Polar
-        if (nRandom < nPolarClear) {
-            nPolarWeather = WEATHER_CLEAR;
-            nPolarSky = SKYBOX_WINTER_CLEAR;
-        }
+        nPolarWeather = WEATHER_CLEAR;
+        nPolarSky = SKYBOX_WINTER_CLEAR;
+        if (nRandom < nPolarClear) {}
         else if (nRandom < nPolarRain) {
             nPolarWeather = WEATHER_RAIN;
             nPolarSky = SKYBOX_ICY;
             if (nRandom < nPolarLightning) bPolarLightning = TRUE;
         }
-        else {
+        else if (nRandom < nPolarSnow) {
             nPolarWeather = WEATHER_SNOW;
             nPolarSky = SKYBOX_ICY;
         }
@@ -684,16 +683,15 @@ void SetGlobalWeather()
         nDesertWeather = WEATHER_CLEAR;
         nDesertSky = SKYBOX_DESERT_CLEAR;
         // Highland
-        if (nRandom < nHighlandClear) {
-            nHighlandWeather = WEATHER_CLEAR;
-            nHighlandSky = SKYBOX_GRASS_CLEAR;
-        }
-        else if (nRandom < nHighlandRain ) {
+        nHighlandWeather = WEATHER_CLEAR;
+        nHighlandSky = SKYBOX_GRASS_CLEAR;
+        if (nRandom < nHighlandClear) {}
+        if (nRandom < nHighlandRain) {
             nHighlandWeather = WEATHER_RAIN;
             nHighlandSky = SKYBOX_GRASS_STORM;
             if (nRandom < nHighlandLightning) bHighlandLightning = TRUE;
         }
-        else {
+        else if (nRandom < nHighlandSnow) {
             nHighlandWeather = WEATHER_SNOW;
             nHighlandSky = SKYBOX_ICY;
         }
@@ -708,23 +706,23 @@ void SetGlobalWeather()
         if (sClimate != "" && !GetIsAreaInterior(oArea))
         {
             if (sClimate == "moderate") { // Moderate Climate
-                    nWeather = nModerateWeather;
-                    nSky = nModerateSky;
-                    bLightning = bModerateLightning;
+                nWeather = nModerateWeather;
+                nSky = nModerateSky;
+                bLightning = bModerateLightning;
             }
             else if (sClimate == "jungle") { // Jungle Climate
-                    nWeather =  nJungleWeather;
-                    nSky = nJungleSky;
-                    bLightning = bJungleLightning;
+                nWeather =  nJungleWeather;
+                nSky = nJungleSky;
+                bLightning = bJungleLightning;
             }
             else if (sClimate == "polar") { // Polar Climate
-                    nWeather = nPolarWeather;
-                    nSky = nPolarSky;
-                    bLightning = bPolarLightning;
+                nWeather = nPolarWeather;
+                nSky = nPolarSky;
+                bLightning = bPolarLightning;
             }
             else if (sClimate == "desert") { // Desert Climate
-                    nWeather = nDesertWeather;
-                    nSky = nDesertSky;
+                nWeather = nDesertWeather;
+                nSky = nDesertSky;
             }
             else if (sClimate == "highland") { // Highland Climate
                 nWeather = nHighlandWeather;
