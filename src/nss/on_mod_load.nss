@@ -3,6 +3,7 @@
 #include "inc_treasure"
 #include "inc_webhook"
 #include "inc_housing"
+#include "inc_weather"
 #include "nwnx_admin"
 #include "nwnx_weapon"
 #include "nwnx_events"
@@ -490,6 +491,9 @@ void main()
 
    WriteTimestampedLogEntry("Total Bounties: "+IntToString(CountList(sBounties)));
    WriteTimestampedLogEntry("Bounties: "+sBounties);
+
+    // Global Weather Script
+    SetGlobalWeather();
 
    // Generate Merchants
     object oStore;
