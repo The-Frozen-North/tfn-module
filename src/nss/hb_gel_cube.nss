@@ -15,6 +15,8 @@
 
 void main()
 {
+   ExecuteScript("hb_ghost", OBJECT_SELF);
+
    object oVictim = FIX_GetFirstObjectInShape(SHAPE_CUBE,4.0,GetLocation(OBJECT_SELF), TRUE, OBJECT_TYPE_CREATURE);
 
    while (GetIsObjectValid(oVictim))

@@ -108,7 +108,7 @@
   },
   "FactionID": {
     "type": "word",
-    "value": 31
+    "value": 30
   },
   "FeatList": {
     "type": "list",
@@ -515,6 +515,26 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "spider_small"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "heartbeat_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "hb_ghost"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",

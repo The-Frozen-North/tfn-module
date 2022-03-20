@@ -591,11 +591,16 @@ void SetGlobalWeather()
             nModerateRain = nRainChance + nSnowChance + 20;
             nModerateSnow = 0;
         }
-        // Moderate - Winter/Fall/Spring Seasons
+        else if (GetLocalInt(oMod, VAR_SEASON_STORE) == SEASON_WINTER) {
+            nModerateClear = nClearChance + 20;
+            nModerateRain = nRainChance + nSnowChance;
+            nModerateSnow = 20;
+        }
+        // Moderate - Fall/Spring Seasons
         else {
             nModerateClear = nClearChance + 18;
             nModerateRain = nRainChance + 17;
-            nModerateSnow = nSnowChance + 5;
+            nModerateSnow = nSnowChance;
         }
         nModerateLightning = nLightningChance + 5;
         // Jungle
