@@ -33,8 +33,6 @@ void main()
         SetLocalInt(OBJECT_SELF, "BASE_RACE", GetRacialType(oPC));
     }
 
-    SetTlkOverride(10303, "<CUSTOM25001>"+GetStringByStrRef(10303)+"<CUSTOM25000>");
-
     SetCampaignString(GetPCPublicCDKey(oPC), "player_name", GetPCPlayerName(oPC));
 
     InitializeHouseMapPin(oPC);
