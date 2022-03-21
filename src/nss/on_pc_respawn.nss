@@ -12,6 +12,8 @@
 #include "inc_persist"
 #include "x0_i0_spells"
 #include "inc_general"
+#include "inc_follower"
+#include "inc_quest"
 
 void main()
 {
@@ -72,4 +74,13 @@ void main()
 
     DelayCommand(1.0, SavePCInfo(oRespawner));
     if (GetPCPublicCDKey(oRespawner) != "") DelayCommand(1.1, ExportSingleCharacter(oRespawner));
+
+// if they are respawning in the hall of justice in NW and are less than level 6, let's give them a recruit
+    if (GetQuestEntry(oRespawner, "q_wailing") >= 4 && GetHitDice(oRespawner) < 6 && GetTag(GetAreaFromLocation(lRespawnLocation)) == "core_hall")
+    {
+        object oMilitia = CreateObject(OBJECT_TYPE_CREATURE, "militia", lRespawnLocation);
+        SetFollowerMaster(oMilitia, oRespawner);
+        DelayCommand(3.0, PlayVoiceChat(VOICE_CHAT_HELLO, oMilitia));
+        DelayCommand(6.0, AssignCommand(oMilitia, SpeakString("Sedos sent me to assist you after you have been fallen in battle. I will help you on your mission.")));
+    }
 }
