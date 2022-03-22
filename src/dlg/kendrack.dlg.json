@@ -72,7 +72,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 52
+                "value": 53
               },
               "IsChild": {
                 "type": "byte",
@@ -6249,7 +6249,27 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 52
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
@@ -6266,12 +6286,61 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Nay, <lad/lass>. Ye've done more than enough for us, and I think ye deserve a final cut. As a proper send off, please take this large sum o' gold as a reward for single-handedly slaying all five of the bastards. Best o' luck in yer adventures, my friend."
+            "0": "Nay, <lad/lass>. Ye've done more than enough for us, and I think ye deserve a final cut. As a proper send off, please take this large sum o' gold as a reward for single-handedly slaying all five of the bastards."
           }
         }
       },
       {
         "__struct_id": 51,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 0
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I've also told some of me mercenaries to continue working for ye. I'm sure the experience they gain be worthwhile. May their swords help you triumph against the evils of the Sword Coast. Best o' luck in yer adventures, my friend."
+          }
+        }
+      },
+      {
+        "__struct_id": 52,
         "ActionParams": {
           "type": "list",
           "value": [
@@ -6335,7 +6404,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 1236
+    "value": 1269
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -9702,6 +9771,71 @@
               "Index": {
                 "type": "dword",
                 "value": 51
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
+          }
+        }
+      },
+      {
+        "__struct_id": 53,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 52
               },
               "IsChild": {
                 "type": "byte",
