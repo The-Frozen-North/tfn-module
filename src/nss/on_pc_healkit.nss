@@ -2,9 +2,18 @@
 
 void main()
 {
-    if (GetIsInCombat(OBJECT_SELF))
+    object oTarget = StringToObject(NWNX_Events_GetEventData("TARGET_OBJECT_ID"));
+    if (GetIsInCombat(oTarget))
     {
-        SendMessageToPC(OBJECT_SELF, "You cannot use healing kits while in combat!");
-        NWNX_Events_SkipEvent();
+        if (GetLocalInt(oTarget, "healers_kit_cd") == 1)
+        {
+            SendMessageToPC(OBJECT_SELF, "Unable to heal: The target is currently in combat and has had a healer's kit applied recently.");
+            NWNX_Events_SkipEvent();
+        }
+        else
+        {
+            SetLocalInt(oTarget, "healers_kit_cd", 1);
+            DelayCommand(6.0, DeleteLocalInt(oTarget, "healers_kit_cd"));
+        }
     }
 }

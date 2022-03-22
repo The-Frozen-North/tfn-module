@@ -16,4 +16,5 @@ void main()
 
     DeleteLocalInt(OBJECT_SELF, "invis");
     DeleteLocalInt(OBJECT_SELF, "gsanc");
+    DeleteLocalInt(OBJECT_SELF, "healers_kit_cd");
 }

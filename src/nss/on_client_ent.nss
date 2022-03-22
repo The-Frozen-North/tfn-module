@@ -77,6 +77,7 @@ void main()
 
     DeleteLocalInt(oPC,"70_applied_darkvision");
     DeleteLocalInt(oPC,"70_applied_lowlightvision");
+    DeleteLocalInt(oPC, "healers_kit_cd");
     ExecuteScript("70_featfix",oPC);
 
     //SetEventScript(oPC,EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED,"70_mod_attacked");
