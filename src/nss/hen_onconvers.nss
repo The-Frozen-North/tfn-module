@@ -78,7 +78,7 @@ void main()
         SendMessageToPC(oMaster, "Henchmen cannot be dismissed from the radial menu");
     }
 
-    if (nMatch == 200 && GetIsFriend(oShouter) && !GetIsFighting(OBJECT_SELF)) // PARTY_I_WAS_ATTACKED
+    if (nMatch == 200 && GetIsFriend(oShouter)) // PARTY_I_WAS_ATTACKED
     {
         HenchmenCombatRound(GetLastHostileActor(oShouter));
     }
