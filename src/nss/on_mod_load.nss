@@ -179,7 +179,8 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_USE_SKILL_BEFORE", "on_pc_skillb");
     NWNX_Events_SubscribeEvent("NWNX_ON_USE_SKILL_AFTER", "on_pc_skilla");
 
-    NWNX_Events_SubscribeEvent("NWNX_ON_HEALER_KIT_BEFORE", "on_pc_healkit");
+    NWNX_Events_SubscribeEvent("NWNX_ON_HEALER_KIT_BEFORE", "on_pc_healkitb");
+    NWNX_Events_SubscribeEvent("NWNX_ON_HEALER_KIT_BEFORE", "on_pc_healkita");
 
     NWNX_Events_SubscribeEvent("NWNX_ON_STEALTH_ENTER_BEFORE", "on_pc_stealth");
     NWNX_Events_SubscribeEvent("NWNX_ON_STEALTH_ENTER_AFTER", "on_pc_stealtha");
