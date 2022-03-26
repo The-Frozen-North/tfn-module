@@ -22,6 +22,18 @@ void DoBanter()
 
 void main()
 {
+    int nSelected = GetLocalInt(OBJECT_SELF, "selected");
+    int nSelectedRemove = GetLocalInt(OBJECT_SELF, "selected_remove");
+    if (nSelectedRemove > 2)
+    {
+        DeleteLocalInt(OBJECT_SELF, "selected");
+        DeleteLocalInt(OBJECT_SELF, "selected_remove");
+    }
+    else if (nSelected > 1)
+    {
+        SetLocalInt(OBJECT_SELF, "selected_remove", nSelectedRemove + 1);
+    }
+
     if (!GetIsInCombat() && GetLocalInt(OBJECT_SELF, "pending_destroy") == 1)
     {
         AssignCommand(OBJECT_SELF, ActionMoveToObject(GetNearestObject(OBJECT_TYPE_DOOR)));

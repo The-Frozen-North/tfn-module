@@ -419,6 +419,8 @@ void main()
     // * This feature is disabled by default.
    SetModuleSwitch (MODULE_SWITCH_ENABLE_TAGBASED_SCRIPTS, TRUE);
 
+   SetEventScript(GetModule(), EVENT_SCRIPT_MODULE_ON_PLAYER_GUIEVENT, "on_guiselect");
+
 // Load treasure tables
    int nIndex;
    for (nIndex = 1; nIndex < 6; nIndex++)

@@ -25,6 +25,18 @@ void main()
     if (nCombatInt > 0)
         SetLocalInt(OBJECT_SELF, "combat", nCombatInt+1);
 
+    int nSelected = GetLocalInt(OBJECT_SELF, "selected");
+    int nSelectedRemove = GetLocalInt(OBJECT_SELF, "selected_remove");
+    if (nSelectedRemove > 2)
+    {
+        DeleteLocalInt(OBJECT_SELF, "selected");
+        DeleteLocalInt(OBJECT_SELF, "selected_remove");
+    }
+    else if (nSelected > 1)
+    {
+        SetLocalInt(OBJECT_SELF, "selected_remove", nSelectedRemove + 1);
+    }
+
     int nCombat = GetIsInCombat(OBJECT_SELF);
 
     if (GetLocalInt(OBJECT_SELF, "no_stealth") == 0 && GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0 && (!nCombat || GetHasFeat(FEAT_HIDE_IN_PLAIN_SIGHT)))
