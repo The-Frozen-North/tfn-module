@@ -1120,9 +1120,10 @@ int spellsIsTarget(object oTarget, int nTargetType, object oSource)
         // * party, even if we are upset with each other currently.
         case SPELL_TARGET_ALLALLIES:
         {
-            if(GetIsReactionTypeFriendly(oTarget,oSource) || GetFactionEqual(oTarget,oSource))
+            if(GetIsReactionTypeFriendly(oTarget,oSource) || GetFactionEqual(oTarget,oSource) || GetIsFriend(oTarget,oSource) || GetIsReactionTypeFriendly(GetMaster(oTarget),oSource) || GetFactionEqual(GetMaster(oTarget),oSource) || GetIsFriend(GetMaster(oTarget),oSource))
             {
-                nReturnValue = TRUE;
+                //nReturnValue = TRUE;
+                return TRUE;
             }
             break;
         }    /*SPELL_TARGET_SINGLETARGET:*/
