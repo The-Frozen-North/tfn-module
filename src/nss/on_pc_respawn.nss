@@ -81,6 +81,6 @@ void main()
         object oMilitia = CreateObject(OBJECT_TYPE_CREATURE, "militia", lRespawnLocation);
         SetFollowerMaster(oMilitia, oRespawner);
         DelayCommand(3.0, PlayVoiceChat(VOICE_CHAT_HELLO, oMilitia));
-        DelayCommand(6.0, AssignCommand(oMilitia, SpeakString("Sedos sent me to assist you after you have been fallen in battle. I will help you on your mission.")));
+        DelayCommand(6.0, AssignCommand(oMilitia, SpeakString("Sedos sent me to assist you after you have fallen in battle. I will help you on your mission.")));
     }
 }
