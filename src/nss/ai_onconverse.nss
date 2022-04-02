@@ -63,7 +63,15 @@ void main()
         break;
     case 10100: // GS_AI_INNOCENT_ATTACKED
     // commoners always run away
-        if (GetLocalInt(OBJECT_SELF, "fear") != 1 && GetClassByPosition(1, OBJECT_SELF) == CLASS_TYPE_COMMONER)
+        if (GetTag(oSpeaker) == "brawler")
+        {
+            switch(d8())
+            {
+                case 1: PlayVoiceChat(VOICE_CHAT_ATTACK); break;
+                case 2: PlayVoiceChat(VOICE_CHAT_CHEER); break;
+            }
+        }
+        else if (GetLocalInt(OBJECT_SELF, "fear") != 1 && GetClassByPosition(1, OBJECT_SELF) == CLASS_TYPE_COMMONER)
         {
             SetLocalInt(OBJECT_SELF, "fear", 1);
             DelayCommand(15.0, DeleteLocalInt(OBJECT_SELF, "fear"));
