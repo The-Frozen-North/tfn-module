@@ -767,7 +767,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>This elven man seems to be gravely wounded. If you have a healing potion, you can administer it to him. Otherwise, you can attempt to heal him through spells or a healing kit.</Start>"
+            "0": "<StartAction>This elven man is gravely wounded and needs more healing. If you have a healing potion, you can administer it to him. Otherwise, you can attempt to heal him through spells or a healing kit.</Start>"
           }
         }
       },
@@ -811,7 +811,31 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 11
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
@@ -828,7 +852,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Thank you."
+            "0": "<StartHighlight>[He quickly quaffs the potion and it appears to be healing his wounds.]</Start>"
           }
         }
       },
@@ -872,7 +896,31 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 11
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
@@ -889,7 +937,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Thank you."
+            "0": "<StartHighlight>[He quickly quaffs the potion and it appears to be healing his wounds.]</Start>"
           }
         }
       },
@@ -933,7 +981,31 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 11
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
@@ -950,7 +1022,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Thank you."
+            "0": "<StartHighlight>[He quickly quaffs the potion and it appears to be healing his wounds.]</Start>"
           }
         }
       },
@@ -994,7 +1066,27 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 11
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
@@ -1011,7 +1103,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Thank you."
+            "0": "<StartHighlight>[He quickly quaffs the potion and it appears to be healing his wounds.]</Start>"
           }
         }
       },
@@ -1068,7 +1160,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 264
+    "value": 310
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -1815,6 +1907,98 @@
           "type": "cexolocstring",
           "value": {
             "0": "<StartAction>Give him a Potion of Cure Critical Wounds.</Start>"
+          }
+        }
+      },
+      {
+        "__struct_id": 11,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_chk_hp"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 9
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 0
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
           }
         }
       }
