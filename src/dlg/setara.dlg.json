@@ -2423,7 +2423,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "dlg_q_chk_atc1"
+                "value": "dlg_q_chk_atc9"
               },
               "ConditionParams": {
                 "type": "list",
@@ -2431,7 +2431,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 39
+                "value": 40
               },
               "IsChild": {
                 "type": "byte",
@@ -2450,7 +2450,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 37
+                "value": 38
               },
               "IsChild": {
                 "type": "byte",
@@ -2694,7 +2694,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 37
+                "value": 38
               },
               "IsChild": {
                 "type": "byte",
@@ -3097,7 +3097,31 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 37
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
@@ -3145,7 +3169,27 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 37
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
@@ -3208,7 +3252,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 38
+                "value": 39
               },
               "IsChild": {
                 "type": "byte",
@@ -3330,7 +3374,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I will give you the gem once you bring me the sirine's mirror. Until then, no deal!"
+            "0": "I will give you the gem once you bring me the sirine's mirror. Until then, no deal! Now begone."
           }
         }
       },
@@ -3447,7 +3491,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 1347
+    "value": 1352
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -5866,6 +5910,87 @@
         },
         "Animation": {
           "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_q_chk_eli"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "target"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "3"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 39
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "About Elaith's gem..."
+          }
+        }
+      },
+      {
+        "__struct_id": 38,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
           "value": 1
         },
         "AnimLoop": {
@@ -5925,7 +6050,7 @@
         }
       },
       {
-        "__struct_id": 38,
+        "__struct_id": 39,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -5988,7 +6113,7 @@
         }
       },
       {
-        "__struct_id": 39,
+        "__struct_id": 40,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -6092,7 +6217,7 @@
         "__struct_id": 0,
         "Active": {
           "type": "resref",
-          "value": "dlg_q_chk_atp2"
+          "value": "dlg_q_chk_atp3"
         },
         "ConditionParams": {
           "type": "list",
