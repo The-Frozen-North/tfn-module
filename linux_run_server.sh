@@ -1,3 +1,5 @@
+#!/bin/bash
+
 git pull
 
 git -C nwn-assets pull || git clone https://github.com/urothis/nwn-assets.git nwn-assets
