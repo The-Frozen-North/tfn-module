@@ -41,7 +41,7 @@ void main()
     }
     else
     {
-        ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectCutsceneParalyze(), oSpirit, 6.0);
+        ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectCutsceneParalyze(), oSpirit, RoundsToSeconds(d3()));
         FloatingTextStringOnCreature("The death of the shadow druid seems to have a pacifying effect on the Spirit of the Wood.", GetLastKiller());
     }
 
