@@ -49,7 +49,12 @@ void main()
         return;
     }
 
-    if (nMatrix & GS_AI_ACTION_TYPE_REST && GetLocalInt(OBJECT_SELF, "no_rest") == 0 && !GetIsInCombat(OBJECT_SELF) && GetLocalInt(OBJECT_SELF, "unconscious") == 0 && GetLocalInt(OBJECT_SELF, "combat") > 3)
+    if (nMatrix & GS_AI_ACTION_TYPE_REST &&
+        GetLocalInt(OBJECT_SELF, "no_rest") == 0 &&
+        !GetIsInCombat(OBJECT_SELF) &&
+        GetLocalInt(OBJECT_SELF, "unconscious") == 0 &&
+        GetLocalInt(OBJECT_SELF, "combat") > 3 &&
+        !GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN, CREATURE_TYPE_IS_ALIVE, TRUE)))
     {
         //SetAILevel(OBJECT_SELF, AI_LEVEL_LOW);
         gsAIActionRest();
