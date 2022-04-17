@@ -1,9 +1,10 @@
 const int BASE_LOCK_DC = 16;
-const int BASE_LOCK_CHANCE = 40;
+const int BASE_LOCK_CHANCE = 20;
 
 void GenerateLockOnObject(object oObject = OBJECT_SELF)
 {
    if (GetLocalInt(oObject, "locked") != 1) return;
+   if (GetLocalInt(GetArea(oObject), "unlocked") == 1) return;
 
    int iCR = GetLocalInt(oObject, "cr");
 
