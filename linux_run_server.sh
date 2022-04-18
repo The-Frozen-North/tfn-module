@@ -22,6 +22,10 @@ rm server/database/spawns.sqlite3
 rm server/database/treasures.sqlite3
 rm server/settings.tml
 rm -d -R  server/override
+
+mkdir server/override
+mkdir server/config
+
 cp modules/and_the_Wailing_Death.mod server/modules/and_the_Wailing_Death.mod
 cp config/common.env server/config/common.env
 cp settings.tml server/settings.tml
