@@ -16,7 +16,7 @@
 //:: Added Support for Mounted Combat Feat Support
 //:://////////////////////////////////////////////
 #include "x0_inc_henai"
-#include "X2_inc_spellhook"
+#include "x2_inc_spellhook"
 
 void main()
 {
