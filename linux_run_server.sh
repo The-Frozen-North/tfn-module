@@ -14,7 +14,7 @@ echo "WARNING: 'Y' will delete all unsaved changes! Commit or stash them before 
 rm -d -RI modules
 rm and_the_Wailing_Death.mod
 
-$PWD/tools/linux/nasher/nasher install  --debug --erfUtil:"$PWD/tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/tools/linux/nwnsc/nwnsc" --installDir:"$PWD" --nssFlags:"-oe -i $PWD/nwn-assets/nwscript" --yes
+$PWD/tools/linux/nasher/nasher install --erfUtil:"$PWD/tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/tools/linux/nwnsc/nwnsc" --installDir:"$PWD" --nssFlags:"-oe -i $PWD/nwn-assets/nwscript" --no
 
 rm server/config/common.env
 rm server/modules/and_the_Wailing_Death.mod
