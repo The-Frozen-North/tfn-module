@@ -9,7 +9,7 @@
 //:: Created On: Apr 19, 2002
 //:://////////////////////////////////////////////
 
-#include "NW_I0_GENERIC"
+#include "nw_i0_generic"
 
 void main()
 {

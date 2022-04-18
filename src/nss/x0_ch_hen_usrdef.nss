@@ -6,7 +6,7 @@
  */
 //:://////////////////////////////////////////////////
 //:://////////////////////////////////////////////////
-#include "X0_INC_HENAI"
+#include "x0_inc_henai"
 
 // Try to cast nSpell on oMaster. returns 1 on success, 0 on failure.
 int CheckSpell(int nSpell, object oMaster);

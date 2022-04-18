@@ -17,8 +17,8 @@
 //:: Created On: 2003-07-24
 //:://////////////////////////////////////////////
 
-#include "X0_INC_HENAI"
-#include "X2_INC_SUMMSCALE"
+#include "x0_inc_henai"
+#include "x2_inc_summscale"
 
 void main_delayed()
 {

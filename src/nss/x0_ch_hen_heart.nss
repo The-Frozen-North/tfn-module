@@ -10,7 +10,7 @@
 //:: Created By: Naomi Novik
 //:: Created On: 01/05/2003
 //:://////////////////////////////////////////////////
-#include "X0_INC_HENAI"
+#include "x0_inc_henai"
 
 
 

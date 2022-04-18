@@ -13,7 +13,7 @@
 //:: Update Pass By:
 //:: March 2003: Removed humanoid and level checks to
 //:: make this a more powerful daze
-#include "X0_I0_SPELLS"
+#include "x0_i0_spells"
 void main()
 {
     //Declare major variables

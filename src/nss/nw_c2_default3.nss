@@ -16,7 +16,7 @@
 //:: Added Support for Mounted Combat Feat Support
 //:://////////////////////////////////////////////
 
-#include "NW_I0_GENERIC"
+#include "nw_i0_generic"
 
 void main()
 {

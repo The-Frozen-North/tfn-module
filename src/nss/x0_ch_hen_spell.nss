@@ -12,7 +12,7 @@
 //:: Created On: Dec 6, 2001
 //:://////////////////////////////////////////////
 #include "x0_i0_henchman"
-#include "X0_INC_HENAI"
+#include "x0_inc_henai"
 
 void main()
 {

@@ -12,7 +12,7 @@
 //:://////////////////////////////////////////////////
 
 
-#include "X0_INC_HENAI"
+#include "x0_inc_henai"
 
 void main()
 {

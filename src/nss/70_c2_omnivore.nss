@@ -12,8 +12,8 @@
 //:: Created On: Dec 21, 2001
 //:://////////////////////////////////////////////
 
-#include "NW_I0_GENERIC"
-#include "NW_O2_CONINCLUDE"
+#include "nw_i0_generic"
+#include "nw_o2_coninclude"
 void main()
 {
 // OPTIONAL BEHAVIORS (Comment In or Out to Activate ) ****************************************************************************

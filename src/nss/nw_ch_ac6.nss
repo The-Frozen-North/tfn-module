@@ -12,7 +12,7 @@
 //:: Created On: Nov 19, 2001
 //:://////////////////////////////////////////////
 
-#include "NW_I0_GENERIC"
+#include "nw_i0_generic"
 
 void main()
 {
