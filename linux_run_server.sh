@@ -29,6 +29,9 @@ cp database/spawns.sqlite3 server/database/spawns.sqlite3
 cp database/treasures.sqlite3 server/database/treasures.sqlite3
 cp override/. server/override
 
+cp server/env/env.2da server/override/env.2da
+cp server/env/env_dm.2da server/override/env_dm.2da
+
 rm and_the_Wailing_Death.mod
 
 cd server

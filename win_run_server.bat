@@ -30,7 +30,11 @@ copy config\common.env server\config\common.env
 copy settings.tml server\settings.tml
 copy database\spawns.sqlite3 server\database\spawns.sqlite3
 copy database\treasures.sqlite3 server\database\treasures.sqlite3
+copy database\treasures.sqlite3 server\database\treasures.sqlite3
 robocopy override server\override
+
+copy server\env\env.2da server\override\env.2da
+copy server\env\env_dm.2da server\override\env_dm.2da
 
 del /f and_the_Wailing_Death.mod
 
