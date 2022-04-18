@@ -25,6 +25,7 @@ rm -d -R  server/override
 
 mkdir server/override
 mkdir server/config
+mkdir server/modules
 
 cp modules/and_the_Wailing_Death.mod server/modules/and_the_Wailing_Death.mod
 cp config/common.env server/config/common.env
