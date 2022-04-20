@@ -40,6 +40,33 @@ void main()
     //Declare major variables
     spellsDeclareMajorVariables();
 
+    int nVFX = VFX_DUR_LIGHT_YELLOW_20;
+    int nIpColor = IP_CONST_LIGHTCOLOR_YELLOW;
+
+    switch (spell.Class)
+    {
+        case CLASS_TYPE_SORCERER:
+            nVFX = VFX_DUR_LIGHT_RED_20;
+            nIpColor = IP_CONST_LIGHTCOLOR_RED;
+        break;
+        case CLASS_TYPE_WIZARD:
+            nVFX = VFX_DUR_LIGHT_BLUE_20;
+            nIpColor = IP_CONST_LIGHTCOLOR_BLUE;
+        break;
+        case CLASS_TYPE_DRUID:
+            nVFX = VFX_DUR_LIGHT_ORANGE_20;
+            nIpColor = IP_CONST_LIGHTCOLOR_ORANGE;
+        break;
+        case CLASS_TYPE_BARD:
+            nVFX = VFX_DUR_LIGHT_PURPLE_20;
+            nIpColor = IP_CONST_LIGHTCOLOR_PURPLE;
+        break;
+        case CLASS_TYPE_CLERIC:
+            nVFX = VFX_DUR_LIGHT_WHITE_20;
+            nIpColor = IP_CONST_LIGHTCOLOR_WHITE;
+        break;
+    }
+
     int nDuration = spell.Level;
     //Enter Metamagic conditions
     if (spell.Meta & METAMAGIC_EXTEND)
@@ -58,7 +85,7 @@ void main()
             return;
         }
 
-        itemproperty ip = ItemPropertyLight(IP_CONST_LIGHTBRIGHTNESS_NORMAL, IP_CONST_LIGHTCOLOR_WHITE);
+        itemproperty ip = ItemPropertyLight(IP_CONST_LIGHTBRIGHTNESS_NORMAL, nIpColor);
 
         if (GetItemHasItemProperty(spell.Target, ITEM_PROPERTY_LIGHT))
         {
@@ -69,7 +96,7 @@ void main()
     }
     else
     {
-        effect eVis = EffectVisualEffect(VFX_DUR_LIGHT_WHITE_20);
+        effect eVis = EffectVisualEffect(nVFX);
         effect eDur = EffectVisualEffect(VFX_DUR_CESSATE_POSITIVE);
         effect eLink = EffectLinkEffects(eVis, eDur);
 
