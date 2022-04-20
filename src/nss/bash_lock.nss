@@ -3,7 +3,7 @@
 void BashLock(object oAttacker)
 {
     int nUnlockDC = GetLockUnlockDC(OBJECT_SELF);
-
+    SpeakString("GS_AI_BASH_LOCK", TALKVOLUME_SILENT_TALK);
 // return and remove the script from itself if locked, plot, key required, and no key tag
     if (GetLocked(OBJECT_SELF) && GetPlotFlag(OBJECT_SELF) && GetLockKeyRequired(OBJECT_SELF) && GetLockKeyTag(OBJECT_SELF) == "")
     {
@@ -28,6 +28,25 @@ void BashLock(object oAttacker)
     if (nStrengthBonus < -7) nStrengthBonus = -7;
 
     int nRoll = d20();
+
+    string sUUID = GetObjectUUID(oAttacker);
+    int nHighestRoll = GetLocalInt(OBJECT_SELF, sUUID);
+
+    if (nHighestRoll = 20)
+        nRoll = 20;
+
+    if (nRoll > 0 && nRoll < 20)
+    {
+        nRoll = nHighestRoll + Random(20 - nHighestRoll) + 1;
+
+        if (nRoll > 20)
+            nRoll = 20;
+
+        SetLocalInt(OBJECT_SELF, sUUID, nRoll);
+    }
+
+    if (nRoll > 20)
+        nRoll = 20;
 
     int nTotal = nRoll + nStrengthBonus;
 

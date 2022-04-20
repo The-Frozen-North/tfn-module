@@ -4,6 +4,9 @@
 
 void main()
 {
+    if (GetIsDead(OBJECT_SELF))
+        return;
+
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_CONVERSATION));
 
     if (GetLocalInt(OBJECT_SELF, "herbivore") == 1)
@@ -82,6 +85,24 @@ void main()
                 case 2: PlayVoiceChat(VOICE_CHAT_BATTLECRY1); break;
                 case 3: PlayVoiceChat(VOICE_CHAT_BATTLECRY2); break;
             }
+        }
+    break;
+    case 10200: //GS_AI_BASH_OBJECT
+        if (GetLocalInt(OBJECT_SELF, "check_bash") != 1 &&
+            !gsCBGetHasAttackTarget() &&
+            !GetIsInCombat() &&
+            !(GetClassByPosition(1, OBJECT_SELF) == CLASS_TYPE_COMMONER))
+        {
+            SetLocalInt(OBJECT_SELF, "check_bash", 1);
+            DelayCommand(10.0, DeleteLocalInt(OBJECT_SELF, "check_bash"));
+
+            switch(d6())
+            {
+                case 1: PlayVoiceChat(VOICE_CHAT_ENEMIES); break;
+                case 2: PlayVoiceChat(VOICE_CHAT_SEARCH); break;
+                case 3: PlayVoiceChat(VOICE_CHAT_LOOKHERE); break;
+            }
+            ActionMoveToObject(oSpeaker, FALSE, 2.0);
         }
     break;
     }

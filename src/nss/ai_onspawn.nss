@@ -49,6 +49,7 @@ void main()
     SetListenPattern(OBJECT_SELF, "GS_AI_ATTACK_TARGET",         10000);
     SetListenPattern(OBJECT_SELF, "GS_AI_REQUEST_REINFORCEMENT", 10003);
     SetListenPattern(OBJECT_SELF, "GS_AI_INNOCENT_ATTACKED", 10100);
+    SetListenPattern(OBJECT_SELF, "GS_AI_BASH_LOCK", 10200);
     SetListening(OBJECT_SELF, TRUE);
 
     //set action matrix
