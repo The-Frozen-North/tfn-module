@@ -2,6 +2,7 @@
 #include "inc_gold"
 #include "nwnx_visibility"
 #include "nwnx_creature"
+#include "x0_i0_spells"
 
 // =======================================================
 // PROTOTYPES
@@ -258,6 +259,9 @@ void ClearMaster(object oHench)
 
 void SetMaster(object oHench, object oPlayer)
 {
+    if (GetIsDead(oHench)) return;
+    if (GetHasEffect(EFFECT_TYPE_PETRIFY, oHench)) return;
+
 // Make sure this is a henchman
     if (GetStringLeft(GetResRef(oHench), 3) != "hen") return;
 

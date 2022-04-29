@@ -62,10 +62,12 @@ void DoRestoreEffect(object oCreature, object oCaster)
     if (GetIsPC(oCreature))
     {
         SQLocalsPlayer_DeleteInt(oCreature, "times_died");
+        SQLocalsPlayer_DeleteInt(oCreature, "PETRIFIED");
     }
     else
     {
         DeleteLocalInt(oCreature, "times_died");
+        DeleteLocalInt(oCreature, "PETRIFIED");
     }
 
     DetermineDeathEffectPenalty(oCreature);
@@ -96,6 +98,7 @@ void DoRestoreEffect(object oCreature, object oCaster)
             case EFFECT_TYPE_CONFUSED:
             case EFFECT_TYPE_FRIGHTENED:
             case EFFECT_TYPE_NEGATIVELEVEL:
+            case EFFECT_TYPE_PETRIFY:
             case EFFECT_TYPE_SLOW:
             case EFFECT_TYPE_STUNNED:
             //Remove effect if it is negative.

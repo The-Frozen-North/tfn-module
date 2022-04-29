@@ -1,6 +1,7 @@
 #include "inc_persist"
 #include "inc_debug"
 #include "inc_henchman"
+#include "inc_penalty"
 #include "inc_quest"
 #include "nwnx_util"
 #include "inc_sql"
@@ -8,6 +9,14 @@
 #include "inc_sqlite_time"
 #include "inc_weather"
 #include "nwnx_player"
+
+int GetIsDeadOrPetrified(object oCreature)
+{
+    if (GetHasEffect(EFFECT_TYPE_PETRIFY, oCreature)) return TRUE;
+    if (GetIsDead(oCreature)) return TRUE;
+
+    return FALSE;
+}
 
 void DoRevive(object oDead)
 {
@@ -38,7 +47,7 @@ void DoRevive(object oDead)
             }
 
             object oMaster = GetMasterByUUID(oDead);
-            int bMasterDead = GetIsDead(oMaster);
+            int bMasterDead = GetIsDeadOrPetrified(oMaster);
 
             object oLastFriend;
 
@@ -56,7 +65,7 @@ void DoRevive(object oDead)
             while (GetIsObjectValid(oCreature))
             {
 // do not count self and count only if alive
-                if (!GetIsDead(oCreature) && (oCreature != oDead))
+                if (!GetIsDeadOrPetrified(oCreature) && (oCreature != oDead))
                 {
                     nRace = GetRacialType(oCreature);
                     // added check to see if they have a master, if so check if it is an enemy to their master as well
@@ -127,7 +136,7 @@ void DoRevive(object oDead)
             }
 
 // destroy henchman if still not alive and master isn't found
-            if (!GetIsPC(oDead) && GetIsDead(oDead) && GetStringLeft(GetResRef(oDead), 3) == "hen" && !bMasterFound)
+            if (!GetIsPC(oDead) && GetIsDeadOrPetrified(oDead) && GetStringLeft(GetResRef(oDead), 3) == "hen" && !bMasterFound)
             {
                  ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_RESTORATION), lLocation);
                  ClearMaster(oDead);
@@ -161,7 +170,14 @@ void main()
 
         RefreshCompletedBounties(oPC, nTime, sBounties);
 
-        if (!GetIsDead(oPC))
+        if (GetHasEffect(EFFECT_TYPE_PETRIFY, oPC))
+        {
+            string sPenalty = IntToString(GetXP(oPC) - GetXPOnRespawn(oPC)) + " XP and " + IntToString(GetGoldLossOnRespawn(oPC)) + " gold";
+            string sDeathMessage = "You can wait for a greater restoration or stone to flesh spell, or you can respawn at your chosen temple for " + sPenalty + ". You will automatically respawn if you die while petrified.";
+
+            PopUpDeathGUIPanel(oPC, TRUE, TRUE, 0, sDeathMessage);
+        }
+        else if (!GetIsDead(oPC))
         {
             SQLocalsPlayer_DeleteInt(oPC, "DEAD");
 

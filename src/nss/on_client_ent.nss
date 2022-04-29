@@ -110,6 +110,10 @@ void main()
         {
             ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDeath(), oPC);
         }
+        else if (SQLocalsPlayer_GetInt(oPC, "PETRIFIED") == 1)
+        {
+            DelayCommand(0.05, ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectPetrify(), oPC));
+        }
 // otherwise, handle hp
         else
         {

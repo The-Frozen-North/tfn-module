@@ -31,6 +31,16 @@ void main()
     object oItem;
     effect eEffect;
 
+    if (SQLocalsPlayer_GetInt(oPlayer, "PETRIFIED") == 1)
+    {
+        ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_COM_CHUNK_STONE_MEDIUM), GetLocation(oPlayer));
+
+        ExecuteScript("pc_respawn", oPlayer);
+
+        // don't do the rest of the script
+        return;
+    }
+
     object oKiller = GetLastHostileActor(oPlayer);
 
     string sPenalty = IntToString(GetXP(oPlayer) - GetXPOnRespawn(oPlayer)) + " XP and " + IntToString(GetGoldLossOnRespawn(oPlayer)) + " gold";

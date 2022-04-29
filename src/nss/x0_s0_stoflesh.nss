@@ -18,6 +18,7 @@
 #include "70_inc_spells"
 #include "x0_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_general"
 
 void main()
 {
@@ -49,6 +50,8 @@ void main()
             eLook = GetNextEffect(spell.Target);
         }
 
+        if (GetIsPC(spell.Target)) SQLocalsPlayer_DeleteInt(spell.Target, "PETRIFIED");
+        DeleteLocalInt(spell.Target, "PETRIFIED");
         //Apply Linked Effect
         ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_DISPEL), spell.Target);
     }

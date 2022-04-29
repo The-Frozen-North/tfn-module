@@ -32,6 +32,8 @@
 #include "x2_inc_switches"
 #include "x2_inc_itemprop"
 #include "x0_i0_henchman"
+#include "inc_webhook"
+#include "inc_persist"
 
 // * Constants
 // * see spellsIsTarget for a definition of these constants
@@ -146,7 +148,7 @@ void DoGrenade(int nDice, int nSplashDamage, int vSmallHit, int vRingHit, int nD
 // * nPower : This is the Hit Dice of a Monster using Gaze, Breath or Touch OR it is the Caster Spell of
 // *   a spellcaster
 // * nFortSaveDC: pass in this number from the spell script
-void DoPetrification(int nPower, object oSource, object oTarget, int nSpellID, int nFortSaveDC);
+void DoPetrification(int nPower, object oSource, object oTarget, int nSpellID, int nFortSaveDC, int bNoSave = FALSE);
 
 // * removed mind effects and provide mind protection
 void spellApplyMindBlank(object oTarget, int nSpellId, float fDelay=0.0);
@@ -993,8 +995,9 @@ int ArcaneArcherCalculateBonus()
 // * nPower : This is the Hit Dice of a Monster using Gaze, Breath or Touch OR it is the Caster Spell of
 // *   a spellcaster
 // * nFortSaveDC: pass in this number from the spell script
-void DoPetrification(int nPower, object oSource, object oTarget, int nSpellID, int nFortSaveDC)
+void DoPetrification(int nPower, object oSource, object oTarget, int nSpellID, int nFortSaveDC, int bNoSave = FALSE)
 {
+    /*
     SetLocalInt(OBJECT_SELF,"Petrify_nPower",nPower);
     SetLocalInt(OBJECT_SELF,"Petrify_nSpellID",nSpellID);
     SetLocalInt(OBJECT_SELF,"Petrify_nFortSaveDC",nFortSaveDC);
@@ -1004,6 +1007,7 @@ void DoPetrification(int nPower, object oSource, object oTarget, int nSpellID, i
     {
         return;
     }
+    */
     //Vanilla code fallback, 70_mod_petrified has not been found
     // * exit if creature is immune to petrification
     if(spellsIsImmuneToPetrification(oTarget))
@@ -1037,7 +1041,7 @@ void DoPetrification(int nPower, object oSource, object oTarget, int nSpellID, i
     effect eLink = EffectLinkEffects(eDur, ePetrify);
 
     // Do a fortitude save check
-    if(!MySavingThrow(SAVING_THROW_FORT, oTarget, nFortSaveDC, SAVING_THROW_TYPE_NONE, oSource))
+    if(bNoSave || !MySavingThrow(SAVING_THROW_FORT, oTarget, nFortSaveDC, SAVING_THROW_TYPE_NONE, oSource))
     {
         if(GetPlotFlag(oTarget) || GetImmortal(oTarget)) return; //1.71: dont do anything else for plot/immortal, caused action cancel before
         // Save failed; apply paralyze effect and VFX impact
@@ -1048,10 +1052,10 @@ void DoPetrification(int nPower, object oSource, object oTarget, int nSpellID, i
             {
                 // * under hardcore rules or higher, this is an instant death
                 ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oTarget);
-                DelayCommand(2.75, PopUpDeathGUIPanel(oTarget, FALSE , TRUE, 40579));
-                // if in hardcore, treat the player as an NPC
-                //bIsPC = FALSE;
-                //fDifficulty = TurnsToSeconds(nPower); // One turn per hit-die
+
+                DeathWebhook(oTarget, oSource, TRUE);
+                SQLocalsPlayer_SetInt(oTarget, "PETRIFIED", 1);
+                SavePCInfo(oTarget);
             }
             else
             {
@@ -1060,6 +1064,8 @@ void DoPetrification(int nPower, object oSource, object oTarget, int nSpellID, i
         }
         else
         {
+            SetLocalInt(oTarget, "PETRIFIED", 1);
+
             ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oTarget);
             //----------------------------------------------------------
             // GZ: Fix for henchmen statues haunting you when changing

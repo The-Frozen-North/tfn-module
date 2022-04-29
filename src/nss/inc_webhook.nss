@@ -162,13 +162,22 @@ void LevelUpWebhook(object oPC)
   SendDiscordLogMessage(sConstructedMsg);
 }
 
-void DeathWebhook(object oPC, object oKiller)
+// sends a web hook to discord if you were petrified
+void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE);
+void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
 {
   string sConstructedMsg;
   struct NWNX_WebHook_Message stMessage;
   stMessage.sUsername = SERVER_BOT;
   stMessage.sColor = DEATH_COLOR;
   stMessage.sTitle = "DEATH";
+  string sAction = "killed";
+
+  if (bPetrified)
+  {
+    stMessage.sTitle = "PETRIFICATION";
+    sAction = "petrified";
+  }
 
   string sName = GetName(oKiller);
   if (sName == "")
@@ -179,7 +188,7 @@ void DeathWebhook(object oPC, object oKiller)
   {
      sName = "**"+sName+"**";
   }
-  stMessage.sDescription = "**"+GetName(oPC)+"** was killed by "+sName+".";
+  stMessage.sDescription = "**"+GetName(oPC)+"** was "+sAction+" by "+sName+".";
 
   stMessage.sAuthorName = GetName(oPC);
   stMessage.sAuthorIconURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oPC)) + "t.png";

@@ -22,6 +22,9 @@ void DoBanter()
 
 void main()
 {
+    if (GetIsDead(OBJECT_SELF)) return;
+    if (GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF)) return;
+
     int nSelected = GetLocalInt(OBJECT_SELF, "selected");
     int nSelectedRemove = GetLocalInt(OBJECT_SELF, "selected_remove");
     if (nSelectedRemove > 2)

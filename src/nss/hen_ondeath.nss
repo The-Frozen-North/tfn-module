@@ -3,6 +3,19 @@
 
 void main()
 {
+     if (GetLocalInt(OBJECT_SELF, "PETRIFIED") == 1)
+    {
+        location lLocation = GetLocation(OBJECT_SELF);
+        ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_COM_CHUNK_STONE_MEDIUM), lLocation);
+        ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_RESTORATION), lLocation);
+
+        DestroyObject(OBJECT_SELF);
+
+        // don't do the rest of the script
+        return;
+    }
+
+
     SpeakString("PARTY_I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
 
     SetLocalInt(OBJECT_SELF, "times_died", GetLocalInt(OBJECT_SELF, "times_died")+1);

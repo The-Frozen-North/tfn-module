@@ -21,8 +21,6 @@ Patch 1.71
 
 #include "x0_i0_spells"
 
-void DoBeholderPetrify(int nPower, object oSource, object oTarget, int nSpellID);
-
 void main()
 {
     int     nSpell = GetSpellId();
@@ -87,7 +85,7 @@ void main()
           // Petrify for one round per SaveDC
           case 778:                eVis = EffectVisualEffect(VFX_IMP_POLYMORPH);
                                    ApplyEffectToObject(DURATION_TYPE_INSTANT,eVis,oTarget);
-                                   DoBeholderPetrify(nSaveDC,OBJECT_SELF,oTarget,nSpell);
+                                   DoPetrification(nSaveDC,OBJECT_SELF,oTarget,nSpell, 0, TRUE);
                                    break;
           case 779:                e1 = EffectCharmed();
                                    eVis = EffectVisualEffect(VFX_IMP_CHARM);
@@ -123,77 +121,5 @@ void main()
                                  eLink = EffectLinkEffects(e1,eVis);
                                  ApplyEffectToObject(DURATION_TYPE_INSTANT,eLink,oTarget);
         }
-    }
-}
-
-void DoBeholderPetrify(int nPower, object oSource, object oTarget, int nSpellID)
-{
-    // * exit if creature is immune to petrification
-    if(spellsIsImmuneToPetrification(oTarget))
-    {
-        //engine workaround for immunity feedback
-        ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectSpellImmunity(nSpellID), oTarget, 0.01);
-    }
-    if(MyResistSpell(oSource,oTarget) > 0)
-    {
-        return;
-    }
-    float fDifficulty = 0.0;
-    int bShowPopup = FALSE;
-    effect ePetrify = EffectPetrify();
-    // * calculate Duration based on difficulty settings
-    switch(GetGameDifficulty())
-    {
-        case GAME_DIFFICULTY_VERY_EASY:
-        nPower = nPower/2;
-        case GAME_DIFFICULTY_EASY:
-        case GAME_DIFFICULTY_NORMAL:
-            fDifficulty = RoundsToSeconds(nPower < 1 ? 1 : nPower); // One Round per hit-die or caster level
-        break;
-        case GAME_DIFFICULTY_CORE_RULES:
-        case GAME_DIFFICULTY_DIFFICULT:
-            bShowPopup = TRUE;
-        break;
-    }
-
-    effect eDur = EffectVisualEffect(VFX_DUR_CESSATE_NEGATIVE);
-    effect eLink = EffectLinkEffects(eDur, ePetrify);
-
-    // Do a fortitude save check
-//    if(!MySavingThrow(SAVING_THROW_FORT, oTarget, nFortSaveDC, SAVING_THROW_TYPE_NONE, oSource))
-    {
-        // Save failed; apply paralyze effect and VFX impact
-        /// * The duration is permanent against NPCs but only temporary against PCs
-        if(GetIsPC(oTarget))
-        {
-            if(bShowPopup)
-            {
-                // * under hardcore rules or higher, this is an instant death
-                ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oTarget);
-                DelayCommand(2.75, PopUpDeathGUIPanel(oTarget, FALSE , TRUE, 40579));
-                // if in hardcore, treat the player as an NPC
-                //bIsPC = FALSE;
-                //fDifficulty = TurnsToSeconds(nPower); // One turn per hit-die
-            }
-            else
-            {
-                ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, fDifficulty);
-            }
-        }
-        else
-        {
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oTarget);
-            //----------------------------------------------------------
-            // GZ: Fix for henchmen statues haunting you when changing
-            //     areas. Henchmen are now kicked from the party if
-            //     petrified.
-            //----------------------------------------------------------
-            if (GetAssociateType(oTarget) == ASSOCIATE_TYPE_HENCHMAN)
-            {
-                FireHenchman(GetMaster(oTarget),oTarget);
-            }
-        }
-        // April 2003: Clearing actions to kick them out of conversation when petrified
-        AssignCommand(oTarget, ClearAllActions(TRUE));
     }
 }
