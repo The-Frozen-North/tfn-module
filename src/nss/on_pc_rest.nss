@@ -29,15 +29,18 @@ void CreateAmbush(int nTarget, object oArea, location lLocation)
 {
     string sSpawnScript = GetLocalString(oArea, "random"+IntToString(nTarget)+"_spawn_script");
 
-    object oEnemy1 = CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), lLocation, TRUE);
-    SetLocalInt(oEnemy1, "ambush", 1);
-    if (sSpawnScript != "") ExecuteScript(sSpawnScript, oEnemy1);
-    object oEnemy2 = CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), lLocation, TRUE);
-    SetLocalInt(oEnemy2, "ambush", 1);
-    if (sSpawnScript != "") ExecuteScript(sSpawnScript, oEnemy2);
+    int nCount = GetLocalInt(oArea, "random"+IntToString(nTarget)+"_ambush_size");
+    if (nCount < 1) nCount = 2;
 
-    DestroyObject(oEnemy1, 300.0);
-    DestroyObject(oEnemy2, 300.0);
+    int i;
+    for (i = 0; i < nCount; i++)
+    {
+        object oEnemy = CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), lLocation, TRUE);
+        SetLocalInt(oEnemy, "ambush", 1);
+        if (sSpawnScript != "") ExecuteScript(sSpawnScript, oEnemy);
+
+        DestroyObject(oEnemy, 300.0);
+    }
 }
 
 void main()
