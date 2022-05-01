@@ -171,7 +171,8 @@ int  GetBeholderTactics(object oTarget)
    int nRet  = FALSE;
 
    // we go melee against petrified targets
-   if (GetHasEffect(EFFECT_TYPE_PETRIFY, oTarget) == TRUE)
+   // or if we don't have any more ray attacks - pok
+   if (GetHasSpell(736, OBJECT_SELF) < 1 || GetHasEffect(EFFECT_TYPE_PETRIFY, oTarget) == TRUE)
    {
         nRet  = 2;
    }
@@ -394,7 +395,7 @@ void main()
                 if (d4() ==1)
                 {
                       BehClearState();
-                      ActionCastSpellAtObject(736,oIntruder,METAMAGIC_ANY,TRUE,0,PROJECTILE_PATH_TYPE_DEFAULT);
+                      ActionCastSpellAtObject(736,oIntruder,METAMAGIC_ANY,FALSE,0,PROJECTILE_PATH_TYPE_DEFAULT);
 
                 }
                 else
@@ -413,7 +414,7 @@ void main()
                         if (!TryToLevitateAway(oIntruder))
                         {
                             BehClearState();
-                            ActionCastSpellAtObject(736,oIntruder,METAMAGIC_ANY,TRUE,0,PROJECTILE_PATH_TYPE_DEFAULT);
+                            ActionCastSpellAtObject(736,oIntruder,METAMAGIC_ANY,FALSE,0,PROJECTILE_PATH_TYPE_DEFAULT);
 
                         }else
                         {
@@ -434,7 +435,7 @@ void main()
                 if (!TryToLevitateAway(oIntruder))
                 {
                     BehClearState();
-                    ActionCastSpellAtObject(736,oIntruder,METAMAGIC_ANY,TRUE,0,PROJECTILE_PATH_TYPE_DEFAULT);
+                    ActionCastSpellAtObject(736,oIntruder,METAMAGIC_ANY,FALSE,0,PROJECTILE_PATH_TYPE_DEFAULT);
 
                 }
                 else
@@ -459,7 +460,7 @@ void main()
                 {
                     BehClearState();
                     BehClearFleeState();
-                    ActionCastSpellAtObject(736,oIntruder,METAMAGIC_ANY,TRUE,0,PROJECTILE_PATH_TYPE_DEFAULT);
+                    ActionCastSpellAtObject(736,oIntruder,METAMAGIC_ANY,FALSE,0,PROJECTILE_PATH_TYPE_DEFAULT);
 
                 }
             }
@@ -468,7 +469,7 @@ void main()
         else
         {
                BehClearState();
-               ActionCastSpellAtObject(736,oIntruder,METAMAGIC_ANY,TRUE,0,PROJECTILE_PATH_TYPE_DEFAULT);
+               ActionCastSpellAtObject(736,oIntruder,METAMAGIC_ANY,FALSE,0,PROJECTILE_PATH_TYPE_DEFAULT);
 
 
         }

@@ -25,10 +25,10 @@ void main()
 {
     int     nSpell = GetSpellId();
     object  oTarget = GetSpellTargetObject();
-    if(!GetIsObjectValid(oTarget))
-    {
-        return;//ray missed
-    }
+    //if(!GetIsObjectValid(oTarget))
+    //{
+    //    return;//ray missed
+    //}
     int     nSave, bSave, nSaveType = SAVING_THROW_TYPE_NONE;
     int     nSaveDC = 15;
     float   fDelay  = 0.0;  //old -- GetSpellEffectDelay(GetLocation(oTarget),OBJECT_SELF);
@@ -111,15 +111,5 @@ void main()
                                    break;
        }
 
-    }
-    else
-    {
-        switch (nSpell)
-        {
-               case 776:         e1 = EffectDamage(d6(3)+13);
-                                 eVis = EffectVisualEffect(VFX_IMP_NEGATIVE_ENERGY);
-                                 eLink = EffectLinkEffects(e1,eVis);
-                                 ApplyEffectToObject(DURATION_TYPE_INSTANT,eLink,oTarget);
-        }
     }
 }

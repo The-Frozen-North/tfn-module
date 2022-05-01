@@ -56,11 +56,11 @@ void main()
 
 
     object oTarget;
-    float fDuration = 9.0f;
+    float fDuration = 7.0f;
     float fDelay;
 
     //Get first target in spell area
-    oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 25.0f, lTargetLocation, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT);
+    oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 10.0f, lTargetLocation, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT);
     while(GetIsObjectValid(oTarget))
     {
         if(spellsIsTarget(oTarget,SPELL_TARGET_STANDARDHOSTILE,OBJECT_SELF) && oTarget != OBJECT_SELF)
@@ -94,7 +94,7 @@ void main()
             }
         }
         //Get next target in spell area
-        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 25.0, lTargetLocation, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 10.0, lTargetLocation, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT);
     }
 
 

@@ -76,9 +76,9 @@ void main()
         if (d2()==1)
         {
             BehDoFireBeam(BEHOLDER_RAY_SLOW,stTargets.oTarget1);
-            BehDoFireBeam(BEHOLDER_RAY_DEATH,stTargets.oTarget1);
+            BehDoFireBeam(BEHOLDER_RAY_FEAR,stTargets.oTarget1);
             if (d2()==1)
-                BehDoFireBeam(BEHOLDER_RAY_FEAR,stTargets.oTarget1);
+                BehDoFireBeam(BEHOLDER_RAY_DEATH,stTargets.oTarget1);
         }
         else
         {
@@ -97,7 +97,8 @@ void main()
         if (d2()==1)
         {
             BehDoFireBeam(BEHOLDER_RAY_SLOW,stTargets.oTarget1);
-            BehDoFireBeam(BEHOLDER_RAY_DEATH,stTargets.oTarget1);
+            if (d2()==1)
+                BehDoFireBeam(BEHOLDER_RAY_DEATH,stTargets.oTarget1);
             BehDoFireBeam(BEHOLDER_RAY_FEAR,stTargets.oTarget1);
             BehDoFireBeam(BEHOLDER_RAY_WOUND,stTargets.oTarget2);
             BehDoFireBeam(BEHOLDER_RAY_TK,stTargets.oTarget2);
@@ -112,7 +113,8 @@ void main()
             if (d2()==1)
                 BehDoFireBeam(BEHOLDER_RAY_PETRI,stTargets.oTarget1);
             BehDoFireBeam(BEHOLDER_RAY_SLOW,stTargets.oTarget2);
-            BehDoFireBeam(BEHOLDER_RAY_DEATH,stTargets.oTarget2);
+            if (d2()==1)
+                BehDoFireBeam(BEHOLDER_RAY_DEATH,stTargets.oTarget2);
             BehDoFireBeam(BEHOLDER_RAY_FEAR,stTargets.oTarget2);
         }
     }
@@ -120,7 +122,8 @@ void main()
     {
        if (d2()==1)
        {
-            BehDoFireBeam(BEHOLDER_RAY_DEATH,stTargets.oTarget1);
+            if (d2()==1)
+                BehDoFireBeam(BEHOLDER_RAY_DEATH,stTargets.oTarget1);
             BehDoFireBeam(BEHOLDER_RAY_SLOW,stTargets.oTarget1);
             if (d2()==1)
                 BehDoFireBeam(BEHOLDER_RAY_FEAR,stTargets.oTarget2);
@@ -131,7 +134,8 @@ void main()
        }
        else
        {
-            BehDoFireBeam(BEHOLDER_RAY_DEATH,stTargets.oTarget2);
+            if (d2()==1)
+                BehDoFireBeam(BEHOLDER_RAY_DEATH,stTargets.oTarget2);
             BehDoFireBeam(BEHOLDER_RAY_SLOW,stTargets.oTarget3);
             BehDoFireBeam(BEHOLDER_RAY_FEAR,stTargets.oTarget1);
             if (d2()==1)
@@ -143,12 +147,14 @@ void main()
     }
     else
     {
-        BehDoFireBeam(BEHOLDER_RAY_DEATH,GetNthRayTarget(oTarget,Random(stTargets.nCount)+1));
+        if (d2()==1)
+            BehDoFireBeam(BEHOLDER_RAY_DEATH,GetNthRayTarget(oTarget,Random(stTargets.nCount)+1));
         BehDoFireBeam(BEHOLDER_RAY_SLOW,GetNthRayTarget(oTarget,Random(stTargets.nCount)+1));
         BehDoFireBeam(BEHOLDER_RAY_FEAR,GetNthRayTarget(oTarget,Random(stTargets.nCount)+1));
         BehDoFireBeam(BEHOLDER_RAY_WOUND,GetNthRayTarget(oTarget,Random(stTargets.nCount)+1));
         BehDoFireBeam(BEHOLDER_RAY_TK,GetNthRayTarget(oTarget,Random(stTargets.nCount)+1));
-        BehDoFireBeam(BEHOLDER_RAY_PETRI,GetNthRayTarget(oTarget,Random(stTargets.nCount)+1));
+        if (d2()==1)
+            BehDoFireBeam(BEHOLDER_RAY_PETRI,GetNthRayTarget(oTarget,Random(stTargets.nCount)+1));
         BehDoFireBeam(BEHOLDER_RAY_CHARM,GetNthRayTarget(oTarget,Random(stTargets.nCount)+1));
         BehDoFireBeam(BEHOLDER_RAY_WOUND,GetNthRayTarget(oTarget,Random(stTargets.nCount)+1));
     }

@@ -54,6 +54,9 @@ struct beholder_target_struct GetRayTargets ( object oTarget );
 
 int GetAntiMagicRayMakesSense(object oTarget)
 {
+    // don't proceed if they don't have enough uses - pok
+    if (GetHasSpell(727) < 1) return FALSE;
+
     int bRet = TRUE;
     int nType;
 
@@ -61,7 +64,7 @@ int GetAntiMagicRayMakesSense(object oTarget)
 
     if (!GetIsEffectValid(eTest))
     {
-      int nMag = GetLevelByClass(CLASS_TYPE_WIZARD,oTarget) + GetLevelByClass(CLASS_TYPE_SORCERER,oTarget) + GetLevelByClass(CLASS_TYPE_BARD,oTarget) + GetLevelByClass(CLASS_TYPE_RANGER,oTarget) + GetLevelByClass(CLASS_TYPE_PALADIN,oTarget);
+      int nMag = GetLevelByClass(CLASS_TYPE_WIZARD,oTarget) + GetLevelByClass(CLASS_TYPE_SORCERER,oTarget) + GetLevelByClass(CLASS_TYPE_BARD,oTarget) + GetLevelByClass(CLASS_TYPE_RANGER,oTarget) + GetLevelByClass(CLASS_TYPE_PALADIN,oTarget)+ GetLevelByClass(CLASS_TYPE_CLERIC,oTarget)+ GetLevelByClass(CLASS_TYPE_DRUID,oTarget);
       // at least 3 levels of magic user classes... we better use anti magic anyway
       if (nMag < 4)
       {
@@ -98,7 +101,7 @@ void OpenAntiMagicEye (object oTarget)
 {
    if (GetAntiMagicRayMakesSense(oTarget))
    {
-        ActionCastSpellAtObject(727 , GetSpellTargetObject(),METAMAGIC_ANY,TRUE,0, PROJECTILE_PATH_TYPE_DEFAULT,TRUE);
+        ActionCastSpellAtObject(727 , GetSpellTargetObject(),METAMAGIC_ANY,FALSE,0, PROJECTILE_PATH_TYPE_DEFAULT,TRUE);
    }
 }
 
@@ -215,7 +218,7 @@ void BehDoFireBeam(int nRay, object oTarget)
         return;
     }
 
-    int bHit   = TouchAttackRanged(oTarget,FALSE)>0;
+    int bHit   = TouchAttackRanged(oTarget,TRUE)>0;
     int nProj;
     switch (nRay)
     {
@@ -239,7 +242,7 @@ void BehDoFireBeam(int nRay, object oTarget)
     {
          ActionCastSpellAtObject(nProj,oTarget,METAMAGIC_ANY,TRUE,0,PROJECTILE_PATH_TYPE_DEFAULT,TRUE);
     }
-        else
+    else
     {
         location lFail = GetLocation(oTarget);
         vector vFail = GetPositionFromLocation(lFail);
