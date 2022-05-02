@@ -9,6 +9,7 @@
 #include "inc_sqlite_time"
 #include "inc_weather"
 #include "nwnx_player"
+#include "inc_horse"
 
 int GetIsDeadOrPetrified(object oCreature)
 {
@@ -167,7 +168,7 @@ void main()
     while(GetIsObjectValid(oPC))
     {
         DoRevive(oPC);
-
+        DetermineHorseEffects(oPC);
         RefreshCompletedBounties(oPC, nTime, sBounties);
 
         if (GetHasEffect(EFFECT_TYPE_PETRIFY, oPC))

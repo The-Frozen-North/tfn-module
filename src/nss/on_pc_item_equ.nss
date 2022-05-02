@@ -49,11 +49,14 @@ doing so, do this only if running original event has no longer sense.
 
 #include "x0_i0_spells"
 #include "70_inc_itemprop"
+#include "inc_horse"
 
 void main()
 {
     object oItem = GetPCItemLastEquipped();
     object oPC   = GetPCItemLastEquippedBy();
+
+    DetermineHorseEffects(oPC);
 
     //1.72: OnPolymorph scripted event handler
     if(!GetLocalInt(oPC,"Polymorphed") && GetHasEffect(EFFECT_TYPE_POLYMORPH,oPC))

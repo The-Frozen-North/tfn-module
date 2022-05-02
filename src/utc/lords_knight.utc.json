@@ -90,7 +90,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 8.0
+    "value": 6.0
   },
   "ClassList": {
     "type": "list",
@@ -103,7 +103,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 8
+          "value": 6
         }
       }
     ]
@@ -138,11 +138,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": -1
+    "value": 0
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 80
+    "value": 60
   },
   "DecayTime": {
     "type": "dword",
@@ -158,7 +158,7 @@
   },
   "Dex": {
     "type": "byte",
-    "value": 14
+    "value": 10
   },
   "Disarmable": {
     "type": "byte",
@@ -185,7 +185,7 @@
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wplmhb002"
+          "value": "cre_halbp1"
         }
       }
     ]
@@ -222,13 +222,6 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 17
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
           "value": 23
         }
       },
@@ -237,13 +230,6 @@
         "Feat": {
           "type": "word",
           "value": 32
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 40
         }
       },
       {
@@ -265,13 +251,6 @@
         "Feat": {
           "type": "word",
           "value": 46
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 150
         }
       }
     ]
@@ -297,7 +276,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 80
+    "value": 60
   },
   "Int": {
     "type": "byte",
@@ -329,7 +308,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 112
+    "value": 78
   },
   "NaturalAC": {
     "type": "byte",
@@ -357,7 +336,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 941
+    "value": 1282
   },
   "Race": {
     "type": "byte",
@@ -622,7 +601,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 156
+    "value": 161
   },
   "SpecAbilityList": {
     "type": "list",
@@ -646,7 +625,7 @@
   },
   "Tail_New": {
     "type": "dword",
-    "value": 19
+    "value": 32
   },
   "TemplateList": {
     "type": "list",
@@ -672,6 +651,21 @@
         "Value": {
           "type": "int",
           "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "heartbeat_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "hb_horse"
         }
       }
     ]

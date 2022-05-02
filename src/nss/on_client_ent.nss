@@ -8,6 +8,7 @@
 #include "inc_sqlite_time"
 #include "inc_mappin"
 #include "inc_housing"
+#include "inc_horse"
 
 void CreateItemIfBlank(object oPC, string sItem)
 {
@@ -66,7 +67,6 @@ void main()
 // Do this only for PCs
     if (!GetIsPC(oPC)) return;
 
-    NWNX_Damage_SetAttackEventScript("pc_attack", oPC);
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_DAMAGED, "on_pc_damaged");
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED, "on_pc_spellcast");
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_SPELLCASTAT, "on_pc_attacked");
@@ -79,6 +79,8 @@ void main()
     DeleteLocalInt(oPC,"70_applied_lowlightvision");
     DeleteLocalInt(oPC, "healers_kit_cd");
     ExecuteScript("70_featfix",oPC);
+
+    DetermineHorseEffects(oPC);
 
     //SetEventScript(oPC,EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED,"70_mod_attacked");
     //SetEventScript(oPC,EVENT_SCRIPT_CREATURE_ON_DAMAGED,"70_mod_damaged");

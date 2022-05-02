@@ -49,11 +49,14 @@ doing so, do this only if running original event has no longer sense.
 
 #include "x0_i0_spells"
 #include "70_inc_itemprop"
+#include "inc_horse"
 
 void main()
 {
     object oItem = GetPCItemLastUnequipped();
     object oPC   = GetPCItemLastUnequippedBy();
+
+    DetermineHorseEffects(oPC);
 
     //1.71: fix for losing skin in ELC/ILR module settings
     if(GetIsPC(oPC) && GetTag(oItem) == "x3_it_pchide" && GetLocalObject(oPC,"oX3_Skin") == OBJECT_INVALID)

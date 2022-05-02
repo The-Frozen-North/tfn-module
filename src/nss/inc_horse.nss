@@ -1,3 +1,6 @@
+// returns true if the creature is mounted
+// checks appearance type for determination
+int GetIsMounted(object oPC);
 int GetIsMounted(object oPC)
 {
     int nAppearance = GetAppearanceType(oPC);
@@ -11,6 +14,65 @@ int GetIsMounted(object oPC)
     }
 }
 
+int GetRidingSpellFailure(object oPC)
+{
+    int nSpellFailure = 30;
+    int nRideSpellBonus = GetSkillRank(SKILL_RIDE, oPC) / 5;
+    nSpellFailure = nSpellFailure - (10 * nRideSpellBonus);
+
+    return nSpellFailure;
+}
+
+// applies horse effects when mounted
+void DetermineHorseEffects(object oPC);
+void DetermineHorseEffects(object oPC)
+{
+    if (GetIsDead(oPC)) return;
+
+// always remove the effect, it can be applied again if mounted
+    effect eEffect = GetFirstEffect(oPC);
+    while(GetIsEffectValid(eEffect))
+    {
+        if(GetEffectTag(eEffect) == "horse_effects")
+            RemoveEffect(oPC, eEffect);
+
+        eEffect = GetNextEffect(oPC);
+    }
+
+// don't continue if not mounted
+    if (!GetIsMounted(oPC)) return;
+
+    int nACPenalty = 4;
+    int nABPenalty = 2;
+    int nACBonus = 0;
+    int nSpellFailure = GetRidingSpellFailure(oPC);
+
+    int nTumbleBonus = GetSkillRank(SKILL_TUMBLE, oPC, TRUE) / 5;
+    if (nTumbleBonus > 0)
+        nACPenalty = nACPenalty + nTumbleBonus;
+
+    if (GetHasFeat(FEAT_MOUNTED_COMBAT, oPC))
+        nACBonus = GetSkillRank(SKILL_RIDE, oPC) + d20() / 5;
+
+    if (GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oPC)) && !GetHasFeat(FEAT_MOUNTED_ARCHERY, oPC))
+        nABPenalty = nABPenalty + 2;
+
+    effect eABPenalty = EffectAttackDecrease(nABPenalty);
+    effect eLink = EffectLinkEffects(EffectACDecrease(nACPenalty), eABPenalty);
+    eLink = EffectLinkEffects(EffectMovementSpeedIncrease(99), eLink);
+
+    if (nACBonus > 0)
+        eLink = EffectLinkEffects(EffectACIncrease(nACBonus), eLink);
+
+    if (nSpellFailure > 0)
+        eLink = EffectLinkEffects(EffectSpellFailure(nSpellFailure), eLink);
+
+    eLink = TagEffect(SupernaturalEffect(eLink), "horse_effects");
+    ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oPC);
+}
+
+// dismounts creature
+void RemoveMount(object oPC);
 void RemoveMount(object oPC)
 {
 // only play sound and visuals if already mounted
@@ -38,6 +100,7 @@ void RemoveMount(object oPC)
     SetCreatureTailType(0, oPC);
 
     SetFootstepType(FOOTSTEP_TYPE_DEFAULT, oPC);
+    DetermineHorseEffects(oPC);
 }
 
 void ApplyMount(object oPC, int nHorse = 0)
@@ -93,6 +156,9 @@ void ApplyMount(object oPC, int nHorse = 0)
     if (nHorse >= 15 && nHorse <= 80) SetCreatureTailType(nHorse, oPC);
 
     SetFootstepType(FOOTSTEP_TYPE_DEFAULT, oPC);
+
+    SendMessageToPC(oPC, "Riding Applies: Skill Riding Check: "+IntToString(GetSkillRank(SKILL_RIDE, oPC) / 5)+" Spell Failure: "+IntToString(GetRidingSpellFailure(oPC))+"%");
+    DetermineHorseEffects(oPC);
 }
 
 void ValidateMount(object oPC)
