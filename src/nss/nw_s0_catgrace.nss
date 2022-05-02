@@ -44,7 +44,7 @@ void main()
     //Signal spell cast at event to fire on the target.
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
     //Enter Metamagic conditions
-    if (spell.Meta & METAMAGIC_EXTEND)
+    if (spell.Class == CLASS_TYPE_HARPER || (spell.Meta & METAMAGIC_EXTEND))
     {
         nDuration = nDuration * 2;    //Duration is +100%
     }

@@ -43,7 +43,7 @@ void main()
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
 
     //Enter Metamagic conditions
-    if (spell.Meta & METAMAGIC_EXTEND)
+    if (spell.Class == CLASS_TYPE_ASSASSIN || (spell.Meta & METAMAGIC_EXTEND))
     {
         nDuration = nDuration *2; //Duration is +100%
     }

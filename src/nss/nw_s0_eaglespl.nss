@@ -37,7 +37,7 @@ void main()
     int nDuration = spell.Level;
 
     //Enter Metamagic conditions
-    if (spell.Meta & METAMAGIC_EXTEND)
+    if (spell.Class == CLASS_TYPE_HARPER || (spell.Meta & METAMAGIC_EXTEND))
     {
         nDuration = nDuration *2; //Duration is +100%
     }

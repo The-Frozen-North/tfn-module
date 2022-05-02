@@ -35,7 +35,7 @@ void main()
     //Fire cast spell at event for the specified target
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
     //Check for metamagic conditions
-    if (spell.Meta & METAMAGIC_EXTEND)
+    if (spell.Class == CLASS_TYPE_BLACKGUARD || (spell.Meta & METAMAGIC_EXTEND))
     {
         nDuration = nDuration * 2;
     }
