@@ -42,24 +42,35 @@ void DetermineHorseEffects(object oPC)
 // don't continue if not mounted
     if (!GetIsMounted(oPC)) return;
 
-    int nACPenalty = 4;
-    int nABPenalty = 2;
+    int nACPenalty = 2;
     int nACBonus = 0;
     int nSpellFailure = GetRidingSpellFailure(oPC);
+    int nRide = GetSkillRank(SKILL_RIDE, oPC);
 
+// remove any AC bonus from tumble
     int nTumbleBonus = GetSkillRank(SKILL_TUMBLE, oPC, TRUE) / 5;
     if (nTumbleBonus > 0)
         nACPenalty = nACPenalty + nTumbleBonus;
 
+// determine AC bonus from riding skill if they have the feat
     if (GetHasFeat(FEAT_MOUNTED_COMBAT, oPC))
-        nACBonus = GetSkillRank(SKILL_RIDE, oPC) + d20() / 5;
+        nACBonus = (nRide + d20()) / 5;
 
-    if (GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oPC)) && !GetHasFeat(FEAT_MOUNTED_ARCHERY, oPC))
-        nABPenalty = nABPenalty + 2;
+    effect eLink = EffectLinkEffects(EffectACDecrease(nACPenalty), EffectMovementSpeedIncrease(80 + nRide));
 
-    effect eABPenalty = EffectAttackDecrease(nABPenalty);
-    effect eLink = EffectLinkEffects(EffectACDecrease(nACPenalty), eABPenalty);
-    eLink = EffectLinkEffects(EffectMovementSpeedIncrease(99), eLink);
+// determine ab penalties
+    int nABPenalty = 1;
+    if (GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oPC)))
+    {
+       nABPenalty = 4;
+
+       if (GetHasFeat(FEAT_MOUNTED_ARCHERY, oPC))
+            nABPenalty = 2;
+    }
+    eLink = EffectLinkEffects(EffectAttackDecrease(nABPenalty), eLink);
+
+// no tumblin' on a mount
+    eLink = EffectLinkEffects(EffectSkillDecrease(SKILL_TUMBLE, 50), eLink);
 
     if (nACBonus > 0)
         eLink = EffectLinkEffects(EffectACIncrease(nACBonus), eLink);
