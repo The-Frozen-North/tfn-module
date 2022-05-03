@@ -1,8 +1,8 @@
 #include "inc_debug"
 #include "util_i_csvlists"
 #include "nwnx_area"
-#include "nwnx_encounter"
 #include "nwnx_object"
+#include "nw_inc_gff"
 
 vector StringToVector(string sVector)
 {
@@ -111,51 +111,55 @@ void main()
 //==========================================
 // COUNT RANDOM SPAWN TYPES IN AREA
 //==========================================
+       string sList, sListUnique;
 
-       int nEncounterIndex, nTotal, nTarget, nUniqueChance;
-       string sTarget, sList, sListUnique;
-       object oEncounter;
-       struct NWNX_Encounter_CreatureListEntry sCreature;
-
+       int nTarget;
 // get the total amount of random spawns in the area
        for (nTarget = 1; nTarget < 10; nTarget++)
        {
-           sTarget = "random"+IntToString(nTarget);
-           oEncounter = GetObjectByTag(GetLocalString(oArea, sTarget));
+           string sTarget = "random"+IntToString(nTarget);
+
+           json jEncounter = TemplateToJson(GetLocalString(oArea, sTarget), RESTYPE_UTE);
 
            sList = "";
            sListUnique = "";
-           nUniqueChance = 0;
 
-           if (GetIsObjectValid(oEncounter))
+           if (jEncounter != JsonNull())
            {
-                nTotal = NWNX_Encounter_GetNumberOfCreaturesInEncounterList(oEncounter);
-                WriteTimestampedLogEntry("num creatures in encounter: "+IntToString(nTotal));
+                json jCreatureList = GffGetList(jEncounter, "CreatureList");
+                int nTotal = JsonGetLength(jCreatureList);
 
-                switch (GetEncounterDifficulty(oEncounter))
+                int nDifficulty = JsonGetInt(GffGetInt(jEncounter, "DifficultyIndex"));
+                int nUniqueChance = 5;
+                switch (nDifficulty)
                 {
                      case 0: nUniqueChance = 5; break;  //very easy
                      case 1: nUniqueChance = 10; break; //easy
                      case 2: nUniqueChance = 15; break; //normal
-                     case 5: nUniqueChance = 20; break; //hard
-                     case 9: nUniqueChance = 25; break; //impossible
+                     case 3: nUniqueChance = 20; break; //hard
+                     case 4: nUniqueChance = 25; break; //impossible
                 }
-                WriteTimestampedLogEntry("encounter difficulty: "+IntToString(GetEncounterDifficulty(oEncounter)));
+                WriteTimestampedLogEntry("encounter difficulty: "+IntToString(nDifficulty));
                 WriteTimestampedLogEntry("unique chance: "+IntToString(nUniqueChance));
 
-                for (nEncounterIndex = 0; nEncounterIndex < nTotal; nEncounterIndex++)
+                int nCreature;
+                for (nCreature = 0; nCreature < nTotal; nCreature++)
                 {
-                      sCreature = NWNX_Encounter_GetEncounterCreatureByIndex(oEncounter, nEncounterIndex);
+                      string sCreatureResRef = JsonGetString(GffGetResRef(JsonArrayGet(jCreatureList, nCreature), "ResRef"));
+                      int nUnique = JsonGetInt(GffGetByte(JsonArrayGet(jCreatureList, nCreature), "SingleSpawn"));
 
-                      if (sCreature.unique)
+                      if (nUnique == 1)
                       {
-                            sListUnique = AddListItem(sListUnique, sCreature.resref, TRUE);
+                            sListUnique = AddListItem(sListUnique, sCreatureResRef, TRUE);
                       }
                       else
                       {
-                            sList = AddListItem(sList, sCreature.resref, TRUE);
+                            sList = AddListItem(sList, sCreatureResRef, TRUE);
                       }
                 }
+
+                WriteTimestampedLogEntry(sTarget+"_list_unique "+sListUnique);
+                WriteTimestampedLogEntry(sTarget+"_list "+sList);
 
                 SetLocalString(oArea, sTarget+"_list_unique", sListUnique);
                 SetLocalString(oArea, sTarget+"_list", sList);

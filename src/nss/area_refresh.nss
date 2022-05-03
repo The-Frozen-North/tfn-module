@@ -3,7 +3,6 @@
 #include "inc_debug"
 #include "util_i_csvlists"
 #include "nwnx_object"
-#include "nwnx_encounter"
 
 string ChooseSpawnRef(object oArea, int nTarget)
 {
