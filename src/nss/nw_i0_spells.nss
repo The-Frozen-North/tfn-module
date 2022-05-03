@@ -702,8 +702,8 @@ int MySavingThrow(int nSavingThrow, object oTarget, int nDC, int nSaveType=SAVIN
         if(oSaveVersus != OBJECT_SELF && GetObjectType(OBJECT_SELF) == OBJECT_TYPE_AREA_OF_EFFECT)//1.72: special AOE handling for new nwnx_patch fix
         {
             //this checks whether is nwnx_patch or nwncx_patch in use; using internal code to avoid including 70_inc_nwnx
-            SetLocalString(GetModule(),"NWNX!PATCH!FUNCS!12",".");
-            DeleteLocalString(GetModule(),"NWNX!PATCH!FUNCS!12");
+            //SetLocalString(GetModule(),"NWNX!PATCH!FUNCS!12",".");
+            //DeleteLocalString(GetModule(),"NWNX!PATCH!FUNCS!12");
             int retVal = GetLocalInt(GetModule(),"NWNXPATCH_RESULT");
             DeleteLocalInt(GetModule(),"NWNXPATCH_RESULT");
             if(retVal >= 201)//in version 2.01 saving throws from AOE spell will count spellcraft, however to make this work requires to put AOE object into the save functions

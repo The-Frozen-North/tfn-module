@@ -10,7 +10,7 @@ const string UI_CHAR_UNDERSCORE = "_";
 void read_2da_apart(string s2da)
 //==========================================/
     {
-    PrintString(s2da);
+    //PrintString(s2da);
 
     int i = 0;
 
@@ -31,7 +31,7 @@ void read_2da_apart(string s2da)
 
                 set_apart_2da_row(s2da, i, appr_row);
 
-                PrintString(IntToString(appr_row));
+                //PrintString(IntToString(appr_row));
                 }
             appr_row++;
             }

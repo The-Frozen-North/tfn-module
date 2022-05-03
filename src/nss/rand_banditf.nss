@@ -73,9 +73,11 @@ void main()
             oMelee = CreateItemOnObject("x2_wdwraxe001", OBJECT_SELF); // dwarvern waraxe
         break;
     }
-
     NWNX_Creature_RunEquip(OBJECT_SELF, oArmor, INVENTORY_SLOT_CHEST);
-    NWNX_Creature_RunEquip(OBJECT_SELF, oHelmet, INVENTORY_SLOT_HEAD);
+
+    if (GetIsObjectValid(oHelmet))
+        NWNX_Creature_RunEquip(OBJECT_SELF, oHelmet, INVENTORY_SLOT_HEAD);
+
     AssignCommand(OBJECT_SELF, ActionEquipItem(oShield, INVENTORY_SLOT_LEFTHAND));
 
 // 25% chance of using throwing axes

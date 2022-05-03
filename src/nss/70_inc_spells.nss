@@ -190,8 +190,8 @@ spell.Meta = GetMetaMagicFeat();
  if(spell.Item == OBJECT_INVALID && spell.Class != CLASS_TYPE_INVALID && GetClassByPosition(2,spell.Caster) != CLASS_TYPE_INVALID && Get2DAString("spells","UserType",spell.Id) == "1" && Get2DAString("spells","FeatID",spell.Id) == "")
  {//spell can have its caster level increased by prestige classes
  SetLocalInt(GetModule(),"NWNXPATCH_RESULT",-1);
- SetLocalString(GetModule(),"NWNX!PATCH!FUNCS!513",ObjectToString(spell.Caster)+"|"+IntToString(spell.Class));
- DeleteLocalString(GetModule(),"NWNX!PATCH!FUNCS!513");
+ //SetLocalString(GetModule(),"NWNX!PATCH!FUNCS!513",ObjectToString(spell.Caster)+"|"+IntToString(spell.Class));
+ //DeleteLocalString(GetModule(),"NWNX!PATCH!FUNCS!513");
  int nMod = GetLocalInt(GetModule(),"NWNXPATCH_RESULT");
  DeleteLocalInt(GetModule(),"NWNXPATCH_RESULT");
   if(nMod > -1)//spell progression value from nwnx_patch
@@ -688,8 +688,8 @@ int GetSavingThrowAdjustedDamage(int nDamage, object oTarget, int nDC, int nSavi
     if(oSaveVersus != OBJECT_SELF && GetObjectType(OBJECT_SELF) == OBJECT_TYPE_AREA_OF_EFFECT)//1.72: special AOE handling for new nwnx_patch fix
     {
         //this checks whether is nwnx_patch or nwncx_patch in use; using internal code to avoid including 70_inc_nwnx
-        SetLocalString(GetModule(),"NWNX!PATCH!FUNCS!12",".");
-        DeleteLocalString(GetModule(),"NWNX!PATCH!FUNCS!12");
+        //SetLocalString(GetModule(),"NWNX!PATCH!FUNCS!12",".");
+        //DeleteLocalString(GetModule(),"NWNX!PATCH!FUNCS!12");
         int retVal = GetLocalInt(GetModule(),"NWNXPATCH_RESULT");
         DeleteLocalInt(GetModule(),"NWNXPATCH_RESULT");
         if(retVal >= 201)//in version 2.01 saving throws from AOE spell will count spellcraft, however to make this work requires to put AOE object into the save functions

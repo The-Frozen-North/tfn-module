@@ -105,6 +105,8 @@ void CreatePlaceholderItem(object oItem)
     object oPlaceholderItem = CreateItemOnObject(sPlaceholderResRef, OBJECT_SELF, 1, "gamble");
     //NWNX_Item_SetBaseGoldPieceValue(oPlaceholderItem, 1000);
 
+    if (!GetIsObjectValid(oPlaceholderItem)) return;
+
     SetLocalObject(oPlaceholderItem, "item", oItem);
     string sDescription = "This item will be revealed when purchased.";
 

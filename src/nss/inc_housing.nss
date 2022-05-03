@@ -343,7 +343,7 @@ object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
     }
 
     string sFacing;
-    SendDebugMessage(sTag+" orientation: "+FloatToString(fOrientation), TRUE);
+    //SendDebugMessage(sTag+" orientation: "+FloatToString(fOrientation), TRUE);
     if (fOrientation > 85.0 && fOrientation < 95.0)
     {
         sFacing = "south";
@@ -388,7 +388,7 @@ object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
 
     object oNewArea = CreateArea("_home"+sDoorTag+"_"+sFacing, sTag);
 
-    SendDebugMessage("_home"+sDoorTag+"_"+sFacing+" created: "+IntToString(GetIsObjectValid(oNewArea)), TRUE);
+    //SendDebugMessage("_home"+sDoorTag+"_"+sFacing+" created: "+IntToString(GetIsObjectValid(oNewArea)), TRUE);
     SetLocalString(oNewArea, "coordinates", sCoordinates);
     object oObject = GetFirstObjectInArea(oNewArea);
     string sNewDoorTag;
