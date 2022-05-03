@@ -1,3 +1,6 @@
+#include "nwnx_creature"
+//#include "inc_debug"
+
 // returns true if the creature is mounted
 // checks appearance type for determination
 int GetIsMounted(object oPC);
@@ -29,6 +32,14 @@ void DetermineHorseEffects(object oPC)
 {
     if (GetIsDead(oPC)) return;
 
+    /*
+    if (GetIsPC(oPC))
+    {
+        SendDebugMessage("movement rate factor "+FloatToString(NWNX_Creature_GetMovementRateFactor(oPC)));
+        SendDebugMessage("movement rate "+IntToString(GetMovementRate(oPC)));
+    }
+    */
+
 // always remove the effect, it can be applied again if mounted
     effect eEffect = GetFirstEffect(oPC);
     while(GetIsEffectValid(eEffect))
@@ -39,13 +50,42 @@ void DetermineHorseEffects(object oPC)
         eEffect = GetNextEffect(oPC);
     }
 
+   int nRide = GetSkillRank(SKILL_RIDE, oPC);
+   int nSpeedBonus = 70 + nRide;
+   if (nSpeedBonus > 99)
+        nSpeedBonus = 99;
+
 // don't continue if not mounted
-    if (!GetIsMounted(oPC)) return;
+    if (!GetIsMounted(oPC))
+    {
+        /*
+        float fMovementCap = 1.5;
+        int nMonkSpeed = GetLevelByClass(CLASS_TYPE_MONK, oPC) / 3;
+        if (nMonkSpeed > 0)
+        {
+            fMovementCap = fMovementCap + (IntToFloat(nMonkSpeed) / 10.0);
+        }
+        else if (GetLevelByClass(CLASS_TYPE_BARBARIAN, oPC))
+        {
+            fMovementCap = fMovementCap + 0.1;
+        }
+
+        NWNX_Creature_SetMovementRateFactorCap(oPC, fMovementCap);
+        */
+
+        // reset to default movement cap
+        NWNX_Creature_SetMovementRateFactorCap(oPC, -1.0);
+        return;
+    }
+    else
+    {
+        NWNX_Creature_SetMovementRate(oPC, 5);
+        NWNX_Creature_SetMovementRateFactorCap(oPC, 1.0 + (IntToFloat(nSpeedBonus) / 100.0));
+    }
 
     int nACPenalty = 2;
     int nACBonus = 0;
     int nSpellFailure = GetRidingSpellFailure(oPC);
-    int nRide = GetSkillRank(SKILL_RIDE, oPC);
 
 // remove any AC bonus from tumble
     int nTumbleBonus = GetSkillRank(SKILL_TUMBLE, oPC, TRUE) / 5;
@@ -56,7 +96,7 @@ void DetermineHorseEffects(object oPC)
     if (GetHasFeat(FEAT_MOUNTED_COMBAT, oPC))
         nACBonus = (nRide + d20()) / 5;
 
-    effect eLink = EffectLinkEffects(EffectACDecrease(nACPenalty), EffectMovementSpeedIncrease(80 + nRide));
+    effect eLink = EffectLinkEffects(EffectACDecrease(nACPenalty), EffectMovementSpeedIncrease(nSpeedBonus));
 
 // determine ab penalties
     int nABPenalty = 1;
