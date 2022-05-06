@@ -13,7 +13,7 @@
 //:: Created By: Preston Watamaniuk
 //:: Created On: Nov 7, 2001
 //:://////////////////////////////////////////////
-#include "NW_I0_GENERIC"
+#include "nw_i0_generic"
 void main()
 {
     object oPC = GetPCSpeaker();
