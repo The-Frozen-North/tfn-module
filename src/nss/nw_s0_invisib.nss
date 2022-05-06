@@ -17,7 +17,7 @@
 void main()
 {
     //1.72: pre-declare some of the spell informations to be able to process them
-    spell.DurationType = SPELL_DURATION_TYPE_ROUNDS;
+    spell.DurationType = SPELL_DURATION_TYPE_TURNS;
 
     if (!X2PreSpellCastCode())
     {
@@ -43,25 +43,7 @@ void main()
     {
         nDuration = nDuration *2; //Duration is +100%
     }
-
-    int nInvis = GetLocalInt(spell.Target, "invis");
-
-    float fDuration = DurationToSeconds(nDuration);
-
-    if (nInvis == 1)
-    {
-        FloatingTextStringOnCreature("*Your invisibility has 50% duration.*", spell.Target);
-        fDuration = fDuration * 0.50;
-    }
-    else if (nInvis >= 2)
-    {
-        FloatingTextStringOnCreature("*Your invisibility has 25% duration.*", spell.Target);
-        fDuration = fDuration * 0.25;
-    }
-
-
-    SetLocalInt(spell.Target, "invis", nInvis+1);
-
     //Apply the VFX impact and effects
-    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, fDuration);
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nDuration));
 }
+

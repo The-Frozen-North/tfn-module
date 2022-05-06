@@ -42,34 +42,15 @@ void main()
     //Fire cast spell at event for the specified target
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
     int nDuration = spell.Level;
-    float fDuration = RoundsToSeconds(spell.Level);
-
-    int nInvis = GetLocalInt(spell.Target, "invis");
-
-    if (nInvis == 1)
-    {
-        FloatingTextStringOnCreature("*Your invisibility has 50% duration, but your concealment will still have full duration.*", spell.Target);
-        fDuration = fDuration * 0.50;
-    }
-    else if (nInvis >= 2)
-    {
-        FloatingTextStringOnCreature("*Your invisibility has 25% duration, but your concealment will still have full duration.*", spell.Target);
-        fDuration = fDuration * 0.25;
-    }
-
     //Enter Metamagic conditions
     if (spell.Meta & METAMAGIC_EXTEND)
     {
         nDuration = nDuration *2; //Duration is +100%
-        fDuration = fDuration *2.0;
     }
-
     //Apply the VFX impact and effects
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eImpact, spell.Target);
 
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nDuration));
-
-    SetLocalInt(spell.Target, "invis", nInvis+1);
-
-    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eInvis, spell.Target, fDuration);
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eInvis, spell.Target, DurationToSeconds(nDuration));
 }
+
