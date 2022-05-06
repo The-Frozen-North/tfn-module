@@ -514,6 +514,9 @@ void main()
     InitializeHouses("blak");
     InitializeHouses("core");
 
+// set Yesgar to spawn 1 minute after module starts
+    SetLocalInt(OBJECT_SELF, "yesgar_count", 190);
+
 // Treasures cause heavy delay on starting a module
 // It can be skipped, but it will cause merchants to lose most of their inventory
 // As well as cause no treasure to be generated.

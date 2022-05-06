@@ -224,8 +224,8 @@ void main()
         object oModule = GetModule();
         int nYesgarCount = GetLocalInt(oModule, "yesgar_count");
 
-// only spawn yesgar if 250 module heartbeats have passed
-        if (nYesgarCount > 250)
+// only spawn yesgar if 200 module heartbeats have passed
+        if (nYesgarCount > 200)
         {
 // yesgar will spawn on a random location
             CreateObject(OBJECT_TYPE_CREATURE, "yesgar", GetLocation(GetObjectByTag("YESGAR_SPAWN"+IntToString(d4()))));
@@ -233,7 +233,7 @@ void main()
         }
         else
         {
-            SetLocalInt(oModule, "yesgar_count", nYesgarCount++);
+            SetLocalInt(oModule, "yesgar_count", nYesgarCount + 1);
         }
     }
 }
