@@ -11,4 +11,6 @@ void main()
     {
         PlayVoiceChat(VOICE_CHAT_THANKS, oTarget);
     }
+
+    ExecuteScript("remove_invis", OBJECT_SELF);
 }

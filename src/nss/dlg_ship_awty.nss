@@ -10,15 +10,15 @@ int StartingConditional()
 
     string sString = "We've just started on our voyage! It'll be a while until we get to land.";
 
-    if (nTravelTime < 5)
+    if (nTravelTime < 3)
     {
         sString = "We're almost at port. Just be patient.";
     }
-    else if (nTravelTime < 10)
+    else if (nTravelTime < 6)
     {
         sString = "We're getting close.";
     }
-    else if (nTravelTime < 20)
+    else if (nTravelTime < 13)
     {
         sString = "Aye, we're more than halfway there.";
     }

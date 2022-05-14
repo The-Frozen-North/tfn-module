@@ -51,7 +51,7 @@ void DetermineHorseEffects(object oPC)
     }
 
    int nRide = GetSkillRank(SKILL_RIDE, oPC);
-   int nSpeedBonus = 70 + nRide;
+   int nSpeedBonus = 60 + nRide;
    if (nSpeedBonus > 99)
         nSpeedBonus = 99;
 
@@ -79,6 +79,7 @@ void DetermineHorseEffects(object oPC)
     }
     else
     {
+        ExecuteScript("remove_invis", oPC);
         NWNX_Creature_SetMovementRate(oPC, 5);
         NWNX_Creature_SetMovementRateFactorCap(oPC, 1.0 + (IntToFloat(nSpeedBonus) / 100.0));
     }

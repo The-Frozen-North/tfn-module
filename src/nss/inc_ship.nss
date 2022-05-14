@@ -56,8 +56,8 @@ void PayShipAndTravel(object oSpeaker, object oPlayer, int nTarget, int bPersuad
     int nTravelTime = GetLocalInt(oArea, "travel_time");
 
 // reset travel time to start to simulate new players boarding ship, or initialize it from the start
-// don't do it under 20 otherwise new players may make the ship ride very, very long
-    if (nTravelTime >= 20 || nTravelTime < 0) SetLocalInt(oArea, "travel_time", 24+d6());
+// don't do it under X otherwise new players may make the ship ride very, very long
+    if (nTravelTime >= 15 || nTravelTime < 0) SetLocalInt(oArea, "travel_time", 20+d4());
 
     TakeGoldFromCreature(nCost, oPlayer, TRUE);
     AssignCommand(oPlayer, ActionJumpToLocation(GetLocation(oDestination)));
