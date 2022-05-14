@@ -1,4 +1,5 @@
 #include "inc_ai_event"
+#include "inc_ai_combat"
 
 void main()
 {
@@ -8,6 +9,11 @@ void main()
 
     if (GetLocalObject(OBJECT_SELF, "GS_AI_ACTION_TARGET") != oDoor)
     {
+        // used to attack nearby creatures if they bump into them, supposedly if they are invisible
+        if (GetObjectType(oDoor) == OBJECT_TYPE_CREATURE && GetIsEnemy(oDoor) && (GetObjectSeen(oDoor) || GetObjectHeard(oDoor)))
+        {
+            gsCBDetermineCombatRound(oDoor);
+        }
         if (GetAbilityScore(OBJECT_SELF, ABILITY_INTELLIGENCE) >= 6)
         {
             if (GetIsDoorActionPossible(oDoor, DOOR_ACTION_OPEN))

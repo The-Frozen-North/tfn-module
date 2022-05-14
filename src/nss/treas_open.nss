@@ -5,6 +5,8 @@ void main()
 {
      object oPC = GetLastUsedBy();
 
+     ExecuteScript("remove_invis", oPC);
+
 // don't do anything if not a PC
      if (!GetIsPC(oPC)) return;
 

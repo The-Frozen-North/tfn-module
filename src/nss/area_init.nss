@@ -265,11 +265,13 @@ void main()
                        }
                  break;
                  case OBJECT_TYPE_DOOR:
+                    SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_OPEN, "door_open");
+                    SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLOSE, "door_close");
 // nullify this, doors with an on click script do not function
-                 SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLICKED, "");
+                    SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLICKED, "");
 
 // all doors are plot
-                 SetPlotFlag(oObject, TRUE);
+                    SetPlotFlag(oObject, TRUE);
 
                  if (GetStringLeft(GetResRef(oObject), 5) != "_home")
                  {

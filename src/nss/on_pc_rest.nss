@@ -260,7 +260,7 @@ void main()
             DelayCommand(2.6, FadeFromBlack(oPC, FADE_SPEED_MEDIUM));
         break;
         case REST_EVENTTYPE_REST_FINISHED:
-            DeleteLocalInt(oPC, "invis");
+            //DeleteLocalInt(oPC, "invis");
             DeleteLocalInt(oPC, "gsanc");
             DeleteLocalInt(oPC, "healers_kit_cd");
             GiveHiPSFeatSafely(oPC);

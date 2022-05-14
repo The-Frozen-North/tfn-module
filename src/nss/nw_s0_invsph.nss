@@ -25,7 +25,7 @@ thats module-related)
 void main()
 {
     //1.72: pre-declare some of the spell informations to be able to process them
-    spell.DurationType = SPELL_DURATION_TYPE_ROUNDS;
+    spell.DurationType = SPELL_DURATION_TYPE_TURNS;
     spell.TargetType = SPELL_TARGET_ALLALLIES;
 
     if (!X2PreSpellCastCode())
@@ -45,9 +45,7 @@ void main()
     effect eLink = EffectLinkEffects(eInvis, eVis);
     eLink = EffectLinkEffects(eLink, eDur);
     eLink = EffectLinkEffects(eLink, eAOE);
-
-
-    int nDuration = spell.Level/3;
+    int nDuration = spell.Level;
 
     //Check Extend metamagic feat.
     if (spell.Meta & METAMAGIC_EXTEND)
@@ -64,3 +62,4 @@ void main()
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nDuration));
     spellsSetupNewAOE("VFX_PER_INVIS_SPHERE");
 }
+

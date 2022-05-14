@@ -31,6 +31,8 @@ void main()
     object oMe=OBJECT_SELF;
     int nHPBefore;
 
+    ExecuteScript("remove_invis", OBJECT_SELF);
+
     PlayNonMeleePainSound(oDamager);
 
     if (GetCurrentHitPoints(OBJECT_SELF) <= GetMaxHitPoints(OBJECT_SELF)/MORALE_PANIC_HEALTH_DIVIDE_FACTOR)
