@@ -37,11 +37,10 @@ void main()
         else if (nHeard)
 // can't see the enemy but heard them? let's move to them to investigate
         {
-            ActionMoveToObject(oPerceived, TRUE, 0.0);
             float fDistance = GetDistanceToObject(oPerceived);
 
 // attack immediately if within range
-            if (!gsCBGetHasAttackTarget() && fDistance >= 0.0 && fDistance <= 2.0)
+            if (!gsCBGetHasAttackTarget() && fDistance >= 0.0 && fDistance <= 10.0)
             {
                 gsCBDetermineCombatRound(oPerceived);
             }

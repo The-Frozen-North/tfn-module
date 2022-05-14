@@ -65,6 +65,8 @@ void main()
         return;
     }
 
+    ExecuteScript("remove_invis", oPC);
+
     DeleteLocalInt(oItem, "destroy_count");
 
     //1.71: craft dupe fix

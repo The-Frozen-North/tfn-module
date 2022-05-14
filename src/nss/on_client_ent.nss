@@ -68,6 +68,7 @@ void main()
     if (!GetIsPC(oPC)) return;
 
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_DAMAGED, "on_pc_damaged");
+    SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_BLOCKED_BY_DOOR, "on_pc_blocked");
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED, "on_pc_spellcast");
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_SPELLCASTAT, "on_pc_attacked");
     GiveHiPSFeatSafely(oPC);

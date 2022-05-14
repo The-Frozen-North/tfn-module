@@ -8,4 +8,6 @@ void main()
     {
         SpeakString("PARTY_I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
     }
+
+    ExecuteScript("remove_invis", OBJECT_SELF);
 }
