@@ -8,13 +8,13 @@ echo WARNING: 'Y' will delete all unsaved changes! Commit or stash them before c
 @echo on
 
 del modules /S
-rd modules\and_the_Wailing_Death
+rd modules\TFN
 rd modules
 
-del /f and_the_Wailing_Death.mod
+del /f TFN.mod
 
 %CD%/tools/win/nasher/nasher.exe install  --verbose --erfUtil:"%CD%/tools/win/neverwinter64/nwn_erf.exe" --gffUtil:"%CD%/tools/win/neverwinter64/nwn_gff.exe" --tlkUtil:"%CD%/tools/win/neverwinter64/nwn_tlk.exe" --nssCompiler:"%CD%/tools/win/nwnsc/nwnsc.exe" --installDir:"%CD%" --nssFlags:"-oe -i %CD%/nwn-base-scripts" --no
 
-del /f and_the_Wailing_Death.mod
+del /f TFN.mod
 
 PAUSE
