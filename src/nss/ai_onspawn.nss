@@ -45,6 +45,8 @@ void main()
     if (nCompanion > 0)
         NWNX_Creature_SetAnimalCompanionCreatureType(OBJECT_SELF, nCompanion);
 
+    DetermineMaxHitPoints(OBJECT_SELF);
+
     //listen
     SetListenPattern(OBJECT_SELF, "GS_AI_ATTACK_TARGET",         10000);
     SetListenPattern(OBJECT_SELF, "GS_AI_REQUEST_REINFORCEMENT", 10003);

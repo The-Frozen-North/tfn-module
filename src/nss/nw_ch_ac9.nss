@@ -24,10 +24,12 @@ Patch 1.70
 
 #include "x0_inc_henai"
 #include "x2_inc_switches"
+#include "inc_general"
 
 void main()
 {
     ExecuteScript("pet_tweak");
+    DetermineMaxHitPoints(OBJECT_SELF);
 
     string sTag;
     object oNPC;

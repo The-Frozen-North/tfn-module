@@ -1,5 +1,7 @@
 #include "inc_sql"
+//#include "inc_debug"
 #include "nwnx_creature"
+#include "nwnx_object"
 #include "nwnx_effect"
 
 const float MORALE_RADIUS = 30.0;
@@ -478,6 +480,65 @@ int GetBaseArmorAC(object oArmor)
       GetItemAppearance(oArmor,ITEM_APPR_TYPE_ARMOR_MODEL,ITEM_APPR_ARMOR_MODEL_TORSO)
     )
   );
+}
+
+int GetHitPointsByClassPosition(object oCreature, int nClassPosition, int bMaximize = FALSE)
+{
+    int nClass = GetClassByPosition(nClassPosition, OBJECT_SELF);
+
+    if (nClass == CLASS_TYPE_INVALID) return 0; // failsafe
+
+    int nMaxHP = StringToInt(Get2DAString("classes", "HitDie", nClass));
+
+    int nLevels = GetLevelByClass(nClass, oCreature);
+
+    if (nLevels == 0)
+        return 0;
+
+// don't do the rest if we want maximized HP
+    if (bMaximize)
+        return nMaxHP * nLevels;
+
+    int nHP, i;
+    for (i = 0; i < nLevels; i++)
+    {
+        int nHPToAdd = Random(nMaxHP) + 1;
+
+    // HP will always be half or more
+        if (nHPToAdd < nMaxHP / 2)
+            nHPToAdd = nMaxHP / 2;
+
+        nHP = nHP + nHPToAdd;
+    }
+
+    return nHP;
+}
+
+// sets max hit points by class with some conditions
+// i.e. bosses/semibosses always get max hp rolls
+// should only be put on spawn tbh
+void DetermineMaxHitPoints(object oCreature);
+void DetermineMaxHitPoints(object oCreature)
+{
+    if (GetIsPC(oCreature)) return;
+
+    // these are considered plot or quest NPCs, keep the default
+    if (GetImmortal(oCreature)) return;
+    if (GetPlotFlag(oCreature)) return;
+
+    // don't do this for pets
+    if (GetAssociateType(oCreature) == ASSOCIATE_TYPE_FAMILIAR || GetAssociateType(oCreature) == ASSOCIATE_TYPE_ANIMALCOMPANION) return;
+
+    int bMaximize = GetLocalInt(oCreature, "boss") == 1 || GetLocalInt(oCreature, "semiboss") == 1;
+
+    int nHP = GetHitPointsByClassPosition(oCreature, 1, bMaximize) + GetHitPointsByClassPosition(oCreature, 2, bMaximize) + GetHitPointsByClassPosition(oCreature, 3, bMaximize);
+
+    NWNX_Object_SetMaxHitPoints(oCreature, nHP);
+    SetCurrentHitPoints(oCreature, GetMaxHitPoints(oCreature));
+
+    //SendDebugMessage(GetName(oCreature) + " determined hp: " + IntToString(nHP), TRUE);
+    //SendDebugMessage(GetName(oCreature) + " hp: " + IntToString(GetCurrentHitPoints(oCreature)), TRUE);
+    //SendDebugMessage(GetName(oCreature) + " max hp: " + IntToString(GetMaxHitPoints(oCreature)), TRUE);
 }
 
 //void main(){}

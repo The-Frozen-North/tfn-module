@@ -796,7 +796,12 @@ void main()
 
     if (nDexterity > nStrength) NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_WEAPON_FINESSE);
 
-    NWNX_Object_SetMaxHitPoints(OBJECT_SELF, (nHitDice+1)*8);
+    int nHP = (nHitDice+1)*8;
+
+    // 75% HP of base HP
+    nHP = nHP - (nHP / 4);
+
+    NWNX_Object_SetMaxHitPoints(OBJECT_SELF, nHP);
     NWNX_Object_SetCurrentHitPoints(OBJECT_SELF, GetMaxHitPoints(OBJECT_SELF));
 
     SetObjectVisualTransform(OBJECT_SELF, OBJECT_VISUAL_TRANSFORM_SCALE, fScale+(fScaleLevel*fHitDice));
