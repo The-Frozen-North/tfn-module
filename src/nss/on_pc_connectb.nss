@@ -7,7 +7,7 @@ void main()
     int nDM = StringToInt(NWNX_Events_GetEventData("IS_DM"));
 
     WriteTimestampedLogEntry("Connecting IP: "+sIP);
-
+    /*
     if (nDM == 1)
     {
         string sKey = NWNX_Events_GetEventData("CDKEY");
@@ -16,7 +16,7 @@ void main()
         int nSkip = TRUE;
 
         int i;
-        for (i = 0; i < 6; i++)
+        for (i = 0; i < 9; i++)
         {
             sTargetKey = Get2DAString("env_dm", "Value", i);
             if (sTargetKey != "" && sTargetKey == sKey)
@@ -34,4 +34,5 @@ void main()
             NWNX_Events_SkipEvent();
         }
     }
+    */
 }
