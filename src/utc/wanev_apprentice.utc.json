@@ -1,12 +1,88 @@
 {
   "__data_type": "UTC ",
+  "Appearance_Head": {
+    "type": "byte",
+    "value": 20
+  },
   "Appearance_Type": {
     "type": "word",
-    "value": 286
+    "value": 6
+  },
+  "ArmorPart_RFoot": {
+    "type": "byte",
+    "value": 1
   },
   "BodyBag": {
     "type": "byte",
     "value": 0
+  },
+  "BodyPart_Belt": {
+    "type": "byte",
+    "value": 0
+  },
+  "BodyPart_LBicep": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LFArm": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LFoot": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LHand": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LShin": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_LShoul": {
+    "type": "byte",
+    "value": 0
+  },
+  "BodyPart_LThigh": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_Neck": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_Pelvis": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RBicep": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RFArm": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RHand": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RShin": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_RShoul": {
+    "type": "byte",
+    "value": 0
+  },
+  "BodyPart_RThigh": {
+    "type": "byte",
+    "value": 1
+  },
+  "BodyPart_Torso": {
+    "type": "byte",
+    "value": 1
   },
   "Cha": {
     "type": "byte",
@@ -222,6 +298,22 @@
       }
     ]
   },
+  "Color_Hair": {
+    "type": "byte",
+    "value": 146
+  },
+  "Color_Skin": {
+    "type": "byte",
+    "value": 2
+  },
+  "Color_Tattoo1": {
+    "type": "byte",
+    "value": 1
+  },
+  "Color_Tattoo2": {
+    "type": "byte",
+    "value": 1
+  },
   "Comment": {
     "type": "cexostring",
     "value": ""
@@ -236,7 +328,7 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 1
+    "value": 0
   },
   "CurrentHitPoints": {
     "type": "short",
@@ -253,7 +345,9 @@
   "Description": {
     "id": 53079,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Facing widely held stereotypes of being twisted, devious, or untrustworthy, all Tieflings can trace their bloodline back to some form of fiendish origin."
+    }
   },
   "Dex": {
     "type": "byte",
@@ -270,21 +364,21 @@
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_mcloth009"
+          "value": "armor125"
         }
       },
       {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wswmdg008"
+          "value": "weapon51"
         }
       },
       {
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_creitem044"
+          "value": "nw_it_creitem196"
         }
       }
     ]
@@ -360,7 +454,7 @@
   },
   "Gender": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "GoodEvil": {
     "type": "byte",
@@ -372,7 +466,7 @@
   },
   "Int": {
     "type": "byte",
-    "value": 16
+    "value": 12
   },
   "Interruptable": {
     "type": "byte",
@@ -454,11 +548,11 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 349
+    "value": 944
   },
   "Race": {
     "type": "byte",
-    "value": 15
+    "value": 20
   },
   "refbonus": {
     "type": "short",
@@ -719,7 +813,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 108
+    "value": 364
   },
   "SpecAbilityList": {
     "type": "list",
@@ -731,7 +825,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 16
+    "value": 13
   },
   "Subrace": {
     "type": "cexostring",
@@ -743,7 +837,7 @@
   },
   "Tail_New": {
     "type": "dword",
-    "value": 205
+    "value": 3
   },
   "TemplateList": {
     "type": "list",
@@ -798,10 +892,10 @@
   },
   "Wings_New": {
     "type": "dword",
-    "value": 205
+    "value": 0
   },
   "Wis": {
     "type": "byte",
-    "value": 16
+    "value": 11
   }
 }
