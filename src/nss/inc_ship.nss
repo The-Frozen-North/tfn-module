@@ -1,4 +1,5 @@
 #include "inc_gold"
+#include "inc_horse"
 #include "nwnx_object"
 
 // Get the cost of the ship, modified by charisma.
@@ -60,7 +61,12 @@ void PayShipAndTravel(object oSpeaker, object oPlayer, int nTarget, int bPersuad
     if (nTravelTime >= 15 || nTravelTime < 0) SetLocalInt(oArea, "travel_time", 20+d4());
 
     TakeGoldFromCreature(nCost, oPlayer, TRUE);
-    AssignCommand(oPlayer, ActionJumpToLocation(GetLocation(oDestination)));
+
+    RemoveMount(oPlayer);
+
+    FadeToBlack(oPlayer);
+    DelayCommand(2.5, AssignCommand(oPlayer, JumpToLocation(GetLocation(oDestination))));
+    DelayCommand(5.0, FadeFromBlack(oPlayer));
 }
 
 //void main() {}
