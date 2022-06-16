@@ -4,6 +4,7 @@
 #include "inc_general"
 #include "inc_henchman"
 #include "inc_follower"
+#include "inc_webhook"
 #include "nwnx_area"
 
 void main()
@@ -67,6 +68,11 @@ void main()
     }
 
     TakeGoldFromCreature(1000, OBJECT_SELF, TRUE);
+
+    if (GetLocalInt(OBJECT_SELF, "defeated_webhook") == 1)
+    {
+        BossDefeatedWebhook(oKiller, OBJECT_SELF);
+    }
 
 //    if (gsFLGetFlag(GS_FL_MORTAL)) gsCMDestroyInventory();
 

@@ -7,6 +7,7 @@ const int LOG_OUT = 2;
 const string PLAYER_COLOR = "#42bcf5";
 const string LEVEL_UP_COLOR = "#ddf542";
 const string DEATH_COLOR = "#ed5426";
+const string BOSS_DEFEATED_COLOR = "#ffd700";
 const string SERVER_COLOR = "#9fe4fc";
 
 #include "nwnx_player"
@@ -182,7 +183,7 @@ void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
   string sName = GetName(oKiller);
   if (sName == "")
   {
-     sName = "an unknown object.";
+     sName = "an unknown object";
   }
   else
   {
@@ -216,6 +217,66 @@ void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
   //stMessage.iTimestamp = SQLite_GetTimeStamp();
   sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", Get2DAString("env", "Value", 2), stMessage);
   SendDiscordLogMessage(sConstructedMsg);
+}
+
+// sends a web hook to discord if you killed a boss
+void BossDefeatedWebhook(object oPC, object oDead);
+void BossDefeatedWebhook(object oPC, object oDead)
+{
+// don't continue if this isn't set, prevents it from being played twice
+  if (GetLocalInt(oDead, "defeated_webhook") != 1)
+  {
+     return;
+  }
+// maybe an associate killed the oDead? try to get the master in that case
+  if (!GetIsPC(oPC))
+  {
+     oPC = GetMaster(oPC);
+  }
+
+// still not a PC? do nothing
+  if (!GetIsPC(oPC))
+  {
+     return;
+  }
+
+  string sConstructedMsg;
+  struct NWNX_WebHook_Message stMessage;
+  stMessage.sUsername = SERVER_BOT;
+  stMessage.sColor = BOSS_DEFEATED_COLOR;
+  stMessage.sTitle = "BOSS DEFEATED";
+
+  stMessage.sDescription = "**"+GetName(oPC)+"** has defeated **"+GetName(oDead)+"**!";
+
+  stMessage.sAuthorName = GetName(oPC);
+  stMessage.sAuthorIconURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oPC)) + "t.png";
+  stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oDead)) + "m.png";
+
+  stMessage.sField1Name = "PLAYERS";
+  stMessage.sField1Value = IntToString(GetPlayerCount());
+  stMessage.iField1Inline = TRUE;
+
+  stMessage.sField2Name = "ACCOUNT";
+  stMessage.sField2Value = GetPCPlayerName(oPC);
+  stMessage.iField2Inline = TRUE;
+
+  string sClassLabel = "CLASS";
+
+  if (GetLevelByPosition(2, oPC) > 0)
+      sClassLabel = "CLASSES";
+
+  stMessage.sField3Name = sClassLabel;
+  stMessage.sField3Value = GetClassesAndLevels(oPC);
+  stMessage.iField3Inline = TRUE;
+
+
+  //stMessage.sFooterText = GetName(GetModule());
+  //stMessage.iTimestamp = SQLite_GetTimeStamp();
+  sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", Get2DAString("env", "Value", 2), stMessage);
+  SendDiscordLogMessage(sConstructedMsg);
+
+// delete this so it doesn't trigger again
+  DeleteLocalInt(oDead, "defeated_webhook");
 }
 
 void ServerWebhook(string sTitle, string sDescription)

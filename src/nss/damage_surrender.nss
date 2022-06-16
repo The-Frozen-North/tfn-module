@@ -1,3 +1,5 @@
+#include "inc_webhook"
+
 void main()
 {
     int nMaxHP = GetMaxHitPoints();
@@ -13,6 +15,11 @@ void main()
 
     if((GetIsDead(OBJECT_SELF) == FALSE) && (nCurrentHP <= nHPThreshold) && GetLocalInt(OBJECT_SELF,"Generic_Surrender") == 0)
     {
+        if (GetLocalInt(OBJECT_SELF, "defeated_webhook") == 1)
+        {
+            BossDefeatedWebhook(GetLastHostileActor(), OBJECT_SELF);
+        }
+
         SetLocalInt(OBJECT_SELF, "Generic_Surrender",1);
         SetLocalInt(OBJECT_SELF, "no_rest",1);
         ChangeToStandardFaction(OBJECT_SELF, STANDARD_FACTION_COMMONER);

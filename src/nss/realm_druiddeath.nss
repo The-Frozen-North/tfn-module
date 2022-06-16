@@ -1,3 +1,5 @@
+#include "inc_webhook"
+
 void main()
 {
     object oDruid;
@@ -30,6 +32,11 @@ void main()
                 DestroyObject(oObject);
 
              oObject = GetNextObjectInArea(oArea);
+        }
+
+        if (GetLocalInt(oSpirit, "defeated_webhook") == 1)
+        {
+            BossDefeatedWebhook(GetLastHostileActor(), oSpirit);
         }
 
         ExecuteScript("hb_friendify", oSpirit);
