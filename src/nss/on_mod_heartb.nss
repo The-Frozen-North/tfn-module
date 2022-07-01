@@ -22,7 +22,7 @@ int GetIsDeadOrPetrified(object oCreature)
 void DoRevive(object oDead)
 {
         if (GetIsInCombat(oDead)) return;
-        if (GetIsDead(oDead))
+        if (GetIsDeadOrPetrified(oDead))
         {
             SendDebugMessage(GetName(oDead)+" is dead, start revive loop");
             int bEnemy = FALSE;
