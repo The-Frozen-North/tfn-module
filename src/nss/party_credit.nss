@@ -19,6 +19,7 @@ struct Party
    int HenchmanSize;
    int TotalSize;
    int LevelGap;
+   int HighestLevel;
    float AverageLevel;
 };
 
@@ -204,6 +205,7 @@ void SetPartyData()
    int nHenchmanSize = 0;
    int nTotalSize = 0;
    int nTotalLevels = 0;
+   int nHighestLevel = 0;
    float fAverageLevel = 0.0;
 
    float fDst = PARTY_DST_MAX;
@@ -220,6 +222,7 @@ void SetPartyData()
           nTotalSize++;
           nLevel = GetLevelFromXP(GetXP(oMbr));
           nTotalLevels = nTotalLevels + nLevel;
+          if (nLevel > nHighestLevel) nHighestLevel = nLevel;
 
 
           if(nLow > nLevel) nLow = nLevel;
@@ -237,6 +240,7 @@ void SetPartyData()
             SetLocalArrayObject(OBJECT_SELF, "Henchmans", nHenchmanSize, oMbr);
           }
           nLevel = GetHitDice(oMbr);
+          if (nLevel > nHighestLevel) nHighestLevel = nLevel;
           nTotalLevels = nTotalLevels + nLevel;
       }
 
@@ -245,10 +249,14 @@ void SetPartyData()
 
    if (nPlayerSize > 0) fAverageLevel = IntToFloat(nTotalLevels) / IntToFloat(nTotalSize);
 
+   float fHighestLevel = IntToFloat(nHighestLevel);
+   if (fHighestLevel > fAverageLevel) fAverageLevel = fHighestLevel;
+
    SendDebugMessage("Player size: "+IntToString(nPlayerSize));
    SendDebugMessage("Henchman size: "+IntToString(nHenchmanSize));
    SendDebugMessage("Total size: "+IntToString(nTotalSize));
    SendDebugMessage("Party gap: "+IntToString(nHigh - nLow));
+   SendDebugMessage("Party highest level: "+IntToString(nLevel));
    SendDebugMessage("Party average: "+FloatToString(fAverageLevel));
 
    Party.PlayerSize = nPlayerSize;
