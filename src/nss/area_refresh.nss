@@ -147,7 +147,7 @@ void main()
      if (nTrapChance >= 30) nTrapChance = 30;
 
      if (GetLocalInt(OBJECT_SELF, "less_traps") == 1)
-        nTrapChance = nTrapChance/2;
+        nTrapChance = nTrapChance/3;
 
      int bTrapped = GetLocalInt(OBJECT_SELF, "trapped");
 
