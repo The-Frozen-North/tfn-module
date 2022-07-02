@@ -1,4 +1,5 @@
 #include "nwnx_events"
+#include "inc_webhook"
 
 void main()
 {
@@ -9,5 +10,13 @@ void main()
     {
         SetLocalInt(oObject, "identified_in_storage", 1);
         StoreCampaignObject(GetPCPublicCDKey(OBJECT_SELF), GetTag(oPossesor), oPossesor);
+    }
+    if (GetObjectType(oObject) == OBJECT_TYPE_ITEM && GetIdentified(oObject))
+    {
+        if (GetLocalInt(oObject, "loreb_wasunidentified"))
+        {
+            DeleteLocalInt(oObject, "loreb_wasunidentified");
+            ValuableItemWebhook(OBJECT_SELF, oObject, FALSE);
+        }
     }
 }

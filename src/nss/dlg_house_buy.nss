@@ -1,4 +1,5 @@
 #include "inc_housing"
+#include "inc_webhook"
 
 void main()
 {
@@ -11,5 +12,6 @@ void main()
         TakeGoldFromCreature(nGold, oPC, TRUE);
         SetCampaignInt(GetPCPublicCDKey(oPC), "house_cost", nGold);
         InitializeHouseMapPin(oPC);
+        HouseBuyWebhook(oPC, nGold, GetArea(OBJECT_SELF));
     }
 }

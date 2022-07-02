@@ -9,10 +9,14 @@ const string LEVEL_UP_COLOR = "#ddf542";
 const string DEATH_COLOR = "#ed5426";
 const string BOSS_DEFEATED_COLOR = "#ffd700";
 const string SERVER_COLOR = "#9fe4fc";
+const string VALUABLE_ITEM_COLOR = "#96e6ff";
+const string HOUSE_BUY_COLOR = "#a000a0";
+const string QUEST_COMPLETE_COLOR = "#50ffa0";
 
 #include "nwnx_player"
 #include "nwnx_webhook_rch"
 #include "inc_nwnx"
+#include "inc_debug"
 
 // -----------------------------------------------------------------------------
 //                              Function Prototypes
@@ -298,3 +302,161 @@ void ServerWebhook(string sTitle, string sDescription)
   sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", Get2DAString("env", "Value", 2), stMessage);
   SendDiscordLogMessage(sConstructedMsg);
 }
+
+void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE);
+void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
+{
+    if (GetGoldPieceValue(oItem) < 14000)
+    {
+        return;
+    }
+    // Hopefully all cases of double reporting are fixed, but for safety's sake
+    if (GetLocalInt(oItem, "webhook_valuable"))
+    {
+        return;
+    }
+    string sConstructedMsg;
+    string sName = GetName(oPC);
+    struct NWNX_WebHook_Message stMessage;
+
+    // Messages work out to be like this:
+    // PC has purchased an Amulet of Protection!
+    // PC has identified an Amulet of Protection!
+
+    string sAcquisitionMethod = nIsPurchased ? "purchased" : "identified";
+
+    string sTitle;
+    string sDescription = "**" + sName + "** has " + sAcquisitionMethod;
+    int nPlayers = GetPlayerCount();
+
+   string sItemName = GetName(oItem);
+    string sFirstLetter = GetStringLowerCase(GetStringLeft(sItemName, 1));
+    if (sFirstLetter == "a" || sFirstLetter == "e" || sFirstLetter == "i" ||
+        sFirstLetter == "o" || sFirstLetter == "u")
+    {
+        sDescription += " an " + sItemName + "!";
+    }
+    else
+    {
+        sDescription += " a " + sItemName + "!";
+    }
+
+    sTitle = "VALUABLE ITEM";
+
+    stMessage.sUsername = SERVER_BOT;
+    stMessage.sTitle = sTitle;
+    stMessage.sColor = VALUABLE_ITEM_COLOR;
+    stMessage.sAuthorName = sName;
+    stMessage.sAuthorIconURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oPC)) + "t.png";
+    stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oPC)) + "m.png";
+    stMessage.sDescription = sDescription;
+
+    stMessage.sField1Name = "PLAYERS";
+    stMessage.sField1Value = IntToString(nPlayers);
+    stMessage.iField1Inline = TRUE;
+
+    stMessage.sField2Name = "ACCOUNT";
+    stMessage.sField2Value = GetPCPlayerName(oPC);
+    stMessage.iField2Inline = TRUE;
+
+    string sClassLabel = "CLASS";
+
+    if (GetLevelByPosition(2, oPC) > 0)
+        sClassLabel = "CLASSES";
+
+    stMessage.sField3Name = sClassLabel;
+    stMessage.sField3Value = GetClassesAndLevels(oPC);
+    stMessage.iField3Inline = TRUE;
+
+    //SendDebugMessage("ValuableItemWebhook: " + sDescription);
+    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", Get2DAString("env", "Value", 2), stMessage);
+    SendDiscordLogMessage(sConstructedMsg);
+    SetLocalInt(oItem, "webhook_valuable", 1);
+}
+
+
+void HouseBuyWebhook(object oPC, int nGoldCost, object oArea);
+void HouseBuyWebhook(object oPC, int nGoldCost, object oArea)
+{
+    string sConstructedMsg;
+    string sName = GetName(oPC);
+    struct NWNX_WebHook_Message stMessage;
+
+    // PC has purchased a house in Area for Gold!
+    string sTitle = "HOUSE PURCHASED";
+    string sDescription = "**" + sName + "** has purchased a house in " + GetName(oArea) + " for " + IntToString(nGoldCost) + " gold!";
+    int nPlayers = GetPlayerCount();
+
+    stMessage.sUsername = SERVER_BOT;
+    stMessage.sTitle = sTitle;
+    stMessage.sColor = HOUSE_BUY_COLOR;
+    stMessage.sAuthorName = sName;
+    stMessage.sAuthorIconURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oPC)) + "t.png";
+    stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oPC)) + "m.png";
+    stMessage.sDescription = sDescription;
+
+    stMessage.sField1Name = "PLAYERS";
+    stMessage.sField1Value = IntToString(nPlayers);
+    stMessage.iField1Inline = TRUE;
+
+    stMessage.sField2Name = "ACCOUNT";
+    stMessage.sField2Value = GetPCPlayerName(oPC);
+    stMessage.iField2Inline = TRUE;
+
+    string sClassLabel = "CLASS";
+
+    if (GetLevelByPosition(2, oPC) > 0)
+        sClassLabel = "CLASSES";
+
+    stMessage.sField3Name = sClassLabel;
+    stMessage.sField3Value = GetClassesAndLevels(oPC);
+    stMessage.iField3Inline = TRUE;
+
+    //SendDebugMessage("HouseBuyWebhook: " + sDescription);
+    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", Get2DAString("env", "Value", 2), stMessage);
+    SendDiscordLogMessage(sConstructedMsg);
+}
+
+
+void QuestCompleteWebhook(object oPC, string sQuestName);
+void QuestCompleteWebhook(object oPC, string sQuestName)
+{
+    string sConstructedMsg;
+    string sName = GetName(oPC);
+    struct NWNX_WebHook_Message stMessage;
+
+    // PC has purchased a house in Area for Gold!
+    string sTitle = "QUEST COMPLETED";
+    string sDescription = "**" + sName + "** has completed " + sQuestName + "!";
+    int nPlayers = GetPlayerCount();
+
+    stMessage.sUsername = SERVER_BOT;
+    stMessage.sTitle = sTitle;
+    stMessage.sColor = QUEST_COMPLETE_COLOR;
+    stMessage.sAuthorName = sName;
+    stMessage.sAuthorIconURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oPC)) + "t.png";
+    stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oPC)) + "m.png";
+    stMessage.sDescription = sDescription;
+
+    stMessage.sField1Name = "PLAYERS";
+    stMessage.sField1Value = IntToString(nPlayers);
+    stMessage.iField1Inline = TRUE;
+
+    stMessage.sField2Name = "ACCOUNT";
+    stMessage.sField2Value = GetPCPlayerName(oPC);
+    stMessage.iField2Inline = TRUE;
+
+    string sClassLabel = "CLASS";
+
+    if (GetLevelByPosition(2, oPC) > 0)
+        sClassLabel = "CLASSES";
+
+    stMessage.sField3Name = sClassLabel;
+    stMessage.sField3Value = GetClassesAndLevels(oPC);
+    stMessage.iField3Inline = TRUE;
+
+    //SendDebugMessage("QuestCompleteWebhook: " + sDescription);
+    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", Get2DAString("env", "Value", 2), stMessage);
+    SendDiscordLogMessage(sConstructedMsg);
+}
+
