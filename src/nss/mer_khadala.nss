@@ -122,6 +122,19 @@ void CreatePlaceholderItem(object oItem)
 void main()
 {
     object oStorage = GetObjectByTag("khadala_storage");
+    // When restocking, the real storage object needs emptying
+    // But khadala is currently flagged to not restock
+    // This is only because running this script is REALLY slow and will lock up the server for everyone
+    object oTest = GetFirstItemInInventory(oStorage);
+    int nNumObjectsDestroyed = 0;
+    while (GetIsObjectValid(oTest))
+    {
+        DestroyObject(oTest);
+        oTest = GetNextItemInInventory(oStorage);
+        nNumObjectsDestroyed++;
+    }
+    SendDebugMessage("mer_khadala: restocking destroyed " + IntToString(nNumObjectsDestroyed) + " objects");
+
 
     object oItemInStorage, oItemPlaceholder;
 

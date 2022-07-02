@@ -4,6 +4,7 @@
 #include "inc_webhook"
 #include "inc_housing"
 #include "inc_weather"
+#include "inc_merchant"
 #include "nwnx_admin"
 #include "nwnx_weapon"
 #include "nwnx_events"
@@ -499,12 +500,12 @@ void main()
    // Generate Merchants
     object oStore;
     location lLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
-
+    int nNow = SQLite_GetTimeStamp();
     int i;
     for (i = 1; i < 25; i++)
     {
         oStore = CreateObject(OBJECT_TYPE_STORE, "merchant"+IntToString(i), lLocation);
-
+        SetLocalInt(oStore, MERCHANT_STORE_LAST_RESTOCKED_AT, nNow);
         ExecuteScript(""+GetTag(oStore), oStore);
     }
     SetLocalInt(GetModule(), "treasure_ready", 1);
