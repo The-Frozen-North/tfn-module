@@ -6,7 +6,7 @@ void main()
 {
     object oMerchant = CreateEventCreature("travel_merchant");
 
-    object oStore = CreateObject(OBJECT_TYPE_STORE, "mer_travel", GetLocation(OBJECT_SELF));
+    object oStore = CreateEventStore("mer_travel");
 
     SetLocalObject(oMerchant, "store", oStore);
 
