@@ -99,7 +99,7 @@ int SELL_HOUSE_LOSS_FACTOR = 5;
 int DestroyHouseArea(object oArea);
 int DestroyHouseArea(object oArea)
 {
-    object oObject = GetFirstObjectInArea(oObject);
+    object oObject = GetFirstObjectInArea(oArea);
     int nObjectType;
 
     while (GetIsObjectValid(oObject))
