@@ -1,11 +1,26 @@
 #include "inc_treasure"
 #include "inc_gold"
+#include "inc_sqlite_time"
+
+// The time, in seconds, between reloading a store's contents
+const int MERCHANT_STORE_RESTOCK_TIME = 86400;
+
+// Set on stores to indicate the last time (SQLite_GetTimeStamp)
+// the store was last restocked at
+const string MERCHANT_STORE_LAST_RESTOCKED_AT = "mer_last_restocked_time";
 
 // Use 256 for all item types.
 void CopyChest(object oTarget, string sChest, int nBaseItemType = BASE_ITEM_INVALID, string sDescriptionFilter = "", int bInfinite = FALSE);
 
 // Adds enchanted weight reduction, and infinite if applicable
 void ApplyEWRAndInfiniteItems(object oTarget);
+
+// Checks whether it's been long enough since the last time this store was restocked
+int ShouldRestockMerchant(object oStore);
+
+// Do restocking of the merchant.
+// Returns the new store object.
+object AttemptMerchantRestock(object oTarget);
 
 void CopyChest(object oTarget, string sChest, int nBaseItemType = BASE_ITEM_INVALID, string sDescriptionFilter = "", int bInfinite = FALSE)
 {
@@ -82,6 +97,11 @@ void OpenMerchant(object oMerchant, object oStore, object oPC)
 // PC? don't do it
     if (GetIsPC(oMerchant)) return;
 
+    if (ShouldRestockMerchant(oStore))
+    {
+        oStore = AttemptMerchantRestock(oStore);
+    }
+
     object oPC = GetLastSpeaker();
 
     int nCap = MERCHANT_MODIFIER_CAP;
@@ -107,6 +127,48 @@ void OpenMerchant(object oMerchant, object oStore, object oPC)
     FloatingTextStringOnCreature("*Merchant Reaction: " + IntToString(nAdjust)+" (Appraise: "+IntToString(nPCAppraise)+", Charisma: "+IntToString(nPCCharisma)+sCharm+")*", oPC, FALSE);
 
     OpenStore(oStore, oPC, -nAdjust, nAdjust);
+}
+
+int ShouldRestockMerchant(object oStore)
+{
+    int nTimeNow = SQLite_GetTimeStamp();
+    int nLast = GetLocalInt(oStore, MERCHANT_STORE_LAST_RESTOCKED_AT);
+    int nDiff = nTimeNow - nLast;
+    if (nTimeNow - nLast >= MERCHANT_STORE_RESTOCK_TIME)
+    {
+        SendDebugMessage("Restock time for store " + GetTag(oStore) + ": Now=" + IntToString(nTimeNow) + ", last=" + IntToString(nLast) + ", diff=" + IntToString(nDiff));
+        return 1;
+    }
+    return 0;
+}
+
+object AttemptMerchantRestock(object oStore)
+{
+    string sResRef = GetResRef(oStore);
+
+    object oBaseArea = GetObjectByTag("_BASE");
+    // Dynamically created stores, IE travelling merchants apparently don't
+    // make their stores in the system area - if the store in question isn't
+    // there, don't destroy it, as it'll likely be cleared as a result of
+    // some other cleaning up script anyway
+    object oNewStore;
+    if (GetArea(oStore) == oBaseArea && !GetLocalInt(oStore, "norestock"))
+    {
+        SendDebugMessage("Restock store: " + GetTag(oStore));
+        DestroyObject(oStore);
+        location lLocation = Location(oBaseArea, Vector(1.0, 1.0, 1.0), 0.0);
+        oNewStore = CreateObject(OBJECT_TYPE_STORE, sResRef, lLocation);
+        ExecuteScript(GetTag(oNewStore), oNewStore);
+    }
+    else
+    {
+        SendDebugMessage("Store " + GetTag(oStore) + " should not restock!");
+        oNewStore = oStore;
+    }
+
+    int nTimeNow = SQLite_GetTimeStamp();
+    SetLocalInt(oNewStore, MERCHANT_STORE_LAST_RESTOCKED_AT, nTimeNow);
+    return(oNewStore);
 }
 
 //void main() {}

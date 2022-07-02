@@ -108,6 +108,9 @@ void main()
             }
         }
      }
+     
+
+     
 // ==============================
 // Events
 // ==============================
@@ -115,6 +118,24 @@ void main()
     int nOldEvent;
     for (nOldEvent = 0; nOldEvent < 20; nOldEvent++)
         DestroyObject(GetObjectByTag(sResRef+"_event", nOldEvent));
+    
+    // Event stores: currently the only sources of stores in refreshing areas is from the
+    // random event merchant
+    // Might not always be the case, though...
+    // In any case, accumulating useless stores won't be doing the
+    // server's memory usage over long uptimes any good...
+    int nStoreIndex;
+    object oOldStore;
+    for (nStoreIndex=0; nStoreIndex < 10; nStoreIndex++)
+    {
+        string sVar = "event_store" + IntToString(nStoreIndex);
+        oOldStore = GetLocalObject(OBJECT_SELF, sVar);
+        if (GetIsObjectValid(oOldStore))
+        {
+            SendDebugMessage("Destroying event store " + GetResRef(oOldStore) + " at var " + sVar);
+            DestroyObject(oOldStore);
+        }
+    }
 
 // 50% chance of an event
     int nEventSpawns = GetLocalInt(OBJECT_SELF, "event_spawn_points");
