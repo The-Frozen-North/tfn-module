@@ -101,7 +101,7 @@ void main()
     int nMasterHitDice;
     switch (nAssociateType)
     {
-        case ASSOCIATE_TYPE_ANIMALCOMPANION: nMasterHitDice = GetLevelByClass(CLASS_TYPE_RANGER, oMaster)+GetLevelByClass(CLASS_TYPE_DRUID, oMaster)+GetLevelByClass(CLASS_TYPE_SHIFTER, oMaster); break;
+        case ASSOCIATE_TYPE_ANIMALCOMPANION: nMasterHitDice = GetLevelByClass(CLASS_TYPE_RANGER, oMaster)+GetLevelByClass(CLASS_TYPE_DRUID, oMaster); break;
         case ASSOCIATE_TYPE_FAMILIAR: nMasterHitDice = GetLevelByClass(CLASS_TYPE_WIZARD, oMaster)+GetLevelByClass(CLASS_TYPE_SORCERER, oMaster)+GetLevelByClass(CLASS_TYPE_DRAGON_DISCIPLE, oMaster)+GetLevelByClass(CLASS_TYPE_PALE_MASTER, oMaster); break;
         default: return; break; // Stop if not familiar or animal companion
     }
