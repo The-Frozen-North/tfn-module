@@ -7,6 +7,7 @@
 
 #include "inc_debug"
 #include "inc_sql"
+#include "x3_inc_string"
 
 // The amount of bonus or penalty XP modified by level.
 const float QUEST_XP_LEVEL_ADJUSTMENT_MODIFIER = 0.1;
@@ -82,6 +83,41 @@ int GetLevelFromXP(int nXP);
 // Courtesy of Sherincall (clippy) from discord
 int Round(float f) { return FloatToInt(f +  (f > 0.0 ? 0.5 : -0.5) ); }
 
+
+// removes trailing zeros, supports up to two places
+string RemoveTrailingZeros(string sString);
+string RemoveTrailingZeros(string sString)
+{
+    if (sString == "") return "";
+
+    int nSize = GetStringLength(sString);
+
+    string sLast = GetStringRight(sString, 3);
+
+// there is probably a better way to do this function intelligently
+    if (sLast == ".00")
+    {
+        return GetStringLeft(sString, nSize - 3);
+    }
+    else if (sLast == ".90" ||
+             sLast == ".80" ||
+             sLast == ".70" ||
+             sLast == ".60" ||
+             sLast == ".50" ||
+             sLast == ".40" ||
+             sLast == ".30" ||
+             sLast == ".20" ||
+             sLast == ".10")
+    {
+        return GetStringLeft(sString, nSize - 1);
+    }
+
+// just return the string it was given, no change
+    return sString;
+}
+
+// truncates to two decimal points
+float Truncate(float fFloat);
 float Truncate(float fFloat)
 {
     return StringToFloat(FloatToString(fFloat, 3, 2));
@@ -168,7 +204,7 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
    //fAdjustedXpAmount = IntToFloat(FloatToInt(fAdjustedXpAmount*10.0))/10.0;
    fAdjustedXpAmount = Truncate(fAdjustedXpAmount);
 
-   SendMessageToPC(oPC, "Experience Points Gained:  "+FloatToString(fAdjustedXpAmount, 3, 2));
+   SendMessageToPC(oPC, "Experience Points Gained:  "+RemoveTrailingZeros(FloatToString(fAdjustedXpAmount, 3, 2)));
 
    int iStoredRemainderXP = SQLocalsPlayer_GetInt(oPC, "xp_remainder");
    SendDebugMessage("Stored remainder XP: "+IntToString(iStoredRemainderXP));
@@ -309,11 +345,11 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
        if (fAverageLevel < 1.0) fAverageLevel = 1.0; //failsafe if party average level was 0 or less
 
        float fTotalSize = IntToFloat(iTotalSize);
-       if (fTotalSize < 1.0) fTotalSize = 1.0; //failsafe is party total size was 0 or less
+       if (fTotalSize < 1.0) fTotalSize = 1.0; //failsafe if party total size was 0 or less
 
        float fPartyMod = PARTY_SIZE_BASE_MOD/(PARTY_SIZE_BASE_MOD-1.0+fTotalSize);
 
-       if (fPartyMod > 1.0) fPartyMod = 1.0; //failsafe is party mod is greater than 1
+       if (fPartyMod > 1.0) fPartyMod = 1.0; //failsafe if party mod is greater than 1
 
        fXP = fXP*fXPPenaltyMod;
 
