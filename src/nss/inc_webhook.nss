@@ -244,6 +244,12 @@ void BossDefeatedWebhook(object oPC, object oDead)
      return;
   }
 
+// do not send the webhook if the PC is higher/equal level to the boss
+  if (GetHitDice(oPC) >= GetHitDice(oDead))
+  {
+    return;
+  }
+
   string sConstructedMsg;
   struct NWNX_WebHook_Message stMessage;
   stMessage.sUsername = SERVER_BOT;
