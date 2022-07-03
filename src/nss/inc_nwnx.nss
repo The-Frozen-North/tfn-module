@@ -1,6 +1,7 @@
 #include "nwnx_webhook"
 #include "nwnx_creature"
 #include "x2_inc_itemprop"
+#include "inc_debug"
 
 // Adds the HiPS feat at the first shadowdancer level,
 // or the kobold commando skin
@@ -37,7 +38,14 @@ void SendDiscordMessage(string sPath, string sMessage)
 
 void SendDiscordLogMessage(string sMessage)
 {
-    if (GetLocalInt(GetModule(), "dev") == 0) NWNX_WebHook_SendWebHookHTTPS("discordapp.com", Get2DAString("env", "Value", 2), sMessage);
+    if (GetLocalInt(GetModule(), "dev") == 0)
+    {
+        NWNX_WebHook_SendWebHookHTTPS("discordapp.com", Get2DAString("env", "Value", 2), sMessage);
+    }
+    else
+    {
+
+    }
 }
 
 //void main() {}

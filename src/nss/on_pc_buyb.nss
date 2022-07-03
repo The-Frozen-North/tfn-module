@@ -1,4 +1,5 @@
 #include "nwnx_events"
+#include "inc_webhook"
 
 void main()
 {
@@ -14,6 +15,9 @@ void main()
             DestroyObject(oItem);
 
             TakeGoldFromCreature(nPrice, OBJECT_SELF, TRUE);
+            // The random items should never be valuable enough to trigger this
+            // in the _AFTER of the same event!
+            ValuableItemWebhook(OBJECT_SELF, oNewItem, TRUE);
 
             if (d4() == 1)
             {

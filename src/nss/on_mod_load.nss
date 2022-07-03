@@ -165,6 +165,7 @@ void main()
 // Events.
 
     NWNX_Events_SubscribeEvent("NWNX_ON_TRAP_ENTER_BEFORE", "on_trap_enterb");
+    NWNX_Events_SubscribeEvent("NWNX_ON_ITEM_USE_LORE_BEFORE", "on_pc_loreb");
     NWNX_Events_SubscribeEvent("NWNX_ON_ITEM_USE_LORE_AFTER", "on_pc_lorea");
     NWNX_Events_SubscribeEvent("NWNX_ON_SPELL_INTERRUPTED_AFTER", "on_spellinta");
 
@@ -198,6 +199,7 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_STORE_REQUEST_SELL_AFTER", "on_storesella");
 
     NWNX_Events_SubscribeEvent("NWNX_ON_STORE_REQUEST_BUY_BEFORE", "on_pc_buyb");
+    NWNX_Events_SubscribeEvent("NWNX_ON_STORE_REQUEST_BUY_AFTER", "on_pc_buya");
 
     NWNX_Events_SubscribeEvent("NWNX_ON_EXAMINE_OBJECT_BEFORE", "on_pc_examineb");
     NWNX_Events_SubscribeEvent("NWNX_ON_EXAMINE_OBJECT_AFTER", "on_pc_examinea");

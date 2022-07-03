@@ -62,5 +62,6 @@ void main()
         SetFollowerMaster(oMilitia, oRespawner);
         DelayCommand(3.0, PlayVoiceChat(VOICE_CHAT_HELLO, oMilitia));
         DelayCommand(6.0, AssignCommand(oMilitia, SpeakString("Sedos sent me to assist you after you have fallen in battle. I will help you on your mission.")));
+        DelayCommand(9.0, AssignCommand(oMilitia, SpeakString("There are also adventurers that might be willing to help you out in the Trade of Blades, across the bridge.")));
     }
 }
