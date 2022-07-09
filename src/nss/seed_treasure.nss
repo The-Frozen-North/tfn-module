@@ -719,6 +719,8 @@ void main()
       CreateTreasureContainer("_MeleeRareT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 32.0);
 
       CreateTreasureContainer("_PotionsT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 34.0);
+
+      CreateTreasureContainer("_JewelsT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 35.0);
    }
 
    object oFabricatorContainer = CreateObject(OBJECT_TYPE_PLACEABLE, "_treas_container", Location(GetObjectByTag("_TREASURE"), Vector(40.0, 40.0, 40.0), 0.0), FALSE, "_FabricatorAmmo");
@@ -1190,6 +1192,34 @@ void main()
    PopulateChestWeapon(TREASURE_RANGE_SEED_CHEST, "Composite ", " +3", sCompositeEnchanted, 2, 3, 4, 4, 4, 4, ItemPropertyAttackBonus(3), ItemPropertyMaxRangeStrengthMod(5), ItemPropertyNoDamage(), 0, TRUE);
 
    SendDebugMessage("Treasure weapons created", TRUE);
+
+// ------------------------------------------
+// GEMS / JEWELRY
+// ------------------------------------------
+                                                               // gold value
+    CreateItemOnObject("misc43", GetObjectByTag("_JewelsT1")); // 16
+    CreateItemOnObject("misc44", GetObjectByTag("_JewelsT1")); // 40
+    CreateItemOnObject("misc38", GetObjectByTag("_JewelsT1")); // 20
+    CreateItemOnObject("misc71", GetObjectByTag("_JewelsT1")); // 90
+
+    CreateItemOnObject("misc35", GetObjectByTag("_JewelsT2")); // 40
+    CreateItemOnObject("misc34", GetObjectByTag("_JewelsT2")); // 80
+    CreateItemOnObject("misc67", GetObjectByTag("_JewelsT2")); // 250
+    CreateItemOnObject("misc72", GetObjectByTag("_JewelsT2")); // 275
+
+    CreateItemOnObject("misc41", GetObjectByTag("_JewelsT3")); // 240
+    CreateItemOnObject("misc33", GetObjectByTag("_JewelsT3")); // 290
+    CreateItemOnObject("misc70", GetObjectByTag("_JewelsT3")); // 700
+    CreateItemOnObject("misc69", GetObjectByTag("_JewelsT3")); // 550
+    CreateItemOnObject("misc47", GetObjectByTag("_JewelsT3")); // 500
+
+    CreateItemOnObject("misc39", GetObjectByTag("_JewelsT4")); // 1300
+    CreateItemOnObject("misc37", GetObjectByTag("_JewelsT4")); // 1500
+    CreateItemOnObject("misc68", GetObjectByTag("_JewelsT4")); // 1050
+
+    CreateItemOnObject("misc36", GetObjectByTag("_JewelsT5")); // 2000
+    CreateItemOnObject("misc45", GetObjectByTag("_JewelsT5")); // 3000
+    CreateItemOnObject("misc46", GetObjectByTag("_JewelsT5")); // 4000
 
 // ======================================================
 // DISTRIBUTION

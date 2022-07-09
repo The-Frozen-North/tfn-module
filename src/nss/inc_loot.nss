@@ -11,7 +11,7 @@
 const float LOOT_DESTRUCTION_TIME = 600.0;
 
 // chance that a treasure will spawn at all out of 100
-const int TREASURE_CHANCE = 25;
+const int TREASURE_CHANCE = 15;
 
 // chance that there won't be placeable treasure at all out of 100
 const int NO_PLACEABLE_TREASURE_CHANCE = 30;
@@ -36,9 +36,9 @@ const int CHANCE_THREE = 5;
 // Lower these to decrease the base chance of getting certain tiers.
 const int BASE_T1_WEIGHT = 4000;
 const int BASE_T2_WEIGHT = 200;
-const int BASE_T3_WEIGHT = 50;
-const int BASE_T4_WEIGHT = 20;
-const int BASE_T5_WEIGHT = 5;
+const int BASE_T3_WEIGHT = 40;
+const int BASE_T4_WEIGHT = 15;
+const int BASE_T5_WEIGHT = 3;
 
 const int MIN_T3_AREA_CR = 3;
 const int MIN_T4_AREA_CR = 6;
@@ -220,8 +220,11 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 
     if (bNonUnique) sNonUnique = "NonUnique";
 
+// 2 out of 3 misc items will always be gems/jewelry
+    if (sType == "Misc" && d3() != 1) sType = "Jewels";
+
 // never NU
-    if (sType == "Misc" || sType == "Apparel" || sType == "Scrolls")
+    if (sType == "Misc" || sType == "Apparel" || sType == "Scrolls" || sType == "Jewels")
         sNonUnique = "";
 
     if (sType == "Weapon")

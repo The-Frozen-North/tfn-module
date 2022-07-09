@@ -461,6 +461,8 @@ void main()
       LoadTreasureContainer("_MeleeRareT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 32.0);
 
       LoadTreasureContainer("_PotionsT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 34.0);
+
+      LoadTreasureContainer("_JewelsT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 35.0);
    }
 
    LoadTreasureContainer("_FabricatorAmmo", IntToFloat(nIndex)*2.0, 35.0);
