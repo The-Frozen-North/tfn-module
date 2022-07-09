@@ -51,6 +51,21 @@ const float BASE_CR_MULTIPLIER = 1.1;
 // The string to play when there isn't loot available
 const string NO_LOOT = "This container doesn't have any items.";
 
+// Percentage chances for various categories
+// Needless to say, these sets should sum to 100
+const int WEAPON_COMMON_CHANCE = 37;
+const int WEAPON_UNCOMMON_CHANCE = 33;
+const int WEAPON_RARE_CHANCE = 30;
+
+const int APPAREL_ARMOR_COMMON_CHANCE = 42;
+const int APPAREL_ARMOR_UNCOMMON_CHANCE = 33;
+const int APPAREL_ARMOR_RARE_CHANCE = 25;
+
+// And these don't need to sum to 100
+const int UNIQUE_ITEM_CHANCE = 33;
+const int MISC_CHANCE_TO_BE_JEWEL = 67;
+const int RANDOM_WEAPON_IS_RANGED = 40;
+
 
 // ===========================================================
 // START PROTOTYPES
@@ -63,6 +78,44 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 
 // Open a personal loot. Called from a containing object.
 void OpenPersonalLoot(object oContainer, object oPC);
+
+
+// ===========================================================
+// DEBUGGING
+// ===========================================================
+
+// To turn on, set LOOT_DEBUG_ENABLED on the module to 1.
+// This also requires the server in dev mode
+
+// Various debugging variables - all should go on the module
+const string LOOT_DEBUG_ENABLED = "dev_loot_debug";
+// Set on the module, should be equal to the expected number of items rolled by the creature that is dying
+const string LOOT_DEBUG_DROP_CHANCE_MULT = "dev_loot_debug_drop_chance_mult";
+// These are all floats, and are the expected amount of gold of items of the given tier generated
+const string LOOT_DEBUG_OUTPUT = "dev_loot_debug_t";
+const string LOOT_DEBUG_GOLD = "dev_loot_debug_gold";
+// If set, only track loot generated in this area (to avoid picking up other loot system calls for anything unrelated)
+const string LOOT_DEBUG_AREA = "dev_loot_debug_area";
+// In debugging, DetermineTier sets its weights on the module
+const string LOOT_DEBUG_T1_WEIGHT = "dev_loot_debug_t1_weight";
+const string LOOT_DEBUG_T2_WEIGHT = "dev_loot_debug_t2_weight";
+const string LOOT_DEBUG_T3_WEIGHT = "dev_loot_debug_t3_weight";
+const string LOOT_DEBUG_T4_WEIGHT = "dev_loot_debug_t4_weight";
+const string LOOT_DEBUG_T5_WEIGHT = "dev_loot_debug_t5_weight";
+// Values of given tier/item type combos are stored to avoid needless iterating over inventories
+// "dev_loot_debug_tX_<type>_value"
+
+// Gets the average value of items of the given tier and item type
+float GetAverageLootValueOfItem(int nTier, string sType);
+
+// Whether or not to track loot probabilities. Enabling this adds quite a lot of extra float calculations
+int ShouldDebugLoot();
+
+// Output the loot tracker's numbers
+void LootDebugOutput();
+
+// Reset the loot tracker.
+void ResetLootDebug();
 
 // ===========================================================
 // START FUNCTIONS
@@ -117,6 +170,15 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
     else if (iAreaCR < MIN_T5_AREA_CR)
     {
         if (nT5Weight > 0) nT5Weight = nT5Weight/100;
+    }
+    
+    if (ShouldDebugLoot())
+    {
+        SetLocalInt(GetModule(), LOOT_DEBUG_T1_WEIGHT, nT1Weight);
+        SetLocalInt(GetModule(), LOOT_DEBUG_T2_WEIGHT, nT2Weight);
+        SetLocalInt(GetModule(), LOOT_DEBUG_T3_WEIGHT, nT3Weight);
+        SetLocalInt(GetModule(), LOOT_DEBUG_T4_WEIGHT, nT4Weight);
+        SetLocalInt(GetModule(), LOOT_DEBUG_T5_WEIGHT, nT5Weight);
     }
 
 
@@ -176,6 +238,8 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
     string sTier = DetermineTier(iCR, iAreaCR, sType);
     string sRarity = "";
     string sNonUnique = "";
+    
+    // Loot debug ignores this as type is rolled in GenerateLoot below
 
 // Given no type, generate a random one.
     if (sType == "")
@@ -191,37 +255,70 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
            case 6: sType = "Potions"; break;
         }
     }
-
+ 
+ 
 // These types are special cases because they have rarities.
     if (sType == "Range" || sType == "Melee" || sType == "Weapon" || sType == "Armor" || sType == "Apparel")
     {
         if (sType == "Melee" || sType == "Range" || sType == "Weapon")
         {
-            switch(Random(33)+1)
+            int nRoll = d100();
+            if (nRoll <= WEAPON_COMMON_CHANCE)
             {
-               case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: sRarity = "Common"; break;
-               case 13: case 14: case 15: case 16: case 17: case 18: case 19: case 20: case 21: case 22: case 23: sRarity = "Uncommon"; break;
-               case 24: case 25: case 26: case 27: case 28: case 29: case 30: case 31: case 32: case 33: sRarity = "Rare"; break;
+                sRarity = "Common";
+            }
+            else
+            {
+                nRoll -= WEAPON_COMMON_CHANCE;
+                if (nRoll <= WEAPON_UNCOMMON_CHANCE)
+                {
+                    sRarity = "Uncommon";
+                }
+                else
+                {
+                    sRarity = "Rare";
+                }
             }
         }
         else
         {
-            switch(d12())
+            int nRoll = d100();
+            if (nRoll <= APPAREL_ARMOR_COMMON_CHANCE)
             {
-               case 1: case 2: case 3: case 4: case 5: sRarity = "Common"; break;
-               case 6: case 7: case 8: case 9: sRarity = "Uncommon"; break;
-               case 10: case 11: case 12: sRarity = "Rare"; break;
+                sRarity = "Common";
+            }
+            else
+            {
+                nRoll -= APPAREL_ARMOR_COMMON_CHANCE;
+                if (nRoll <= APPAREL_ARMOR_UNCOMMON_CHANCE)
+                {
+                    sRarity = "Uncommon";
+                }
+                else
+                {
+                    sRarity = "Rare";
+                }
             }
         }
     }
+    
 
 // These types can have either a unique, or non-unique
-    if ((sType == "Range" || sType == "Weapon" || sType == "Armor" || sType == "Melee" || sType == "Potions") && d3() <= 2) sNonUnique = "NonUnique";
+    if (sType == "Range" || sType == "Weapon" || sType == "Armor" || sType == "Melee" || sType == "Potions")
+    {
+        if (d100() > UNIQUE_ITEM_CHANCE)
+        {
+            sNonUnique = "NonUnique";
+        }
+    }
 
-    if (bNonUnique) sNonUnique = "NonUnique";
+    if (bNonUnique)
+    {
+        sNonUnique = "NonUnique";
+    }
 
 // 2 out of 3 misc items will always be gems/jewelry
-    if (sType == "Misc" && d3() != 1) sType = "Jewels";
+    if (sType == "Misc" && d100() <= MISC_CHANCE_TO_BE_JEWEL) sType = "Jewels";
 
 // never NU
     if (sType == "Misc" || sType == "Apparel" || sType == "Scrolls" || sType == "Jewels")
@@ -231,7 +328,7 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
     {
         sType = "Melee";
 // chance of this being a range weapon
-        if (d10() <= 4) sType = "Range";
+        if (d100() <= RANDOM_WEAPON_IS_RANGED) sType = "Range";
     }
 
     if (nTier > 0)
@@ -352,6 +449,81 @@ object GenerateLoot(object oContainer)
        nItemRoll = nItemRoll - nApparelWeight;
        if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Apparel");break;}
    }
+   
+    if (ShouldDebugLoot())
+    {
+        object oModule = GetModule();
+        object oTargetArea = GetLocalObject(oModule, LOOT_DEBUG_AREA);
+        if (!GetIsObjectValid(oTargetArea) || oTargetArea == GetArea(oContainer))
+        {
+            float fChanceForNoLootMultiplier = GetLocalFloat(oModule, LOOT_DEBUG_DROP_CHANCE_MULT);
+            float fCombinedWeight = IntToFloat(nCombinedWeight);
+            // Doing all this division every time is not ideal, but...
+            // Someday someone might want to make a version that calculates expected values
+            // outside of the default loot item type proportions
+            // and so making the gold-fetch function on a per-itemtype basis seemed sensible
+            float fMiscChance = IntToFloat(BASE_MISC_WEIGHT)/fCombinedWeight;
+            float fScrollChance = IntToFloat(BASE_SCROLL_WEIGHT)/fCombinedWeight;
+            float fPotionChance = IntToFloat(BASE_POTION_WEIGHT)/fCombinedWeight;
+            float fWeaponChance = IntToFloat(BASE_WEAPON_WEIGHT)/fCombinedWeight;
+            float fArmorChance = IntToFloat(BASE_ARMOR_WEIGHT)/fCombinedWeight;
+            float fApparelChance = IntToFloat(BASE_APPAREL_WEIGHT)/fCombinedWeight;
+            
+            
+            int nT1Weight = GetLocalInt(oModule, LOOT_DEBUG_T1_WEIGHT);
+            int nT2Weight = GetLocalInt(oModule, LOOT_DEBUG_T2_WEIGHT);
+            int nT3Weight = GetLocalInt(oModule, LOOT_DEBUG_T3_WEIGHT);
+            int nT4Weight = GetLocalInt(oModule, LOOT_DEBUG_T4_WEIGHT);
+            int nT5Weight = GetLocalInt(oModule, LOOT_DEBUG_T5_WEIGHT);
+            
+            float fWeightSum = IntToFloat(nT1Weight + nT2Weight + nT3Weight + nT4Weight + nT5Weight);
+            
+            float fT1Prob = IntToFloat(nT1Weight)/fWeightSum;
+            float fT2Prob = IntToFloat(nT2Weight)/fWeightSum;
+            float fT3Prob = IntToFloat(nT3Weight)/fWeightSum;
+            float fT4Prob = IntToFloat(nT4Weight)/fWeightSum;
+            float fT5Prob = IntToFloat(nT5Weight)/fWeightSum;
+            
+            int nItemTypeIndex;
+            int nTier;
+            for (nItemTypeIndex=0; nItemTypeIndex <= 5; nItemTypeIndex++)
+            {
+                string sType;
+                float fChance;
+                // Ugly, but probably better than using a SetLocalFloat based lookup system
+                switch (nItemTypeIndex)
+                {
+                    case 0: { sType="Misc";     fChance=fMiscChance;    break; }
+                    case 1: { sType="Scrolls";  fChance=fScrollChance;  break; }
+                    case 2: { sType="Potions";  fChance=fPotionChance;  break; }
+                    case 3: { sType="Weapon";   fChance=fWeaponChance;  break; }
+                    case 4: { sType="Armor";    fChance=fArmorChance;   break; }
+                    case 5: { sType="Apparel";  fChance=fApparelChance; break; }
+                }
+                for (nTier=1; nTier<=5; nTier++)
+                {
+                    float fTierChance;
+                    switch (nTier)
+                    {
+                        case 1: { fTierChance=fT1Prob; break; }
+                        case 2: { fTierChance=fT2Prob; break; }
+                        case 3: { fTierChance=fT3Prob; break; }
+                        case 4: { fTierChance=fT4Prob; break; }
+                        case 5: { fTierChance=fT5Prob; break; }
+                    }
+                    float fGold = GetAverageLootValueOfItem(nTier, sType);
+                    float fProb = fTierChance*fChance*fChanceForNoLootMultiplier;
+                    float fContribution = fGold*fProb;
+                    string sVar = LOOT_DEBUG_OUTPUT + IntToString(nTier);
+                    SetLocalFloat(oModule, sVar, GetLocalFloat(oModule, sVar) + fContribution);
+                    sVar = sVar + "_" + sType;
+                    SetLocalFloat(oModule, sVar, GetLocalFloat(oModule, sVar) + fContribution);
+                    sVar = LOOT_DEBUG_OUTPUT + IntToString(nTier) + "_numitems";
+                    SetLocalFloat(oModule, sVar, GetLocalFloat(oModule, sVar) + fProb);
+                }
+            }
+        }
+    }
 
     return oItem;
 }
@@ -420,13 +592,236 @@ void OpenPersonalLoot(object oContainer, object oPC)
 }
 
 
-int DetermineGoldFromCR(int iCR)
+int DetermineGoldFromCR(int iCR, int nMultiplier=1)
 {
     if (iCR < 1) iCR = 1;
-    int iResult = 3+d3(iCR);
+    int iResult = nMultiplier * (3+d3(iCR));
 
     if (d10() == 10) iResult = iResult*2; // 10% chance to double gold
+    if (ShouldDebugLoot())
+    {
+        float fAvg = IntToFloat(nMultiplier * (3 + (iCR * 2)));
+        fAvg *= 1.1;
+        float fChanceForNoLootMultiplier = GetLocalFloat(GetModule(), LOOT_DEBUG_DROP_CHANCE_MULT);
+        fAvg *= fChanceForNoLootMultiplier;
+        SetLocalFloat(GetModule(), LOOT_DEBUG_GOLD, GetLocalFloat(GetModule(), LOOT_DEBUG_GOLD) + fAvg);
+    }
     return iResult;
 }
+
+int ShouldDebugLoot()
+{
+    if (GetIsDevServer() && GetLocalInt(GetModule(), LOOT_DEBUG_ENABLED))
+    {   
+        return TRUE;
+    }
+    return FALSE;
+}
+
+int GetIdentifiedItemCost(object oItem)
+{
+    int nState = GetIdentified(oItem);
+    if (!nState)
+    {
+        SetIdentified(oItem, TRUE);
+    }
+    int nVal = GetGoldPieceValue(oItem);
+    SetIdentified(oItem, nState);
+    return nVal;    
+}
+
+float GetAverageLootValueOfItem(int nTier, string sType)
+{
+    //"dev_loot_debug_tX_<type>_value"
+    string sVar = "dev_loot_debug_t" + IntToString(nTier) + "_" + sType + "_value";
+    float fVal = GetLocalFloat(GetModule(), sVar);
+    if (fVal > 0.0)
+    {
+        return fVal;
+    }
+    // If it's not saved, it's calculation time
+    
+    // "Weapon" chests don't exist and are instead just an amalgamation of Melee + Range
+    if (sType == "Weapon")
+    {
+        float fRangedProportion = IntToFloat(RANDOM_WEAPON_IS_RANGED)/100.0;
+        float fMeleeProportion = 1.0 - fRangedProportion;
+        float fRet = (fMeleeProportion * GetAverageLootValueOfItem(nTier, "Melee")) + (fRangedProportion * GetAverageLootValueOfItem(nTier, "Range"));
+        SetLocalFloat(GetModule(), sVar, fRet);
+        return fRet;
+    } 
+    
+    float fCommonChance = 1.0;
+    float fUncommonChance = 0.0;
+    float fRareChance = 0.0;
+    int nHasRarities = 0;
+    if (sType == "Melee" || sType == "Range" || sType == "Weapon")
+    {
+        nHasRarities = 1;
+        fCommonChance = IntToFloat(WEAPON_COMMON_CHANCE)/100.0;
+        fUncommonChance = IntToFloat(WEAPON_UNCOMMON_CHANCE)/100.0;
+        fRareChance = IntToFloat(WEAPON_RARE_CHANCE)/100.0;
+    }
+    else if (sType == "Armor" || sType == "Apparel")
+    {
+        nHasRarities = 1;
+        fCommonChance = IntToFloat(APPAREL_ARMOR_COMMON_CHANCE)/100.0;
+        fUncommonChance = IntToFloat(APPAREL_ARMOR_UNCOMMON_CHANCE)/100.0;
+        fRareChance = IntToFloat(APPAREL_ARMOR_RARE_CHANCE)/100.0;
+    }
+    float fUniqueChance = IntToFloat(UNIQUE_ITEM_CHANCE)/100.0;
+    if (sType == "Misc" || sType == "Apparel" || sType == "Scrolls" || sType == "Jewels")
+    {
+        // These do not have nonuniques
+        fUniqueChance = 1.0;
+    }
+    
+    int nUniqueState;
+    int nRarity;
+    string sTier = "T" + IntToString(nTier);
+    
+    float fTotal;
+    
+    for (nUniqueState=0; nUniqueState<=1; nUniqueState++)
+    {
+        string sNonUnique;
+        float fChanceAtThisUniqueness;
+        if (nUniqueState == 0)
+        {
+            sNonUnique = "NonUnique";
+            fChanceAtThisUniqueness = 1.0 - fUniqueChance;
+        }
+        else
+        {
+            sNonUnique = "";
+            fChanceAtThisUniqueness = fUniqueChance;
+        }
+        for (nRarity=0; nRarity<=2; nRarity++)
+        {
+            string sRarity;
+            float fChanceAtThisRarity = 0.0;
+            if (!nHasRarities)
+            {
+                sRarity = "";
+                fChanceAtThisRarity = 1.0;
+            }
+            else
+            {
+                
+                if (nRarity == 0)
+                {
+                    sRarity = "Common";
+                    fChanceAtThisRarity = fCommonChance;
+                }
+                else if (nRarity == 1)
+                {
+                    sRarity = "Uncommon";
+                    fChanceAtThisRarity = fUncommonChance;
+                }
+                else
+                {
+                    sRarity = "Rare";
+                    fChanceAtThisRarity = fRareChance;
+                }
+            }
+            
+            object oChest = GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique);
+            if (!GetIsObjectValid(oChest))
+            {
+                oChest = GetObjectByTag("_"+sType+sRarity+sTier+"NonUnique");
+            }
+            int nRealObjCount = 0;
+            int nGoldTotal = 0;
+            if (GetIsObjectValid(oChest))
+            {
+                object oTest = GetFirstItemInInventory(oChest);
+                while (GetIsObjectValid(oTest))
+                {
+                    int nBaseType = GetBaseItemType(oTest);
+                    if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT)
+                    {
+                        int nOneItemGold = GetIdentifiedItemCost(oTest)/GetItemStackSize(oTest);
+                        // generation sets stack size to d45 = expected 23: (n+1)/2
+                        float fStackMultiplier = 23.0/IntToFloat(GetItemStackSize(oTest));
+                        int nCost = FloatToInt(IntToFloat(GetIdentifiedItemCost(oTest)) * fStackMultiplier);
+                        nGoldTotal += nCost;
+                    }
+                    else
+                    {
+                        nGoldTotal += GetIdentifiedItemCost(oTest);
+                    }
+                    nRealObjCount++;
+                    oTest = GetNextItemInInventory(oChest);
+                }
+            }
+            else
+            {
+                // Avoid division by 0
+                nRealObjCount = 1;
+            }
+            
+            float fAverageForThisChest = IntToFloat(nGoldTotal)/IntToFloat(nRealObjCount);
+            float fContribution = fAverageForThisChest * fChanceAtThisRarity * fChanceAtThisUniqueness;
+            fTotal += fContribution;
+            
+            // If only one rarity, we don't need to bother with the rarity looping
+            if (!nHasRarities)
+            {
+                break;
+            }
+        }
+    }
+        
+    // Misc might be replaced by jewels
+    if (sType == "Misc")
+    {
+        float fJewelChance = IntToFloat(MISC_CHANCE_TO_BE_JEWEL)/100.0;
+        float fMiscChance = 1.0 - fJewelChance;
+        fTotal = (fMiscChance * fTotal) + (fJewelChance * GetAverageLootValueOfItem(nTier, "Jewels"));
+    }
+    
+    if (fTotal == 0.0)
+    {
+        // Hack to avoid doing checking the container every time the value of an item from this chest is called for
+        fTotal = 0.01;
+    }
+    
+    SetLocalFloat(GetModule(), sVar, fTotal);
+    SendDebugMessage("Average value of t" + IntToString(nTier) + " " + sType + " = " + FloatToString(fTotal), TRUE);
+    return fTotal;
+}
+
+void LootDebugOutput()
+{
+    int nTier;
+    float fGoldTotal = 0.0;
+    for (nTier=1; nTier<=5; nTier++)
+    {
+        string sVar = LOOT_DEBUG_OUTPUT + IntToString(nTier);
+        fGoldTotal += GetLocalFloat(GetModule(), sVar);
+        SendDebugMessage("Expected value of tier " + IntToString(nTier) + " items: " + FloatToString(GetLocalFloat(GetModule(), sVar)), TRUE);
+        sVar = sVar + "_numitems";
+        SendDebugMessage("Expected number of tier " + IntToString(nTier) + " items: " + FloatToString(GetLocalFloat(GetModule(), sVar)), TRUE);
+    }
+    float fRawGold = GetLocalFloat(GetModule(), LOOT_DEBUG_GOLD);
+    SendDebugMessage("Expected raw gold: " + FloatToString(fRawGold), TRUE);
+    SendDebugMessage("Total item value: " + FloatToString(fGoldTotal), TRUE);
+}
+
+// Reset the loot tracker.
+void ResetLootDebug()
+{
+    int nTier;
+    for (nTier=1; nTier<=5; nTier++)
+    {
+        string sVar = LOOT_DEBUG_OUTPUT + IntToString(nTier);
+        SetLocalFloat(GetModule(), sVar, 0.0);
+        sVar = sVar + "_numitems";
+        SetLocalFloat(GetModule(), sVar, 0.0);
+    }
+    SetLocalFloat(GetModule(), LOOT_DEBUG_GOLD, 0.0);
+    DeleteLocalObject(GetModule(), LOOT_DEBUG_AREA);
+}
+
 
 //void main() {}

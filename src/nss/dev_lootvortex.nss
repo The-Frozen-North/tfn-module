@@ -40,7 +40,7 @@ void DelayedAction(int nStartXP)
     object oTest = GetFirstObjectInArea(oArea);
     while (GetIsObjectValid(oTest))
     {
-        if (GetResRef(oTest) == "_loot_container" && !GetLocalInt(oTest, "dev_lootvortex_container"))
+        if (GetResRef(oTest) == "_loot_container")
         {
             //SendMessageToPC(oDev, "Found loot container!");
             object oPersonalLoot = GetObjectByUUID(GetLocalString(oTest, "personal_loot_"+GetPCPublicCDKey(oDev, TRUE)));

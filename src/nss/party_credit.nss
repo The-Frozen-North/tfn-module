@@ -246,12 +246,13 @@ void SetPartyData()
 
       oMbr = GetNextObjectInShape(SHAPE_SPHERE, fDst, lLocation, FALSE, OBJECT_TYPE_CREATURE);
    }
-   // Used for dev_lootvortex: if there were no "real" party members in range, add
-   // the module developer as a party member, so long as they're in the same area
+   // Used for loot debugging: if there were no "real" party members in range, add
+   // the module developer as a party member
+   // This forces the loot code to always be run
    if (nTotalSize == 0 && GetIsDevServer())
    {
       object oDev = GetLocalObject(GetModule(), "dev_lootvortex");
-      if (GetIsObjectValid(oDev) && GetArea(oDev) == GetArea(OBJECT_SELF) && GetIsDeveloper(oDev))
+      if (GetIsObjectValid(oDev) && GetIsDeveloper(oDev))
       {
           nPlayerSize++;
           nTotalSize++;
@@ -334,10 +335,11 @@ void main()
     int nChanceThree = CHANCE_THREE;
     int nChanceTwo = CHANCE_TWO;
     int nChanceOne = CHANCE_ONE;
+    int nTreasureChance = 100;
 
     if (bDestroyed)
     {
-        int nTreasureChance = TREASURE_CHANCE;
+        nTreasureChance = TREASURE_CHANCE;
 
 // destroyed treasures have double the chance of still dropping treasure
 // also double chance of items :D
@@ -352,7 +354,15 @@ void main()
 
         if (GetLocalInt(OBJECT_SELF, "half_loot") == 1) nTreasureChance = nTreasureChance/2;
 
-        if ((bBoss != 1) && (bSemiBoss != 1) && (d100() > nTreasureChance)) bNoTreasure = TRUE;
+        if ((bBoss == 1) || (bSemiBoss == 1))
+        {
+            nTreasureChance = 100;
+        }
+
+        if (d100() > nTreasureChance)
+        {
+            bNoTreasure = TRUE;
+        }
 
 // any of these races will never drop treasure
         int nRace = GetRacialType(OBJECT_SELF);
@@ -368,7 +378,11 @@ void main()
     }
 
 // ambushes never yield treasure
-    if (bAmbush) bNoTreasure = TRUE;
+    if (bAmbush)
+    {
+        bNoTreasure = TRUE;
+        nTreasureChance = 0;
+    }
 
 // determine if there is a key
     object oItem = GetFirstItemInInventory(OBJECT_SELF);
@@ -385,10 +399,16 @@ void main()
     }
 
     if (GetLocalString(OBJECT_SELF, "quest1") != "")
+    {
         bNoTreasure = FALSE;
+        nTreasureChance = 100;
+    }
 
     if (GetLocalString(OBJECT_SELF, "quest_item") != "")
+    {
         bNoTreasure = FALSE;
+        nTreasureChance = 100;
+    }
 
 // only proceed if there is treasure or a key
     if (!bNoTreasure || GetIsObjectValid(oKey))
@@ -430,10 +450,18 @@ void main()
     int nGoldToDistribute = 0;
     if (!bNoTreasure)
     {
-        nGold = DetermineGoldFromCR(iCR);
-
-        if (bBoss == 1) nGold = nGold*3;
-        else if (bSemiBoss == 1) nGold = nGold*2;
+        if (ShouldDebugLoot())
+        {
+            // This is the gold drop rate, set it on the module so it gets counted correctly
+            float fTreasureChance = IntToFloat(nTreasureChance)/100.0;
+            SetLocalFloat(GetModule(), LOOT_DEBUG_DROP_CHANCE_MULT, fTreasureChance);
+        }
+        if (bBoss == 1) nGold = DetermineGoldFromCR(iCR, 3);
+        else if (bSemiBoss == 1) nGold = DetermineGoldFromCR(iCR, 2);
+        else
+        {
+            nGold = DetermineGoldFromCR(iCR);
+        }
 
         nGoldToDistribute = nGold/nTotalSize;
 // remove henchman gold now, if they exist
@@ -444,8 +472,15 @@ void main()
    int nItem1, nItem2, nItem3;
 
    int nItemsRoll = d100();
+   
+   if (bBoss)
+   {
+       nChanceThree = 100;
+       nChanceTwo = 0;
+       nChanceOne = 0;
+   }
 
-   if ((nItemsRoll <= nChanceThree) || (bBoss == 1))
+   if (nItemsRoll <= nChanceThree)
    {
        nItem3 = Random(nTotalSize)+1;
        nItem2 = Random(nTotalSize)+1;
@@ -469,6 +504,25 @@ void main()
 
    if (nItem3 > 0)
     SendDebugMessage("Item 3: "+IntToString(nItem3));
+
+    if (ShouldDebugLoot())
+    {
+        float fChanceThree = IntToFloat(nChanceThree)/100.0;
+        float fChanceTwo = IntToFloat(nChanceTwo - nChanceThree)/100.0;
+        float fChanceOne = 1.0 - (fChanceTwo + fChanceThree);
+        
+        float fExpected = fChanceOne + (2.0 * fChanceTwo) + (3.0 * fChanceThree);
+        SetLocalFloat(GetModule(), LOOT_DEBUG_DROP_CHANCE_MULT, fExpected);
+        
+        // Force it to always roll only one item when debugging
+        // This is so that one call is always done to GenerateLoot which updates the logging variables correctly
+        // Because we just calculated the correct expected amount of items
+        // It will mean that the actual items created will not be correct though, but that's a small price to pay for science
+        // plus if you can run this you can just warp to the treasure area and loot whatever you want anyway
+        nItem1 = 1;
+        nItem2 = 0;
+        nItem3 = 0;
+    }
 
 // =========================
 // END LOOT CONTAINER CODE
