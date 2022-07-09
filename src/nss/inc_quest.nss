@@ -221,7 +221,7 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FAL
         FloatingTextStringOnCreature("*You stash away "+GetName(oQuestObject)+" for safe keeping*", oPC, FALSE);
 
     struct NWNX_Player_JournalEntry jeQuest = NWNX_Player_GetJournalEntry(oPC, sQuestName);
-    if (jeQuest.nQuestCompleted)
+    if (GetStringLeft(sQuestName, 2) != "b_" && jeQuest.nQuestCompleted)
     {
         QuestCompleteWebhook(oPC, jeQuest.sName);
     }
