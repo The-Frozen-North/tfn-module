@@ -5,6 +5,13 @@ void SendDebugMessage(string sMessage, int bLog = FALSE);
 // Returns the player's name, level, and character
 string PlayerDetailedName(object oPC);
 
+// TRUE if the server is running in a development environment
+// Only developers can set the necessary variable to do this on the "live" server
+int GetIsDevServer();
+
+// True if oPC is a developer, as defined in the env files
+int GetIsDeveloper(object oPC);
+
 string PlayerDetailedName(object oPC)
 {
     return GetPCPlayerName(oPC)+" (L"+IntToString(GetHitDice(oPC))+" "+GetName(oPC)+")";
@@ -25,6 +32,15 @@ void SendDebugMessage(string sMessage, int bLog = FALSE)
     if (bLog) WriteTimestampedLogEntry(sMessage);
 
     if (GetLocalInt(GetModule(), "debug_verbose") == 1) SendMessageToPC(GetFirstPC(), "** DEBUG: "+sMessage+" **");
+}
+
+int GetIsDevServer()
+{
+    if (GetLocalInt(GetModule(), "dev") != 0)
+    {
+        return 1;
+    }
+    return 0;
 }
 
 int GetIsDeveloper(object oPC)
@@ -51,3 +67,4 @@ int GetIsDeveloper(object oPC)
 }
 
 //void main(){}
+

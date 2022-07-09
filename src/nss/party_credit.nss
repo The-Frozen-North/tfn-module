@@ -246,6 +246,24 @@ void SetPartyData()
 
       oMbr = GetNextObjectInShape(SHAPE_SPHERE, fDst, lLocation, FALSE, OBJECT_TYPE_CREATURE);
    }
+   // Used for dev_lootvortex: if there were no "real" party members in range, add
+   // the module developer as a party member, so long as they're in the same area
+   if (nTotalSize == 0 && GetIsDevServer())
+   {
+      object oDev = GetLocalObject(GetModule(), "dev_lootvortex");
+      if (GetIsObjectValid(oDev) && GetArea(oDev) == GetArea(OBJECT_SELF) && GetIsDeveloper(oDev))
+      {
+          nPlayerSize++;
+          nTotalSize++;
+          nLevel = GetLevelFromXP(GetXP(oMbr));
+          nTotalLevels = nTotalLevels + nLevel;
+          nHighestLevel = nLevel;
+          nLow = nLevel;
+          nHigh = nLevel;
+          SetLocalArrayObject(OBJECT_SELF, "Players", nPlayerSize, oDev);
+      }
+   }
+
 
    if (nPlayerSize > 0) fAverageLevel = IntToFloat(nTotalLevels) / IntToFloat(nTotalSize);
 
