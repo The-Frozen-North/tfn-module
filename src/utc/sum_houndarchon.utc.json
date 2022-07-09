@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 12.0
+    "value": 10.0
   },
   "ClassList": {
     "type": "list",
@@ -27,18 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 11
-        }
-      },
-      {
-        "__struct_id": 2,
-        "Class": {
-          "type": "int",
-          "value": 4
-        },
-        "ClassLevel": {
-          "type": "short",
-          "value": 4
+          "value": 10
         }
       }
     ]
@@ -49,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 16
+    "value": 15
   },
   "Conversation": {
     "type": "resref",
@@ -61,7 +50,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 49
+    "value": 72
   },
   "DecayTime": {
     "type": "dword",
@@ -88,10 +77,17 @@
     "type": "list",
     "value": [
       {
+        "__struct_id": 2,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "nw_maarcl072"
+        }
+      },
+      {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewsw002"
+          "value": "cre_harchonsword"
         }
       },
       {
@@ -112,7 +108,7 @@
   },
   "FactionID": {
     "type": "word",
-    "value": 2
+    "value": 1
   },
   "FeatList": {
     "type": "list",
@@ -121,14 +117,14 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 23
+          "value": 3
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 40
+          "value": 23
         }
       },
       {
@@ -144,20 +140,15 @@
           "type": "word",
           "value": 45
         }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 145
-        }
       }
     ]
   },
   "FirstName": {
     "id": 12738,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Summoned Hound Archon"
+    }
   },
   "fortbonus": {
     "type": "short",
@@ -173,7 +164,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 49
+    "value": 72
   },
   "Int": {
     "type": "byte",
@@ -205,11 +196,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 109
+    "value": 92
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 14
+    "value": 9
   },
   "NoPermDeath": {
     "type": "byte",
@@ -309,7 +300,21 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 8
+          "value": 12
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 12
         }
       },
       {
@@ -330,49 +335,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 7
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 8
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 7
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 12
         }
       },
       {
@@ -421,7 +384,35 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 7
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 10
         }
       },
       {
@@ -507,67 +498,7 @@
         "__struct_id": 4,
         "Spell": {
           "type": "word",
-          "value": 47
-        },
-        "SpellCasterLevel": {
-          "type": "byte",
-          "value": 10
-        },
-        "SpellFlags": {
-          "type": "byte",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 4,
-        "Spell": {
-          "type": "word",
-          "value": 121
-        },
-        "SpellCasterLevel": {
-          "type": "byte",
-          "value": 10
-        },
-        "SpellFlags": {
-          "type": "byte",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 4,
-        "Spell": {
-          "type": "word",
-          "value": 101
-        },
-        "SpellCasterLevel": {
-          "type": "byte",
-          "value": 10
-        },
-        "SpellFlags": {
-          "type": "byte",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 4,
-        "Spell": {
-          "type": "word",
-          "value": 101
-        },
-        "SpellCasterLevel": {
-          "type": "byte",
-          "value": 10
-        },
-        "SpellFlags": {
-          "type": "byte",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 4,
-        "Spell": {
-          "type": "word",
-          "value": 101
+          "value": 322
         },
         "SpellCasterLevel": {
           "type": "byte",
@@ -582,11 +513,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 4
+    "value": 86
   },
   "Str": {
     "type": "byte",
-    "value": 18
+    "value": 17
   },
   "Subrace": {
     "type": "cexostring",

@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 182
+    "value": 77
   },
   "BodyBag": {
     "type": "byte",
@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 11
+    "value": 13
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 8.0
+    "value": 12.0
   },
   "ClassList": {
     "type": "list",
@@ -27,18 +27,18 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 7
+          "value": 10
         }
       }
     ]
   },
   "Comment": {
     "type": "cexostring",
-    "value": ""
+    "value": "Boss Monster"
   },
   "Con": {
     "type": "byte",
-    "value": 8
+    "value": 13
   },
   "Conversation": {
     "type": "resref",
@@ -50,7 +50,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 56
+    "value": 80
   },
   "DecayTime": {
     "type": "dword",
@@ -61,13 +61,15 @@
     "value": ""
   },
   "Description": {
-    "id": 12697,
+    "id": 12553,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Corrupt officials are often said to become Ghoul Lords in their unlife. Cunning and intelligent, they often maintain a retinue of undead servants."
+    }
   },
   "Dex": {
     "type": "byte",
-    "value": 11
+    "value": 17
   },
   "Disarmable": {
     "type": "byte",
@@ -77,31 +79,38 @@
     "type": "list",
     "value": [
       {
-        "__struct_id": 2,
+        "__struct_id": 16384,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_aarcl011"
+          "value": "cre_ghoullclaw"
         }
       },
       {
-        "__struct_id": 16,
+        "__struct_id": 32768,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wplmss002"
+          "value": "cre_ghoullclaw"
+        }
+      },
+      {
+        "__struct_id": 65536,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "cre_ghoullbite"
         }
       },
       {
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_skelchiefsum"
+          "value": "cre_shoullskin"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 2
+    "value": 1
   },
   "FeatList": {
     "type": "list",
@@ -110,21 +119,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 2
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 3
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 4
+          "value": 6
         }
       },
       {
@@ -138,6 +133,20 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 23
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 42
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 289
         }
       },
@@ -145,23 +154,16 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 45
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 46
+          "value": 290
         }
       }
     ]
   },
   "FirstName": {
-    "id": 12762,
+    "id": 90415,
     "type": "cexolocstring",
     "value": {
-      "0": "Summoned Skeleton Chieftain"
+      "0": "Summoned Ghoul Lord"
     }
   },
   "fortbonus": {
@@ -178,11 +180,11 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 56
+    "value": 80
   },
   "Int": {
     "type": "byte",
-    "value": 10
+    "value": 14
   },
   "Interruptable": {
     "type": "byte",
@@ -202,7 +204,7 @@
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "Lootable": {
     "type": "byte",
@@ -210,11 +212,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 49
+    "value": 90
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 2
+    "value": 7
   },
   "NoPermDeath": {
     "type": "byte",
@@ -238,7 +240,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 288
+    "value": 214
   },
   "Race": {
     "type": "byte",
@@ -290,7 +292,7 @@
   },
   "ScriptSpawn": {
     "type": "resref",
-    "value": "nw_ch_summon_9"
+    "value": "nw_ch_ac9"
   },
   "ScriptSpellAt": {
     "type": "resref",
@@ -314,7 +316,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 12
         }
       },
       {
@@ -328,7 +330,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 11
+          "value": 12
         }
       },
       {
@@ -342,21 +344,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 12
         }
       },
       {
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 6
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 12
         }
       },
       {
@@ -370,21 +365,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 12
         }
       },
       {
@@ -426,7 +407,28 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 6
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 12
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 12
         }
       },
       {
@@ -503,11 +505,117 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 80
+    "value": 41
   },
   "SpecAbilityList": {
     "type": "list",
-    "value": []
+    "value": [
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 2
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 10
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 200
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 0
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 64
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 10
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 64
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 10
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 64
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 10
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 78
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 10
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 78
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 10
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      }
+    ]
   },
   "StartingPackage": {
     "type": "byte",
@@ -515,7 +623,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 16
+    "value": 15
   },
   "Subrace": {
     "type": "cexostring",
@@ -523,11 +631,11 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_S_SKELCHIEF"
+    "value": "X2_S_GHOUL_16"
   },
   "Tail_New": {
     "type": "dword",
-    "value": 0
+    "value": 205
   },
   "TemplateList": {
     "type": "list",
@@ -535,7 +643,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "sum_skelchief"
+    "value": "sum_ghoullord"
   },
   "WalkRate": {
     "type": "int",
@@ -547,10 +655,10 @@
   },
   "Wings_New": {
     "type": "dword",
-    "value": 0
+    "value": 205
   },
   "Wis": {
     "type": "byte",
-    "value": 10
+    "value": 11
   }
 }

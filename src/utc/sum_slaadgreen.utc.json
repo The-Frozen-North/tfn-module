@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 155
+    "value": 154
   },
   "BodyBag": {
     "type": "byte",
@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 8
+    "value": 10
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 8.0
+    "value": 9.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 8
+          "value": 10
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 20
+    "value": 18
   },
   "Conversation": {
     "type": "resref",
@@ -50,7 +50,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 64
+    "value": 40
   },
   "DecayTime": {
     "type": "dword",
@@ -61,7 +61,7 @@
     "value": ""
   },
   "Description": {
-    "id": 12713,
+    "id": 12711,
     "type": "cexolocstring",
     "value": {}
   },
@@ -80,14 +80,21 @@
         "__struct_id": 16384,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_rslaadclaw"
+          "value": "nw_it_crewpsp005"
         }
       },
       {
         "__struct_id": 32768,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpb016"
+          "value": "nw_it_crewpsp005"
+        }
+      },
+      {
+        "__struct_id": 65536,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "nw_it_crewps017"
         }
       },
       {
@@ -124,21 +131,21 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 10
+          "value": 377
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 23
+          "value": 179
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 40
+          "value": 190
         }
       },
       {
@@ -154,21 +161,14 @@
           "type": "word",
           "value": 289
         }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 290
-        }
       }
     ]
   },
   "FirstName": {
-    "id": 12767,
+    "id": 12766,
     "type": "cexolocstring",
     "value": {
-      "0": "Summoned Red Slaad"
+      "0": "Summoned Green Slaad"
     }
   },
   "fortbonus": {
@@ -181,15 +181,15 @@
   },
   "GoodEvil": {
     "type": "byte",
-    "value": 0
+    "value": 50
   },
   "HitPoints": {
     "type": "short",
-    "value": 64
+    "value": 40
   },
   "Int": {
     "type": "byte",
-    "value": 6
+    "value": 10
   },
   "Interruptable": {
     "type": "byte",
@@ -209,7 +209,7 @@
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "Lootable": {
     "type": "byte",
@@ -217,11 +217,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 112
+    "value": 80
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 5
+    "value": 10
   },
   "NoPermDeath": {
     "type": "byte",
@@ -245,7 +245,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 298
+    "value": 297
   },
   "Race": {
     "type": "byte",
@@ -261,7 +261,7 @@
   },
   "ScriptDamaged": {
     "type": "resref",
-    "value": "nw_ch_ac5"
+    "value": "nw_ch_ac6"
   },
   "ScriptDeath": {
     "type": "resref",
@@ -297,7 +297,7 @@
   },
   "ScriptSpawn": {
     "type": "resref",
-    "value": "sum_on_spawn"
+    "value": "nw_ch_summon_9"
   },
   "ScriptSpellAt": {
     "type": "resref",
@@ -321,7 +321,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 8
         }
       },
       {
@@ -335,7 +335,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 11
+          "value": 8
         }
       },
       {
@@ -349,21 +349,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 12
         }
       },
       {
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 5
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 12
         }
       },
       {
@@ -377,21 +370,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 12
         }
       },
       {
@@ -433,14 +412,35 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 5
+          "value": 0
         }
       },
       {
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 11
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 12
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
         }
       },
       {
@@ -544,6 +544,111 @@
           "type": "byte",
           "value": 1
         }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 770
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 0
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 770
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 0
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 76
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 10
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 370
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 10
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 526
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 10
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 526
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 10
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 303
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 0
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
       }
     ]
   },
@@ -553,7 +658,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 22
+    "value": 20
   },
   "Subrace": {
     "type": "cexostring",
@@ -561,7 +666,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_S_SLAADRED"
+    "value": "NW_S_SLAADGRN"
   },
   "Tail_New": {
     "type": "dword",
@@ -573,7 +678,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "sum_slaad"
+    "value": "sum_slaadgreen"
   },
   "WalkRate": {
     "type": "int",
@@ -589,6 +694,6 @@
   },
   "Wis": {
     "type": "byte",
-    "value": 6
+    "value": 12
   }
 }

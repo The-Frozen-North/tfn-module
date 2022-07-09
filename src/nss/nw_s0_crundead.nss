@@ -38,11 +38,11 @@ void main()
     //Set the summoned undead to the appropriate template based on the caster level
     if (spell.Level <= 11)
     {
-        eSummon = EffectSummonCreature("NW_S_GHOUL",VFX_FNF_SUMMON_UNDEAD);
+        eSummon = EffectSummonCreature("sum_ghoullord",VFX_FNF_SUMMON_UNDEAD);
     }
     else if ((spell.Level >= 12) && (spell.Level <= 13))
     {
-        eSummon = EffectSummonCreature("NW_S_GHAST",VFX_FNF_SUMMON_UNDEAD);
+        eSummon = EffectSummonCreature("sum_ghast",VFX_FNF_SUMMON_UNDEAD);
     }
     else if ((spell.Level >= 14) && (spell.Level <= 15))
     {
