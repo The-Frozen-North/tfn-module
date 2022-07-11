@@ -5936,7 +5936,7 @@
               },
               "Cost": {
                 "type": "dword",
-                "value": 6272000
+                "value": 6498000
               },
               "Cursed": {
                 "type": "byte",
@@ -5982,7 +5982,38 @@
                     },
                     "CostValue": {
                       "type": "word",
+                      "value": 5
+                    },
+                    "Param1": {
+                      "type": "byte",
+                      "value": 255
+                    },
+                    "Param1Value": {
+                      "type": "byte",
+                      "value": 0
+                    },
+                    "PropertyName": {
+                      "type": "word",
+                      "value": 22
+                    },
+                    "Subtype": {
+                      "type": "word",
+                      "value": 0
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "ChanceAppear": {
+                      "type": "byte",
+                      "value": 100
+                    },
+                    "CostTable": {
+                      "type": "byte",
                       "value": 6
+                    },
+                    "CostValue": {
+                      "type": "word",
+                      "value": 1
                     },
                     "Param1": {
                       "type": "byte",
@@ -6060,37 +6091,6 @@
                     },
                     "Subtype": {
                       "type": "word",
-                      "value": 4
-                    }
-                  },
-                  {
-                    "__struct_id": 0,
-                    "ChanceAppear": {
-                      "type": "byte",
-                      "value": 100
-                    },
-                    "CostTable": {
-                      "type": "byte",
-                      "value": 0
-                    },
-                    "CostValue": {
-                      "type": "word",
-                      "value": 0
-                    },
-                    "Param1": {
-                      "type": "byte",
-                      "value": 255
-                    },
-                    "Param1Value": {
-                      "type": "byte",
-                      "value": 255
-                    },
-                    "PropertyName": {
-                      "type": "word",
-                      "value": 37
-                    },
-                    "Subtype": {
-                      "type": "word",
                       "value": 8
                     }
                   },
@@ -6123,6 +6123,37 @@
                     "Subtype": {
                       "type": "word",
                       "value": 9
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "ChanceAppear": {
+                      "type": "byte",
+                      "value": 100
+                    },
+                    "CostTable": {
+                      "type": "byte",
+                      "value": 0
+                    },
+                    "CostValue": {
+                      "type": "word",
+                      "value": 0
+                    },
+                    "Param1": {
+                      "type": "byte",
+                      "value": 255
+                    },
+                    "Param1Value": {
+                      "type": "byte",
+                      "value": 255
+                    },
+                    "PropertyName": {
+                      "type": "word",
+                      "value": 37
+                    },
+                    "Subtype": {
+                      "type": "word",
+                      "value": 4
                     }
                   },
                   {
@@ -6327,7 +6358,7 @@
               },
               "TemplateResRef": {
                 "type": "resref",
-                "value": "nw_it_creitemco5"
+                "value": "stonegolemhide"
               },
               "XOrientation": {
                 "type": "float",
@@ -6462,55 +6493,55 @@
         },
         "ScriptAttacked": {
           "type": "resref",
-          "value": "nw_c2_default5"
+          "value": "ai_onattacked"
         },
         "ScriptDamaged": {
           "type": "resref",
-          "value": "nw_c2_default6"
+          "value": "ai_ondamaged"
         },
         "ScriptDeath": {
           "type": "resref",
-          "value": "nw_c2_default7"
+          "value": "ai_ondeath"
         },
         "ScriptDialogue": {
           "type": "resref",
-          "value": "nw_c2_default4"
+          "value": "ai_onconverse"
         },
         "ScriptDisturbed": {
           "type": "resref",
-          "value": "nw_c2_default8"
+          "value": "ai_ondisturb"
         },
         "ScriptEndRound": {
           "type": "resref",
-          "value": "nw_c2_default3"
+          "value": "ai_oncombrnd"
         },
         "ScriptHeartbeat": {
           "type": "resref",
-          "value": "nw_c2_default1"
+          "value": "ai_onheartb"
         },
         "ScriptOnBlocked": {
           "type": "resref",
-          "value": "nw_c2_defaulte"
+          "value": "ai_onblocked"
         },
         "ScriptOnNotice": {
           "type": "resref",
-          "value": "nw_c2_default2"
+          "value": "ai_onpercep"
         },
         "ScriptRested": {
           "type": "resref",
-          "value": "nw_c2_defaulta"
+          "value": "ai_onrest"
         },
         "ScriptSpawn": {
           "type": "resref",
-          "value": "nw_c2_default9"
+          "value": "ai_onspawn"
         },
         "ScriptSpellAt": {
           "type": "resref",
-          "value": "nw_c2_defaultb"
+          "value": "ai_onspellcast"
         },
         "ScriptUserDefine": {
           "type": "resref",
-          "value": "nw_c2_defaultd"
+          "value": "ai_onuserdef"
         },
         "SkillList": {
           "type": "list",
