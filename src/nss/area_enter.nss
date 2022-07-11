@@ -52,7 +52,7 @@ void main()
 
        ValidateMount(oPC);
 
-       if (GetLocalInt(OBJECT_SELF, "underdark") == 1)
+       if (GetLocalInt(OBJECT_SELF, "underdark") == 1 && !GetIsDM(oPC))
        {
            SetGuiPanelDisabled(oPC, GUI_PANEL_MINIMAP, TRUE);
        }
