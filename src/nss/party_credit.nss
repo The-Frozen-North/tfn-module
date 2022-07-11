@@ -37,12 +37,12 @@ void SetLocalArrayObject(object oObject, string sArrayName, int nIndex, object o
    SetLocalObject(oObject, sArrayName + IntToString(nIndex), oValue);
 }
 
-void SendLootMessage(object oItem)
+void SendLootMessage(object oHench, object oItem)
 {
     if (!GetIsObjectValid(oItem))
         return;
 
-    object oOwner = GetItemPossessor(oItem);
+    object oOwner = oHench;
 
     if (GetIsDead(oOwner))
         return;
@@ -185,11 +185,11 @@ void DetermineItem(object oItem, object oMerchant, object oHench, int nNth)
        SetPickpocketableFlag(oItem, FALSE);
        object oNewItem = CopyItem(oItem, oHench, TRUE);
        DestroyObject(oItem);
-       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oNewItem)));
+       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oHench, oNewItem)));
    }
    else
    {
-       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oItem)));
+       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oHench, oItem)));
    }
 }
 
