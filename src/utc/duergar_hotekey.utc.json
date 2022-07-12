@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 359
+    "value": 217
   },
   "BodyBag": {
     "type": "byte",
@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 16
+    "value": 6
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 6.0
+    "value": 13.0
   },
   "ClassList": {
     "type": "list",
@@ -23,142 +23,22 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 9
+          "value": 4
         },
         "ClassLevel": {
           "type": "short",
-          "value": 6
-        },
-        "KnownList1": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 3,
-              "Spell": {
-                "type": "word",
-                "value": 50
-              },
-              "SpellFlags": {
-                "type": "byte",
-                "value": 1
-              },
-              "SpellMetaMagic": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Spell": {
-                "type": "word",
-                "value": 102
-              },
-              "SpellFlags": {
-                "type": "byte",
-                "value": 1
-              },
-              "SpellMetaMagic": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Spell": {
-                "type": "word",
-                "value": 107
-              },
-              "SpellFlags": {
-                "type": "byte",
-                "value": 1
-              },
-              "SpellMetaMagic": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Spell": {
-                "type": "word",
-                "value": 417
-              },
-              "SpellFlags": {
-                "type": "byte",
-                "value": 1
-              },
-              "SpellMetaMagic": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "KnownList2": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 3,
-              "Spell": {
-                "type": "word",
-                "value": 120
-              },
-              "SpellFlags": {
-                "type": "byte",
-                "value": 1
-              },
-              "SpellMetaMagic": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Spell": {
-                "type": "word",
-                "value": 115
-              },
-              "SpellFlags": {
-                "type": "byte",
-                "value": 1
-              },
-              "SpellMetaMagic": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "KnownList3": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 3,
-              "Spell": {
-                "type": "word",
-                "value": 78
-              },
-              "SpellFlags": {
-                "type": "byte",
-                "value": 1
-              },
-              "SpellMetaMagic": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
+          "value": 13
         }
       }
     ]
   },
   "Comment": {
     "type": "cexostring",
-    "value": "Stinger Mage, 3rd-level sorcerer"
+    "value": ""
   },
   "Con": {
     "type": "byte",
-    "value": 15
+    "value": 14
   },
   "Conversation": {
     "type": "resref",
@@ -166,11 +46,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 0
+    "value": 1
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 24
+    "value": 130
   },
   "DecayTime": {
     "type": "dword",
@@ -181,54 +61,54 @@
     "value": ""
   },
   "Description": {
-    "id": 40621,
+    "id": 63230,
     "type": "cexolocstring",
     "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 10
+    "value": 12
   },
   "Disarmable": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "Equip_ItemList": {
     "type": "list",
     "value": [
       {
+        "__struct_id": 2,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "x2_mduerar001"
+        }
+      },
+      {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_stingspear"
+          "value": "nw_waxmbt011"
         }
       },
       {
-        "__struct_id": 16384,
+        "__struct_id": 32,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp005"
+          "value": "nw_ashmto008"
         }
       },
       {
-        "__struct_id": 32768,
+        "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp005"
-        }
-      },
-      {
-        "__struct_id": 65536,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "x0_stinger_tail"
+          "value": "cre_duergars"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 33
+    "value": 24
   },
   "FeatList": {
     "type": "list",
@@ -237,42 +117,126 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 488
+          "value": 2
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 7
+          "value": 3
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 377
+          "value": 4
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 22
+          "value": 5
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 289
+          "value": 6
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 44
+          "value": 228
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 391
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 229
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 230
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 72
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 68
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 23
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 28
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 32
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 234
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 227
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 111
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 106
         }
       },
       {
@@ -288,14 +252,28 @@
           "type": "word",
           "value": 46
         }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 148
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 144
+        }
       }
     ]
   },
   "FirstName": {
-    "id": 2876,
+    "id": 12508,
     "type": "cexolocstring",
     "value": {
-      "0": "Stinger Sorcerer"
+      "0": "Duergar Commander"
     }
   },
   "fortbonus": {
@@ -312,15 +290,15 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 24
+    "value": 130
   },
   "Int": {
     "type": "byte",
-    "value": 13
+    "value": 10
   },
   "Interruptable": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "IsImmortal": {
     "type": "byte",
@@ -330,13 +308,37 @@
     "type": "byte",
     "value": 0
   },
+  "ItemList": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "InventoryRes": {
+          "type": "resref",
+          "value": "key_hotenow"
+        },
+        "Pickpocketable": {
+          "type": "byte",
+          "value": 1
+        },
+        "Repos_PosX": {
+          "type": "word",
+          "value": 0
+        },
+        "Repos_Posy": {
+          "type": "word",
+          "value": 0
+        }
+      }
+    ]
+  },
   "LastName": {
     "type": "cexolocstring",
     "value": {}
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "Lootable": {
     "type": "byte",
@@ -344,11 +346,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 36
+    "value": 169
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 4
+    "value": 0
   },
   "NoPermDeath": {
     "type": "byte",
@@ -356,7 +358,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "PerceptionRange": {
     "type": "byte",
@@ -372,11 +374,11 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 615
+    "value": 973
   },
   "Race": {
     "type": "byte",
-    "value": 13
+    "value": 0
   },
   "refbonus": {
     "type": "short",
@@ -448,13 +450,6 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
           "value": 0
         }
       },
@@ -469,21 +464,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 17
         }
       },
       {
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 9
+          "value": 1
         }
       },
       {
@@ -525,6 +513,20 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
+          "value": 8
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
           "value": 0
         }
       },
@@ -539,7 +541,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 0
         }
       },
       {
@@ -553,14 +555,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 0
         }
       },
       {
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 0
         }
       },
       {
@@ -637,7 +639,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 313
+    "value": 382
   },
   "SpecAbilityList": {
     "type": "list",
@@ -645,11 +647,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 9
+    "value": 4
   },
   "Str": {
     "type": "byte",
-    "value": 10
+    "value": 18
   },
   "Subrace": {
     "type": "cexostring",
@@ -657,7 +659,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "X0_STINGER_MAGE"
+    "value": "NW_DUEFIGHT001"
   },
   "Tail_New": {
     "type": "dword",
@@ -669,7 +671,27 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "stinger_mage"
+    "value": "duergar_hotekey"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "boss"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
