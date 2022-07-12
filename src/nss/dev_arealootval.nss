@@ -66,7 +66,7 @@ void main()
             if (!GetIsDead(oTest) && !GetIsPC(oTest))
             {
                 DelayCommand(0.1, KillCreature(oTest));
-                DelayCommand(0.2, ExecuteScript("party_credit", oTest));
+                //DelayCommand(0.2, ExecuteScript("party_credit", oTest));
             }
         }
         else if (nObjType == OBJECT_TYPE_PLACEABLE)
@@ -78,7 +78,7 @@ void main()
         }
         oTest = GetNextObjectInArea(oArea);
     }
-    DelayCommand(6.0f, DelayedAction());
+    DelayCommand(10.0f, DelayedAction());
     NWNX_Util_SetInstructionLimit(nOldInstructionLimit);
 }
 

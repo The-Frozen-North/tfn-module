@@ -104,10 +104,13 @@ void main()
     if (GetLocalInt(OBJECT_SELF, "boss"))
     {
         fCR = fCR * 2.0; // double CR for bosses
+        // Increased area CR means higher quality loot
+        iAreaCR = FloatToInt(IntToFloat(iAreaCR) * 1.5);
     }
     else if (GetLocalInt(OBJECT_SELF, "semiboss"))
     {
         fCR = fCR * 1.5; // 50% increase for semibosses
+        iAreaCR = FloatToInt(IntToFloat(iAreaCR) * 1.2);
     }
 
 // Scan and store weapons.

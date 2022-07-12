@@ -8,7 +8,7 @@ void main()
     int nAreaCR = GetLocalInt(GetArea(OBJECT_SELF), "cr");
 
     SetLocalInt(OBJECT_SELF, "cr", nAreaCR+GetLocalInt(OBJECT_SELF, "cr_bonus"));
-    SetLocalInt(OBJECT_SELF, "area_cr", nAreaCR);
+    SetLocalInt(OBJECT_SELF, "area_cr", nAreaCR+GetLocalInt(OBJECT_SELF, "cr_bonus"));
 
     SetEventScript(OBJECT_SELF, EVENT_SCRIPT_PLACEABLE_ON_DEATH, "treas_death");
     GenerateTrapOnObject();
