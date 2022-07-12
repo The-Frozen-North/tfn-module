@@ -99,7 +99,7 @@ void main()
             break;
             case ALIGNMENT_NEUTRAL:
                 {
-                    eSummon = EffectSummonCreature("sum_slaad", VFX_FNF_SUMMON_MONSTER_3);
+                    eSummon = EffectSummonCreature("sum_slaadred", VFX_FNF_SUMMON_MONSTER_3);
                 }
             break;
         }

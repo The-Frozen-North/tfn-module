@@ -44,15 +44,15 @@ void DelayedAction(int nStartXP)
         {
             //SendMessageToPC(oDev, "Found loot container!");
             object oPersonalLoot = GetObjectByUUID(GetLocalString(oTest, "personal_loot_"+GetPCPublicCDKey(oDev, TRUE)));
-            
+
             object oInvItem = GetFirstItemInInventory(oPersonalLoot);
-            
+
             while (GetIsObjectValid(oInvItem))
             {
                 SetIdentified(oInvItem, TRUE);
                 nTotalGoldValue += GetGoldPieceValue(oInvItem);
                 object oNew = CopyItem(oInvItem, oMyContainer);
-                DelayCommand(115f, DestroyObject(oNew));
+                DelayCommand(115.0, DestroyObject(oNew));
                 DelayCommand(0.1, DestroyObject(oInvItem));
                 oInvItem = GetNextItemInInventory(oPersonalLoot);
             }
