@@ -47,13 +47,13 @@ void main()
     switch (nAlign)
     {
         case ALIGNMENT_EVIL:
-            eSummon = EffectSummonCreature("NW_S_SUCCUBUS",VFX_FNF_SUMMON_GATE, fDelay);
+            eSummon = EffectSummonCreature("sum_succubus",VFX_FNF_SUMMON_GATE, fDelay);
         break;
         case ALIGNMENT_GOOD:
-            eSummon = EffectSummonCreature("NW_S_CHOUND", VFX_FNF_SUMMON_CELESTIAL, fDelay);
+            eSummon = EffectSummonCreature("sum_houndarchon", VFX_FNF_SUMMON_CELESTIAL, fDelay);
         break;
         case ALIGNMENT_NEUTRAL:
-            eSummon = EffectSummonCreature("NW_S_SLAADGRN",VFX_FNF_SUMMON_MONSTER_3, 1.0);
+            eSummon = EffectSummonCreature("sum_slaadgreen",VFX_FNF_SUMMON_MONSTER_3, 1.0);
         break;
     }
     //Apply the summon effect and VFX impact
