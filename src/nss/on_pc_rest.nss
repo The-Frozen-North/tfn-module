@@ -134,9 +134,13 @@ void main()
                 if (!GetIsObjectValid(oCampfire))
                 {
                    SendDebugMessage("oCampfire was not found, creating a rest in progress.");
+// spawn a creature to determine if this is valid spawn point
                    oValidator = CreateObject(OBJECT_TYPE_CREATURE, "_cf_validator", lTarget);
 
                    oCampfire = CreateObject(OBJECT_TYPE_PLACEABLE, "_campfire", GetLocation(oValidator), FALSE, "_campfire");
+
+                   DelayCommand(30.0, AssignCommand(oCampfire, PlayAnimation(ANIMATION_PLACEABLE_DEACTIVATE)));
+                   DestroyObject(oCampfire, 60.0);
 
                    DestroyObject(oValidator);
 
@@ -221,11 +225,6 @@ void main()
                         DestroyObject(oCampfire, fAmbushTime+10.0);
                         DelayCommand(fAmbushTime, CreateAmbush(Random(nEnemyGroups)+1, oArea, lLocation));
                         DelayCommand(fAmbushTime, FloatingTextStringOnCreature(sSpotted, oPC, FALSE));
-                    }
-                    else
-                    {
-                        DelayCommand(30.0, AssignCommand(oCampfire, PlayAnimation(ANIMATION_PLACEABLE_DEACTIVATE)));
-                        DestroyObject(oCampfire, 60.0);
                     }
                  }
                  sHideClass = GetLocalString(oCampfire, "hide_class");
