@@ -1242,7 +1242,7 @@
         },
         "Plot": {
           "type": "byte",
-          "value": 0
+          "value": 1
         },
         "PortraitId": {
           "type": "word",
@@ -1283,6 +1283,26 @@
         "TrapType": {
           "type": "byte",
           "value": 0
+        },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "onopen_script"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "hote_gate_onopen"
+              }
+            }
+          ]
         },
         "Will": {
           "type": "byte",
@@ -1373,11 +1393,11 @@
         },
         "LinkedTo": {
           "type": "cexostring",
-          "value": ""
+          "value": "HotenowPassageToGate"
         },
         "LinkedToFlags": {
           "type": "byte",
-          "value": 0
+          "value": 1
         },
         "LoadScreenID": {
           "type": "word",
@@ -1394,7 +1414,9 @@
         "LocName": {
           "id": 5349,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Door"
+          }
         },
         "OnClick": {
           "type": "resref",
@@ -1470,7 +1492,7 @@
         },
         "Tag": {
           "type": "cexostring",
-          "value": "CryptExit"
+          "value": "HotenowGateToPassage"
         },
         "TemplateResRef": {
           "type": "resref",
