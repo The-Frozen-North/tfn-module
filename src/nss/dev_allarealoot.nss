@@ -42,13 +42,13 @@ void main()
     SendMessageToAllDMs(GetName(oDev) + " is running dev_allarealoot");
 
 	int nAreaIndex = 0;
-	float fDelay = 20.0*nAreaIndex;
+	float fDelay = 24.0*nAreaIndex;
 	object oArea = GetFirstArea();
 	while (GetIsObjectValid(oArea))
 	{
 		if (GetLocalInt(oArea, "cr") > 0)
 		{
-			fDelay = 20.0*nAreaIndex;
+			fDelay = 24.0*nAreaIndex;
 			nAreaIndex++;
 			DelayCommand(fDelay, RunOnArea(oDev, oArea));
 		}

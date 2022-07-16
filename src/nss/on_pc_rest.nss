@@ -214,6 +214,8 @@ void main()
                         else if (bHarperScout) {sHideClass = "Harper Scout";}
 
                         SetLocalString(oCampfire, "hide_class", sHideClass);
+                        DelayCommand(50.0, AssignCommand(oCampfire, PlayAnimation(ANIMATION_PLACEABLE_DEACTIVATE)));
+                        DestroyObject(oCampfire, 60.0);
                     }
 // otherwise, trigger an ambush
                     else if (nAmbushRoll <= nAmbushChance)

@@ -2,6 +2,7 @@
 #include "inc_debug"
 #include "inc_general"
 #include "nwnx_player"
+#include "util_i_math"
 
 // ===========================================================
 // START CONSTANTS
@@ -11,7 +12,11 @@
 const float LOOT_DESTRUCTION_TIME = 600.0;
 
 // chance that a treasure will spawn at all out of 100
-const int TREASURE_CHANCE = 15;
+// This gets modified based on the difference between a monster's CR and the area CR
+// Currently, the treasure drop rate in percentage is:
+// min(100, 20 * pow(2.0, ((MonsterCR - AreaCR)/2))
+const float TREASURE_CHANCE = 20.0;
+const float TREASURE_CHANCE_EXPONENT_DENOMINATOR = 2.0;
 
 // chance that there won't be placeable treasure at all out of 100
 const int NO_PLACEABLE_TREASURE_CHANCE = 30;
@@ -36,17 +41,15 @@ const int CHANCE_THREE = 5;
 // Lower these to decrease the base chance of getting certain tiers.
 const int BASE_T1_WEIGHT = 4000;
 const int BASE_T2_WEIGHT = 200;
-const int BASE_T3_WEIGHT = 40;
-const int BASE_T4_WEIGHT = 15;
-const int BASE_T5_WEIGHT = 3;
+const int BASE_T3_WEIGHT = 50;
+const int BASE_T4_WEIGHT = 20;
+const int BASE_T5_WEIGHT = 5;
 
-const int MIN_T3_AREA_CR = 3;
-const int MIN_T4_AREA_CR = 6;
-const int MIN_T5_AREA_CR = 10;
-
-// increase this to increase weight of better loot
-// in correlation to CR
-const float BASE_CR_MULTIPLIER = 1.1;
+const int T1_SIGMOID_MIDPOINT = 1;
+const int T2_SIGMOID_MIDPOINT = 4;
+const int T3_SIGMOID_MIDPOINT = 7;
+const int T4_SIGMOID_MIDPOINT = 10;
+const int T5_SIGMOID_MIDPOINT = 13;
 
 // The string to play when there isn't loot available
 const string NO_LOOT = "This container doesn't have any items.";
@@ -131,18 +134,11 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
 
     //SendDebugMessage("Loot fCR: "+FloatToString(fCR));
 
-// If there is a CR available, use this to modify the loot chance
-    float fMod = fCR*BASE_CR_MULTIPLIER;
-
-    if (fMod < 1.0) fMod = 1.0;
-
-    //SendDebugMessage("Loot fMod: "+FloatToString(fMod));
-
-    int nT1Weight = BASE_T1_WEIGHT;
-    int nT2Weight = FloatToInt(BASE_T2_WEIGHT * fMod);
-    int nT3Weight = FloatToInt(BASE_T3_WEIGHT * fMod);
-    int nT4Weight = FloatToInt(BASE_T4_WEIGHT * fMod);
-    int nT5Weight = FloatToInt(BASE_T5_WEIGHT * fMod);
+    int nT1Weight = FloatToInt(BASE_T1_WEIGHT * fmax(0.0, ((68.0 + atan((iAreaCR - T1_SIGMOID_MIDPOINT) * 0.6))/158.0)));
+    int nT2Weight = FloatToInt(BASE_T2_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T2_SIGMOID_MIDPOINT) * 0.6))/158.0)));
+    int nT3Weight = FloatToInt(BASE_T3_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T3_SIGMOID_MIDPOINT) * 0.6))/158.0)));
+    int nT4Weight = FloatToInt(BASE_T4_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T4_SIGMOID_MIDPOINT) * 0.6))/158.0)));
+    int nT5Weight = FloatToInt(BASE_T5_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T5_SIGMOID_MIDPOINT) * 0.6))/158.0)));
 
    int nCombinedWeight = 0;
 
@@ -154,24 +150,6 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
    if (nT4Weight < 0) nT4Weight = 0;
    if (nT5Weight < 0) nT5Weight = 0;
 
-
-// modify weight by area CR
-    if (iAreaCR < MIN_T3_AREA_CR)
-    {
-        if (nT3Weight > 0) nT3Weight = nT3Weight/100;
-        if (nT4Weight > 0) nT4Weight = nT4Weight/100;
-        if (nT5Weight > 0) nT5Weight = nT5Weight/100;
-    }
-    else if (iAreaCR < MIN_T4_AREA_CR)
-    {
-        if (nT4Weight > 0) nT4Weight = nT4Weight/100;
-        if (nT5Weight > 0) nT5Weight = nT5Weight/100;
-    }
-    else if (iAreaCR < MIN_T5_AREA_CR)
-    {
-        if (nT5Weight > 0) nT5Weight = nT5Weight/100;
-    }
-    
     if (ShouldDebugLoot())
     {
         SetLocalInt(GetModule(), LOOT_DEBUG_T1_WEIGHT, nT1Weight);
@@ -179,6 +157,12 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
         SetLocalInt(GetModule(), LOOT_DEBUG_T3_WEIGHT, nT3Weight);
         SetLocalInt(GetModule(), LOOT_DEBUG_T4_WEIGHT, nT4Weight);
         SetLocalInt(GetModule(), LOOT_DEBUG_T5_WEIGHT, nT5Weight);
+        
+        SendDebugMessage("Loot T1Weight: "+IntToString(nT1Weight));
+        SendDebugMessage("Loot T2Weight: "+IntToString(nT2Weight));
+        SendDebugMessage("Loot T3Weight: "+IntToString(nT3Weight));
+        SendDebugMessage("Loot T4Weight: "+IntToString(nT4Weight));
+        SendDebugMessage("Loot T5Weight: "+IntToString(nT5Weight));
     }
 
 
@@ -190,6 +174,14 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
 
    nCombinedWeight = nT1Weight + nT2Weight + nT3Weight + nT4Weight + nT5Weight;
    //SendDebugMessage("Combined: "+IntToString(nCombinedWeight));
+   
+   // This is better than crashing out with a TMI if it can happen for any reason
+   // (this happeened when trying to add the sigmoids for the first time)
+   if (nCombinedWeight == 0)
+   {
+       SendDebugMessage("ERROR: Combined weight for DetermineTier at CR " + IntToString(iCR) + " and area CR " + IntToString(iAreaCR) + " resulted in a weight sum of 0!", TRUE);
+       return "T1";
+   }
 
    int nTierRoll = Random(nCombinedWeight)+1;
    //SendDebugMessage("Roll: "+IntToString(nTierRoll));
@@ -202,24 +194,14 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
         nTierRoll = nTierRoll - nT2Weight;
         if (nTierRoll <= 0) {sTier = "T2";break;}
 
-        if (iAreaCR >= MIN_T3_AREA_CR)
-        {
-            nTierRoll = nTierRoll - nT3Weight;
-            if (nTierRoll <= 0) {sTier = "T3";break;}
-        }
+        nTierRoll = nTierRoll - nT3Weight;
+        if (nTierRoll <= 0) {sTier = "T3";break;}
 
-        if (iAreaCR >= MIN_T4_AREA_CR)
-        {
-            nTierRoll = nTierRoll - nT4Weight;
-            if (nTierRoll <= 0) {sTier = "T4";break;}
-        }
+        nTierRoll = nTierRoll - nT4Weight;
+        if (nTierRoll <= 0) {sTier = "T4";break;}
 
-
-        if (iAreaCR >= MIN_T5_AREA_CR)
-        {
-            nTierRoll = nTierRoll - nT5Weight;
-            if (nTierRoll <= 0) {sTier = "T5";break;}
-        }
+        nTierRoll = nTierRoll - nT5Weight;
+        if (nTierRoll <= 0) {sTier = "T5";break;}
     }
 
     //SendDebugMessage("Chosen Tier: "+sTier);
@@ -238,7 +220,7 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
     string sTier = DetermineTier(iCR, iAreaCR, sType);
     string sRarity = "";
     string sNonUnique = "";
-    
+
     // Loot debug ignores this as type is rolled in GenerateLoot below
 
 // Given no type, generate a random one.
@@ -255,8 +237,8 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
            case 6: sType = "Potions"; break;
         }
     }
- 
- 
+
+
 // These types are special cases because they have rarities.
     if (sType == "Range" || sType == "Melee" || sType == "Weapon" || sType == "Armor" || sType == "Apparel")
     {
@@ -301,7 +283,7 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
             }
         }
     }
-    
+
 
 // These types can have either a unique, or non-unique
     if (sType == "Range" || sType == "Weapon" || sType == "Armor" || sType == "Melee" || sType == "Potions")
@@ -449,7 +431,7 @@ object GenerateLoot(object oContainer)
        nItemRoll = nItemRoll - nApparelWeight;
        if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Apparel");break;}
    }
-   
+
     if (ShouldDebugLoot())
     {
         object oModule = GetModule();
@@ -468,22 +450,22 @@ object GenerateLoot(object oContainer)
             float fWeaponChance = IntToFloat(BASE_WEAPON_WEIGHT)/fCombinedWeight;
             float fArmorChance = IntToFloat(BASE_ARMOR_WEIGHT)/fCombinedWeight;
             float fApparelChance = IntToFloat(BASE_APPAREL_WEIGHT)/fCombinedWeight;
-            
-            
+
+
             int nT1Weight = GetLocalInt(oModule, LOOT_DEBUG_T1_WEIGHT);
             int nT2Weight = GetLocalInt(oModule, LOOT_DEBUG_T2_WEIGHT);
             int nT3Weight = GetLocalInt(oModule, LOOT_DEBUG_T3_WEIGHT);
             int nT4Weight = GetLocalInt(oModule, LOOT_DEBUG_T4_WEIGHT);
             int nT5Weight = GetLocalInt(oModule, LOOT_DEBUG_T5_WEIGHT);
-            
+
             float fWeightSum = IntToFloat(nT1Weight + nT2Weight + nT3Weight + nT4Weight + nT5Weight);
-            
+
             float fT1Prob = IntToFloat(nT1Weight)/fWeightSum;
             float fT2Prob = IntToFloat(nT2Weight)/fWeightSum;
             float fT3Prob = IntToFloat(nT3Weight)/fWeightSum;
             float fT4Prob = IntToFloat(nT4Weight)/fWeightSum;
             float fT5Prob = IntToFloat(nT5Weight)/fWeightSum;
-            
+
             int nItemTypeIndex;
             int nTier;
             for (nItemTypeIndex=0; nItemTypeIndex <= 5; nItemTypeIndex++)
@@ -612,7 +594,7 @@ int DetermineGoldFromCR(int iCR, int nMultiplier=1)
 int ShouldDebugLoot()
 {
     if (GetIsDevServer() && GetLocalInt(GetModule(), LOOT_DEBUG_ENABLED))
-    {   
+    {
         return TRUE;
     }
     return FALSE;
@@ -627,7 +609,7 @@ int GetIdentifiedItemCost(object oItem)
     }
     int nVal = GetGoldPieceValue(oItem);
     SetIdentified(oItem, nState);
-    return nVal;    
+    return nVal;
 }
 
 float GetAverageLootValueOfItem(int nTier, string sType)
@@ -640,7 +622,7 @@ float GetAverageLootValueOfItem(int nTier, string sType)
         return fVal;
     }
     // If it's not saved, it's calculation time
-    
+
     // "Weapon" chests don't exist and are instead just an amalgamation of Melee + Range
     if (sType == "Weapon")
     {
@@ -649,8 +631,8 @@ float GetAverageLootValueOfItem(int nTier, string sType)
         float fRet = (fMeleeProportion * GetAverageLootValueOfItem(nTier, "Melee")) + (fRangedProportion * GetAverageLootValueOfItem(nTier, "Range"));
         SetLocalFloat(GetModule(), sVar, fRet);
         return fRet;
-    } 
-    
+    }
+
     float fCommonChance = 1.0;
     float fUncommonChance = 0.0;
     float fRareChance = 0.0;
@@ -675,13 +657,13 @@ float GetAverageLootValueOfItem(int nTier, string sType)
         // These do not have nonuniques
         fUniqueChance = 1.0;
     }
-    
+
     int nUniqueState;
     int nRarity;
     string sTier = "T" + IntToString(nTier);
-    
+
     float fTotal;
-    
+
     for (nUniqueState=0; nUniqueState<=1; nUniqueState++)
     {
         string sNonUnique;
@@ -707,7 +689,7 @@ float GetAverageLootValueOfItem(int nTier, string sType)
             }
             else
             {
-                
+
                 if (nRarity == 0)
                 {
                     sRarity = "Common";
@@ -724,7 +706,7 @@ float GetAverageLootValueOfItem(int nTier, string sType)
                     fChanceAtThisRarity = fRareChance;
                 }
             }
-            
+
             object oChest = GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique);
             if (!GetIsObjectValid(oChest))
             {
@@ -759,11 +741,11 @@ float GetAverageLootValueOfItem(int nTier, string sType)
                 // Avoid division by 0
                 nRealObjCount = 1;
             }
-            
+
             float fAverageForThisChest = IntToFloat(nGoldTotal)/IntToFloat(nRealObjCount);
             float fContribution = fAverageForThisChest * fChanceAtThisRarity * fChanceAtThisUniqueness;
             fTotal += fContribution;
-            
+
             // If only one rarity, we don't need to bother with the rarity looping
             if (!nHasRarities)
             {
@@ -771,7 +753,7 @@ float GetAverageLootValueOfItem(int nTier, string sType)
             }
         }
     }
-        
+
     // Misc might be replaced by jewels
     if (sType == "Misc")
     {
@@ -779,13 +761,13 @@ float GetAverageLootValueOfItem(int nTier, string sType)
         float fMiscChance = 1.0 - fJewelChance;
         fTotal = (fMiscChance * fTotal) + (fJewelChance * GetAverageLootValueOfItem(nTier, "Jewels"));
     }
-    
+
     if (fTotal == 0.0)
     {
         // Hack to avoid doing checking the container every time the value of an item from this chest is called for
         fTotal = 0.01;
     }
-    
+
     SetLocalFloat(GetModule(), sVar, fTotal);
     SendDebugMessage("Average value of t" + IntToString(nTier) + " " + sType + " = " + FloatToString(fTotal), TRUE);
     return fTotal;

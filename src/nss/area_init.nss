@@ -340,6 +340,7 @@ void main()
                        SetLocalFloat(oArea, "treasure_y"+IntToString(nTreasures), vTreasureVector.y);
                        SetLocalFloat(oArea, "treasure_z"+IntToString(nTreasures), vTreasureVector.z);
                        SetLocalFloat(oArea, "treasure_o"+IntToString(nTreasures), GetFacing(oObject));
+                       SetLocalInt(oArea, "treasure_cr_bonus"+IntToString(nTreasures), GetLocalInt(oObject, "cr_bonus"));
 // treasures tagged with keep is always guaranteed
                        if (GetLocalInt(oObject, "keep") == 1) SetLocalInt(oArea, "treasure_keep"+IntToString(nTreasures), 1);
 

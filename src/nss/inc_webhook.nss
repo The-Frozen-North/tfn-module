@@ -317,7 +317,9 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
         return;
     }
     // Hopefully all cases of double reporting are fixed, but for safety's sake
-    if (GetLocalInt(oItem, "webhook_valuable"))
+    // This specifically stops the webhook firing twice for the player who identified an item for any reason
+    // The lore event is by far the most dodgy detection...
+    if (GetLocalObject(oItem, "webhook_valuable_identifier") == oPC)
     {
         return;
     }
@@ -377,7 +379,6 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
     //SendDebugMessage("ValuableItemWebhook: " + sDescription);
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", Get2DAString("env", "Value", 2), stMessage);
     SendDiscordLogMessage(sConstructedMsg);
-    SetLocalInt(oItem, "webhook_valuable", 1);
 }
 
 

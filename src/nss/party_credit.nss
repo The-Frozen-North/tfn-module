@@ -37,12 +37,12 @@ void SetLocalArrayObject(object oObject, string sArrayName, int nIndex, object o
    SetLocalObject(oObject, sArrayName + IntToString(nIndex), oValue);
 }
 
-void SendLootMessage(object oItem)
+void SendLootMessage(object oHench, object oItem)
 {
     if (!GetIsObjectValid(oItem))
         return;
 
-    object oOwner = GetItemPossessor(oItem);
+    object oOwner = oHench;
 
     if (GetIsDead(oOwner))
         return;
@@ -185,11 +185,11 @@ void DetermineItem(object oItem, object oMerchant, object oHench, int nNth)
        SetPickpocketableFlag(oItem, FALSE);
        object oNewItem = CopyItem(oItem, oHench, TRUE);
        DestroyObject(oItem);
-       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oNewItem)));
+       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oHench, oNewItem)));
    }
    else
    {
-       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oItem)));
+       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oHench, oItem)));
    }
 }
 
@@ -339,13 +339,17 @@ void main()
 
     if (bDestroyed)
     {
-        nTreasureChance = TREASURE_CHANCE;
+        nTreasureChance = FloatToInt(fmin(100.0, TREASURE_CHANCE * pow(2.0, (iCR - iAreaCR)/TREASURE_CHANCE_EXPONENT_DENOMINATOR)));
+        if (ShouldDebugLoot())
+        {
+            SendDebugMessage("Treasure chance at MCR " + IntToString(iCR) + " and ACR " + IntToString(iAreaCR) + " = " + IntToString(nTreasureChance));
+        }
 
 // destroyed treasures have double the chance of still dropping treasure
 // also double chance of items :D
         if (GetStringLeft(GetResRef(OBJECT_SELF), 6) == "treas_")
         {
-            nTreasureChance = TREASURE_CHANCE*2;
+            nTreasureChance = max(1, min(100, nTreasureChance*2));
 
             nChanceThree = CHANCE_THREE*2;
             nChanceTwo = CHANCE_TWO*2;
@@ -372,7 +376,10 @@ void main()
             case RACIAL_TYPE_ANIMAL:
             case RACIAL_TYPE_VERMIN:
             case RACIAL_TYPE_BEAST:
+            {
                bNoTreasure = TRUE;
+               nTreasureChance = 0;
+            }
             break;
         }
     }
@@ -397,6 +404,10 @@ void main()
 
         oItem = GetNextItemInInventory(OBJECT_SELF);
     }
+    if (GetIsObjectValid(oKey))
+    {
+        nTreasureChance = 100;
+    }
 
     if (GetLocalString(OBJECT_SELF, "quest1") != "")
     {
@@ -408,6 +419,12 @@ void main()
     {
         bNoTreasure = FALSE;
         nTreasureChance = 100;
+    }
+    
+    if (ShouldDebugLoot() && nTreasureChance > 0)
+    {
+        // Always make a container if debugging and there's a chance this enemy type drops something
+        bNoTreasure = FALSE;
     }
 
 // only proceed if there is treasure or a key
@@ -472,7 +489,7 @@ void main()
    int nItem1, nItem2, nItem3;
 
    int nItemsRoll = d100();
-   
+
    if (bBoss)
    {
        nChanceThree = 100;
@@ -507,13 +524,14 @@ void main()
 
     if (ShouldDebugLoot())
     {
+        float fTreasureChance = IntToFloat(nTreasureChance)/100.0;
         float fChanceThree = IntToFloat(nChanceThree)/100.0;
         float fChanceTwo = IntToFloat(nChanceTwo - nChanceThree)/100.0;
         float fChanceOne = 1.0 - (fChanceTwo + fChanceThree);
-        
-        float fExpected = fChanceOne + (2.0 * fChanceTwo) + (3.0 * fChanceThree);
+
+        float fExpected = fTreasureChance * (fChanceOne + (2.0 * fChanceTwo) + (3.0 * fChanceThree));
         SetLocalFloat(GetModule(), LOOT_DEBUG_DROP_CHANCE_MULT, fExpected);
-        
+
         // Force it to always roll only one item when debugging
         // This is so that one call is always done to GenerateLoot which updates the logging variables correctly
         // Because we just calculated the correct expected amount of items
@@ -522,6 +540,7 @@ void main()
         nItem1 = 1;
         nItem2 = 0;
         nItem3 = 0;
+        bNoTreasure = FALSE;
     }
 
 // =========================

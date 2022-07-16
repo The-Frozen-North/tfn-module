@@ -81,7 +81,7 @@ void main()
 
      if (nTreasures > 0)
      {
-        int nTreasureChance = ((iRows*iColumns)/nTreasures)*5;
+        int nTreasureChance = FloatToInt(((iRows*iColumns)/nTreasures)*2.5);
 
         object oTreasure;
         vector vTreasurePosition;
@@ -89,12 +89,20 @@ void main()
 
 
 // cap the density of treasure
-        if (nTreasureChance >= 75) nTreasureChance = 75;
+        if (nTreasureChance >= 85) nTreasureChance = 85;
 
         int i;
         for (i = 1; i <= nTreasures; i++)
         {
-            if ((GetLocalInt(OBJECT_SELF, "treasure_keep"+IntToString(i)) == 1) || (d100() <= nTreasureChance))
+            int nThisTreasureChance = nTreasureChance;
+            // Much more likely to keep high quality treasures
+            int nCRBonus = GetLocalInt(OBJECT_SELF, "treasure_cr_bonus" + IntToString(i));
+            if (nCRBonus >= 4)
+            {
+                nThisTreasureChance = min(85, (nThisTreasureChance * 3));
+            }
+            
+            if ((GetLocalInt(OBJECT_SELF, "treasure_keep"+IntToString(i)) == 1) || (d100() <= nThisTreasureChance))
             {
 
                 vTreasurePosition = Vector(GetLocalFloat(OBJECT_SELF, "treasure_x"+IntToString(i)), GetLocalFloat(OBJECT_SELF, "treasure_y"+IntToString(i)), GetLocalFloat(OBJECT_SELF, "treasure_z"+IntToString(i)));
