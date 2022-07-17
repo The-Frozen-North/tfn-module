@@ -40,20 +40,23 @@ void main()
     {
         SignalEvent(oTarget,EventSpellCastAt(spell.Caster,spell.Id));
         fDelay = GetRandomDelay(0.5, 2.5);
-        if(!GetPlotFlag(oTarget) && GetLocked(oTarget))
+        if(GetLocked(oTarget))
         {
             nResist =  GetDoorFlag(oTarget,DOOR_FLAG_RESIST_KNOCK);
-            if (nResist == 0)
+            if (nResist == 0 && !GetLockKeyRequired(oTarget))
             {
-                if ((spell.DC - 10 + d20()) >= GetLockUnlockDC(oTarget))
+                int nRoll = d20();
+                int nBase = spell.DC - 10;
+                int nTotal = nRoll + nBase;
+                int nUnlockDC =  GetLockUnlockDC(oTarget);
+                string sOutcome = nTotal >= nUnlockDC ? "success" : "failure";
+                string sMessage = GetName(spell.Caster)+" : Knock on " + GetName(oTarget) + " : *"+sOutcome+"* : ("+IntToString(nRoll)+" + "+IntToString(nBase)+" = "+IntToString(nTotal)+" vs. DC: "+IntToString(nUnlockDC)+")";
+                FloatingTextStringOnCreature(sMessage, spell.Caster);
+                if (nTotal >= nUnlockDC)
                 {
                     AssignCommand(oTarget, ActionUnlockObject(oTarget));
                     DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
                     DelayCommand(fDelay, AssignCommand(oTarget, PlaySound("gui_picklockopen")));
-                }
-                else
-                {
-                    FloatingTextStringOnCreature("*The spell failed to unlock the object.*",spell.Caster);
                 }
             }
             else if  (nResist == 1)
