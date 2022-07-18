@@ -6,6 +6,13 @@
 #include "x0_i0_position"
 #include "nwnx_area"
 
+void ApplySleepVFX(object oCreature)
+{
+    if (GetRacialType(oCreature) == RACIAL_TYPE_ELF) return;
+
+    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_SLEEP), oCreature);
+}
+
 string ChooseSpawnRef(object oArea, int nTarget)
 {
     string sTarget = "random"+IntToString(nTarget);
@@ -67,8 +74,6 @@ void main()
     object oItem = GetFirstItemInInventory(oPC);
 
     float fSize = 30.0;
-
-    effect eSleep = EffectVisualEffect(VFX_IMP_SLEEP);
 
     switch (GetLastRestEventType())
     {
@@ -238,24 +243,22 @@ void main()
 // END REST AMBUSH CODE
 // =======================================
 
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 1));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 2));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 3));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 4));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 5));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 6));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 7));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 8));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 9));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 1));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 2));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 3));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 4));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 5));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 6));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 7));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 8));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_HENCHMAN, oPC, 9));
 
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION, oPC, 1));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION, oPC, 2));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_FAMILIAR, oPC, 1));
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, GetAssociate(ASSOCIATE_TYPE_FAMILIAR, oPC, 2));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION, oPC, 1));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION, oPC, 2));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_FAMILIAR, oPC, 1));
+            ApplySleepVFX(GetAssociate(ASSOCIATE_TYPE_FAMILIAR, oPC, 2));
 
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, oPC);
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eSleep, oPC);
-
+            ApplySleepVFX(oPC);
 
             DelayCommand(0.1,FadeToBlack(oPC,FADE_SPEED_FAST));
             DelayCommand(2.6, FadeFromBlack(oPC, FADE_SPEED_MEDIUM));
@@ -286,4 +289,3 @@ void main()
     }
 
 }
-
