@@ -34,53 +34,58 @@ void main()
 // use this to get the center of a tile
        float fMultiplier = 5.0;
 
-// Loop through the X axis of an area
-       for (iXAxis = 0; iXAxis < iRows; iXAxis++)
+       // This seemingly does nothing except be really slow and waste electricity if the area is not trapped
+       if (bTrapped)
        {
-            float fXAxis = fMultiplier+(IntToFloat(iXAxis)*fMultiplier*2.0);
 
-// Loop through the Y axis of an area, following the previous X location
-            for (iYAxis = 0; iYAxis < iColumns; iYAxis++)
-            {
-                fYAxis = fMultiplier+(IntToFloat(iYAxis)*fMultiplier*2.0);
+    // Loop through the X axis of an area
+           for (iXAxis = 0; iXAxis < iRows; iXAxis++)
+           {
+                float fXAxis = fMultiplier+(IntToFloat(iXAxis)*fMultiplier*2.0);
 
-                lTile = Location(oArea, Vector(fXAxis, fYAxis, 0.0), 0.0);
-
-// we will spawn a creature at the exact location to check if it is in the proper spot
-                oValidator = CreateObject(OBJECT_TYPE_CREATURE, "_area_validator", lTile);
-
-                vTile = GetPositionFromLocation(lTile);
-                vValidator = GetPosition(oValidator);
-
-                lValidator = GetLocation(oValidator);
-
-                oDoor = GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile);
-                if (GetIsObjectValid(oDoor))
+    // Loop through the Y axis of an area, following the previous X location
+                for (iYAxis = 0; iYAxis < iColumns; iYAxis++)
                 {
-                    fDistanceFromDoor = GetDistanceBetweenLocations(GetLocation(GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile)), lTile);
-                }
-                else
-                {
-// in cases of a door not existing, just set the distance to a high number so it emulates not being close to a door
-                    fDistanceFromDoor = 999.0;
-                }
+                    fYAxis = fMultiplier+(IntToFloat(iYAxis)*fMultiplier*2.0);
 
-// we don't want spawns too close to a door. also, make sure the spot and the creature are around the same position
-// using the Distance Between Two Points Formula:
-                fX = vTile.x - vValidator.x;
-                fY = vTile.y - vValidator.y;
-                fDistanceBetweenPoints = sqrt((fX*fX) + (fY*fY));
-                if (fDistanceBetweenPoints < 0.0) fDistanceBetweenPoints = 999.0;
+                    lTile = Location(oArea, Vector(fXAxis, fYAxis, 0.0), 0.0);
 
-                if (fDistanceFromDoor >= 3.0 && fDistanceBetweenPoints <= 2.0 && vValidator.z > -2.0)
-                {
-                    if (bTrapped)
+    // we will spawn a creature at the exact location to check if it is in the proper spot
+                    oValidator = CreateObject(OBJECT_TYPE_CREATURE, "_area_validator", lTile);
+
+                    vTile = GetPositionFromLocation(lTile);
+                    vValidator = GetPosition(oValidator);
+
+                    lValidator = GetLocation(oValidator);
+
+                    oDoor = GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile);
+                    if (GetIsObjectValid(oDoor))
                     {
-                        SetCampaignString("spawns", sResRef+"_traps", AddListItem(GetCampaignString("spawns", sResRef+"_traps"), VectorToString(vValidator)));
+                        fDistanceFromDoor = GetDistanceBetweenLocations(GetLocation(GetNearestObjectToLocation(OBJECT_TYPE_DOOR,lTile)), lTile);
                     }
-                }
+                    else
+                    {
+    // in cases of a door not existing, just set the distance to a high number so it emulates not being close to a door
+                        fDistanceFromDoor = 999.0;
+                    }
 
-                DestroyObject(oValidator);
+    // we don't want spawns too close to a door. also, make sure the spot and the creature are around the same position
+    // using the Distance Between Two Points Formula:
+                    fX = vTile.x - vValidator.x;
+                    fY = vTile.y - vValidator.y;
+                    fDistanceBetweenPoints = sqrt((fX*fX) + (fY*fY));
+                    if (fDistanceBetweenPoints < 0.0) fDistanceBetweenPoints = 999.0;
+
+                    if (fDistanceFromDoor >= 3.0 && fDistanceBetweenPoints <= 2.0 && vValidator.z > -2.0)
+                    {
+                        if (bTrapped)
+                        {
+                            SetCampaignString("spawns", sResRef+"_traps", AddListItem(GetCampaignString("spawns", sResRef+"_traps"), VectorToString(vValidator)));
+                        }
+                    }
+
+                    DestroyObject(oValidator);
+                }
             }
         }
 

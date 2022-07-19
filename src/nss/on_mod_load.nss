@@ -22,6 +22,12 @@ void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 
     if (GetIsObjectValid(oContainer)) SendDebugMessage("loaded "+GetName(oContainer));
 }
 
+void LoadTreasureContainerByBaseItem(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)
+{
+    object oContainer = RetrieveCampaignObject("treasures", sTag, Location(GetObjectByTag("_TREASUREBASEITM"), Vector(x, y, z), 0.0));
+    if (GetIsObjectValid(oContainer)) SendDebugMessage("loaded "+GetName(oContainer));
+}
+
 void InitializeHouses(string sArea)
 {
     object oArea = GetObjectByTag(sArea);
@@ -463,6 +469,28 @@ void main()
       LoadTreasureContainer("_PotionsT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 34.0);
 
       LoadTreasureContainer("_JewelsT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 35.0);
+      
+      int nBaseItem;
+      int nOffset = 0;
+      for (nBaseItem=0; nBaseItem<=BASE_ITEM_WHIP; nBaseItem++)
+      {
+          if (nBaseItem == BASE_ITEM_ARMOR)
+          {
+                int nBaseAC;
+                for (nBaseAC = 0; nBaseAC <= 8; nBaseAC++)
+                {
+                    LoadTreasureContainerByBaseItem("_BaseItem" + IntToString(nBaseItem) + "T"+IntToString(nIndex)+ "AC" + IntToString(nBaseAC) + "NonUnique", IntToFloat(nIndex)*2.0, IntToFloat(nOffset));
+                    LoadTreasureContainerByBaseItem("_BaseItem" + IntToString(nBaseItem) + "T"+IntToString(nIndex) + "AC" + IntToString(nBaseAC), IntToFloat(nIndex)*2.0, 0.5  + IntToFloat(nOffset));
+                    nOffset += 1;
+                }
+          }
+          else
+          {
+                LoadTreasureContainerByBaseItem("_BaseItem" + IntToString(nBaseItem) + "T"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, IntToFloat(nOffset));
+                LoadTreasureContainerByBaseItem("_BaseItem" + IntToString(nBaseItem) + "T"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 0.5  + IntToFloat(nOffset));
+                nOffset += 1;
+          }
+      }
    }
 
    LoadTreasureContainer("_FabricatorAmmo", IntToFloat(nIndex)*2.0, 35.0);

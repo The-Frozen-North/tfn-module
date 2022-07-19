@@ -52,7 +52,11 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
 
            oCreature = CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), Location(oArea, Vector(vSpawnWP.x, vSpawnWP.y, vSpawnWP.z), IntToFloat(Random(360)+1)));
 
-           if (sSpawnScript != "") ExecuteScript(sSpawnScript, oCreature);
+           if (sSpawnScript != "")
+           {
+               // Stagger running this a bit, because large amounts of creature randomisation may cause server lag in places
+               DelayCommand(0.3 * nSpawn, ExecuteScript(sSpawnScript, oCreature));
+           }
 
 // Store the creature so it can be deleted later.
            SetLocalObject(oArea, "random"+IntToString(nTarget)+"_creature"+IntToString(nSpawn), oCreature);
