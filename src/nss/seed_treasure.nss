@@ -735,7 +735,7 @@ void CreateContainersForItemTypesByTier()
                                     oContainerForItem = CreateTreasureContainer("_BaseItem" + IntToString(nBaseItem) + "T" + IntToString(nTier) + sUniqueness, IntToFloat(nTier)*2.0, 36.0 + IntToFloat((nBaseItem * 2) + nUnique));
                                 }
                             }
-                            SendDebugMessage("Base Items by Tier: Copy " + GetName(oTest) + " to " + GetTag(oContainerForItem), TRUE);
+                            //SendDebugMessage("Base Items by Tier: Copy " + GetName(oTest) + " to " + GetTag(oContainerForItem), TRUE);
                             CopyItem(oTest, oContainerForItem, TRUE);
                             oTest = GetNextItemInInventory(oContainerToSearchThrough);
                         }

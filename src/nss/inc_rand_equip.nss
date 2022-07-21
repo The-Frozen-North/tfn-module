@@ -952,6 +952,7 @@ object CopyAndEquipUndroppableItem(object oCreature, object oSourceItem, int nSl
     object oNew = CopyItem(oSourceItem, oCreature, TRUE);
     SetPickpocketableFlag(oNew, FALSE);
     SetDroppableFlag(oNew, FALSE);
+    SetIdentified(oNew, TRUE);
     int nSuccess = NWNX_Creature_RunEquip(oCreature, oNew, nSlot);
     if (nSuccess)
     {

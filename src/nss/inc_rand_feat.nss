@@ -685,6 +685,7 @@ void AddRandomFeats(object oCreature, int nFeatList, int nCount)
                 DelayCommand(10.0, _DelayedAddCasterListFeats(oCreature));
                 bStartedCasterDelay = 1;
             }
+            continue;
         }
         int nTotalWeight =_BuildFeatChoiceArray(nFeatListForThisFeat, oCreature);
         if (nTotalWeight == 0)

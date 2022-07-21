@@ -67,6 +67,19 @@ void InitializeHouses(string sArea)
     SetCampaignString("housing", sArea, sList);
 }
 
+void SeedSpellbookMonitor()
+{
+    if (GetLocalInt(GetModule(), "seeded_spellbooks"))
+    {
+        SendDebugMessage("Seeding complete", TRUE);
+        NWNX_Administration_ShutdownServer();
+    }
+    else
+    {
+        DelayCommand(3.0, SeedSpellbookMonitor());
+    }
+}
+
 void main()
 {
 // Set a very high instruction limit so we can run the initialization scripts without TMI
@@ -106,9 +119,9 @@ void main()
        SetCampaignInt("spawns", "finished", 1);
 
        ExecuteScript("seed_treasure");
-
-       SendDebugMessage("Seeding complete", TRUE);
-       NWNX_Administration_ShutdownServer();
+       ExecuteScript("seed_rand_spells");
+       
+       DelayCommand(6.0, SeedSpellbookMonitor());
 
        return;
     }
