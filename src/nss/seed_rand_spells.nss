@@ -31,6 +31,7 @@ void SpellbookSeedLoop(int nPos=-1)
 void main()
 {
     NWNX_Util_SetInstructionLimit(52428888);
+    DestroyCampaignDatabase("randspellbooks");
     SetLocalInt(GetModule(), RAND_SPELL_SEEDING_SPELLBOOKS, 1);
     string sResRef = NWNX_Util_GetFirstResRef(NWNX_UTIL_RESREF_TYPE_CREATURE, "", TRUE);
     while (GetStringLength(sResRef) > 0)
