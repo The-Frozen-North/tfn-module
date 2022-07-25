@@ -65,7 +65,7 @@ object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance,
 
 // An amalgamation of GetTieredArmorOfType and CopyAndEquipUndroppableItem.
 // Also sets local int "unique" to 1 on the returned object if it was from a unique chest
-object TryEquippingRandomArmorOfTier(int nBaseItem, int nTier, int nUniqueChance, object oCreature, int nSlot);
+object TryEquippingRandomArmorOfTier(int nAC, int nTier, int nUniqueChance, object oCreature, int nSlot=INVENTORY_SLOT_CHEST);
 
 
 // Convenience function that runs TryEquippingRandomItemOfTier for:
@@ -1005,7 +1005,7 @@ object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance,
     return oNew;
 }
 
-object TryEquippingRandomArmorOfTier(int nAC, int nTier, int nUniqueChance, object oCreature, int nSlot)
+object TryEquippingRandomArmorOfTier(int nAC, int nTier, int nUniqueChance, object oCreature, int nSlot=INVENTORY_SLOT_CHEST)
 {
     object oSource = GetTieredArmorOfType(nAC, nTier, nUniqueChance);
     int bIsUnique = FindSubString(GetTag(GetItemPossessor(oSource)), "NonUnique") == -1;

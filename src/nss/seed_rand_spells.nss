@@ -3,11 +3,15 @@
 #include "inc_rand_spell"
 #include "inc_array"
 
-void SpellbookSeedLoop(int nPos=-1)
+void SpellbookSeedLoop(int nPos=-1, int nCounts=0)
 {
     object oOld = GetLocalObject(GetModule(), "spellbook_seed_last_creature");
-    if (GetLocalInt(oOld, "seed_spellbook_complete") || nPos == -1)
+    if (GetLocalInt(oOld, "seed_spellbook_complete") || nPos == -1 || nCounts > 100)
     {
+        if (nCounts > 100)
+        {
+            WriteTimestampedLogEntry("WARNING: " + GetName(oOld) + " (resref: " + GetResRef(oOld) + ") didn't generate a spellbook in 100s!");
+        }
         DestroyObject(oOld);
         nPos++;
         string sResRef = Array_At_Str("SEED_RAND_SPELLS", nPos);
@@ -25,7 +29,7 @@ void SpellbookSeedLoop(int nPos=-1)
         object oNew = CreateObject(OBJECT_TYPE_CREATURE, sResRef, lSpawn);
         SetLocalObject(GetModule(), "spellbook_seed_last_creature", oNew);
     }
-    DelayCommand(1.0, SpellbookSeedLoop(nPos));
+    DelayCommand(1.0, SpellbookSeedLoop(nPos, nCounts+1));
 }
 
 void main()

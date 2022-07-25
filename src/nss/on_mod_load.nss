@@ -16,6 +16,10 @@
 #include "70_inc_switches"
 #include "util_i_csvlists"
 
+const int SEED_SPAWNS = 0;
+const int SEED_TREASURES = 0;
+const int SEED_SPELLBOOKS = 1;
+
 void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)
 {
     object oContainer = RetrieveCampaignObject("treasures", sTag, Location(GetObjectByTag("_TREASURE"), Vector(x, y, z), 0.0));
@@ -94,34 +98,64 @@ void main()
 
     if (FindSubString(NWNX_Administration_GetServerName(), "SEED") > -1)
     {
-// Destroy the databases to give it a clean slate.
-       DestroyCampaignDatabase("spawns");
+        // When debugging one aspect of seeding, reseeding everything makes iterations take ages
+        if (SEED_SPAWNS)
+        //if (TRUE)
+        {
+    // Destroy the databases to give it a clean slate.
+           DestroyCampaignDatabase("spawns");
 
-       object oArea = GetFirstArea();
-       string sAreaResRef;
+           object oArea = GetFirstArea();
+           string sAreaResRef;
 
-// Loop through all areas in the module.
-       while (GetIsObjectValid(oArea))
-       {
-
-// Skip the system areas. They are prepended with an underscore.
-           if (GetStringLeft(GetResRef(oArea), 1) == "_")
+    // Loop through all areas in the module.
+           while (GetIsObjectValid(oArea))
            {
+
+    // Skip the system areas. They are prepended with an underscore.
+               if (GetStringLeft(GetResRef(oArea), 1) == "_")
+               {
+                   oArea = GetNextArea();
+                   continue;
+               }
+
+               ExecuteScript("seed_area_spawns", oArea);
+
                oArea = GetNextArea();
-               continue;
+
            }
-
-           ExecuteScript("seed_area_spawns", oArea);
-
-           oArea = GetNextArea();
-
-       }
+        }
+        else
+        {
+            WriteTimestampedLogEntry("============================");
+            WriteTimestampedLogEntry("WARNING: Not seeding spawns!");
+            WriteTimestampedLogEntry("============================");
+        }
        SetCampaignInt("spawns", "finished", 1);
 
-       ExecuteScript("seed_treasure");
-       ExecuteScript("seed_rand_spells");
+       if (SEED_TREASURES)
+       {
+            ExecuteScript("seed_treasure");
+       }
+       else
+       {
+            WriteTimestampedLogEntry("==============================");
+            WriteTimestampedLogEntry("WARNING: Not seeding treasures!");
+            WriteTimestampedLogEntry("==============================");
+       }
+       if (SEED_SPELLBOOKS)
+       {
+            ExecuteScript("seed_rand_spells");
+            DelayCommand(6.0, SeedSpellbookMonitor());
+       }
+       else
+       {
+            WriteTimestampedLogEntry("===============================");
+            WriteTimestampedLogEntry("WARNING: Not seeding spellbooks!");
+            WriteTimestampedLogEntry("===============================");
+       }
        
-       DelayCommand(6.0, SeedSpellbookMonitor());
+       
 
        return;
     }
