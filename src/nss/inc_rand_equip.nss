@@ -911,7 +911,7 @@ string GetMundaneArmorOfAC(int nAC)
         case 7: { sOut = "nw_aarcl006"; break; }
         case 8: { sOut = "nw_aarcl007"; break; }
     }
-    WriteTimestampedLogEntry("Mundane base AC " + IntToString(nAC) + " = " + sOut);
+    //WriteTimestampedLogEntry("Mundane base AC " + IntToString(nAC) + " = " + sOut);
     return sOut;
 }
 

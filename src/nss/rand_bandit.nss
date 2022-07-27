@@ -97,7 +97,7 @@ void main()
     
     
     int nAC = GetACOfArmorToEquip(OBJECT_SELF, nMaxAC);
-    WriteTimestampedLogEntry("Max AC = " + IntToString(nMaxAC) + " -> " + IntToString(nAC));
+    //WriteTimestampedLogEntry("Max AC = " + IntToString(nMaxAC) + " -> " + IntToString(nAC));
     TryEquippingRandomArmorOfTier(nAC, 1 + (d100() > 95), 2, OBJECT_SELF);
     struct RandomWeaponResults rwr = RollRandomWeaponTypesForCreature(OBJECT_SELF);
     
