@@ -8,6 +8,9 @@
 // This is an include full of functions that make randomising humanoids
 // hopefully a whole lot less laborious.
 
+// Return the base AC of the best armour type that the creature can sensibly equip, up to a max of nMaxAC.
+int GetACOfArmorToEquip(object oCreature, int nMaxAC=8);
+
 // Return a BASE_ITEM_* constant of a "light" weapon, suitable for
 // wielding in the offhand without penalty.
 // Creatures with more advanced proficiencies will be significantly more likely
@@ -61,6 +64,7 @@ object GetTieredArmorOfType(int nAC, int nTier, int nUniqueChance=0);
 
 // An amalgamation of GetTieredItemOfType and CopyAndEquipUndroppableItem.
 // Also sets local int "unique" to 1 on the returned object if it was from a unique chest
+// Pass nSlot = -1 to not try equipping the item (useful for backup melees for archers)
 object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance, object oCreature, int nSlot);
 
 // An amalgamation of GetTieredArmorOfType and CopyAndEquipUndroppableItem.
@@ -121,6 +125,7 @@ struct CreatureProficiencies GetCreatureWeaponProficiencies(object oCreature)
     struct CreatureProficiencies cpOut;
     cpOut.bMartial = GetHasFeat(FEAT_WEAPON_PROFICIENCY_MARTIAL, oCreature);
     cpOut.bDruid = GetHasFeat(FEAT_WEAPON_PROFICIENCY_DRUID, oCreature);
+    cpOut.bExotic = GetHasFeat(FEAT_WEAPON_PROFICIENCY_EXOTIC, oCreature);
     cpOut.bElf = GetHasFeat(FEAT_WEAPON_PROFICIENCY_ELF, oCreature);
     cpOut.bMonk = GetHasFeat(FEAT_WEAPON_PROFICIENCY_MONK, oCreature);
     cpOut.bRogue = GetHasFeat(FEAT_WEAPON_PROFICIENCY_ROGUE, oCreature);
@@ -815,47 +820,98 @@ string GetMundaneWeaponOfType(int nBaseItem)
 
     switch (nBaseItem)
     {
-       case BASE_ITEM_SMALLSHIELD: sOut = "nw_ashsw001"; break;
-       case BASE_ITEM_HELMET: sOut = "nw_arhe006"; break;
-       case BASE_ITEM_LARGESHIELD: sOut = "nw_ashlw001"; break;
-       case BASE_ITEM_TOWERSHIELD: sOut = "nw_ashto001"; break;
-       case BASE_ITEM_BASTARDSWORD: sOut = "nw_wswbs001"; break;
-       case BASE_ITEM_BATTLEAXE: sOut = "nw_waxbt001"; break;
-       case BASE_ITEM_CLUB: sOut = "nw_wblcl001"; break;
-       case BASE_ITEM_DAGGER: sOut = "nw_wswdg001"; break;
-       case BASE_ITEM_LONGSWORD: sOut = "nw_wswls001"; break;
-       case BASE_ITEM_SHORTSWORD: sOut = "nw_wswss001"; break;
-       case BASE_ITEM_WARHAMMER: sOut = "nw_wblhw001"; break;
-       case BASE_ITEM_LIGHTMACE: sOut = "nw_wblml001"; break;
-       case BASE_ITEM_HANDAXE: sOut = "nw_waxhn001"; break;
-       case BASE_ITEM_QUARTERSTAFF: sOut = "nw_wdbqs001"; break;
-       case BASE_ITEM_LONGBOW: sOut = "nw_wbwln001"; break;
-       case BASE_ITEM_SHORTBOW: sOut = "nw_wbwsh001"; break;
-       case BASE_ITEM_LIGHTFLAIL: sOut = "nw_wblfl001"; break;
-       case BASE_ITEM_LIGHTHAMMER: sOut = "nw_wblhl001"; break;
-       case BASE_ITEM_HALBERD: sOut = "nw_wplhb001"; break;
-       case BASE_ITEM_SHORTSPEAR: sOut = "nw_wplss001"; break;
-       case BASE_ITEM_GREATSWORD: sOut = "nw_wswgs001"; break;
-       case BASE_ITEM_GREATAXE: sOut = "nw_waxgr001"; break;
-       case BASE_ITEM_HEAVYFLAIL: sOut = "nw_wblfh001"; break;
-       case BASE_ITEM_DWARVENWARAXE: sOut = "x2_wdwraxe00"; break;
-       case BASE_ITEM_MORNINGSTAR: sOut = "nw_wblms001"; break;
-       case BASE_ITEM_HEAVYCROSSBOW: sOut = "nw_wbwxh001"; break;
-       case BASE_ITEM_LIGHTCROSSBOW: sOut = "nw_wbwxl001"; break;
-       case BASE_ITEM_DIREMACE: sOut = "nw_wdbma001"; break;
-       case BASE_ITEM_DOUBLEAXE: sOut = "nw_wdbax001"; break;
-       case BASE_ITEM_RAPIER: sOut = "nw_wswrp001"; break;
-       case BASE_ITEM_SCIMITAR: sOut = "nw_wswsc001"; break;
-       case BASE_ITEM_KATANA: sOut = "nw_wswka001"; break;
-       case BASE_ITEM_KAMA: sOut = "nw_wspka001"; break;
-       case BASE_ITEM_SCYTHE: sOut = "nw_wplsc001"; break;
-       case BASE_ITEM_TWOBLADEDSWORD: sOut = "nw_wdbsw001"; break;
-       case BASE_ITEM_WHIP: sOut = "x2_it_wpwhip"; break;
-       case BASE_ITEM_TRIDENT: sOut = "nw_wpltr001"; break;
-       case BASE_ITEM_KUKRI: sOut = "nw_wspku001"; break;
-       case BASE_ITEM_SICKLE: sOut = "nw_wspsc001"; break;
-       case BASE_ITEM_SLING: sOut = "nw_wbwsl001"; break;
+       case BASE_ITEM_SMALLSHIELD: { sOut = "nw_ashsw001"; break; } 
+       case BASE_ITEM_HELMET: { sOut = "nw_arhe006"; break; }
+       case BASE_ITEM_LARGESHIELD: { sOut = "nw_ashlw001"; break; }
+       case BASE_ITEM_TOWERSHIELD: { sOut = "nw_ashto001"; break; }
+       case BASE_ITEM_BASTARDSWORD: { sOut = "nw_wswbs001"; break; }
+       case BASE_ITEM_BATTLEAXE: { sOut = "nw_waxbt001"; break; }
+       case BASE_ITEM_CLUB: { sOut = "nw_wblcl001"; break; }
+       case BASE_ITEM_DAGGER: { sOut = "nw_wswdg001"; break; }
+       case BASE_ITEM_LONGSWORD: { sOut = "nw_wswls001"; break; }
+       case BASE_ITEM_SHORTSWORD: { sOut = "nw_wswss001"; break; }
+       case BASE_ITEM_WARHAMMER: { sOut = "nw_wblhw001"; break; }
+       case BASE_ITEM_LIGHTMACE: { sOut = "nw_wblml001"; break; }
+       case BASE_ITEM_HANDAXE: { sOut = "nw_waxhn001"; break; }
+       case BASE_ITEM_QUARTERSTAFF: { sOut = "nw_wdbqs001"; break; }
+       case BASE_ITEM_LONGBOW: { sOut = "nw_wbwln001"; break; }
+       case BASE_ITEM_SHORTBOW: { sOut = "nw_wbwsh001"; break; }
+       case BASE_ITEM_LIGHTFLAIL: { sOut = "nw_wblfl001"; break; }
+       case BASE_ITEM_LIGHTHAMMER: { sOut = "nw_wblhl001"; break; }
+       case BASE_ITEM_HALBERD: { sOut = "nw_wplhb001"; break; }
+       case BASE_ITEM_SHORTSPEAR: { sOut = "nw_wplss001"; break; }
+       case BASE_ITEM_GREATSWORD: { sOut = "nw_wswgs001"; break; }
+       case BASE_ITEM_GREATAXE: { sOut = "nw_waxgr001"; break; }
+       case BASE_ITEM_HEAVYFLAIL: { sOut = "nw_wblfh001"; break; }
+       case BASE_ITEM_DWARVENWARAXE: { sOut = "x2_wdwraxe00"; break; }
+       case BASE_ITEM_MORNINGSTAR: { sOut = "nw_wblms001"; break; }
+       case BASE_ITEM_HEAVYCROSSBOW: { sOut = "nw_wbwxh001"; break; }
+       case BASE_ITEM_LIGHTCROSSBOW: { sOut = "nw_wbwxl001"; break; }
+       case BASE_ITEM_DIREMACE: { sOut = "nw_wdbma001"; break; }
+       case BASE_ITEM_DOUBLEAXE: { sOut = "nw_wdbax001"; break; }
+       case BASE_ITEM_RAPIER: { sOut = "nw_wswrp001"; break; }
+       case BASE_ITEM_SCIMITAR: { sOut = "nw_wswsc001"; break; }
+       case BASE_ITEM_KATANA: { sOut = "nw_wswka001"; break; }
+       case BASE_ITEM_KAMA: { sOut = "nw_wspka001"; break; }
+       case BASE_ITEM_SCYTHE: { sOut = "nw_wplsc001"; break; }
+       case BASE_ITEM_TWOBLADEDSWORD: { sOut = "nw_wdbsw001"; break; }
+       case BASE_ITEM_WHIP: { sOut = "x2_it_wpwhip"; break; }
+       case BASE_ITEM_TRIDENT: { sOut = "nw_wpltr001"; break; }
+       case BASE_ITEM_KUKRI: { sOut = "nw_wspku001"; break; }
+       case BASE_ITEM_SICKLE: { sOut = "nw_wspsc001"; break; }
+       case BASE_ITEM_SLING: { sOut = "nw_wbwsl001"; break; }
     }
+    return sOut;
+}
+
+string GetMundaneArmorOfAC(int nAC)
+{
+    string sOut = "";
+    int nRoll;
+    switch (nAC)
+    {
+        case 0:
+        {
+            nRoll = Random(3);
+            if (nRoll == 0) { sOut = "nw_cloth022"; }
+            else if (nRoll == 1) { sOut = "nw_cloth006"; }
+            else if (nRoll == 2) { sOut = "nw_cloth001"; }
+            break;
+        }
+        case 1: { sOut = "nw_aarcl009"; break; }
+        case 2: { sOut = "nw_aarcl001"; break; }
+        case 3:
+        {
+            nRoll = Random(2);
+            if (nRoll == 0) { sOut = "nw_aarcl002"; }
+            else { sOut = "nw_aarcl008"; }
+            break;
+        }
+        case 4:
+        {
+            nRoll = Random(2);
+            if (nRoll == 0) { sOut = "nw_aarcl012"; }
+            else { sOut = "nw_aarcl003"; }
+            break;
+        } 
+        case 5:
+        {
+            nRoll = Random(2);
+            if (nRoll == 0) { sOut = "nw_aarcl010"; }
+            else { sOut = "nw_aarcl004"; }
+            break;
+        } 
+        case 6:
+        {
+            nRoll = Random(2);
+            if (nRoll == 0) { sOut = "nw_aarcl011"; }
+            else { sOut = "nw_aarcl005"; }
+            break;
+        }
+        case 7: { sOut = "nw_aarcl006"; break; }
+        case 8: { sOut = "nw_aarcl007"; break; }
+    }
+    WriteTimestampedLogEntry("Mundane base AC " + IntToString(nAC) + " = " + sOut);
     return sOut;
 }
 
@@ -901,7 +957,7 @@ object GetTieredItemOfType(int nBaseItem, int nTier, int nUniqueChance=0)
     }
     if (nTier > 1)
     {
-        GetTieredItemOfType(nBaseItem, nTier-1, nUniqueChance);
+        return GetTieredItemOfType(nBaseItem, nTier-1, nUniqueChance);
     }
     return OBJECT_INVALID;
 }
@@ -932,14 +988,14 @@ object GetTieredArmorOfType(int nAC, int nTier, int nUniqueChance=0)
     }
     if (nTier > 1)
     {
-        GetTieredArmorOfType(nAC, nTier-1, nUniqueChance);
+        return GetTieredArmorOfType(nAC, nTier-1, nUniqueChance);
     }
     return OBJECT_INVALID;
 }
 
-object CopyAndEquipUndroppableItem(object oCreature, object oSourceItem, int nSlot)
+object _EquipUndroppableItem(object oCreature, object oNew, int nSlot)
 {
-    if (oSourceItem == OBJECT_INVALID)
+    if (!GetIsObjectValid(oNew))
     {
         return OBJECT_INVALID;
     }
@@ -949,10 +1005,13 @@ object CopyAndEquipUndroppableItem(object oCreature, object oSourceItem, int nSl
         oOldOffhand = GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oCreature);
     }
     object oOld = GetItemInSlot(nSlot, oCreature);
-    object oNew = CopyItem(oSourceItem, oCreature, TRUE);
     SetPickpocketableFlag(oNew, FALSE);
     SetDroppableFlag(oNew, FALSE);
     SetIdentified(oNew, TRUE);
+    if (nSlot == -1)
+    {
+        return oNew;
+    }
     int nSuccess = NWNX_Creature_RunEquip(oCreature, oNew, nSlot);
     if (nSuccess)
     {
@@ -973,6 +1032,16 @@ object CopyAndEquipUndroppableItem(object oCreature, object oSourceItem, int nSl
     return OBJECT_INVALID;
 }
 
+object CopyAndEquipUndroppableItem(object oCreature, object oSourceItem, int nSlot)
+{
+    if (oSourceItem == OBJECT_INVALID)
+    {
+        return OBJECT_INVALID;
+    }
+    object oNew = CopyItem(oSourceItem, oCreature, TRUE);
+    return _EquipUndroppableItem(oCreature, oNew, nSlot);
+}
+
 object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance, object oCreature, int nSlot)
 {
     if (nBaseItem == BASE_ITEM_INVALID)
@@ -982,6 +1051,12 @@ object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance,
     object oSource = GetTieredItemOfType(nBaseItem, nTier, nUniqueChance);
     int bIsUnique = FindSubString(GetTag(GetItemPossessor(oSource)), "NonUnique") == -1;
     object oNew = CopyAndEquipUndroppableItem(oCreature, oSource, nSlot);
+    if (!GetIsObjectValid(oNew))
+    {
+        oNew = CreateItemOnObject(GetMundaneWeaponOfType(nBaseItem), oCreature);
+        _EquipUndroppableItem(oCreature, oNew, nSlot);
+        bIsUnique = 0;
+    }
     if (bIsUnique)
     {
         SetLocalInt(oNew, "unique", 1);
@@ -1005,11 +1080,103 @@ object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance,
     return oNew;
 }
 
+int GetACOfArmorToEquip(object oCreature, int nMaxAC=8)
+{
+    if (nMaxAC == 0) { return 0; }
+    if (!GetHasFeat(FEAT_ARMOR_PROFICIENCY_HEAVY, oCreature) && nMaxAC > 5) { nMaxAC = 5; }
+    if (!GetHasFeat(FEAT_ARMOR_PROFICIENCY_MEDIUM, oCreature) && nMaxAC > 3) { nMaxAC = 3; }
+    if (!GetHasFeat(FEAT_ARMOR_PROFICIENCY_LIGHT, oCreature)) { return 0; }
+    if (GetLevelByClass(CLASS_TYPE_MONK, oCreature)) { return 0; }
+    if (GetLevelByClass(CLASS_TYPE_WIZARD, oCreature)) { return 0; }
+    if (GetLevelByClass(CLASS_TYPE_SORCERER, oCreature)) { return 0; }
+    if (GetLevelByClass(CLASS_TYPE_RANGER, oCreature) && nMaxAC > 3) { nMaxAC = 3; }
+    if (GetLevelByClass(CLASS_TYPE_ROGUE, oCreature)  && nMaxAC > 3) { nMaxAC = 3; }
+    int nBestArmorAC = 0;
+    int nDexMod = GetAbilityModifier(ABILITY_DEXTERITY, oCreature);
+    int nBestAC = nDexMod;
+    int nThisAC = 1 + min(8, nDexMod);
+    if (nThisAC > nBestAC)
+    {
+        nBestArmorAC = 1;
+        nBestAC = nThisAC;
+    }
+    if (nMaxAC >= 2)
+    {
+        nThisAC = 2 + min(6, nDexMod);
+        if (nThisAC > nBestAC)
+        {
+            nBestArmorAC = 2;
+            nBestAC = nThisAC;
+        }
+        if (nMaxAC >= 3)
+        {  
+            nThisAC = 3 + min(4, nDexMod);
+            if (nThisAC > nBestAC)
+            {
+                nBestArmorAC = 3;
+                nBestAC = nThisAC;
+            }
+            if (nMaxAC >= 4)
+            {  
+                nThisAC = 4 + min(4, nDexMod);
+                if (nThisAC > nBestAC)
+                {
+                    nBestArmorAC = 4;
+                    nBestAC = nThisAC;
+                }
+                if (nMaxAC >= 5)
+                {  
+                    nThisAC = 5 + min(2, nDexMod);
+                    if (nThisAC > nBestAC)
+                    {
+                        nBestArmorAC = 5;
+                        nBestAC = nThisAC;
+                    }
+                    if (nMaxAC >= 6)
+                    {  
+                        nThisAC = 6 + min(1, nDexMod);
+                        if (nThisAC > nBestAC)
+                        {
+                            nBestArmorAC = 6;
+                            nBestAC = nThisAC;
+                        }
+                        if (nMaxAC >= 7)
+                        {  
+                            nThisAC = 7 + min(1, nDexMod);
+                            if (nThisAC > nBestAC)
+                            {
+                                nBestArmorAC = 7;
+                                nBestAC = nThisAC;
+                            }
+                            if (nMaxAC >= 8)
+                            {  
+                                nThisAC = 8 + min(1, nDexMod);
+                                if (nThisAC > nBestAC)
+                                {
+                                    nBestArmorAC = 8;
+                                    nBestAC = nThisAC;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return nBestArmorAC;
+}
+
 object TryEquippingRandomArmorOfTier(int nAC, int nTier, int nUniqueChance, object oCreature, int nSlot=INVENTORY_SLOT_CHEST)
 {
     object oSource = GetTieredArmorOfType(nAC, nTier, nUniqueChance);
     int bIsUnique = FindSubString(GetTag(GetItemPossessor(oSource)), "NonUnique") == -1;
     object oNew = CopyAndEquipUndroppableItem(oCreature, oSource, nSlot);
+    if (!GetIsObjectValid(oNew))
+    {
+        oNew = CreateItemOnObject(GetMundaneArmorOfAC(nAC), oCreature);
+        _EquipUndroppableItem(oCreature, oNew, nSlot);
+        bIsUnique = 0;
+    }
     if (bIsUnique)
     {
         SetLocalInt(oNew, "unique", 1);

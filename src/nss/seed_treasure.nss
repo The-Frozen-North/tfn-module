@@ -711,6 +711,17 @@ void CreateContainersForItemTypesByTier()
                         object oTest = GetFirstItemInInventory(oContainerToSearchThrough);
                         while (GetIsObjectValid(oTest))
                         {
+                            int bWasFabricator = 0;
+                            // Follow fabricator ammo, or for some reason this doesn't get put into the chests
+                            if (GetStringLength(GetLocalString(oTest, "ammo_tag")) > 0)
+                            {
+                                object oAmmo = GetObjectByTag("fabricator_"+GetLocalString(oTest, "ammo_tag"));
+                                if (GetIsObjectValid(oAmmo))
+                                {
+                                    oTest = oAmmo;
+                                    bWasFabricator = 1;
+                                }
+                            }
                             int nBaseItem = GetBaseItemType(oTest);
                             object oContainerForItem;
                             if (nBaseItem == BASE_ITEM_ARMOR)
@@ -736,7 +747,26 @@ void CreateContainersForItemTypesByTier()
                                 }
                             }
                             //SendDebugMessage("Base Items by Tier: Copy " + GetName(oTest) + " to " + GetTag(oContainerForItem), TRUE);
-                            CopyItem(oTest, oContainerForItem, TRUE);
+                            int bOkay = 1;
+                            // Following fabricators is allowing dupes in the same container, so if it was a fabricator
+                            // Take a little while to check for dupes first
+                            if (bWasFabricator)
+                            {
+                                object oTest2 = GetFirstItemInInventory(oContainerForItem);
+                                while (GetIsObjectValid(oTest2))
+                                {
+                                    if (GetResRef(oTest2) == GetResRef(oTest))
+                                    {
+                                        bOkay = 0;
+                                        break;
+                                    }
+                                    oTest2 = GetNextItemInInventory(oContainerForItem);
+                                }
+                            }
+                            if (bOkay)
+                            {
+                                CopyItem(oTest, oContainerForItem, TRUE);
+                            }
                             oTest = GetNextItemInInventory(oContainerToSearchThrough);
                         }
                     }

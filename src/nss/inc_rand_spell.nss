@@ -166,7 +166,7 @@ struct CategoryWeights _CalculateWeightForSpellAssignment(struct CategoryWeights
 
 int SeedingSpellbooks(int nClass, object oCreature=OBJECT_SELF)
 {
-    if (GetLocalInt(GetModule(), "RAND_SPELL_SEEDING_SPELLBOOKS"))
+    if (GetLocalInt(GetModule(), RAND_SPELL_SEEDING_SPELLBOOKS))
     {
         NWNX_Util_SetInstructionLimit(52428888);
         SetCampaignInt("randspellbooks", GetResRef(oCreature) + "_numsbs_" + IntToString(nClass), 0);
@@ -236,11 +236,13 @@ void _ClearSpellbook(object oCreature, int nClass)
     if (nClass == CLASS_TYPE_SORCERER || nClass == CLASS_TYPE_BARD)
     {
         for (nLevel=0; nLevel <=9; nLevel++)
-        {
+        {            
             int nNum = NWNX_Creature_GetKnownSpellCount(oCreature, nClass, nLevel);
+            //WriteTimestampedLogEntry("Has " + IntToString(nNum) + " spells of level " + IntToString(nLevel));
             for (i=(nNum-1); i>=0; i--)
             {
                 int nSpell = NWNX_Creature_GetKnownSpell(oCreature, nClass, nLevel, i);
+                //WriteTimestampedLogEntry("Remove spell " + IntToString(nSpell) + " at index " + IntToString(i));
                 NWNX_Creature_RemoveKnownSpell(oCreature, nClass, nLevel, nSpell);
             }
         }
@@ -3063,6 +3065,10 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
 void RandomSpellbookPopulate(int nSpellbookType, object oCreature, int nClass)
 {
     //WriteTimestampedLogEntry("Populating random spellbook of type " + IntToString(nSpellbookType) + " for " + GetName(oCreature) + " and class " + IntToString(nClass));
+    if (GetLevelByClass(nClass, oCreature) <= 0)
+    {
+        WriteTimestampedLogEntry("ERROR: Tried to seed spellbooks for class " + IntToString(nClass) + " on " + GetName(oCreature) + " (resref " + GetResRef(oCreature) + ") but it has no levels in this class!");
+    }
     _GetAvailableSpellSlots(oCreature, nClass);
     if (nSpellbookType < RAND_SPELL_DIVINE_START)
     {
@@ -3076,13 +3082,14 @@ void RandomSpellbookPopulate(int nSpellbookType, object oCreature, int nClass)
 
 void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1)
 {
+    _ClearSpellbook(oCreature, nClass);
     if (nFixedIndex == -1)
     {
         int nNumSpellbooks = GetCampaignInt("randspellbooks", GetResRef(oCreature) + "_numsbs_" + IntToString(nClass));
         nFixedIndex = Random(nNumSpellbooks);
     }
     
-    WriteTimestampedLogEntry("Retrieve:" + GetResRef(oCreature) + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex));
+    //WriteTimestampedLogEntry("Retrieve:" + GetResRef(oCreature) + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex));
     // Resref: 16
     // _rsb_ : 5
     // nClass: 2
@@ -3090,7 +3097,7 @@ void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1)
     // nFixedIndex: 2, or maybe 3 if someone is insane
     // = 26 or 27 at a stretch, max for campaign db is 32
     json jObj = GetCampaignJson("randspellbooks", GetResRef(oCreature) + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex));
-    WriteTimestampedLogEntry(JsonDump(jObj));
+    //WriteTimestampedLogEntry(JsonDump(jObj));
     int nNumCasterFeats = GetLocalInt(oCreature, "rand_feat_caster");
     int i;
     json jFeats = JsonObjectGet(jObj, "Feats");
@@ -3155,6 +3162,7 @@ void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1)
 
 void SeedingSpellbooksComplete(object oCreature=OBJECT_SELF)
 {
+    WriteTimestampedLogEntry(GetName(oCreature) + " says it is done seeding spellbooks, waiting for watcher to notice...");
     SetLocalInt(oCreature, "seed_spellbook_complete", 1);
 }
 

@@ -3,14 +3,22 @@
 #include "inc_rand_spell"
 #include "inc_array"
 
+// If not seeding areas/treasures, the server is really laggy to start with
+// And so a pretty big value of this is needed for the first few...
+const int SEED_SPELLBOOK_COUNT_TIMEOUTS = 300;
+
 void SpellbookSeedLoop(int nPos=-1, int nCounts=0)
 {
     object oOld = GetLocalObject(GetModule(), "spellbook_seed_last_creature");
-    if (GetLocalInt(oOld, "seed_spellbook_complete") || nPos == -1 || nCounts > 100)
+    if (GetLocalInt(oOld, "seed_spellbook_complete") || nPos == -1 || nCounts > SEED_SPELLBOOK_COUNT_TIMEOUTS)
     {
-        if (nCounts > 100)
+        if (nCounts % 100 == 0 && nCounts > 0)
         {
-            WriteTimestampedLogEntry("WARNING: " + GetName(oOld) + " (resref: " + GetResRef(oOld) + ") didn't generate a spellbook in 100s!");
+            WriteTimestampedLogEntry(GetName(oOld) + " (resref: " + GetResRef(oOld) + ") at " + IntToString(nCounts) + "of max " + IntToString(SEED_SPELLBOOK_COUNT_TIMEOUTS) + "...");
+        }
+        if (nCounts > SEED_SPELLBOOK_COUNT_TIMEOUTS)
+        {
+            WriteTimestampedLogEntry("WARNING: " + GetName(oOld) + " (resref: " + GetResRef(oOld) + ") hasn't signalled it is done seeding spellbooks after " + IntToString(SEED_SPELLBOOK_COUNT_TIMEOUTS) + " counts");
         }
         DestroyObject(oOld);
         nPos++;
@@ -25,8 +33,8 @@ void SpellbookSeedLoop(int nPos=-1, int nCounts=0)
         }
         object oArea = GetObjectByTag("_ENCOUNTERS");
         location lSpawn = Location(oArea, Vector(10.0, 10.0, 0.0), 0.0);
-        WriteTimestampedLogEntry("Beginning spellbook seed for " + sResRef);
         object oNew = CreateObject(OBJECT_TYPE_CREATURE, sResRef, lSpawn);
+        WriteTimestampedLogEntry("Beginning spellbook seed for " + sResRef + " -> " + GetName(oNew));
         SetLocalObject(GetModule(), "spellbook_seed_last_creature", oNew);
     }
     DelayCommand(1.0, SpellbookSeedLoop(nPos, nCounts+1));

@@ -175,5 +175,6 @@ void main()
     }
 
     string sScript = GetLocalString(OBJECT_SELF, "spawn_script");
+    //WriteTimestampedLogEntry("ai_onspawn for " + GetName(OBJECT_SELF) + "-> spawn script = " + sScript);
     if (sScript != "") ExecuteScript(sScript);
 }

@@ -80,17 +80,29 @@ int _SelectFeatList(object oCreature)
     {
         return RAND_FEAT_LIST_CASTER;
     }
+    
+    if (Random(100) < FloatToInt(fCasterProportion * 100))
+    {
+        return RAND_FEAT_LIST_CASTER;
+    }
 
     if (fAdditionalBAB >= 0.4)
     {
         if (bRanged) { return RAND_FEAT_LIST_RANGED; }
         return RAND_FEAT_LIST_MELEE;
     }
-
-    if (Random(100) < FloatToInt(fCasterProportion * 100))
+    
+    if (fAdditionalBAB >= 0.25 && Random(100) < 50)
     {
-        return RAND_FEAT_LIST_CASTER;
+        if (bRanged) { return RAND_FEAT_LIST_RANGED; }
+        return RAND_FEAT_LIST_MELEE;
     }
+
+    if (Random(100) < 80)
+    {
+        return RAND_FEAT_LIST_GENERAL;
+    }
+    
     if (bRanged) { return RAND_FEAT_LIST_RANGED; }
     return RAND_FEAT_LIST_MELEE;
 }
@@ -128,7 +140,16 @@ int _EvaluateRandomFeat_Melee(object oCreature, int nFeat)
     if (nFeat == FEAT_TWO_WEAPON_FIGHTING)
     {
         if (GetHasFeat(374, oCreature)) { return 0; }
-        return 40;
+        if (GetAbilityScore(oCreature, ABILITY_DEXTERITY) >= 15)
+        {
+            return 40;
+        }
+        // This is the threshold where inc_rand_equip accepts dual wield without ambidexterity
+        if (GetHitDice(oCreature) <= 4)
+        {
+            return 30;
+        }
+        return 0;
     }
     if (nFeat == FEAT_ARMOR_PROFICIENCY_HEAVY)
     {
@@ -208,11 +229,11 @@ int _EvaluateRandomFeat_Melee(object oCreature, int nFeat)
     }
     if (nFeat == FEAT_WEAPON_PROFICIENCY_MARTIAL)
     {
-        return 50;
+        return 80;
     }
     if (nFeat == FEAT_WEAPON_PROFICIENCY_EXOTIC)
     {
-        return 40;
+        return 60;
     }
     if (nFeat == FEAT_WEAPON_SPECIALIZATION_DAGGER)
     {
@@ -581,7 +602,11 @@ void _DelayedAddCasterListFeats(object oCreature)
     int i;
     for (i=0; i<nCount; i++)
     {
-        int nTotalWeight =_BuildFeatChoiceArray(RAND_FEAT_LIST_CASTER, oCreature);
+        int nTotalWeight = _BuildFeatChoiceArray(RAND_FEAT_LIST_CASTER, oCreature);
+        if (nTotalWeight == 0)
+        {
+            nTotalWeight = _BuildFeatChoiceArray(RAND_FEAT_LIST_GENERAL, oCreature);
+        }
         if (nTotalWeight == 0)
         {
             return;
