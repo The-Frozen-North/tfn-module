@@ -16,8 +16,8 @@
 #include "70_inc_switches"
 #include "util_i_csvlists"
 
-const int SEED_SPAWNS = 0;
-const int SEED_TREASURES = 0;
+const int SEED_SPAWNS = 1;
+const int SEED_TREASURES = 1;
 const int SEED_SPELLBOOKS = 1;
 
 void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)
