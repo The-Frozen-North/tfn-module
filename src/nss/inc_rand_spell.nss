@@ -66,6 +66,7 @@ int SeedingSpellbooks(int nClass, object oCreature=OBJECT_SELF);
 const int MISSING_SPELL_PROTECTION_FROM_ALIGNMENT = 321;
 const int MISSING_SPELL_MAGIC_CIRCLE_AGAINST_ALIGNMENT = 322;
 const int MISSING_SPELL_AURA_VERSUS_ALIGNMENT = 323;
+const int MISSING_SPELL_SHAPECHANGE_RED_DRAGON = 392;
 
 
 //////////////////
@@ -251,10 +252,13 @@ void _ClearSpellbook(object oCreature, int nClass)
     {
         for (nLevel = 0; nLevel <= 9; nLevel++)
         {
-            int nNum = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, nLevel);
+            int nNum = NWNX_Creature_GetMemorisedSpellCountByLevel(oCreature, nClass, nLevel);
             for (i=0; i<nNum; i++)
             {
+                // NWNX writes angry errors to the log if you try to set the spell id to -1
+                // So this fills the book with "spent" resistance casts instead
                 struct NWNX_Creature_MemorisedSpell mem = NWNX_Creature_GetMemorisedSpell(oCreature, nClass, nLevel, i);
+                //WriteTimestampedLogEntry("Remove spell " + IntToString(mem.id) + " at index " + IntToString(i) + " of " + IntToString(nNum) + " at level " + IntToString(nLevel));
                 mem.ready = 0;
                 mem.meta = METAMAGIC_NONE;
                 mem.id = SPELL_RESISTANCE;
@@ -1107,7 +1111,7 @@ void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nC
             {
                 nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_PREMONITION, nClass, sClass2da, 10 * cwThisAssignment.nWeightDefences);
             }
-            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUNBURST, nClass, sClass2da, (15 + nSpellFocusEvocation * 4) * cwThisAssignment.nWeightDamagingAoESelective);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUNBURST, nClass, sClass2da, ((11 + nSpellFocusEvocation * 4) + nSpellFocusEvocation * 4) * cwThisAssignment.nWeightDamagingAoESelective);
             if (!bHasSummon)
             {
                 nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_VIII, nClass, sClass2da, 40 * cwThisAssignment.nHighestCategoryWeight);
@@ -1182,9 +1186,9 @@ void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nC
                 nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_MASS_HASTE, nClass, sClass2da, 100 * cwThisAssignment.nWeightOffensiveUtility, METAMAGIC_EXTEND);
            }
            if (!GetHasSpell(SPELL_WALL_OF_FIRE, oCreature))
-            {
+           {
                 nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_WALL_OF_FIRE, nClass, sClass2da, (10 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective, METAMAGIC_MAXIMIZE);
-            }
+           }
            if (!bHasSummon)
            {
                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_VII, nClass, sClass2da, 40 * cwThisAssignment.nHighestCategoryWeight);
@@ -1611,8 +1615,10 @@ void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nC
             {
                 nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_STONE_BONES, nClass, sClass2da, 50 * cwThisAssignment.nWeightDefences);
             }
-
-            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREASE, nClass, sClass2da, (20 + nCasterLevel + nSpellFocusConjuration * 3) * cwThisAssignment.nWeightControlAoENonSelective, METAMAGIC_EXTEND);
+            if (!GetHasSpell(SPELL_GREASE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREASE, nClass, sClass2da, (20 + nCasterLevel + nSpellFocusConjuration * 3) * cwThisAssignment.nWeightControlAoENonSelective, METAMAGIC_EXTEND);
+            }
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_RAY_OF_ENFEEBLEMENT, nClass, sClass2da, (20 * nSpellFocusNecromancy * 8) * cwThisAssignment.nWeightControlSingleTarget, METAMAGIC_EXTEND);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CHARM_PERSON, nClass, sClass2da, (26 + nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlSingleTarget, METAMAGIC_EXTEND);
 
@@ -1661,7 +1667,10 @@ void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nC
             cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
              nWeightSum = 0;
             _ClearRandomSpellTempArrays();
-            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREASE, nClass, sClass2da, (20 + nCasterLevel + nSpellFocusConjuration * 3) * cwThisAssignment.nWeightControlAoENonSelective);
+            if (!GetHasSpell(SPELL_GREASE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREASE, nClass, sClass2da, (20 + nCasterLevel + nSpellFocusConjuration * 3) * cwThisAssignment.nWeightControlAoENonSelective);
+            }
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BURNING_HANDS, nClass, sClass2da, (28 + nSpellFocusTransmutation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CHARM_PERSON, nClass, sClass2da, (26 + nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlSingleTarget);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_COLOR_SPRAY, nClass, sClass2da, (26 + nSpellFocusIllusion * 8) * cwThisAssignment.nWeightControlAoENonSelective);
@@ -1799,10 +1808,16 @@ void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nC
             _ClearRandomSpellTempArrays();
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DISMISSAL, nClass, sClass2da,  10 * cwThisAssignment.nWeightDamagingAoENonSelective);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CHARM_MONSTER, nClass, sClass2da, (26 + nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlSingleTarget);
-            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CLAIRAUDIENCE_AND_CLAIRVOYANCE, nClass, sClass2da, 5 * cwThisAssignment.nWeightOffensiveUtility);
+            if (!GetHasSpell(SPELL_CLAIRAUDIENCE_AND_CLAIRVOYANCE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CLAIRAUDIENCE_AND_CLAIRVOYANCE, nClass, sClass2da, 5 * cwThisAssignment.nWeightOffensiveUtility);
+            }
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CONFUSION, nClass, sClass2da, (26 + nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlAoENonSelective);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_CRITICAL_WOUNDS, nClass, sClass2da,  20 * cwThisAssignment.nWeightCureConditions);
-            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_NEUTRALIZE_POISON, nClass, sClass2da,  15 * cwThisAssignment.nWeightCureConditions);
+            if (!GetHasSpell(SPELL_NEUTRALIZE_POISON, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_NEUTRALIZE_POISON, nClass, sClass2da, 15 * cwThisAssignment.nWeightCureConditions);
+            }
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_WAR_CRY, nClass, sClass2da, (18 + nSpellFocusEnchantment * 8)  * (cwThisAssignment.nWeightControlAoESelective + 
             cwThisAssignment.nWeightMeleeAbility));
             if (!bHasSummon)
@@ -1886,11 +1901,11 @@ void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nC
              nWeightSum = 0;
             _ClearRandomSpellTempArrays();
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BLINDNESS_AND_DEAFNESS, nClass, sClass2da, (26 + nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlSingleTarget);
-            if (!GetHasSpell(SPELL_EAGLE_SPLEDOR, oCreature))
+            if (!GetHasSpell(SPELL_EAGLE_SPLEDOR, oCreature) && !GetHasSpell(SPELL_BULLS_STRENGTH, oCreature))
             {
                 nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BULLS_STRENGTH, nClass, sClass2da, 40 * cwThisAssignment.nWeightMeleeAbility);
             }
-            if (!GetHasSpell(SPELL_BULLS_STRENGTH))
+            if (!GetHasSpell(SPELL_BULLS_STRENGTH) && !GetHasSpell(SPELL_EAGLE_SPLEDOR, oCreature))
             {
                 nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_EAGLE_SPLEDOR, nClass, sClass2da, 40 * cwThisAssignment.nWeightControlSingleTarget);
             }
@@ -1934,8 +1949,11 @@ void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nC
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BALAGARNSIRONHORN, nClass, sClass2da, (15 * nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlAoENonSelective);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CHARM_PERSON, nClass, sClass2da, (26 + nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlSingleTarget);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_LIGHT_WOUNDS, nClass, sClass2da,  20 * cwThisAssignment.nWeightCureConditions);
-            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREASE, nClass, sClass2da, (20 + nCasterLevel + nSpellFocusConjuration * 3) * cwThisAssignment.nWeightControlAoENonSelective);
-            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_LESSER_DISPEL, nClass, sClass2da, 30 * cwThisAssignment.nWeightOffensiveUtility);
+            if (!GetHasSpell(SPELL_GREASE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREASE, nClass, sClass2da, (20 + nCasterLevel + nSpellFocusConjuration * 3) * cwThisAssignment.nWeightControlAoENonSelective);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_LESSER_DISPEL, nClass, sClass2da, (2 - GetHasSpell(SPELL_LESSER_DISPEL, oCreature)) * 15 * cwThisAssignment.nWeightOffensiveUtility);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_MAGE_ARMOR, nClass, sClass2da, 30 * cwThisAssignment.nWeightDefences);
             if (!GetHasSpell(SPELL_MAGIC_WEAPON, oCreature))
             {
@@ -2176,6 +2194,25 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
         nWeightMaximizeSpell = max(0, 7 * (nCasterLevel - 7));
         nWeightEmpowerSpell = max(0, 6 * (nCasterLevel - 5)); 
     }
+    else if (nSpellbookType == RAND_SPELL_DIVINE_RANGER || nSpellbookType == RAND_SPELL_DIVINE_PALADIN)
+    {
+        cwWeights.nWeightDamagingSingleTarget = 1;
+        cwWeights.nWeightDamagingAoESelective = 1;
+        cwWeights.nWeightDamagingAoENonSelective = 1;
+        cwWeights.nWeightControlSingleTarget = 1;
+        cwWeights.nWeightControlAoESelective = 1;
+        cwWeights.nWeightControlAoENonSelective = 1;
+        cwWeights.nWeightOffensiveUtility = 3;
+        cwWeights.nWeightCureConditions = 2;
+        cwWeights.nWeightDefences = 6;
+        cwWeights.nWeightMeleeAbility = 6;
+        
+        if (nSpellbookType == RAND_SPELL_DIVINE_PALADIN)
+        {
+            nWeightExtendSpell = 40;
+        }
+        nWeightSpellPenetration = 0;
+    }
     
     int nWeightSum;
     
@@ -2320,8 +2357,6 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
         int nDomain1 = GetDomain(oCreature, 1, CLASS_TYPE_CLERIC);
         int nDomain2 = GetDomain(oCreature, 2, CLASS_TYPE_CLERIC);
         
-        // TODO metamagic-ed versions, once all the domain-ed spells are in place
-        
         nAssigned = 0;
         nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 9);
         while (nLeft > 0)
@@ -2430,11 +2465,11 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
             }
             if (nDomain1 == DOMAIN_SUN || nDomain2 == DOMAIN_SUN)
             {
-                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUNBEAM, nClass, sClass2da, 15 * cwThisAssignment.nWeightDamagingAoENonSelective);
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUNBEAM, nClass, sClass2da, 15 * cwThisAssignment.nWeightDamagingAoENonSelective, METAMAGIC_NONE, -1);
             }
             if ((nDomain1 == DOMAIN_WAR || nDomain2 == DOMAIN_WAR) && !GetHasSpell(SPELL_AURA_OF_VITALITY, oCreature))
             {
-                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_AURA_OF_VITALITY, nClass, sClass2da, 60 * cwThisAssignment.nWeightOffensiveUtility);
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_AURA_OF_VITALITY, nClass, sClass2da, 60 * cwThisAssignment.nWeightOffensiveUtility, METAMAGIC_NONE, -1);
             }
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FLAME_STRIKE, nClass, sClass2da, (24 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective, METAMAGIC_EMPOWER);
             if (nDomain1 == DOMAIN_EVIL || nDomain1 == DOMAIN_DEATH || nDomain2 == DOMAIN_EVIL || nDomain2 == DOMAIN_DEATH)
@@ -2573,7 +2608,10 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
                 nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_HASTE, nClass, sClass2da, 100 * max(cwThisAssignment.nWeightOffensiveUtility, cwThisAssignment.nWeightMeleeAbility), METAMAGIC_NONE, -1);
             }
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_HEALING_CIRCLE, nClass, sClass2da,  20 * cwThisAssignment.nWeightCureConditions);
-            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_MONSTROUS_REGENERATION, nClass, sClass2da,  10 * cwThisAssignment.nWeightCureConditions);
+            if (!GetHasSpell(SPELL_MONSTROUS_REGENERATION, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_MONSTROUS_REGENERATION, nClass, sClass2da,  10 * cwThisAssignment.nWeightCureConditions);
+            }
             if (!bHasSummon)
             {
                 nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_V, nClass, sClass2da, 40 * cwThisAssignment.nHighestCategoryWeight);
@@ -2857,7 +2895,6 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
         nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 2);
         while (nLeft > 0)
         {
-            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
             cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
             nWeightSum = 0;
             _ClearRandomSpellTempArrays();
@@ -2881,7 +2918,7 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
             }
             if ((nDomain1 == DOMAIN_PLANT || nDomain2 == DOMAIN_PLANT) && !GetHasSpell(SPELL_BARKSKIN, oCreature))
             {
-                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BARKSKIN, nClass, sClass2da, 30 * cwThisAssignment.nWeightDefences, METAMAGIC_NONE, -1);
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BARKSKIN, nClass, sClass2da, 50 * cwThisAssignment.nWeightDefences, METAMAGIC_NONE, -1);
             }
             if (nDomain1 == DOMAIN_SUN || nDomain2 == DOMAIN_SUN)
             {
@@ -2939,7 +2976,6 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
         nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 1);
         while (nLeft > 0)
         {
-            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
             cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
             nWeightSum = 0;
             _ClearRandomSpellTempArrays();
@@ -3018,7 +3054,6 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
         nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 0);
         while (nLeft > 0)
         {
-            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
             cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
             nWeightSum = 0;
             _ClearRandomSpellTempArrays();
@@ -3042,7 +3077,751 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
             nLeft--;
         }
     }
-    
+    else if (nClass == CLASS_TYPE_DRUID)
+    {
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 9);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_EARTHQUAKE, nClass, sClass2da, 1 + ((24 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective));
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_STORM_OF_VENGEANCE, nClass, sClass2da, 1 + ((26 + nSpellFocusConjuration * 8) * max(cwThisAssignment.nWeightControlAoESelective, cwThisAssignment.nWeightDamagingAoESelective)));
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_MASS_HEAL, nClass, sClass2da, 1 + (30 * cwThisAssignment.nWeightCureConditions));
+            // 
+            if (!GetHasSpell(MISSING_SPELL_SHAPECHANGE_RED_DRAGON, oCreature) && !GetHasSpell(SPELL_SHAPECHANGE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SHAPECHANGE, nClass, sClass2da, 1 + (30 * cwThisAssignment.nWeightMeleeAbility));
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FIRE_STORM, nClass, sClass2da, 1 + ((24 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoESelective), METAMAGIC_EMPOWER);
+            if (!GetHasSpell(SPELL_STONEHOLD, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_STONEHOLD, nClass, sClass2da, 1 + ((24 + nSpellFocusConjuration * 8) * cwThisAssignment.nWeightControlAoENonSelective), METAMAGIC_MAXIMIZE);
+            }
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_IX, nClass, sClass2da, 20 * cwThisAssignment.nHighestCategoryWeight);
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_ELEMENTAL_SWARM, nClass, sClass2da, 60 * cwThisAssignment.nHighestCategoryWeight);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_IX || nAdded == SPELL_ELEMENTAL_SWARM)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 8);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BOMBARDMENT, nClass, sClass2da, 1 + ((24 + nSpellFocusConjuration * 8) * cwThisAssignment.nWeightDamagingAoENonSelective));
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FINGER_OF_DEATH, nClass, sClass2da, (26 + nSpellFocusNecromancy * 8) * cwThisAssignment.nWeightDamagingSingleTarget);
+            if (!GetHasSpell(SPELL_NATURES_BALANCE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_NATURES_BALANCE, nClass, sClass2da, (26 + nSpellFocusTransmutation * 8) * max(cwThisAssignment.nWeightOffensiveUtility, cwThisAssignment.nWeightCureConditions));
+            }
+            if (!GetHasSpell(SPELL_PREMONITION, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_PREMONITION, nClass, sClass2da, 100 * cwThisAssignment.nWeightDefences);
+            }
+            else
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_PREMONITION, nClass, sClass2da, 10 * cwThisAssignment.nWeightDefences);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUNBEAM, nClass, sClass2da, (11 + nSpellFocusEvocation * 4) * cwThisAssignment.nWeightDamagingAoENonSelective);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUNBURST, nClass, sClass2da, (15 + nSpellFocusEvocation * 4) * cwThisAssignment.nWeightDamagingAoESelective);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_INFERNO, nClass, sClass2da, (30 - (GetHasSpell(SPELL_INFERNO, oCreature) * 15)) * cwThisAssignment.nWeightDamagingAoESelective, METAMAGIC_MAXIMIZE);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_ICE_STORM, nClass, sClass2da, (20 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective, METAMAGIC_MAXIMIZE);
+            if (!GetHasSpell(SPELL_WALL_OF_FIRE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_WALL_OF_FIRE, nClass, sClass2da, (10 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective, METAMAGIC_MAXIMIZE);
+            }
+            if (!GetHasSpell(SPELL_STONEHOLD, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_STONEHOLD, nClass, sClass2da, 1 + ((24 + nSpellFocusConjuration * 8) * cwThisAssignment.nWeightControlAoENonSelective), METAMAGIC_EMPOWER);
+            }
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_VIII, nClass, sClass2da, 50 * cwThisAssignment.nHighestCategoryWeight);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_VIII)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 7);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            if (!GetHasSpell(SPELL_AURA_OF_VITALITY, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_AURA_OF_VITALITY, nClass, sClass2da, 50 * cwThisAssignment.nWeightOffensiveUtility);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CREEPING_DOOM, nClass, sClass2da, (20 * cwThisAssignment.nWeightDamagingAoENonSelective));
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FIRE_STORM, nClass, sClass2da, 1 + ((24 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoESelective));
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_HARM, nClass, sClass2da, 1 + ((24 + nSpellFocusNecromancy * 8) * cwThisAssignment.nWeightDamagingAoENonSelective));
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_HEAL, nClass, sClass2da, 30 * cwThisAssignment.nWeightCureConditions);
+            if (!GetHasSpell(SPELL_TRUE_SEEING, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_TRUE_SEEING, nClass, sClass2da, 10 * cwThisAssignment.nWeightOffensiveUtility);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_INFERNO, nClass, sClass2da, (30 - (GetHasSpell(SPELL_INFERNO, oCreature) * 15)) * cwThisAssignment.nWeightDamagingAoESelective, METAMAGIC_EMPOWER);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_ICE_STORM, nClass, sClass2da, (15 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective, METAMAGIC_EMPOWER);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FLAME_STRIKE, nClass, sClass2da, (24 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective, METAMAGIC_MAXIMIZE);
+            if (!GetHasSpell(SPELL_WALL_OF_FIRE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_WALL_OF_FIRE, nClass, sClass2da, (10 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective, METAMAGIC_EMPOWER);
+            }
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_VII, nClass, sClass2da, 50 *cwThisAssignment.nHighestCategoryWeight);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_VII)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 6);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            if (!GetHasSpell(SPELL_CRUMBLE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CRUMBLE, nClass, sClass2da, 5 * cwThisAssignment.nWeightDamagingSingleTarget);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DROWN, nClass, sClass2da, (24 + nSpellFocusTransmutation * 8) * cwThisAssignment.nWeightDamagingSingleTarget);
+            if (!GetHasSpell(SPELL_ENERGY_BUFFER, oCreature) && !GetHasSpell(SPELL_PROTECTION_FROM_ELEMENTS, oCreature) && !GetHasSpell(SPELL_RESIST_ELEMENTS, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_ENERGY_BUFFER, nClass, sClass2da, 70 * cwThisAssignment.nWeightDefences);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREATER_DISPELLING, nClass, sClass2da, (2 - GetHasSpell(SPELL_GREATER_DISPELLING, oCreature)) * 15 * cwThisAssignment.nWeightOffensiveUtility);
+            if (!GetHasSpell(SPELL_GREATER_STONESKIN, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREATER_STONESKIN, nClass, sClass2da, 100 * cwThisAssignment.nWeightDefences);
+            }
+            else
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREATER_STONESKIN, nClass, sClass2da, 10 * cwThisAssignment.nWeightDefences);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_HEALING_CIRCLE, nClass, sClass2da,  20 * cwThisAssignment.nWeightCureConditions);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_REGENERATE, nClass, sClass2da, (20 * cwThisAssignment.nWeightCureConditions));
+            if (!GetHasSpell(SPELL_STONEHOLD, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_STONEHOLD, nClass, sClass2da, 1 + ((24 + nSpellFocusConjuration * 8) * cwThisAssignment.nWeightControlAoENonSelective));
+            }
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_VI, nClass, sClass2da, 50 *cwThisAssignment.nHighestCategoryWeight);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_INFERNO, nClass, sClass2da, (30 - (GetHasSpell(SPELL_INFERNO, oCreature) * 15)) * cwThisAssignment.nWeightDamagingAoESelective, METAMAGIC_EXTEND);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FLAME_STRIKE, nClass, sClass2da, (24 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective, METAMAGIC_EMPOWER);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CALL_LIGHTNING, nClass, sClass2da, (24 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoESelective, METAMAGIC_MAXIMIZE);
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_VI)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 5);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            if (!GetHasSpell(SPELL_AWAKEN, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_AWAKEN, nClass, sClass2da, 15 * cwThisAssignment.nWeightOffensiveUtility);
+            }
+            if (!GetHasSpell(SPELL_DEATH_WARD, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DEATH_WARD, nClass, sClass2da, 20 * cwThisAssignment.nWeightDefences);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_ICE_STORM, nClass, sClass2da, 1 + ((20 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective));
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_INFERNO, nClass, sClass2da, (30 - (GetHasSpell(SPELL_INFERNO, oCreature) * 15)) * cwThisAssignment.nWeightDamagingAoESelective);
+            if (!GetHasSpell(SPELL_MONSTROUS_REGENERATION, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_MONSTROUS_REGENERATION, nClass, sClass2da,  10 * cwThisAssignment.nWeightCureConditions);
+            }
+            if (!GetHasSpell(SPELL_OWLS_INSIGHT, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_OWLS_INSIGHT, nClass, sClass2da,  100 * cwThisAssignment.nWeightOffensiveUtility);
+            }
+            if (!GetHasSpell(SPELL_SPELL_RESISTANCE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SLAY_LIVING, nClass, sClass2da, 60 * cwThisAssignment.nWeightDefences);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_CRITICAL_WOUNDS, nClass, sClass2da,  20 * cwThisAssignment.nWeightCureConditions);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SLAY_LIVING, nClass, sClass2da, (24 + nSpellFocusNecromancy * 8) * cwThisAssignment.nWeightDamagingSingleTarget);
+            if (!GetHasSpell(SPELL_WALL_OF_FIRE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_WALL_OF_FIRE, nClass, sClass2da, (10 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_HOLD_MONSTER, nClass, sClass2da, (26 + nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlSingleTarget, METAMAGIC_EXTEND);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CALL_LIGHTNING, nClass, sClass2da, (24 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoESelective, METAMAGIC_EMPOWER);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_HEALING_STING, nClass, sClass2da, (10 + nSpellFocusNecromancy * 8) * cwThisAssignment.nWeightDamagingSingleTarget, METAMAGIC_EMPOWER);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FLAME_LASH, nClass, sClass2da, ((20 + nCasterLevel/3) + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingSingleTarget, METAMAGIC_MAXIMIZE);
+            if (!GetHasSpell(SPELL_BULLS_STRENGTH, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BULLS_STRENGTH, nClass, sClass2da, 40 * cwThisAssignment.nWeightMeleeAbility, METAMAGIC_MAXIMIZE);
+            }
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_V, nClass, sClass2da, 50 *cwThisAssignment.nHighestCategoryWeight);
+            }
+
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_V)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 4);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_SERIOUS_WOUNDS, nClass, sClass2da,  20 * cwThisAssignment.nWeightCureConditions);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DISPEL_MAGIC, nClass, sClass2da,  (2 - GetHasSpell(SPELL_DISPEL_MAGIC, oCreature)) * 15 * cwThisAssignment.nWeightOffensiveUtility);
+            if (!GetHasSpell(SPELL_FREEDOM_OF_MOVEMENT, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FREEDOM_OF_MOVEMENT, nClass, sClass2da, (1+(GetHasSpell(SPELL_STONEHOLD, oCreature) * 2)) * 20 * cwThisAssignment.nWeightDefences);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_HOLD_MONSTER, nClass, sClass2da, (26 + nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlSingleTarget);
+            if (!GetHasSpell(SPELL_MASS_CAMOFLAGE, oCreature) && GetSkillRank(SKILL_HIDE, oCreature, TRUE) > 0)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_MASS_CAMOFLAGE, nClass, sClass2da,  5 * cwThisAssignment.nWeightOffensiveUtility);
+            }
+            if (!GetHasSpell(SPELL_STONESKIN, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_STONESKIN, nClass, sClass2da, 100 * cwThisAssignment.nWeightDefences);
+            }
+            else
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_STONESKIN, nClass, sClass2da, 10 * cwThisAssignment.nWeightDefences);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FLAME_LASH, nClass, sClass2da, ((20 + nCasterLevel/3) + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingSingleTarget, METAMAGIC_EMPOWER);
+            if (!GetHasSpell(SPELL_BULLS_STRENGTH, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BULLS_STRENGTH, nClass, sClass2da, 40 * cwThisAssignment.nWeightMeleeAbility, METAMAGIC_EMPOWER);
+            }
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_IV, nClass, sClass2da, 50 *cwThisAssignment.nHighestCategoryWeight);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_IV)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 3);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CALL_LIGHTNING, nClass, sClass2da, (24 + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingAoESelective);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CONTAGION, nClass, sClass2da, (5 + nSpellFocusNecromancy * 6) * cwThisAssignment.nWeightControlSingleTarget);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_INFESTATION_OF_MAGGOTS, nClass, sClass2da, (10 + nSpellFocusNecromancy * 8) * cwThisAssignment.nWeightControlSingleTarget);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_MODERATE_WOUNDS, nClass, sClass2da,  20 * cwThisAssignment.nWeightCureConditions);
+            if (!GetHasSpell(SPELL_DOMINATE_ANIMAL, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DOMINATE_ANIMAL, nClass, sClass2da, (5 + nSpellFocusEnchantment) * cwThisAssignment.nWeightControlSingleTarget);
+            }
+            if (!GetHasSpell(SPELL_GREATER_MAGIC_FANG, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREATER_MAGIC_FANG, nClass, sClass2da, 30 * cwThisAssignment.nHighestCategoryWeight);
+            }
+            if (!GetHasSpell(SPELL_NEUTRALIZE_POISON, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_NEUTRALIZE_POISON, nClass, sClass2da, 15 * cwThisAssignment.nWeightCureConditions);
+            }
+            if (!GetHasSpell(SPELL_ENERGY_BUFFER, oCreature) && !GetHasSpell(SPELL_PROTECTION_FROM_ELEMENTS, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_PROTECTION_FROM_ELEMENTS, nClass, sClass2da, 40 * cwThisAssignment.nWeightDefences);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_QUILLFIRE, nClass, sClass2da, (18 + nSpellFocusTransmutation * 8) * cwThisAssignment.nWeightControlSingleTarget);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_HEALING_STING, nClass, sClass2da, (15 + nSpellFocusNecromancy * 6) * cwThisAssignment.nWeightDamagingSingleTarget);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_POISON, nClass, sClass2da, 15 * cwThisAssignment.nWeightControlSingleTarget);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CHARM_PERSON_OR_ANIMAL, nClass, sClass2da, (26 + nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlSingleTarget, METAMAGIC_EXTEND);
+            if (!GetHasSpell(SPELL_SPIKE_GROWTH, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SPIKE_GROWTH, nClass, sClass2da, (18 + nSpellFocusTransmutation * 8) * cwThisAssignment.nWeightControlAoENonSelective);
+            }
+            if (!GetHasSpell(SPELL_REMOVE_DISEASE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_REMOVE_DISEASE, nClass, sClass2da, 2 * cwThisAssignment.nWeightCureConditions);
+            }
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_III, nClass, sClass2da, 50 *cwThisAssignment.nHighestCategoryWeight);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_III)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 2);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            if (!GetHasSpell(SPELL_BARKSKIN, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BARKSKIN, nClass, sClass2da, 50 * cwThisAssignment.nWeightDefences);
+            }
+            if (!GetHasSpell(SPELL_BLOOD_FRENZY, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BLOOD_FRENZY, nClass, sClass2da, 20 * cwThisAssignment.nWeightMeleeAbility);
+            }
+            if (!GetHasSpell(SPELL_BULLS_STRENGTH, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BULLS_STRENGTH, nClass, sClass2da, 40 * cwThisAssignment.nWeightMeleeAbility);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CHARM_PERSON_OR_ANIMAL, nClass, sClass2da, (26 + nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlSingleTarget);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FLAME_LASH, nClass, sClass2da, ((20 + nCasterLevel/3) + nSpellFocusEvocation * 8) * cwThisAssignment.nWeightDamagingSingleTarget);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_LESSER_DISPEL, nClass, sClass2da, (2 - GetHasSpell(SPELL_LESSER_DISPEL, oCreature)) * 15 * cwThisAssignment.nWeightOffensiveUtility);
+            if (!GetHasSpell(SPELL_ONE_WITH_THE_LAND, oCreature) && GetSkillRank(SKILL_HIDE, oCreature, TRUE) > 0)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_ONE_WITH_THE_LAND, nClass, sClass2da,  5 * cwThisAssignment.nWeightOffensiveUtility);
+            }
+            if (!GetHasSpell(SPELL_ENERGY_BUFFER, oCreature) && !GetHasSpell(SPELL_PROTECTION_FROM_ELEMENTS, oCreature) && !GetHasSpell(SPELL_RESIST_ELEMENTS, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_RESIST_ELEMENTS, nClass, sClass2da, 60 * cwThisAssignment.nWeightDefences);
+            }
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_II, nClass, sClass2da, 50 *cwThisAssignment.nHighestCategoryWeight);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_II)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+        
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 1);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_LIGHT_WOUNDS, nClass, sClass2da,  20 * cwThisAssignment.nWeightCureConditions);
+            if (!GetHasSpell(SPELL_ENERGY_BUFFER, oCreature) && !GetHasSpell(SPELL_PROTECTION_FROM_ELEMENTS, oCreature) && !GetHasSpell(SPELL_ENDURE_ELEMENTS, oCreature) && !GetHasSpell(SPELL_RESIST_ELEMENTS, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_ENDURE_ELEMENTS, nClass, sClass2da, 30 * cwThisAssignment.nWeightDefences);
+            }
+            if (!GetHasSpell(SPELL_ENTANGLE, oCreature))
+            {
+                _AddToRandomSpellTempArrays(oCreature, SPELL_ENTANGLE, nClass, sClass2da, 20 * cwThisAssignment.nWeightControlAoENonSelective);
+            }
+            if (!GetHasSpell(SPELL_GREASE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREASE, nClass, sClass2da, (20 + nCasterLevel + nSpellFocusConjuration * 3) * cwThisAssignment.nWeightControlAoENonSelective);
+            }
+            if (!GetHasSpell(SPELL_GREATER_MAGIC_FANG, oCreature) && !GetHasSpell(SPELL_MAGIC_FANG, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_MAGIC_FANG, nClass, sClass2da, 30 * cwThisAssignment.nHighestCategoryWeight);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SLEEP, nClass, sClass2da, (20 - (nCasterLevel * 2) + (nSpellFocusEnchantment * 3)) * cwThisAssignment.nWeightControlAoENonSelective);
+            if (!GetHasSpell(SPELL_CAMOFLAGE, oCreature) && !GetHasSpell(SPELL_MASS_CAMOFLAGE, oCreature) && GetSkillRank(SKILL_HIDE, oCreature, TRUE) > 0)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CAMOFLAGE, nClass, sClass2da,  5 * cwThisAssignment.nWeightOffensiveUtility);
+            }
+           
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_I, nClass, sClass2da, 50 *cwThisAssignment.nHighestCategoryWeight);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_I)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 0);
+        nAssigned = 0;
+        while (nLeft > 0)
+        {
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            if (!GetHasSpell(SPELL_RESISTANCE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_RESISTANCE, nClass, sClass2da, 80);
+            }
+            if (!GetHasSpell(SPELL_VIRTUE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_VIRTUE, nClass, sClass2da, 80);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_LIGHT, nClass, sClass2da, 1);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FLARE, nClass, sClass2da, (20 + nSpellFocusEvocation * 2) * cwThisAssignment.nWeightControlSingleTarget);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_MINOR_WOUNDS, nClass, sClass2da, 1 + (10 * cwThisAssignment.nWeightCureConditions));
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));;
+            nAssigned++;
+            nLeft--;
+        }
+    }
+    else if (nClass == CLASS_TYPE_RANGER)
+    {
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 4);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_SERIOUS_WOUNDS, nClass, sClass2da,  20 * cwThisAssignment.nWeightCureConditions);
+            if (!GetHasSpell(SPELL_FREEDOM_OF_MOVEMENT, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FREEDOM_OF_MOVEMENT, nClass, sClass2da, (1+(GetHasSpell(SPELL_STONEHOLD, oCreature) * 2)) * 20 * cwThisAssignment.nWeightDefences);
+            }
+            if (!GetHasSpell(SPELL_MASS_CAMOFLAGE, oCreature) && GetSkillRank(SKILL_HIDE, oCreature, TRUE) > 0)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_MASS_CAMOFLAGE, nClass, sClass2da,  5 * cwThisAssignment.nWeightOffensiveUtility);
+            }
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_IV, nClass, sClass2da, 50 *cwThisAssignment.nHighestCategoryWeight);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_IV)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 3);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            if (!GetHasSpell(SPELL_BLADE_THIRST, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BLADE_THIRST, nClass, sClass2da, 20 * cwThisAssignment.nWeightMeleeAbility);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_AID, nClass, sClass2da, 1 + (20 * cwThisAssignment.nWeightMeleeAbility));
+            if (!GetHasSpell(SPELL_INVISIBILITY_PURGE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_INVISIBILITY_PURGE, nClass, sClass2da, 10 * cwThisAssignment.nWeightOffensiveUtility);
+            }
+            if (!GetHasSpell(SPELL_GREATER_MAGIC_FANG, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREATER_MAGIC_FANG, nClass, sClass2da, 30 * cwThisAssignment.nHighestCategoryWeight);
+            }
+            if (!GetHasSpell(SPELL_NEUTRALIZE_POISON, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_NEUTRALIZE_POISON, nClass, sClass2da, 15 * cwThisAssignment.nWeightCureConditions);
+            }
+            if (!GetHasSpell(SPELL_REMOVE_DISEASE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_REMOVE_DISEASE, nClass, sClass2da, 2 * cwThisAssignment.nWeightCureConditions);
+            }
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_III, nClass, sClass2da, 50 *cwThisAssignment.nHighestCategoryWeight);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_III)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 2);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            if (!GetHasSpell(SPELL_CATS_GRACE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CATS_GRACE, nClass, sClass2da, 40 * cwThisAssignment.nWeightMeleeAbility);
+            }
+            if (!GetHasSpell(SPELL_ONE_WITH_THE_LAND, oCreature) && GetSkillRank(SKILL_HIDE, oCreature, TRUE) > 0)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_ONE_WITH_THE_LAND, nClass, sClass2da,  5 * cwThisAssignment.nWeightOffensiveUtility);
+            }
+            if (!GetHasSpell(SPELL_ENERGY_BUFFER, oCreature) && !GetHasSpell(SPELL_PROTECTION_FROM_ELEMENTS, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_PROTECTION_FROM_ELEMENTS, nClass, sClass2da, 60 * cwThisAssignment.nWeightDefences);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SLEEP, nClass, sClass2da, 1 + ((20 - (nCasterLevel * 2) + (nSpellFocusEnchantment * 3)) * cwThisAssignment.nWeightControlAoENonSelective));
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_II, nClass, sClass2da, 50 *cwThisAssignment.nHighestCategoryWeight);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_II)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 1);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            if (!GetHasSpell(SPELL_CAMOFLAGE, oCreature) && !GetHasSpell(SPELL_MASS_CAMOFLAGE, oCreature) && GetSkillRank(SKILL_HIDE, oCreature, TRUE) > 0)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CAMOFLAGE, nClass, sClass2da,  5 * cwThisAssignment.nWeightOffensiveUtility);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_LIGHT_WOUNDS, nClass, sClass2da,  20 * cwThisAssignment.nWeightCureConditions);
+            if (!GetHasSpell(SPELL_ENTANGLE, oCreature))
+            {
+                _AddToRandomSpellTempArrays(oCreature, SPELL_ENTANGLE, nClass, sClass2da, 20 * cwThisAssignment.nWeightControlAoENonSelective);
+            }
+            if (!GetHasSpell(SPELL_GREATER_MAGIC_FANG, oCreature) && !GetHasSpell(SPELL_MAGIC_FANG, oCreature) && nCasterLevel >= 6)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_MAGIC_FANG, nClass, sClass2da, 30 * cwThisAssignment.nHighestCategoryWeight);
+            }
+            if (!GetHasSpell(SPELL_ENERGY_BUFFER, oCreature) && !GetHasSpell(SPELL_PROTECTION_FROM_ELEMENTS, oCreature) && !GetHasSpell(SPELL_RESIST_ELEMENTS, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_RESIST_ELEMENTS, nClass, sClass2da, 60 * cwThisAssignment.nWeightDefences);
+            }
+            if (!GetHasSpell(SPELL_GREASE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREASE, nClass, sClass2da, (20 + nCasterLevel + nSpellFocusConjuration * 3) * cwThisAssignment.nWeightControlAoENonSelective);
+            }
+            if (!bHasSummon)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SUMMON_CREATURE_I, nClass, sClass2da, 50 *cwThisAssignment.nHighestCategoryWeight);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            if (nAdded == SPELL_SUMMON_CREATURE_I)
+            {
+                bHasSummon = 1;
+            }
+            nAssigned++;
+            nLeft--;
+        }
+    }
+    else if (nClass == CLASS_TYPE_PALADIN)
+    {
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 4);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            // This is by far the best spell of the level!
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_HOLY_SWORD, nClass, sClass2da,  50 * cwThisAssignment.nWeightMeleeAbility);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_SERIOUS_WOUNDS, nClass, sClass2da,  20 * cwThisAssignment.nWeightCureConditions);
+            if (!GetHasSpell(SPELL_DEATH_WARD, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DEATH_WARD, nClass, sClass2da, 20 * cwThisAssignment.nWeightDefences);
+            }
+            if (!GetHasSpell(SPELL_FREEDOM_OF_MOVEMENT, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_FREEDOM_OF_MOVEMENT, nClass, sClass2da, 20 * cwThisAssignment.nWeightDefences);
+            }
+            if (!GetHasSpell(SPELL_NEUTRALIZE_POISON, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_NEUTRALIZE_POISON, nClass, sClass2da, 10 * cwThisAssignment.nWeightCureConditions);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 3);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            if (!GetHasSpell(SPELL_GREATER_MAGIC_WEAPON, oCreature) && !GetHasSpell(SPELL_HOLY_SWORD, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREATER_MAGIC_WEAPON, nClass, sClass2da, 20 * cwThisAssignment.nWeightMeleeAbility);
+            }
+            if (!GetHasSpell(SPELL_MAGIC_CIRCLE_AGAINST_EVIL, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, MISSING_SPELL_MAGIC_CIRCLE_AGAINST_ALIGNMENT, nClass, sClass2da, 30 * cwThisAssignment.nWeightDefences);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DISPEL_MAGIC, nClass, sClass2da,  (2 - GetHasSpell(SPELL_DISPEL_MAGIC, oCreature)) * 15 * cwThisAssignment.nWeightOffensiveUtility);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_MODERATE_WOUNDS, nClass, sClass2da,  20 * cwThisAssignment.nWeightCureConditions);
+            if (!GetHasSpell(SPELL_PRAYER, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_PRAYER, nClass, sClass2da, 30 * max(cwThisAssignment.nWeightMeleeAbility, cwThisAssignment.nWeightOffensiveUtility), METAMAGIC_EXTEND);
+            }
+            if (!GetHasSpell(SPELL_REMOVE_BLINDNESS_AND_DEAFNESS, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_REMOVE_BLINDNESS_AND_DEAFNESS, nClass, sClass2da, 5 * cwThisAssignment.nWeightCureConditions);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 2);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            if (!GetHasSpell(SPELL_AID, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_AID, nClass, sClass2da, 20 * cwThisAssignment.nWeightMeleeAbility);
+            }
+            if (!GetHasSpell(SPELL_AURAOFGLORY, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_AURAOFGLORY, nClass, sClass2da, 50 * cwThisAssignment.nWeightMeleeAbility);
+            }
+            if (!GetHasSpell(SPELL_BULLS_STRENGTH, oCreature) && !GetHasSpell(SPELL_EAGLE_SPLEDOR, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BULLS_STRENGTH, nClass, sClass2da, 40 * cwThisAssignment.nWeightMeleeAbility);
+            }
+            if (!GetHasSpell(SPELL_BULLS_STRENGTH, oCreature) && !GetHasSpell(SPELL_EAGLE_SPLEDOR, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_EAGLE_SPLEDOR, nClass, sClass2da, 20 * cwThisAssignment.nWeightMeleeAbility);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_REMOVE_PARALYSIS, nClass, sClass2da, 1 + (5 * cwThisAssignment.nWeightCureConditions));
+            if (!GetHasSpell(SPELL_ENERGY_BUFFER, oCreature) && !GetHasSpell(SPELL_PROTECTION_FROM_ELEMENTS, oCreature) && !GetHasSpell(SPELL_RESIST_ELEMENTS, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_RESIST_ELEMENTS, nClass, sClass2da, 20 * cwThisAssignment.nWeightDefences);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DIVINE_FAVOR, nClass, sClass2da, 30 * cwThisAssignment.nWeightMeleeAbility, METAMAGIC_EXTEND);
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            nAssigned++;
+            nLeft--;
+        }
+        
+        nAssigned = 0;
+        nLeft = Array_At_Int(RAND_SPELL_SLOTS_REMAINING, 1);
+        while (nLeft > 0)
+        {
+            // Adding 1 to many spell weights to try to avoid totalweight == 0 in any circumstances
+            cwThisAssignment = _CalculateWeightForSpellAssignment(cwWeights, nAssigned);
+            nWeightSum = 0;
+            _ClearRandomSpellTempArrays();
+            if (!GetHasSpell(SPELL_BLESS, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BLESS, nClass, sClass2da, 30 * max(cwThisAssignment.nWeightOffensiveUtility, cwThisAssignment.nWeightMeleeAbility));
+            }
+            if (!GetHasSpell(SPELL_BLESS_WEAPON, oCreature) && !GetHasSpell(SPELL_MAGIC_WEAPON, oCreature) && !GetHasSpell(SPELL_GREATER_MAGIC_WEAPON, oCreature) && !GetHasSpell(SPELL_DEAFENING_CLANG, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BLESS_WEAPON, nClass, sClass2da, 30 * cwThisAssignment.nWeightMeleeAbility);
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_MAGIC_WEAPON, nClass, sClass2da, 20 * cwThisAssignment.nWeightMeleeAbility);
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DEAFENING_CLANG, nClass, sClass2da, 40 * cwThisAssignment.nWeightMeleeAbility);
+            }
+            if (!GetHasSpell(SPELL_ENERGY_BUFFER, oCreature) && !GetHasSpell(SPELL_PROTECTION_FROM_ELEMENTS, oCreature) && !GetHasSpell(SPELL_ENDURE_ELEMENTS, oCreature) && !GetHasSpell(SPELL_RESIST_ELEMENTS, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_ENDURE_ELEMENTS, nClass, sClass2da, 30 * cwThisAssignment.nWeightDefences);
+            }
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_LIGHT_WOUNDS, nClass, sClass2da, 30 * cwThisAssignment.nWeightCureConditions);
+            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DIVINE_FAVOR, nClass, sClass2da, 30 * cwThisAssignment.nWeightMeleeAbility);
+            if (!GetHasSpell(SPELL_PROTECTION_FROM_EVIL, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, MISSING_SPELL_PROTECTION_FROM_ALIGNMENT, nClass, sClass2da, 30 * cwThisAssignment.nWeightDefences);
+            }
+            if (!GetHasSpell(SPELL_RESISTANCE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_RESISTANCE, nClass, sClass2da, 10 * cwThisAssignment.nWeightDefences);
+            }
+            if (!GetHasSpell(SPELL_VIRTUE, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_VIRTUE, nClass, sClass2da, 2 * cwThisAssignment.nWeightDefences);
+            }
+            jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
+            nAssigned++;
+            nLeft--;
+        }
+    }
     jObj = JsonObjectSet(jObj, "Feats", jFeats);
     jObj = JsonObjectSet(jObj, "Domains", jDomains);
     int nFeatsLength = JsonGetLength(jFeats);
@@ -3064,7 +3843,7 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
 
 void RandomSpellbookPopulate(int nSpellbookType, object oCreature, int nClass)
 {
-    //WriteTimestampedLogEntry("Populating random spellbook of type " + IntToString(nSpellbookType) + " for " + GetName(oCreature) + " and class " + IntToString(nClass));
+    WriteTimestampedLogEntry("Populating random spellbook of type " + IntToString(nSpellbookType) + " for " + GetName(oCreature) + " and class " + IntToString(nClass));
     if (GetLevelByClass(nClass, oCreature) <= 0)
     {
         WriteTimestampedLogEntry("ERROR: Tried to seed spellbooks for class " + IntToString(nClass) + " on " + GetName(oCreature) + " (resref " + GetResRef(oCreature) + ") but it has no levels in this class!");
@@ -3082,14 +3861,16 @@ void RandomSpellbookPopulate(int nSpellbookType, object oCreature, int nClass)
 
 void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1)
 {
-    _ClearSpellbook(oCreature, nClass);
+    // Save time and don't do this, it'll all be overwritten anyway
+    //_ClearSpellbook(oCreature, nClass);
     if (nFixedIndex == -1)
     {
         int nNumSpellbooks = GetCampaignInt("randspellbooks", GetResRef(oCreature) + "_numsbs_" + IntToString(nClass));
         nFixedIndex = Random(nNumSpellbooks);
     }
     
-    //WriteTimestampedLogEntry("Retrieve:" + GetResRef(oCreature) + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex));
+    
+    // Variable length:
     // Resref: 16
     // _rsb_ : 5
     // nClass: 2
@@ -3097,7 +3878,8 @@ void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1)
     // nFixedIndex: 2, or maybe 3 if someone is insane
     // = 26 or 27 at a stretch, max for campaign db is 32
     json jObj = GetCampaignJson("randspellbooks", GetResRef(oCreature) + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex));
-    //WriteTimestampedLogEntry(JsonDump(jObj));
+    WriteTimestampedLogEntry("Retrieve:" + GetResRef(oCreature) + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex));
+    WriteTimestampedLogEntry(JsonDump(jObj));
     int nNumCasterFeats = GetLocalInt(oCreature, "rand_feat_caster");
     int i;
     json jFeats = JsonObjectGet(jObj, "Feats");

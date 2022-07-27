@@ -35,6 +35,7 @@ void SpellbookSeedLoop(int nPos=-1, int nCounts=0)
         location lSpawn = Location(oArea, Vector(10.0, 10.0, 0.0), 0.0);
         object oNew = CreateObject(OBJECT_TYPE_CREATURE, sResRef, lSpawn);
         WriteTimestampedLogEntry("Beginning spellbook seed for " + sResRef + " -> " + GetName(oNew));
+        nCounts = 0;
         SetLocalObject(GetModule(), "spellbook_seed_last_creature", oNew);
     }
     DelayCommand(1.0, SpellbookSeedLoop(nPos, nCounts+1));
