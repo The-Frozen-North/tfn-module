@@ -199,6 +199,7 @@ void main()
     DoRevive(GetObjectByTag("hen_grimgnaw"));
     DoRevive(GetObjectByTag("hen_valen"));
     DoRevive(GetObjectByTag("hen_nathyrra"));
+    DoRevive(GetObjectByTag("hen_bim"));
 
     int nWeatherCount = GetLocalInt(oModule, "weather_count");
     int nWeatherDuration = GetLocalInt(oModule, "weather_duration");

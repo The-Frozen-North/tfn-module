@@ -5534,7 +5534,7 @@
         },
         "FactionID": {
           "type": "word",
-          "value": 2
+          "value": 3
         },
         "FeatList": {
           "type": "list",
@@ -5626,7 +5626,7 @@
         },
         "Plot": {
           "type": "byte",
-          "value": 0
+          "value": 1
         },
         "PortraitId": {
           "type": "word",
@@ -6710,7 +6710,7 @@
         },
         "FactionID": {
           "type": "word",
-          "value": 2
+          "value": 3
         },
         "FeatList": {
           "type": "list",
@@ -6802,7 +6802,7 @@
         },
         "Plot": {
           "type": "byte",
-          "value": 0
+          "value": 1
         },
         "PortraitId": {
           "type": "word",
@@ -8270,828 +8270,6 @@
         },
         "Cha": {
           "type": "byte",
-          "value": 8
-        },
-        "ChallengeRating": {
-          "type": "float",
-          "value": 1.0
-        },
-        "ClassList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 2,
-              "Class": {
-                "type": "int",
-                "value": 4
-              },
-              "ClassLevel": {
-                "type": "short",
-                "value": 1
-              }
-            }
-          ]
-        },
-        "Color_Hair": {
-          "type": "byte",
-          "value": 13
-        },
-        "Color_Skin": {
-          "type": "byte",
-          "value": 1
-        },
-        "Color_Tattoo1": {
-          "type": "byte",
-          "value": 1
-        },
-        "Color_Tattoo2": {
-          "type": "byte",
-          "value": 1
-        },
-        "Con": {
-          "type": "byte",
-          "value": 12
-        },
-        "Conversation": {
-          "type": "resref",
-          "value": "bim"
-        },
-        "CRAdjust": {
-          "type": "int",
-          "value": 0
-        },
-        "CurrentHitPoints": {
-          "type": "short",
-          "value": 10
-        },
-        "DecayTime": {
-          "type": "dword",
-          "value": 5000
-        },
-        "Deity": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Description": {
-          "id": 57876,
-          "type": "cexolocstring",
-          "value": {}
-        },
-        "Dex": {
-          "type": "byte",
-          "value": 13
-        },
-        "Disarmable": {
-          "type": "byte",
-          "value": 0
-        },
-        "Equip_ItemList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 2,
-              "AddCost": {
-                "type": "dword",
-                "value": 24
-              },
-              "ArmorPart_Belt": {
-                "type": "byte",
-                "value": 4
-              },
-              "ArmorPart_LBicep": {
-                "type": "byte",
-                "value": 10
-              },
-              "ArmorPart_LFArm": {
-                "type": "byte",
-                "value": 13
-              },
-              "ArmorPart_LFoot": {
-                "type": "byte",
-                "value": 5
-              },
-              "ArmorPart_LHand": {
-                "type": "byte",
-                "value": 4
-              },
-              "ArmorPart_LShin": {
-                "type": "byte",
-                "value": 9
-              },
-              "ArmorPart_LShoul": {
-                "type": "byte",
-                "value": 16
-              },
-              "ArmorPart_LThigh": {
-                "type": "byte",
-                "value": 3
-              },
-              "ArmorPart_Neck": {
-                "type": "byte",
-                "value": 1
-              },
-              "ArmorPart_Pelvis": {
-                "type": "byte",
-                "value": 7
-              },
-              "ArmorPart_RBicep": {
-                "type": "byte",
-                "value": 10
-              },
-              "ArmorPart_RFArm": {
-                "type": "byte",
-                "value": 13
-              },
-              "ArmorPart_RFoot": {
-                "type": "byte",
-                "value": 5
-              },
-              "ArmorPart_RHand": {
-                "type": "byte",
-                "value": 4
-              },
-              "ArmorPart_Robe": {
-                "type": "byte",
-                "value": 0
-              },
-              "ArmorPart_RShin": {
-                "type": "byte",
-                "value": 9
-              },
-              "ArmorPart_RShoul": {
-                "type": "byte",
-                "value": 3
-              },
-              "ArmorPart_RThigh": {
-                "type": "byte",
-                "value": 3
-              },
-              "ArmorPart_Torso": {
-                "type": "byte",
-                "value": 12
-              },
-              "BaseItem": {
-                "type": "int",
-                "value": 16
-              },
-              "Charges": {
-                "type": "byte",
-                "value": 0
-              },
-              "Cloth1Color": {
-                "type": "byte",
-                "value": 25
-              },
-              "Cloth2Color": {
-                "type": "byte",
-                "value": 20
-              },
-              "Cost": {
-                "type": "dword",
-                "value": 25
-              },
-              "Cursed": {
-                "type": "byte",
-                "value": 0
-              },
-              "DescIdentified": {
-                "type": "cexolocstring",
-                "value": {
-                  "0": "This uniform is commonly worn by academy students, faculty, and even the local militia, who were most likely former students that have graduated. The gold markings and blue dye makes this uniform very distinctive, even from a distance."
-                }
-              },
-              "Description": {
-                "type": "cexolocstring",
-                "value": {
-                  "0": "This uniform is commonly worn by academy students, faculty, and even the local militia, who were most likely former students that have graduated. The gold markings and blue dye makes this uniform very distinctive, even from a distance."
-                }
-              },
-              "Identified": {
-                "type": "byte",
-                "value": 1
-              },
-              "Leather1Color": {
-                "type": "byte",
-                "value": 3
-              },
-              "Leather2Color": {
-                "type": "byte",
-                "value": 23
-              },
-              "LocalizedName": {
-                "id": 24979,
-                "type": "cexolocstring",
-                "value": {
-                  "0": "Neverwinter Uniform"
-                }
-              },
-              "Metal1Color": {
-                "type": "byte",
-                "value": 0
-              },
-              "Metal2Color": {
-                "type": "byte",
-                "value": 8
-              },
-              "Plot": {
-                "type": "byte",
-                "value": 0
-              },
-              "PropertiesList": {
-                "type": "list",
-                "value": []
-              },
-              "StackSize": {
-                "type": "word",
-                "value": 1
-              },
-              "Stolen": {
-                "type": "byte",
-                "value": 0
-              },
-              "Tag": {
-                "type": "cexostring",
-                "value": "nwuniform"
-              },
-              "TemplateResRef": {
-                "type": "resref",
-                "value": "nwuniform"
-              },
-              "XOrientation": {
-                "type": "float",
-                "value": 0.0
-              },
-              "XPosition": {
-                "type": "float",
-                "value": -1.0
-              },
-              "YOrientation": {
-                "type": "float",
-                "value": 1.0
-              },
-              "YPosition": {
-                "type": "float",
-                "value": -1.0
-              },
-              "ZPosition": {
-                "type": "float",
-                "value": -1.0
-              }
-            }
-          ]
-        },
-        "FactionID": {
-          "type": "word",
-          "value": 2
-        },
-        "FeatList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 1,
-              "Feat": {
-                "type": "word",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Feat": {
-                "type": "word",
-                "value": 2
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Feat": {
-                "type": "word",
-                "value": 3
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Feat": {
-                "type": "word",
-                "value": 4
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Feat": {
-                "type": "word",
-                "value": 40
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Feat": {
-                "type": "word",
-                "value": 46
-              }
-            }
-          ]
-        },
-        "FirstName": {
-          "id": 57902,
-          "type": "cexolocstring",
-          "value": {
-            "0": "Bim"
-          }
-        },
-        "fortbonus": {
-          "type": "short",
-          "value": 0
-        },
-        "Gender": {
-          "type": "byte",
-          "value": 0
-        },
-        "GoodEvil": {
-          "type": "byte",
-          "value": 50
-        },
-        "HitPoints": {
-          "type": "short",
-          "value": 10
-        },
-        "Int": {
-          "type": "byte",
-          "value": 10
-        },
-        "Interruptable": {
-          "type": "byte",
-          "value": 1
-        },
-        "IsImmortal": {
-          "type": "byte",
-          "value": 1
-        },
-        "IsPC": {
-          "type": "byte",
-          "value": 0
-        },
-        "LastName": {
-          "type": "cexolocstring",
-          "value": {}
-        },
-        "LawfulChaotic": {
-          "type": "byte",
-          "value": 50
-        },
-        "Lootable": {
-          "type": "byte",
-          "value": 0
-        },
-        "MaxHitPoints": {
-          "type": "short",
-          "value": 12
-        },
-        "NaturalAC": {
-          "type": "byte",
-          "value": 1
-        },
-        "NoPermDeath": {
-          "type": "byte",
-          "value": 0
-        },
-        "PerceptionRange": {
-          "type": "byte",
-          "value": 11
-        },
-        "Phenotype": {
-          "type": "int",
-          "value": 0
-        },
-        "Plot": {
-          "type": "byte",
-          "value": 0
-        },
-        "PortraitId": {
-          "type": "word",
-          "value": 96
-        },
-        "Race": {
-          "type": "byte",
-          "value": 6
-        },
-        "refbonus": {
-          "type": "short",
-          "value": 0
-        },
-        "ScriptAttacked": {
-          "type": "resref",
-          "value": "ai_onattacked"
-        },
-        "ScriptDamaged": {
-          "type": "resref",
-          "value": "ai_ondamaged"
-        },
-        "ScriptDeath": {
-          "type": "resref",
-          "value": "ai_ondeath"
-        },
-        "ScriptDialogue": {
-          "type": "resref",
-          "value": "ai_onconverse"
-        },
-        "ScriptDisturbed": {
-          "type": "resref",
-          "value": "ai_ondisturb"
-        },
-        "ScriptEndRound": {
-          "type": "resref",
-          "value": "ai_oncombrnd"
-        },
-        "ScriptHeartbeat": {
-          "type": "resref",
-          "value": "ai_onheartb"
-        },
-        "ScriptOnBlocked": {
-          "type": "resref",
-          "value": "ai_onblocked"
-        },
-        "ScriptOnNotice": {
-          "type": "resref",
-          "value": "ai_onpercep"
-        },
-        "ScriptRested": {
-          "type": "resref",
-          "value": "ai_onrest"
-        },
-        "ScriptSpawn": {
-          "type": "resref",
-          "value": "ai_onspawn"
-        },
-        "ScriptSpellAt": {
-          "type": "resref",
-          "value": "ai_onspellcast"
-        },
-        "ScriptUserDefine": {
-          "type": "resref",
-          "value": "ai_onuserdef"
-        },
-        "SkillList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 2
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 2
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 2
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 2
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Rank": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "SoundSetFile": {
-          "type": "word",
-          "value": 193
-        },
-        "SpecAbilityList": {
-          "type": "list",
-          "value": []
-        },
-        "StartingPackage": {
-          "type": "byte",
-          "value": 4
-        },
-        "Str": {
-          "type": "byte",
-          "value": 15
-        },
-        "Subrace": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Tag": {
-          "type": "cexostring",
-          "value": "acad_bim"
-        },
-        "Tail_New": {
-          "type": "dword",
-          "value": 0
-        },
-        "TemplateList": {
-          "type": "list",
-          "value": []
-        },
-        "TemplateResRef": {
-          "type": "resref",
-          "value": "acad_bim"
-        },
-        "WalkRate": {
-          "type": "int",
-          "value": 7
-        },
-        "willbonus": {
-          "type": "short",
-          "value": 0
-        },
-        "Wings_New": {
-          "type": "dword",
-          "value": 0
-        },
-        "Wis": {
-          "type": "byte",
-          "value": 12
-        },
-        "XOrientation": {
-          "type": "float",
-          "value": 0.97
-        },
-        "XPosition": {
-          "type": "float",
-          "value": 55.5053
-        },
-        "YOrientation": {
-          "type": "float",
-          "value": -0.243
-        },
-        "YPosition": {
-          "type": "float",
-          "value": 39.7286
-        },
-        "ZPosition": {
-          "type": "float",
-          "value": -0.0
-        }
-      },
-      {
-        "__struct_id": 4,
-        "Appearance_Head": {
-          "type": "byte",
-          "value": 13
-        },
-        "Appearance_Type": {
-          "type": "word",
-          "value": 6
-        },
-        "ArmorPart_RFoot": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyBag": {
-          "type": "byte",
-          "value": 0
-        },
-        "BodyPart_Belt": {
-          "type": "byte",
-          "value": 0
-        },
-        "BodyPart_LBicep": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_LFArm": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_LFoot": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_LHand": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_LShin": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_LShoul": {
-          "type": "byte",
-          "value": 0
-        },
-        "BodyPart_LThigh": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_Neck": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_Pelvis": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_RBicep": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_RFArm": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_RHand": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_RShin": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_RShoul": {
-          "type": "byte",
-          "value": 0
-        },
-        "BodyPart_RThigh": {
-          "type": "byte",
-          "value": 1
-        },
-        "BodyPart_Torso": {
-          "type": "byte",
-          "value": 1
-        },
-        "Cha": {
-          "type": "byte",
           "value": 12
         },
         "ChallengeRating": {
@@ -9180,19 +8358,19 @@
               },
               "ArmorPart_Belt": {
                 "type": "byte",
-                "value": 4
+                "value": 8
               },
               "ArmorPart_LBicep": {
                 "type": "byte",
-                "value": 10
+                "value": 7
               },
               "ArmorPart_LFArm": {
                 "type": "byte",
-                "value": 13
+                "value": 20
               },
               "ArmorPart_LFoot": {
                 "type": "byte",
-                "value": 5
+                "value": 186
               },
               "ArmorPart_LHand": {
                 "type": "byte",
@@ -9200,15 +8378,15 @@
               },
               "ArmorPart_LShin": {
                 "type": "byte",
-                "value": 9
+                "value": 11
               },
               "ArmorPart_LShoul": {
                 "type": "byte",
-                "value": 16
+                "value": 17
               },
               "ArmorPart_LThigh": {
                 "type": "byte",
-                "value": 3
+                "value": 9
               },
               "ArmorPart_Neck": {
                 "type": "byte",
@@ -9216,19 +8394,19 @@
               },
               "ArmorPart_Pelvis": {
                 "type": "byte",
-                "value": 7
+                "value": 6
               },
               "ArmorPart_RBicep": {
                 "type": "byte",
-                "value": 10
+                "value": 7
               },
               "ArmorPart_RFArm": {
                 "type": "byte",
-                "value": 13
+                "value": 20
               },
               "ArmorPart_RFoot": {
                 "type": "byte",
-                "value": 5
+                "value": 186
               },
               "ArmorPart_RHand": {
                 "type": "byte",
@@ -9240,19 +8418,19 @@
               },
               "ArmorPart_RShin": {
                 "type": "byte",
-                "value": 9
+                "value": 11
               },
               "ArmorPart_RShoul": {
                 "type": "byte",
-                "value": 3
+                "value": 17
               },
               "ArmorPart_RThigh": {
                 "type": "byte",
-                "value": 3
+                "value": 9
               },
               "ArmorPart_Torso": {
                 "type": "byte",
-                "value": 12
+                "value": 14
               },
               "BaseItem": {
                 "type": "int",
@@ -9260,7 +8438,7 @@
               },
               "Charges": {
                 "type": "byte",
-                "value": 0
+                "value": 50
               },
               "Cloth1Color": {
                 "type": "byte",
@@ -9268,11 +8446,11 @@
               },
               "Cloth2Color": {
                 "type": "byte",
-                "value": 20
+                "value": 25
               },
               "Cost": {
                 "type": "dword",
-                "value": 1
+                "value": 1200
               },
               "Cursed": {
                 "type": "byte",
@@ -9280,15 +8458,11 @@
               },
               "DescIdentified": {
                 "type": "cexolocstring",
-                "value": {
-                  "0": "This uniform is commonly worn by academy students, faculty, and even the local militia, who were most likely former students that have graduated. The gold markings and blue dye makes this uniform very distinctive, even from a distance."
-                }
+                "value": {}
               },
               "Description": {
                 "type": "cexolocstring",
-                "value": {
-                  "0": "This uniform is commonly worn by academy students, faculty, and even the local militia, who were most likely former students that have graduated. The gold markings and blue dye makes this uniform very distinctive, even from a distance."
-                }
+                "value": {}
               },
               "Identified": {
                 "type": "byte",
@@ -9296,26 +8470,26 @@
               },
               "Leather1Color": {
                 "type": "byte",
-                "value": 3
+                "value": 23
               },
               "Leather2Color": {
                 "type": "byte",
-                "value": 23
+                "value": 25
               },
               "LocalizedName": {
                 "id": 24979,
                 "type": "cexolocstring",
                 "value": {
-                  "0": "Neverwinter Uniform"
+                  "0": "Neverwinter Full Plate"
                 }
               },
               "Metal1Color": {
                 "type": "byte",
-                "value": 0
+                "value": 1
               },
               "Metal2Color": {
                 "type": "byte",
-                "value": 8
+                "value": 0
               },
               "Plot": {
                 "type": "byte",
@@ -9335,11 +8509,126 @@
               },
               "Tag": {
                 "type": "cexostring",
-                "value": "nwuniform"
+                "value": "NWuniform8"
               },
               "TemplateResRef": {
                 "type": "resref",
-                "value": "nwuniform"
+                "value": "cre_nwplate"
+              },
+              "XOrientation": {
+                "type": "float",
+                "value": 0.0
+              },
+              "XPosition": {
+                "type": "float",
+                "value": -1.0
+              },
+              "YOrientation": {
+                "type": "float",
+                "value": 1.0
+              },
+              "YPosition": {
+                "type": "float",
+                "value": -1.0
+              },
+              "ZPosition": {
+                "type": "float",
+                "value": -1.0
+              }
+            },
+            {
+              "__struct_id": 64,
+              "AddCost": {
+                "type": "dword",
+                "value": 0
+              },
+              "BaseItem": {
+                "type": "int",
+                "value": 80
+              },
+              "Charges": {
+                "type": "byte",
+                "value": 0
+              },
+              "Cloth1Color": {
+                "type": "byte",
+                "value": 25
+              },
+              "Cloth2Color": {
+                "type": "byte",
+                "value": 25
+              },
+              "Cost": {
+                "type": "dword",
+                "value": 24
+              },
+              "Cursed": {
+                "type": "byte",
+                "value": 0
+              },
+              "DescIdentified": {
+                "id": 66528,
+                "type": "cexolocstring",
+                "value": {}
+              },
+              "Description": {
+                "type": "cexolocstring",
+                "value": {}
+              },
+              "Identified": {
+                "type": "byte",
+                "value": 1
+              },
+              "Leather1Color": {
+                "type": "byte",
+                "value": 23
+              },
+              "Leather2Color": {
+                "type": "byte",
+                "value": 93
+              },
+              "LocalizedName": {
+                "id": 66540,
+                "type": "cexolocstring",
+                "value": {
+                  "0": "Bim's Cloak"
+                }
+              },
+              "Metal1Color": {
+                "type": "byte",
+                "value": 1
+              },
+              "Metal2Color": {
+                "type": "byte",
+                "value": 0
+              },
+              "ModelPart1": {
+                "type": "byte",
+                "value": 14
+              },
+              "Plot": {
+                "type": "byte",
+                "value": 0
+              },
+              "PropertiesList": {
+                "type": "list",
+                "value": []
+              },
+              "StackSize": {
+                "type": "word",
+                "value": 1
+              },
+              "Stolen": {
+                "type": "byte",
+                "value": 0
+              },
+              "Tag": {
+                "type": "cexostring",
+                "value": "X0_MAARCL027"
+              },
+              "TemplateResRef": {
+                "type": "resref",
+                "value": "hen_bimc"
               },
               "XOrientation": {
                 "type": "float",

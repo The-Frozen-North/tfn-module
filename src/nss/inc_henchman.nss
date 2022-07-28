@@ -85,6 +85,7 @@ void RehireHenchman(object oPlayer)
     if (GetLocalString(oModule, "hen_grimgnaw_master") == sUUID) SetMaster(GetObjectByTag("hen_grimgnaw"), oPlayer);
     if (GetLocalString(oModule, "hen_valen_master") == sUUID) SetMaster(GetObjectByTag("hen_valen"), oPlayer);
     if (GetLocalString(oModule, "hen_nathyrra_master") == sUUID) SetMaster(GetObjectByTag("hen_nathyrra"), oPlayer);
+    if (GetLocalString(oModule, "hen_bim_master") == sUUID) SetMaster(GetObjectByTag("hen_bim"), oPlayer);
 }
 
 void DismissHenchman(object oHench)
