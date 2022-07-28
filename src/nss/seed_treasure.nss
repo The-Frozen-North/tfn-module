@@ -673,6 +673,109 @@ void CountItemsThroughTiers()
     }
 }
 
+void CreateContainersForItemTypesByTier()
+{
+    int nBaseItem;
+    int nUnique;
+    for (nUnique=0; nUnique <= 1; nUnique++)
+    {
+        string sUniqueness = nUnique ? "NonUnique" : "";
+        int nTier;
+        for (nTier=1; nTier<=5; nTier++)
+        {
+            int nNumItems = 0;
+            int nContainerType;
+            for (nContainerType=0; nContainerType<=3; nContainerType++)
+            {
+                string sContainerTypeName;
+                switch (nContainerType)
+                {
+                    case 0: { sContainerTypeName = "Armor"; break; }
+                    case 1: { sContainerTypeName = "Range"; break; }
+                    case 2: { sContainerTypeName = "Melee"; break; }
+                    case 3: { sContainerTypeName = "Apparel"; break; }
+                }
+                int nRarity;
+                for (nRarity=0; nRarity<=2; nRarity++)
+                {
+                    string sRarityName;
+                    switch (nRarity)
+                    {
+                        case 0: { sRarityName = "Common"; break; }
+                        case 1: { sRarityName = "Uncommon"; break; }
+                        case 2: { sRarityName = "Rare"; break; }
+                    }
+                    object oContainerToSearchThrough = GetObjectByTag("_" + sContainerTypeName + sRarityName + "T" + IntToString(nTier) + sUniqueness);
+                    if (GetIsObjectValid(oContainerToSearchThrough))
+                    {
+                        object oTest = GetFirstItemInInventory(oContainerToSearchThrough);
+                        while (GetIsObjectValid(oTest))
+                        {
+                            int bWasFabricator = 0;
+                            // Follow fabricator ammo, or for some reason this doesn't get put into the chests
+                            if (GetStringLength(GetLocalString(oTest, "ammo_tag")) > 0)
+                            {
+                                object oAmmo = GetObjectByTag("fabricator_"+GetLocalString(oTest, "ammo_tag"));
+                                if (GetIsObjectValid(oAmmo))
+                                {
+                                    oTest = oAmmo;
+                                    bWasFabricator = 1;
+                                }
+                            }
+                            int nBaseItem = GetBaseItemType(oTest);
+                            object oContainerForItem;
+                            if (nBaseItem == BASE_ITEM_ARMOR)
+                            {
+                                int nBaseAC = GetBaseArmorAC(oTest);
+                                oContainerForItem = GetObjectByTag("_BaseItem" + IntToString(nBaseItem) + "T" + IntToString(nTier) + "AC" + IntToString(nBaseAC) + sUniqueness);
+                                if (!GetIsObjectValid(oContainerForItem))
+                                {
+                                    oContainerForItem = CreateTreasureContainer("_BaseItem" + IntToString(nBaseItem) + "T" + IntToString(nTier) + "AC" + IntToString(nBaseAC) + sUniqueness, IntToFloat(nTier)*2.0, 36.0 + IntToFloat((nBaseItem * 2) + nUnique));
+                                }
+                            }
+                            else
+                            {
+                                // Merge gloves/bracers together in one happy union of hand socks
+                                if (nBaseItem == BASE_ITEM_BRACER)
+                                {
+                                    nBaseItem = BASE_ITEM_GLOVES;
+                                }
+                                oContainerForItem = GetObjectByTag("_BaseItem" + IntToString(nBaseItem) + "T" + IntToString(nTier) + sUniqueness);
+                                if (!GetIsObjectValid(oContainerForItem))
+                                {
+                                    oContainerForItem = CreateTreasureContainer("_BaseItem" + IntToString(nBaseItem) + "T" + IntToString(nTier) + sUniqueness, IntToFloat(nTier)*2.0, 36.0 + IntToFloat((nBaseItem * 2) + nUnique));
+                                }
+                            }
+                            //SendDebugMessage("Base Items by Tier: Copy " + GetName(oTest) + " to " + GetTag(oContainerForItem), TRUE);
+                            int bOkay = 1;
+                            // Following fabricators is allowing dupes in the same container, so if it was a fabricator
+                            // Take a little while to check for dupes first
+                            if (bWasFabricator)
+                            {
+                                object oTest2 = GetFirstItemInInventory(oContainerForItem);
+                                while (GetIsObjectValid(oTest2))
+                                {
+                                    if (GetResRef(oTest2) == GetResRef(oTest))
+                                    {
+                                        bOkay = 0;
+                                        break;
+                                    }
+                                    oTest2 = GetNextItemInInventory(oContainerForItem);
+                                }
+                            }
+                            if (bOkay)
+                            {
+                                CopyItem(oTest, oContainerForItem, TRUE);
+                            }
+                            oTest = GetNextItemInInventory(oContainerToSearchThrough);
+                        }
+                    }
+                }
+            }                    
+        }
+    }
+}
+
 void main()
 {
 
@@ -1234,8 +1337,11 @@ void main()
         DistributeTreasureToStores(oDistributionItem);
         oDistributionItem = GetNextItemInInventory(oContainer);
     }
+    
+    CreateContainersForItemTypesByTier();
 
     CountItemsThroughTiers();
+    
 
     SetCampaignInt("treasures", "finished", 1);
 

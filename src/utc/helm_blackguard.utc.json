@@ -257,21 +257,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 6
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
           "value": 473
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 23
         }
       },
       {
@@ -286,20 +272,6 @@
         "Feat": {
           "type": "word",
           "value": 472
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 40
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 44
         }
       },
       {
@@ -373,7 +345,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 112
+    "value": 104
   },
   "NaturalAC": {
     "type": "byte",
@@ -699,6 +671,26 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "helm_blackguard"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "spawn_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "rand_helmbg"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",

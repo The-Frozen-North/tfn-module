@@ -233,6 +233,8 @@ object Array_At_Obj(string tag, int index, object obj=OBJECT_INVALID)
 
 void Array_Clear(string tag, object obj=OBJECT_INVALID)
 {
+    // Running this on an array that doesn't exist writes warnings to the log
+    CreateArrayTable(tag, obj);
     ExecuteStatement("delete from "+GetTableName(tag, obj), obj);
 }
 

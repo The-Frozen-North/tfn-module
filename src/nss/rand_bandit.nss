@@ -1,107 +1,117 @@
 #include "nwnx_creature"
+#include "inc_rand_spell"
+#include "inc_rand_feat"
+#include "inc_rand_appear"
+#include "inc_rand_equip"
+
+// Users:
+// bandit "Bandit"                  - ranged
+// bandit_fighter "Bandit Thug"     - melee
+// bandit_outlaw "Bandit Outlaw"    - ranged
+// bandit_brute "Bandit Brute"      - melee
+// bandit_mage "Bandit Mage"
 
 void main()
 {
-    switch (d2())
+    RandomiseGenderAndAppearance(OBJECT_SELF);
+    RandomiseCreatureSoundset_Rough(OBJECT_SELF);
+    int bRanged = 0;
+    string sResRef = GetResRef(OBJECT_SELF);
+    if (sResRef == "bandit" || sResRef == "bandit_outlaw")
     {
-        case 2:
-            NWNX_Creature_SetGender(OBJECT_SELF, GENDER_FEMALE);
-            SetCreatureBodyPart(CREATURE_PART_HEAD, 12, OBJECT_SELF);
-            SetPortraitResRef(OBJECT_SELF, "po_hu_f_14_");
-            NWNX_Creature_SetSoundset(OBJECT_SELF, 188);
-        break;
+        bRanged = 1;
+        SetLocalInt(OBJECT_SELF, RAND_EQUIP_GIVE_RANGED, 1);
+    }
+    int nHD = GetHitDice(OBJECT_SELF);
+    int nNumFeats;
+    
+    int nFighter = GetLevelByClass(CLASS_TYPE_FIGHTER, OBJECT_SELF);
+    if (nFighter > 0)
+    {
+        nNumFeats = 1 + (nFighter/2);
+        AddRandomFeats(OBJECT_SELF, RAND_FEAT_LIST_FIGHTER_BONUS, nNumFeats);
+    }
+    
+    nNumFeats = 1 + (nHD/3);
+    if (GetRacialType(OBJECT_SELF) == RACIAL_TYPE_HUMAN)
+    {
+        nNumFeats++;
+    }
+    
+    int nFeatList = RAND_FEAT_LIST_RANDOM;
+    if (GetLevelByClass(CLASS_TYPE_SORCERER, OBJECT_SELF)) { nFeatList = RAND_FEAT_LIST_CASTER; }
+    
+    AddRandomFeats(OBJECT_SELF, nFeatList, nNumFeats);
+    
+    if (GetLevelByClass(CLASS_TYPE_SORCERER, OBJECT_SELF))
+    {
+        if (d3() == 1)
+        {
+            SetLocalString(OBJECT_SELF, "quest1", "02_b_gem");
+            SetLocalString(OBJECT_SELF, "quest_item", "b_gem_power");
+        }
+        if (SeedingSpellbooks(CLASS_TYPE_SORCERER, OBJECT_SELF))
+        {
+            int i;
+            for (i=0; i<RAND_SPELL_NUM_SPELLBOOKS; i++)
+            {
+                RandomSpellbookPopulate(RAND_SPELL_ARCANE_EVOKER_SINGLE_TARGET, OBJECT_SELF, CLASS_TYPE_SORCERER);
+            }
+            SeedingSpellbooksComplete(OBJECT_SELF);
+        }
+        else
+        {
+            LoadSpellbook(CLASS_TYPE_SORCERER, OBJECT_SELF);
+        }
     }
 
-    object oArmor, oRange, oMelee, oAmmo;
-
-    switch (d10())
+    
+    int nMaxAC;
+    int nRoll = Random(10) + 1;
+    
+    if (sResRef == "bandit_fighter" || sResRef == "bandit_brute")
     {
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-           oArmor = CreateItemOnObject("nw_aarcl009"); //padded
-        break;
-        case 5:
-        case 6:
-        case 7:
-           oArmor = CreateItemOnObject("nw_aarcl001"); //leather
-        break;
-        case 8:
-        case 9:
-           oArmor = CreateItemOnObject("nw_aarcl002"); //studded
-        break;
-        case 10:
-           oArmor = CreateItemOnObject("nw_aarcl012"); //chain shirt
-        break;
+        if (nRoll < 5) { nMaxAC = 3; }
+        else if (nRoll <= 7) { nMaxAC = 4; }
+        else if (nRoll <= 9) { nMaxAC = 5; }
+        else { nMaxAC = 6; }
     }
-
-    switch (d6())
+    else if (sResRef == "bandit_mage")
     {
-        case 1:
-        case 2:
-        case 3:
-           oRange = CreateItemOnObject("nw_wbwsh001", OBJECT_SELF); // shortbow
-           oAmmo = CreateItemOnObject("nw_wamar001", OBJECT_SELF, 99); // arrows
-           AssignCommand(OBJECT_SELF, ActionEquipItem(oAmmo, INVENTORY_SLOT_ARROWS));
-        break;
-        case 4:
-        case 5:
-           oRange = CreateItemOnObject("nw_wbwxl001"); //light xbow
-           oAmmo = CreateItemOnObject("nw_wambo001", OBJECT_SELF, 99); // bolts
-           AssignCommand(OBJECT_SELF, ActionEquipItem(oAmmo, INVENTORY_SLOT_BOLTS));
-        break;
-        case 6:
-           oRange = CreateItemOnObject("nw_wbwsl001", OBJECT_SELF); // sling
-           oAmmo = CreateItemOnObject("nw_wambu001", OBJECT_SELF, 99); // bullets
-           AssignCommand(OBJECT_SELF, ActionEquipItem(oAmmo, INVENTORY_SLOT_BULLETS));
-        break;
+        nMaxAC = 0;
     }
-
-    switch (d10())
+    else if (sResRef == "bandit_outlaw")
     {
-        case 1:
-        case 2:
-            oMelee = CreateItemOnObject("nw_wswss001", OBJECT_SELF); // shortsword
-        break;
-        case 3:
-        case 4:
-        case 5:
-            oMelee = CreateItemOnObject("nw_wswdg001", OBJECT_SELF); // dagger
-        break;
-        case 6:
-        case 7:
-            oMelee = CreateItemOnObject("nw_wblcl001", OBJECT_SELF); // club
-        break;
-        case 8:
-            oMelee = CreateItemOnObject("nw_waxhn001", OBJECT_SELF); // handaxe
-        break;
-        case 9:
-            oMelee = CreateItemOnObject("nw_wblmhl001", OBJECT_SELF); // light hammer
-        break;
-        case 10:
-            oMelee = CreateItemOnObject("nw_wblml001", OBJECT_SELF); // mace
-        break;
+        if (nRoll < 4) { nMaxAC = 4; }
+        else if (nRoll <= 7) { nMaxAC = 5; }
+        else if (nRoll <= 9) { nMaxAC = 6; }
+        else { nMaxAC = 7; }
     }
-
-    AssignCommand(OBJECT_SELF, ActionEquipItem(oRange, INVENTORY_SLOT_RIGHTHAND));
-    NWNX_Creature_RunEquip(OBJECT_SELF, oArmor, INVENTORY_SLOT_CHEST);
-
-    SetDroppableFlag(oRange, FALSE);
-    SetPickpocketableFlag(oRange, FALSE);
-
-    SetDroppableFlag(oMelee, FALSE);
-    SetPickpocketableFlag(oMelee, FALSE);
-
-    SetDroppableFlag(oArmor, FALSE);
-    SetPickpocketableFlag(oArmor, FALSE);
-
-    SetDroppableFlag(oAmmo, FALSE);
-    SetPickpocketableFlag(oAmmo, FALSE);
-
-    SetDroppableFlag(oMelee, FALSE);
-    SetPickpocketableFlag(oMelee, FALSE);
-
-    SetLocalObject(OBJECT_SELF, "melee_weapon", oMelee);
-    SetLocalObject(OBJECT_SELF, "range_weapon", oRange);
+    else if (sResRef == "bandit")
+    {
+        if (nRoll < 5) { nMaxAC = 1; }
+        else if (nRoll <= 7) { nMaxAC = 2; }
+        else if (nRoll <= 9) { nMaxAC = 3; }
+        else { nMaxAC = 4; }
+    }
+    
+    
+    int nAC = GetACOfArmorToEquip(OBJECT_SELF, nMaxAC);
+    //WriteTimestampedLogEntry("Max AC = " + IntToString(nMaxAC) + " -> " + IntToString(nAC));
+    TryEquippingRandomArmorOfTier(nAC, 1 + (d100() > 95), 2, OBJECT_SELF);
+    struct RandomWeaponResults rwr = RollRandomWeaponTypesForCreature(OBJECT_SELF);
+    
+    object oMain = TryEquippingRandomItemOfTier(rwr.nMainHand, 1 + (d100() > 95), 2, OBJECT_SELF, INVENTORY_SLOT_RIGHTHAND);
+    TryEquippingRandomItemOfTier(rwr.nOffHand, 1 + (d100() > 95), 2, OBJECT_SELF, INVENTORY_SLOT_LEFTHAND);
+    if (rwr.nBackupMeleeWeapon != BASE_ITEM_INVALID)
+    {
+        object oBackup = TryEquippingRandomItemOfTier(rwr.nBackupMeleeWeapon, 1, 1, OBJECT_SELF, -1);
+        SetLocalObject(OBJECT_SELF, "melee_weapon", oBackup);
+        SetLocalObject(OBJECT_SELF, "ranged_weapon", oMain);
+    }
+    else
+    {
+        SetLocalObject(OBJECT_SELF, "melee_weapon", oMain);
+    }
+    TryEquippingRandomApparelOfTier(1 + (d100() > 95), 2, OBJECT_SELF);
 }
