@@ -472,6 +472,7 @@ void main()
     // * is triggered. Check "x2_it_example.nss" for an example.
     // * This feature is disabled by default.
    SetModuleSwitch (MODULE_SWITCH_ENABLE_TAGBASED_SCRIPTS, TRUE);
+   SetUserDefinedItemEventPrefix("is_");
 
    SetEventScript(GetModule(), EVENT_SCRIPT_MODULE_ON_PLAYER_GUIEVENT, "on_guiselect");
 
