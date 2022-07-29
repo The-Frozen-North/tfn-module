@@ -527,7 +527,7 @@ void main()
         float fTreasureChance = IntToFloat(nTreasureChance)/100.0;
         float fChanceThree = IntToFloat(nChanceThree)/100.0;
         float fChanceTwo = IntToFloat(nChanceTwo - nChanceThree)/100.0;
-        float fChanceOne = 1.0 - (fChanceTwo + fChanceThree);
+        float fChanceOne = IntToFloat(nChanceOne - (nChanceTwo + nChanceThree))/100.0;
 
         float fExpected = fTreasureChance * (fChanceOne + (2.0 * fChanceTwo) + (3.0 * fChanceThree));
         SetLocalFloat(GetModule(), LOOT_DEBUG_DROP_CHANCE_MULT, fExpected);
