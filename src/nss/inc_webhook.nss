@@ -359,11 +359,11 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
     if (sFirstLetter == "a" || sFirstLetter == "e" || sFirstLetter == "i" ||
         sFirstLetter == "o" || sFirstLetter == "u")
     {
-        sDescription += " an " + sItemName + "!";
+        sDescription += " an **" + sItemName + "**!";
     }
     else
     {
-        sDescription += " a " + sItemName + "!";
+        sDescription += " a **" + sItemName + "**!";
     }
 
     sTitle = "VALUABLE ITEM";
@@ -412,7 +412,7 @@ void QuestCompleteWebhook(object oPC, string sQuestName)
     
     // PC has purchased a house in Area for Gold!
     string sTitle = "QUEST COMPLETED";
-    string sDescription = "**" + sName + "** has completed " + sQuestName + "!";
+    string sDescription = "**" + sName + "** has completed **" + sQuestName + "**!";
     int nPlayers = GetPlayerCount();
 
     stMessage.sTitle = sTitle;
