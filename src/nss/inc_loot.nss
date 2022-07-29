@@ -13,9 +13,9 @@ const float LOOT_DESTRUCTION_TIME = 600.0;
 
 // chance that a treasure will spawn at all out of 100
 // This gets modified based on the difference between a monster's CR and the area CR
-// Currently, the treasure drop rate in percentage is:
+// Currently, the treasure drop rate as a percentage is:
 // min(100, 20 * pow(2.0, ((MonsterCR - AreaCR)/2))
-const float TREASURE_CHANCE = 20.0;
+const float TREASURE_CHANCE = 30.0;
 const float TREASURE_CHANCE_EXPONENT_DENOMINATOR = 2.0;
 
 // chance that there won't be placeable treasure at all out of 100
@@ -53,6 +53,23 @@ const int T5_SIGMOID_MIDPOINT = 13;
 
 // The string to play when there isn't loot available
 const string NO_LOOT = "This container doesn't have any items.";
+
+// Constants for placeable loot
+// To use this, placeables should have a local string "treasure" set on them with a value of "low" "medium" or "high"
+// The quality variables set quality_mult on containers, multiplying the effective Area CR of loot inside
+// The quantity variables set quantity_mult on containers, multiplying the effective CHANCE_* constants for loot in there
+// Manually setting these on the containers will override these values
+// Doing things this way is nice because the entire module's loot can be changed by messing with these script constants
+// Instead of going through blueprints to change variables like what was needed to implement this in the first place
+const float TREASURE_HIGH_QUALITY = 1.0;
+const float TREASURE_HIGH_QUANTITY = 3.0;
+const float TREASURE_MEDIUM_QUALITY = 1.0;
+const float TREASURE_MEDIUM_QUANTITY = 1.75;
+const float TREASURE_LOW_QUALITY = 0.6;
+const float TREASURE_LOW_QUANTITY = 1.0;
+
+// CHANCE_X are multiplied by this for placeables that are destroyed (rather than opening the lock)
+const float PLACEABLE_DESTROY_LOOT_PENALTY = 0.6;
 
 // Percentage chances for various categories
 // Needless to say, these sets should sum to 100
@@ -133,7 +150,11 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
     string sTier;
 
     //SendDebugMessage("Loot fCR: "+FloatToString(fCR));
-
+    // These functions look demented, but were designed with a fairly large amount of reasoning in mind
+    // This also discusses the issues with the significantly simpler system that it replaced
+    // https://docs.google.com/document/d/1t451EgutNToXGVbuQGHraBaefI8TsWlcWbqXDpU-HA0
+    // As the person that spent a few hours coming up with them, I would strongly encourage
+    // a detailed discussion of what about the design of these is wrong before messing with them!
     int nT1Weight = FloatToInt(BASE_T1_WEIGHT * fmax(0.0, ((68.0 + atan((iAreaCR - T1_SIGMOID_MIDPOINT) * 0.6))/158.0)));
     int nT2Weight = FloatToInt(BASE_T2_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T2_SIGMOID_MIDPOINT) * 0.6))/158.0)));
     int nT3Weight = FloatToInt(BASE_T3_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T3_SIGMOID_MIDPOINT) * 0.6))/158.0)));
@@ -176,7 +197,7 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
    //SendDebugMessage("Combined: "+IntToString(nCombinedWeight));
    
    // This is better than crashing out with a TMI if it can happen for any reason
-   // (this happeened when trying to add the sigmoids for the first time)
+   // (this happened when trying to add the sigmoids for the first time)
    if (nCombinedWeight == 0)
    {
        SendDebugMessage("ERROR: Combined weight for DetermineTier at CR " + IntToString(iCR) + " and area CR " + IntToString(iAreaCR) + " resulted in a weight sum of 0!", TRUE);

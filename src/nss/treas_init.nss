@@ -6,9 +6,16 @@
 void main()
 {
     int nAreaCR = GetLocalInt(GetArea(OBJECT_SELF), "cr");
-
-    SetLocalInt(OBJECT_SELF, "cr", nAreaCR+GetLocalInt(OBJECT_SELF, "cr_bonus"));
-    SetLocalInt(OBJECT_SELF, "area_cr", nAreaCR+(GetLocalInt(OBJECT_SELF, "cr_bonus")/2));
+    int nCR = nAreaCR;
+    float fQualityMult = GetLocalFloat(OBJECT_SELF, "quality_mult");
+    if (fQualityMult > 0.0)
+    {
+        nAreaCR = FloatToInt(IntToFloat(nAreaCR) * fQualityMult);
+    }
+    // This may be unused now
+    SetLocalInt(OBJECT_SELF, "cr", nAreaCR);
+    // This is most definitely used
+    SetLocalInt(OBJECT_SELF, "area_cr", nAreaCR);
 
     SetEventScript(OBJECT_SELF, EVENT_SCRIPT_PLACEABLE_ON_DEATH, "treas_death");
     GenerateTrapOnObject();
