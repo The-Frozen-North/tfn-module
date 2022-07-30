@@ -18,6 +18,7 @@ rm server/config/common.env
 rm server/modules/TFN.mod
 rm server/database/spawns.sqlite3
 rm server/database/treasures.sqlite3
+rm server/database/randspellbooks.sqlite3
 rm server/settings.tml
 rm -d -R  server/override
 
@@ -30,6 +31,7 @@ cp config/common.env server/config/common.env
 cp settings.tml server/settings.tml
 cp database/spawns.sqlite3 server/database/spawns.sqlite3
 cp database/treasures.sqlite3 server/database/treasures.sqlite3
+cp database/treasures.sqlite3 server/database/randspellbooks.sqlite3
 cp -r override/. server/override
 
 cp server/env/env.2da server/override/env.2da

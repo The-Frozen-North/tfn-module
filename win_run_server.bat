@@ -23,6 +23,7 @@ del /f server\config\common.env
 del /f server\modules\TFN.mod
 del /f server\database\spawns.sqlite3
 del /f server\database\treasures.sqlite3
+del /f server\database\randspellbooks.sqlite3
 del /f server\settings.tml
 rmdir /s /q  server\override
 copy modules\TFN.mod server\modules\TFN.mod
@@ -30,7 +31,7 @@ copy config\common.env server\config\common.env
 copy settings.tml server\settings.tml
 copy database\spawns.sqlite3 server\database\spawns.sqlite3
 copy database\treasures.sqlite3 server\database\treasures.sqlite3
-copy database\treasures.sqlite3 server\database\treasures.sqlite3
+copy database\randspellbooks.sqlite3 server\database\randspellbooks.sqlite3
 robocopy override server\override
 
 copy server\env\env.2da server\override\env.2da
