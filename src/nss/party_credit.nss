@@ -649,17 +649,17 @@ void main()
 // assumed to be out of bounds (henchman)
                if (Party.PlayerSize+nNth == nItem1)
                {
-                   oItem1 = GenerateLoot(oMerchant);
+                   oItem1 = GenerateLoot(oContainer, oMerchant);
                    DetermineItem(oItem1, oMerchant, oHenchman, nNth);
-               }
+               }    
                if (Party.PlayerSize+nNth == nItem2)
                {
-                   oItem2 = GenerateLoot(oMerchant);
+                   oItem2 = GenerateLoot(oContainer, oMerchant);
                    DetermineItem(oItem2, oMerchant, oHenchman, nNth);
                }
                if (Party.PlayerSize+nNth == nItem3)
                {
-                   oItem3 = GenerateLoot(oMerchant);
+                   oItem3 = GenerateLoot(oContainer, oMerchant);
                    DetermineItem(oItem3, oMerchant, oHenchman, nNth);
                }
 
