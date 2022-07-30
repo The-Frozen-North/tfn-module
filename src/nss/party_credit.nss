@@ -336,6 +336,8 @@ void main()
     int nChanceTwo = CHANCE_TWO;
     int nChanceOne = CHANCE_ONE;
     int nTreasureChance = 100;
+    
+    int bIsPlaceable = GetObjectType(OBJECT_SELF) == OBJECT_TYPE_PLACEABLE;
 
     if (bDestroyed)
     {
@@ -343,17 +345,6 @@ void main()
         if (ShouldDebugLoot())
         {
             SendDebugMessage("Treasure chance at MCR " + IntToString(iCR) + " and ACR " + IntToString(iAreaCR) + " = " + IntToString(nTreasureChance));
-        }
-
-// destroyed treasures have double the chance of still dropping treasure
-// also double chance of items :D
-        if (GetStringLeft(GetResRef(OBJECT_SELF), 6) == "treas_")
-        {
-            nTreasureChance = max(1, min(100, nTreasureChance*2));
-
-            nChanceThree = CHANCE_THREE*2;
-            nChanceTwo = CHANCE_TWO*2;
-            nChanceOne = CHANCE_ONE*2;
         }
 
         if (GetLocalInt(OBJECT_SELF, "half_loot") == 1) nTreasureChance = nTreasureChance/2;
@@ -382,6 +373,29 @@ void main()
             }
             break;
         }
+    }
+    
+    // Placeables always yield treasure, even if you bash them to pieces
+    // (how hard do you have to bonk a coin before it's not gold any more?)
+    // Destroying them lowers the chances of getting items though
+    // And some have higher chances to contain more items
+    if (bIsPlaceable)
+    {
+        bNoTreasure = FALSE;
+        nTreasureChance = 100;
+        float fTreasureMultiplier = 1.0;
+        float fQuantityMult = GetLocalFloat(OBJECT_SELF, "quantity_mult");
+        if (fQuantityMult > 0.0)
+        {
+            fTreasureMultiplier = fQuantityMult;
+        }
+        if (bDestroyed)
+        {
+            fTreasureMultiplier *= PLACEABLE_DESTROY_LOOT_PENALTY;
+        }
+        nChanceOne = FloatToInt(IntToFloat(nChanceOne) * fTreasureMultiplier);
+        nChanceTwo = FloatToInt(IntToFloat(nChanceTwo) * fTreasureMultiplier);
+        nChanceThree = FloatToInt(IntToFloat(nChanceThree) * fTreasureMultiplier);
     }
 
 // ambushes never yield treasure
@@ -496,6 +510,7 @@ void main()
        nChanceTwo = 0;
        nChanceOne = 0;
    }
+   
 
    if (nItemsRoll <= nChanceThree)
    {
@@ -527,9 +542,11 @@ void main()
         float fTreasureChance = IntToFloat(nTreasureChance)/100.0;
         float fChanceThree = IntToFloat(nChanceThree)/100.0;
         float fChanceTwo = IntToFloat(nChanceTwo - nChanceThree)/100.0;
-        float fChanceOne = 1.0 - (fChanceTwo + fChanceThree);
+        float fChanceOne = IntToFloat(nChanceOne - (nChanceTwo + nChanceThree))/100.0;
 
         float fExpected = fTreasureChance * (fChanceOne + (2.0 * fChanceTwo) + (3.0 * fChanceThree));
+        SendDebugMessage("Expected number of items from " + GetName(OBJECT_SELF) +": " + FloatToString(fExpected));
+        //SendDebugMessage("fTreasureChance = " + FloatToString(fTreasureChance));
         SetLocalFloat(GetModule(), LOOT_DEBUG_DROP_CHANCE_MULT, fExpected);
 
         // Force it to always roll only one item when debugging

@@ -5,6 +5,7 @@
 #include "inc_persist"
 #include "util_i_csvlists"
 #include "inc_sqlite_time"
+#include "inc_webhook"
 
 const float AOE_QUEST_SIZE = 75.0;
 

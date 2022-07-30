@@ -3861,8 +3861,12 @@ void RandomSpellbookPopulate(int nSpellbookType, object oCreature, int nClass)
 
 void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1)
 {
-    // Save time and don't do this, it'll all be overwritten anyway
-    //_ClearSpellbook(oCreature, nClass);
+    // Save time and don't do this for prep casters, it'll all be overwritten anyway
+    // Spont casters need their old known spells clearing though
+    if (nClass == CLASS_TYPE_SORCERER || nClass == CLASS_TYPE_BARD)
+    {
+        _ClearSpellbook(oCreature, nClass);
+    }
     if (nFixedIndex == -1)
     {
         int nNumSpellbooks = GetCampaignInt("randspellbooks", GetResRef(oCreature) + "_numsbs_" + IntToString(nClass));

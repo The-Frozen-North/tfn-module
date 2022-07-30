@@ -44,7 +44,10 @@ void SendDiscordLogMessage(string sMessage)
     }
     else
     {
-
+        // Try anyway
+        NWNX_WebHook_SendWebHookHTTPS("discordapp.com", Get2DAString("env", "Value", 2), sMessage);
+        // But the log is good
+        WriteTimestampedLogEntry("Webhook message: " + sMessage);
     }
 }
 

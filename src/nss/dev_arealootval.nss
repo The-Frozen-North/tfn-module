@@ -27,8 +27,31 @@ void DelayedAction()
     DeleteLocalObject(GetModule(), LOOT_DEBUG_AREA);
 	SetLocalInt(GetModule(), LOOT_DEBUG_ENABLED, 0);
     DeleteLocalObject(GetModule(), "dev_lootvortex");
+    
+    object oTest = GetFirstObjectInArea(oArea);
+    while (GetIsObjectValid(oTest))
+    {
+        if (GetResRef(oTest) == "_loot_container")
+        {
+            //SendMessageToPC(oDev, "Found loot container!");
+            object oPersonalLoot = GetObjectByUUID(GetLocalString(oTest, "personal_loot_"+GetPCPublicCDKey(oDev, TRUE)));
+            object oInvItem = GetFirstItemInInventory(oPersonalLoot);
+
+            while (GetIsObjectValid(oInvItem))
+            {
+                DelayCommand(0.1, DestroyObject(oInvItem));
+                oInvItem = GetNextItemInInventory(oPersonalLoot);
+            }
+            DelayCommand(0.5, DecrementLootAndDestroyIfEmpty(oDev, oTest, oPersonalLoot));
+        }
+        oTest = GetNextObjectInArea(oArea);
+    }
+    
     NWNX_Util_SetInstructionLimit(nOldInstructionLimit);
 }
+
+const int DO_CREATURES = 1;
+const int DO_PLACEABLES = 1;
 
 void main()
 {
@@ -61,7 +84,7 @@ void main()
     while (GetIsObjectValid(oTest))
     {
         int nObjType = GetObjectType(oTest);
-        if (nObjType == OBJECT_TYPE_CREATURE)
+        if (nObjType == OBJECT_TYPE_CREATURE && DO_CREATURES)
         {
             if (!GetIsDead(oTest) && !GetIsPC(oTest))
             {
@@ -69,9 +92,9 @@ void main()
                 //DelayCommand(0.2, ExecuteScript("party_credit", oTest));
             }
         }
-        else if (nObjType == OBJECT_TYPE_PLACEABLE)
+        else if (nObjType == OBJECT_TYPE_PLACEABLE && DO_PLACEABLES)
         {
-            if (GetLocalInt(oTest, "cr") > 0 && GetResRef(oTest) != "_loot_container")
+            if (GetLocalInt(oTest, "cr") > 0 && GetResRef(oTest) != "_loot_container" && GetName(oTest) != "Personal Loot")
             {
                 DelayCommand(0.2, ExecuteScript("party_credit", oTest));
             }

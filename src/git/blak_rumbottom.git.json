@@ -50001,6 +50001,26 @@
           "type": "byte",
           "value": 1
         },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "low"
+              }
+            }
+          ]
+        },
         "Will": {
           "type": "byte",
           "value": 0
@@ -50235,15 +50255,15 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "cr_bonus"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 1
+                "value": 3
               },
               "Value": {
-                "type": "int",
-                "value": 4
+                "type": "cexostring",
+                "value": "high"
               }
             },
             {
@@ -50304,6 +50324,21 @@
               "Value": {
                 "type": "cexostring",
                 "value": "q_portrait"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "semiboss"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 1
               }
             }
           ]
@@ -50380,7 +50415,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -50544,22 +50579,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -50574,7 +50609,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -50659,7 +50694,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -50823,22 +50858,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -50853,7 +50888,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -50938,7 +50973,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -51102,22 +51137,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -51132,7 +51167,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -51217,7 +51252,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -51381,22 +51416,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -51411,7 +51446,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -51496,7 +51531,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -51660,22 +51695,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -51690,7 +51725,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -51775,7 +51810,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -51939,22 +51974,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -51969,7 +52004,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -52054,7 +52089,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -52218,22 +52253,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -52248,7 +52283,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -52495,21 +52530,6 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "cr_bonus"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 2
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
                 "value": "trapped"
               },
               "Type": {
@@ -52534,6 +52554,21 @@
               "Value": {
                 "type": "int",
                 "value": 1
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "medium"
               }
             }
           ]
@@ -52587,7 +52622,7 @@
         },
         "CurrentHP": {
           "type": "short",
-          "value": 15
+          "value": 30
         },
         "Description": {
           "id": 14548,
@@ -52616,7 +52651,7 @@
         },
         "HP": {
           "type": "short",
-          "value": 15
+          "value": 30
         },
         "Interruptable": {
           "type": "byte",
@@ -52763,6 +52798,26 @@
           "type": "byte",
           "value": 1
         },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "medium"
+              }
+            }
+          ]
+        },
         "Will": {
           "type": "byte",
           "value": 0
@@ -52833,7 +52888,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 15
         },
         "HasInventory": {
           "type": "byte",
@@ -52997,21 +53052,6 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "cr_bonus"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 4
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
                 "value": "trapped"
               },
               "Type": {
@@ -53036,6 +53076,21 @@
               "Value": {
                 "type": "int",
                 "value": 1
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "high"
               }
             }
           ]
@@ -53269,6 +53324,26 @@
           "type": "byte",
           "value": 1
         },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "low"
+              }
+            }
+          ]
+        },
         "Will": {
           "type": "byte",
           "value": 0
@@ -53318,7 +53393,7 @@
         },
         "CurrentHP": {
           "type": "short",
-          "value": 15
+          "value": 30
         },
         "Description": {
           "id": 14577,
@@ -53349,7 +53424,7 @@
         },
         "HP": {
           "type": "short",
-          "value": 15
+          "value": 30
         },
         "Interruptable": {
           "type": "byte",
@@ -53505,15 +53580,15 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "cr_bonus"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 1
+                "value": 3
               },
               "Value": {
-                "type": "int",
-                "value": 1
+                "type": "cexostring",
+                "value": "low"
               }
             }
           ]
@@ -53745,6 +53820,26 @@
           "type": "byte",
           "value": 1
         },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "low"
+              }
+            }
+          ]
+        },
         "Will": {
           "type": "byte",
           "value": 0
@@ -53972,6 +54067,26 @@
           "type": "byte",
           "value": 1
         },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "low"
+              }
+            }
+          ]
+        },
         "Will": {
           "type": "byte",
           "value": 0
@@ -54044,7 +54159,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -54208,22 +54323,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -54238,7 +54353,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -54323,7 +54438,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -54487,22 +54602,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -54517,7 +54632,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -54602,7 +54717,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -54766,22 +54881,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -54796,7 +54911,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -54881,7 +54996,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -55045,22 +55160,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -55075,7 +55190,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -55160,7 +55275,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -55324,22 +55439,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -55354,7 +55469,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -55439,7 +55554,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 13
         },
         "HasInventory": {
           "type": "byte",
@@ -55603,22 +55718,22 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "CR_BONUS"
+                "value": "treasure"
               },
               "Type": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "Value": {
-                "type": "float",
-                "value": 3.0
+                "type": "cexostring",
+                "value": "medium"
               }
             },
             {
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "TRAPPED"
+                "value": "trapped"
               },
               "Type": {
                 "type": "dword",
@@ -55633,7 +55748,7 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "LOCKED"
+                "value": "locked"
               },
               "Type": {
                 "type": "dword",
@@ -55716,7 +55831,7 @@
         },
         "Hardness": {
           "type": "byte",
-          "value": 10
+          "value": 15
         },
         "HasInventory": {
           "type": "byte",
@@ -55880,21 +55995,6 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "cr_bonus"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 4
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
                 "value": "trapped"
               },
               "Type": {
@@ -55919,6 +56019,21 @@
               "Value": {
                 "type": "int",
                 "value": 1
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "high"
               }
             }
           ]
@@ -56157,21 +56272,6 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "cr_bonus"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 2
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
                 "value": "trapped"
               },
               "Type": {
@@ -56196,6 +56296,21 @@
               "Value": {
                 "type": "int",
                 "value": 1
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "medium"
               }
             }
           ]
@@ -56434,21 +56549,6 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "cr_bonus"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 2
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
                 "value": "trapped"
               },
               "Type": {
@@ -56473,6 +56573,21 @@
               "Value": {
                 "type": "int",
                 "value": 1
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "medium"
               }
             }
           ]
@@ -56711,21 +56826,6 @@
               "__struct_id": 0,
               "Name": {
                 "type": "cexostring",
-                "value": "cr_bonus"
-              },
-              "Type": {
-                "type": "dword",
-                "value": 1
-              },
-              "Value": {
-                "type": "int",
-                "value": 2
-              }
-            },
-            {
-              "__struct_id": 0,
-              "Name": {
-                "type": "cexostring",
                 "value": "trapped"
               },
               "Type": {
@@ -56750,6 +56850,21 @@
               "Value": {
                 "type": "int",
                 "value": 1
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "medium"
               }
             }
           ]
@@ -56981,6 +57096,26 @@
           "type": "byte",
           "value": 1
         },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "low"
+              }
+            }
+          ]
+        },
         "Will": {
           "type": "byte",
           "value": 0
@@ -57209,6 +57344,26 @@
         "Useable": {
           "type": "byte",
           "value": 1
+        },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "low"
+              }
+            }
+          ]
         },
         "Will": {
           "type": "byte",
@@ -57439,6 +57594,26 @@
           "type": "byte",
           "value": 1
         },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "low"
+              }
+            }
+          ]
+        },
         "Will": {
           "type": "byte",
           "value": 0
@@ -57663,6 +57838,26 @@
         "Useable": {
           "type": "byte",
           "value": 1
+        },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "treasure"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "low"
+              }
+            }
+          ]
         },
         "Will": {
           "type": "byte",

@@ -3,6 +3,7 @@
 #include "nwnx_area"
 #include "nwnx_object"
 #include "nw_inc_gff"
+#include "inc_loot"
 
 vector StringToVector(string sVector)
 {
@@ -340,7 +341,23 @@ void main()
                        SetLocalFloat(oArea, "treasure_y"+IntToString(nTreasures), vTreasureVector.y);
                        SetLocalFloat(oArea, "treasure_z"+IntToString(nTreasures), vTreasureVector.z);
                        SetLocalFloat(oArea, "treasure_o"+IntToString(nTreasures), GetFacing(oObject));
-                       SetLocalInt(oArea, "treasure_cr_bonus"+IntToString(nTreasures), GetLocalInt(oObject, "cr_bonus"));
+                       float fQualityMult = GetLocalFloat(oObject, "quality_mult");
+                       string sTreasureTier = GetLocalString(oObject, "treasure");
+                       if (fQualityMult <= 0.0) {
+                           if (sTreasureTier == "low") { fQualityMult = TREASURE_LOW_QUALITY; }
+                           else if (sTreasureTier == "medium") { fQualityMult = TREASURE_MEDIUM_QUALITY; }
+                           else if (sTreasureTier == "high") { fQualityMult = TREASURE_HIGH_QUALITY; }
+                           else { fQualityMult = 1.0; }
+                       }
+                       SetLocalFloat(oArea, "treasure_quality_mult"+IntToString(nTreasures), fQualityMult);
+                       float fQuantityMult = GetLocalFloat(oObject, "quantity_mult");
+                       if (fQuantityMult <= 0.0) {
+                           if (sTreasureTier == "low") { fQuantityMult = TREASURE_LOW_QUANTITY; }
+                           else if (sTreasureTier == "medium") { fQuantityMult = TREASURE_MEDIUM_QUANTITY; }
+                           else if (sTreasureTier == "high") { fQuantityMult = TREASURE_HIGH_QUANTITY; }
+                           else { fQuantityMult = 1.0; }
+                       }
+                       SetLocalFloat(oArea, "treasure_quantity_mult"+IntToString(nTreasures), fQuantityMult);
 // treasures tagged with keep is always guaranteed
                        if (GetLocalInt(oObject, "keep") == 1) SetLocalInt(oArea, "treasure_keep"+IntToString(nTreasures), 1);
 

@@ -85,7 +85,9 @@ void main()
 
      if (nTreasures > 0)
      {
-        int nTreasureChance = FloatToInt(((iRows*iColumns)/nTreasures)*2.5);
+        // The constant here is the 100x the target number of treasures per toolset square (IE: 5 = 0.05 treasures per toolset square)
+        // It will get further modified by the quality/quantity stuff, so better treasures are more likely to show up
+        int nTreasureChance = FloatToInt(((iRows*iColumns)/nTreasures)*10.0);
 
         object oTreasure;
         vector vTreasurePosition;
@@ -98,13 +100,15 @@ void main()
         int i;
         for (i = 1; i <= nTreasures; i++)
         {
-            int nThisTreasureChance = nTreasureChance;
-            // Much more likely to keep high quality treasures
-            int nCRBonus = GetLocalInt(OBJECT_SELF, "treasure_cr_bonus" + IntToString(i));
-            if (nCRBonus >= 4)
-            {
-                nThisTreasureChance = min(85, (nThisTreasureChance * 3));
-            }
+            float fThisTreasureChance = IntToFloat(nTreasureChance);
+            // Much more likely to keep better quality treasures
+            // Clearing an area and having none of the big chests at the end spawn is sad
+            float fQualityMult = GetLocalFloat(OBJECT_SELF, "treasure_quality_mult" + IntToString(i));
+            float fQuantityMult = GetLocalFloat(OBJECT_SELF, "treasure_quantity_mult" + IntToString(i));
+            
+            fThisTreasureChance = fThisTreasureChance * fQualityMult * fQuantityMult;
+            
+            int nThisTreasureChance = min(85, FloatToInt(fThisTreasureChance));
             
             if ((GetLocalInt(OBJECT_SELF, "treasure_keep"+IntToString(i)) == 1) || (d100() <= nThisTreasureChance))
             {
@@ -112,7 +116,8 @@ void main()
                 vTreasurePosition = Vector(GetLocalFloat(OBJECT_SELF, "treasure_x"+IntToString(i)), GetLocalFloat(OBJECT_SELF, "treasure_y"+IntToString(i)), GetLocalFloat(OBJECT_SELF, "treasure_z"+IntToString(i)));
                 lTreasureLocation = Location(OBJECT_SELF, vTreasurePosition, GetLocalFloat(OBJECT_SELF, "treasure_o"+IntToString(i)));
                 oTreasure = CreateObject(OBJECT_TYPE_PLACEABLE, GetLocalString(OBJECT_SELF, "treasure_resref"+IntToString(i)), lTreasureLocation);
-                SetLocalInt(oTreasure, "cr_bonus", GetLocalInt(oTreasure, "cr_bonus"));
+                SetLocalFloat(oTreasure, "quality_mult", fQualityMult);
+                SetLocalFloat(oTreasure, "quantity_mult", fQuantityMult);
                 ExecuteScript("treas_init", oTreasure);
 
 // store the treasure so it can deleted later on refresh
