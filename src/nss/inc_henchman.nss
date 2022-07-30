@@ -2,7 +2,7 @@
 #include "inc_gold"
 #include "nwnx_visibility"
 #include "nwnx_creature"
-#include "x0_i0_spells"
+#include "x0_i0_match"
 
 // =======================================================
 // PROTOTYPES
