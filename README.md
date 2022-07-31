@@ -1,4 +1,4 @@
-# The Frozen North [![Discord](https://img.shields.io/discord/589592256072253460?color=%232e9ee8&label=Discord&logo=discord)](https://discord.gg/qKqRUDZ) ![build](https://github.com/b5635/the-frozen-north/actions/workflows/build.yml/badge.svg)
+# The Frozen North [![Discord](https://img.shields.io/discord/589592256072253460?color=%232e9ee8&label=Discord&logo=discord)](https://discord.gg/qKqRUDZ) ![Build](https://github.com/b5635/the-frozen-north/actions/workflows/build.yml/badge.svg)
 
 This repository contains all the module content and associated files for The Frozen North, a Neverwinter Nights: Enhanced Edition persistent world.
 
