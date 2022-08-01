@@ -3,6 +3,7 @@
 #include "inc_loot"
 #include "inc_henchman"
 #include "inc_nwnx"
+#include "inc_key"
 
 // The max distance in meters a party member can be from
 // a target killed by oKiller and still get xp. (no lower than 5!)
@@ -625,7 +626,13 @@ void main()
             nGold = nGold - nGoldToDistribute;
         }
 
-        if (GetIsObjectValid(oKey)) CopyItem(oKey, oPersonalLoot);
+        if (GetIsObjectValid(oKey))
+        {
+            if (!GetHasKey(oPC, GetTag(oKey)))
+            {
+                CopyItem(oKey, oPersonalLoot);
+            }                
+        }
 
         DestroyObject(oPersonalLoot, LOOT_DESTRUCTION_TIME); // Personal loot will no longer be accessible after awhile
 

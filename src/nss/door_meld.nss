@@ -1,8 +1,10 @@
+#include "inc_key"
+
 void main()
 {
     object oPC = GetClickingObject();
 
-    if (GetIsObjectValid(GetItemPossessedBy(oPC, "key_water")) && GetIsObjectValid(GetItemPossessedBy(oPC, "key_earth")))
+    if (GetHasKey(oPC, "key_water") && GetHasKey(oPC, "key_earth"))
     {
         SetLocked(OBJECT_SELF, FALSE);
         AssignCommand(OBJECT_SELF, ActionOpenDoor(OBJECT_SELF));
