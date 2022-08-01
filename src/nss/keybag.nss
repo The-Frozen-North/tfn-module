@@ -25,12 +25,9 @@ void MakeKeyWindow(object oPC)
         // Stuff in the database is saved as haskeytag_<the key tag>
         string sKeyTag = SqlGetString(sql, 0);
         sKeyTag = GetSubString(sKeyTag, 10, 999);
-        WriteTimestampedLogEntry("Keybag found key: " + sKeyTag);
         if (GetStringLength(sKeyTag) == 0) { break; }
         string sKeyName = GetKeyName(sKeyTag);
         string sKeyDesc = GetKeyDescription(sKeyTag);
-        WriteTimestampedLogEntry("Keybag found key: " + sKeyName);
-        WriteTimestampedLogEntry("Keybag found key: " + sKeyDesc);
         json jName = NuiLabel(JsonString(sKeyName), JsonInt(NUI_HALIGN_LEFT), JsonInt(NUI_VALIGN_MIDDLE));
         jName = NuiWidth(jName, 160.0);
         jRow = JsonArrayInsert(jRow, jName);
