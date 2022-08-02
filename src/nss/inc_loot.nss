@@ -391,9 +391,9 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 // ---------------------------------------------------------
 // Generates loot. Typically used for creatures or containers.
 // ---------------------------------------------------------
-object GenerateLoot(object oContainer)
+object GenerateLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALID)
 {
-   if (!GetHasInventory(oContainer)) return OBJECT_INVALID; // stop if the container has no inventory
+   
 
    if (GetLocalInt(GetModule(), "treasure_ready") != 1)
    {
@@ -406,9 +406,16 @@ object GenerateLoot(object oContainer)
        SendMessageToAllPCs("Treasure is tainted. No treasure will be generated.");
        return OBJECT_INVALID;
    }
+   
+   if (!GetIsObjectValid(oDestinationContainer))
+   {
+       oDestinationContainer = oLootSource;
+   }
+   
+   if (!GetHasInventory(oDestinationContainer)) return OBJECT_INVALID; // stop if the container has no inventory
 
-   int iCR = GetLocalInt(oContainer, "cr");
-   int iAreaCR = GetLocalInt(oContainer, "area_cr");
+   int iCR = GetLocalInt(oLootSource, "cr");
+   int iAreaCR = GetLocalInt(oLootSource, "area_cr");
 
 // Add all the weights
    int nCombinedWeight = 0;
@@ -435,29 +442,29 @@ object GenerateLoot(object oContainer)
    while (TRUE)
    {
        nItemRoll = nItemRoll - nMiscWeight;
-       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Misc");break;}
+       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oDestinationContainer, "Misc");break;}
 
        nItemRoll = nItemRoll - nScrollsWeight;
-       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Scrolls");break;}
+       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oDestinationContainer, "Scrolls");break;}
 
        nItemRoll = nItemRoll - nPotionsWeight;
-       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Potions");break;}
+       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oDestinationContainer, "Potions");break;}
 
        nItemRoll = nItemRoll - nWeaponWeight;
-       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Weapon");break;}
+       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oDestinationContainer, "Weapon");break;}
 
        nItemRoll = nItemRoll - nArmorWeight;
-       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Armor");break;}
+       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oDestinationContainer, "Armor");break;}
 
        nItemRoll = nItemRoll - nApparelWeight;
-       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oContainer, "Apparel");break;}
+       if (nItemRoll <= 0) {oItem = GenerateTierItem(iCR, iAreaCR, oDestinationContainer, "Apparel");break;}
    }
 
     if (ShouldDebugLoot())
     {
         object oModule = GetModule();
         object oTargetArea = GetLocalObject(oModule, LOOT_DEBUG_AREA);
-        if (!GetIsObjectValid(oTargetArea) || oTargetArea == GetArea(oContainer))
+        if (!GetIsObjectValid(oTargetArea) || oTargetArea == GetArea(oDestinationContainer))
         {
             float fChanceForNoLootMultiplier = GetLocalFloat(oModule, LOOT_DEBUG_DROP_CHANCE_MULT);
             float fCombinedWeight = IntToFloat(nCombinedWeight);

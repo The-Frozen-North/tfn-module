@@ -50,6 +50,7 @@ doing so, do this only if running original event has no longer sense.
 #include "x0_i0_spells"
 #include "70_inc_itemprop"
 #include "inc_quest"
+#include "inc_key"
 
 void main()
 {
@@ -63,6 +64,26 @@ void main()
         AdvanceQuest(oItem, oPC, 1);
         DestroyObject(oItem);
         return;
+    }
+    
+    if (GetIsPC(oPC))
+    {
+        int bIsKey = 0;
+        if (GetBaseItemType(oItem) == BASE_ITEM_KEY)
+        {
+            if (!GetLocalInt(oItem, "nokeybag"))
+            {
+                bIsKey = 1;
+            }
+        }
+        else if (GetLocalInt(oItem, "is_key"))
+        {
+            bIsKey = 1;
+        }
+        if (bIsKey)
+        {
+            AddKeyToPlayer(oPC, oItem);
+        }
     }
 
     ExecuteScript("remove_invis", oPC);

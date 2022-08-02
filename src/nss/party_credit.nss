@@ -3,6 +3,7 @@
 #include "inc_loot"
 #include "inc_henchman"
 #include "inc_nwnx"
+#include "inc_key"
 
 // The max distance in meters a party member can be from
 // a target killed by oKiller and still get xp. (no lower than 5!)
@@ -410,7 +411,7 @@ void main()
     object oKey;
     while (GetIsObjectValid(oItem))
     {
-        if (GetBaseItemType(oItem) == BASE_ITEM_KEY)
+        if (GetBaseItemType(oItem) == BASE_ITEM_KEY || GetLocalInt(oItem, "is_key"))
         {
             oKey = oItem;
             break;
@@ -625,7 +626,27 @@ void main()
             nGold = nGold - nGoldToDistribute;
         }
 
-        if (GetIsObjectValid(oKey)) CopyItem(oKey, oPersonalLoot);
+        if (GetIsObjectValid(oKey))
+        {
+            if (!GetHasKey(oPC, GetTag(oKey)))
+            {
+                CopyItem(oKey, oPersonalLoot);
+            }                
+        }
+        // This is for putting keys inside placeables
+        string sKeyResRef = GetLocalString(OBJECT_SELF, "key_item");
+        if (sKeyResRef != "")
+        {
+            object oKeyItem = CreateItemOnObject(sKeyResRef, oPersonalLoot, 1);
+            if (GetHasKey(oPC, GetTag(oKeyItem)))
+            {
+                DestroyObject(oKeyItem);
+            }
+            else
+            {
+                SetLocalInt(oKeyItem, "is_key", 1);
+            }
+        }
 
         DestroyObject(oPersonalLoot, LOOT_DESTRUCTION_TIME); // Personal loot will no longer be accessible after awhile
 
@@ -649,17 +670,17 @@ void main()
 // assumed to be out of bounds (henchman)
                if (Party.PlayerSize+nNth == nItem1)
                {
-                   oItem1 = GenerateLoot(oMerchant);
+                   oItem1 = GenerateLoot(oContainer, oMerchant);
                    DetermineItem(oItem1, oMerchant, oHenchman, nNth);
-               }
+               }    
                if (Party.PlayerSize+nNth == nItem2)
                {
-                   oItem2 = GenerateLoot(oMerchant);
+                   oItem2 = GenerateLoot(oContainer, oMerchant);
                    DetermineItem(oItem2, oMerchant, oHenchman, nNth);
                }
                if (Party.PlayerSize+nNth == nItem3)
                {
-                   oItem3 = GenerateLoot(oMerchant);
+                   oItem3 = GenerateLoot(oContainer, oMerchant);
                    DetermineItem(oItem3, oMerchant, oHenchman, nNth);
                }
 

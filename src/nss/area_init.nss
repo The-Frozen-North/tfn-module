@@ -268,6 +268,11 @@ void main()
                  case OBJECT_TYPE_DOOR:
                     SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_OPEN, "door_open");
                     SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLOSE, "door_close");
+                    if (GetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_FAIL_TO_OPEN) != "")
+                    {
+                        SetLocalString(oObject, "onfailtoopen_script", GetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_FAIL_TO_OPEN));
+                    }
+                    SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_FAIL_TO_OPEN, "door_failopen");
 // nullify this, doors with an on click script do not function
                     SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLICKED, "");
 
