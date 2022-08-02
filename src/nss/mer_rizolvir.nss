@@ -55,13 +55,13 @@ void main()
         GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 5, TRUE);
     }
 
-    nMax = d3();
+    nMax = d2();
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 5, TRUE);
     }
 
-    nMax = d3(2);
+    nMax = d3();
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Range", 5, TRUE);

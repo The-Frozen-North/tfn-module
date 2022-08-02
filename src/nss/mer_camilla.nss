@@ -6,7 +6,7 @@ void main()
     int i;
     for (i = 0; i < nItems; i++)
     {
-        GenerateTierItem(6, 3, OBJECT_SELF);
+        GenerateTierItem(6, 5, OBJECT_SELF);
     }
 
     int nMax = d4(4);

@@ -55,39 +55,50 @@ void main()
     }
 
 
-    nMax = d2();
-    for (i = 0; i < nMax; i++)
+    if (d2() == 2)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 5, TRUE);
+        nMax = d2();
+        for (i = 0; i < nMax; i++)
+        {
+            GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 5, TRUE);
+        }
     }
 
-    nMax = d2();
-    for (i = 0; i < nMax; i++)
+    if (d2() == 2)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 5, TRUE);
+        nMax = d2();
+        for (i = 0; i < nMax; i++)
+        {
+            GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 5, TRUE);
+        }
     }
+    
+    int bNonUnique;
 
     int nItems = d6(10);
     for (i = 0; i < nItems; i++)
     {
-        GenerateTierItem(4, 10, OBJECT_SELF);
+        GenerateTierItem(6, 6, OBJECT_SELF);
     }
 
     nMax = d3(4);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "", 3, TRUE);
+        bNonUnique = d10() >= 3;
+        GenerateTierItem(0, 0, OBJECT_SELF, "", 3, bNonUnique);
     }
 
     nMax = d3(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "", 4, TRUE);
+        bNonUnique = d10() >= 3;
+        GenerateTierItem(0, 0, OBJECT_SELF, "", 4, bNonUnique);
     }
 
-    nMax = d2(2);
+    nMax = d2();
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "", 5, TRUE);
+        bNonUnique = d10() >= 3;
+        GenerateTierItem(0, 0, OBJECT_SELF, "", 5, bNonUnique);
     }
 }
