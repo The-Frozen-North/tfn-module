@@ -4,6 +4,7 @@
 
 int GetHasKey(object oPC, string sKeyTag);
 void AddKeyToPlayer(object oPC, object oKey);
+void RemoveKeyFromPlayer(object oPC, string sKeyTag);
 int GetNumKeysOwned(object oPC);
 
 string GetKeyName(string sKeyTag);
@@ -45,6 +46,16 @@ void AddKeyToPlayer(object oPC, object oKey)
         FloatingTextStringOnCreature("*You stash away the "+sName+" in your key bag*", oPC, FALSE);
     }
     DestroyObject(oKey);
+}
+
+void RemoveKeyFromPlayer(object oPC, string sKeyTag)
+{
+    if (GetHasKey(oPC, sKeyTag))
+    {
+        string sName = GetKeyName(sKeyTag);
+        FloatingTextStringOnCreature("*You have removed "+sName+" from your key bag*", oPC, FALSE);
+        SQLocalsPlayer_DeleteInt(oPC, "haskeytag_" + sKeyTag);
+    }
 }
 
 int GetHasKey(object oPC, string sKeyTag)

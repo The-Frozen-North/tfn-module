@@ -76,7 +76,7 @@ void main()
                 bIsKey = 1;
             }
         }
-        else if (GetLocalInt(oItem, "iskey"))
+        else if (GetLocalInt(oItem, "is_key"))
         {
             bIsKey = 1;
         }

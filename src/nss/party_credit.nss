@@ -411,7 +411,7 @@ void main()
     object oKey;
     while (GetIsObjectValid(oItem))
     {
-        if (GetBaseItemType(oItem) == BASE_ITEM_KEY)
+        if (GetBaseItemType(oItem) == BASE_ITEM_KEY || GetLocalInt(oItem, "is_key"))
         {
             oKey = oItem;
             break;
@@ -632,6 +632,20 @@ void main()
             {
                 CopyItem(oKey, oPersonalLoot);
             }                
+        }
+        // This is for putting keys inside placeables
+        string sKeyResRef = GetLocalString(OBJECT_SELF, "key_item");
+        if (sKeyResRef != "")
+        {
+            object oKeyItem = CreateItemOnObject(sKeyResRef, oPersonalLoot, 1);
+            if (GetHasKey(oPC, GetTag(oKeyItem)))
+            {
+                DestroyObject(oKeyItem);
+            }
+            else
+            {
+                SetLocalInt(oKeyItem, "is_key", 1);
+            }
         }
 
         DestroyObject(oPersonalLoot, LOOT_DESTRUCTION_TIME); // Personal loot will no longer be accessible after awhile
