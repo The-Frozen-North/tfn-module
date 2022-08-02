@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 24
+    "value": 92
   },
   "BodyBag": {
     "type": "byte",
@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 10.0
+    "value": 11.0
   },
   "ClassList": {
     "type": "list",
@@ -46,11 +46,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 1
+    "value": 0
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 66
+    "value": 100
   },
   "DecayTime": {
     "type": "dword",
@@ -61,10 +61,9 @@
     "value": ""
   },
   "Description": {
+    "id": 12577,
     "type": "cexolocstring",
-    "value": {
-      "0": "Created by demented wizards, Bone Golems are generally used to guard prized possessions. Their bodies are pieced together from various creatures, both humanoid and monster."
-    }
+    "value": {}
   },
   "Dex": {
     "type": "byte",
@@ -72,23 +71,23 @@
   },
   "Disarmable": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "Equip_ItemList": {
     "type": "list",
     "value": [
       {
-        "__struct_id": 16384,
+        "__struct_id": 65536,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp005"
+          "value": "nw_it_crewpb017"
         }
       },
       {
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "it_creitemco008"
+          "value": "stonegolemhide"
         }
       }
     ]
@@ -104,15 +103,23 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 228
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 289
         }
       }
     ]
   },
   "FirstName": {
+    "id": 12578,
     "type": "cexolocstring",
     "value": {
-      "0": "Bone Golem"
+      "0": "Lesser Stone Golem"
     }
   },
   "fortbonus": {
@@ -121,7 +128,7 @@
   },
   "Gender": {
     "type": "byte",
-    "value": 0
+    "value": 4
   },
   "GoodEvil": {
     "type": "byte",
@@ -129,11 +136,11 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 66
+    "value": 100
   },
   "Int": {
     "type": "byte",
-    "value": 10
+    "value": 3
   },
   "Interruptable": {
     "type": "byte",
@@ -149,9 +156,7 @@
   },
   "LastName": {
     "type": "cexolocstring",
-    "value": {
-      "0": ""
-    }
+    "value": {}
   },
   "LawfulChaotic": {
     "type": "byte",
@@ -163,11 +168,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 66
+    "value": 100
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 0
+    "value": 12
   },
   "NoPermDeath": {
     "type": "byte",
@@ -191,7 +196,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 226
+    "value": 230
   },
   "Race": {
     "type": "byte",
@@ -330,7 +335,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 15
+          "value": 0
         }
       },
       {
@@ -456,19 +461,35 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 65535
+    "value": 50
   },
   "SpecAbilityList": {
     "type": "list",
-    "value": []
+    "value": [
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 226
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 7
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      }
+    ]
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 75
+    "value": 0
   },
   "Str": {
     "type": "byte",
-    "value": 24
+    "value": 21
   },
   "Subrace": {
     "type": "cexostring",
@@ -476,7 +497,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "BoneGolem"
+    "value": "NW_GOLSTONE"
   },
   "Tail_New": {
     "type": "dword",
@@ -488,11 +509,46 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "bonegolem"
+    "value": "lesser_gol_stone"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "semiboss"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "no_wander"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
-    "value": 3
+    "value": 7
   },
   "willbonus": {
     "type": "short",
