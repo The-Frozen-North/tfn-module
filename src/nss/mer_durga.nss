@@ -71,7 +71,9 @@ void main()
         {
             GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 5, TRUE);
         }
-
+    }
+    if (d2() == 1)
+    {
         nMax = d2();
         for (i = 0; i < nMax; i++)
         {

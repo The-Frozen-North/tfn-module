@@ -92,11 +92,11 @@ string GetPartySizeString(object oPC)
         nNumNPCS += GetHenchmanCount(oPartyMember);
         oPartyMember = GetNextFactionMember(oPC);
     }
-    
-    string sOut = IntToString(nNumNPCS + nNumPCs);
+    string sOut = "0 NPCs";
+    //string sOut = IntToString(nNumNPCS + nNumPCs);
     if (nNumNPCS > 0)
     {
-        sOut += " (" + IntToString(nNumNPCS) + " NPC" + (nNumNPCS > 1 ? "s" : "") + ")";
+        sOut == IntToString(nNumNPCS) + " NPC" + (nNumNPCS > 1 ? "s" : "");
     }
     return sOut;
 }
