@@ -247,15 +247,14 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 // Given no type, generate a random one.
     if (sType == "")
     {
-        switch(Random(7))
+        switch(Random(6))
         {
            case 0: sType = "Misc"; break;
            case 1: sType = "Scrolls"; break;
            case 2: sType = "Weapon"; break;
            case 3: sType = "Armor"; break;
-           case 4: sType = "Range"; break;
-           case 5: sType = "Apparel"; break;
-           case 6: sType = "Potions"; break;
+           case 4: sType = "Apparel"; break;
+           case 5: sType = "Potions"; break;
         }
     }
 
