@@ -6,7 +6,7 @@
   },
   "Appearance": {
     "type": "dword",
-    "value": 76
+    "value": 761
   },
   "AutoRemoveKey": {
     "type": "byte",
@@ -86,9 +86,7 @@
   "LocName": {
     "id": 14710,
     "type": "cexolocstring",
-    "value": {
-      "0": "Large Pedestal"
-    }
+    "value": {}
   },
   "OnClick": {
     "type": "resref",
@@ -156,7 +154,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 18
+    "value": 19
   },
   "Plot": {
     "type": "byte",
@@ -164,7 +162,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 434
+    "value": 1230
   },
   "Ref": {
     "type": "byte",
@@ -176,11 +174,11 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "LayenneCentralPedestalPlc"
+    "value": "SarcophagusEgyptian"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "layenne_cent_ped"
+    "value": "treas_sarco_sw_h"
   },
   "TrapDetectable": {
     "type": "byte",
@@ -221,6 +219,21 @@
         "__struct_id": 0,
         "Name": {
           "type": "cexostring",
+          "value": "trapped"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
           "value": "treasure"
         },
         "Type": {
@@ -230,51 +243,6 @@
         "Value": {
           "type": "cexostring",
           "value": "high"
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "quest1"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 3
-        },
-        "Value": {
-          "type": "cexostring",
-          "value": "02_q_star_sapphire"
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "quest_item"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 3
-        },
-        "Value": {
-          "type": "cexostring",
-          "value": "q_starsapphire"
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "boss"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
         }
       }
     ]

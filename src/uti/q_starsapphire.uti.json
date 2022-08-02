@@ -2,11 +2,11 @@
   "__data_type": "UTI ",
   "AddCost": {
     "type": "dword",
-    "value": 75
+    "value": 0
   },
   "BaseItem": {
     "type": "int",
-    "value": 65
+    "value": 24
   },
   "Charges": {
     "type": "byte",
@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 75
+    "value": 0
   },
   "Cursed": {
     "type": "byte",
@@ -27,13 +27,13 @@
   "DescIdentified": {
     "type": "cexolocstring",
     "value": {
-      "0": "This key was found in the Drow section beneath Mount Hotenow, carried by a Duergar Commander."
+      "0": "Its size is impressive, with a unique quality and cut. This semi-precious stone has great value, particularly for those interested in the history of the Cheroux family."
     }
   },
   "Description": {
     "type": "cexolocstring",
     "value": {
-      "0": "This key was found in the Drow section beneath Mount Hotenow, carried by a Duergar Commander."
+      "0": ""
     }
   },
   "Identified": {
@@ -43,24 +43,16 @@
   "LocalizedName": {
     "type": "cexolocstring",
     "value": {
-      "0": "Hotenow Key"
+      "0": "Star Sapphire"
     }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 51
-  },
-  "ModelPart2": {
-    "type": "byte",
-    "value": 33
-  },
-  "ModelPart3": {
-    "type": "byte",
-    "value": 61
+    "value": 49
   },
   "PaletteID": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "Plot": {
     "type": "byte",
@@ -80,10 +72,30 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "key_hotenow"
+    "value": "quest"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "key_hotenow"
+    "value": "q_starsapphire"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest1"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "02_q_star_sapphire"
+        }
+      }
+    ]
   }
 }

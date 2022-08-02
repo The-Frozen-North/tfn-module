@@ -1,6 +1,5 @@
 // Layenne's tomb refresh
 
-
 void main()
 {
     int bAmethyst = 0;
@@ -15,6 +14,7 @@ void main()
         DestroyObject(oCentral);
     }
     int i;
+    // The four gem insert pedestals, and the four hint VFX around the tomb
     for (i=1; i<=4; i++)
     {
         object oPed = GetObjectByTag("LayennePedestal" + IntToString(i));
@@ -45,7 +45,7 @@ void main()
         }
         int nVFX;
         string sPlaceableVFX;
-        
+
         if (nRoll == 0)
         {
             SetLocalString(oPed, "layenne_gem", "amethyst");
@@ -53,7 +53,7 @@ void main()
             sPlaceableVFX = "plc_solpurple";
             bAmethyst = 1;
         }
-        else if (nRoll == 1) 
+        else if (nRoll == 1)
         {
             SetLocalString(oPed, "layenne_gem", "emerald");
             nVFX = 179;
@@ -74,8 +74,27 @@ void main()
             sPlaceableVFX = "plc_solblue";
             bSapphire = 1;
         }
-        ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectVisualEffect(nVFX), oPed);
+
+
+
+        oWP = GetWaypointByTag("LayenneHint" + IntToString(i));
+        DestroyObject(GetLocalObject(oWP, "VFX1"));
         oVFX = CreateObject(OBJECT_TYPE_PLACEABLE, sPlaceableVFX, GetLocation(oWP));
-        SetLocalObject(oPed, "VFX1", oVFX);
+        SetLocalObject(oWP, "VFX1", oVFX);
+    }
+
+    // The four glyph generators for the iron golem fight
+    for (i=1; i<=4; i++)
+    {
+        object oWP = GetWaypointByTag("LayenneGlyph" + IntToString(i));
+        object oOldGlyph = GetLocalObject(oWP, "LayenneGlyphPlc");
+        if (GetIsObjectValid(oOldGlyph))
+        {
+            DestroyObject(oOldGlyph);
+        }
+        object oGlyph = CreateObject(OBJECT_TYPE_PLACEABLE, "layenne_glyphgen", GetLocation(oWP));
+        SetName(oGlyph, GetStringByStrRef(47501)); // "Glyph Generator"
+        SetLocalObject(oWP, "LayenneGlyphPlc", oGlyph);
+        SetEventScript(oGlyph, EVENT_SCRIPT_PLACEABLE_ON_DEATH, "layenne_glyph_d");
     }
 }

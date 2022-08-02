@@ -21,12 +21,14 @@ void main()
         int nSuccessVFX;
         int nLightVFX;
         string sPlaceableVFX;
+        string sPlaceableVFX2;
         if (sMyGem == "amethyst")
         {
             sGemTag = "q_gemofmisery";
             nSuccessVFX = VFX_DUR_AURA_PURPLE;
             nLightVFX = VFX_DUR_LIGHT_PURPLE_15;
             sPlaceableVFX = "plc_magicpurple";
+            sPlaceableVFX2 = "plc_solpurple";
         }
         else if (sMyGem == "diamond")
         {
@@ -34,6 +36,7 @@ void main()
             nSuccessVFX = VFX_DUR_AURA_WHITE;
             nLightVFX = VFX_DUR_LIGHT_WHITE_15;
             sPlaceableVFX = "plc_magicwhite";
+            sPlaceableVFX2 = "plc_solwhite";
         }
         else if (sMyGem == "emerald")
         {
@@ -41,6 +44,7 @@ void main()
             nSuccessVFX = VFX_DUR_AURA_GREEN;
             nLightVFX = 179;
             sPlaceableVFX = "plc_magicgreen";
+            sPlaceableVFX2 = "plc_solgreen";
         }
         else if (sMyGem == "sapphire")
         {
@@ -48,12 +52,17 @@ void main()
             nSuccessVFX = VFX_DUR_AURA_BLUE;
             nLightVFX = VFX_DUR_LIGHT_BLUE_15;
             sPlaceableVFX = "plc_magicblue";
+            sPlaceableVFX2 = "plc_solblue";
+
         }
         RemoveKeyFromPlayer(oPC, sGemTag);
         SetLocalInt(OBJECT_SELF, "layenne_filled", 1);
         ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectVisualEffect(nSuccessVFX), OBJECT_SELF);
+        ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectVisualEffect(nLightVFX), OBJECT_SELF);
         //ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectVisualEffect(nLightVFX), OBJECT_SELF);
         object oVFX = CreateObject(OBJECT_TYPE_PLACEABLE, sPlaceableVFX, GetLocation(OBJECT_SELF));
+        SetLocalObject(OBJECT_SELF, "VFX1", oVFX);
+        oVFX = CreateObject(OBJECT_TYPE_PLACEABLE, sPlaceableVFX2, GetLocation(OBJECT_SELF));
         SetLocalObject(OBJECT_SELF, "VFX2", oVFX);
         // Was this the last one?
         int i;

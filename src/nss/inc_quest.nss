@@ -140,7 +140,7 @@ int GetIsQuestStageEligible(object oQuestObject, object oPC, int nTarget, int bB
     string sQuest = GetLocalString(oQuestObject, sQuestTarget);
     string sQuestName = GetSubString(sQuest, 3, 27);
     int nQuestStage = StringToInt(GetSubString(sQuest, 0, 2));
-
+    //SendMessageToPC(oPC, "Stage = " + IntToString(nQuestStage) + ", entry = " + IntToString(GetQuestEntry(oPC, sQuestName)));
 // Player must be behind by 1 of their quest entry. Skipped on bluff.
     if (!bBluff && GetQuestEntry(oPC, sQuestName) != (nQuestStage-1)) return FALSE;
 
@@ -160,7 +160,6 @@ int GetIsQuestStageEligible(object oQuestObject, object oPC, int nTarget, int bB
     }
 
     if (GetIsAtQuestStage(oQuestObject, oPC, nTarget) == TRUE) return FALSE;
-
     return TRUE;
 }
 
