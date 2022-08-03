@@ -86,6 +86,14 @@ const int UNIQUE_ITEM_CHANCE = 33;
 const int MISC_CHANCE_TO_BE_JEWEL = 67;
 const int RANDOM_WEAPON_IS_RANGED = 40;
 
+// The real chance of a tiered pawnshop item to be unique is:
+// UNIQUE_ITEM_CHANCE/100 * PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE/100
+// With both set at 33 that brings it to about 10.9%
+// Pawnshops also typically stock lots of level appropriate random items that work like monster drops
+// This applies ONLY to the fixed items of X tier
+const int PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE = 100;
+const int STORE_RANDOM_T5_CHANCE = 15;
+
 
 // ===========================================================
 // START PROTOTYPES

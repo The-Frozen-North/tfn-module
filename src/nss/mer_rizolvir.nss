@@ -30,40 +30,56 @@ void main()
     int i;
     int nMax = d3(2);
 
-    nMax = d6(3);
+    nMax = d4(2);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 3, TRUE);
     }
 
-    nMax = d6(3);
+    nMax = d4(2);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 3, TRUE);
     }
 
-    nMax = d6(3);
+    nMax = d4(2);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Range", 3, TRUE);
     }
-
-
-    nMax = d2();
+    
+    nMax = d3(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 5, TRUE);
+        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 4, TRUE);
     }
 
-    nMax = d2();
+    nMax = d3(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 5, TRUE);
+        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 4, TRUE);
     }
 
-    nMax = d3();
+    nMax = d3(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Range", 5, TRUE);
+        GenerateTierItem(0, 0, OBJECT_SELF, "Range", 4, TRUE);
+    }
+
+
+    for (i = 0; i < 7; i++)
+    {
+        if (Random(100) < STORE_RANDOM_T5_CHANCE)
+        {
+            GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 5, TRUE);
+        }
+        if (Random(100) < STORE_RANDOM_T5_CHANCE)
+        {
+            GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 5, TRUE);
+        }
+        if (Random(100) < STORE_RANDOM_T5_CHANCE)
+        {
+            GenerateTierItem(0, 0, OBJECT_SELF, "Range", 5, TRUE);
+        }
     }
 }
