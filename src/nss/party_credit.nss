@@ -207,6 +207,7 @@ void SetPartyData()
    int nTotalSize = 0;
    int nTotalLevels = 0;
    int nHighestLevel = 0;
+   int nAssociateType;
    float fAverageLevel = 0.0;
 
    float fDst = PARTY_DST_MAX;
@@ -223,6 +224,7 @@ void SetPartyData()
           nTotalSize++;
           nLevel = GetLevelFromXP(GetXP(oMbr));
           nTotalLevels = nTotalLevels + nLevel;
+          nAssociateType = GetAssociateType(oMbr);
           if (nLevel > nHighestLevel) nHighestLevel = nLevel;
 
 
@@ -230,12 +232,12 @@ void SetPartyData()
           if(nHigh < nLevel) nHigh = nLevel;
           SetLocalArrayObject(OBJECT_SELF, "Players", nPlayerSize, oMbr);
       }
-// checking if it isn't dead and that the heartbeat event is henchman heartbeat is enough
-// for us to tell
-      else if (!GetIsDead(oMbr) && !GetIsPC(oMbr) && GetEventScript(oMbr, EVENT_SCRIPT_CREATURE_ON_HEARTBEAT) == "hen_onheartb")
+
+// all associates except dominated should count for xp purposes
+      else if (!GetIsDead(oMbr) && !GetIsPC(oMbr) && nAssociateType > 0 && nAssociateType != ASSOCIATE_TYPE_DOMINATED)
       {
           nTotalSize++;
-          if (GetStringLeft(GetResRef(oMbr), 3) == "hen")
+          if (GetStringLeft(GetResRef(oMbr), 3) == "hen") // only named henchman count for loot distro
           {
             nHenchmanSize++;
             SetLocalArrayObject(OBJECT_SELF, "Henchmans", nHenchmanSize, oMbr);
@@ -337,7 +339,7 @@ void main()
     int nChanceTwo = CHANCE_TWO;
     int nChanceOne = CHANCE_ONE;
     int nTreasureChance = 100;
-    
+
     int bIsPlaceable = GetObjectType(OBJECT_SELF) == OBJECT_TYPE_PLACEABLE;
 
     if (bDestroyed)
@@ -375,7 +377,7 @@ void main()
             break;
         }
     }
-    
+
     // Placeables always yield treasure, even if you bash them to pieces
     // (how hard do you have to bonk a coin before it's not gold any more?)
     // Destroying them lowers the chances of getting items though
@@ -435,7 +437,7 @@ void main()
         bNoTreasure = FALSE;
         nTreasureChance = 100;
     }
-    
+
     if (ShouldDebugLoot() && nTreasureChance > 0)
     {
         // Always make a container if debugging and there's a chance this enemy type drops something
@@ -511,7 +513,7 @@ void main()
        nChanceTwo = 0;
        nChanceOne = 0;
    }
-   
+
 
    if (nItemsRoll <= nChanceThree)
    {
@@ -631,7 +633,7 @@ void main()
             if (!GetHasKey(oPC, GetTag(oKey)))
             {
                 CopyItem(oKey, oPersonalLoot);
-            }                
+            }
         }
         // This is for putting keys inside placeables
         string sKeyResRef = GetLocalString(OBJECT_SELF, "key_item");
@@ -672,7 +674,7 @@ void main()
                {
                    oItem1 = GenerateLoot(oContainer, oMerchant);
                    DetermineItem(oItem1, oMerchant, oHenchman, nNth);
-               }    
+               }
                if (Party.PlayerSize+nNth == nItem2)
                {
                    oItem2 = GenerateLoot(oContainer, oMerchant);
