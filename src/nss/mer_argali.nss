@@ -20,13 +20,15 @@ void main()
         GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 4, TRUE);
     }
 
-    nMax = d3();
-    for (i = 0; i < nMax; i++)
+    for (i = 0; i < 4; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 5, TRUE);
+        if (Random(100) < STORE_RANDOM_T5_CHANCE)
+        {
+            GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 5, TRUE);
+        }
     }
 
-    nMax = d4(2);
+    nMax = d4(3);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 3, TRUE);

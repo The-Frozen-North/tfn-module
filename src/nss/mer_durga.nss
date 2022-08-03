@@ -28,13 +28,13 @@ void main()
     CopyChest(OBJECT_SELF, "_ArmorRareT3NonUnique", 256, "", TRUE);
 
     int i;
-    int nMax = d3(3);
+    int nMax = d3(2);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 4, TRUE);
     }
 
-    nMax = d3(3);
+    nMax = d3(2);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 4, TRUE);
@@ -63,19 +63,14 @@ void main()
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 2, TRUE);
     }
-
-    if (d2() == 1)
+    
+    for (i = 0; i < 3; i++)
     {
-        nMax = d2();
-        for (i = 0; i < nMax; i++)
+        if (Random(100) < STORE_RANDOM_T5_CHANCE)
         {
             GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 5, TRUE);
         }
-    }
-    if (d2() == 1)
-    {
-        nMax = d2();
-        for (i = 0; i < nMax; i++)
+        if (Random(100) < STORE_RANDOM_T5_CHANCE)
         {
             GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 5, TRUE);
         }

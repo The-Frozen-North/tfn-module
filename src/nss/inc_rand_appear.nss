@@ -526,23 +526,21 @@ void RandomiseCreatureSoundset_Old(object oCreature=OBJECT_SELF)
 
 void RandomiseSkinColour(object oCreature=OBJECT_SELF)
 {
-    SetColor(oCreature, COLOR_CHANNEL_SKIN, Random(16));
+    SetColor(oCreature, COLOR_CHANNEL_SKIN, Random(14));
 }
 
 void RandomiseHairColour(object oCreature=OBJECT_SELF)
 {
     int nSkin = GetColor(oCreature, COLOR_CHANNEL_SKIN);
     int nHair;
-    // Darker skinned people usually have darker hair, too
-    if ((nSkin >= 5 && nSkin <= 7) || nSkin == 11 || nSkin == 15)
+    int nDarkerSkin = 1;
+    // Lighter skin colours
+    if (nSkin <= 3 || nSkin == 8 || nSkin == 9 || nSkin == 12 || nSkin == 13)
     {
-        int nRoll = Random(4);
-        if (nRoll == 0) { nHair = 2; }
-        else if (nRoll == 1) { nHair = 3; }
-        else if (nRoll == 2) { nHair = 14; }
-        else { nHair = 15; }
+        nDarkerSkin = 0;
     }
-    else
+    
+    if (!nDarkerSkin)
     {
         // Apparently, 1/4 of the first row colours are some kind of red
         // which seems a bit too common
@@ -556,6 +554,28 @@ void RandomiseHairColour(object oCreature=OBJECT_SELF)
             if (nHair >= 4 && nHair <= 7)
             {
                 nHair += 8;
+            }
+        }
+    }
+    else
+    {   
+        // Red
+        if (d10() == 10)
+        {
+            nHair = Random(4) + 4;
+        }
+        else
+        {
+            // Omit 12/13 for darker skin
+            nHair = Random(10);
+            if (nHair == 12 && nHair == 13)
+            {
+                nHair += 2;
+            }
+            // Don't end up in the red range
+            if (nHair >= 4 && nHair <= 7)
+            {
+                nHair += 4;
             }
         }
     }

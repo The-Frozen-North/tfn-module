@@ -24,19 +24,21 @@ void main()
         GenerateTierItem(0, 0, OBJECT_SELF, "Range", 4, TRUE);
     }
 
-    nMax = d2();
-    for (i = 0; i < nMax; i++)
+    for (i = 0; i < 3; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Range", 5, TRUE);
+        if (Random(100) < STORE_RANDOM_T5_CHANCE)
+        {
+            GenerateTierItem(0, 0, OBJECT_SELF, "Range", 5, TRUE);
+        }
     }
 
-    nMax = d6(3);
+    nMax = d4(3);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Range", 3, TRUE);
     }
 
-    nMax = d6(5);
+    nMax = d6(4);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Range", 2, TRUE);

@@ -3,6 +3,7 @@
 
 void main()
 {
+    // BLACKSMITH portion
     ApplyEWRAndInfiniteItems(OBJECT_SELF);
 
     CopyChest(OBJECT_SELF, "_RangeCommonT1NonUnique", 256, "", TRUE);
@@ -41,64 +42,73 @@ void main()
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 4, TRUE);
     }
+    
+    nMax = d4(3);
+    for (i = 0; i < nMax; i++)
+    {
+        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 3, TRUE);
+    }
 
     nMax = d4(3);
+    for (i = 0; i < nMax; i++)
+    {
+        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 3, TRUE);
+    }
+
+    nMax = d6(3);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 2, TRUE);
     }
 
-    nMax = d4(3);
+    nMax = d6(3);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 2, TRUE);
     }
 
 
-    if (d2() == 2)
+    for (i = 0; i < 4; i++)
     {
-        nMax = d2();
-        for (i = 0; i < nMax; i++)
+        if (Random(100) < STORE_RANDOM_T5_CHANCE)
         {
             GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 5, TRUE);
         }
-    }
-
-    if (d2() == 2)
-    {
-        nMax = d2();
-        for (i = 0; i < nMax; i++)
+        if (Random(100) < STORE_RANDOM_T5_CHANCE)
         {
             GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 5, TRUE);
         }
     }
     
+    // PAWNSHOP portion
     int bNonUnique;
 
-    int nItems = d6(10);
+    int nItems = d20(10);
     for (i = 0; i < nItems; i++)
     {
         GenerateTierItem(6, 6, OBJECT_SELF);
     }
 
-    nMax = d3(4);
+    nMax = d4(6);
     for (i = 0; i < nMax; i++)
     {
-        bNonUnique = d10() >= 3;
+        bNonUnique = Random(100) >= PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE;
         GenerateTierItem(0, 0, OBJECT_SELF, "", 3, bNonUnique);
     }
 
     nMax = d3(3);
     for (i = 0; i < nMax; i++)
     {
-        bNonUnique = d10() >= 3;
+        bNonUnique = Random(100) >= PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE;
         GenerateTierItem(0, 0, OBJECT_SELF, "", 4, bNonUnique);
     }
 
-    nMax = d2();
-    for (i = 0; i < nMax; i++)
+    for (i = 0; i < 5; i++)
     {
-        bNonUnique = d10() >= 3;
-        GenerateTierItem(0, 0, OBJECT_SELF, "", 5, bNonUnique);
+        if (Random(100) < STORE_RANDOM_T5_CHANCE)
+        {
+            bNonUnique = Random(100) >= PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE;
+            GenerateTierItem(0, 0, OBJECT_SELF, "", 5, bNonUnique);
+        }
     }
 }
