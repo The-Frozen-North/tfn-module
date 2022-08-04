@@ -183,15 +183,11 @@ float GetAverageCostForBaseItem(int nBaseItem)
     
     int nRandom = d100();
     
-    /*
+    
     float fT5Chance = IntToFloat(1*nMultiplier)/100.0;
     float fT4Chance = IntToFloat(3*nMultiplier)/100.0;
     float fT3Chance = IntToFloat(7*nMultiplier)/100.0;
-    */
     
-    float fT5Chance = 0.0;
-    float fT4Chance = 0.0;
-    float fT3Chance = 0.0;
     
     float fT2Chance = 1.0 - (fT3Chance + fT4Chance + fT5Chance);
     
@@ -201,10 +197,10 @@ float GetAverageCostForBaseItem(int nBaseItem)
     float fUnique = IntToFloat(UNIQUE_ITEM_CHANCE)/100.0;
     float fNonUnique = 1.0 - fUnique;
 
-    float fT2 = fT2Chance * ((fUnique * GetAverageValueOfItemsOfType(nBaseItem, 2, 1)) + (fNonUnique * GetAverageValueOfItemsOfType(nBaseItem, 2, 1)));
-    float fT3 = fT3Chance * ((fUnique * GetAverageValueOfItemsOfType(nBaseItem, 3, 1)) + (fNonUnique * GetAverageValueOfItemsOfType(nBaseItem, 3, 1)));
-    float fT4 = fT4Chance * ((fUnique * GetAverageValueOfItemsOfType(nBaseItem, 4, 1)) + (fNonUnique * GetAverageValueOfItemsOfType(nBaseItem, 4, 1)));
-    float fT5 = fT5Chance * ((fUnique * GetAverageValueOfItemsOfType(nBaseItem, 5, 1)) + (fNonUnique * GetAverageValueOfItemsOfType(nBaseItem, 5, 1)));
+    float fT2 = fT2Chance * ((fUnique * GetAverageValueOfItemsOfType(nBaseItem, 2, 1)) + (fNonUnique * GetAverageValueOfItemsOfType(nBaseItem, 2, 0)));
+    float fT3 = fT3Chance * ((fUnique * GetAverageValueOfItemsOfType(nBaseItem, 3, 1)) + (fNonUnique * GetAverageValueOfItemsOfType(nBaseItem, 3, 0)));
+    float fT4 = fT4Chance * ((fUnique * GetAverageValueOfItemsOfType(nBaseItem, 4, 1)) + (fNonUnique * GetAverageValueOfItemsOfType(nBaseItem, 4, 0)));
+    float fT5 = fT5Chance * ((fUnique * GetAverageValueOfItemsOfType(nBaseItem, 5, 1)) + (fNonUnique * GetAverageValueOfItemsOfType(nBaseItem, 5, 0)));
     
     return fT2 + fT3 + fT4 + fT5;
 }
@@ -214,23 +210,20 @@ float GetAverageCostForBaseAC(int nAC)
     int nMultiplier = GetMultiplierForBaseAC(nAC);
     int nRandom = d100();
     
-    /*
+    
     float fT5Chance = IntToFloat(1*nMultiplier)/100.0;
     float fT4Chance = IntToFloat(3*nMultiplier)/100.0;
     float fT3Chance = IntToFloat(7*nMultiplier)/100.0;
-    */
-    float fT5Chance = 0.0;
-    float fT4Chance = 0.0;
-    float fT3Chance = 0.0;
+    
     float fT2Chance = 1.0 - (fT3Chance + fT4Chance + fT5Chance);
     
     float fUnique = IntToFloat(UNIQUE_ITEM_CHANCE)/100.0;
     float fNonUnique = 1.0 - fUnique;
 
-    float fT2 = fT2Chance * ((fUnique * GetAverageValueOfArmorOfType(nAC, 2, 1)) + (fNonUnique * GetAverageValueOfArmorOfType(nAC, 2, 1)));
-    float fT3 = fT3Chance * ((fUnique * GetAverageValueOfArmorOfType(nAC, 3, 1)) + (fNonUnique * GetAverageValueOfArmorOfType(nAC, 3, 1)));
-    float fT4 = fT4Chance * ((fUnique * GetAverageValueOfArmorOfType(nAC, 4, 1)) + (fNonUnique * GetAverageValueOfArmorOfType(nAC, 4, 1)));
-    float fT5 = fT5Chance * ((fUnique * GetAverageValueOfArmorOfType(nAC, 5, 1)) + (fNonUnique * GetAverageValueOfArmorOfType(nAC, 5, 1)));
+    float fT2 = fT2Chance * ((fUnique * GetAverageValueOfArmorOfType(nAC, 2, 1)) + (fNonUnique * GetAverageValueOfArmorOfType(nAC, 2, 0)));
+    float fT3 = fT3Chance * ((fUnique * GetAverageValueOfArmorOfType(nAC, 3, 1)) + (fNonUnique * GetAverageValueOfArmorOfType(nAC, 3, 0)));
+    float fT4 = fT4Chance * ((fUnique * GetAverageValueOfArmorOfType(nAC, 4, 1)) + (fNonUnique * GetAverageValueOfArmorOfType(nAC, 4, 0)));
+    float fT5 = fT5Chance * ((fUnique * GetAverageValueOfArmorOfType(nAC, 5, 1)) + (fNonUnique * GetAverageValueOfArmorOfType(nAC, 5, 0)));
     
     return fT2 + fT3 + fT4 + fT5;
 }
