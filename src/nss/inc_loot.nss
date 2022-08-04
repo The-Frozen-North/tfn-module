@@ -2,7 +2,9 @@
 #include "inc_debug"
 #include "inc_general"
 #include "nwnx_player"
+#include "nwnx_visibility"
 #include "util_i_math"
+#include "nw_i0_plot" 
 
 // ===========================================================
 // START CONSTANTS
@@ -148,6 +150,8 @@ void ResetLootDebug();
 // ===========================================================
 // START FUNCTIONS
 // ===========================================================
+
+const string PERSONAL_LOOT_GOLD_AMOUNT = "personal_loot_gold";
 
 // ---------------------------------------------------------
 // This function is used to determine the tier of the drop.
@@ -328,7 +332,8 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
     }
 
 // 2 out of 3 misc items will always be gems/jewelry
-    if (sType == "Misc" && d100() <= MISC_CHANCE_TO_BE_JEWEL) sType = "Jewels";
+// Unless you're a shop, in which case this is just wasted UI space because there's no reason to ever buy these items
+    if (sType == "Misc" && d100() <= MISC_CHANCE_TO_BE_JEWEL && GetObjectType(oContainer) != OBJECT_TYPE_STORE) sType = "Jewels";
 
 // never NU
     if (sType == "Misc" || sType == "Apparel" || sType == "Scrolls" || sType == "Jewels")
@@ -559,16 +564,24 @@ void DecrementLootAndDestroyIfEmpty(object oOpener, object oLootParent, object o
 // Decrement number of players who looted this, and destroy the loot container.
     SetLocalInt(oLootParent, "unlooted", nUnlooted);
     DestroyObject(oPersonalLoot);
+    
+    int bIsTreasure = GetStringLeft(GetResRef(oLootParent), 6) == "treas_";
+    
+    // Hide lootbags for players that have taken all their stuff
+    if (!bIsTreasure)
+    {
+        NWNX_Visibility_SetVisibilityOverride(oOpener, oLootParent, NWNX_VISIBILITY_HIDDEN);
+    }
 
 // 0 or less unlooted means everyone has already looted this.
     if (nUnlooted <= 0)
     {
         SetPlotFlag(oLootParent, FALSE);
 
-        if (GetStringLeft(GetResRef(oLootParent), 6) == "treas_")
+        if (bIsTreasure)
         {
             AssignCommand(oLootParent, ActionPlayAnimation(ANIMATION_PLACEABLE_CLOSE));
-            DestroyObject(oLootParent, 2.0);
+            DestroyObject(oLootParent, 2.5);
             // Assume this is a placeable treasure, close it then destroy it.
         }
         else
@@ -590,17 +603,35 @@ void OpenPersonalLoot(object oContainer, object oPC)
 
 // Get the personal container
     object oPersonalLoot = GetObjectByUUID(GetLocalString(oContainer, "personal_loot_"+GetPCPublicCDKey(oPC, TRUE)));
+    
+    int nGold = GetLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT);
+    if (nGold > 0)
+    {
+        AssignCommand(oContainer, ActionPlayAnimation(ANIMATION_PLACEABLE_OPEN));
+        GiveGoldToCreature(oPC, nGold);
+        DeleteLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT);
+    }
 
 // if the loot container doesn't exist, give a message
     if (oPersonalLoot == OBJECT_INVALID)
     {
-        FloatingTextStringOnCreature(NO_LOOT, oPC, FALSE);
+        if (nGold <= 0)
+        {
+            FloatingTextStringOnCreature(NO_LOOT, oPC, FALSE);
+        }
     }
 // if there are no items in it, destroy it immediately and do the logic
     else if (!GetIsObjectValid(GetFirstItemInInventory(oPersonalLoot)))
     {
-        FloatingTextStringOnCreature(NO_LOOT, oPC, FALSE);
-        DecrementLootAndDestroyIfEmpty(oPC, oContainer, oPersonalLoot);
+        if (nGold <= 0)
+        {
+            FloatingTextStringOnCreature(NO_LOOT, oPC, FALSE);
+            DecrementLootAndDestroyIfEmpty(oPC, oContainer, oPersonalLoot);
+        }
+        if (nGold > 0)
+        {
+            DelayCommand(1.0, DecrementLootAndDestroyIfEmpty(oPC, oContainer, oPersonalLoot));
+        }
     }
     else
     {

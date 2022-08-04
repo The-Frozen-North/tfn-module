@@ -129,7 +129,7 @@ void main()
         ApplyEffectToObject(DURATION_TYPE_INSTANT, eImpact, oTest);
         ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eVis, oTest, 3.0);
         // This is intended to have a nonzero chance to kill people who can't see colours correctly or blindly follow OC guides :)
-        DelayCommand(0.0, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(d6(12), nDamageType), oTest));
+        DelayCommand(0.0, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(d6(8), nDamageType), oTest));
         oTest = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lSelf, TRUE);
     }
 }
