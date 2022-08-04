@@ -624,7 +624,7 @@ void main()
         if (nGold > 0)
         {
             if (nNth == Party.PlayerSize) nGoldToDistribute = nGold; // if this is the last player, give them the remaining gold
-            CreateItemOnObject("nw_it_gold001", oPersonalLoot, nGoldToDistribute);
+            SetLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT, nGoldToDistribute);
             nGold = nGold - nGoldToDistribute;
         }
 

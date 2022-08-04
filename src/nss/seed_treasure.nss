@@ -685,7 +685,7 @@ void CreateContainersForItemTypesByTier()
         {
             int nNumItems = 0;
             int nContainerType;
-            for (nContainerType=0; nContainerType<=3; nContainerType++)
+            for (nContainerType=0; nContainerType<=4; nContainerType++)
             {
                 string sContainerTypeName;
                 switch (nContainerType)
@@ -694,6 +694,7 @@ void CreateContainersForItemTypesByTier()
                     case 1: { sContainerTypeName = "Range"; break; }
                     case 2: { sContainerTypeName = "Melee"; break; }
                     case 3: { sContainerTypeName = "Apparel"; break; }
+                    case 4: { sContainerTypeName = "Scrolls"; break; }
                 }
                 int nRarity;
                 for (nRarity=0; nRarity<=2; nRarity++)
