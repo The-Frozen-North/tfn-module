@@ -12,6 +12,8 @@
 //:: Updated On: Jul 25, 2003 - Georg Zoeller
 //:://////////////////////////////////////////////
 #include "x0_inc_henai"
+#include "inc_henchman"
+#include "inc_follower"
 
 void DoBanter()
 {
@@ -24,6 +26,26 @@ void main()
 {
     if (GetIsDead(OBJECT_SELF)) return;
     if (GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF)) return;
+
+// this routine should make the henchman go straight to the stored master if it's dead in an attempt to revive them
+// keep this high up in case any other routines stop and return early
+    object oStoredMaster;
+
+    if (GetStringLeft(GetResRef(OBJECT_SELF), 3) == "hen")
+    {
+        oStoredMaster = GetMasterByUUID(OBJECT_SELF);
+    }
+    else
+    {
+        oStoredMaster = GetMasterByStoredUUID(OBJECT_SELF);
+    }
+
+    if (GetIsObjectValid(oStoredMaster) && !GetIsInCombat(OBJECT_SELF) && GetIsDead(oStoredMaster))
+    {
+        ClearAllActions(TRUE);
+        ActionMoveToObject(oStoredMaster, TRUE);
+        return; // don't do any more actions that might interrupt this
+    }
 
     int nSelected = GetLocalInt(OBJECT_SELF, "selected");
     int nSelectedRemove = GetLocalInt(OBJECT_SELF, "selected_remove");

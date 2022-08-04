@@ -93,7 +93,7 @@ void main()
 
     while(GetIsObjectValid(oTarget))
     {
-        if(spellsIsTarget(oTarget,spell.TargetType,spell.Caster))
+        if(oTarget != spell.Caster && spellsIsTarget(oTarget,spell.TargetType,spell.Caster))
         {
             fDelay = GetRandomDelay(0.4, 1.1);
             //Fire spell cast at event for target

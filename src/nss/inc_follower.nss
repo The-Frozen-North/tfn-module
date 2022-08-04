@@ -1,6 +1,8 @@
 #include "inc_debug"
 #include "nw_i0_generic"
 
+// assigns normal creature scripts to this follower and deletes some local master related variables
+void AssignNormalScripts(object oCreature);
 void AssignNormalScripts(object oCreature)
 {
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_BLOCKED_BY_DOOR, "ai_onblocked");
@@ -20,6 +22,8 @@ void AssignNormalScripts(object oCreature)
     DeleteLocalObject(oCreature, "NW_L_FORMERMASTER");
 }
 
+// assigns the henchman scripts to this follower. kinda hacky
+void AssignHenchmanScripts(object oCreature);
 void AssignHenchmanScripts(object oCreature)
 {
     SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_BLOCKED_BY_DOOR, "hen_onblocked");
@@ -37,6 +41,8 @@ void AssignHenchmanScripts(object oCreature)
     ExecuteScript("hen_onspawn", oCreature);
 }
 
+// get how many followers this player has (not henchman or any other associates)
+int GetFollowerCount(object oPlayer);
 int GetFollowerCount(object oPlayer)
 {
     int nCount = 0;
@@ -54,6 +60,8 @@ int GetFollowerCount(object oPlayer)
     return nCount;
 }
 
+// determines if this follower has a stored master
+int CheckFollowerMaster(object oFollower, object oPlayer);
 int CheckFollowerMaster(object oFollower, object oPlayer)
 {
     string sUUID = GetLocalString(oFollower, "master");
@@ -72,6 +80,8 @@ int CheckFollowerMaster(object oFollower, object oPlayer)
     }
 }
 
+// recruits this follower to a PC
+void SetFollowerMaster(object oFollower, object oPlayer);
 void SetFollowerMaster(object oFollower, object oPlayer)
 {
     if (GetLocalInt(oFollower, "follower") != 1) return;
@@ -89,6 +99,8 @@ void SetFollowerMaster(object oFollower, object oPlayer)
     AssignHenchmanScripts(oFollower);
 }
 
+// dismisse the follower. the follower will move towards their spawn location and destroy itself on the way
+void DismissFollower(object oFollower);
 void DismissFollower(object oFollower)
 {
     DeleteLocalInt(oFollower, "no_master_count");
@@ -106,6 +118,21 @@ void DismissFollower(object oFollower)
     DestroyObject(oFollower, 10.0);
 }
 
+
+// gets the master based on the uuid stored on this object
+object GetMasterByStoredUUID(object oFollower);
+object GetMasterByStoredUUID(object oFollower)
+{
+    string sUUID = GetLocalString(oFollower, "master");
+
+    if (sUUID == "") return OBJECT_INVALID;
+
+    return GetObjectByUUID(sUUID);
+}
+
+// helper function to add the follower back to a party when a PC disconnects and logs back in
+// also fires them after a set amount of time
+void CheckOrRehireFollowerMasterAssignment(object oFollower);
 void CheckOrRehireFollowerMasterAssignment(object oFollower)
 {
     string sUUID = GetLocalString(oFollower, "master");
@@ -113,7 +140,7 @@ void CheckOrRehireFollowerMasterAssignment(object oFollower)
     if (sUUID == "") return;
 
     object oMaster = GetMaster(oFollower);
-    object oUUID = GetObjectByUUID(sUUID);
+    object oUUID = GetMasterByStoredUUID(oFollower);
 
     if (GetIsObjectValid(oMaster))
     {

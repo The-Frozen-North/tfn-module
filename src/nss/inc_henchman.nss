@@ -39,6 +39,10 @@ int PlayerHasHenchman(object oPlayer);
 // Rehire the current henchman. Used when a player is relogging.
 void RehireHenchman(object oPlayer);
 
+// retrieves master by uuid for this henchman.
+// useful for when the master is dead (not in party)
+object GetMasterByUUID(object oHench);
+
 
 // =======================================================
 // FUNCTIONS
