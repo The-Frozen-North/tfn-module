@@ -217,14 +217,14 @@ void SetPartyData()
 
    while(oMbr != OBJECT_INVALID)
    {
-
+      nAssociateType = GetAssociateType(oMbr);
       if(GetIsPC(oMbr))
       {
           nPlayerSize++;
           nTotalSize++;
           nLevel = GetLevelFromXP(GetXP(oMbr));
           nTotalLevels = nTotalLevels + nLevel;
-          nAssociateType = GetAssociateType(oMbr);
+          
           if (nLevel > nHighestLevel) nHighestLevel = nLevel;
 
 

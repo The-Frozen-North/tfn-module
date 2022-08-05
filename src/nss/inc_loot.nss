@@ -94,7 +94,7 @@ const int RANDOM_WEAPON_IS_RANGED = 40;
 // Pawnshops also typically stock lots of level appropriate random items that work like monster drops
 // This applies ONLY to the fixed items of X tier
 const int PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE = 100;
-const int STORE_RANDOM_T5_CHANCE = 15;
+const int STORE_RANDOM_T5_CHANCE = 9;
 
 
 // ===========================================================
@@ -610,6 +610,7 @@ void OpenPersonalLoot(object oContainer, object oPC)
         AssignCommand(oContainer, ActionPlayAnimation(ANIMATION_PLACEABLE_OPEN));
         GiveGoldToCreature(oPC, nGold);
         DeleteLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT);
+        NWNX_Player_PlaySound(oPC, "it_coins", oPC);
     }
 
 // if the loot container doesn't exist, give a message
