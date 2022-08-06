@@ -224,7 +224,7 @@ void SetPartyData()
           nTotalSize++;
           nLevel = GetLevelFromXP(GetXP(oMbr));
           nTotalLevels = nTotalLevels + nLevel;
-          
+
           if (nLevel > nHighestLevel) nHighestLevel = nLevel;
 
 
@@ -233,8 +233,11 @@ void SetPartyData()
           SetLocalArrayObject(OBJECT_SELF, "Players", nPlayerSize, oMbr);
       }
 
-// all associates except dominated should count for xp purposes
-      else if (!GetIsDead(oMbr) && !GetIsPC(oMbr) && nAssociateType > 0 && nAssociateType != ASSOCIATE_TYPE_DOMINATED)
+// all associates except dominated and pets should count for xp purposes
+      else if (!GetIsDead(oMbr) && !GetIsPC(oMbr) && nAssociateType > 0
+               && nAssociateType != ASSOCIATE_TYPE_DOMINATED
+               && nAssociateType != ASSOCIATE_TYPE_FAMILIAR
+               && nAssociateType != ASSOCIATE_TYPE_ANIMALCOMPANION)
       {
           nTotalSize++;
           if (GetStringLeft(GetResRef(oMbr), 3) == "hen") // only named henchman count for loot distro
