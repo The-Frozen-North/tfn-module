@@ -1,5 +1,6 @@
 #include "inc_ai_event"
 #include "x0_i0_position"
+#include "inc_ai_combat"
 
 void main()
 {
@@ -42,25 +43,47 @@ void main()
     if (GetLocalInt(OBJECT_SELF, "no_stealth") == 0 && GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0 && (!nCombat || GetHasFeat(FEAT_HIDE_IN_PLAIN_SIGHT)))
         SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
 
-// return to the original spawn point if it is too far
-    location lSpawn = GetLocalLocation(OBJECT_SELF, "spawn");
-    float fDistanceFromSpawn = GetDistanceBetweenLocations(GetLocation(OBJECT_SELF), lSpawn);
-    float fMaxDistance = 5.0;
+// if this creature is from an ambush, make it attack their visible target or move to their location
+    if (GetLocalInt(OBJECT_SELF, "ambush") == 1)
+    {
+// only attack or move to the ambush location when not in combat, otherwise combat can be interrupted
+        if (!GetIsInCombat(OBJECT_SELF))
+        {
+            object oTarget = GetLocalObject(oTarget, "ambush_target");
 
-    if (GetLocalString(OBJECT_SELF, "merchant") != "") fMaxDistance = fMaxDistance * 0.5;
+// attack ambush target if seen or target is alive
+            if (!GetIsDead(oTarget) && (GetObjectSeen(oTarget) || GetObjectHeard(oTarget)))
+            {
+                gsCBDetermineCombatRound(oTarget);
+            }
+            else
+            {
+                ActionMoveToLocation(GetLocalLocation(OBJECT_SELF, "ambush_location"), TRUE);
+            }
+        }
+
+    }
+    else
+    {
+// return to the original spawn point if it is too far
+        location lSpawn = GetLocalLocation(OBJECT_SELF, "spawn");
+        float fDistanceFromSpawn = GetDistanceBetweenLocations(GetLocation(OBJECT_SELF), lSpawn);
+        float fMaxDistance = 5.0;
+
+        if (GetLocalString(OBJECT_SELF, "merchant") != "") fMaxDistance = fMaxDistance * 0.5;
 
 // enemies and herbivores have a much farther distance before they need to reset
-    if ((GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) <= 10) || GetLocalInt(OBJECT_SELF, "herbivore") == 1) fMaxDistance = fMaxDistance*10.0;
+        if ((GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) <= 10) || GetLocalInt(OBJECT_SELF, "herbivore") == 1) fMaxDistance = fMaxDistance*10.0;
 
-    if (GetLocalInt(OBJECT_SELF, "no_wander") == 1) fMaxDistance = 0.0;
+        if (GetLocalInt(OBJECT_SELF, "no_wander") == 1) fMaxDistance = 0.0;
 // Not in combat? Different/Invalid area? Too far from spawn?
-    if (GetLocalInt(OBJECT_SELF, "ambient") != 1 && !nCombat && ((fDistanceFromSpawn == -1.0) || (fDistanceFromSpawn > fMaxDistance)))
-    {
-        AssignCommand(OBJECT_SELF, ClearAllActions());
-        MoveToNewLocation(lSpawn, OBJECT_SELF);
-        return;
+        if (GetLocalInt(OBJECT_SELF, "ambient") != 1 && !nCombat && ((fDistanceFromSpawn == -1.0) || (fDistanceFromSpawn > fMaxDistance)))
+        {
+            AssignCommand(OBJECT_SELF, ClearAllActions());
+            MoveToNewLocation(lSpawn, OBJECT_SELF);
+            return;
+        }
     }
-
     string sScript = GetLocalString(OBJECT_SELF, "heartbeat_script");
     if (sScript != "") ExecuteScript(sScript);
 }

@@ -76,6 +76,8 @@ void main()
 // this item is deprecated
     DestroyObject(GetItemPossessedBy(oPC, "_dev_tool"));
 
+    DeleteLocalInt(oPC, "ambushed");
+
     DeleteLocalInt(oPC,"70_applied_darkvision");
     DeleteLocalInt(oPC,"70_applied_lowlightvision");
     DeleteLocalInt(oPC, "healers_kit_cd");
