@@ -272,7 +272,7 @@ void SetPartyData()
    }
 
 
-   if (nPlayerSize > 0) fAverageLevel = IntToFloat(nTotalLevels) / IntToFloat(nTotalSize);
+   if (nPlayerSize > 0) fAverageLevel = IntToFloat(nTotalLevels) / IntToFloat(max(1, nTotalSize));
 
    float fHighestLevel = IntToFloat(nHighestLevel);
    if (fHighestLevel > fAverageLevel) fAverageLevel = fHighestLevel;
