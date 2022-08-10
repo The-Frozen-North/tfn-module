@@ -169,7 +169,7 @@ void main()
     {
         SetLocalInt(OBJECT_SELF, "no_stealth", 1);
     }
-    else if (GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0)
+    else if (GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0 && !GetLocalInt(OBJECT_SELF, "no_stealth"))
     {
         SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
     }

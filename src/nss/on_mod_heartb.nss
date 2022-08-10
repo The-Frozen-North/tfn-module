@@ -13,7 +13,7 @@
 
 int GetIsDeadOrPetrified(object oCreature)
 {
-    if (GetHasEffect(EFFECT_TYPE_PETRIFY, oCreature)) return TRUE;
+    if (GetHasPermanentPetrification(oCreature)) return TRUE;
     if (GetIsDead(oCreature)) return TRUE;
 
     return FALSE;
@@ -115,23 +115,59 @@ void DoRevive(object oDead)
 
             if (!bEnemy && bFriend && IsCreatureRevivable(oDead))
             {
-                SQLocalsPlayer_DeleteInt(oDead, "DEAD");
-                ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oDead);
-
-                DetermineDeathEffectPenalty(oDead, 1);
-
-                if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound) SetMaster(oDead, oMaster);
-
-                object oFactionPC = GetFirstFactionMember(oDead);
-                while (GetIsObjectValid(oFactionPC))
+                if (GetHasPermanentPetrification(oDead))
                 {
-                    if (GetIsObjectValid(oLastFriend))
-                        NWNX_Player_FloatingTextStringOnCreature(oFactionPC, oDead, "*"+GetName(oDead)+" was revived by "+GetName(oLastFriend)+".");
+                    if (GetStoneToFleshSalveCharges(oDead) > 0)
+                    {
+                        UseStoneToFleshSalveCharge(oDead);
+                        FloatingTextStringOnCreature("Your Salve of Stone to Flesh has " + IntToString(GetStoneToFleshSalveCharges(oDead)) + " uses remaining today.", oDead);
+                        effect eEffect = GetFirstEffect(oDead);
+                        while (GetIsEffectValid(eEffect))
+                        {
+                            if (GetEffectType(eEffect) == EFFECT_TYPE_PETRIFY)
+                            {
+                                if (GetEffectDurationType(eEffect) == DURATION_TYPE_PERMANENT)
+                                {
+                                    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_DISPEL), oDead);
+                                    RemoveEffect(oDead, eEffect);
+                                    break;
+                                }
+                            }
+                            eEffect = GetNextEffect(oDead);
+                        }
+                        object oFactionPC = GetFirstFactionMember(oDead);
+                        while (GetIsObjectValid(oFactionPC))
+                        {
+                            if (GetIsObjectValid(oLastFriend))
+                                NWNX_Player_FloatingTextStringOnCreature(oFactionPC, oDead, "*The power of "+GetName(oDead)+"'s Salve of Stone to Flesh was activated by "+GetName(oLastFriend)+".*");
 
-                    if (sReviveMessage != "")
-                        DelayCommand(3.0, NWNX_Player_FloatingTextStringOnCreature(oFactionPC, oDead, "*"+GetName(oDead)+sReviveMessage));
+                            if (sReviveMessage != "")
+                                DelayCommand(3.0, NWNX_Player_FloatingTextStringOnCreature(oFactionPC, oDead, "*"+GetName(oDead)+sReviveMessage));
 
-                    oFactionPC = GetNextFactionMember(oDead);
+                            oFactionPC = GetNextFactionMember(oDead);
+                        }
+                    }
+                }
+                else
+                {
+                    SQLocalsPlayer_DeleteInt(oDead, "DEAD");
+                    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oDead);
+
+                    DetermineDeathEffectPenalty(oDead, 1);
+
+                    if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound) SetMaster(oDead, oMaster);
+
+                    object oFactionPC = GetFirstFactionMember(oDead);
+                    while (GetIsObjectValid(oFactionPC))
+                    {
+                        if (GetIsObjectValid(oLastFriend))
+                            NWNX_Player_FloatingTextStringOnCreature(oFactionPC, oDead, "*"+GetName(oDead)+" was revived by "+GetName(oLastFriend)+".*");
+
+                        if (sReviveMessage != "")
+                            DelayCommand(3.0, NWNX_Player_FloatingTextStringOnCreature(oFactionPC, oDead, "*"+GetName(oDead)+sReviveMessage));
+
+                        oFactionPC = GetNextFactionMember(oDead);
+                    }
                 }
                 WriteTimestampedLogEntry(GetName(oDead)+" was revived by friendly "+GetName(oLastFriend)+".");
             }
@@ -171,10 +207,18 @@ void main()
         DetermineHorseEffects(oPC);
         RefreshCompletedBounties(oPC, nTime, sBounties);
 
-        if (GetHasEffect(EFFECT_TYPE_PETRIFY, oPC))
+        if (GetHasPermanentPetrification(oPC))
         {
             string sPenalty = IntToString(GetXP(oPC) - GetXPOnRespawn(oPC)) + " XP and " + IntToString(GetGoldLossOnRespawn(oPC)) + " gold";
-            string sDeathMessage = "You can wait for a greater restoration or stone to flesh spell, or you can respawn at your chosen temple for " + sPenalty + ". You will automatically respawn if you die while petrified.";
+            string sDeathMessage;
+            if (GetStoneToFleshSalveCharges(oPC) > 0)
+            {
+                sDeathMessage = "The power of the Salve of Stone to Flesh will restore you if there is an ally nearby, there are no enemies, and you are out of combat, or you can respawn at your chosen temple for " + sPenalty + ". You will automatically respawn if you die while petrified.";                
+            }
+            else
+            {
+                sDeathMessage = "You can wait for a greater restoration or stone to flesh spell, or you can respawn at your chosen temple for " + sPenalty + ". You will automatically respawn if you die while petrified.";
+            }
 
             PopUpDeathGUIPanel(oPC, TRUE, TRUE, 0, sDeathMessage);
         }

@@ -216,7 +216,7 @@ void main()
 // these types should never be skipped
                 if (nType == OBJECT_TYPE_CREATURE)
                 {
-                   for (nQuestLoop = 1; nQuestLoop < 10; nQuestLoop++)
+                   for (nQuestLoop = 1; nQuestLoop < 20; nQuestLoop++)
                    {
                         sQuest = GetLocalString(oObject, "quest"+IntToString(nQuestLoop));
                         sQuestName = GetSubString(sQuest, 3, 27);

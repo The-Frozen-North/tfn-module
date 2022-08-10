@@ -51,6 +51,60 @@ void KillTaunt(object oKiller, object oKilled)
     }
 }
 
+const string SALVE_RESREF = "salveofstonetofl";
+
+int GetHasPermanentPetrification(object oCreature)
+{
+    effect eEffect = GetFirstEffect(oCreature);
+    while (GetIsEffectValid(eEffect))
+    {
+        if (GetEffectType(eEffect) == EFFECT_TYPE_PETRIFY)
+        {
+            if (GetEffectDurationType(eEffect) == DURATION_TYPE_PERMANENT)
+            {
+                return 1;
+            }
+        }
+        eEffect = GetNextEffect(oCreature);
+    }
+    return 0;
+}
+
+int GetStoneToFleshSalveCharges(object oCreature)
+{
+    object oTest = GetFirstItemInInventory(oCreature);
+    while (GetIsObjectValid(oTest))
+    {
+        if (GetResRef(oTest) == SALVE_RESREF)
+        {
+            itemproperty ipFirst = GetFirstItemProperty(oTest);
+            int nUses = GetItemPropertyUsesPerDayRemaining(oTest, ipFirst);
+            return nUses;
+        }
+        oTest = GetNextItemInInventory(oCreature);
+    } 
+    return 0;
+}
+
+void UseStoneToFleshSalveCharge(object oCreature)
+{
+    object oTest = GetFirstItemInInventory(oCreature);
+    while (GetIsObjectValid(oTest))
+    {
+        if (GetResRef(oTest) == SALVE_RESREF)
+        {
+            itemproperty ipFirst = GetFirstItemProperty(oTest);
+            int nUses = GetItemPropertyUsesPerDayRemaining(oTest, ipFirst);
+            if (nUses > 0)
+            {
+                SetItemPropertyUsesPerDayRemaining(oTest, ipFirst, nUses - 1);
+            }
+            return;
+        }
+        oTest = GetNextItemInInventory(oTest);
+    }
+}
+
 void RemoveDeathEffectPenalty(object oCreature)
 {
     effect eEffect = GetFirstEffect(oCreature);
