@@ -135,6 +135,11 @@ void DoRevive(object oDead)
                             }
                             eEffect = GetNextEffect(oDead);
                         }
+                        if (GetIsPC(oDead))
+                        {
+                            SQLocalsPlayer_DeleteInt(oDead, "PETRIFIED");
+                        }
+                        DeleteLocalInt(oDead, "PETRIFIED");
                         object oFactionPC = GetFirstFactionMember(oDead);
                         while (GetIsObjectValid(oFactionPC))
                         {
