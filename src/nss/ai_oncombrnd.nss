@@ -9,5 +9,8 @@ void main()
         SetLocalInt(OBJECT_SELF, "combat", 1);
 
     gsCBDetermineCombatRound();
+    
+    string sScript = GetLocalString(OBJECT_SELF, "combatround_script");
+    if (sScript != "") ExecuteScript(sScript);
 }
 

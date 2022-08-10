@@ -1,4 +1,5 @@
 #include "inc_xp"
+#include "inc_debug"
 #include "inc_gold"
 #include "inc_loot"
 #include "inc_treasure"
@@ -76,7 +77,7 @@ void RefreshCompletedBounty(object oPC, string sQuest, int nTime)
     string sReset = sQuest+"_reset";
     int nReset = SQLocalsPlayer_GetInt(oPC, sReset);
 
-    if (nReset > 0 && nTime >= nReset)
+    if (nReset > 0 && ((nTime >= nReset) || (GetIsDevServer() && GetIsDeveloper(oPC))))
     {
         SQLocalsPlayer_DeleteInt(oPC, sReset);
         SQLocalsPlayer_DeleteInt(oPC, sQuest);
