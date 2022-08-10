@@ -5,6 +5,27 @@
 #include "util_i_csvlists"
 #include "x0_i0_position"
 #include "nwnx_area"
+#include "nwnx_visibility"
+
+
+// this function gets all creatures near a location and interrupts their rest + prevents resting for a bit
+// typically this should be applied to a campfire (uses around the same radius for creatures attaching to a campfire)
+void InterruptRest(location lLocation)
+{
+    object oCreature = GetFirstObjectInShape(SHAPE_SPHERE, 31.0, lLocation);
+
+    while (GetIsObjectValid(oCreature))
+    {
+        if (GetIsResting(oCreature))
+        {
+            AssignCommand(oCreature, ClearAllActions());
+            SetLocalInt(oCreature, "ambushed", 1);
+            DelayCommand(12.0, DeleteLocalInt(oCreature, "ambushed"));
+        }
+
+        oCreature = GetNextObjectInShape(SHAPE_SPHERE, 31.0, lLocation);
+    }
+}
 
 void ApplySleepVFX(object oCreature)
 {
@@ -13,48 +34,18 @@ void ApplySleepVFX(object oCreature)
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_SLEEP), oCreature);
 }
 
-string ChooseSpawnRef(object oArea, int nTarget)
-{
-    string sTarget = "random"+IntToString(nTarget);
-
-    string sList = GetLocalString(oArea, sTarget+"_list");
-    string sListUnique = GetLocalString(oArea, sTarget+"_list_unique");
-
-    int nUniqueChance = GetLocalInt(oArea, sTarget+"_unique_chance");
-
-    if (d100() <= nUniqueChance)
-    {
-        return GetListItem(sListUnique, Random(CountList(sListUnique)));
-    }
-    else
-    {
-        return GetListItem(sList, Random(CountList(sList)));
-    }
-}
-
-void CreateAmbush(int nTarget, object oArea, location lLocation)
-{
-    string sSpawnScript = GetLocalString(oArea, "random"+IntToString(nTarget)+"_spawn_script");
-
-    int nCount = GetLocalInt(oArea, "random"+IntToString(nTarget)+"_ambush_size");
-    if (nCount < 1) nCount = 2;
-
-    int i;
-    for (i = 0; i < nCount; i++)
-    {
-        object oEnemy = CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), lLocation, TRUE);
-        SetLocalInt(oEnemy, "ambush", 1);
-        if (sSpawnScript != "") ExecuteScript(sSpawnScript, oEnemy);
-
-        DestroyObject(oEnemy, 300.0);
-    }
-}
-
 void main()
 {
     object oPC = GetLastPCRested();
+
+    if (GetLocalInt(oPC, "ambushed") == 1)
+    {
+        SendMessageToPC(oPC, "You cannot rest while you are being ambushed.");
+        return;
+    }
+
     object oArea = GetArea(oPC);
-    object oObjectLoop, oCurrentPC, oCampfire, oValidator;
+    object oObjectLoop, oCurrentPC, oCampfire, oValidator, oAmbushSpawn;
     location lLocation = GetLocation(oPC);
     float fFacing = GetFacing(oPC);
     location lTarget = GenerateNewLocation(oPC, 1.5, fFacing, fFacing);
@@ -114,7 +105,7 @@ void main()
 // only do ambushes if there are random enemy groups
                 if ((GetLocalInt(oArea, "ambush") == 1) && (nEnemyGroups > 0))
                 {
-                    nAmbushChance = 40;
+                    nAmbushChance = 40; // any rolls 10 is not an ambush either. essentially this is 30% chance of an ambush occuring
                 }
                 else
                 {
@@ -228,10 +219,28 @@ void main()
                         fAmbushTime = IntToFloat(4+d6());
                         SendDebugMessage("Ambush will be created in: "+FloatToString(fAmbushTime)+" seconds");
 
+// we will spawn a creature that will run to a specified spawn point. this will simulate a creature spawning from somewhere
+// instead of it spawning on top of the player
+                        object oAmbushSpawn = CreateObject(OBJECT_TYPE_CREATURE, "_ambush_spawn", lLocation);
+
+// make this ambush spawn a ghost and have set it to be invisible to everyone
+                        ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectCutsceneGhost(), oAmbushSpawn);
+                        NWNX_Visibility_SetVisibilityOverride(OBJECT_INVALID, oAmbushSpawn, NWNX_VISIBILITY_HIDDEN);
+
+// store some values on the ambush spawn itself
+                        SetLocalObject(oAmbushSpawn, "pc", oPC);
+                        SetLocalLocation(oAmbushSpawn, "pc_location", lLocation);
+                        SetLocalInt(oAmbushSpawn, "target", Random(nEnemyGroups)+1); // the random spawn target that will be stored and used
+
+// make it run away from the PC's location
+                        AssignCommand(oAmbushSpawn, ActionMoveAwayFromLocation(lLocation, TRUE, 45.0));
+
                         DelayCommand(fAmbushTime+1.0, AssignCommand(oCampfire, PlayAnimation(ANIMATION_PLACEABLE_DEACTIVATE)));
                         DestroyObject(oCampfire, fAmbushTime+10.0);
-                        DelayCommand(fAmbushTime, CreateAmbush(Random(nEnemyGroups)+1, oArea, lLocation));
+                        DelayCommand(fAmbushTime, ExecuteScript("create_ambush", oAmbushSpawn));
                         DelayCommand(fAmbushTime, FloatingTextStringOnCreature(sSpotted, oPC, FALSE));
+
+                        DelayCommand(fAmbushTime, InterruptRest(GetLocation(oCampfire)));
                     }
                  }
                  sHideClass = GetLocalString(oCampfire, "hide_class");

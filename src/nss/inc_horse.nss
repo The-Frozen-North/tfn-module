@@ -51,7 +51,7 @@ void DetermineHorseEffects(object oPC)
     }
 
    int nRide = GetSkillRank(SKILL_RIDE, oPC);
-   int nSpeedBonus = 60 + nRide;
+   int nSpeedBonus = 50 + (nRide / 2);
    if (nSpeedBonus > 99)
         nSpeedBonus = 99;
 
