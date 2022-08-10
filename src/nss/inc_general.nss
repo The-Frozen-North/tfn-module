@@ -3,6 +3,7 @@
 #include "nwnx_creature"
 #include "nwnx_object"
 #include "nwnx_effect"
+#include "x0_i0_match"
 
 const float MORALE_RADIUS = 30.0;
 const float REMAINS_DECAY = 120.0;
@@ -42,12 +43,14 @@ void KillTaunt(object oKiller, object oKilled)
     int nRandom = d4();
 
     float fDelay = 1.25;
-
-    switch (nRandom)
+    if (!GetHasEffect(EFFECT_TYPE_PETRIFY, oKiller))
     {
-       case 1: DelayCommand(fDelay, PlayVoiceChat(VOICE_CHAT_THREATEN, oKiller)); break;
-       case 2: DelayCommand(fDelay, PlayVoiceChat(VOICE_CHAT_LAUGH, oKiller)); break;
-       case 3: DelayCommand(fDelay, PlayVoiceChat(VOICE_CHAT_CHEER, oKiller)); break;
+        switch (nRandom)
+        {
+           case 1: DelayCommand(fDelay, PlayVoiceChat(VOICE_CHAT_THREATEN, oKiller)); break;
+           case 2: DelayCommand(fDelay, PlayVoiceChat(VOICE_CHAT_LAUGH, oKiller)); break;
+           case 3: DelayCommand(fDelay, PlayVoiceChat(VOICE_CHAT_CHEER, oKiller)); break;
+        }
     }
 }
 
@@ -196,18 +199,22 @@ void DoMoraleCry(object oCreature)
 
      SetLocalInt(oCreature, "morale_cried", 1);
 
+    
      ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectFrightened(), oCreature, IntToFloat(d3(2)));
 
-     switch (d6())
-     {
-         case 1: PlayVoiceChat(VOICE_CHAT_HELP, oCreature); break;
-         case 2: PlayVoiceChat(VOICE_CHAT_FLEE, oCreature); break;
-         case 3: PlayVoiceChat(VOICE_CHAT_NEARDEATH, oCreature); break;
-         case 4:
-            if (GetCurrentHitPoints(oCreature) <= GetMaxHitPoints(oCreature)/2)
-                PlayVoiceChat(VOICE_CHAT_HEALME, oCreature);
-         break;
-     }
+    if (!GetHasEffect(EFFECT_TYPE_PETRIFY, oCreature))
+    {
+         switch (d6())
+         {
+             case 1: PlayVoiceChat(VOICE_CHAT_HELP, oCreature); break;
+             case 2: PlayVoiceChat(VOICE_CHAT_FLEE, oCreature); break;
+             case 3: PlayVoiceChat(VOICE_CHAT_NEARDEATH, oCreature); break;
+             case 4:
+                if (GetCurrentHitPoints(oCreature) <= GetMaxHitPoints(oCreature)/2)
+                    PlayVoiceChat(VOICE_CHAT_HEALME, oCreature);
+             break;
+         }
+    }
 
      FloatingTextStringOnCreature("*" + GetName(oCreature) + ": Morale Failure*", oCreature);
 
@@ -296,18 +303,21 @@ void DoMoraleCheckSphere(object oCreature, int nDC = 10, float fRadius = MORALE_
 void DoDyingVoice()
 {
     if (GetIsDead(OBJECT_SELF)) return;
-
-     switch (d6())
-     {
-         case 1: PlayVoiceChat(VOICE_CHAT_HELP); break;
-         case 2: PlayVoiceChat(VOICE_CHAT_HEALME); break;
-         case 3: PlayVoiceChat(VOICE_CHAT_NEARDEATH); break;
-     }
+    if (!GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF))
+    {
+         switch (d6())
+         {
+             case 1: PlayVoiceChat(VOICE_CHAT_HELP); break;
+             case 2: PlayVoiceChat(VOICE_CHAT_HEALME); break;
+             case 3: PlayVoiceChat(VOICE_CHAT_NEARDEATH); break;
+         }
+    }
 }
 
 void PlayNonMeleePainSound(object oDamager)
 {
     if (GetIsDead(OBJECT_SELF)) return;
+    if (GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF)) { return; }
 
     int nWeaponDamage = GetDamageDealtByType(DAMAGE_TYPE_BASE_WEAPON);
 

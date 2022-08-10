@@ -11,8 +11,8 @@ void BeUnlocked()
 void UnlockTheDoor()
 {
     object oArea = GetArea(OBJECT_SELF);
-    object oDoor;
-    if (!GetIsObjectValid(GetLocalObject(oArea, "interiordoor")))
+    object oDoor = GetLocalObject(oArea, "interiordoor");
+    if (!GetIsObjectValid(oDoor))
     {
         oDoor = GetObjectByTag("HH_LichInteriorDoor");
         SetLocalObject(oArea, "interiordoor", oDoor);
@@ -86,6 +86,7 @@ void main()
     else
     {
         object oKiller = GetLastKiller();
+        SetLocalInt(OBJECT_SELF, "defeated_webhook", 1);
         BossDefeatedWebhook(oKiller, OBJECT_SELF);
         // Now you spawn loot.
         DeleteLocalInt(OBJECT_SELF, "no_credit");

@@ -35,7 +35,8 @@ void main()
     {
         CreateObject(OBJECT_TYPE_PLACEABLE, "invisibleobject", GetLocation(oWP), FALSE, "HH_LichCentralPoint");
         vector vCircle = GetPosition(oWP);
-        CreateObject(OBJECT_TYPE_PLACEABLE, "x2_plc_scircle", Location(GetArea(OBJECT_SELF), vCircle, 180.0), FALSE, "HH_SummoningCircle");
+        object oCircle = CreateObject(OBJECT_TYPE_PLACEABLE, "x2_plc_scircle", Location(GetArea(OBJECT_SELF), vCircle, 180.0), FALSE, "HH_SummoningCircle");
+        SetPlotFlag(oCircle, TRUE);
     }
     object oLoot = GetObjectByTag("HH_LichLoot");
     if (GetIsObjectValid(oLoot))
