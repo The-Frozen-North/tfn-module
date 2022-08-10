@@ -1,8 +1,10 @@
 #include "inc_debug"
+#include "x0_i0_match"
 
 void DoVoice(object oCreature, int nSelected)
 {
     if (GetIsDead(oCreature)) return;
+    if (GetHasEffect(EFFECT_TYPE_PETRIFY, oCreature)) { return; }
 
     if (nSelected > 4)
     {

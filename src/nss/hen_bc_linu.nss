@@ -2,6 +2,7 @@
 
 void main()
 {
+    if (GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF)) { return; }
      int nRand = 60;
 
      switch (Random(nRand))

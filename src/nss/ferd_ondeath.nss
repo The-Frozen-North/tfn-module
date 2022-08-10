@@ -6,11 +6,11 @@ void DealWithFerdDeath(object oPC)
 {
     if (GetQuestEntry(oPC, "q_cockatrice") == 3 || GetQuestEntry(oPC, "q_cockatrice") == 2)
     {
-        if (GetQuestEntry(oPC, "q_cockatrice_fbasilisk") == 1)
+        if (GetQuestEntry(oPC, "q_cockatrice_fbasilisk") <= 1)
         {
             GiveQuestXPToPC(OBJECT_SELF, 2, 8, 0);
         }
-        if (GetQuestEntry(oPC, "q_cockatrice_fgorgon") == 1)
+        if (GetQuestEntry(oPC, "q_cockatrice_fgorgon") <= 1)
         {
             GiveQuestXPToPC(OBJECT_SELF, 2, 8, 0);
         }

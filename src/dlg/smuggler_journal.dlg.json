@@ -241,12 +241,81 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>An early entry catches your eye: \"Told the boys not to go south again. Those idiots Hroki and Tor tried to take the shortcut down the coast and never came back. I bet they've joined the ghosts by now.\""
+            "0": "<StartAction>An early entry catches your eye: \"Told the boys not to go south again. Those idiots Hroki and Tor decided to have a go at plundering those old shipwrecks by the ruined village. I bet they've joined the ghosts by now, and I sure hope they don't come back to haunt us. At least the rest of the ghosts don't bother us here.\""
           }
         }
       },
       {
         "__struct_id": 3,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 4
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartAction>The journal then describes how the Wailing Death meant that smuggling goods into Neverwinter became impossible, despite various attempts to find a way into the city."
+          }
+        }
+      },
+      {
+        "__struct_id": 4,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -290,7 +359,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>Much later, there is another interesting entry: \"Strange animal statues have started appearing around the area, especially around the north. I've told the others not to go up there, I can only hope they listen this time...\""
+            "0": "<StartAction>Quite recently, there is another interesting entry: \"Strange animal statues have started appearing around the area, especially around the north. I've told the others not to go up there, I can only hope they listen this time...\""
           }
         }
       }
@@ -298,7 +367,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 119
+    "value": 169
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -520,6 +589,71 @@
               "Index": {
                 "type": "dword",
                 "value": 3
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
+          }
+        }
+      },
+      {
+        "__struct_id": 4,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 4
               },
               "IsChild": {
                 "type": "byte",

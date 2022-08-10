@@ -14,9 +14,21 @@ void main()
     object oLink3 = GetObjectByTag(GetLocalString(OBJECT_SELF, "link3"));
 
     if (NWNX_Area_GetNumberOfPlayersInArea(OBJECT_SELF) > 0)  bPlayersInArea = TRUE;
-    if (GetIsObjectValid(oLink1) && NWNX_Area_GetNumberOfPlayersInArea(oLink1) > 0)  bPlayersInLinkedArea = TRUE;
-    if (GetIsObjectValid(oLink2) && NWNX_Area_GetNumberOfPlayersInArea(oLink2) > 0)  bPlayersInLinkedArea = TRUE;
-    if (GetIsObjectValid(oLink3) && NWNX_Area_GetNumberOfPlayersInArea(oLink3) > 0)  bPlayersInLinkedArea = TRUE;
+    int nLink = 1;
+    while (1)
+    {
+        object oLinked = GetObjectByTag(GetLocalString(OBJECT_SELF, "link" + IntToString(nLink)));
+        if (!GetIsObjectValid(oLinked))
+        {
+            break;
+        }
+        if (NWNX_Area_GetNumberOfPlayersInArea(oLinked) > 0)
+        {
+            bPlayersInLinkedArea = TRUE;
+            break;
+        }
+        nLink++;
+    }
 
     object oPlayer = GetFirstPC();
 
@@ -96,6 +108,8 @@ void main()
     }
     else if (nRefresh > 0)
     {
-        SetLocalInt(OBJECT_SELF, "refresh", nRefresh+1);
+        int nRefreshSpeedMult = GetLocalInt(OBJECT_SELF, "refresh_speed");
+        if (nRefreshSpeedMult < 1) { nRefreshSpeedMult = 1; }
+        SetLocalInt(OBJECT_SELF, "refresh", nRefresh+nRefreshSpeedMult);
     }
 }

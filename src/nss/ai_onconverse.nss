@@ -68,10 +68,13 @@ void main()
     // commoners always run away
         if (GetTag(oSpeaker) == "brawler")
         {
-            switch(d8())
+            if (!gsC2GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF))
             {
-                case 1: PlayVoiceChat(VOICE_CHAT_ATTACK); break;
-                case 2: PlayVoiceChat(VOICE_CHAT_CHEER); break;
+                switch(d8())
+                {
+                    case 1: PlayVoiceChat(VOICE_CHAT_ATTACK); break;
+                    case 2: PlayVoiceChat(VOICE_CHAT_CHEER); break;
+                }
             }
         }
         else if (GetLocalInt(OBJECT_SELF, "fear") != 1 && GetClassByPosition(1, OBJECT_SELF) == CLASS_TYPE_COMMONER)
@@ -79,11 +82,14 @@ void main()
             SetLocalInt(OBJECT_SELF, "fear", 1);
             DelayCommand(15.0, DeleteLocalInt(OBJECT_SELF, "fear"));
             ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectFrightened(), OBJECT_SELF, 30.0);
-            switch(d6())
+            if (!gsC2GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF))
             {
-                case 1: PlayVoiceChat(VOICE_CHAT_HELP); break;
-                case 2: PlayVoiceChat(VOICE_CHAT_BATTLECRY1); break;
-                case 3: PlayVoiceChat(VOICE_CHAT_BATTLECRY2); break;
+                switch(d6())
+                {
+                    case 1: PlayVoiceChat(VOICE_CHAT_HELP); break;
+                    case 2: PlayVoiceChat(VOICE_CHAT_BATTLECRY1); break;
+                    case 3: PlayVoiceChat(VOICE_CHAT_BATTLECRY2); break;
+                }
             }
         }
     break;
@@ -95,12 +101,14 @@ void main()
         {
             SetLocalInt(OBJECT_SELF, "check_bash", 1);
             DelayCommand(10.0, DeleteLocalInt(OBJECT_SELF, "check_bash"));
-
-            switch(d6())
+            if (!gsC2GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF))
             {
-                case 1: PlayVoiceChat(VOICE_CHAT_ENEMIES); break;
-                case 2: PlayVoiceChat(VOICE_CHAT_SEARCH); break;
-                case 3: PlayVoiceChat(VOICE_CHAT_LOOKHERE); break;
+                switch(d6())
+                {
+                    case 1: PlayVoiceChat(VOICE_CHAT_ENEMIES); break;
+                    case 2: PlayVoiceChat(VOICE_CHAT_SEARCH); break;
+                    case 3: PlayVoiceChat(VOICE_CHAT_LOOKHERE); break;
+                }
             }
             ActionMoveToObject(oSpeaker, FALSE, 2.0);
         }

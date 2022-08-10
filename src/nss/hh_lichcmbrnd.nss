@@ -9,8 +9,8 @@ void BeLocked()
 void LockTheDoor()
 {
     object oArea = GetArea(OBJECT_SELF);
-    object oDoor;
-    if (!GetIsObjectValid(GetLocalObject(oArea, "interiordoor")))
+    object oDoor = GetLocalObject(oArea, "interiordoor");
+    if (!GetIsObjectValid(oDoor))
     {
         oDoor = GetObjectByTag("HH_LichInteriorDoor");
         SetLocalObject(oArea, "interiordoor", oDoor);
@@ -86,7 +86,7 @@ void SpawnSkeletons()
             object oCentre = GetObjectByTag("HH_LichCentralPoint");
             for (i=0; i<nNumSkelesToSpawn; i++)
             {
-                if (Random(100) >= (nNumSkelesToSpawn*20)) { continue; }
+                if (Random(100) >= (nNumSkelesToSpawn*45)) { continue; }
                 int bFurthest = 1;
                 int nRoll = Random(6);
                 string sResRef = "";
