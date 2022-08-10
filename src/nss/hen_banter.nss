@@ -660,8 +660,10 @@ void main()
    }
 
     int nRandom = Random(nCount)+1;
-
-    SpeakString(GetLocalString(OBJECT_SELF, "banter"+IntToString(nRandom)));
-    ClearAllActions();
-    PlaySound(GetLocalString(OBJECT_SELF, "banter_sound"+IntToString(nRandom)));
+    if (nCount > 0)
+    {
+        SpeakString(GetLocalString(OBJECT_SELF, "banter"+IntToString(nRandom)));
+        ClearAllActions();
+        PlaySound(GetLocalString(OBJECT_SELF, "banter_sound"+IntToString(nRandom)));
+    }
 }

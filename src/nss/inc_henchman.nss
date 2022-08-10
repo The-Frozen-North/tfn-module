@@ -13,7 +13,8 @@
 void ScaleHenchman(object oHench);
 
 // Clears out the master for the henchman
-void ClearMaster(object oHench);
+// If bTagDestroy, the henchman will walk at doors in the expectation that something will destroy them
+void ClearMaster(object oHench, int bTagDestroy=1);
 
 // Set the master for the henchman
 void SetMaster(object oHench, object oPlayer);
@@ -42,6 +43,10 @@ void RehireHenchman(object oPlayer);
 // retrieves master by uuid for this henchman.
 // useful for when the master is dead (not in party)
 object GetMasterByUUID(object oHench);
+
+// Respawn the named henchman if they are not in existence somewhere.
+// Respawning also clears their master
+void TFNRespawnHenchman(string sResRef);
 
 
 // =======================================================
@@ -234,7 +239,7 @@ AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAbilityBonus(GetLocalInt(oH
     }
 }
 
-void ClearMaster(object oHench)
+void ClearMaster(object oHench, int bTagDestroy=1)
 {
 // Make sure this is a henchman
     if (GetStringLeft(GetResRef(oHench), 3) != "hen") return;
@@ -250,8 +255,10 @@ void ClearMaster(object oHench)
 
     object oPlayer = GetMaster(oHench);
     RemoveHenchman(oPlayer, oHench);
-
-    SetLocalInt(oHench, "pending_destroy", 1);
+    if (bTagDestroy)
+    {
+        SetLocalInt(oHench, "pending_destroy", 1);
+    }
 
 // Reset the henchman visibility override
     object oParty = GetFirstFactionMember(oPlayer);
@@ -283,6 +290,8 @@ void SetMaster(object oHench, object oPlayer)
 
     AddHenchman(oPlayer, oHench);
     ScaleHenchman(oHench);
+    
+    NWNX_Creature_SetCorpseDecayTime(oHench, 37627000);
 
 // Ensure the henchman is always visible to the player
     object oParty = GetFirstFactionMember(oPlayer);
@@ -291,6 +300,17 @@ void SetMaster(object oHench, object oPlayer)
         NWNX_Visibility_SetVisibilityOverride(oPlayer, oHench, NWNX_VISIBILITY_VISIBLE);
         oParty = GetNextFactionMember(oPlayer);
     }
+}
+
+void TFNRespawnHenchman(string sResRef)
+{
+    if (!GetIsObjectValid(GetObjectByTag(sResRef)))
+    {
+        SendDebugMessage("Respawning henchman: " + sResRef, TRUE);
+        object oHench = CreateObject(OBJECT_TYPE_CREATURE, sResRef, GetLocation(GetObjectByTag(sResRef + "_spawn_point")));
+        ClearMaster(oHench, 0);
+        NWNX_Creature_SetFaction(oHench, STANDARD_FACTION_MERCHANT);
+    }        
 }
 
 //void main(){}
