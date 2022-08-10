@@ -49,7 +49,7 @@ void main()
 // only attack or move to the ambush location when not in combat, otherwise combat can be interrupted
         if (!GetIsInCombat(OBJECT_SELF))
         {
-            object oTarget = GetLocalObject(oTarget, "ambush_target");
+            object oTarget = GetLocalObject(OBJECT_SELF, "ambush_target");
 
 // attack ambush target if seen or target is alive
             if (!GetIsDead(oTarget) && (GetObjectSeen(oTarget) || GetObjectHeard(oTarget)))
