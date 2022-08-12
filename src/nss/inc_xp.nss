@@ -292,7 +292,7 @@ int GetXPFromLevel(int nLevel)
 float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iTotalSize, float fMultiplier = 1.0)
 {
 // If the CR is 0.0, then assume this is not a kill and do not do any XP related thingies.
-   float fCR = GetChallengeRating(OBJECT_SELF);
+   float fCR = GetChallengeRating(oCreature);
    float fXP;
 
 // if tagged no xp just return 0 early

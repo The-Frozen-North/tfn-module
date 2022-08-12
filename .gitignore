@@ -15,6 +15,17 @@
 !tools/**
 !templates/
 !templates/**
+!grafana-provisioning/
+!grafana-provisioning/**
+!config/common-dev.env
+# Don't add real passwords to git
+config/influxdb.env
+config/grafana.env
+grafana-provisioning/datasources/nwn.yml
+# Only the file templates
+!config/influxdb-template.env
+!config/grafana-template.env
+!grafana-provisioning/datasources/nwn.yml.template
 
 # Whitelist github and spec folder
 !.github
@@ -70,4 +81,3 @@ override/env_dm.2da
 *.mod
 *.ncs
 *.csv
-
