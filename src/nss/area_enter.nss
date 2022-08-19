@@ -2,6 +2,7 @@
 #include "inc_horse"
 #include "inc_persist"
 #include "inc_quest"
+#include "inc_restxp"
 
 void WarningMessage(object oPC)
 {
@@ -51,6 +52,11 @@ void main()
        SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 50, oPC);
 
        ValidateMount(oPC);
+       
+       if (PlayerGetsRestedXPInArea(oPC, OBJECT_SELF))
+        {
+            SendOnEnterRestedPopup(oPC);
+        }
 
        if (GetLocalInt(OBJECT_SELF, "underdark") == 1 && !GetIsDM(oPC))
        {

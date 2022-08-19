@@ -32,6 +32,19 @@ void LoadTreasureContainerByBaseItem(string sTag, float x = 1.0, float y = 1.0, 
     if (GetIsObjectValid(oContainer)) SendDebugMessage("loaded "+GetName(oContainer));
 }
 
+void SpawnPCBloodstains()
+{
+    int i;
+    for (i=0; i <= 100; i++)
+    {
+        location lLoc = GetCampaignLocation("pcbloodstains", "Pos" + IntToString(i));
+        if (GetIsObjectValid(GetAreaFromLocation(lLoc)))
+        {
+            CreateObject(OBJECT_TYPE_PLACEABLE, "_pc_bloodstain", lLoc);
+        }
+    }
+}
+
 void InitializeHouses(string sArea)
 {
     object oArea = GetObjectByTag(sArea);
@@ -595,6 +608,8 @@ void main()
     InitializeHouses("dock");
     InitializeHouses("blak");
     InitializeHouses("core");
+    
+    SpawnPCBloodstains();
 
 // set Yesgar to spawn 1 minute after module starts
     SetLocalInt(OBJECT_SELF, "yesgar_count", 190);

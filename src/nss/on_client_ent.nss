@@ -9,6 +9,7 @@
 #include "inc_mappin"
 #include "inc_housing"
 #include "inc_horse"
+#include "inc_restxp"
 
 void CreateItemIfBlank(object oPC, string sItem)
 {
@@ -37,6 +38,8 @@ void main()
     SetCampaignString(GetPCPublicCDKey(oPC), "player_name", GetPCPlayerName(oPC));
 
     InitializeHouseMapPin(oPC);
+    
+    AddRestedXPOnLogin(oPC);
 
     string sType = "player";
     string sMessage = PlayerDetailedName(oPC)+" has entered the game as a "+sType;

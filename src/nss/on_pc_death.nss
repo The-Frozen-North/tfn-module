@@ -25,6 +25,8 @@
 #include "inc_sql"
 #include "inc_penalty"
 
+const int MAX_NUMBER_BLOODSTAINS = 100;
+
 void main()
 {
     object oPlayer = GetLastPlayerDied();
@@ -60,6 +62,11 @@ void main()
 // Create a blood spot on dying.
         object oBloodSpot = CreateObject(OBJECT_TYPE_PLACEABLE, "_pc_bloodstain", lDeathSpot);
         AssignCommand(oBloodSpot, SetFacing(fFacing));
+        int nBloodstainPos = GetCampaignInt("pcbloodstains", "NextIndex");
+        SetCampaignLocation("pcbloodstains", "Pos" + IntToString(nBloodstainPos), lDeathSpot);
+        nBloodstainPos++;
+        if (nBloodstainPos >= MAX_NUMBER_BLOODSTAINS) { nBloodstainPos = 0; }
+        SetCampaignInt("pcbloodstains", "NextIndex", nBloodstainPos);
      }
 
      RemoveDeathEffectPenalty(oPlayer);

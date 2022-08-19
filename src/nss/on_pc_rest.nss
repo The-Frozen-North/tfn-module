@@ -8,7 +8,7 @@
 #include "x0_i0_position"
 #include "nwnx_area"
 #include "nwnx_visibility"
-
+#include "inc_restxp"
 
 // this function gets all creatures near a location and interrupts their rest + prevents resting for a bit
 // typically this should be applied to a campfire (uses around the same radius for creatures attaching to a campfire)
@@ -345,6 +345,8 @@ void main()
             if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION, oPC)))  DecrementRemainingFeatUses(oPC, FEAT_ANIMAL_COMPANION);
             
             AnnounceRemainingRevives(oPC);
+            GiveHouseRestingXP(oPC);
+            SendRestedXPNotifierToPC(oPC);
 
         case REST_EVENTTYPE_REST_CANCELLED:
             StopFade(oPC);

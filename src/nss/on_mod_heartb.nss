@@ -10,6 +10,7 @@
 #include "inc_weather"
 #include "nwnx_player"
 #include "inc_horse"
+#include "inc_restxp"
 
 int GetIsDeadOrPetrified(object oCreature)
 {
@@ -213,6 +214,8 @@ void main()
         DoRevive(oPC);
         DetermineHorseEffects(oPC);
         RefreshCompletedBounties(oPC, nTime, sBounties);
+        
+        AddRestedXPHeartbeat(oPC);
 
         if (GetHasPermanentPetrification(oPC))
         {

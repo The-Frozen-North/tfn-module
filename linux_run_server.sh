@@ -12,7 +12,14 @@ echo "WARNING: 'Y' will delete all unsaved changes! Commit or stash them before 
 rm -d -RI modules
 rm TFN.mod
 
-$PWD/tools/linux/nasher/nasher install --erfUtil:"$PWD/tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/tools/linux/nwnsc/nwnsc" --installDir:"$PWD" --nssFlags:"-oe -i $PWD/nwn-base-scripts" --no
+desc=`cat mod_desc.txt`
+timestamp=`git log -1 --format=%cd --date=format:"%d %b %y"`
+hash=`git rev-parse HEAD`
+hash=${hash:0:6}
+desc="$desc
+Last Updated: $timestamp ($hash)"
+
+$PWD/tools/linux/nasher/nasher install --erfUtil:"$PWD/tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/tools/linux/nwnsc/nwnsc" --installDir:"$PWD" --nssFlags:"-oe -i $PWD/nwn-base-scripts" --no --modDescription="$desc"
 
 rm server/config/common.env
 rm server/modules/TFN.mod

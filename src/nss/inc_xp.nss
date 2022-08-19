@@ -8,6 +8,7 @@
 #include "inc_debug"
 #include "inc_sql"
 #include "x3_inc_string"
+#include "inc_restxp"
 
 // The amount of bonus or penalty XP modified by level.
 const float QUEST_XP_LEVEL_ADJUSTMENT_MODIFIER = 0.1;
@@ -75,8 +76,6 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE);
 // with bonuses/penalties related to the target level
 void GiveQuestXPToPC(object oPC, int nTier, int nLevel, int bBluff = FALSE);
 
-// This function returns the level based on XP
-int GetLevelFromXP(int nXP);
 
 // ------------------ INTERNAL FUNCTIONS ----------------
 
@@ -123,10 +122,7 @@ float Truncate(float fFloat)
     return StringToFloat(FloatToString(fFloat, 3, 2));
 }
 
-int GetLevelFromXP(int nXP)
-{
-   return FloatToInt(0.5 + sqrt(0.25 + (IntToFloat(nXP) / 500 )));
-}
+
 
 
 void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
@@ -139,6 +135,8 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
 // Calculate favored bonus
    float fFavoredModifier = 1.0;
    int nRace = GetRacialType(oPC);
+   
+   
 
    if (GetLocalInt(oPC, "BASE_RACE_SET") == 1)
        nRace = GetLocalInt(oPC, "BASE_RACE");
@@ -186,7 +184,23 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
 // for favored racial class with non humans/half-elves
    if (sFavoredBonus == "" && fFavoredModifier == FAVORED_BONUS) sFavoredBonus = ", Favored class: 20%";
 
-   float fAdjustedXpAmount = fModifier * fXpAmount;
+   float fRestedProportion = bQuest ? RESTEDXP_QUEST_INCREASE : RESTEDXP_KILL_INCREASE;
+   float fPreRestAdjusted = fModifier * fXpAmount;
+   float fAdjustedXpAmount = GetRestModifiedExperience(fPreRestAdjusted, oPC, fRestedProportion);
+   string sRested = "";
+   if (fAdjustedXpAmount > fPreRestAdjusted)
+   {
+        float fRealRestBonus = ((fAdjustedXpAmount / fPreRestAdjusted) * 100) - 100.0;
+        if (bQuest)
+        {
+            sRested = ", Rested: " + NeatFloatToString(fRealRestBonus, 2) + "%";
+        }
+        else
+        {
+            sRested = "Rested Experience bonus: +" + NeatFloatToString(fAdjustedXpAmount - fPreRestAdjusted) + " (" + NeatFloatToString(fRealRestBonus, 2) + "%)";
+            SendMessageToPC(oPC, sRested);
+        }
+   }
 
    if (bQuest)
    {
@@ -195,7 +209,7 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
       string sBonus = "Bonus";
       if (nTotal < 0) sBonus = "Penalty";
 
-      FloatingTextStringOnCreature("*XP "+sBonus+": "+IntToString(nTotal)+" (Wisdom: "+IntToString(nWisdomMod)+"%"+sFavoredBonus+")*", oPC, FALSE);
+      FloatingTextStringOnCreature("*XP "+sBonus+": "+IntToString(nTotal)+" (Wisdom: "+IntToString(nWisdomMod)+"%"+sFavoredBonus+ sRested +")*", oPC, FALSE);
    }
 
    SendDebugMessage("fAdjustedXP without truncation: "+FloatToString(fAdjustedXpAmount));
@@ -204,7 +218,9 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
    //fAdjustedXpAmount = IntToFloat(FloatToInt(fAdjustedXpAmount*10.0))/10.0;
    fAdjustedXpAmount = Truncate(fAdjustedXpAmount);
 
+
    SendMessageToPC(oPC, "Experience Points Gained:  "+RemoveTrailingZeros(FloatToString(fAdjustedXpAmount, 3, 2)));
+
 
    int iStoredRemainderXP = SQLocalsPlayer_GetInt(oPC, "xp_remainder");
    SendDebugMessage("Stored remainder XP: "+IntToString(iStoredRemainderXP));

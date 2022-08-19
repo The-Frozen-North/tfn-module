@@ -17,7 +17,26 @@ rd modules
 
 del /f TFN.mod
 
-%CD%/tools/win/nasher/nasher.exe install  --verbose --erfUtil:"%CD%/tools/win/neverwinter64/nwn_erf.exe" --gffUtil:"%CD%/tools/win/neverwinter64/nwn_gff.exe" --tlkUtil:"%CD%/tools/win/neverwinter64/nwn_tlk.exe" --nssCompiler:"%CD%/tools/win/nwnsc/nwnsc.exe" --installDir:"%CD%" --nssFlags:"-oe -i %CD%/nwn-base-scripts" --no
+rem Fetch a timestamp and commit hash from git, and append it to mod_desc.txt
+rem This is more painful than it probably needed to be
+FOR /F "tokens=* USEBACKQ" %%g IN (`git log -1 --format^=%%cd --date^=format:"%%d %%b %%y"`) do (SET "timestamp=%%g")
+FOR /F "tokens=* USEBACKQ" %%g IN (`git rev-parse HEAD`) do (SET "hash=%%g")
+set "hash=%hash:~,6%"
+
+
+Setlocal EnableDelayedExpansion
+set LF=^
+
+
+rem THE TWO EMPTY LINES ABOVE ARE REQUIRED!
+rem DO NOT REMOVE THE WHITESPACE IN THE NAME OF MAKING THE MODULE DESCRIPTION GET WRITTEN PROPERLY
+set content=
+for /f "delims=" %%x in ('type mod_desc.txt') do set "content=!content!%%x!LF!"
+set "content=!content!Last Updated: %timestamp% (%hash%)"
+
+"%CD%/tools/win/nasher/nasher.exe" install  --verbose --erfUtil:"%CD%/tools/win/neverwinter64/nwn_erf.exe" --gffUtil:"%CD%/tools/win/neverwinter64/nwn_gff.exe" --tlkUtil:"%CD%/tools/win/neverwinter64/nwn_tlk.exe" --nssCompiler:"%CD%/tools/win/nwnsc/nwnsc.exe" --installDir:"%CD%" --nssFlags:"-oe -i %CD%/nwn-base-scripts" --no --modDescription "!content!"
+
+endlocal
 
 del /f server\config\common.env
 del /f server\modules\TFN.mod

@@ -6,6 +6,7 @@ void main()
 {
     object oPC = GetExitingObject();
     SavePCInfo(oPC);
+    SQLocalsPlayer_SetInt(oPC, "RESTXP_LAST_SAVE", SQLite_GetTimeStamp());
 
     object oPCCount = GetFirstPC();
     int nPCs = -1;
