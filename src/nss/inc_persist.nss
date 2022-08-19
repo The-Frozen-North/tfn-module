@@ -110,7 +110,7 @@ void SavePCInfo(object oPC)
 
     ExportMinimap(oPC);
     MapPin_SavePCMapPins(oPC);
-
+        
     SQLocalsPlayer_SetInt(oPC, "CURRENT_HP", GetCurrentHitPoints(oPC));
 }
 

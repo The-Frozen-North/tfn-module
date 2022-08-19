@@ -80,9 +80,17 @@ int GetStoneToFleshSalveCharges(object oCreature)
     {
         if (GetResRef(oTest) == SALVE_RESREF)
         {
-            itemproperty ipFirst = GetFirstItemProperty(oTest);
-            int nUses = GetItemPropertyUsesPerDayRemaining(oTest, ipFirst);
-            return nUses;
+            itemproperty ipTest = GetFirstItemProperty(oTest);
+            while (GetIsItemPropertyValid(ipTest))
+            {
+                if (GetItemPropertyType(ipTest) == ITEM_PROPERTY_CAST_SPELL)
+                {
+                    int nUses = GetItemPropertyUsesPerDayRemaining(oTest, ipTest);
+                    return nUses;
+                }
+                ipTest = GetNextItemProperty(oTest);
+            }
+            
         }
         oTest = GetNextItemInInventory(oCreature);
     } 
@@ -96,13 +104,20 @@ void UseStoneToFleshSalveCharge(object oCreature)
     {
         if (GetResRef(oTest) == SALVE_RESREF)
         {
-            itemproperty ipFirst = GetFirstItemProperty(oTest);
-            int nUses = GetItemPropertyUsesPerDayRemaining(oTest, ipFirst);
-            if (nUses > 0)
+            itemproperty ipTest = GetFirstItemProperty(oTest);
+            while (GetIsItemPropertyValid(ipTest))
             {
-                SetItemPropertyUsesPerDayRemaining(oTest, ipFirst, nUses - 1);
+                if (GetItemPropertyType(ipTest) == ITEM_PROPERTY_CAST_SPELL)
+                {
+                    int nUses = GetItemPropertyUsesPerDayRemaining(oTest, ipTest);
+                    if (nUses > 0)
+                    {
+                        SetItemPropertyUsesPerDayRemaining(oTest, ipTest, nUses - 1);
+                    }
+                    break;
+                }
+                ipTest = GetNextItemProperty(oTest);
             }
-            return;
         }
         oTest = GetNextItemInInventory(oTest);
     }

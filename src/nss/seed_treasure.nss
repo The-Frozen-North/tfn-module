@@ -441,7 +441,14 @@ void DistributeTreasureToStores(object oItem)
 
 
 // Apply a multiplier for misc items (junk and art)
-       if (TestStringAgainstPattern("**misc**", sResRef)) nValue = nValue * 5;
+    // magic bags have their prices set elsewhere anyway
+    if (TestStringAgainstPattern("**misc**", sResRef))
+    {
+        if (nBaseType != BASE_ITEM_LARGEBOX)
+        {
+            nValue = nValue * 5;
+        }
+    }
 
 // Enchanted full plate mail is considered 1 tier higher.
        if (nEnchantValue > 0 && nBaseArmorAC == 8) nEnchantValue++;
@@ -450,6 +457,7 @@ void DistributeTreasureToStores(object oItem)
        if (nValue > 22000)
        {
            CopyItemToExistingTarget(oItem, GetObjectByTag("_overvalue"));
+           WriteTimestampedLogEntry("Overvalued Item (" + IntToString(nValue) + "): " + GetName(oItem) + ", resref=" + GetResRef(oItem));
            DestroyObject(oItem);
            return;
        }

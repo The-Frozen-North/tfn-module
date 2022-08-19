@@ -60,6 +60,25 @@ int GetFollowerCount(object oPlayer)
     return nCount;
 }
 
+object GetFollowerByIndex(object oPlayer, int nIndex=0)
+{
+    if (GetIsPC(oPlayer))
+    {
+        object oParty = GetFirstFactionMember(oPlayer, FALSE);
+
+        while (GetIsObjectValid(oParty))
+        {
+            if ((GetLocalInt(oParty, "follower") == 1) && GetMaster(oParty) == oPlayer)
+            {
+                if (nIndex <= 0) { return oParty; }
+                nIndex--;
+            }
+            oParty = GetNextFactionMember(oPlayer, FALSE);
+        }
+    }
+    return OBJECT_INVALID;
+}
+
 // determines if this follower has a stored master
 int CheckFollowerMaster(object oFollower, object oPlayer);
 int CheckFollowerMaster(object oFollower, object oPlayer)

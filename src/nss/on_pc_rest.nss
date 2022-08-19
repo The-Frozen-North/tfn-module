@@ -2,11 +2,13 @@
 #include "inc_general"
 #include "inc_horse"
 #include "inc_nwnx"
+#include "inc_henchman"
+#include "inc_follower"
 #include "util_i_csvlists"
 #include "x0_i0_position"
 #include "nwnx_area"
 #include "nwnx_visibility"
-
+#include "inc_restxp"
 
 // this function gets all creatures near a location and interrupts their rest + prevents resting for a bit
 // typically this should be applied to a campfire (uses around the same radius for creatures attaching to a campfire)
@@ -32,6 +34,58 @@ void ApplySleepVFX(object oCreature)
     if (GetRacialType(oCreature) == RACIAL_TYPE_ELF) return;
 
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_SLEEP), oCreature);
+}
+
+void AnnounceRemainingRevivesOnCreature(object oCreature)
+{
+    int nTimesRevived = GetTimesRevived(oCreature);
+    
+    string sReviveMessage = "*" + GetName(oCreature);
+
+    if (nTimesRevived >= 3)
+    {
+        sReviveMessage += " cannot be revived without Raise Dead*";
+    }
+    else if (nTimesRevived == 2)
+    {
+        sReviveMessage += " can be revived one more time*";
+    }
+    else if (nTimesRevived == 1)
+    {
+        sReviveMessage += " can be revived two more times*";
+    }
+    
+    if (nTimesRevived > 0)
+    {
+        FloatingTextStringOnCreature(sReviveMessage, oCreature, TRUE);
+    }
+}
+
+void AnnounceRemainingRevives(object oPC)
+{
+    AnnounceRemainingRevivesOnCreature(oPC);
+    int nIndex = 0;
+    while (1)
+    {
+        object oHench = GetHenchmanByIndex(oPC, nIndex);
+        if (!GetIsObjectValid(oHench))
+        {
+            break;
+        }
+        AnnounceRemainingRevivesOnCreature(oHench);
+        nIndex++;
+    }
+    nIndex = 0;
+    while (1)
+    {
+        object oHench = GetFollowerByIndex(oPC, nIndex);
+        if (!GetIsObjectValid(oHench))
+        {
+            break;
+        }
+        AnnounceRemainingRevivesOnCreature(oHench);
+        nIndex++;
+    }
 }
 
 void main()
@@ -289,6 +343,10 @@ void main()
 
             if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_FAMILIAR, oPC))) DecrementRemainingFeatUses(oPC, FEAT_SUMMON_FAMILIAR);
             if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION, oPC)))  DecrementRemainingFeatUses(oPC, FEAT_ANIMAL_COMPANION);
+            
+            AnnounceRemainingRevives(oPC);
+            GiveHouseRestingXP(oPC);
+            SendRestedXPNotifierToPC(oPC);
 
         case REST_EVENTTYPE_REST_CANCELLED:
             StopFade(oPC);

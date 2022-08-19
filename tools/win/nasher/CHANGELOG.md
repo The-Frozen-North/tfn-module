@@ -1,5 +1,307 @@
 # nasher changelog
 
+## 0.19.0: Auguest 19, 2022
+
+### Added ability to set module description for module targets
+([#102](https://github.com/squattingmonk/nasher/pull/102))
+
+The `modDescription` field is available in the `[target]` section of
+`nasher.cfg` and can be overridden using the `--modDescription` command-line
+parameter.
+
+Thanks, @tinygiant98!
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.18.2...0.19.0
+
+
+## 0.18.2: June 22, 2022
+
+Fix: relative paths passed to `--nssCompiler` are now relative to the package
+directory rather than the target's cache directory.
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.18.1...0.18.2
+
+
+## 0.18.1: June 5, 2022
+
+### `unpack` now correctly acts on multiple targets
+
+Before 0.18.0, the usage was `nasher unpack [<target> [<file>]]`. With 0.18.0,
+the new usage was supposed to be `nasher unpack [<target>...]`, but a bug caused
+it to always use the default target.
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.18.0...0.18.1
+
+
+## 0.18.0: June 3, 2022
+
+### Added subsections to `nasher.cfg`
+
+`nasher.cfg` now supports subsections to allow better organization. The current
+subsections allowed are `[*.sources]`, `[*.rules]`, and `[*.variables]`. These
+can either be context-aware or explicitly set:
+
+    # Context aware subsections
+    [package]
+      [sources]
+    [target]
+      [sources]
+
+    # Explicit (preferred)
+    [package]
+      [package.sources]
+    [target]
+      [target.sources]
+
+Indentation is optional, but encouraged.
+
+The parser should be backwards compatible with existing `nasher.cfg` files, and
+there are tests to check some known packages.
+
+### Added support for user-defined variables
+
+You can now define variables that can be referenced in any target field except for
+`name`. You can set variables in the `[package.variables]` section (to apply to
+all targets) or the `[target.variables]` section (to apply to a single target).
+The key is the variable name, while the value is what it should resolve to. The
+target variables table is merged with the package variables table to allow
+missing keys to be inherited.
+
+If a variable referenced is not found, nasher will also check the environment
+variables. If a variable is not found in the table or the environment, an error
+is thrown.
+
+Variables can be referenced using the syntax `$variable` or `${variable}`. The
+latter syntax allows variables to include non-alphanumeric characters or to be
+adjacent to alphanumeric characters that are not part of the variable name
+(e.g., `${foo}bar`).
+
+One variable is available by default: `$target` resolves to the name of the
+current target. This allows some neat things:
+
+```toml
+# This package has two targets, "foo" and "bar", that yield a file
+# named "foo.hak" and "bar.hak", respectively using the source files
+# in "src/foo" and "src/bar" respectively.
+[package]
+file = "$target.hak"
+
+  [package.sources]
+  include = "src/$target/*"
+
+[target]
+name = "foo"
+
+[target]
+name = "bar"
+```
+
+This feature can also be used to easily reference out-of-tree projects:
+
+```toml
+[package]
+
+  [package.variables]
+  sm-utils = "../sm-utils/src" # Can be used by any target or rule
+
+  [package.sources]
+  include = "${sm-utils}/*.{nss,json}" # include files in sm-utils
+  include = "src/**/*.{nss,json}"
+
+  [package.rules]
+  "util_*" = "${sm-utils}" # Unpack util files to sm-utils
+  "*" = "src/$target" # Unpack unknown file to target's source dir
+
+[target]
+name = "demo"
+file = "core_framework.mod"
+
+[target]
+name = "utils"
+file = "sm_utils.erf"
+
+  [target.sources]
+  include = "${sm-utils}/*.{nss,json}" # include only files in sm-utils
+```
+
+Since nasher checks environment variables, you can place user-specific
+information in an environment variable. For example, if you want to include a
+file in a target using an absolute path, you could place it directly in the
+`nasher.cfg`, but this would not be useful for other users of your project:
+
+```toml
+[target]
+name = "mymodule"
+file = "my_module.mod"
+
+  [target.sources]
+  include = "src/*.{nss,json}"
+  include = "/home/squattingmonk/.local/src/nwscript/utils/util_i_color.nss"
+```
+
+This makes collaboration difficult, since other users of this project would have
+to edit the `nasher.cfg` to change the location of the file to where it is on
+their system. Instead, you can use an environment variable:
+
+```toml
+[target]
+name = "mymodule"
+file = "my_module.mod"
+
+  [target.sources]
+  include = "src/*.{nss,json}"
+  include = "${SM_UTILS}/util_i_color.nss"
+```
+
+```bash
+export SM_UTILS=/home/squattingmonk/.local/src/nwscript/utils
+```
+
+Other users can then set the environment variable to the location of their
+choice without changing the `nasher.cfg`.
+
+### Added user-defined target groups
+
+You can now group targets into aliases that are expanded when a
+command is run. Groups are defined with the repeatable `group` directive
+in `nasher.cfg`. This makes it easy to, say, pack all haks in a project:
+
+```toml
+# To pack all targets: nasher pack all
+# To pack only haks: nasher pack haks
+[target]
+name = "demo"
+file = "demo.mod"
+
+[target]
+name = "hak1"
+group = "haks"
+file = "hak1.hak"
+
+[target]
+name = "hak2"
+group = "haks"
+file = "hak2.hak"
+```
+
+### `nasher list` can now list specific targets
+
+`nasher list` can now limit its output to the named targets (e.g., `nasher list
+demo`). The default behavior is to list all targets for backwards compatibility.
+To list only the first target, use `nasher list ""`. Also supports target
+groups.
+
+### Other
+
+- Fixed relative paths not working in exclude directories
+  ([#90](https://github.com/squattingmonk/nasher/issues/90))
+- Updated help text for all commands to show all available options
+- nasher commands now support the `--` operator, which causes all arguments that
+  come after it to be treated as positional arguments even if they look like
+  options. For example: `nasher config -- nssFlags "-n /opt/nwn"` prevents the
+  `-n` from being treated as an option with the value `/opt/nwn`.
+- `--noInstall` is now correctly treated as a flag that does not require a value
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.17.4...0.18.0
+
+
+## 0.17.4: May 12, 2022
+
+Added better error handling for the `init` command. It now shows the error
+message from the OS if a directory could not be created and will error out if it
+cannot open the file before showing the package generation wizard. Other errors
+will show a stack trace.
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.17.3...0.17.4
+
+
+## 0.17.3: May 6, 2022
+
+`unpack` no longer causes a duplicate target error.
+([#98](https://github.com/squattingmonk/nasher/issues/98))
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.17.2...0.17.3
+
+
+## 0.17.2: April 21, 2022
+
+- An error is now generated if multiple targets in nasher.cfg have the same name.
+- Target names can now include all printable ascii characters except the
+  following characters which are invalid in filenames: `/\:*?\"<>|^`. Note:
+  target names are automatically converted to lowercase to avoid issues
+  with case-sensitive OSes.
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.17.1...0.17.2
+
+## 0.17.1: April 18, 2022
+
+Hotfix: `--abortOnCompileError` no longer consumes the following argument or
+option as its value. Previously, `nasher compile --abortOnCompileError --clean`
+caused `--clean` to be treated as the value of `--abortOnCompileError`. You can
+explicitly pass a value: `--abortOnCompileError=false`.
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.17.0...0.17.1
+
+
+## 0.17.0: April 18, 2022
+
+### Added `--abortOnCompileError` option
+
+Added a new option to auto-answer the "Do you wish to continue compiling?"
+prompt when errors were encountered on compilation. Now you can force-answer
+`no` to the prompt by passing `--abortOnCompileError` and force-answer `yes` to
+the prompt by passing `--abortOnCompileError=false`. This will reduce the number
+of prompts to answer without having to pass `--yes` or `--no`.
+([#84](https://github.com/squattingmonk/nasher/issues/84))
+
+### Prompt to continue compiling on error now shown after each chunk
+
+The user will now receive a prompt if there were errors in compilation after
+each chunk of scripts is run. Previously, if the user were to compile a large
+number of scripts, they would have to wait until the end of compilation to be
+notified. These prompts respect the `--abortOnCompileError` flag to allow an
+early exit. As a convenience, a hint is shown to let the user know how many
+chunks of scripts are remaining.
+
+**Note**: if the `-y` flag is not in `--nssFlags`, nwnsc will stop compiling
+scripts in the current chunk. If the user chooses to continue compiling, the
+remaining scripts from that chunk will not have been compiled and will show no
+errors to indicate why.
+
+### `nasher list --verbose` now lists source files
+
+This will make it easier to see which files will be included in a target without
+having to build and check the cache.
+
+### Other
+
+- Bumped required nim version to 1.6.4, neverwinter.nim version to 1.5.5, and
+  nwnt version to 1.3.3.
+- Bumped required glob version to 0.11.1. The newer version allows negative
+  pattern matching (i.e., `!(pattern)`) which may be helpful for include
+  directives or unpack rules.
+
+---
+
+Details: https://github.com/squattingmonk/nasher/compare/0.16.3...0.17.0
+
+
 ## 0.16.3: January 01, 2022
 
 Added error handling for out-of-range int values on choice prompts. Previously,

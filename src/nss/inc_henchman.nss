@@ -70,6 +70,25 @@ int GetHenchmanCount(object oPlayer)
     return nCount;
 }
 
+object GetHenchmanByIndex(object oPlayer, int nIndex=0)
+{
+    if (GetIsPC(oPlayer))
+    {
+        object oParty = GetFirstFactionMember(oPlayer, FALSE);
+
+        while (GetIsObjectValid(oParty))
+        {
+            if (GetStringLeft(GetResRef(oParty), 3) == "hen" && GetMaster(oParty) == oPlayer)
+            {
+                if (nIndex <= 0) { return oParty; }
+                nIndex--;
+            }                
+            oParty = GetNextFactionMember(oPlayer, FALSE);
+        }
+    }
+    return OBJECT_INVALID;
+}
+
 void PlayVoiceByStrRef(int nStrRef)
 {
     SpeakStringByStrRef(nStrRef);

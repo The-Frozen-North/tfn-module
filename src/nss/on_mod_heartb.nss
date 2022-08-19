@@ -10,6 +10,7 @@
 #include "inc_weather"
 #include "nwnx_player"
 #include "inc_horse"
+#include "inc_restxp"
 
 int GetIsDeadOrPetrified(object oCreature)
 {
@@ -157,6 +158,8 @@ void DoRevive(object oDead)
                 {
                     SQLocalsPlayer_DeleteInt(oDead, "DEAD");
                     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oDead);
+                    SetObjectVisualTransform(oDead, OBJECT_VISUAL_TRANSFORM_SCALE, 1.0);
+                    SetObjectVisualTransform(oDead, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, 0.0);
 
                     DetermineDeathEffectPenalty(oDead, 1);
 
@@ -211,6 +214,8 @@ void main()
         DoRevive(oPC);
         DetermineHorseEffects(oPC);
         RefreshCompletedBounties(oPC, nTime, sBounties);
+        
+        AddRestedXPHeartbeat(oPC);
 
         if (GetHasPermanentPetrification(oPC))
         {
