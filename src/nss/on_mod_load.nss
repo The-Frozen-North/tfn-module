@@ -167,8 +167,8 @@ void main()
             WriteTimestampedLogEntry("WARNING: Not seeding spellbooks!");
             WriteTimestampedLogEntry("===============================");
        }
-       
-       
+
+
 
        return;
     }
@@ -273,6 +273,10 @@ void main()
 // seems to happen a little too early, like 0.5 second too early?
     //NWNX_Events_SubscribeEvent("NWNX_ON_BROADCAST_CAST_SPELL_AFTER", "remove_invis");
     NWNX_Events_SubscribeEvent("NWNX_ON_CAST_SPELL_AFTER", "remove_invis");
+
+// no spellcasting while mounted and in combat
+    NWNX_Events_SubscribeEvent("NWNX_ON_CAST_SPELL_BEFORE", "cast_ride_chk");
+    NWNX_Events_SubscribeEvent("NWNX_ON_BROADCAST_CAST_SPELL_BEFORE", "cast_ride_chk");
 
 // We must skip this if polymorphed or bartering.
     NWNX_Events_SubscribeEvent("NWNX_ON_SERVER_CHARACTER_SAVE_BEFORE", "on_pc_save");
@@ -530,7 +534,7 @@ void main()
       LoadTreasureContainer("_PotionsT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 34.0);
 
       LoadTreasureContainer("_JewelsT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 35.0);
-      
+
       int nBaseItem;
       int nOffset = 0;
       for (nBaseItem=0; nBaseItem<=BASE_ITEM_WHIP; nBaseItem++)
@@ -608,7 +612,7 @@ void main()
     InitializeHouses("dock");
     InitializeHouses("blak");
     InitializeHouses("core");
-    
+
     SpawnPCBloodstains();
 
 // set Yesgar to spawn 1 minute after module starts

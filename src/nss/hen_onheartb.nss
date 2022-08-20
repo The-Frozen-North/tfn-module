@@ -14,6 +14,7 @@
 #include "x0_inc_henai"
 #include "inc_henchman"
 #include "inc_follower"
+#include "inc_horse"
 
 void DoBanter()
 {
@@ -26,6 +27,8 @@ void main()
 {
     if (GetIsDead(OBJECT_SELF)) return;
     if (GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF)) return;
+
+    DetermineHenchmanMount(OBJECT_SELF);
 
 // this routine should make the henchman go straight to the stored master if it's dead in an attempt to revive them
 // keep this high up in case any other routines stop and return early

@@ -1,6 +1,8 @@
 #include "nwnx_creature"
 //#include "inc_debug"
 
+const int HENCHMAN_MOUNT = 16;
+
 // returns true if the creature is mounted
 // checks appearance type for determination
 int GetIsMounted(object oPC);
@@ -17,14 +19,14 @@ int GetIsMounted(object oPC)
     }
 }
 
-int GetRidingSpellFailure(object oPC)
-{
-    int nSpellFailure = 30;
-    int nRideSpellBonus = GetSkillRank(SKILL_RIDE, oPC) / 5;
-    nSpellFailure = nSpellFailure - (10 * nRideSpellBonus);
+//int GetRidingSpellFailure(object oPC)
+//{
+//    int nSpellFailure = 30;
+//    int nRideSpellBonus = GetSkillRank(SKILL_RIDE, oPC) / 5;
+//    nSpellFailure = nSpellFailure - (10 * nRideSpellBonus);
 
-    return nSpellFailure;
-}
+//    return nSpellFailure;
+//}
 
 // applies horse effects when mounted
 void DetermineHorseEffects(object oPC);
@@ -84,9 +86,9 @@ void DetermineHorseEffects(object oPC)
         NWNX_Creature_SetMovementRateFactorCap(oPC, 1.0 + (IntToFloat(nSpeedBonus) / 100.0));
     }
 
-    int nACPenalty = 2;
+    int nACPenalty = 4;
     int nACBonus = 0;
-    int nSpellFailure = GetRidingSpellFailure(oPC);
+    //int nSpellFailure = GetRidingSpellFailure(oPC);
 
 // remove any AC bonus from tumble
     int nTumbleBonus = GetSkillRank(SKILL_TUMBLE, oPC, TRUE) / 5;
@@ -116,8 +118,8 @@ void DetermineHorseEffects(object oPC)
     if (nACBonus > 0)
         eLink = EffectLinkEffects(EffectACIncrease(nACBonus), eLink);
 
-    if (nSpellFailure > 0)
-        eLink = EffectLinkEffects(EffectSpellFailure(nSpellFailure), eLink);
+    //if (nSpellFailure > 0)
+    //    eLink = EffectLinkEffects(EffectSpellFailure(nSpellFailure), eLink);
 
     eLink = TagEffect(SupernaturalEffect(eLink), "horse_effects");
     ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oPC);
@@ -128,10 +130,24 @@ void RemoveMount(object oPC);
 void RemoveMount(object oPC)
 {
 // only play sound and visuals if already mounted
-    if (GetIsMounted(oPC))
+// don't play it for non-PCs as they will do it all at the same time. its very loud :)
+    if (GetIsMounted(oPC) && GetIsPC(oPC))
     {
         PlaySound("c_horse_slct");
+
         ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_SUMMON_MONSTER_1), GetLocation(oPC));
+
+        object oHench = GetFirstFactionMember(oPC, FALSE);
+
+        while (GetIsObjectValid(oHench))
+        {
+            if (GetAssociateType(oHench) == ASSOCIATE_TYPE_HENCHMAN && GetMaster(oHench) == oPC && GetIsMounted(oHench))
+            {
+                RemoveMount(oHench);
+            }
+
+            oHench = GetNextFactionMember(oPC, FALSE);
+        }
     }
 
     switch (GetRacialType(oPC))
@@ -177,10 +193,24 @@ void ApplyMount(object oPC, int nHorse = 0)
     int nAppearanceType = GetAppearanceType(oPC);
 
 // only play sound and visuals if not already mounted
-    if (!GetIsMounted(oPC))
+    if (!GetIsMounted(oPC) && GetIsPC(oPC))
     {
         PlaySound("c_horse_bat"+IntToString(d2()));
+
         ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_SUMMON_MONSTER_1), GetLocation(oPC));
+
+        // loop through and mount all henchman
+        object oHench = GetFirstFactionMember(oPC, FALSE);
+
+        while (GetIsObjectValid(oHench))
+        {
+            if (GetAssociateType(oHench) == ASSOCIATE_TYPE_HENCHMAN && GetMaster(oHench) == oPC && !GetIsMounted(oHench))
+            {
+                ApplyMount(oHench, HENCHMAN_MOUNT);
+            }
+
+            oHench = GetNextFactionMember(oPC, FALSE);
+        }
         //AssignCommand(oPC, PlaySound("c_horse_bat"+IntToString(d2())));
     }
 
@@ -209,7 +239,7 @@ void ApplyMount(object oPC, int nHorse = 0)
 
     SetFootstepType(FOOTSTEP_TYPE_DEFAULT, oPC);
 
-    SendMessageToPC(oPC, "Riding Applies: Skill Riding Check: "+IntToString(GetSkillRank(SKILL_RIDE, oPC) / 5)+" Spell Failure: "+IntToString(GetRidingSpellFailure(oPC))+"%");
+    //SendMessageToPC(oPC, "Riding Applies: Skill Riding Check: "+IntToString(GetSkillRank(SKILL_RIDE, oPC) / 5)+" Spell Failure: "+IntToString(GetRidingSpellFailure(oPC))+"%");
     DetermineHorseEffects(oPC);
 }
 
@@ -220,6 +250,24 @@ void ValidateMount(object oPC)
         RemoveMount(oPC);
         return;
     }
+}
+
+// if master is mounted, mount otherwise dismount
+// also refreshes penalties and stuff
+void DetermineHenchmanMount(object oHench);
+void DetermineHenchmanMount(object oHench)
+{
+    object oMaster = GetMaster(oHench);
+
+    if (GetIsObjectValid(oMaster) && GetIsMounted(oMaster))
+    {
+        ApplyMount(oHench, HENCHMAN_MOUNT);
+    }
+    else
+    {
+        RemoveMount(oHench);
+    }
+
 }
 
 //void main(){}
