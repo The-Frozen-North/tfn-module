@@ -20,6 +20,7 @@ void main()
         EquipMelee();
 
         ActionDoCommand(_gsCBTalentAttack(oAttacker, FALSE));
+        gsCBDetermineCombatRound(oAttacker);
         return;
 
         DelayCommand(7.0, DeleteLocalInt(OBJECT_SELF, "melee_attacked"));
