@@ -135,8 +135,8 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
 // Calculate favored bonus
    float fFavoredModifier = 1.0;
    int nRace = GetRacialType(oPC);
-   
-   
+
+
 
    if (GetLocalInt(oPC, "BASE_RACE_SET") == 1)
        nRace = GetLocalInt(oPC, "BASE_RACE");
@@ -262,10 +262,14 @@ void GiveQuestXPToPC(object oPC, int nTier, int nLevel, int bBluff = FALSE)
    int nAdjust = nLevel - nPCLevel;
    float fAdjust = IntToFloat(nAdjust) * QUEST_XP_LEVEL_ADJUSTMENT_MODIFIER;
 
+// being over level reduces XP more significantly, by double
+// i.e. if you are level 5 and complete a lvl 4 quest, you get 20% less XP
+   if (fAdjust < 0.0) fAdjust = fAdjust * 2.0;
+
    fMod = fMod + fAdjust;
 
-// capped at 25% xp
-   if (fMod < 0.25) fMod = 0.25;
+// capped at 20% xp
+   if (fMod < 0.2) fMod = 0.2;
 // capped at 150% xp
    if (fMod > 1.5) fMod = 1.5;
 
