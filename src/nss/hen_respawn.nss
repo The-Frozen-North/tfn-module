@@ -11,4 +11,7 @@ void main()
     TFNRespawnHenchman("hen_valen");
     TFNRespawnHenchman("hen_nathyrra");
     TFNRespawnHenchman("hen_bim");
+    TFNRespawnHenchman("hen_xanos");
+    TFNRespawnHenchman("hen_dorna");
+    TFNRespawnHenchman("hen_mischa");
 }

@@ -214,7 +214,7 @@ void main()
         DoRevive(oPC);
         DetermineHorseEffects(oPC);
         RefreshCompletedBounties(oPC, nTime, sBounties);
-        
+
         AddRestedXPHeartbeat(oPC);
 
         if (GetHasPermanentPetrification(oPC))
@@ -223,7 +223,7 @@ void main()
             string sDeathMessage;
             if (GetStoneToFleshSalveCharges(oPC) > 0)
             {
-                sDeathMessage = "The power of the Salve of Stone to Flesh will restore you if there is an ally nearby, there are no enemies, and you are out of combat, or you can respawn at your chosen temple for " + sPenalty + ". You will automatically respawn if you die while petrified.";                
+                sDeathMessage = "The power of the Salve of Stone to Flesh will restore you if there is an ally nearby, there are no enemies, and you are out of combat, or you can respawn at your chosen temple for " + sPenalty + ". You will automatically respawn if you die while petrified.";
             }
             else
             {
@@ -254,6 +254,9 @@ void main()
     DoRevive(GetObjectByTag("hen_valen"));
     DoRevive(GetObjectByTag("hen_nathyrra"));
     DoRevive(GetObjectByTag("hen_bim"));
+    DoRevive(GetObjectByTag("hen_xanos"));
+    DoRevive(GetObjectByTag("hen_dorna"));
+    DoRevive(GetObjectByTag("hen_mischa"));
 
     int nWeatherCount = GetLocalInt(oModule, "weather_count");
     int nWeatherDuration = GetLocalInt(oModule, "weather_duration");

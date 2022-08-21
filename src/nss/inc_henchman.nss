@@ -82,7 +82,7 @@ object GetHenchmanByIndex(object oPlayer, int nIndex=0)
             {
                 if (nIndex <= 0) { return oParty; }
                 nIndex--;
-            }                
+            }
             oParty = GetNextFactionMember(oPlayer, FALSE);
         }
     }
@@ -114,6 +114,9 @@ void RehireHenchman(object oPlayer)
     if (GetLocalString(oModule, "hen_valen_master") == sUUID) SetMaster(GetObjectByTag("hen_valen"), oPlayer);
     if (GetLocalString(oModule, "hen_nathyrra_master") == sUUID) SetMaster(GetObjectByTag("hen_nathyrra"), oPlayer);
     if (GetLocalString(oModule, "hen_bim_master") == sUUID) SetMaster(GetObjectByTag("hen_bim"), oPlayer);
+    if (GetLocalString(oModule, "hen_dorna_master") == sUUID) SetMaster(GetObjectByTag("hen_dorna"), oPlayer);
+    if (GetLocalString(oModule, "hen_mischa_master") == sUUID) SetMaster(GetObjectByTag("hen_mischa"), oPlayer);
+    if (GetLocalString(oModule, "hen_xanos_master") == sUUID) SetMaster(GetObjectByTag("hen_xanos"), oPlayer);
 }
 
 void DismissHenchman(object oHench)
@@ -182,6 +185,11 @@ void ScaleHenchman(object oHench)
             nClass = CLASS_TYPE_SHADOWDANCER;
             nPackage = 141;
         }
+        else if (sResRef == "hen_dorna")
+        {
+            nClass = CLASS_TYPE_ROGUE;
+            nPackage = 143;
+        }
         else
         {
             nClass = CLASS_TYPE_INVALID;
@@ -214,6 +222,7 @@ AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAbilityBonus(GetLocalInt(oH
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(2), GetItemInSlot(INVENTORY_SLOT_NECK, oHench));
 
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyEnhancementBonus(1), GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyEnhancementBonus(1), GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench));
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAttackBonus(1), GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench));
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(1), GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench));
 
@@ -232,6 +241,7 @@ AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAbilityBonus(GetLocalInt(oH
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(3), GetItemInSlot(INVENTORY_SLOT_NECK, oHench));
 
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyEnhancementBonus(2), GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyEnhancementBonus(2), GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench));
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAttackBonus(2), GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench));
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(2), GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench));
 
@@ -248,6 +258,7 @@ AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAbilityBonus(GetLocalInt(oH
             break;
             case 12:
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyEnhancementBonus(3), GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench));
+                AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyEnhancementBonus(3), GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench));
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyAttackBonus(3), GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench));
                 AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyACBonus(3), GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench));
 
@@ -309,7 +320,7 @@ void SetMaster(object oHench, object oPlayer)
 
     AddHenchman(oPlayer, oHench);
     ScaleHenchman(oHench);
-    
+
     NWNX_Creature_SetCorpseDecayTime(oHench, 37627000);
 
 // Ensure the henchman is always visible to the player
@@ -329,7 +340,7 @@ void TFNRespawnHenchman(string sResRef)
         object oHench = CreateObject(OBJECT_TYPE_CREATURE, sResRef, GetLocation(GetObjectByTag(sResRef + "_spawn_point")));
         ClearMaster(oHench, 0);
         NWNX_Creature_SetFaction(oHench, STANDARD_FACTION_MERCHANT);
-    }        
+    }
 }
 
 //void main(){}
