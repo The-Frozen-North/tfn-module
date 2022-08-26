@@ -22,7 +22,7 @@ void main()
         {
             if (nTrapPulses > 0 && GetObjectType(oTest) == OBJECT_TYPE_CREATURE && !bCompleted)
             {
-                int nDamage = d4() + Random(1 + min(10, nTrapPulses/4));
+                int nDamage = d4() + Random(1 + min(30, nTrapPulses/2)) + nTrapPulses/5;
                 int nChanceForConDrain = nTrapPulses;
                 if (Random(100) < nChanceForConDrain)
                 {
@@ -49,10 +49,23 @@ void main()
             if (bApplyDispel)
             {
                 effect eInvalid;
-                spellsDispelMagic(oTest, 40, eInvalid, eInvalid);
                 if (!GetHasEffect(EFFECT_TYPE_SPELL_FAILURE, oTest))
                 {
-                    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectSpellFailure(), oTest, 30.0);
+                    spellsDispelMagic(oTest, 40, eInvalid, eInvalid);
+                    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, TagEffect(EffectSpellFailure(), "obelisk_spellfail"), oTest, 9999.0);
+                }
+            }
+            else
+            {
+                effect eTest = GetFirstEffect(oTest);
+                while (GetIsEffectValid(eTest))
+                {
+                    if (GetEffectCreator(eTest) == OBJECT_SELF && GetEffectType(eTest) == EFFECT_TYPE_SPELL_FAILURE && GetEffectTag(eTest) == "obelisk_spellfail")
+                    {
+                        RemoveEffect(oTest, eTest);
+                        break;
+                    }
+                    eTest = GetNextEffect(oTest);
                 }
             }
         }

@@ -6,9 +6,9 @@ void main()
     if (!GetIsPC(oEntering)) { return; }
     if (GetQuestEntry(oEntering, "q_beholder_prot") == 1)
     {
-        AssignCommand(oEntering, SpeakString("Looking toward the light from above, you see the opening of a Beholder tunnel."));
-        AssignCommand(oEntering, DelayCommand(2.0, SpeakString("You wonder why a tunnel would end here, in front of an object draining so much magical power.")));
-        AssignCommand(oEntering, DelayCommand(4.0, SpeakString("It seems like there is no way up, but the obelisk may be worth investigating.")));
+        AssignCommand(oEntering, FloatingTextStringOnCreature("Looking toward the light from above, you see the opening of a Beholder tunnel.", oEntering, FALSE));
+        AssignCommand(oEntering, DelayCommand(2.0, FloatingTextStringOnCreature("You wonder why a tunnel would end here, in a place drained of magical power.", oEntering, FALSE)));
+        AssignCommand(oEntering, DelayCommand(4.0, FloatingTextStringOnCreature("It seems like there is no way up, but the cavern may be worth investigating...", oEntering, FALSE)));
         SetQuestEntry(oEntering, "q_beholder_prot", 2);
     }
 }

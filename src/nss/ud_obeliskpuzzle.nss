@@ -30,6 +30,12 @@ void main()
         return;
     }
     
+    if (!bAreaInit)
+    {
+        // Safety: if there's a player operating the puzzle, there must be a player in the area
+        SetLocalInt(oArea, "UDObeliskHasPlayers", 1);
+    }
+    
     int nMyX = GetLocalInt(OBJECT_SELF, "TileX");
     int nMyY = GetLocalInt(OBJECT_SELF, "TileY");
     // + shape, so self, (X-1, Y), (X+1, Y), (X, Y+1), (X, Y-1)
@@ -58,6 +64,7 @@ void main()
         int nVFX;
         if (i == 0)
         {
+            // Polymorph is a bit loud and makes it a bit too hard to see what you are doing
             //nVFX = VFX_IMP_POLYMORPH;
             nVFX = VFX_IMP_CONFUSION_S;
         }
@@ -86,6 +93,9 @@ void main()
             SpeakString("With the clatter of mechanisms, there is a hissing of gas. You hear the door to the room creak closed behind you.");
             object oDoor = GetObjectByTag("UDObeliskPuzzleEntrance");
             AssignCommand(oDoor, BeLocked());
+            // Make the mechanism say its line
+            object oMechanism = GetLocalObject(oArea, "UDObeliskLever");
+            AssignCommand(oMechanism, SpeakString("From the strange control, a voice clearly intones:\nOne stuck tile costs one golden pile,\nBut the risk increases all the while."));
         }
     }
     

@@ -43,7 +43,7 @@ void main()
     {
         return;
     }
-    int nDC = 19 - GetItemACValue(oTargetItem);
+    int nDC = 25 - GetItemACValue(oTargetItem);
     if (nDC > 0)
     {
         if (!GetIsSkillSuccessful(oTarget, SKILL_DISCIPLINE, nDC))
