@@ -276,7 +276,7 @@ void main()
 
 // no spellcasting while mounted and in combat
     NWNX_Events_SubscribeEvent("NWNX_ON_CAST_SPELL_BEFORE", "cast_ride_chk");
-    NWNX_Events_SubscribeEvent("NWNX_ON_BROADCAST_CAST_SPELL_BEFORE", "cast_ride_chk");
+    NWNX_Events_SubscribeEvent("NWNX_ON_BROADCAST_CAST_SPELL_BEFORE", "cast_ride_chkbc");
 
 // We must skip this if polymorphed or bartering.
     NWNX_Events_SubscribeEvent("NWNX_ON_SERVER_CHARACTER_SAVE_BEFORE", "on_pc_save");

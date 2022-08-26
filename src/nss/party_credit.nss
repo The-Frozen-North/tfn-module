@@ -182,9 +182,9 @@ void DetermineItem(object oItem, object oMerchant, object oHench, int nNth)
 {
    if (GetBaseItemType(oItem) == BASE_ITEM_POTIONS)
    {
-       SetDroppableFlag(oItem, FALSE);
-       SetPickpocketableFlag(oItem, FALSE);
        object oNewItem = CopyItem(oItem, oHench, TRUE);
+       SetDroppableFlag(oNewItem, FALSE);
+       SetPickpocketableFlag(oNewItem, FALSE);
        DestroyObject(oItem);
        AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oHench, oNewItem)));
    }
