@@ -15,6 +15,7 @@
 #include "inc_henchman"
 #include "inc_follower"
 #include "inc_horse"
+#include "nwnx_creature"
 
 void DoBanter()
 {
@@ -41,6 +42,38 @@ void main()
     else
     {
         oStoredMaster = GetMasterByStoredUUID(OBJECT_SELF);
+    }
+    
+    // That bebilith can unequip shields/armour
+    if (!GetIsInCombat(OBJECT_SELF))
+    {
+        object oShield = GetLocalObject(OBJECT_SELF, "hen_shield");
+        if (!GetIsObjectValid(oShield))
+        {
+            oShield = GetItemInSlot(INVENTORY_SLOT_LEFTHAND, OBJECT_SELF);
+            if (GetIsObjectValid(oShield))
+            {
+                SetLocalObject(OBJECT_SELF, "hen_shield", oShield);
+            }
+        }
+        else if (GetItemInSlot(INVENTORY_SLOT_LEFTHAND, OBJECT_SELF) != oShield)
+        {
+            NWNX_Creature_RunEquip(OBJECT_SELF, oShield, INVENTORY_SLOT_LEFTHAND);
+        }
+        object oArmour = GetLocalObject(OBJECT_SELF, "hen_armour");
+        if (!GetIsObjectValid(oArmour))
+        {
+            DeleteLocalObject(OBJECT_SELF, "hen_armour");
+            oArmour = GetItemInSlot(INVENTORY_SLOT_CHEST, OBJECT_SELF);
+            if (GetIsObjectValid(oArmour))
+            {
+                SetLocalObject(OBJECT_SELF, "hen_armour", oArmour);
+            }
+        }
+        else if (GetItemInSlot(INVENTORY_SLOT_CHEST, OBJECT_SELF) != oArmour)
+        {
+            NWNX_Creature_RunEquip(OBJECT_SELF, oArmour, INVENTORY_SLOT_CHEST);
+        }
     }
 
     if (GetIsObjectValid(oStoredMaster) && !GetIsInCombat(OBJECT_SELF) && GetIsDead(oStoredMaster))
@@ -82,12 +115,29 @@ void main()
             SummonAnimalCompanion();
         }
     }
+    
 
     string sScript = GetLocalString(OBJECT_SELF, "heartbeat_script");
     if (sScript != "") ExecuteScript(sScript);
 
     //1.72: this happens when the henchman is not hired and there is no pc in his area
     if (GetAILevel() == AI_LEVEL_VERY_LOW) return;
+    
+    // Have paladins try to remove diseases on nearby non-enemies
+    if (!GetIsInCombat() && GetIsObjectValid(oStoredMaster) && GetHasFeat(FEAT_REMOVE_DISEASE, OBJECT_SELF))
+    {
+        location lSelf = GetLocation(OBJECT_SELF);
+        object oTest = GetFirstObjectInShape(SHAPE_SPHERE, 10.0, lSelf);
+        while (GetIsObjectValid(oTest))
+        {
+            if (!GetIsDead(oTest) && !GetIsEnemy(oTest) && GetHasEffect(EFFECT_TYPE_DISEASE, oTest))
+            {
+                ActionUseFeat(FEAT_REMOVE_DISEASE, oTest);
+                return;
+            }
+            oTest = GetNextObjectInShape(SHAPE_SPHERE, 10.0, lSelf);
+        }
+    }
 
     if (GetIsObjectValid(GetMaster(OBJECT_SELF)) && GetStringLeft(GetResRef(OBJECT_SELF), 3) == "hen")
     {

@@ -580,6 +580,11 @@ void main()
 
        oArea = GetNextArea();
    }
+   // Add quests that don't have variables set on any creature here
+   // The above only scours the module for quests on creatures, some quests are purely scripted
+   // and without being put in the quests list they aren't loaded into PC journals on join
+   SetLocalString(OBJECT_SELF, "quests", AddListItem(GetLocalString(OBJECT_SELF, "quests"), "q_cockatrice_fbasilisk", TRUE));
+   SetLocalString(OBJECT_SELF, "quests", AddListItem(GetLocalString(OBJECT_SELF, "quests"), "q_cockatrice_fgorgon", TRUE));
 
    string sQuests = GetLocalString(OBJECT_SELF, "quests");
    string sBounties = GetLocalString(OBJECT_SELF, "bounties");

@@ -12,4 +12,6 @@ void main()
             SendRestedXPNotifierToPC(oLeaver);
         }
     }
+    string sScript = GetLocalString(OBJECT_SELF, "exit_script");
+    if (sScript != "") { ExecuteScript(sScript); }
 }

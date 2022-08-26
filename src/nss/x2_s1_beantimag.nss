@@ -23,9 +23,28 @@ Patch 1.72
 */
 
 #include "x0_i0_spells"
+#include "inc_quest"
 
 void DoRemoveEffects(object oTarget)
 {
+    int bHasQuestProtection = 0;
+    if (!GetIsPC(oTarget))
+    {
+        bHasQuestProtection = GetQuestEntry(GetMaster(oTarget), "q_beholder_prot");
+    }
+    else
+    {
+        bHasQuestProtection = GetQuestEntry(oTarget, "q_beholder_prot");
+        if (bHasQuestProtection == 3)
+        {
+            FloatingTextStringOnCreature("The obelisk's orb absorbs some of the beholder's power!", oTarget);
+            SetQuestEntry(oTarget, "q_beholder_prot", 4);
+        }
+    }
+    if (bHasQuestProtection < 3)
+    {
+        bHasQuestProtection = 0;
+    }
     effect eEff = GetFirstEffect(oTarget);
     while (GetIsEffectValid(eEff))
     {
@@ -35,8 +54,10 @@ void DoRemoveEffects(object oTarget)
                && GetEffectType(eEff) != EFFECT_TYPE_SPELL_FAILURE
                )
             {
-
-                RemoveEffect (oTarget, eEff);
+                if (!bHasQuestProtection || !MySavingThrow(SAVING_THROW_WILL, oTarget, 18))
+                {
+                    RemoveEffect (oTarget, eEff);
+                }
             }
         }
         eEff = GetNextEffect(oTarget);
