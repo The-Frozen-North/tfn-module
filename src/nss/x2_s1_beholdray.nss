@@ -104,7 +104,7 @@ void main()
             }
             else
             {
-                e1 = EffectDamage(d6(6));
+                e1 = EffectDamage(d6(8));
             }
             eVis = EffectVisualEffect(VFX_IMP_DEATH);
             eLink = EffectLinkEffects(e1,eVis);
@@ -119,16 +119,17 @@ void main()
           // Petrify for one round per SaveDC
           case 778:                      
           {
+            eVis = EffectVisualEffect(VFX_IMP_POLYMORPH);
             if (!bHasQuestProtection)
             {
-               eVis = EffectVisualEffect(VFX_IMP_POLYMORPH);
                ApplyEffectToObject(DURATION_TYPE_INSTANT,eVis,oTarget);
                DoPetrification(nSaveDC,OBJECT_SELF,oTarget,nSpell, 0, TRUE);
             }
             else
             {
-               eVis = EffectVisualEffect(VFX_IMP_POLYMORPH);
+               
                e1 = EffectPetrify();
+               ApplyEffectToObject(DURATION_TYPE_INSTANT,eVis,oTarget);
                ApplyEffectToObject(DURATION_TYPE_TEMPORARY,e1,oTarget, RoundsToSeconds(d4(2)));
             }
             break;
@@ -148,8 +149,6 @@ void main()
             }
             break;
           }    
-           
-                                   break;
           case 780:
           {
             e1 = EffectSlow();
