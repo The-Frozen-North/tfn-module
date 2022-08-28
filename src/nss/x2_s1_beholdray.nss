@@ -104,7 +104,9 @@ void main()
             }
             else
             {
-                e1 = EffectDamage(d6(8));
+                // 10 + 40-60% of the target's max health
+                int nDmg = 10 + ((40 + Random(21)) * GetMaxHitPoints(oTarget))/100;
+                e1 = EffectDamage(nDmg);
             }
             eVis = EffectVisualEffect(VFX_IMP_DEATH);
             eLink = EffectLinkEffects(e1,eVis);
