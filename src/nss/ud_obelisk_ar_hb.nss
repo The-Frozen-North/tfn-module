@@ -11,6 +11,7 @@ void main()
     int nTrapPulses = GetLocalInt(OBJECT_SELF, "UDObeliskTrapTriggered");
 	int bHasPlayer = 0;
     int bCompleted = GetLocalInt(OBJECT_SELF, "UDObeliskPuzzleComplete");
+    int nGridSize = GetLocalInt(OBJECT_SELF, "PUZZLE_GRID_SIZE");
 	while (GetIsObjectValid(oTest))
 	{
 		if (GetIsPC(oTest) || GetIsDM(oTest))
@@ -22,7 +23,15 @@ void main()
         {
             if (nTrapPulses > 0 && GetObjectType(oTest) == OBJECT_TYPE_CREATURE && !bCompleted)
             {
-                int nDamage = d4() + Random(1 + min(30, nTrapPulses/2)) + nTrapPulses/5;
+                int nDamage;
+                if (nGridSize == 5)
+                {
+                    nDamage = d4() + Random(1 + min(30, nTrapPulses/5)) + nTrapPulses/5;
+                }
+                else
+                {
+                    nDamage = d4() + Random(1 + min(30, nTrapPulses/8)) + nTrapPulses/8;
+                }
                 int nChanceForConDrain = nTrapPulses;
                 if (Random(100) < nChanceForConDrain)
                 {
