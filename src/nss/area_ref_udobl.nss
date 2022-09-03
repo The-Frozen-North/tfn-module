@@ -53,17 +53,20 @@ void main()
     
     // Recreate loot if it still exists
     object oLootWP = GetWaypointByTag("UDTileLootCentre");
-    for (i=1; i<=PUZZLE_MAX_FORCED; i++)
+    for (i=1; i<=4; i++)
     {
         object oLoot = GetLocalObject(OBJECT_SELF, "UDObeliskPuzzleLoot" + IntToString(i));
         if (GetIsObjectValid(oLoot))
         {
             DestroyObject(oLoot);
         }
+    }
+    for (i=1; i<=PUZZLE_MAX_FORCED; i++)
+    {
         vector vLoc = GetPosition(oLootWP);
         float fY = (IntToFloat(i) - (IntToFloat(1+PUZZLE_MAX_FORCED)/2.0))*PUZZLE_LOOT_SEPARATION;
         location lLoc = Location(OBJECT_SELF, vLoc + Vector(0.0, fY, 0.0), GetFacing(oLootWP) + 180.0);
-        oLoot = CreateObject(OBJECT_TYPE_PLACEABLE, "treas_treasure_h", lLoc);
+        object oLoot = CreateObject(OBJECT_TYPE_PLACEABLE, "treas_treasure_h", lLoc);
         SetLocalObject(OBJECT_SELF, "UDObeliskPuzzleLoot" + IntToString(i), oLoot);
         SetPlotFlag(oLoot, 1);
     }
@@ -83,9 +86,10 @@ void main()
     // Recreate puzzle tiles
     int x;
     int y;
-    for (x=0; x<PUZZLE_GRID_SIZE; x++)
+    
+    for (x=0; x<7; x++)
     {
-        for (y=0; y<PUZZLE_GRID_SIZE; y++)
+        for (y=0; y<7; y++)
         {
             string sVar = "UDTile" + IntToString(x) + "_" + IntToString(y);
             object oTile = GetLocalObject(OBJECT_SELF, sVar);
@@ -93,10 +97,19 @@ void main()
             {
                 DestroyObject(oTile);
             }
+        }
+    }
+    
+    
+    for (x=0; x<PUZZLE_GRID_SIZE; x++)
+    {
+        for (y=0; y<PUZZLE_GRID_SIZE; y++)
+        {
+            string sVar = "UDTile" + IntToString(x) + "_" + IntToString(y);
             float fX = (IntToFloat(x) - (IntToFloat(-1+PUZZLE_GRID_SIZE)/2.0))*PUZZLE_TILE_SEPARATION;
             float fY = (IntToFloat(y) - (IntToFloat(-1+PUZZLE_GRID_SIZE)/2.0))*PUZZLE_TILE_SEPARATION;
             location lTile = Location(OBJECT_SELF, vOrigin + Vector(fX, fY, 0.0), fFacing);
-            oTile = CreateObject(OBJECT_TYPE_PLACEABLE, "ud_puzzle_plate", lTile);
+            object oTile = CreateObject(OBJECT_TYPE_PLACEABLE, "ud_puzzle_plate", lTile);
             SetLocalObject(OBJECT_SELF, sVar, oTile);
             SetLocalInt(oTile, "TileX", x);
             SetLocalInt(oTile, "TileY", y);
