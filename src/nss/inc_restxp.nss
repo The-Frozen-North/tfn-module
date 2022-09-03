@@ -13,12 +13,12 @@ const float RESTEDXP_CAP_PER_LEVEL = 200.0;
 const int RESTEDXP_TIME_TO_FILL = 86400; // 24h
 
 // When not online, re  sted xp gain is multiplied by this
-const float RESTEDXP_OFFLINE_MULTIPLIER = 0.05;
+const float RESTEDXP_OFFLINE_MULTIPLIER = 0.075;
 
 // Proportional increase that rested xp adds
 // 0.0 = no bonus
 // 1.0 = double xp
-const float RESTEDXP_KILL_INCREASE = 0.7;
+const float RESTEDXP_KILL_INCREASE = 1.0;
 const float RESTEDXP_QUEST_INCREASE = 0.0;
 
 // How much rested XP to give from resting at home, per house tier.
@@ -168,8 +168,12 @@ void SendRestedXPNotifierToPC(object oPC)
     if (fRestedXP >= 0.01)
     {
         float fPercentage = GetRestedXPPercentage(oPC);
-        string sMes = "Rested XP: " + NeatFloatToString(fRestedXP, 2) + " (" + NeatFloatToString(100*fPercentage, 2) + "%)";
+        string sMes = "Rested XP: " + NeatFloatToString(fRestedXP, 2) + " (" + NeatFloatToString(100*fPercentage, 2) + "% of maximum)";
         FloatingTextStringOnCreature(sMes, oPC, FALSE);
+        if (PlayerGetsRestedXPInArea(oPC))
+        {
+            SendMessageToPC(oPC, "You are gaining resting experience in this area. You do no need to repeatedly rest to accumulate this.");
+        }
     }
 }
 
@@ -269,5 +273,5 @@ void GiveHouseRestingXP(object oPC)
 
 void SendOnEnterRestedPopup(object oPC)
 {
-    SendMessageToPC(oPC, "This area feels safe and comfortable enough that you are gaining Rested XP.");
+    SendMessageToPC(oPC, "This area feels safe and comfortable enough that you are gaining Rested XP. This will increase experience gained from kills until depleted.");
 }
