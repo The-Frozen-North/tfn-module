@@ -5,8 +5,8 @@
 #include "inc_debug"
 
 // The cap of rested XP for a PC is (this variable * amount of xp to reach next level, not counting PC's current progress)
-const float RESTEDXP_CAP_BASE = 1000.0;
-const float RESTEDXP_CAP_PER_LEVEL = 200.0;
+const float RESTEDXP_CAP_BASE = 700.0;
+const float RESTEDXP_CAP_PER_LEVEL = 130.0;
 
 // The amount of seconds of logged in time to gain 100% rested xp
 //const int RESTEDXP_TIME_TO_FILL = 129600; // 36h
@@ -23,7 +23,7 @@ const float RESTEDXP_QUEST_INCREASE = 0.0;
 
 // How much rested XP to give from resting at home, per house tier.
 // 0.01 = 1% of cap for poor, 2% for average, 3% for rich
-const float RESTEDXP_HOUSE_PER_HOUSE_QUALITY = 0.01;
+const float RESTEDXP_HOUSE_PER_HOUSE_QUALITY = 0.0125;
 
 // The time in seconds between successive at-home rests giving house xp
 const int RESTEDXP_HOUSE_REST_COOLDOWN = 21600; // 6h
@@ -147,8 +147,8 @@ float GetRestedXPPercentage(object oPC)
 
 void _AddRestedXPFlat(object oPC, float fAmountToAdd)
 {
-    float fRestXPCap = GetRestedXPCap(oPC);
     float fCurrent = GetRestedXP(oPC);
+    float fRestXPCap = fmax(fCurrent, GetRestedXPCap(oPC));
     float fFinal = fmin(fCurrent + fAmountToAdd, fRestXPCap);
     //SendDebugMessage("Add to rest xp: new = " + FloatToString(fFinal) + " cap = " + FloatToString(fRestXPCap));
     SQLocalsPlayer_SetFloat(oPC, RESTEDXP_PLAYER_VAR, fFinal);
@@ -170,10 +170,7 @@ void SendRestedXPNotifierToPC(object oPC)
         float fPercentage = GetRestedXPPercentage(oPC);
         string sMes = "Rested XP: " + NeatFloatToString(fRestedXP, 2) + " (" + NeatFloatToString(100*fPercentage, 2) + "% of maximum)";
         FloatingTextStringOnCreature(sMes, oPC, FALSE);
-        if (PlayerGetsRestedXPInArea(oPC))
-        {
-            SendMessageToPC(oPC, "You are gaining resting experience in this area. You do no need to repeatedly rest to accumulate this.");
-        }
+        
     }
 }
 
@@ -239,35 +236,50 @@ float GetRestModifiedExperience(float fBaseXP, object oPC, float fIncrease)
     return fBaseXP;
 }
 
-void GiveHouseRestingXP(object oPC)
+int IsEligibleForHouseRestingXP(object oPC)
 {
-    object oArea = GetArea(oPC);
-    if (!GetIsPlayerHomeless(oPC) && GetTag(oArea) == GetHomeTag(oPC))
+    if (!GetIsPlayerHomeless(oPC))
     {
         int nLastRest = SQLocalsPlayer_GetInt(oPC, "RestXP_LastHouseRest");
         int nNow = SQLite_GetTimeStamp();
         int nDelta = nNow - nLastRest;
         if (nDelta >= RESTEDXP_HOUSE_REST_COOLDOWN)
         {  
-            SQLocalsPlayer_SetInt(oPC, "RestXP_LastHouseRest", nNow);
-            int nHouseCost = GetCampaignInt(GetPCPublicCDKey(oPC), "house_cost");
-            int nMult = 0;
-            if (nHouseCost >= 40000)
-            {
-                nMult = 3;
-            }
-            else if (nHouseCost >= 15000)
-            {
-                nMult = 2;
-            }
-            else if (nHouseCost >= 6000)
-            {
-                nMult = 1;
-            }
-            float fRestedXPToAdd = IntToFloat(nMult) * RESTEDXP_HOUSE_PER_HOUSE_QUALITY * GetRestedXPCap(oPC);
-            _AddRestedXPFlat(oPC, fRestedXPToAdd);
-            FloatingTextStringOnCreature("Resting at home makes you feel refreshed.", oPC, FALSE);
+            return 1;
         }
+    }
+    return 0;
+}
+
+void GiveHouseRestingXP(object oPC)
+{
+    object oArea = GetArea(oPC);
+    if (IsEligibleForHouseRestingXP(oPC) && GetTag(oArea) == GetHomeTag(oPC))
+    {
+        int nNow = SQLite_GetTimeStamp();
+        SQLocalsPlayer_SetInt(oPC, "RestXP_LastHouseRest", nNow);
+        int nHouseCost = GetCampaignInt(GetPCPublicCDKey(oPC), "house_cost");
+        int nMult = 0;
+        if (nHouseCost >= 40000)
+        {
+            nMult = 3;
+        }
+        else if (nHouseCost >= 15000)
+        {
+            nMult = 2;
+        }
+        else if (nHouseCost >= 6000)
+        {
+            nMult = 1;
+        }
+        float fRestedXPToAdd = IntToFloat(nMult) * RESTEDXP_HOUSE_PER_HOUSE_QUALITY * GetRestedXPCap(oPC);
+        _AddRestedXPFlat(oPC, fRestedXPToAdd);
+        FloatingTextStringOnCreature("Resting at home makes you feel refreshed, giving you some Rested XP.", oPC, FALSE);
+        return;
+    }
+    else if (!GetIsPlayerHomeless(oPC) && GetTag(oArea) == GetHomeTag(oPC))
+    {
+        FloatingTextStringOnCreature("You aren't yet tired enough to get a fully refreshing sleep.", oPC, FALSE);
     }
 }
 

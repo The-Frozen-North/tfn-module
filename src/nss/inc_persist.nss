@@ -36,7 +36,13 @@ void SetTemporaryInt(string sName, int nValue, float fSeconds = 60.0)
     object oModule = GetModule();
     SetLocalInt(oModule, sName, 1);
     SendDebugMessage("Temporary int set: "+sName+" Value: "+IntToString(nValue)+" Expires in: "+FloatToString(fSeconds));
-    if (fSeconds > 0.0) DelayCommand(fSeconds, DeleteLocalInt(oModule, sName));
+    // Assign the clear command to the module
+    // If OBJECT_SELF (such as a henchman) is destroyed before this ticks down
+    // the var will not be unset until the server is restarted
+    if (fSeconds > 0.0) 
+    {
+        AssignCommand(oModule, DelayCommand(fSeconds, DeleteLocalInt(oModule, sName)));
+    }
 }
 int GetTemporaryInt(string sName)
 {

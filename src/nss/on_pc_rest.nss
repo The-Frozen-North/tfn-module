@@ -347,6 +347,21 @@ void main()
             AnnounceRemainingRevives(oPC);
             GiveHouseRestingXP(oPC);
             SendRestedXPNotifierToPC(oPC);
+            if (PlayerGetsRestedXPInArea(oPC))
+            {
+                if (!GetIsPlayerHomeless(oPC) && GetTag(oArea) == GetHomeTag(oPC))
+                {
+                    // GiveHouseRestingXP deals with messages in home
+                }
+                else
+                {
+                    SendMessageToPC(oPC, "You are gaining resting experience in this area. You do no need to repeatedly rest to accumulate this.");
+                }
+            }
+            if (IsEligibleForHouseRestingXP(oPC))
+            {
+                SendMessageToPC(oPC, "You feel like you would benefit from a rest in your own home...");
+            }
 
         case REST_EVENTTYPE_REST_CANCELLED:
             StopFade(oPC);
