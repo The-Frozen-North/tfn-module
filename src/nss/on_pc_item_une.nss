@@ -50,6 +50,9 @@ doing so, do this only if running original event has no longer sense.
 #include "x0_i0_spells"
 #include "70_inc_itemprop"
 #include "inc_horse"
+#include "nwnx_events"
+#include "nwnx_effect"
+#include "inc_debug"
 
 void main()
 {
@@ -73,6 +76,43 @@ void main()
         SetLocalInt(oPC,"UnPolymorph_HP_Setup",TRUE);
         SetLocalInt(oPC,"UnPolymorph_HP",GetCurrentHitPoints(oPC));
         DelayCommand(0.0,ExecuteScript("70_mod_polymorph",oPC));
+    }
+    
+    // If the item created some self buffs on the user, remove them.
+    int nIndex = 1;
+    int bRemovedNotify = 0;
+    while (1)
+    {
+        string sVar = "SelfCastEffectID" + IntToString(nIndex);
+        int nEffectID = GetLocalInt(oItem, sVar);
+        if (!nEffectID)
+        {
+            break;
+        }
+        string sEffectID = IntToString(nEffectID);
+        effect eTest = GetFirstEffect(oPC);
+        SendDebugMessage("Target effect ID: " + sEffectID);
+        while (GetIsEffectValid(eTest))
+        {
+            struct NWNX_EffectUnpacked eUnpacked = NWNX_Effect_UnpackEffect(eTest);
+            SendDebugMessage("This effect ID: " + eUnpacked.sID);
+            if (sEffectID == eUnpacked.sID)
+            {
+                SendDebugMessage("IDs matched, removed");
+                RemoveEffect(oPC, eTest);
+                if (!bRemovedNotify)
+                {
+                    bRemovedNotify = 1;
+                    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_DISPEL), oPC);
+                    FloatingTextStringOnCreature("As you unequip the " + GetName(oItem) + ", some effects it created were dispelled.", oPC, FALSE);
+                }
+                break;
+            }                
+            eTest = GetNextEffect(oPC);
+        }
+        DeleteLocalInt(oItem, sVar);
+        nIndex++;
+        
     }
 
 }

@@ -42,6 +42,7 @@
 #include "70_inc_spells"
 #include "x0_i0_match"
 #include "x2_inc_craft"
+#include "inc_debug"
 
 
 const int X2_EVENT_CONCENTRATION_BROKEN = 12400;
@@ -514,6 +515,34 @@ void _X2PreSpellCastCode()
    if(GetLocalInt(oItem,"MUSICAL_INSTRUMENT"))//variable indicating musical instrument
    {
        nContinue = MusicalInstrumentsCheck(oItem);
+   }
+   
+   int bIsBeingCastOffEquippedItem = 0;
+   // When casting off items that are equipped, remember what effecs were added
+   if (GetIsObjectValid(oItem) && oTarget == OBJECT_SELF)
+   {
+       int nSlot;
+       SendDebugMessage("Spell is being cast at self off item");
+       
+       for (nSlot = 0; nSlot < INVENTORY_SLOT_CWEAPON_L; nSlot++)
+       {
+           if (GetItemInSlot(nSlot, OBJECT_SELF) == oItem)
+           {
+               bIsBeingCastOffEquippedItem = 1;
+               break;
+           }
+       }
+       if (bIsBeingCastOffEquippedItem)
+       {
+           SetLocalObject(OBJECT_SELF, "SelfCastItem", oItem);
+           SetLocalInt(OBJECT_SELF, "SelfCastItemSpell", GetSpellId());
+       }
+   }   
+   if (!bIsBeingCastOffEquippedItem)
+   {
+       // clear vars
+       DeleteLocalObject(OBJECT_SELF, "SelfCastItem");
+       DeleteLocalInt(OBJECT_SELF, "SelfCastItemSpell");
    }
 
 

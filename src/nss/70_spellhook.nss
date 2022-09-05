@@ -26,6 +26,7 @@ Patch 1.72
 #include "70_inc_spellhook"
 #include "x2_inc_spellhook"
 #include "x0_i0_match"
+#include "inc_debug"
 
 //------------------------------------------------------------------------------
 // if X2_EXECUTE_SCRIPT_END is set by this script, the original spell will not be cast
@@ -266,7 +267,34 @@ void main()
    {
        nContinue = MusicalInstrumentsCheck(oItem);
    }
-
+   
+   int bIsBeingCastOffEquippedItem = 0;
+   // When casting off items that are equipped, remember what effecs were added
+   if (GetIsObjectValid(oItem) && oTarget == OBJECT_SELF)
+   {
+       int nSlot;
+       SendDebugMessage("Spell is being cast at self off item");
+       
+       for (nSlot = 0; nSlot < INVENTORY_SLOT_CWEAPON_L; nSlot++)
+       {
+           if (GetItemInSlot(nSlot, OBJECT_SELF) == oItem)
+           {
+               bIsBeingCastOffEquippedItem = 1;
+               break;
+           }
+       }
+       if (bIsBeingCastOffEquippedItem)
+       {
+           SetLocalObject(OBJECT_SELF, "SelfCastItem", oItem);
+           SetLocalInt(OBJECT_SELF, "SelfCastItemSpell", GetSpellId());
+       }
+   }   
+   if (!bIsBeingCastOffEquippedItem)
+   {
+       // clear vars
+       DeleteLocalObject(OBJECT_SELF, "SelfCastItem");
+       DeleteLocalInt(OBJECT_SELF, "SelfCastItemSpell");
+   }
 
    SetExecutedScriptReturnValue(!nContinue);
 }
