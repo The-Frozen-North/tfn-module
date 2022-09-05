@@ -269,6 +269,8 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_EXAMINE_OBJECT_BEFORE", "on_pc_examineb");
     NWNX_Events_SubscribeEvent("NWNX_ON_EXAMINE_OBJECT_AFTER", "on_pc_examinea");
+    
+    NWNX_Events_SubscribeEvent("NWNX_ON_EFFECT_APPLIED_AFTER", "on_effect_applya");
 
 // seems to happen a little too early, like 0.5 second too early?
     //NWNX_Events_SubscribeEvent("NWNX_ON_BROADCAST_CAST_SPELL_AFTER", "remove_invis");
