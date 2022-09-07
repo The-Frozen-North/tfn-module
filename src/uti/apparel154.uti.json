@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 12235
+    "value": 1351
   },
   "Cursed": {
     "type": "byte",
@@ -27,7 +27,9 @@
   "DescIdentified": {
     "id": 48935,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "The grand mage Batalista intended this item to aid in his travels in the Plane of Fire, and it is said he repeatedly summoned a salamander from that realm to aid in the construction. Salamanders not being known for their patience, it is likely he should not have pestered his \"instructor\" quite so much. The finger bearing the finished ring was indeed untouched by the inferno that claimed his tower. Had that finger still been attached, Batalista himself might have fared better. "
+    }
   },
   "Description": {
     "type": "cexolocstring",
@@ -42,11 +44,13 @@
   "LocalizedName": {
     "id": 48934,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Batalista's Passport"
+    }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 8
+    "value": 28
   },
   "PaletteID": {
     "type": "byte",
@@ -67,12 +71,12 @@
         },
         "CostTable": {
           "type": "byte",
+          "value": 7
+        },
+        "CostValue": {
+          "type": "word",
           "value": 2
         },
-        "CostValue": {
-          "type": "word",
-          "value": 1
-        },
         "Param1": {
           "type": "byte",
           "value": 255
@@ -83,104 +87,11 @@
         },
         "PropertyName": {
           "type": "word",
-          "value": 1
+          "value": 23
         },
         "Subtype": {
-          "type": "word",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 3
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 8
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 15
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 154
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 3
-        },
-        "CostValue": {
           "type": "word",
           "value": 10
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 15
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 162
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 2
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 1
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 40
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 0
         }
       }
     ]

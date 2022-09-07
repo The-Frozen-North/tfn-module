@@ -354,7 +354,7 @@ void CreateTypeLoot(string sType)
     for (nIndex = 1; nIndex < 300; nIndex++)
     {
        oItem = CreateObject(OBJECT_TYPE_ITEM, sType+IntToString(nIndex), lStaging);
-       oNewItem = CopyItem(oItem, oDistribution);
+       oNewItem = CopyItem(oItem, oDistribution, TRUE);
 
        if (GetIdentified(oItem)) SetLocalInt(oNewItem, "identified", 1);
 
@@ -492,6 +492,7 @@ void DistributeTreasureToStores(object oItem)
            if (FindSubString(sName, "+2") > -1 && sTier == "T3") sTier = "T4";
            if (FindSubString(sName, "+3") > -1 && sTier == "T4") sTier = "T5";
        }
+       
 
        if (GetStringLeft(sResRef, 4) == "misc") {sType = "Misc";}
        else if (nBaseType == BASE_ITEM_SPELLSCROLL) {sType = "Scrolls";}

@@ -102,7 +102,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 20590
+    "value": 18841
   },
   "Cursed": {
     "type": "byte",
@@ -275,11 +275,11 @@
         },
         "PropertyName": {
           "type": "word",
-          "value": 40
+          "value": 41
         },
         "Subtype": {
           "type": "word",
-          "value": 0
+          "value": 1
         }
       },
       {
@@ -330,5 +330,25 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "armor133"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "reduce_cost"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 3000
+        }
+      }
+    ]
   }
 }

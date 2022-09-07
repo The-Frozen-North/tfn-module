@@ -116,9 +116,25 @@ void InitializeItem(object oItem)
     {
         int nBaseArmorAC = GetBaseArmorAC(oItem);
     // Adjust the value of the item based on base AC. Every base AC = 10% more in value.
-        if (nBaseArmorAC > 0)
+        if ((nBaseArmorAC > 0 && nBaseArmorAC < 5) || nBaseArmorAC == 8)
+        {
             NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + FloatToInt( IntToFloat(GetGoldPieceValue(oItem)) * (IntToFloat(nBaseArmorAC) * 0.1) ) );
+        }
+        else if (nBaseArmorAC == 5)
+        {
+            NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + FloatToInt( IntToFloat(GetGoldPieceValue(oItem)) * (IntToFloat(2) * 0.1) ) );
+        }
+        else if (nBaseArmorAC == 6)
+        {
+            NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + FloatToInt( IntToFloat(GetGoldPieceValue(oItem)) * (IntToFloat(4) * 0.1) ) );
+        }
+        else if (nBaseArmorAC == 7)
+        {
+            NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + FloatToInt( IntToFloat(GetGoldPieceValue(oItem)) * (IntToFloat(6) * 0.1) ) );
+        }
     }
+    
+     NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) - GetLocalInt(oItem, "reduce_cost"));
 
     SetLocalInt(oItem, "initialized", 1);
 }

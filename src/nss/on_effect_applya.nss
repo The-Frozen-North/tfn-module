@@ -2,6 +2,58 @@
 #include "nwnx_effect"
 #include "inc_debug"
 
+// Unfortunately there's no guarantee that the effect ID you're trying to save is actually ON the creature it seems
+// at least, in the case of unique powers, it isn't, and a single DelayCommand pass is needed to pick it up
+// Further thinking makes me wonder if there's truly any need to actually check the effect exists before saving its ID
+
+void TryToSaveEffectID(object oItem, int nEventEffectID, int nRetries=5)
+{
+    string sEffectID = IntToString(nEventEffectID);
+    effect eTest = GetFirstEffect(OBJECT_SELF);
+    SendDebugMessage("Target effect ID: " + sEffectID);
+    
+    int nItemEffectListPos = 1;
+    while (1)
+    {
+        if (!GetLocalInt(oItem, "SelfCastEffectID" + IntToString(nItemEffectListPos)))
+        {
+            break;
+        }
+        nItemEffectListPos++;
+    }
+    SendDebugMessage("Saved effect ID at index: " + IntToString(nItemEffectListPos));
+    SetLocalInt(oItem, "SelfCastEffectID" + IntToString(nItemEffectListPos), nEventEffectID);
+    return;
+    
+    /*while (GetIsEffectValid(eTest))
+    {
+        struct NWNX_EffectUnpacked eUnpacked = NWNX_Effect_UnpackEffect(eTest);
+        SendDebugMessage("This effect ID: " + eUnpacked.sID);
+        if (sEffectID == eUnpacked.sID)
+        {
+            int nItemEffectListPos = 1;
+            while (1)
+            {
+                if (!GetLocalInt(oItem, "SelfCastEffectID" + IntToString(nItemEffectListPos)))
+                {
+                    break;
+                }
+                nItemEffectListPos++;
+            }
+            SendDebugMessage("Saved effect ID at index: " + IntToString(nItemEffectListPos));
+            SetLocalInt(oItem, "SelfCastEffectID" + IntToString(nItemEffectListPos), nEventEffectID);
+            return;
+        }
+        eTest = GetNextEffect(OBJECT_SELF);
+    }
+    nRetries--;
+    if (nRetries > 0)
+    {
+        DelayCommand(0.0, TryToSaveEffectID(oItem, nEventEffectID, nRetries));
+    }
+    */
+}
+
 void main()
 {
     if (GetLocalInt(OBJECT_SELF, "SelfCastItemSpell"))
@@ -9,7 +61,12 @@ void main()
         int nItemSpell = GetLocalInt(OBJECT_SELF, "SelfCastItemSpell");
         object oItem = GetLocalObject(OBJECT_SELF, "SelfCastItem");
         object oCreator = StringToObject(NWNX_Events_GetEventData("CREATOR"));
-        if (nItemSpell == StringToInt(NWNX_Events_GetEventData("SPELL_ID")))
+        SendDebugMessage("SelfCastItemSpell is set: ItemSpell = " + IntToString(nItemSpell) + ", item = " + GetName(oItem) + ", creator = " + GetName(oCreator));
+        SendDebugMessage("Event spell ID = " + NWNX_Events_GetEventData("SPELL_ID"));
+        
+        // Unique power doesn't get the usual NWNX spell ID
+        if (nItemSpell == StringToInt(NWNX_Events_GetEventData("SPELL_ID")) 
+            || (nItemSpell == 413 && NWNX_Events_GetEventData("SPELL_ID") == "4294967295"))
         {
             if (GetItemPossessor(oItem) == OBJECT_SELF && oCreator == OBJECT_SELF)
             {
@@ -69,29 +126,8 @@ void main()
                 SendDebugMessage("Saving new effect id");
                 string sEffectID = NWNX_Events_GetEventData("UNIQUE_ID");
                 int nEffectID = StringToInt(sEffectID);
-                effect eTest = GetFirstEffect(OBJECT_SELF);
-                SendDebugMessage("Target effect ID: " + sEffectID);
-                while (GetIsEffectValid(eTest))
-                {
-                    struct NWNX_EffectUnpacked eUnpacked = NWNX_Effect_UnpackEffect(eTest);
-                    SendDebugMessage("This effect ID: " + eUnpacked.sID);
-                    if (sEffectID == eUnpacked.sID)
-                    {
-                        int nItemEffectListPos = 1;
-                        while (1)
-                        {
-                            if (!GetLocalInt(oItem, "SelfCastEffectID" + IntToString(nItemEffectListPos)))
-                            {
-                                break;
-                            }
-                            nItemEffectListPos++;
-                        }
-                        SendDebugMessage("Saved effect ID at index: " + IntToString(nItemEffectListPos));
-                        SetLocalInt(oItem, "SelfCastEffectID" + IntToString(nItemEffectListPos), nEffectID);
-                        break;
-                    }                
-                    eTest = GetNextEffect(OBJECT_SELF);
-                }
+                TryToSaveEffectID(oItem, nEffectID); 
+                
             }
         }
     }

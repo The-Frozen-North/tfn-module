@@ -166,6 +166,8 @@ void main()
             WriteTimestampedLogEntry("===============================");
             WriteTimestampedLogEntry("WARNING: Not seeding spellbooks!");
             WriteTimestampedLogEntry("===============================");
+            // this normally shutsdown the server when done
+            NWNX_Administration_ShutdownServer();
        }
 
 
@@ -295,6 +297,9 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_GIVE_ITEM_BEFORE", "dm_chk_dev");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SET_VARIABLE_BEFORE", "dm_chk_dev");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_GIVE_LEVEL_BEFORE", "dm_chk_dev");
+    
+    NWNX_Events_SubscribeEvent("NWNX_ON_DEBUG_RUN_SCRIPT_BEFORE", "dm_chk_dev");
+    NWNX_Events_SubscribeEvent("NWNX_ON_DEBUG_RUN_SCRIPT_CHUNK_BEFORE", "dm_chk_dev");
 
 // Following DM events can be done by DMs, but there is a limit unless developer
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_GIVE_GOLD_BEFORE", "dm_chk_limit");
