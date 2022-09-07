@@ -178,13 +178,13 @@
                   },
                   {
                     "__struct_id": 0,
-                    "NAME": {
-                      "type": "cexostring",
-                      "value": "Dorna's Armor"
-                    },
                     "RESREF": {
                       "type": "resref",
                       "value": "hen_dorna_arm"
+                    },
+                    "STRREF": {
+                      "type": "dword",
+                      "value": 75203
                     }
                   },
                   {
@@ -1820,17 +1820,6 @@
                   },
                   {
                     "__struct_id": 0,
-                    "RESREF": {
-                      "type": "resref",
-                      "value": "x0_hen_dorna_ar1"
-                    },
-                    "STRREF": {
-                      "type": "dword",
-                      "value": 75203
-                    }
-                  },
-                  {
-                    "__struct_id": 0,
                     "NAME": {
                       "type": "cexostring",
                       "value": "Human Flesh"
@@ -2195,17 +2184,6 @@
                     "RESREF": {
                       "type": "resref",
                       "value": "armor124"
-                    }
-                  },
-                  {
-                    "__struct_id": 0,
-                    "RESREF": {
-                      "type": "resref",
-                      "value": "x0_npc_xan_clo"
-                    },
-                    "STRREF": {
-                      "type": "dword",
-                      "value": 75208
                     }
                   }
                 ]
@@ -7982,6 +7960,137 @@
                     "__struct_id": 0,
                     "ID": {
                       "type": "byte",
+                      "value": 31
+                    },
+                    "LIST": {
+                      "type": "list",
+                      "value": [
+                        {
+                          "__struct_id": 0,
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "weapon184"
+                          },
+                          "STRREF": {
+                            "type": "dword",
+                            "value": 13901
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "NAME": {
+                            "type": "cexostring",
+                            "value": "Axe of Kruntur"
+                          },
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "weapon263"
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "NAME": {
+                            "type": "cexostring",
+                            "value": "Battleaxe of Mauletar"
+                          },
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "weapon264"
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "weapon185"
+                          },
+                          "STRREF": {
+                            "type": "dword",
+                            "value": 13905
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "weapon186"
+                          },
+                          "STRREF": {
+                            "type": "dword",
+                            "value": 13907
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "NAME": {
+                            "type": "cexostring",
+                            "value": "Wizard Slayer"
+                          },
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "weapon265"
+                          }
+                        }
+                      ]
+                    },
+                    "STRREF": {
+                      "type": "dword",
+                      "value": 169
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "ID": {
+                      "type": "byte",
+                      "value": 30
+                    },
+                    "LIST": {
+                      "type": "list",
+                      "value": [
+                        {
+                          "__struct_id": 0,
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "weapon47"
+                          },
+                          "STRREF": {
+                            "type": "dword",
+                            "value": 91217
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "weapon183"
+                          },
+                          "STRREF": {
+                            "type": "dword",
+                            "value": 91219
+                          }
+                        },
+                        {
+                          "__struct_id": 0,
+                          "RESREF": {
+                            "type": "resref",
+                            "value": "weapon181"
+                          },
+                          "STRREF": {
+                            "type": "dword",
+                            "value": 91221
+                          }
+                        }
+                      ]
+                    },
+                    "STRREF": {
+                      "type": "dword",
+                      "value": 83310
+                    }
+                  },
+                  {
+                    "__struct_id": 0,
+                    "ID": {
+                      "type": "byte",
                       "value": 32
                     },
                     "LIST": {
@@ -8079,29 +8188,18 @@
                     },
                     "STRREF": {
                       "type": "dword",
-                      "value": 6762
+                      "value": 515
                     }
                   },
                   {
                     "__struct_id": 0,
                     "ID": {
                       "type": "byte",
-                      "value": 30
+                      "value": 65
                     },
                     "LIST": {
                       "type": "list",
                       "value": [
-                        {
-                          "__struct_id": 0,
-                          "RESREF": {
-                            "type": "resref",
-                            "value": "weapon47"
-                          },
-                          "STRREF": {
-                            "type": "dword",
-                            "value": 91217
-                          }
-                        },
                         {
                           "__struct_id": 0,
                           "NAME": {
@@ -8126,17 +8224,6 @@
                         },
                         {
                           "__struct_id": 0,
-                          "RESREF": {
-                            "type": "resref",
-                            "value": "weapon183"
-                          },
-                          "STRREF": {
-                            "type": "dword",
-                            "value": 91219
-                          }
-                        },
-                        {
-                          "__struct_id": 0,
                           "NAME": {
                             "type": "cexostring",
                             "value": "Hojar's Fame"
@@ -8156,105 +8243,12 @@
                             "type": "resref",
                             "value": "weapon182"
                           }
-                        },
-                        {
-                          "__struct_id": 0,
-                          "RESREF": {
-                            "type": "resref",
-                            "value": "weapon181"
-                          },
-                          "STRREF": {
-                            "type": "dword",
-                            "value": 91221
-                          }
                         }
                       ]
                     },
                     "STRREF": {
                       "type": "dword",
-                      "value": 6760
-                    }
-                  },
-                  {
-                    "__struct_id": 0,
-                    "ID": {
-                      "type": "byte",
-                      "value": 31
-                    },
-                    "LIST": {
-                      "type": "list",
-                      "value": [
-                        {
-                          "__struct_id": 0,
-                          "RESREF": {
-                            "type": "resref",
-                            "value": "weapon184"
-                          },
-                          "STRREF": {
-                            "type": "dword",
-                            "value": 13901
-                          }
-                        },
-                        {
-                          "__struct_id": 0,
-                          "NAME": {
-                            "type": "cexostring",
-                            "value": "Axe of Kruntur"
-                          },
-                          "RESREF": {
-                            "type": "resref",
-                            "value": "weapon263"
-                          }
-                        },
-                        {
-                          "__struct_id": 0,
-                          "NAME": {
-                            "type": "cexostring",
-                            "value": "Battleaxe of Mauletar"
-                          },
-                          "RESREF": {
-                            "type": "resref",
-                            "value": "weapon264"
-                          }
-                        },
-                        {
-                          "__struct_id": 0,
-                          "RESREF": {
-                            "type": "resref",
-                            "value": "weapon185"
-                          },
-                          "STRREF": {
-                            "type": "dword",
-                            "value": 13905
-                          }
-                        },
-                        {
-                          "__struct_id": 0,
-                          "RESREF": {
-                            "type": "resref",
-                            "value": "weapon186"
-                          },
-                          "STRREF": {
-                            "type": "dword",
-                            "value": 13907
-                          }
-                        },
-                        {
-                          "__struct_id": 0,
-                          "NAME": {
-                            "type": "cexostring",
-                            "value": "Wizard Slayer"
-                          },
-                          "RESREF": {
-                            "type": "resref",
-                            "value": "weapon265"
-                          }
-                        }
-                      ]
-                    },
-                    "STRREF": {
-                      "type": "dword",
-                      "value": 6761
+                      "value": 1532
                     }
                   }
                 ]
