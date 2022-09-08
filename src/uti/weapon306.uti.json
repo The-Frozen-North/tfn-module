@@ -6,7 +6,7 @@
   },
   "BaseItem": {
     "type": "int",
-    "value": 38
+    "value": 22
   },
   "Charges": {
     "type": "byte",
@@ -18,17 +18,17 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 4374
+    "value": 16918
   },
   "Cursed": {
     "type": "byte",
     "value": 0
   },
   "DescIdentified": {
-    "id": 91113,
+    "id": 14306,
     "type": "cexolocstring",
     "value": {
-      "0": "This axe has been magically enchanted to smother its target in flames with each strike. The enchantment was poor, however, and the effect does not always appear."
+      "0": "Rumored to have been dropped from the Heavens by a careless lesser deity, this dagger is a favorite among thieves and assassins as it will sometimes magically hide its user from the victim's sight."
     }
   },
   "Description": {
@@ -42,27 +42,27 @@
     "value": 0
   },
   "LocalizedName": {
-    "id": 91112,
+    "id": 14307,
     "type": "cexolocstring",
     "value": {
-      "0": "Hojar's Fame"
+      "0": "Dagger of the Star"
     }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 13
+    "value": 41
   },
   "ModelPart2": {
     "type": "byte",
-    "value": 33
+    "value": 61
   },
   "ModelPart3": {
     "type": "byte",
-    "value": 34
+    "value": 51
   },
   "PaletteID": {
     "type": "byte",
-    "value": 65
+    "value": 34
   },
   "Plot": {
     "type": "byte",
@@ -79,11 +79,73 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 2
+          "value": 4
         },
         "CostValue": {
           "type": "word",
           "value": 1
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 16
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 9
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 4
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 1
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 16
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 10
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 2
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 2
         },
         "Param1": {
           "type": "byte",
@@ -145,10 +207,10 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "hojars_fame"
+    "value": "dagger_stars"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "weapon278"
+    "value": "weapon306"
   }
 }
