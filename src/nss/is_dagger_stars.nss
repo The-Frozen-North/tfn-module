@@ -1,5 +1,6 @@
 // Dagger of stars
-// 10% chance to turn attacker invisible for 1 round
+// 10% chance to turn attacker invisible for 2 rounds
+// (1 round is not enough to make any sneak attacks sometimes and the AI might ignore it)
 void main()
 {
     object oTarget = GetSpellTargetObject();
@@ -12,7 +13,7 @@ void main()
                 DURATION_TYPE_TEMPORARY,
                 eInvis,
                 OBJECT_SELF,
-                RoundsToSeconds(1)
+                RoundsToSeconds(2)
             );
         }
     }
