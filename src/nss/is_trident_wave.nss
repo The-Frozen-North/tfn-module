@@ -1,5 +1,5 @@
-// Hojar's Fame Handaxe
-// 25% chance for 1d8 fire damage
+// Wave (trident)
+// 15% chance for 3d8 cold damage
 void main()
 {
     object oTarget = GetSpellTargetObject();
