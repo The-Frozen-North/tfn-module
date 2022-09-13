@@ -2,7 +2,8 @@
 
 // Club of Detonation
 // 20% chance for 1d8 fire damage
-// 5% chance for 2d8 AOE fireball (hurts everyone, allow reflex save DC 14, no SR)
+// 5% chance for 2d8 AOE fireball
+// (hurts everyone, allows reflex save to all but original target)
 void main()
 {
     object oTarget = GetSpellTargetObject();
@@ -38,8 +39,13 @@ void main()
                 //Don't hit dead things
                 if (!GetIsDead(oVictim))
                 {
-                    //Adjust the damage based on the Reflex Save, Evasion and Improved Evasion.
-                    nDam = GetSavingThrowAdjustedDamage(d8(2), oVictim, nDC, SAVING_THROW_REFLEX, SAVING_THROW_TYPE_FIRE);
+                    //Roll damage
+                    nDam = d8(2);
+                    if (oVictim != oTarget)
+                    {
+                        //Adjust the damage based on the Reflex Save, Evasion and Improved Evasion.
+                        nDam = GetSavingThrowAdjustedDamage(nDam, oVictim, nDC, SAVING_THROW_REFLEX, SAVING_THROW_TYPE_FIRE);
+                    }
 
                     if (nDam > 0)
                     {
