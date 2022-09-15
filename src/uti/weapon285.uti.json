@@ -6,7 +6,7 @@
   },
   "BaseItem": {
     "type": "int",
-    "value": 31
+    "value": 63
   },
   "Charges": {
     "type": "byte",
@@ -18,17 +18,17 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 16000
+    "value": 5600
   },
   "Cursed": {
     "type": "byte",
     "value": 0
   },
   "DescIdentified": {
-    "id": 14420,
+    "id": 14414,
     "type": "cexolocstring",
     "value": {
-      "0": "This dart gleams like a streak of light when flying through the air. When it hits its target, it releases a tiny acid droplet before soaring back to the hand that threw it. Sometimes the acid manages to burn a hole in the target's armor. "
+      "0": "The only thing dwarven warriors love more than a cool pint of ale is a short-hafted blade of cold steel. Perfect for penetrating the thick skulls of orcs, these axes serve their purpose well."
     }
   },
   "Description": {
@@ -42,19 +42,27 @@
     "value": 0
   },
   "LocalizedName": {
-    "id": 14419,
+    "id": 14415,
     "type": "cexolocstring",
     "value": {
-      "0": "Biter"
+      "0": "Beruel's Retort"
     }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 21
+    "value": 12
+  },
+  "ModelPart2": {
+    "type": "byte",
+    "value": 33
+  },
+  "ModelPart3": {
+    "type": "byte",
+    "value": 12
   },
   "PaletteID": {
     "type": "byte",
-    "value": 52
+    "value": 80
   },
   "Plot": {
     "type": "byte",
@@ -71,11 +79,11 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 2
+          "value": 10
         },
         "CostValue": {
           "type": "word",
-          "value": 2
+          "value": 1
         },
         "Param1": {
           "type": "byte",
@@ -87,7 +95,7 @@
         },
         "PropertyName": {
           "type": "word",
-          "value": 56
+          "value": 11
         },
         "Subtype": {
           "type": "word",
@@ -137,6 +145,37 @@
         },
         "CostValue": {
           "type": "word",
+          "value": 7
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 0
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 2
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 18
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 14
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 2
+        },
+        "CostValue": {
+          "type": "word",
           "value": 1
         },
         "Param1": {
@@ -148,74 +187,12 @@
           "value": 0
         },
         "PropertyName": {
-          "type": "word",
-          "value": 16
-        },
-        "Subtype": {
           "type": "word",
           "value": 6
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 4
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 1
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 16
         },
         "Subtype": {
           "type": "word",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 26
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 4
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
           "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 82
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 125
         }
       }
     ]
@@ -230,10 +207,10 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "w_biter"
+    "value": "weapon285"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "weapon311"
+    "value": "weapon285"
   }
 }

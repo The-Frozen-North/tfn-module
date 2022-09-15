@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 16000
+    "value": 3400
   },
   "Cursed": {
     "type": "byte",
@@ -28,7 +28,7 @@
     "id": 14420,
     "type": "cexolocstring",
     "value": {
-      "0": "This dart gleams like a streak of light when flying through the air. When it hits its target, it releases a tiny acid droplet before soaring back to the hand that threw it. Sometimes the acid manages to burn a hole in the target's armor. "
+      "0": "Fullen Woolspinner, an ambitious halfling from a well to do family, left his home to spend several years adventuring. During his travels he ended up staying with a family of dwarven weaponsmiths. Much impressed by their throwing axes, which always returned to the hands of their wielder, Fullen sought to make a dart that could do the same. With the help of his dwarven friends he succeeded, creating several of the famous Fullen Boomerang Darts."
     }
   },
   "Description": {
@@ -45,12 +45,12 @@
     "id": 14419,
     "type": "cexolocstring",
     "value": {
-      "0": "Biter"
+      "0": "Boomerang Dart"
     }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 21
+    "value": 12
   },
   "PaletteID": {
     "type": "byte",
@@ -63,37 +63,6 @@
   "PropertiesList": {
     "type": "list",
     "value": [
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 2
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 2
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 56
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 0
-        }
-      },
       {
         "__struct_id": 0,
         "ChanceAppear": {
@@ -133,7 +102,7 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 4
+          "value": 2
         },
         "CostValue": {
           "type": "word",
@@ -148,74 +117,12 @@
           "value": 0
         },
         "PropertyName": {
-          "type": "word",
-          "value": 16
-        },
-        "Subtype": {
           "type": "word",
           "value": 6
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 4
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 1
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 16
         },
         "Subtype": {
           "type": "word",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 26
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 4
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
           "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 82
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 125
         }
       }
     ]
@@ -230,10 +137,10 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "w_biter"
+    "value": "weapon392"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "weapon311"
+    "value": "weapon392"
   }
 }
