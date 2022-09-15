@@ -17,6 +17,8 @@ const string TREASURE_DISTRIBUTION = "_TreasureDistribution";
 
 const float TREASURE_CREATION_DELAY = 0.0;
 
+const int ITEM_PROPERTY_BOOMERANG = 14;
+
 // =======================================================
 // DETERMINE ENCHANT VALUE
 // =======================================================
