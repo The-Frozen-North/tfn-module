@@ -566,16 +566,16 @@ void RandomiseHairColour(object oCreature=OBJECT_SELF)
         }
         else
         {
-            // Omit 12/13 for darker skin
             nHair = Random(10);
-            if (nHair == 12 && nHair == 13)
-            {
-                nHair += 2;
-            }
             // Don't end up in the red range
             if (nHair >= 4 && nHair <= 7)
             {
                 nHair += 4;
+            }
+            // Omit 12/13 for darker skin
+            if (nHair == 12 || nHair == 13)
+            {
+                nHair += 2;
             }
         }
     }

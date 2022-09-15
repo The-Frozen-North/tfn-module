@@ -351,10 +351,10 @@ void CreateTypeLoot(string sType)
     object oDistribution = GetObjectByTag(TREASURE_DISTRIBUTION);
     location lStaging = GetTreasureStagingLocation();
 
-    for (nIndex = 1; nIndex < 300; nIndex++)
+    for (nIndex = 1; nIndex < 500; nIndex++)
     {
        oItem = CreateObject(OBJECT_TYPE_ITEM, sType+IntToString(nIndex), lStaging);
-       oNewItem = CopyItem(oItem, oDistribution);
+       oNewItem = CopyItem(oItem, oDistribution, TRUE);
 
        if (GetIdentified(oItem)) SetLocalInt(oNewItem, "identified", 1);
 
@@ -492,6 +492,7 @@ void DistributeTreasureToStores(object oItem)
            if (FindSubString(sName, "+2") > -1 && sTier == "T3") sTier = "T4";
            if (FindSubString(sName, "+3") > -1 && sTier == "T4") sTier = "T5";
        }
+       
 
        if (GetStringLeft(sResRef, 4) == "misc") {sType = "Misc";}
        else if (nBaseType == BASE_ITEM_SPELLSCROLL) {sType = "Scrolls";}
@@ -622,9 +623,12 @@ void DistributeTreasureToStores(object oItem)
         // Turn these into ammo makers.
         if (GetIsItemPropertyValid(GetFirstItemProperty(oItem)) && (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT))
         {
-            CreateFabricator(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));
-            SetTag(oItem, "crafted_ammo");
-            SetPlotFlag(oItem, TRUE);
+            if (!GetItemHasItemProperty(oItem, ITEM_PROPERTY_BOOMERANG))
+            {
+                CreateFabricator(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));
+                SetTag(oItem, "crafted_ammo");
+                SetPlotFlag(oItem, TRUE);
+            }
         }
 
         oNewItem = CopyItemToExistingTarget(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));

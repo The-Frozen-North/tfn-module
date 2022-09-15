@@ -8,11 +8,11 @@ void DealWithFerdDeath(object oPC)
     {
         if (GetQuestEntry(oPC, "q_cockatrice_fbasilisk") <= 1)
         {
-            GiveQuestXPToPC(OBJECT_SELF, 2, 8, 0);
+            GiveQuestXPToPC(oPC, 2, 8, 0);
         }
         if (GetQuestEntry(oPC, "q_cockatrice_fgorgon") <= 1)
         {
-            GiveQuestXPToPC(OBJECT_SELF, 2, 8, 0);
+            GiveQuestXPToPC(oPC, 2, 8, 0);
         }
         FloatingTextStringOnCreature("With Ferdinand dead, you take some feathers from the cockatrice.", oPC, FALSE);
         SetQuestEntry(oPC, "q_cockatrice_fbasilisk", 4);

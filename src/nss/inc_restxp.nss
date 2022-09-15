@@ -285,5 +285,5 @@ void GiveHouseRestingXP(object oPC)
 
 void SendOnEnterRestedPopup(object oPC)
 {
-    SendMessageToPC(oPC, "This area feels safe and comfortable enough that you are gaining Rested XP. This will increase experience gained from kills until depleted.");
+    SendMessageToPC(oPC, "This area feels safe and comfortable enough that you are gaining Rested XP. This will increase experience gained from kills until depleted. Logging out here will continue to add Rested XP at a lower rate.");
 }

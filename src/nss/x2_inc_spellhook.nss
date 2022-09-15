@@ -528,6 +528,7 @@ void _X2PreSpellCastCode()
        {
            if (GetItemInSlot(nSlot, OBJECT_SELF) == oItem)
            {
+               SendDebugMessage("Item casting spell is also equipped");
                bIsBeingCastOffEquippedItem = 1;
                break;
            }
