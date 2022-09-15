@@ -47,14 +47,28 @@ doing so, do this only if running original event has no longer sense.
 //:: Created On: 31-05-2017
 //:://////////////////////////////////////////////
 
+#include "nwnx_feedback"
 #include "x0_i0_spells"
 #include "70_inc_itemprop"
 #include "inc_horse"
+#include "inc_treasure"
 
 void main()
 {
     object oItem = GetPCItemLastEquipped();
     object oPC   = GetPCItemLastEquippedBy();
+
+    // Boomerang weapons should suppress "you are running out of ammo" messages
+    object oRightHand = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oPC);
+    if (GetItemHasItemProperty(oRightHand, ITEM_PROPERTY_BOOMERANG))
+    {
+        // NWNX_FEEDBACK_COMBAT_RUNNING_OUT_OF_AMMO = 24
+        NWNX_Feedback_SetFeedbackMessageHidden(24, 1, oPC);
+    }
+    else
+    {
+        NWNX_Feedback_SetFeedbackMessageHidden(24, 0, oPC);
+    }
 
     DetermineHorseEffects(oPC);
 

@@ -5,6 +5,7 @@
 #include "nwnx_visibility"
 #include "util_i_math"
 #include "nw_i0_plot" 
+#include "inc_treasure"
 
 // ===========================================================
 // START CONSTANTS
@@ -396,6 +397,12 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 // Set a stack size. Don't go above 50, due to certain stack sizes.
     int nBaseType = GetBaseItemType(oNewItem);
     if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT) SetItemStackSize(oNewItem, Random(45)+1);
+    
+    // Boomerang items should always generate as stack size 1
+    if (GetItemHasItemProperty(oNewItem, ITEM_PROPERTY_BOOMERANG))
+    {
+        SetItemStackSize(oNewItem, 1);
+    }
 
     return oNewItem;
 }
