@@ -618,7 +618,7 @@ void DistributeTreasureToStores(object oItem)
                break;
              }
           }
-        SendDebugMessage("_"+sType+sRarity+sTier+sNonUnique);
+        SendDebugMessage(GetName(oItem) + "-> _"+sType+sRarity+sTier+sNonUnique);
 
         // Turn these into ammo makers.
         if (GetIsItemPropertyValid(GetFirstItemProperty(oItem)) && (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT))
@@ -791,6 +791,11 @@ void CreateContainersForItemTypesByTier()
 
 void main()
 {
+    // Destroying this is kinda important.
+    // If items were seeded into a chest, and then removed, and that chest no longer contains anything to seed
+    // there is nothing removing it from the db
+    // so the old items continue to pop up
+    DestroyCampaignDatabase("treasures");
 
 // ==============================================
 //  START TREASURE

@@ -1,6 +1,7 @@
 #include "inc_treasure"
 #include "inc_gold"
 #include "inc_sqlite_time"
+#include "inc_debug"
 
 // The time, in seconds, between reloading a store's contents
 const int MERCHANT_STORE_RESTOCK_TIME = 86400;
@@ -131,6 +132,11 @@ void OpenMerchant(object oMerchant, object oStore, object oPC)
 
 int ShouldRestockMerchant(object oStore)
 {
+    // This means merchant stock will change every time you open a store in dev mode
+    if (GetIsDevServer())
+    {
+        return 1;
+    }
     int nTimeNow = SQLite_GetTimeStamp();
     int nLast = GetLocalInt(oStore, MERCHANT_STORE_LAST_RESTOCKED_AT);
     int nDiff = nTimeNow - nLast;

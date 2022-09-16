@@ -2,6 +2,7 @@
 #include "inc_debug"
 #include "inc_general"
 #include "nwnx_player"
+#include "nwnx_item"
 #include "nwnx_visibility"
 #include "util_i_math"
 #include "nw_i0_plot" 
