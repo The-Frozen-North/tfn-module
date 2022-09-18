@@ -7,7 +7,7 @@ void main()
 
     if (NWNX_Creature_GetIsBartering(OBJECT_SELF))
     {
-        SendDebugMessage("Skipping save for "+GetName(OBJECT_SELF)+" because bartering");
+        SendDebugMessage("Skipping save for "+GetName(OBJECT_SELF)+" because bartering", TRUE);
         NWNX_Events_SkipEvent();
         return;
     }
@@ -27,7 +27,7 @@ void main()
 
     if (bPolymorph)
     {
-        SendDebugMessage("Skipping save for "+GetName(OBJECT_SELF)+" because polymorphed");
+        SendDebugMessage("Skipping save for "+GetName(OBJECT_SELF)+" because polymorphed", TRUE);
         NWNX_Events_SkipEvent();
     }
 }
