@@ -6,7 +6,7 @@
   },
   "BaseItem": {
     "type": "int",
-    "value": 19
+    "value": 111
   },
   "Charges": {
     "type": "byte",
@@ -18,21 +18,20 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 6702
+    "value": 19749
   },
   "Cursed": {
     "type": "byte",
     "value": 0
   },
   "DescIdentified": {
-    "id": 40434,
+    "id": 103876,
     "type": "cexolocstring",
     "value": {
-      "0": "This periapt is a large gemstone hanging on a thick golden chain. Eunuchs from Kara-Tur would wear this particular periapt when sampling their emperor's food. "
+      "0": "This whip carries an enchantment that greatly enhances the severity of the usual whip crack, turning it into a mighty deafening boom. The sheer force of the sound is enough to harm the those struck, as well as potentially making their spellcasting very difficult."
     }
   },
   "Description": {
-    "id": 40433,
     "type": "cexolocstring",
     "value": {
       "0": ""
@@ -43,19 +42,27 @@
     "value": 0
   },
   "LocalizedName": {
-    "id": 75229,
+    "id": 103875,
     "type": "cexolocstring",
     "value": {
-      "0": "Periapt of Proof against Poison"
+      "0": "Crack of Thunder"
     }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 2
+    "value": 11
+  },
+  "ModelPart2": {
+    "type": "byte",
+    "value": 11
+  },
+  "ModelPart3": {
+    "type": "byte",
+    "value": 11
   },
   "PaletteID": {
     "type": "byte",
-    "value": 21
+    "value": 77
   },
   "Plot": {
     "type": "byte",
@@ -72,11 +79,11 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 3
+          "value": 2
         },
         "CostValue": {
           "type": "word",
-          "value": 8
+          "value": 3
         },
         "Param1": {
           "type": "byte",
@@ -88,11 +95,11 @@
         },
         "PropertyName": {
           "type": "word",
-          "value": 15
+          "value": 56
         },
         "Subtype": {
           "type": "word",
-          "value": 204
+          "value": 0
         }
       },
       {
@@ -103,11 +110,11 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 2
+          "value": 0
         },
         "CostValue": {
           "type": "word",
-          "value": 4
+          "value": 0
         },
         "Param1": {
           "type": "byte",
@@ -119,11 +126,73 @@
         },
         "PropertyName": {
           "type": "word",
-          "value": 40
+          "value": 12
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 37
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 4
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 7
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 16
         },
         "Subtype": {
           "type": "word",
           "value": 13
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 24
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 0
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 1
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 3
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 48
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 15
         }
       }
     ]
@@ -138,10 +207,10 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "x1luckycharm"
+    "value": "X2_IT_CREWPWHIP"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "apparel188"
+    "value": "weapon395"
   }
 }

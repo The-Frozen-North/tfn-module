@@ -21,6 +21,7 @@ void main()
         object oVFX = GetLocalObject(oPed, "VFX1");
         if (GetIsObjectValid(oVFX))
         {
+            SetPlotFlag(oVFX, 0);
             DestroyObject(oVFX);
         }
         oVFX = GetLocalObject(oPed, "VFX2");
@@ -80,6 +81,7 @@ void main()
         oWP = GetWaypointByTag("LayenneHint" + IntToString(i));
         DestroyObject(GetLocalObject(oWP, "VFX1"));
         oVFX = CreateObject(OBJECT_TYPE_PLACEABLE, sPlaceableVFX, GetLocation(oWP));
+        SetPlotFlag(oVFX, 1);
         SetLocalObject(oWP, "VFX1", oVFX);
     }
 

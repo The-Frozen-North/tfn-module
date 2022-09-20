@@ -320,6 +320,9 @@ void main()
 // Check and do certain logic on spawning of objects.
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SPAWN_OBJECT_BEFORE", "dm_spawnb");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SPAWN_OBJECT_AFTER", "dm_spawna");
+    
+    NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_DROP_ITEM_BEFORE", "on_item_dropb");
+    
 
     ServerWebhook("The Frozen North is starting!", "The Frozen North server is starting up. Once the module is stable and ready for players to login, we'll let you know.");
 
