@@ -193,11 +193,11 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
         float fRealRestBonus = ((fAdjustedXpAmount / fPreRestAdjusted) * 100) - 100.0;
         if (bQuest)
         {
-            sRested = ", Rested: " + NeatFloatToString(fRealRestBonus, 2) + "%";
+            sRested = ", Rested: " + NeatFloatToString(fRealRestBonus, 1) + "%";
         }
         else
         {
-            sRested = "Rested Experience bonus: +" + NeatFloatToString(fAdjustedXpAmount - fPreRestAdjusted) + " (" + NeatFloatToString(fRealRestBonus, 2) + "%)";
+            sRested = "Rested Experience bonus: +" + NeatFloatToString(fAdjustedXpAmount - fPreRestAdjusted) + " (" + NeatFloatToString(fRealRestBonus, 1) + "%)";
             SendMessageToPC(oPC, sRested);
         }
    }

@@ -4,6 +4,13 @@
 void main()
 {
     object oPC = GetEnteringObject();
-
-    if (GetIsObjectValid(oPC) && GetQuestEntry(oPC, "q_kidnapped") != 1) NWNX_Visibility_SetVisibilityOverride(oPC, GetObjectByTag("JOLIE"), NWNX_VISIBILITY_HIDDEN);
+    
+    if (GetIsObjectValid(oPC) && GetQuestEntry(oPC, "q_kidnapped") != 1) 
+    {
+        NWNX_Visibility_SetVisibilityOverride(oPC, GetObjectByTag("JOLIE"), NWNX_VISIBILITY_HIDDEN);
+    }
+    else if (GetIsObjectValid(oPC))
+    {
+        NWNX_Visibility_SetVisibilityOverride(oPC, GetObjectByTag("JOLIE"), NWNX_VISIBILITY_DEFAULT);
+    }
 }

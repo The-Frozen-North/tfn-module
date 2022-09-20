@@ -2,6 +2,7 @@
 #include "inc_sql"
 #include "inc_mappin"
 #include "nwnx_player"
+#include "nwnx_creature"
 
 // -------------------------------------------------------------------------
 // PROTOTYPES
@@ -9,6 +10,16 @@
 
 //save current pc location and hps into database
 void SavePCInfo(object oPC);
+
+// TRUE if running SavePCInfo right now will go through or whether it will be blocked.
+// Useful for avoiding duplication exploitation
+// for example if a character cannot be saved, they should not
+// be allowed to interact with house storage as that will be saved
+// even if the player's BIC is not.
+// Put simply, without checking this, a PC can polymorph, deposit their life savings into their house
+// then log out and back in, and because their BIC isn't saved their gold will be both in their inventory
+// and in their house
+int CanSavePCInfo(object oPC);
 
 // Set a temporary global integer that lasts X seconds. Default 60.0.
 // Use 0.0 or less fSeconds to never expire for the current session.
@@ -54,6 +65,35 @@ int GetTemporaryInt(string sName)
 // -------------------------------------------------------------------------
 // PC FUNCTIONS
 // -------------------------------------------------------------------------
+
+int CanSavePCInfo(object oPC)
+{
+    if (NWNX_Creature_GetIsBartering(oPC))
+    {
+        SendDebugMessage("Can't save BIC for "+GetName(oPC)+" because bartering", TRUE);
+        return 0;
+    }
+
+    int bPolymorph = FALSE;
+
+    effect e = GetFirstEffect(oPC);
+    while(GetIsEffectValid(e))
+    {
+        if(GetEffectType(e) == EFFECT_TYPE_POLYMORPH)
+        {
+            bPolymorph = TRUE;
+            break;
+        }
+        e = GetNextEffect(oPC);
+    }
+
+    if (bPolymorph)
+    {
+        SendDebugMessage("Can't save BIC for "+GetName(oPC)+" because polymorphed", TRUE);
+        return 0;
+    }
+    return 1;
+}
 
 void ExportMinimap(object oPC)
 {

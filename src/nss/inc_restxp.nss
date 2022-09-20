@@ -9,10 +9,9 @@ const float RESTEDXP_CAP_BASE = 700.0;
 const float RESTEDXP_CAP_PER_LEVEL = 130.0;
 
 // The amount of seconds of logged in time to gain 100% rested xp
-//const int RESTEDXP_TIME_TO_FILL = 129600; // 36h
 const int RESTEDXP_TIME_TO_FILL = 86400; // 24h
 
-// When not online, re  sted xp gain is multiplied by this
+// When not online, rested xp gain is multiplied by this
 const float RESTEDXP_OFFLINE_MULTIPLIER = 0.075;
 
 // Proportional increase that rested xp adds
@@ -23,7 +22,7 @@ const float RESTEDXP_QUEST_INCREASE = 0.0;
 
 // How much rested XP to give from resting at home, per house tier.
 // 0.01 = 1% of cap for poor, 2% for average, 3% for rich
-const float RESTEDXP_HOUSE_PER_HOUSE_QUALITY = 0.0125;
+const float RESTEDXP_HOUSE_PER_HOUSE_QUALITY = 0.04;
 
 // The time in seconds between successive at-home rests giving house xp
 const int RESTEDXP_HOUSE_REST_COOLDOWN = 21600; // 6h
@@ -168,7 +167,7 @@ void SendRestedXPNotifierToPC(object oPC)
     if (fRestedXP >= 0.01)
     {
         float fPercentage = GetRestedXPPercentage(oPC);
-        string sMes = "Rested XP: " + NeatFloatToString(fRestedXP, 2) + " (" + NeatFloatToString(100*fPercentage, 2) + "% of maximum)";
+        string sMes = "Rested XP: " + NeatFloatToString(fRestedXP, 1) + " (" + NeatFloatToString(100*fPercentage, 1) + "% of maximum)";
         FloatingTextStringOnCreature(sMes, oPC, FALSE);
         
     }
@@ -196,7 +195,7 @@ void AddRestedXPOnLogin(object oPC)
         
         float fDelta = IntToFloat(nNow - nLogout);
         fDelta *= RESTEDXP_OFFLINE_MULTIPLIER;
-        SendDebugMessage(GetName(oPC) + "'s login rest xp in seconds: " + NeatFloatToString(fDelta), TRUE);
+        SendDebugMessage(GetName(oPC) + "'s login rest xp in seconds: " + NeatFloatToString(fDelta, 2), TRUE);
         _AddRestedXP(oPC, fDelta);
         SendRestedXPNotifierToPC(oPC);
     }
@@ -225,6 +224,7 @@ float GetRestModifiedExperience(float fBaseXP, object oPC, float fIncrease)
         if (fRestedXPAddition >= fRestedXP)
         {
             SQLocalsPlayer_SetFloat(oPC, RESTEDXP_PLAYER_VAR, 0.0);
+            FloatingTextStringOnCreature("You have run out of Rested XP.", oPC, FALSE);
             return (fBaseXP + fRestedXP);
         }
         else

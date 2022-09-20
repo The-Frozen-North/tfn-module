@@ -1,4 +1,5 @@
 #include "inc_housing"
+#include "inc_persist"
 
 void main()
 {
@@ -8,6 +9,11 @@ void main()
     {
         if (GetHomeTag(oPC) == GetTag(GetArea(OBJECT_SELF)))
         {
+            if (!CanSavePCInfo(oPC))
+            {
+                FloatingTextStringOnCreature("You cannot use house storage while polymorphed or bartering.", oPC, FALSE);
+                return;
+            }
             SetCustomToken(29901, IntToString(GetCampaignInt(GetPCPublicCDKey(oPC), "gold")));
             ActionStartConversation(GetLastUsedBy(), "", TRUE, FALSE);
         }
