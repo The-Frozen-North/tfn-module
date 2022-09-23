@@ -7,7 +7,23 @@ void main()
     object oPC = GetExitingObject();
     SavePCInfo(oPC);
     SQLocalsPlayer_SetInt(oPC, "RESTXP_LAST_SAVE", SQLite_GetTimeStamp());
-
+    
+    // Change henchman factions, otherwise they turn hostile to commoner factions and go killing sprees
+    int i;
+    for (i=0; i<GetHenchmanCount(oPC); i++)
+    {
+       object oHench = GetHenchmanByIndex(oPC, i);
+       RemoveHenchman(oPC, oHench);
+       ChangeToStandardFaction(oHench, STANDARD_FACTION_DEFENDER);
+    }
+    // ... and followers too
+    for (i=0; i<GetFollowerCount(oPC); i++)
+    {
+       object oHench = GetFollowerByIndex(oPC, i);
+       RemoveHenchman(oPC, oHench);
+       ChangeToStandardFaction(oHench, STANDARD_FACTION_DEFENDER);
+    }
+    
     object oPCCount = GetFirstPC();
     int nPCs = -1;
 

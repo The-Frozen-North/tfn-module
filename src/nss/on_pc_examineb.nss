@@ -13,6 +13,6 @@ void main()
     else if (GetObjectType(oObject) == OBJECT_TYPE_ITEM && GetIdentified(oObject) && GetResRef(oObject) == "ammo_maker")
     {
         object oAmmo = GetObjectByTag("fabricator_"+GetLocalString(oObject, "ammo_tag"));
-        SetDescription(oObject, "This appears to be some sort of contraption that can create ammunition.\n\nThe difficulty class and gold required is dependant on the type of ammunition that this device outputs.\n\nDC: "+IntToString(DetermineAmmoCraftingDC(oAmmo))+"\nGold: "+IntToString(DetermineAmmoCraftingCost(oAmmo)));
+        SetDescription(oObject, "This appears to be some sort of contraption that can create ammunition.\n\nThe difficulty class and gold required is dependent on the type of ammunition that this device outputs.\n\nDC: "+IntToString(DetermineAmmoCraftingDC(oAmmo))+"\nGold: "+IntToString(DetermineAmmoCraftingCost(oAmmo)));
     }
 }

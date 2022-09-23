@@ -243,6 +243,7 @@ void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
     }
     
     string sName = GetName(oKiller);
+    
     if (sName == "")
     {
        sName = "an unknown object";
@@ -250,6 +251,14 @@ void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
     else
     {
        sName = "**"+sName+"**";
+       if (GetIsObjectValid(GetMaster(oKiller)))
+       {
+            int nAssociateType = GetAssociateType(oKiller);
+            if (nAssociateType == ASSOCIATE_TYPE_FAMILIAR || nAssociateType == ASSOCIATE_TYPE_ANIMALCOMPANION || nAssociateType == ASSOCIATE_TYPE_SUMMONED)
+            {
+                sName = "**" + GetName(GetMaster(oKiller)) + "'s " + GetName(oKiller) + "**";
+            }
+       }
     }
     stMessage.sDescription = "**"+GetName(oPC)+"** was "+sAction+" by "+sName+".";
     
