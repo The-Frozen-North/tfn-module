@@ -44,6 +44,12 @@ void main()
         oStoredMaster = GetMasterByStoredUUID(OBJECT_SELF);
     }
     
+    // After curing petrification, this will add them back to the party
+    if (!GetIsObjectValid(GetMaster(OBJECT_SELF)))
+    {
+        SetMaster(OBJECT_SELF, oStoredMaster);
+    }
+    
     // That bebilith can unequip shields/armour
     if (!GetIsInCombat(OBJECT_SELF))
     {

@@ -15,10 +15,12 @@
 #include "inc_sqlite_time"
 #include "70_inc_switches"
 #include "util_i_csvlists"
+#include "inc_prettify"
 
 const int SEED_SPAWNS = 1;
 const int SEED_TREASURES = 1;
 const int SEED_SPELLBOOKS = 1;
+const int SEED_PRETTIFY_PLACEABLES = 0;
 
 void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)
 {
@@ -145,6 +147,40 @@ void main()
             WriteTimestampedLogEntry("============================");
         }
        SetCampaignInt("spawns", "finished", 1);
+       NWNX_Util_SetInstructionsExecuted(0);
+       if (SEED_PRETTIFY_PLACEABLES)
+       {
+
+           object oArea = GetFirstArea();
+           string sAreaResRef;
+
+           while (GetIsObjectValid(oArea))
+           {
+               // This does, surprisingly, manage to TMI without continuously bumping down the VM instruction limit
+               NWNX_Util_SetInstructionsExecuted(0);
+    // Skip the system areas. They are prepended with an underscore.
+               if (GetStringLeft(GetResRef(oArea), 1) == "_")
+               {
+                   oArea = GetNextArea();
+                   continue;
+               }
+               string sScript = GetLocalString(oArea, "prettify_script");
+               if (sScript != "")
+               {
+                ExecuteScript(sScript, oArea);
+                WriteTimestampedLogEntry("Finished prettify seed script for " + GetResRef(oArea));
+               }
+
+               oArea = GetNextArea();
+
+           }
+        }
+        else
+        {
+            WriteTimestampedLogEntry("=============================");
+            WriteTimestampedLogEntry("WARNING: Not seeding prettify!");
+            WriteTimestampedLogEntry("=============================");
+        }
 
        if (SEED_TREASURES)
        {
@@ -575,6 +611,8 @@ void main()
    string sAreaResRef;
    location lBaseLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
    object oAreaRefresher;
+   
+   LoadAllPrettifyPlaceables();
 
 // Loop through all objects in the module.
    while (GetIsObjectValid(oArea))
@@ -630,6 +668,7 @@ void main()
     InitializeHouses("core");
 
     SpawnPCBloodstains();
+    
 
 // set Yesgar to spawn 1 minute after module starts
     SetLocalInt(OBJECT_SELF, "yesgar_count", 190);
