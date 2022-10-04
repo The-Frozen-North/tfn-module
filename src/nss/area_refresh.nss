@@ -156,7 +156,12 @@ void main()
 
 // 50% chance of an event
     int nEventSpawns = GetLocalInt(OBJECT_SELF, "event_spawn_points");
-    if (nEventSpawns > 0 && d2() == 1)
+    int nEventChance = GetLocalInt(OBJECT_SELF, "event_chance");
+    if (nEventChance <= 0)
+    { 
+        nEventChance = 50;
+    }
+    if (nEventSpawns > 0 && Random(100) < nEventChance)
     {
         int nEvents = GetLocalInt(OBJECT_SELF, "events");
 

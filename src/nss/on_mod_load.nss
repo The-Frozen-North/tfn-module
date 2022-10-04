@@ -17,10 +17,10 @@
 #include "util_i_csvlists"
 #include "inc_prettify"
 
-const int SEED_SPAWNS = 1;
-const int SEED_TREASURES = 1;
+const int SEED_SPAWNS = 0;
+const int SEED_TREASURES = 0;
 const int SEED_SPELLBOOKS = 1;
-const int SEED_PRETTIFY_PLACEABLES = 0;
+const int SEED_PRETTIFY_PLACEABLES = 1;
 
 void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)
 {

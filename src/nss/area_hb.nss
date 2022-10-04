@@ -43,7 +43,7 @@ void main()
         oPlayer = GetNextPC();
     }
 
-// item clean up
+//   clean up
     object oItem = GetFirstObjectInArea(OBJECT_SELF);
     int nDestroyCount;
     while (GetIsObjectValid(oItem))
@@ -51,7 +51,7 @@ void main()
         if(GetObjectType(oItem) == OBJECT_TYPE_ITEM)
         {
             nDestroyCount = GetLocalInt(oItem, "destroy_count");
-            if (nDestroyCount == 100 && !bPlayersInInvalidArea && !bPlayersInArea && !bPlayersInLinkedArea)
+            if (nDestroyCount >= 100 && !bPlayersInInvalidArea && !bPlayersInArea && !bPlayersInLinkedArea)
             {
                 DestroyObject(oItem);
             }
@@ -72,13 +72,8 @@ void main()
 
 // This is the number to fall back to if a refresh was to be started, but there were players
     int nRefreshRestart = 400;
+    // When the count hits this number the area will be refreshed
     int nRefreshAt = 600;
-
-    if (FindSubString(GetName(OBJECT_SELF), "Neverwinter") > -1 && FindSubString(GetName(OBJECT_SELF), "Neverwinter Wood") == -1)
-    {
-        nRefreshRestart = 200;
-        nRefreshAt = 300;
-    }
 
 // only start counting if the refresh counter is there
     int nRefresh = GetLocalInt(OBJECT_SELF, "refresh");
@@ -109,7 +104,17 @@ void main()
     else if (nRefresh > 0)
     {
         int nRefreshSpeedMult = GetLocalInt(OBJECT_SELF, "refresh_speed");
-        if (nRefreshSpeedMult < 1) { nRefreshSpeedMult = 1; }
+        if (nRefreshSpeedMult < 1)
+        {
+            if (FindSubString(GetName(OBJECT_SELF), "Neverwinter") > -1 && FindSubString(GetName(OBJECT_SELF), "Neverwinter Wood") == -1)
+            {
+                nRefreshSpeedMult = 2;
+            }
+            else
+            {
+                nRefreshSpeedMult = 1;
+            }
+        }
         SetLocalInt(OBJECT_SELF, "refresh", nRefresh+nRefreshSpeedMult);
     }
 }

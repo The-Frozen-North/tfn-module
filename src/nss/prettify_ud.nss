@@ -71,7 +71,9 @@ void main()
     pps.sResRef = "nw_plc_puddle1";
     pps.fAvoidPlaceableRadius = 2.0;
     pps.nValidSurface1 = SURFACEMAT_ABSTRACT_WALKABLE;
+    pps.nAvoidSurface1 = SURFACEMAT_STONE;
     pps.nTargetDensity = 3;
+    pps.fAvoidDoorRadius = 5.0;
     pps.fMinScale = 0.2;
     pps.fMaxScale = 0.8;
     pps.fMaximumGroundSlope = 0.05;
@@ -88,7 +90,9 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "x2_plc_hole_s";
     pps.fAvoidPlaceableRadius = 1.5;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_ABSTRACT_WALKABLE;
+    pps.nAvoidSurface1 = SURFACEMAT_STONE;
     pps.nTargetDensity = 2;
     pps.fMinScale = 0.5;
     pps.fMaxScale = 1.2;
@@ -103,7 +107,9 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "tm_pl_btlbroken";
     pps.fAvoidPlaceableRadius = 1.0;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_ABSTRACT_WALKABLE;
+    pps.nAvoidSurface1 = SURFACEMAT_STONE;
     pps.nTargetDensity = 1;
     pps.fMinScale = 0.8;
     pps.fMaxScale = 1.2;
@@ -154,7 +160,9 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "x2_plc_crystal";
     pps.fAvoidPlaceableRadius = 2.5;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_ABSTRACT_WALKABLE;
+    pps.nAvoidSurface1 = SURFACEMAT_STONE;
     pps.nTargetDensity = 10;
     pps.fMinScale = 0.3;
     pps.fMaxScale = 1.3;
@@ -186,7 +194,9 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "x0_dirtpatch";
     pps.fAvoidPlaceableRadius = 2.0;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_ABSTRACT_WALKABLE;
+    pps.nAvoidSurface1 = SURFACEMAT_STONE;
     pps.nTargetDensity = 3;
     pps.fMinScale = 0.1;
     pps.fMaxScale = 0.66;
@@ -207,7 +217,9 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "nw_plc_fungus";
     pps.fAvoidPlaceableRadius = 2.0;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_ABSTRACT_WALKABLE;
+    pps.nAvoidSurface1 = SURFACEMAT_STONE;
     pps.nTargetDensity = 35;
     pps.fMinScale = 0.3;
     pps.fMaxScale = 1.3;
@@ -222,7 +234,9 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "x2_plc_mold";
     pps.fAvoidPlaceableRadius = 2.0;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_ABSTRACT_WALKABLE;
+    pps.nAvoidSurface1 = SURFACEMAT_STONE;
     pps.nTargetDensity = 8;
     pps.fMinScale = 0.6;
     pps.fMaxScale = 1.0;
@@ -238,7 +252,9 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "tm_pl_shroomblu2";
     pps.fAvoidPlaceableRadius = 3.0;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_ABSTRACT_WALKABLE;
+    pps.nAvoidSurface1 = SURFACEMAT_STONE;
     pps.nTargetDensity = 20;
     pps.fMinScale = 0.3;
     pps.fMaxScale = 1.3;
@@ -265,7 +281,9 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "nw_plc_rock5";
     pps.fAvoidPlaceableRadius = 2.5;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_ABSTRACT_WALKABLE;
+    pps.nAvoidSurface1 = SURFACEMAT_STONE;
     pps.nTargetDensity = 20;
     pps.fMinScale = 0.6;
     pps.fMaxScale = 1.2;
@@ -282,6 +300,7 @@ void main()
     pps.sResRef = "plc_waterdrip";
     pps.fAvoidPlaceableRadius = 0.0;
     pps.nValidSurface1 = SURFACEMAT_ABSTRACT_ALL;
+    pps.nAvoidSurface1 = SURFACEMAT_STONE;
     pps.nTargetDensity = 1;
     PlacePrettifyPlaceable(pps, OBJECT_SELF);
     
@@ -291,6 +310,7 @@ void main()
     pps.sResRef = "x3_plc_swater";
     pps.fAvoidPlaceableRadius = 0.0;
     pps.nValidSurface1 = SURFACEMAT_ABSTRACT_ALL;
+    pps.nAvoidSurface1 = SURFACEMAT_STONE;
     pps.nTargetDensity = 1;
     PlacePrettifyPlaceable(pps, OBJECT_SELF);
     

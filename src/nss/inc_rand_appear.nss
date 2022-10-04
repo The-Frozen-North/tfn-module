@@ -188,7 +188,7 @@ void RandomiseCreatureHead(object oCreature=OBJECT_SELF)
     }
     if (nHead != -1)
     {
-        SetCreatureBodyPart(CREATURE_PART_HEAD, nHead, OBJECT_SELF);
+        SetCreatureBodyPart(CREATURE_PART_HEAD, nHead, oCreature);
     }
 }
 
@@ -526,7 +526,8 @@ void RandomiseCreatureSoundset_Old(object oCreature=OBJECT_SELF)
 
 void RandomiseSkinColour(object oCreature=OBJECT_SELF)
 {
-    SetColor(oCreature, COLOR_CHANNEL_SKIN, Random(14));
+    int nSkin = Random(14);
+    SetColor(oCreature, COLOR_CHANNEL_SKIN, nSkin);
 }
 
 void RandomiseHairColour(object oCreature=OBJECT_SELF)

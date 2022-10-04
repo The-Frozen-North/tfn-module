@@ -19,6 +19,8 @@ struct PrettifyPlaceableSettings
     float fMaxScale;
     // This placeable will not be placed within this distance of any other placeables
     float fAvoidPlaceableRadius;
+    // Same thing, for doors
+    float fAvoidDoorRadius;
     // The maximum floor surface gradient allowed to place this placeable.
     // Many placeables look stupid when put on too steep hills
     // If set to 0.0, is not checked - to get really flat land, use some very small positive number instead
@@ -246,6 +248,16 @@ int CanPrettifiedPlaceableBePlacedAtLocation(struct PrettifyPlaceableSettings pp
             }
         }
         
+        // Check fAvoidDoorRadius
+        if (pps.fAvoidDoorRadius > 0.0)
+        {
+            object oNearest = GetNearestObjectToLocation(OBJECT_TYPE_DOOR, lLoc, 1);
+            if (GetIsObjectValid(oNearest) && GetDistanceBetweenLocations(lLoc, GetLocation(oNearest)) <= pps.fAvoidPlaceableRadius)
+            {
+                //PrettifyDebug("Can't place " + pps.sResRef + " on surface " + IntToString(nSurfacemat) + ": too close to door " + GetName(oNearest));
+                return 0;
+            }
+        }
         
         // Check borders.
         vector vLoc = GetPositionFromLocation(lLoc);

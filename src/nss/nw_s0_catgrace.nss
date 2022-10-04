@@ -51,6 +51,8 @@ void main()
     //Create the Ability Bonus effect with the correct modifier
     eDex = EffectAbilityIncrease(ABILITY_DEXTERITY,nModify);
     effect eLink = EffectLinkEffects(eDex, eDur);
+    
+    RemoveAnimalSpellEffects(spell.Target);
 
     //Apply visual and bonus effects
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nDuration));

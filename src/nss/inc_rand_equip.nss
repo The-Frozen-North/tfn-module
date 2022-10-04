@@ -3,6 +3,14 @@
 #include "util_i_math"
 #include "x2_inc_itemprop"
 #include "nwnx_creature"
+#include "70_inc_itemprop"
+
+// Suggested order:
+// Weapons
+// Apparel
+// Armor
+
+// Doing this means that any dex bonuses from weapons/apparel can be taken into account for AC calcuations
 
 
 // This is an include full of functions that make randomising humanoids
@@ -65,15 +73,23 @@ object GetTieredArmorOfType(int nAC, int nTier, int nUniqueChance=0);
 // An amalgamation of GetTieredItemOfType and CopyAndEquipUndroppableItem.
 // Also sets local int "unique" to 1 on the returned object if it was from a unique chest
 // Pass nSlot = -1 to not try equipping the item (useful for backup melees for archers)
-object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance, object oCreature, int nSlot);
+// nTries is the number of attempts to find one of these items that can be successfully equipped
+object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance, object oCreature, int nSlot, int nTries=5, int bCheckSuitability=1);
+
+// Like TryEquippingRandomItemOfTier but without the equipping part.
+// Use this for cases like backup melee weapons for ranged creatures
+object AddRandomItemOfTierToInventory(int nBaseItem, int nTier, int nUniqueChance, object oCreature);
 
 // An amalgamation of GetTieredArmorOfType and CopyAndEquipUndroppableItem.
 // Also sets local int "unique" to 1 on the returned object if it was from a unique chest
-object TryEquippingRandomArmorOfTier(int nAC, int nTier, int nUniqueChance, object oCreature, int nSlot=INVENTORY_SLOT_CHEST);
+// Will equip mundane armor of nAC if searching the chests didn't find anything.
+// nTries is the number of attempts to find one of these items that can be successfully equipped
+object TryEquippingRandomArmorOfTier(int nAC, int nTier, int nUniqueChance, object oCreature, int nSlot=INVENTORY_SLOT_CHEST, int nTries=10);
 
 
 // Convenience function that runs TryEquippingRandomItemOfTier for:
 // Ring1, Ring2, Head, Hands, Neck, Belt, Feet, Cloak
+// In this case, nUniqueChance is the chance of filling each slot, as all of these item types are uniques
 void TryEquippingRandomApparelOfTier(int nTier, int nUniqueChance, object oCreature);
 
 // Sets the weighting for a random weapon type on a creature.
@@ -83,6 +99,8 @@ void TryEquippingRandomApparelOfTier(int nTier, int nUniqueChance, object oCreat
 // The relative increase depends on the size of the weapon pool, which depends on the creature
 // Weapons can be excluded entirely by setting a weight of zero.
 void SetRandomEquipWeaponTypeWeight(object oCreature, int nBaseItem, int nWeight);
+
+int IsItemSuitableForCreature(object oCreature, object oItem);
 
 
 struct RandomWeaponResults
@@ -646,8 +664,16 @@ int SelectRangedWeaponType(object oCreature)
             // Size restriction, no giving longbows to halflings
             if (nCreatureSize - nWeaponSize >= -1)
             {
+                // Arcane Archer only works on bows
+                if (GetLevelByClass(CLASS_TYPE_ARCANE_ARCHER, oCreature))
+                {
+                    if (nBaseItem != BASE_ITEM_LONGBOW && nBaseItem != BASE_ITEM_SHORTBOW)
+                    {
+                        continue;
+                    }
+                }
                 // Rapid shot/reload: if you have exactly one of these two feats, only try to get that kind of weapon
-                if (bRapidShot ^ bRapidReload)
+                else if (bRapidShot ^ bRapidReload)
                 {
                     if (bRapidShot && (nBaseItem == BASE_ITEM_LIGHTCROSSBOW || nBaseItem == BASE_ITEM_HEAVYCROSSBOW))
                     {
@@ -696,33 +722,10 @@ struct RandomWeaponResults RollRandomWeaponTypesForCreature(object oCreature)
     rwrOut.nOffHand = BASE_ITEM_INVALID;
     rwrOut.nBackupMeleeWeapon = BASE_ITEM_INVALID;
     // Do we even WANT weapons?
-    if (GetLevelByClass(CLASS_TYPE_MONK, oCreature) > 0)
-    {
-        if (Random(100) < 20)
-        {
-            rwrOut.nMainHand = BASE_ITEM_KAMA;
-        }
-        return rwrOut;
-    }
-
-    // If the creature has creatureweapons, don't give it normal stuff
-    int nSlot;
-    for (nSlot = INVENTORY_SLOT_CWEAPON_L; nSlot <= INVENTORY_SLOT_CWEAPON_B; nSlot++)
-    {
-        if (GetIsObjectValid(GetItemInSlot(nSlot, oCreature)))
-        {
-            return rwrOut;
-        }
-    }
+    
     // Give ranged and a random one handed backup melee weapon if something signalled to
     int bGiveRanged = GetLocalInt(oCreature, RAND_EQUIP_GIVE_RANGED);
-    if (bGiveRanged)
-    {
-        rwrOut.nMainHand = SelectRangedWeaponType(oCreature);
-        rwrOut.nBackupMeleeWeapon = SelectMainHandMeleeWeaponType(oCreature);
-        return rwrOut;
-    }
-
+    
     // Melee: figure out what we want (one handed + shield, two weapons, two handers)
     int bShieldProficiency = GetHasFeat(FEAT_SHIELD_PROFICIENCY, oCreature);
     int bDualWield = 0;
@@ -739,6 +742,55 @@ struct RandomWeaponResults RollRandomWeaponTypesForCreature(object oCreature)
     {
         bDualWield = 1;
     }
+    
+    if (GetLevelByClass(CLASS_TYPE_MONK, oCreature) > 0)
+    {
+        if (bDualWield && !bGiveRanged)
+        {
+            rwrOut.nMainHand = BASE_ITEM_KAMA;
+            rwrOut.nOffHand = BASE_ITEM_KAMA;
+            return rwrOut;
+        }
+        int bNoFists = 1;
+        if (GetHitDice(oCreature) * 3 >= GetLevelByClass(CLASS_TYPE_MONK, oCreature) * 2)
+        {
+            bNoFists = 0;
+        }
+        if (bGiveRanged || Random(100) < 66 || bNoFists)
+        {
+            if (bGiveRanged)
+            {
+                rwrOut.nMainHand = BASE_ITEM_SHURIKEN;
+                rwrOut.nBackupMeleeWeapon = d2() == 1 ? BASE_ITEM_QUARTERSTAFF : BASE_ITEM_KAMA;
+            }
+            else
+            {
+                rwrOut.nMainHand = d2() == 1 ? BASE_ITEM_QUARTERSTAFF : BASE_ITEM_KAMA;
+            }
+            
+            return rwrOut;
+        }
+        // Otherwise, punchy punchy time
+        return rwrOut;
+    }
+
+    // If the creature has creatureweapons, don't give it normal stuff
+    int nSlot;
+    for (nSlot = INVENTORY_SLOT_CWEAPON_L; nSlot <= INVENTORY_SLOT_CWEAPON_B; nSlot++)
+    {
+        if (GetIsObjectValid(GetItemInSlot(nSlot, oCreature)))
+        {
+            return rwrOut;
+        }
+    }
+    
+    if (bGiveRanged)
+    {
+        rwrOut.nMainHand = SelectRangedWeaponType(oCreature);
+        rwrOut.nBackupMeleeWeapon = SelectMainHandMeleeWeaponType(oCreature);
+        return rwrOut;
+    }
+
 
     if (!(bDualWield) && !(bShieldProficiency))
     {
@@ -1042,15 +1094,50 @@ object CopyAndEquipUndroppableItem(object oCreature, object oSourceItem, int nSl
     return _EquipUndroppableItem(oCreature, oNew, nSlot);
 }
 
-object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance, object oCreature, int nSlot)
+object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance, object oCreature, int nSlot, int nTries=5, int bCheckSuitability=1)
 {
     if (nBaseItem == BASE_ITEM_INVALID)
     {
         return OBJECT_INVALID;
     }
-    object oSource = GetTieredItemOfType(nBaseItem, nTier, nUniqueChance);
-    int bIsUnique = FindSubString(GetTag(GetItemPossessor(oSource)), "NonUnique") == -1;
-    object oNew = CopyAndEquipUndroppableItem(oCreature, oSource, nSlot);
+    if (Random(100) < nUniqueChance)
+    {
+        nUniqueChance = 100;
+    }
+    else
+    {
+        nUniqueChance = 0;
+    }
+    object oNew;
+    int i;
+    int bIsUnique;
+    int nThisTier = nTier;
+    while (nThisTier > 0)
+    {
+        for (i=0; i<nTries; i++)
+        {
+            object oSource = GetTieredItemOfType(nBaseItem, nThisTier, nUniqueChance);
+            if (!GetIsObjectValid(oSource)) { continue; }
+            if (bCheckSuitability)
+            {
+                if (!IsItemSuitableForCreature(oCreature, oSource))
+                {
+                    continue;
+                }
+            }
+            bIsUnique = FindSubString(GetTag(GetItemPossessor(oSource)), "NonUnique") == -1;
+            oNew = CopyAndEquipUndroppableItem(oCreature, oSource, nSlot);
+            if (GetIsObjectValid(oNew))
+            {
+                break;
+            }
+        }
+        if (GetIsObjectValid(oNew))
+        {
+            break;
+        }
+        nThisTier--;
+    }
     if (!GetIsObjectValid(oNew))
     {
         oNew = CreateItemOnObject(GetMundaneWeaponOfType(nBaseItem), oCreature);
@@ -1061,22 +1148,53 @@ object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance,
     {
         SetLocalInt(oNew, "unique", 1);
     }
+    object oAmmo;
     if (nBaseItem == BASE_ITEM_BULLET || nBaseItem == BASE_ITEM_ARROW || nBaseItem == BASE_ITEM_BOLT || nBaseItem == BASE_ITEM_SHURIKEN || nBaseItem == BASE_ITEM_DART || nBaseItem == BASE_ITEM_THROWINGAXE)
     {
+        oAmmo = oNew;
         SetItemStackSize(oNew, 99);
     }
     else if (nBaseItem == BASE_ITEM_SLING)
     {
-        TryEquippingRandomItemOfTier(BASE_ITEM_BULLET, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_BULLETS);
+        oAmmo = TryEquippingRandomItemOfTier(BASE_ITEM_BULLET, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_BULLETS);
     }
     else if (nBaseItem == BASE_ITEM_LIGHTCROSSBOW || nBaseItem == BASE_ITEM_HEAVYCROSSBOW)
     {
-        TryEquippingRandomItemOfTier(BASE_ITEM_BOLT, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_BOLTS);
+        oAmmo = TryEquippingRandomItemOfTier(BASE_ITEM_BOLT, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_BOLTS);
     }
     else if (nBaseItem == BASE_ITEM_SHORTBOW || nBaseItem == BASE_ITEM_LONGBOW)
     {
-        TryEquippingRandomItemOfTier(BASE_ITEM_ARROW, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_ARROWS);
+        oAmmo = TryEquippingRandomItemOfTier(BASE_ITEM_ARROW, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_ARROWS);
     }
+    if (GetIsObjectValid(oAmmo))
+    {
+        AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyBoomerang(), oAmmo);
+    }
+    return oNew;
+}
+
+object AddRandomItemOfTierToInventory(int nBaseItem, int nTier, int nUniqueChance, object oCreature)
+{
+    object oSource = GetTieredItemOfType(nBaseItem, nTier, nUniqueChance);
+    int bIsUnique = 0;
+    object oNew;
+    if (!GetIsObjectValid(oSource))
+    {
+        oNew = CreateItemOnObject(GetMundaneWeaponOfType(nBaseItem), oCreature);
+    }
+    else
+    {
+        bIsUnique = FindSubString(GetTag(GetItemPossessor(oSource)), "NonUnique") == -1;
+        oNew = CopyItem(oSource, oCreature, TRUE);
+        if (bIsUnique)
+        {
+            SetLocalInt(oNew, "unique", 1);
+        }
+    }
+    
+    SetPickpocketableFlag(oNew, FALSE);
+    SetDroppableFlag(oNew, FALSE);
+    SetIdentified(oNew, TRUE);
     return oNew;
 }
 
@@ -1166,11 +1284,43 @@ int GetACOfArmorToEquip(object oCreature, int nMaxAC=8)
     return nBestArmorAC;
 }
 
-object TryEquippingRandomArmorOfTier(int nAC, int nTier, int nUniqueChance, object oCreature, int nSlot=INVENTORY_SLOT_CHEST)
+object TryEquippingRandomArmorOfTier(int nAC, int nTier, int nUniqueChance, object oCreature, int nSlot=INVENTORY_SLOT_CHEST, int nTries=10)
 {
-    object oSource = GetTieredArmorOfType(nAC, nTier, nUniqueChance);
-    int bIsUnique = FindSubString(GetTag(GetItemPossessor(oSource)), "NonUnique") == -1;
-    object oNew = CopyAndEquipUndroppableItem(oCreature, oSource, nSlot);
+    if (Random(100) < nUniqueChance)
+    {
+        nUniqueChance = 100;
+    }
+    else
+    {
+        nUniqueChance = 0;
+    }
+    if (nAC == 0)
+    {
+        nUniqueChance = 100;
+    }
+    int i;
+    int bIsUnique;
+    int nThisTier = nTier;
+    object oNew;
+    while (nThisTier > 0)
+    {
+        for (i=0; i<=nTries; i++)
+        {
+            object oSource = GetTieredArmorOfType(nAC, nTier, nUniqueChance);
+            if (!GetIsObjectValid(oSource)) { continue; }
+            bIsUnique = FindSubString(GetTag(GetItemPossessor(oSource)), "NonUnique") == -1;
+            oNew = CopyAndEquipUndroppableItem(oCreature, oSource, nSlot);
+            if (GetIsObjectValid(oNew))
+            {
+                break;
+            }
+        }
+        if (GetIsObjectValid(oNew))
+        {
+            break;
+        }
+        nThisTier--;
+    }
     if (!GetIsObjectValid(oNew))
     {
         oNew = CreateItemOnObject(GetMundaneArmorOfAC(nAC), oCreature);
@@ -1186,14 +1336,38 @@ object TryEquippingRandomArmorOfTier(int nAC, int nTier, int nUniqueChance, obje
 
 void TryEquippingRandomApparelOfTier(int nTier, int nUniqueChance, object oCreature)
 {
-    TryEquippingRandomItemOfTier(BASE_ITEM_HELMET, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_HEAD);
-    TryEquippingRandomItemOfTier(BASE_ITEM_GLOVES, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_ARMS);
-    TryEquippingRandomItemOfTier(BASE_ITEM_RING, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_LEFTRING);
-    TryEquippingRandomItemOfTier(BASE_ITEM_RING, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_RIGHTRING);
-    TryEquippingRandomItemOfTier(BASE_ITEM_AMULET, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_NECK);
-    TryEquippingRandomItemOfTier(BASE_ITEM_BELT, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_BELT);
-    TryEquippingRandomItemOfTier(BASE_ITEM_BOOTS, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_BOOTS);
-    TryEquippingRandomItemOfTier(BASE_ITEM_CLOAK, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_CLOAK);
+    if (Random(100) < nUniqueChance)
+    {
+        TryEquippingRandomItemOfTier(BASE_ITEM_HELMET, nTier, 100, oCreature, INVENTORY_SLOT_HEAD);
+    }
+    if (Random(100) < nUniqueChance)
+    {
+        TryEquippingRandomItemOfTier(BASE_ITEM_GLOVES, nTier, 100, oCreature, INVENTORY_SLOT_ARMS);
+    }
+    if (Random(100) < nUniqueChance)
+    {
+        TryEquippingRandomItemOfTier(BASE_ITEM_RING, nTier, 100, oCreature, INVENTORY_SLOT_LEFTRING);
+    }
+    if (Random(100) < nUniqueChance)
+    {
+        TryEquippingRandomItemOfTier(BASE_ITEM_RING, nTier, 100, oCreature, INVENTORY_SLOT_RIGHTRING);
+    }
+    if (Random(100) < nUniqueChance)
+    {
+        TryEquippingRandomItemOfTier(BASE_ITEM_AMULET, nTier, 100, oCreature, INVENTORY_SLOT_NECK);
+    }
+    if (Random(100) < nUniqueChance)
+    {
+        TryEquippingRandomItemOfTier(BASE_ITEM_BELT, nTier, 100, oCreature, INVENTORY_SLOT_BELT);
+    }
+    if (Random(100) < nUniqueChance)
+    {
+        TryEquippingRandomItemOfTier(BASE_ITEM_BOOTS, nTier, 100, oCreature, INVENTORY_SLOT_BOOTS);
+    }
+    if (Random(100) < nUniqueChance)
+    {
+        TryEquippingRandomItemOfTier(BASE_ITEM_CLOAK, nTier, 100, oCreature, INVENTORY_SLOT_CLOAK);
+    }
 }
 
 void SetRandomEquipWeaponTypeWeight(object oCreature, int nBaseItem, int nWeight)
@@ -1204,6 +1378,190 @@ void SetRandomEquipWeaponTypeWeight(object oCreature, int nBaseItem, int nWeight
 }
 
 
-
+int IsItemSuitableForCreature(object oCreature, object oItem)
+{
+    // Only deal in certain kinds of items
+    int nBaseItem = GetBaseItemType(oItem);
+    if (nBaseItem == BASE_ITEM_HELMET || nBaseItem == BASE_ITEM_AMULET || nBaseItem == BASE_ITEM_RING || nBaseItem == BASE_ITEM_BOOTS || nBaseItem == BASE_ITEM_BELT || nBaseItem == BASE_ITEM_CLOAK || nBaseItem == BASE_ITEM_GLOVES || nBaseItem == BASE_ITEM_BRACER || nBaseItem == BASE_ITEM_ARMOR || nBaseItem == BASE_ITEM_SMALLSHIELD || nBaseItem == BASE_ITEM_LARGESHIELD || nBaseItem == BASE_ITEM_TOWERSHIELD)
+    {
+        int bSuitable = 0;
+        int bIsUnarmedMonk = GetLevelByClass(CLASS_TYPE_MONK, oCreature) && !GetIsObjectValid(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oCreature));
+        itemproperty ipTest = GetFirstItemProperty(oItem);
+        if (!GetIsItemPropertyValid(ipTest))
+        {
+            // It does nothing, so I guess it's as good as anything...
+            bSuitable = 1;
+        }
+        while (GetIsItemPropertyValid(ipTest))
+        {
+            int nItemPropertyType = GetItemPropertyType(ipTest);
+            // Unarmed Monks need attack and/or damage bonus on their gloves
+            // It is after all the difference between anyone else having a mundane vs enchanted weapon
+            if (bIsUnarmedMonk && (nBaseItem == BASE_ITEM_GLOVES || nBaseItem == BASE_ITEM_BRACER))
+            {
+                if (nItemPropertyType == ITEM_PROPERTY_ATTACK_BONUS || nItemPropertyType == ITEM_PROPERTY_DAMAGE_BONUS)
+                {
+                    bSuitable = 1;
+                }
+            }
+            else
+            {
+                // These are okay on anyone.
+                if (nItemPropertyType == ITEM_PROPERTY_AC_BONUS || 
+                    nItemPropertyType == ITEM_PROPERTY_AC_BONUS_VS_ALIGNMENT_GROUP ||
+                    nItemPropertyType == ITEM_PROPERTY_AC_BONUS_VS_DAMAGE_TYPE ||
+                    nItemPropertyType == ITEM_PROPERTY_AC_BONUS_VS_RACIAL_GROUP ||
+                    nItemPropertyType == ITEM_PROPERTY_AC_BONUS_VS_SPECIFIC_ALIGNMENT ||
+                    nItemPropertyType == ITEM_PROPERTY_DAMAGE_REDUCTION ||
+                    nItemPropertyType == ITEM_PROPERTY_DAMAGE_RESISTANCE ||
+                    nItemPropertyType == ITEM_PROPERTY_IMMUNITY_DAMAGE_TYPE ||
+                    nItemPropertyType == ITEM_PROPERTY_IMMUNITY_MISCELLANEOUS ||
+                    nItemPropertyType == ITEM_PROPERTY_IMMUNITY_SPECIFIC_SPELL ||
+                    nItemPropertyType == ITEM_PROPERTY_LIGHT ||
+                    nItemPropertyType == ITEM_PROPERTY_REGENERATION ||
+                    nItemPropertyType == ITEM_PROPERTY_SAVING_THROW_BONUS ||
+                    nItemPropertyType == ITEM_PROPERTY_SAVING_THROW_BONUS_SPECIFIC ||
+                    nItemPropertyType == ITEM_PROPERTY_SPELL_RESISTANCE)
+                {
+                    bSuitable = 1;
+                }
+                // Ignored because they probably should never exist in TFN and checking against these is just pointless instructions
+                // ITEM_PROPERTY_FREEDOM_OF_MOVEMENT
+                // ITEM_PROPERTY_HASTE
+                // ITEM_PROPERTY_IMMUNITY_SPELL_SCHOOL
+                // ITEM_PROPERTY_IMMUNITY_SPELLS_BY_LEVEL
+                // ITEM_PROPERTY_IMPROVED_EVASION
+                // ITEM_PROPERTY_MIND_BLANK
+                // ITEM_PROPERTY_TRUE_SEEING
+                // ITEM_PROPERTY_TURN_RESISTANCE
+                
+                
+                else if (nItemPropertyType == ITEM_PROPERTY_ABILITY_BONUS)
+                {
+                    int nAbility = GetItemPropertySubType(ipTest);
+                    if (nAbility == ABILITY_STRENGTH)
+                    {
+                        // Strength doesn't help with casting or throwing shurikens
+                        // It does help with just about everything else in TFN though
+                        if (!GetLevelByClass(CLASS_TYPE_WIZARD, oCreature) && !GetLevelByClass(CLASS_TYPE_SORCERER, oCreature) && GetBaseItemType(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oCreature)) != BASE_ITEM_SHURIKEN)
+                        {
+                            bSuitable = 1;
+                        }
+                    }
+                    else if (nAbility == ABILITY_DEXTERITY)
+                    {
+                        // Not helpful if we are likely to get heavy armor and don't have weapon finesse
+                        if (GetHasFeat(FEAT_WEAPON_FINESSE, oCreature) || GetACOfArmorToEquip(oCreature) < 5)
+                        {
+                            bSuitable = 1;
+                        }
+                    }
+                    else if (nAbility == ABILITY_CONSTITUTION)
+                    {
+                        // Health. Everyone has it.
+                        bSuitable = 1;
+                    }
+                    else if (nAbility == ABILITY_INTELLIGENCE)
+                    {
+                        if (GetLevelByClass(CLASS_TYPE_WIZARD, oCreature))
+                        {
+                            bSuitable = 1;
+                        }
+                    }
+                    else if (nAbility == ABILITY_WISDOM)
+                    {
+                       if (GetLevelByClass(CLASS_TYPE_CLERIC, oCreature) || GetLevelByClass(CLASS_TYPE_DRUID, oCreature) || GetLevelByClass(CLASS_TYPE_MONK, oCreature))
+                        {
+                            bSuitable = 1;
+                        } 
+                    }
+                    else if (nAbility == ABILITY_CHARISMA)
+                    {
+                        // AI clerics won't do anything useful with CHA except blow more turn undeads on things that don't need it
+                        if (GetLevelByClass(CLASS_TYPE_SORCERER, oCreature) || GetLevelByClass(CLASS_TYPE_PALADIN, oCreature) || GetLevelByClass(CLASS_TYPE_BARD, oCreature))
+                        {
+                            bSuitable = 1;
+                        } 
+                    }
+                }
+                else if (nItemPropertyType == ITEM_PROPERTY_BONUS_FEAT)
+                {
+                    int nIPRPFeatConst = GetItemPropertySubType(ipTest);
+                    int nFeat = StringToInt(Get2DAString("iprp_feats", "FeatIndex", nIPRPFeatConst));
+                    // If we have the feat already it's useless!
+                    if (!GetHasFeat(nFeat, oCreature))
+                    {
+                        // A few feats that I think pop up on TFN items
+                        object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oCreature);
+                        if (nFeat == FEAT_EXTRA_TURNING && GetHasFeat(FEAT_TURN_UNDEAD, oCreature))
+                        {
+                            bSuitable = 1;
+                        }
+                        else if (nFeat == FEAT_POINT_BLANK_SHOT && IPGetIsRangedWeapon(oWeapon))
+                        {
+                            bSuitable = 1;
+                        }
+                        else if (nFeat == FEAT_RAPID_SHOT && (GetBaseItemType(oWeapon) == BASE_ITEM_LONGBOW || GetBaseItemType(oWeapon) == BASE_ITEM_SHORTBOW))
+                        {
+                            bSuitable = 1;
+                        }
+                        else if (nFeat == FEAT_WEAPON_SPECIALIZATION_UNARMED_STRIKE && bIsUnarmedMonk)
+                        {
+                            bSuitable = 1;
+                        }
+                    }
+                }
+                else if (nItemPropertyType == ITEM_PROPERTY_BONUS_SPELL_SLOT_OF_LEVEL_N)
+                {
+                    // Spell slots are useless unless you have the class for them
+                    int nClass = GetItemPropertySubType(ipTest);
+                    if (GetLevelByClass(nClass, oCreature))
+                    {
+                        bSuitable = 1;
+                    }
+                }
+                else if (nItemPropertyType == ITEM_PROPERTY_ONHITCASTSPELL)
+                {
+                    
+                    // This is fine so long as it's not on gloves
+                    if (nBaseItem != BASE_ITEM_GLOVES && nBaseItem != BASE_ITEM_BRACER)
+                    {
+                        bSuitable = 1;
+                    }
+                }
+                else if (nItemPropertyType == ITEM_PROPERTY_SKILL_BONUS)
+                {
+                    int nSkill = GetItemPropertySubType(ipTest);
+                    // If we have ranks in the skill, it's probably useful
+                    if (GetSkillRank(nSkill, oCreature, TRUE) > 0)
+                    {
+                        bSuitable = 1;
+                    }
+                    else if (nSkill == SKILL_DISCIPLINE || nSkill == SKILL_SPOT || nSkill == SKILL_SEARCH || nSkill == SKILL_LISTEN)
+                    {
+                        // I don't think anyone would mind getting a bit more of this
+                        bSuitable = 1;
+                    }
+                    else if (nSkill == SKILL_CONCENTRATION && (GetLevelByClass(CLASS_TYPE_WIZARD, oCreature) || GetLevelByClass(CLASS_TYPE_SORCERER, oCreature) || GetLevelByClass(CLASS_TYPE_CLERIC, oCreature) || GetLevelByClass(CLASS_TYPE_DRUID, oCreature) || GetLevelByClass(CLASS_TYPE_BARD, oCreature)))
+                    {
+                        // Casters probably don't mind concentration
+                        bSuitable = 1;
+                    }
+                }
+            }
+            
+            
+            if (bSuitable)
+            {
+                break;
+            }
+            ipTest = GetNextItemProperty(oItem);
+        }
+        
+        
+        return bSuitable;
+    }
+    return 1;
+}
 
 //void main() {}

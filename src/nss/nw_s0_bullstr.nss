@@ -42,6 +42,8 @@ void main()
     //Set the ability bonus effect
     eStr = EffectAbilityIncrease(ABILITY_STRENGTH,nModify);
     effect eLink = EffectLinkEffects(eStr, eDur);
+    
+    RemoveAnimalSpellEffects(spell.Target);
 
     //Appyly the VFX impact and ability bonus effect
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nDuration));

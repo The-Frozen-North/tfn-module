@@ -220,6 +220,10 @@ void main()
         if (GetHasPermanentPetrification(oPC))
         {
             string sPenalty = IntToString(GetXP(oPC) - GetXPOnRespawn(oPC)) + " XP and " + IntToString(GetGoldLossOnRespawn(oPC)) + " gold";
+            if (GetXP(oPC) < 3000)
+            {
+                sPenalty = "no penalty";
+            }
             string sDeathMessage;
             if (GetStoneToFleshSalveCharges(oPC) > 0)
             {

@@ -11,7 +11,13 @@ void main()
         {
             SendRestedXPNotifierToPC(oLeaver);
         }
+        int nRefresh = GetLocalInt(OBJECT_SELF, "refresh");
+        if (nRefresh >= 400)
+        {
+            SetLocalInt(OBJECT_SELF, "refresh", 400);
+        }
     }
+    
     string sScript = GetLocalString(OBJECT_SELF, "exit_script");
     if (sScript != "") { ExecuteScript(sScript); }
 }

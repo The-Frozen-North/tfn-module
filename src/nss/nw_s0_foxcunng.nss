@@ -45,6 +45,8 @@ void main()
     //Set Adjust Ability Score effect
     eRaise = EffectAbilityIncrease(ABILITY_INTELLIGENCE, nRaise);
     effect eLink = EffectLinkEffects(eRaise, eDur);
+    
+    RemoveAnimalSpellEffects(spell.Target);
 
     //Apply the VFX impact and effects
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nDuration));

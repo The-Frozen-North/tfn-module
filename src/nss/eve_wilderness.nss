@@ -9,11 +9,11 @@ void main()
     switch (d10())
     {
         case 1: sScript = "eve_adventure"; break;
-        case 2: sScript = "eve_adventurevet"; break;
+        case 2: sScript = "eve_adventure"; break;
         case 3: sScript = "eve_bears"; break;
         case 4: sScript = "eve_militia"; break;
-        case 5: sScript = "eve_paladin"; break;
-        case 6: sScript = "eve_paladinvet"; break;
+        case 5: sScript = "eve_adventure"; break;
+        case 6: sScript = "eve_adventure"; break;
         case 7: sScript = "eve_travelmer"; break;
         case 8: sScript = "eve_wolves"; break;
         case 9:

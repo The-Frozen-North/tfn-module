@@ -157,6 +157,32 @@ void main()
     }
 
     __TurnCombatRoundOn(TRUE);
+    
+    // PDK followers could really do with help using their shield
+    if (GetLevelByClass(CLASS_TYPE_PURPLE_DRAGON_KNIGHT, OBJECT_SELF) >= 1)
+    {
+        location lSelf = GetLocation(OBJECT_SELF);
+        object oTest = GetFirstObjectInShape(SHAPE_SPHERE, 10.0, lSelf);
+        int nBest = -1;
+        object oBest = OBJECT_INVALID;
+        while (GetIsObjectValid(oTest))
+        {            
+            if (!GetIsDead(oTest) && oTest != OBJECT_SELF && !GetIsEnemy(oTest) && GetIsInCombat(oTest))
+            {
+                int nMissing = GetMaxHitPoints(oTest) - GetCurrentHitPoints(oTest);
+                if (nMissing > nBest)
+                {
+                    nBest = nMissing;
+                    oBest = oTest;
+                }
+            }
+            oTest = GetNextObjectInShape(SHAPE_SPHERE, 10.0, lSelf);
+        }
+        if (GetIsObjectValid(oBest))
+        {
+            ActionUseFeat(FEAT_PDK_SHIELD, oBest);
+        }
+    }
 
     // ----------------------------------------------------------------------------------------
     // DetermineCombatRound: ACTIONS

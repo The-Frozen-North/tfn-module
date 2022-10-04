@@ -776,7 +776,8 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         ClearAllActions();
         return;
     }
-
+    
+    
 // Turn off Detect if there is a valid target
     SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, FALSE);
 
@@ -822,6 +823,7 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
     }
 
     if (GetCurrentAction() != ACTION_CASTSPELL) ClearAllActions();
+    
 
 //    //no magic area
 //    if (gsFLGetAreaFlag("OVERRIDE_MAGIC"))

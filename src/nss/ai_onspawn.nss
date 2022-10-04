@@ -83,7 +83,7 @@ void main()
 
             if (d10() == 1)
             {
-                object oItem = GenerateTierItem(GetHitDice(OBJECT_SELF), iAreaCR, OBJECT_SELF, "Misc");
+                object oItem = GenerateTierItem(GetHitDice(OBJECT_SELF), GetHitDice(OBJECT_SELF), OBJECT_SELF, "Misc");
                 SetDroppableFlag(oItem, FALSE);
                 SetPickpocketableFlag(oItem, TRUE);
             }
