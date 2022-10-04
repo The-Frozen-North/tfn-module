@@ -628,6 +628,10 @@ void AddRandomAdventurerSkills(object oCreature, int nSkillpoints)
     int nHD = GetHitDice(oCreature);
     int nMaxRank = nHD + 3;
     int nNumDesired = GetLocalInt(oCreature, "adventurer_num_desired_skills");
+    if (nNumDesired == 0)
+    {
+        return;
+    }
     int nAmountPerSkill = nSkillpoints/nNumDesired;
     int nRemainder = 0;
     if (nAmountPerSkill > nMaxRank)
@@ -653,6 +657,11 @@ void AddRandomAdventurerSkills(object oCreature, int nSkillpoints)
 void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
 {
     if (nHD < 1) { return; }
+    else if (nPath <= 0 || nPath > ADVENTURER_PATH_HIGHEST)
+    {
+        WriteTimestampedLogEntry("Warning: Tried to advance adventurer along invalid path " + IntToString(nPath));
+        nPath = Random(12) + 1;
+    }
     int nRacialType = GetRacialTypeForAdventurerPath(nPath);
     NWNX_Creature_SetRacialType(oCreature, nRacialType);
     AdjustAdventurerAlignment(oCreature, nPath);
@@ -3323,6 +3332,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_TUMBLE);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISCIPLINE);
     }
+    
     
     
     // End of all the path handling...
