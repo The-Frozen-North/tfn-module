@@ -46,6 +46,10 @@ void main()
     object oKiller = GetLastHostileActor(oPlayer);
 
     string sPenalty = IntToString(GetXP(oPlayer) - GetXPOnRespawn(oPlayer)) + " XP and " + IntToString(GetGoldLossOnRespawn(oPlayer)) + " gold";
+    if (GetXP(oPlayer) < 3000)
+    {
+        sPenalty = "no penalty";
+    }
 
     string sDeathMessage = "You will be automatically revived if there is an ally nearby, there are no enemies, and you are out of combat, or you can respawn at your chosen temple for " + sPenalty + ".";
 

@@ -175,7 +175,6 @@ void HenchmenCombatRound(object oIntruder)
     // Community Patch 1.72: function changed in order to allow modify combat AI without need
     // to recompile all creature scripts. The combat AI is now resolved in 70_ai_generic script
     //------------------------------------------------------------------------------
-
 // force this to be used!
     SetLocalObject(OBJECT_SELF,"Intruder",oIntruder);
     ExecuteScript("70_ai_henchman",OBJECT_SELF);

@@ -8,6 +8,7 @@ void main()
     struct PrettifyPlaceableSettings pps = GetDefaultPrettifySettings();
     pps.sResRef = "nw_plc_puddle1";
     pps.fAvoidPlaceableRadius = 2.0;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_STONE;
     pps.nTargetDensity = 3;
     pps.fMaximumGroundSlope = 0.05;
@@ -30,6 +31,7 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "x2_plc_hole_s";
     pps.fAvoidPlaceableRadius = 1.5;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_GRASS;
     pps.nTargetDensity = 1;
     pps.fMaximumGroundSlope = 0.1;
@@ -47,6 +49,7 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "x3_plc_bush001";
     pps.fAvoidPlaceableRadius = 1.5;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_GRASS;
     pps.nTargetDensity = 1;
     pps.fMaximumGroundSlope = 0.2;
@@ -306,6 +309,7 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "tm_pl_bushlg01";
     pps.fAvoidPlaceableRadius = 1.5;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_GRASS;
     pps.nTargetDensity = 8;
     pps.fMaximumGroundSlope = 0.2;
@@ -385,6 +389,7 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "x0_dirtpatch";
     pps.fAvoidPlaceableRadius = 2.0;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_ABSTRACT_WALKABLE;
     pps.nTargetDensity = 3;
     pps.fMinScale = 0.1;
@@ -436,6 +441,7 @@ void main()
     pps = GetDefaultPrettifySettings();
     pps.sResRef = "x3_plc_treel018";
     pps.fAvoidPlaceableRadius = 7.0;
+    pps.fAvoidDoorRadius = 5.0;
     pps.nValidSurface1 = SURFACEMAT_GRASS;
     pps.nTargetDensity = 2;
     pps.fMaximumGroundSlope = 0.2;

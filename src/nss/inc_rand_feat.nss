@@ -195,7 +195,7 @@ int _EvaluateRandomFeat_Melee(object oCreature, int nFeat)
     if (nFeat == FEAT_BLIND_FIGHT) { return 60; }
     if (nFeat == FEAT_CALLED_SHOT) { return 30; }
     if (nFeat == FEAT_CLEAVE) {  return 60; }
-    if (nFeat == FEAT_CIRCLE_KICK) { return 100; }
+    if (nFeat == FEAT_CIRCLE_KICK) { return 150; }
     if (nFeat == FEAT_DISARM) { return 40; }
     if (nFeat == FEAT_DODGE) { return 30; }
     if (nFeat == FEAT_EXPERTISE) { return 40; }
@@ -217,7 +217,7 @@ int _EvaluateRandomFeat_Melee(object oCreature, int nFeat)
     if (nFeat == FEAT_WEAPON_FINESSE)
     {
         int nModDiff = GetAbilityModifier(ABILITY_DEXTERITY, oCreature) - GetAbilityModifier(ABILITY_STRENGTH, oCreature);
-        return max(0, 20*nModDiff);
+        return max(0, 40*nModDiff);
     }
     if (nFeat == FEAT_WEAPON_FOCUS_DAGGER)
     {
@@ -225,7 +225,7 @@ int _EvaluateRandomFeat_Melee(object oCreature, int nFeat)
         {
             return 200;
         }
-        return 20;
+        return 40;
     }
     if (nFeat == FEAT_WEAPON_PROFICIENCY_MARTIAL)
     {
@@ -442,7 +442,7 @@ int _BuildFeatChoiceArray_Melee(object oCreature)
     nTotalWeight += _AddToChoiceArray(FEAT_EXTRA_SMITING, _EvaluateRandomFeat_Melee(oCreature, FEAT_EXTRA_SMITING), oCreature);
     nTotalWeight += _AddToChoiceArray(FEAT_EXPERTISE, _EvaluateRandomFeat_Melee(oCreature, FEAT_EXPERTISE), oCreature);
     nTotalWeight += _AddToChoiceArray(FEAT_DODGE, _EvaluateRandomFeat_Melee(oCreature, FEAT_DODGE), oCreature);
-    nTotalWeight += _AddToChoiceArray(FEAT_DISARM, _EvaluateRandomFeat_Melee(oCreature, FEAT_DISARM), oCreature);
+    //nTotalWeight += _AddToChoiceArray(FEAT_DISARM, _EvaluateRandomFeat_Melee(oCreature, FEAT_DISARM), oCreature);
     nTotalWeight += _AddToChoiceArray(FEAT_CIRCLE_KICK, _EvaluateRandomFeat_Melee(oCreature, FEAT_CIRCLE_KICK), oCreature);
     nTotalWeight += _AddToChoiceArray(FEAT_CLEAVE, _EvaluateRandomFeat_Melee(oCreature, FEAT_CLEAVE), oCreature);
     nTotalWeight += _AddToChoiceArray(FEAT_CALLED_SHOT, _EvaluateRandomFeat_Melee(oCreature, FEAT_CALLED_SHOT), oCreature);
@@ -506,7 +506,7 @@ int _BuildFeatChoiceArray_FighterBonus(object oCreature)
         nTotalWeight += _AddToChoiceArray(FEAT_AMBIDEXTERITY, _EvaluateRandomFeat_Melee(oCreature, FEAT_AMBIDEXTERITY), oCreature);
         nTotalWeight += _AddToChoiceArray(FEAT_BLIND_FIGHT, _EvaluateRandomFeat_Melee(oCreature, FEAT_BLIND_FIGHT), oCreature);
         nTotalWeight += _AddToChoiceArray(FEAT_CALLED_SHOT, _EvaluateRandomFeat_Melee(oCreature, FEAT_CALLED_SHOT), oCreature);
-        nTotalWeight += _AddToChoiceArray(FEAT_DISARM, _EvaluateRandomFeat_Melee(oCreature, FEAT_DISARM), oCreature);
+        //nTotalWeight += _AddToChoiceArray(FEAT_DISARM, _EvaluateRandomFeat_Melee(oCreature, FEAT_DISARM), oCreature);
         nTotalWeight += _AddToChoiceArray(FEAT_DODGE, _EvaluateRandomFeat_Melee(oCreature, FEAT_DODGE), oCreature);
         nTotalWeight += _AddToChoiceArray(FEAT_MOBILITY, _EvaluateRandomFeat_Melee(oCreature, FEAT_MOBILITY), oCreature);
         nTotalWeight += _AddToChoiceArray(FEAT_SPRING_ATTACK, _EvaluateRandomFeat_Melee(oCreature, FEAT_SPRING_ATTACK), oCreature);
@@ -517,7 +517,7 @@ int _BuildFeatChoiceArray_FighterBonus(object oCreature)
         nTotalWeight += _AddToChoiceArray(FEAT_IMPROVED_EXPERTISE, _EvaluateRandomFeat_Melee(oCreature, FEAT_IMPROVED_EXPERTISE), oCreature);
         nTotalWeight += _AddToChoiceArray(FEAT_IMPROVED_KNOCKDOWN, _EvaluateRandomFeat_Melee(oCreature, FEAT_IMPROVED_KNOCKDOWN), oCreature);
         nTotalWeight += _AddToChoiceArray(FEAT_IMPROVED_POWER_ATTACK, _EvaluateRandomFeat_Melee(oCreature, FEAT_IMPROVED_POWER_ATTACK), oCreature);
-        nTotalWeight += _AddToChoiceArray(FEAT_IMPROVED_DISARM, _EvaluateRandomFeat_Melee(oCreature, FEAT_IMPROVED_DISARM), oCreature);
+        //nTotalWeight += _AddToChoiceArray(FEAT_IMPROVED_DISARM, _EvaluateRandomFeat_Melee(oCreature, FEAT_IMPROVED_DISARM), oCreature);
         nTotalWeight += _AddToChoiceArray(FEAT_IMPROVED_TWO_WEAPON_FIGHTING, _EvaluateRandomFeat_Melee(oCreature, FEAT_IMPROVED_TWO_WEAPON_FIGHTING), oCreature);
         nTotalWeight += _AddToChoiceArray(FEAT_WEAPON_FINESSE, _EvaluateRandomFeat_Melee(oCreature, FEAT_WEAPON_FINESSE), oCreature);
         nTotalWeight += _AddToChoiceArray(FEAT_WEAPON_FOCUS_DAGGER, _EvaluateRandomFeat_Melee(oCreature, FEAT_WEAPON_FOCUS_DAGGER), oCreature);
@@ -733,7 +733,7 @@ void AddRandomFeats(object oCreature, int nFeatList, int nCount)
             ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(GetHitDice(oCreature)), oCreature);
         }
     }
-    DelayCommand(10.0, _DelayedFixWeaponSpecificFeats(oCreature));
+    AssignCommand(GetModule(), DelayCommand(10.0, _DelayedFixWeaponSpecificFeats(oCreature)));
 }
 
 //void main(){}

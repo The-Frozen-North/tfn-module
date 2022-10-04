@@ -7,7 +7,7 @@ void main()
     {
        HenchmenCombatRound(OBJECT_INVALID);
     }
-
+    
 
     if(GetSpawnInCondition(NW_FLAG_END_COMBAT_ROUND_EVENT))
     {

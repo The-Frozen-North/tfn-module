@@ -16,8 +16,10 @@ const int RAND_SPELL_ARCANE_EVOKER_AOE = 1;
 const int RAND_SPELL_ARCANE_SINGLE_TARGET_BALANCED = 2;
 // All about trying to make it difficult for enemies to do anything
 const int RAND_SPELL_ARCANE_CONTROLLER = 3;
+// Niche spellbook, aka the true strike button
+const int RAND_SPELL_ARCANE_BUFF_ATTACKS = 4;
 
-const int RAND_SPELL_ARCANE_NUMLISTS = 4;
+const int RAND_SPELL_ARCANE_NUMLISTS = 5;
 
 const int RAND_SPELL_DIVINE_START = 100;
 
@@ -43,7 +45,10 @@ const int RAND_SPELL_NUM_SPELLBOOKS = 20;
 // nSpellbookType should be a RAND_SPELL_* constant.
 // Bards, paladins and rangers should only use their appropriate spellbook constants.
 // Load these with LoadSpellbook.
-void RandomSpellbookPopulate(int nSpellbookType, object oCreature, int nClass);
+// Spellbooks are saved by resref, sOverrideResRef allows you to override this
+// And the same override needs to be used for LoadSpellbook when retrieving
+// Name collisions are not protected against. Use with care.
+void RandomSpellbookPopulate(int nSpellbookType, object oCreature, int nClass, string sOverrideResRef="");
 
 void SetRandomSpellWeight(object oCreature, int nSpell, int nWeight);
 
@@ -55,11 +60,15 @@ void GuessThematicDomainWeights(object oCreature);
 
 // Loads a spellbook.
 // If no index is specified, selects randomly from the creature's resref's available saved books for the given class.
-void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1);
+// Spellbooks are saved by resref, sOverrideResRef allows you to override this
+// And the same override needs to be used for RandomSpellbookPopulate when seeding
+// Name collisions are not protected against. Use with care.
+// bSpellsOnly will not set domains or feats again.
+void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1, string sOverrideResRef="", int bSpellsOnly=0);
 
 // Return TRUE if it's time to seed spellbooks, FALSE if it's not (time to load them instead)
 // If it is time, does some initialisation - don't call this more than once for a single class for one creature
-int SeedingSpellbooks(int nClass, object oCreature=OBJECT_SELF);
+int SeedingSpellbooks(int nClass, object oCreature=OBJECT_SELF, string sOverrideResRef="");
 
 
 // These constants are commented out in nwscript.nss, but I kinda need them
@@ -165,12 +174,17 @@ struct CategoryWeights _CalculateWeightForSpellAssignment(struct CategoryWeights
     return cwOut;
 }
 
-int SeedingSpellbooks(int nClass, object oCreature=OBJECT_SELF)
+int SeedingSpellbooks(int nClass, object oCreature=OBJECT_SELF, string sOverrideResRef="")
 {
     if (GetLocalInt(GetModule(), RAND_SPELL_SEEDING_SPELLBOOKS))
     {
+        string sResRef = GetResRef(oCreature);
+        if (sOverrideResRef != "")
+        {
+            sResRef = sOverrideResRef;
+        }
         NWNX_Util_SetInstructionLimit(52428888);
-        SetCampaignInt("randspellbooks", GetResRef(oCreature) + "_numsbs_" + IntToString(nClass), 0);
+        SetCampaignInt("randspellbooks", sResRef + "_numsbs_" + IntToString(nClass), 0);
         return 1;
     }
     return 0;
@@ -208,8 +222,48 @@ void _GetAvailableSpellSlots(object oCreature, int nClass)
     {
         return;
     }
+    
     int nClassLevel = GetLevelByClass(nClass, oCreature);
     int nAbilityModifier = GetAbilityModifier(nClassAbility, oCreature);
+    
+    // Pale master gives +1 wiz/sorc on odd levels
+    if (GetLevelByClass(CLASS_TYPE_PALE_MASTER, oCreature) && (nClass == CLASS_TYPE_WIZARD || nClass == CLASS_TYPE_SORCERER))
+    {
+        // Applies only to the higher of the two
+        int nLevelInTheOtherOne = -1;
+        if (nClass == CLASS_TYPE_WIZARD)
+        {
+            nLevelInTheOtherOne = GetLevelByClass(CLASS_TYPE_SORCERER, oCreature);
+        }
+        else
+        {
+            nLevelInTheOtherOne = GetLevelByClass(CLASS_TYPE_WIZARD, oCreature);
+        }
+        // Out of a lack of better ideas, I'm going to guess that Sorc wins ties (lower ID)
+        // But I don't know why, and I also have no idea why anyone would ever design a creature this applies to
+        int bGetsPM = 1;
+        if (nLevelInTheOtherOne == nClassLevel)
+        {
+            WriteTimestampedLogEntry("WARNING: " + GetName(oCreature) + " has equal Sorc/Wiz levels AND Pale Master levels. Work out which one gets the progression, or reconsider your extremely bizarre creature design.");
+            if (nClass != CLASS_TYPE_SORCERER)
+            {
+                bGetsPM = 0;
+            }
+        }
+        else if (nLevelInTheOtherOne > nClassLevel)
+        {
+            bGetsPM = 0;
+        }
+        if (bGetsPM)
+        {
+            // 1 every odd level
+            // -> the final bonus is (class level / 2) rounded up
+            // aka ((class level + 1)/2) rounded down
+            nClassLevel += (GetLevelByClass(CLASS_TYPE_PALE_MASTER, oCreature)+1)/2;
+            WriteTimestampedLogEntry("Class " + IntToString(nClass) + " gets Pale Master boost");
+        }
+        
+    }
 
     int nLevel;
     for (nLevel=0; nLevel <= 9; nLevel++)
@@ -738,7 +792,7 @@ int _AddCasterFeatFromTempArrays(object oCreature, int nWeightSum)
     return -1;
 }
 
-void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nClass)
+void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nClass, string sOverrideResRef="")
 {
     int nOldInstructions = NWNX_Util_GetInstructionLimit();
     NWNX_Util_SetInstructionLimit(52428888);
@@ -931,6 +985,25 @@ void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nC
         nWeightSpellPenetration = 20;
         if (nCasterLevel >= 5) { nWeightSpellFocusEnchantment = 40; }
         nWeightExtendSpell = 40;
+    }
+    else if (nSpellbookType == RAND_SPELL_ARCANE_BUFF_ATTACKS)
+    {
+        cwWeights.nWeightDamagingSingleTarget = 2;
+        cwWeights.nWeightDamagingAoESelective = 2;
+        cwWeights.nWeightDamagingAoENonSelective = 2;
+        cwWeights.nWeightControlSingleTarget = 2;
+        cwWeights.nWeightControlAoESelective = 2;
+        cwWeights.nWeightControlAoENonSelective = 2;
+        cwWeights.nWeightOffensiveUtility = 5;
+        cwWeights.nWeightCureConditions = 2;
+        cwWeights.nWeightDefences = 5;
+        
+        nWeightSpellPenetration = 1;
+        nWeightSpellFocusEvocation = 1;
+       
+        nWeightExtendSpell = 1;
+        nWeightMaximizeSpell = 0;
+        nWeightEmpowerSpell = 0;
     }
     
     
@@ -1671,6 +1744,10 @@ void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nC
             {
                 nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREASE, nClass, sClass2da, (20 + nCasterLevel + nSpellFocusConjuration * 3) * cwThisAssignment.nWeightControlAoENonSelective);
             }
+            if (nSpellbookType == RAND_SPELL_ARCANE_BUFF_ATTACKS)
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_TRUE_STRIKE, nClass, sClass2da, 200);
+            }
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BURNING_HANDS, nClass, sClass2da, (28 + nSpellFocusTransmutation * 8) * cwThisAssignment.nWeightDamagingAoENonSelective);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CHARM_PERSON, nClass, sClass2da, (26 + nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlSingleTarget);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_COLOR_SPRAY, nClass, sClass2da, (26 + nSpellFocusIllusion * 8) * cwThisAssignment.nWeightControlAoENonSelective);
@@ -2007,17 +2084,22 @@ void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nC
         int nFeat = JsonGetInt(jFeat);
         NWNX_Creature_RemoveFeat(oCreature, nFeat);
     }
-    int nSpellbookIndex = GetCampaignInt("randspellbooks", GetResRef(oCreature) + "_numsbs_" + IntToString(nClass));
-    //WriteTimestampedLogEntry("Set to " + GetResRef(oCreature) + "_randspellbook_" + IntToString(nClass) + "_" + IntToString(nSpellbookIndex));
+    string sResRef = GetResRef(oCreature);
+    if (sOverrideResRef != "")
+    {
+        sResRef = sOverrideResRef;
+    }
+    int nSpellbookIndex = GetCampaignInt("randspellbooks", sResRef + "_numsbs_" + IntToString(nClass));
+    //WriteTimestampedLogEntry("Set to " + sResRef + "_randspellbook_" + IntToString(nClass) + "_" + IntToString(nSpellbookIndex));
     //WriteTimestampedLogEntry(JsonDump(jObj));
-    SetCampaignJson("randspellbooks", GetResRef(oCreature) + "_rsb_" + IntToString(nClass) + "_" + IntToString(nSpellbookIndex), jObj);
-    SetCampaignInt("randspellbooks", GetResRef(oCreature) + "_numsbs_" + IntToString(nClass), nSpellbookIndex + 1);
+    SetCampaignJson("randspellbooks", sResRef + "_rsb_" + IntToString(nClass) + "_" + IntToString(nSpellbookIndex), jObj);
+    SetCampaignInt("randspellbooks", sResRef + "_numsbs_" + IntToString(nClass), nSpellbookIndex + 1);
     SetLocalInt(oCreature, "rand_feat_caster", nCasterFeats);
     NWNX_Util_SetInstructionsExecuted(0);
     
 }
 
-void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nClass)
+void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nClass, string sOverrideResRef="")
 {
     int nOldInstructions = NWNX_Util_GetInstructionLimit();
     NWNX_Util_SetInstructionLimit(52428888);
@@ -2682,7 +2764,7 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
             }
             if (!GetHasSpell(SPELL_GREATER_MAGIC_WEAPON, oCreature))
             {
-                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREATER_MAGIC_WEAPON, nClass, sClass2da, 20 * cwThisAssignment.nWeightMeleeAbility);
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREATER_MAGIC_WEAPON, nClass, sClass2da, 4 * cwThisAssignment.nWeightMeleeAbility);
             }
             if (!GetHasSpell(SPELL_DEATH_WARD, oCreature))
             {
@@ -2698,7 +2780,7 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
             }
             // Poison DC is apparently fixed and not dependent on SF: necromancy
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_POISON, nClass, sClass2da, 15 * cwThisAssignment.nWeightControlSingleTarget);
-            if ((nDomain1 != DOMAIN_STRENGTH || nDomain2 != DOMAIN_STRENGTH) || !GetHasFeat(FEAT_EXTEND_SPELL, oCreature))
+            if ((nDomain1 != DOMAIN_STRENGTH && nDomain2 != DOMAIN_STRENGTH) || !GetHasFeat(FEAT_EXTEND_SPELL, oCreature))
             {
                 nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DIVINE_POWER, nClass, sClass2da, (50 - (GetHasSpell(SPELL_DIVINE_POWER, oCreature) * 25)) * cwThisAssignment.nWeightMeleeAbility);
             }
@@ -2795,7 +2877,10 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CONTAGION, nClass, sClass2da, (10 + nSpellFocusNecromancy * 8) * cwThisAssignment.nWeightControlSingleTarget);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_SERIOUS_WOUNDS, nClass, sClass2da, 30 * cwThisAssignment.nWeightCureConditions);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_INFLICT_SERIOUS_WOUNDS, nClass, sClass2da, (20 + nSpellFocusNecromancy * 8) * cwThisAssignment.nWeightDamagingSingleTarget);
-            nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DARKFIRE, nClass, sClass2da, 30 * cwThisAssignment.nWeightMeleeAbility);
+            if (!GetHasSpell(SPELL_GREATER_MAGIC_WEAPON, oCreature))
+            {
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DARKFIRE, nClass, sClass2da, 40 * cwThisAssignment.nWeightMeleeAbility);
+            }
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_DISPEL_MAGIC, nClass, sClass2da,  (2 - GetHasSpell(SPELL_DISPEL_MAGIC, oCreature)) * 15 * cwThisAssignment.nWeightOffensiveUtility);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GLYPH_OF_WARDING, nClass, sClass2da, (26 + nSpellFocusAbjuration * 8) * cwThisAssignment.nWeightDamagingAoESelective);
             if (!GetHasSpell(SPELL_MAGIC_CIRCLE_AGAINST_EVIL, oCreature))
@@ -2982,7 +3067,7 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BANE, nClass, sClass2da, (22 + nSpellFocusEnchantment * 8) * cwThisAssignment.nWeightControlAoESelective);
             if (!GetHasSpell(SPELL_BLESS, oCreature))
             {
-                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BLESS, nClass, sClass2da, 30 * max(cwThisAssignment.nWeightOffensiveUtility, cwThisAssignment.nWeightMeleeAbility));
+                nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_BLESS, nClass, sClass2da, 30 * cwThisAssignment.nWeightOffensiveUtility);
             }
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_CURE_LIGHT_WOUNDS, nClass, sClass2da, 30 * cwThisAssignment.nWeightCureConditions);
             nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_INFLICT_LIGHT_WOUNDS, nClass, sClass2da, (20 + nSpellFocusNecromancy * 8) * cwThisAssignment.nWeightDamagingSingleTarget);
@@ -3831,17 +3916,23 @@ void _RandomSpellbookPopulateDivine(int nSpellbookType, object oCreature, int nC
         int nFeat = JsonGetInt(jFeat);
         NWNX_Creature_RemoveFeat(oCreature, nFeat);
     }
-    int nSpellbookIndex = GetCampaignInt("randspellbooks", GetResRef(oCreature) + "_numsbs_" + IntToString(nClass));
+    string sResRef = GetResRef(oCreature);
+    if (sOverrideResRef != "")
+    {
+        sResRef = sOverrideResRef;
+    }
+    int nSpellbookIndex = GetCampaignInt("randspellbooks", sResRef + "_numsbs_" + IntToString(nClass));
     //WriteTimestampedLogEntry("Set to " + GetResRef(oCreature) + "_randspellbook_" + IntToString(nClass) + "_" + IntToString(nSpellbookIndex));
     //WriteTimestampedLogEntry(JsonDump(jObj));
-    SetCampaignJson("randspellbooks", GetResRef(oCreature) + "_rsb_" + IntToString(nClass) + "_" + IntToString(nSpellbookIndex), jObj);
-    SetCampaignInt("randspellbooks", GetResRef(oCreature) + "_numsbs_" + IntToString(nClass), nSpellbookIndex + 1);
+    
+    SetCampaignJson("randspellbooks", sResRef + "_rsb_" + IntToString(nClass) + "_" + IntToString(nSpellbookIndex), jObj);
+    SetCampaignInt("randspellbooks", sResRef + "_numsbs_" + IntToString(nClass), nSpellbookIndex + 1);
     SetLocalInt(oCreature, "rand_feat_caster", nCasterFeats);
     NWNX_Util_SetInstructionsExecuted(0);
 }
 
 
-void RandomSpellbookPopulate(int nSpellbookType, object oCreature, int nClass)
+void RandomSpellbookPopulate(int nSpellbookType, object oCreature, int nClass, string sOverrideResRef="")
 {
     WriteTimestampedLogEntry("Populating random spellbook of type " + IntToString(nSpellbookType) + " for " + GetName(oCreature) + " and class " + IntToString(nClass));
     if (GetLevelByClass(nClass, oCreature) <= 0)
@@ -3851,27 +3942,40 @@ void RandomSpellbookPopulate(int nSpellbookType, object oCreature, int nClass)
     _GetAvailableSpellSlots(oCreature, nClass);
     if (nSpellbookType < RAND_SPELL_DIVINE_START)
     {
-        _RandomSpellbookPopulateArcane(nSpellbookType, oCreature, nClass);
+        _RandomSpellbookPopulateArcane(nSpellbookType, oCreature, nClass, sOverrideResRef);
     }
     else
     {
-        _RandomSpellbookPopulateDivine(nSpellbookType, oCreature, nClass);
+        _RandomSpellbookPopulateDivine(nSpellbookType, oCreature, nClass, sOverrideResRef);
     }
 }
 
-void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1)
+void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1, string sOverrideResRef="", int bSpellsOnly=0)
 {
+    if (!GetIsObjectValid(oCreature))
+    {
+        return;
+    }
     // Save time and don't do this for prep casters, it'll all be overwritten anyway
     // Spont casters need their old known spells clearing though
     if (nClass == CLASS_TYPE_SORCERER || nClass == CLASS_TYPE_BARD)
     {
         _ClearSpellbook(oCreature, nClass);
     }
+    
+    string sResRef = GetResRef(oCreature);
+    if (sOverrideResRef != "")
+    {
+        sResRef = sOverrideResRef;
+    }
+    
     if (nFixedIndex == -1)
     {
-        int nNumSpellbooks = GetCampaignInt("randspellbooks", GetResRef(oCreature) + "_numsbs_" + IntToString(nClass));
+        int nNumSpellbooks = GetCampaignInt("randspellbooks", sResRef + "_numsbs_" + IntToString(nClass));
         nFixedIndex = Random(nNumSpellbooks);
     }
+    
+    int i;
     
     
     // Variable length:
@@ -3881,41 +3985,46 @@ void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1)
     // _: 1
     // nFixedIndex: 2, or maybe 3 if someone is insane
     // = 26 or 27 at a stretch, max for campaign db is 32
-    json jObj = GetCampaignJson("randspellbooks", GetResRef(oCreature) + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex));
-    WriteTimestampedLogEntry("Retrieve:" + GetResRef(oCreature) + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex));
+    json jObj = GetCampaignJson("randspellbooks", sResRef + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex));
+    WriteTimestampedLogEntry("Retrieve: " + sResRef + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex) + " in " + GetName(GetArea(oCreature)));
     WriteTimestampedLogEntry(JsonDump(jObj));
-    int nNumCasterFeats = GetLocalInt(oCreature, "rand_feat_caster");
-    int i;
-    json jFeats = JsonObjectGet(jObj, "Feats");
-    // The feat processor sets rand_feat_caster and will add random other feats if this fails to fill all the slots
-    for (i=0; i<nNumCasterFeats; i++)
+    if (!bSpellsOnly)
     {
-        json jFeat = JsonArrayGet(jFeats, i);
-        if (i >= JsonGetLength(jFeats)) { break; }
-        int nFeat = JsonGetInt(jFeat);
-        NWNX_Creature_AddFeat(oCreature, nFeat);
-        SetLocalInt(oCreature, "rand_feat_caster", GetLocalInt(oCreature, "rand_feat_caster")-1);
+        int nNumCasterFeats = GetLocalInt(oCreature, "rand_feat_caster");
+        
+        json jFeats = JsonObjectGet(jObj, "Feats");
+        // The feat processor sets rand_feat_caster and will add random other feats if this fails to fill all the slots
+        for (i=0; i<nNumCasterFeats; i++)
+        {
+            json jFeat = JsonArrayGet(jFeats, i);
+            if (i >= JsonGetLength(jFeats)) { break; }
+            int nFeat = JsonGetInt(jFeat);
+            NWNX_Creature_AddFeat(oCreature, nFeat);
+            SetLocalInt(oCreature, "rand_feat_caster", GetLocalInt(oCreature, "rand_feat_caster")-1);
+        }
+        
+        json jDomains = JsonObjectGet(jObj, "Domains");
+        int nNumDomains = JsonGetLength(jDomains);
+        for (i=0; i<nNumDomains; i++)
+        {
+            json jDomain = JsonArrayGet(jDomains, i);
+            int nDomain = JsonGetInt(jDomain);
+            int nOldDomain = GetDomain(oCreature, i+1, CLASS_TYPE_CLERIC);
+            int nFeat = StringToInt(Get2DAString("domains", "GrantedFeat", nOldDomain));
+            if (nFeat > 0 && GetHasFeat(nFeat, oCreature))
+            {
+                NWNX_Creature_RemoveFeat(oCreature, nFeat);
+            }
+            nFeat = StringToInt(Get2DAString("domains", "GrantedFeat", nDomain));
+            if (nFeat > 0 && !GetHasFeat(nFeat, oCreature))
+            {
+                NWNX_Creature_AddFeat(oCreature, nFeat);
+            }
+            NWNX_Creature_SetDomain(oCreature, CLASS_TYPE_CLERIC, i+1, nDomain);        
+        }
     }
     
-    json jDomains = JsonObjectGet(jObj, "Domains");
-    int nNumDomains = JsonGetLength(jDomains);
-    for (i=0; i<nNumDomains; i++)
-    {
-        json jDomain = JsonArrayGet(jDomains, i);
-        int nDomain = JsonGetInt(jDomain);
-        int nOldDomain = GetDomain(oCreature, i+1, CLASS_TYPE_CLERIC);
-        int nFeat = StringToInt(Get2DAString("domains", "GrantedFeat", nOldDomain));
-        if (nFeat > 0 && GetHasFeat(nFeat, oCreature))
-        {
-            NWNX_Creature_RemoveFeat(oCreature, nFeat);
-        }
-        nFeat = StringToInt(Get2DAString("domains", "GrantedFeat", nDomain));
-        if (nFeat > 0 && !GetHasFeat(nFeat, oCreature))
-        {
-            NWNX_Creature_AddFeat(oCreature, nFeat);
-        }
-        NWNX_Creature_SetDomain(oCreature, CLASS_TYPE_CLERIC, i+1, nDomain);        
-    }
+    int bFailedAnIndexZero = 0;
     
     for(i=0; i<=9; i++)
     {
@@ -3931,6 +4040,11 @@ void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1)
             {
                 //WriteTimestampedLogEntry("Add spont known spell " + IntToString(nThisSpell) + " at lvl " + IntToString(nThisLevel));
                 NWNX_Creature_AddKnownSpell(oCreature, nClass, i, nSpell);
+                if (NWNX_Creature_GetKnownSpell(oCreature, nClass, i, nSpellIndex) != nSpell)
+                {
+                    WriteTimestampedLogEntry("Failed to set spont spell " + IntToString(nSpell) + " at level " + IntToString(i) + " index " + IntToString(nSpellIndex));
+                    if (nSpellIndex == 0) { bFailedAnIndexZero = 1; }
+                }
             }
             else
             {
@@ -3941,7 +4055,32 @@ void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1)
                 mem.domain = nDomain;
                 int nIndex = nSpellIndex;
                 NWNX_Creature_SetMemorisedSpell(oCreature, nClass, i, nIndex, mem);
+                if (NWNX_Creature_GetMemorisedSpell(oCreature, nClass, i, nIndex).id != nSpell)
+                {
+                    WriteTimestampedLogEntry("Failed to set mem spell " + IntToString(nSpell) + " at level " + IntToString(i) + " index " + IntToString(nSpellIndex));
+                    if (nSpellIndex == 0) { bFailedAnIndexZero = 1; }
+                }
             }
+        }
+    }
+    
+    // For some reason loading adventurers can happen before their slots update from level ups
+    // Doing this from INDEX ZERO fails only means that we won't continuously refresh due to failed spell setting
+    // due to ability score loss from items etc
+    // if we get this far it's because we can know the spellbook was designed for a creature with different spellcasting class levels
+    if (bFailedAnIndexZero)
+    {
+        int nFails = GetLocalInt(oCreature, "spellbook_load_fails");
+        nFails++;
+        SetLocalInt(oCreature, "spellbook_load_fails", nFails);
+        if (nFails > 100)
+        {
+            WriteTimestampedLogEntry("Failed to successfully set spells after 100 attempts.");
+        }
+        else
+        {
+            WriteTimestampedLogEntry("Retrying spellbook load in 10s; fail count = " + IntToString(nFails));
+            AssignCommand(GetModule(), DelayCommand(10.0, LoadSpellbook(nClass, oCreature, nFixedIndex, sOverrideResRef, 1)));
         }
     }
 }
