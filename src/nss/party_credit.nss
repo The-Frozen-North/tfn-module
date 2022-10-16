@@ -1,6 +1,7 @@
 #include "inc_xp"
 #include "inc_quest"
 #include "inc_loot"
+#include "inc_treasure"
 #include "inc_henchman"
 #include "inc_nwnx"
 #include "inc_key"
