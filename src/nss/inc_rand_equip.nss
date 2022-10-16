@@ -5,6 +5,7 @@
 #include "nwnx_creature"
 #include "nwnx_item"
 #include "70_inc_itemprop"
+#include "inc_treasure"
 
 // Suggested order:
 // Weapons
