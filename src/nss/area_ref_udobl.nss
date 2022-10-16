@@ -16,6 +16,7 @@ void BeLocked()
 
 void main()
 {
+    WriteTimestampedLogEntry("Running area_ref_udobl on " + GetName(OBJECT_SELF));
     int PUZZLE_GRID_SIZE;
     int PUZZLE_MAX_FORCED;
     if (d2() == 1)

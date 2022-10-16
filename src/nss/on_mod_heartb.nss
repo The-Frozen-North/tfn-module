@@ -131,7 +131,6 @@ void DoRevive(object oDead)
                                 {
                                     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_DISPEL), oDead);
                                     RemoveEffect(oDead, eEffect);
-                                    break;
                                 }
                             }
                             eEffect = GetNextEffect(oDead);

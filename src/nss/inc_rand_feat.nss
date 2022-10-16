@@ -56,7 +56,7 @@ int _RandomFeatIsRangedCharacter(object oCreature)
 
 int _SelectFeatList(object oCreature)
 {
-    if (Random(100) < 10)
+    if (Random(100) < 7)
     {
         return RAND_FEAT_LIST_GENERAL;
     }
@@ -70,7 +70,7 @@ int _SelectFeatList(object oCreature)
     int nCaster = GetLevelByClass(CLASS_TYPE_WIZARD, oCreature)
                 + GetLevelByClass(CLASS_TYPE_SORCERER, oCreature)
                 + (GetLevelByClass(CLASS_TYPE_CLERIC, oCreature)/2)
-                + GetLevelByClass(CLASS_TYPE_DRUID, oCreature)
+                + (GetLevelByClass(CLASS_TYPE_DRUID, oCreature)/2)
                 + GetLevelByClass(CLASS_TYPE_PALE_MASTER, oCreature)
                 + (GetLevelByClass(CLASS_TYPE_BARD, oCreature)/2);
 
@@ -98,7 +98,7 @@ int _SelectFeatList(object oCreature)
         return RAND_FEAT_LIST_MELEE;
     }
 
-    if (Random(100) < 80)
+    if (Random(100) < 50)
     {
         return RAND_FEAT_LIST_GENERAL;
     }
@@ -217,7 +217,7 @@ int _EvaluateRandomFeat_Melee(object oCreature, int nFeat)
     if (nFeat == FEAT_WEAPON_FINESSE)
     {
         int nModDiff = GetAbilityModifier(ABILITY_DEXTERITY, oCreature) - GetAbilityModifier(ABILITY_STRENGTH, oCreature);
-        return max(0, 40*nModDiff);
+        return max(0, 50*nModDiff);
     }
     if (nFeat == FEAT_WEAPON_FOCUS_DAGGER)
     {

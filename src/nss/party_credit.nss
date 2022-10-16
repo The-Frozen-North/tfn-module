@@ -1,6 +1,7 @@
 #include "inc_xp"
 #include "inc_quest"
 #include "inc_loot"
+#include "inc_treasure"
 #include "inc_henchman"
 #include "inc_nwnx"
 #include "inc_key"
@@ -485,7 +486,8 @@ void main()
 // only distribute gold if there is treasure
     int nGold = 0;
     int nGoldToDistribute = 0;
-    if (!bNoTreasure)
+    // also avoid dropping empty lootbags for people who have the key already
+    if (!bNoTreasure || GetIsObjectValid(oKey))
     {
         if (ShouldDebugLoot())
         {
@@ -499,8 +501,8 @@ void main()
         {
             nGold = DetermineGoldFromCR(iCR);
         }
-
-        nGoldToDistribute = nGold/nTotalSize;
+        nGoldToDistribute = nGold/max(1, nTotalSize);
+        
 // remove henchman gold now, if they exist
         if (Party.HenchmanSize > 0) nGold = nGold - Party.HenchmanSize*nGoldToDistribute;
     }
@@ -579,7 +581,7 @@ void main()
    {
         fMultiplier = 2.0;
    }
-
+   
    float fXP = GetPartyXPValue(OBJECT_SELF, bAmbush, Party.AverageLevel, Party.TotalSize, fMultiplier);
 
 // =========================
@@ -610,7 +612,10 @@ void main()
 
 // If there's a quest on the object, add a quest item to their personal if this player is eligible
         if (sQuestItemResRef != "" && GetLocalString(oContainer, "quest1") != "" && GetIsQuestStageEligible(oContainer, oPC, 1))
-            CreateItemOnObject(sQuestItemResRef, oPersonalLoot, 1, "quest");
+        {
+            object oQuest = CreateItemOnObject(sQuestItemResRef, oPersonalLoot, 1, "quest");
+            SetName(oQuest, QUEST_ITEM_NAME_COLOR + GetName(oQuest) + "</c>");
+        }
 
         if (bNoTreasure == FALSE)
         {
@@ -635,7 +640,8 @@ void main()
         {
             if (!GetHasKey(oPC, GetTag(oKey)))
             {
-                CopyItem(oKey, oPersonalLoot);
+                object oNewKey = CopyItem(oKey, oPersonalLoot);
+                SetName(oNewKey, KEY_ITEM_NAME_COLOR + GetName(oNewKey) + "</c>");
             }
         }
         // This is for putting keys inside placeables
@@ -643,6 +649,7 @@ void main()
         if (sKeyResRef != "")
         {
             object oKeyItem = CreateItemOnObject(sKeyResRef, oPersonalLoot, 1);
+            SetName(oKeyItem, KEY_ITEM_NAME_COLOR + GetName(oKeyItem) + "</c>");
             if (GetHasKey(oPC, GetTag(oKeyItem)))
             {
                 DestroyObject(oKeyItem);

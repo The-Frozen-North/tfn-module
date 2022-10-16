@@ -49,8 +49,9 @@ const int BASE_T3_WEIGHT = 50;
 const int BASE_T4_WEIGHT = 15;
 const int BASE_T5_WEIGHT = 4;
 
+// See the implementation for notes on what these are and how they work
 const int T1_SIGMOID_MIDPOINT = 1;
-const int T2_SIGMOID_MIDPOINT = 4;
+const int T2_SIGMOID_MIDPOINT = 1;
 const int T3_SIGMOID_MIDPOINT = 7;
 const int T4_SIGMOID_MIDPOINT = 10;
 const int T5_SIGMOID_MIDPOINT = 13;
@@ -404,6 +405,9 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
     {
         SetItemStackSize(oNewItem, 1);
     }
+    
+    // Set visual transforms, and do the rest if it wasn't done for any reason
+    InitializeItem(oNewItem);
 
     return oNewItem;
 }
@@ -413,8 +417,7 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 // ---------------------------------------------------------
 object GenerateLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALID)
 {
-   
-
+    
    if (GetLocalInt(GetModule(), "treasure_ready") != 1)
    {
        SendMessageToAllPCs("Treasure isn't ready. No treasure will be generated.");

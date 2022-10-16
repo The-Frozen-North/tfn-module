@@ -33,7 +33,10 @@ int CharismaModifiedGold(object oPC, int nGold)
 
 int CharismaModifiedPersuadeGold(object oPC, int nGold)
 {
-    return FloatToInt(CharismaModifiedGold(oPC, nGold) * PERSUADE_DISCOUNT_MODIFIER);
+    int nRet = FloatToInt(CharismaModifiedGold(oPC, nGold) * PERSUADE_DISCOUNT_MODIFIER);
+    if (nRet < 10) { return nRet; }
+    if (nRet < 100) { return 5 * (nRet / 5); }
+    return 10 * (nRet / 10);
 }
 
 int CharismaDiscountedGold(object oPC, int nGold)

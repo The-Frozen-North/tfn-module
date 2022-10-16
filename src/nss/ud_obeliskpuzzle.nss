@@ -14,6 +14,11 @@ void main()
     object oArea = GetArea(OBJECT_SELF);
     if (GetLocalInt(oArea, "UDObeliskPuzzleComplete"))
     {
+        // Safety in case of refresh bugs: if the puzzle is marked as complete for any reason, make sure both gates can be opened
+        object oExit = GetObjectByTag("UDObeliskPuzzleProgression");
+        SetLocked(oExit, FALSE);
+        oExit = GetObjectByTag("UDObeliskPuzzleEntrance");
+        SetLocked(oExit, FALSE);
         return;
     }
     // If someone is using this without opening the entry gate first

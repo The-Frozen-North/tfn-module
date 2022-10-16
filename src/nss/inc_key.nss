@@ -1,5 +1,8 @@
 #include "inc_persist"
 
+// A light blue/purple. It's pretty.
+const string KEY_ITEM_NAME_COLOR = "<c\xa9\x96\xff>";
+
 // Include for key functions.
 
 int GetHasKey(object oPC, string sKeyTag);
@@ -28,7 +31,7 @@ void AddKeyToPlayer(object oPC, object oKey)
     SQLocalsPlayer_SetInt(oPC, "haskeytag_" + sKeyTag, 1);
     string sDesc = GetDescription(oKey);
     SetCampaignString("key_info", sKeyTag + "_desc", sDesc);
-    string sName = GetName(oKey);
+    string sName = GetName(oKey, TRUE);
     SetCampaignString("key_info", sKeyTag + "_name", sName);
     object oBag = GetItemPossessedBy(oPC, "keybag");
     if (!GetIsObjectValid(oBag))

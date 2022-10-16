@@ -2,6 +2,7 @@
 #include "util_i_csvlists"
 #include "nwnx_area"
 #include "nwnx_object"
+#include "nwnx_creature"
 #include "nw_inc_gff"
 #include "inc_loot"
 
@@ -221,13 +222,30 @@ void main()
                         sQuest = GetLocalString(oObject, "quest"+IntToString(nQuestLoop));
                         sQuestName = GetSubString(sQuest, 3, 27);
 
+                        int bQuestNPC = 0;
                         if (GetStringLeft(sQuestName, 2) == "q_")
                         {
                             SetLocalString(oModule, "quests", AddListItem(GetLocalString(oModule, "quests"), sQuestName, TRUE));
+                            bQuestNPC = 1;
+                            
                         }
                         else if (GetStringLeft(sQuestName, 2) == "b_")
                         {
                             SetLocalString(oModule, "bounties", AddListItem(GetLocalString(oModule, "bounties"), sQuestName, TRUE));
+                            bQuestNPC = 1;
+                        }
+                        
+                        // Maintain a list of NPCs on the area too
+                        // This is needed to know what to check for questgiver highlights without having to
+                        // iterate over everything in the area more times
+                        if (bQuestNPC)
+                        {
+                            // Don't mess with enemies
+                            int nFaction = NWNX_Creature_GetFaction(oObject);
+                            if (GetPlotFlag(oObject) || GetImmortal(oObject) || nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER || nFaction == STANDARD_FACTION_MERCHANT)
+                            {
+                                SetLocalString(oArea, "quest_npcs", AddListItem(GetLocalString(oArea, "quest_npcs"), ObjectToString(oObject), TRUE));
+                            }
                         }
                    }
 
