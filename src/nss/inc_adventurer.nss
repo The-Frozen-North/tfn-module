@@ -3500,12 +3500,12 @@ int GetRandomItemTierFromAdventurerHD(int nHD)
     if (nHD == 1) { return 1; }
     else if (nHD == 2)
     {
-        if (d6() == 1) { return 2; }
+        if (d10() == 1) { return 2; }
         return 1;
     }
     else if (nHD == 3)
     {
-        if (d2() == 1) { return 2; }
+        if (d6() == 1) { return 2; }
         return 1;
     }
     else if (nHD == 4)
@@ -3518,55 +3518,59 @@ int GetRandomItemTierFromAdventurerHD(int nHD)
     {
         int nRoll = d10();
         if (nRoll <= 2) { return 1; }
-        else if (nRoll <= 8) { return 2; }
+        else if (nRoll <= 9) { return 2; }
         return 3;
     }
     else if (nHD == 6)
     {
         int nRoll = d10();
         if (nRoll <= 1) { return 1; }
-        else if (nRoll <= 7) { return 2; }
+        else if (nRoll <= 8) { return 2; }
         return 3;
     }
     else if (nHD == 7)
     {
         int nRoll = d10();
         if (nRoll <= 1) { return 1; }
-        else if (nRoll <= 5) { return 2; }
+        else if (nRoll <= 6) { return 2; }
         return 3;
     }
     else if (nHD == 8)
     {
         int nRoll = d10();
-        if (nRoll <= 1) { return 2; }
-        else if (nRoll <= 7) { return 3; }
+        if (nRoll <= 1) { return 1; }
+        else if (nRoll <= 4) { return 2; }
+        else if (nRoll <= 9) { return 3; }
         return 4;
     }
     else if (nHD == 9)
     {
         int nRoll = d10();
-        if (nRoll <= 8) { return 3; }
-        else if (nRoll <= 9) { return 4; }
-        return 5;
+        if (nRoll <= 3) { return 2; }
+        else if (nRoll <= 8) { return 3; }
+        return 4;
     }
     else if (nHD == 10)
     {
         int nRoll = d10();
-        if (nRoll <= 6) { return 3; }
+        if (nRoll <= 2) { return 2; }
+        else if (nRoll <= 6) { return 3; }
         else if (nRoll <= 9) { return 4; }
         return 5;
     }
     else if (nHD == 11)
     {
         int nRoll = d10();
-        if (nRoll <= 2) { return 3; }
+        if (nRoll <= 1) { return 2; }
+        else if (nRoll <= 5) { return 3; }
         else if (nRoll <= 8) { return 4; }
         return 5;
     }
     else if (nHD >= 12)
     {
         int nRoll = d10();
-        if (nRoll <= 5) { return 4; }
+        if (nRoll <= 4) { return 3; }
+        else if (nRoll <= 7) { return 4; }
         return 5;
     }
     // should never be reached
