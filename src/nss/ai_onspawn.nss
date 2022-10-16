@@ -112,6 +112,11 @@ void main()
         fCR = fCR * 1.5; // 50% increase for semibosses
         iAreaCR = FloatToInt(IntToFloat(iAreaCR) * 1.2);
     }
+    
+    // Create random weapons before scanning, it's sensible
+    string sScript = GetLocalString(OBJECT_SELF, "spawn_script");
+    //WriteTimestampedLogEntry("ai_onspawn for " + GetName(OBJECT_SELF) + "-> spawn script = " + sScript);
+    if (sScript != "") ExecuteScript(sScript);
 
 // Scan and store weapons.
     object oItemInSlot = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
@@ -174,7 +179,5 @@ void main()
         SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
     }
 
-    string sScript = GetLocalString(OBJECT_SELF, "spawn_script");
-    //WriteTimestampedLogEntry("ai_onspawn for " + GetName(OBJECT_SELF) + "-> spawn script = " + sScript);
-    if (sScript != "") ExecuteScript(sScript);
+    
 }

@@ -100,46 +100,53 @@ int GetAdventurerPathWeight(int nPath)
         case ADVENTURER_PATH_RANGER12:
         case ADVENTURER_PATH_ROGUE12:
         {
-            nRet = 100;
+            nRet = 60; // = 360 total attacker
             break;
         }
         // Pure casters - due to NWN's lack of CL progressing prestige options these would get quite rare
         case ADVENTURER_PATH_CLERIC12:
         case ADVENTURER_PATH_DRUID12:
         {
-            nRet = 200;
+            nRet = 110; // = 220 total caster
             break;
         }
         case ADVENTURER_PATH_WIZARD12:
         case ADVENTURER_PATH_SORCERER12:
         {
-            nRet = 300;
+            nRet = 150; // +300 = 520 total caster
             break;
         }
         // The weird mix base class
         case ADVENTURER_PATH_BARD12:
         {
-            nRet = 100;
+            nRet = 50; // = 410 total attacker, if you count bard as that
             break;
         }
         case ADVENTURER_PATH_FIGHTER7WM5:
         case ADVENTURER_PATH_FIGHTER6RANGER1WM5:
         {
-            nRet = 150;
+            nRet = 60; // +120 = 480 total attacker
             break;
         }
         case ADVENTURER_PATH_CLERIC11MONK1:
         case ADVENTURER_PATH_DRUID11MONK1:
         {
-            nRet = 50;
+            nRet = 40; // +80 = 600 total caster
             break;
         }
         // All the other many multiclass combinations
         default:
         {
-            nRet = 20;
+            // ADVENTURER_PATH_HIGHEST = 51
+            // 4 multiclasses marked above
+            // -> 40 possibilities
+            // -> +800 to attacker = 1400
+            nRet = 20; 
+            
             break;
         }
+        // 1400 attacker
+        // 600 caster
     }
     return nRet;
 }
@@ -3528,13 +3535,6 @@ int GetRandomItemTierFromAdventurerHD(int nHD)
         else if (nRoll <= 5) { return 2; }
         return 3;
     }
-    else if (nHD == 7)
-    {
-        int nRoll = d10();
-        if (nRoll <= 3) { return 2; }
-        else if (nRoll <= 9) { return 3; }
-        return 4;
-    }
     else if (nHD == 8)
     {
         int nRoll = d10();
@@ -3631,11 +3631,12 @@ void EquipAdventurer(object oAdventurer)
     
     
     struct RandomWeaponResults rwr = RollRandomWeaponTypesForCreature(oAdventurer);
-    TryEquippingRandomItemOfTier(rwr.nMainHand, nWeaponTier, nUniqueChance, oAdventurer, INVENTORY_SLOT_RIGHTHAND);
-    TryEquippingRandomItemOfTier(rwr.nOffHand, GetRandomItemTierFromAdventurerHD(nHD), nUniqueChance, oAdventurer, INVENTORY_SLOT_LEFTHAND);
+    object oMain = TryEquippingRandomItemOfTier(rwr.nMainHand, nWeaponTier, nUniqueChance, oAdventurer, INVENTORY_SLOT_RIGHTHAND);
+    object oOffhand = TryEquippingRandomItemOfTier(rwr.nOffHand, GetRandomItemTierFromAdventurerHD(nHD), nUniqueChance, oAdventurer, INVENTORY_SLOT_LEFTHAND);
+    object oBackup;
     if (rwr.nBackupMeleeWeapon > 0)
     {
-        AddRandomItemOfTierToInventory(rwr.nBackupMeleeWeapon, GetRandomItemTierFromAdventurerHD(nHD), nUniqueChance, oAdventurer);
+        oBackup = AddRandomItemOfTierToInventory(rwr.nBackupMeleeWeapon, GetRandomItemTierFromAdventurerHD(nHD), nUniqueChance, oAdventurer);
     }
     if (Random(100) < nChanceToFillApparel)
     {
@@ -3672,6 +3673,19 @@ void EquipAdventurer(object oAdventurer)
     
     nMaxAC = GetACOfArmorToEquip(oAdventurer, nMaxAC);
     TryEquippingRandomArmorOfTier(nMaxAC, nWeaponTier, nUniqueChance, oAdventurer);
+    if (GetWeaponRanged(oMain))
+    {
+        SetLocalInt(oAdventurer, "range", 1);
+        SetLocalObject(oAdventurer, "range_weapon", oMain);
+        SetLocalObject(oAdventurer, "melee_weapon", oBackup);
+        SetLocalObject(oAdventurer, "offhand", oOffhand);
+    }
+    else
+    {
+        SetLocalObject(oAdventurer, "melee_weapon", oMain);
+        SetLocalObject(oAdventurer, "offhand", oOffhand);
+    }
+    SetLocalInt(oAdventurer, "no_stealth", 1);
 }
 
 object SpawnAdventurer(location lSpawn, int nPath, int nHD, int bAdvance=1, int bEquip=1)

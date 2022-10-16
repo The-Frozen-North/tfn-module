@@ -12,6 +12,12 @@ const float AOE_QUEST_SIZE = 75.0;
 
 const int BOUNTY_RESET_TIME =  21600; // 6 hours
 
+// 0xffdc14 - a slightly darkened yellow
+const int HILITE_QUEST_ELIGIBLE = 16768020;
+const string QUEST_GIVER_NAME_COLOR = "<c\xff\xdc\x14>";
+// A light green
+const string QUEST_ITEM_NAME_COLOR = "<c\xb9\xff\xb9>";
+
 // Set a player's quest entry.
 void SetQuestEntry(object oPC, string sQuestEntry, int nValue);
 
@@ -40,6 +46,12 @@ int GetQuestEntry(object oPC, string sQuestEntry, int bForceJournal = FALSE);
 
 // Refreshes the PC's completed bounties
 void RefreshCompletedBounties(object oPC, int nTime, string sList);
+
+// Update the hilite colour overrides for quest creatures in oArea for oPC.
+void UpdateQuestgiverHighlights(object oArea, object oPC);
+
+// True of oPC is eligible for a quest stage handed out by oNPC.
+int IsPCEligibleForQuestFromNPC(object oNPC, object oPC);
 
 // -------------------------------------------------------------------------
 // FUNCTIONS
@@ -226,6 +238,8 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FAL
     {
         QuestCompleteWebhook(oPC, jeQuest.sName);
     }
+    
+    UpdateQuestgiverHighlights(GetArea(oQuestObject), oPC);
 }
 
 void AdvanceQuestSphere(object oQuestObject, int nTarget, float fRadius = 30.0)
@@ -239,6 +253,60 @@ void AdvanceQuestSphere(object oQuestObject, int nTarget, float fRadius = 30.0)
         if (GetIsPC(oPC)) AdvanceQuest(oQuestObject, oPC, 1);
 
         oPC = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation, FALSE, OBJECT_TYPE_CREATURE);
+    }
+}
+
+int IsPCEligibleForQuestFromNPC(object oNPC, object oPC)
+{
+    //SendMessageToPC(GetFirstPC(), "Found a PC");
+    int i;
+    for (i = 1; i < 20; i++)
+    {
+        if (GetIsQuestStageEligible(oNPC, oPC, i))
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void ClearAllQuestgiverHighlightsInAreaForPC(object oArea, object oPC)
+{
+    string sList = GetLocalString(oArea, "quest_npcs");
+    int nCount = CountList(sList);
+    int i;
+    for (i=0; i<nCount; i++)
+    {
+        object oGiver = StringToObject(GetListItem(sList, i));
+        if (GetIsObjectValid(oGiver))
+        {
+            NWNX_Player_SetCreatureNameOverride(oPC, oGiver, "");
+            NWNX_Player_SetObjectHiliteColorOverride(oPC, oGiver, -1);
+        }
+    }
+}
+
+void UpdateQuestgiverHighlights(object oArea, object oPC)
+{
+    string sList = GetLocalString(oArea, "quest_npcs");
+    int nCount = CountList(sList);
+    int i;
+    for (i=0; i<nCount; i++)
+    {
+        object oGiver = StringToObject(GetListItem(sList, i));
+        if (GetIsObjectValid(oGiver))
+        {
+            if (IsPCEligibleForQuestFromNPC(oGiver, oPC))
+            {
+                NWNX_Player_SetCreatureNameOverride(oPC, oGiver, QUEST_GIVER_NAME_COLOR + GetName(oGiver) + "</c>");
+                NWNX_Player_SetObjectHiliteColorOverride(oPC, oGiver, HILITE_QUEST_ELIGIBLE);
+            }
+            else
+            {
+                NWNX_Player_SetCreatureNameOverride(oPC, oGiver, "");
+                NWNX_Player_SetObjectHiliteColorOverride(oPC, oGiver, -1);
+            }
+        }
     }
 }
 

@@ -23,34 +23,29 @@ void main()
     {
         if (GetIsPC(oPC))
         {
-            //SendMessageToPC(GetFirstPC(), "Found a PC");
-            int i;
-            for (i = 1; i < 10; i++)
+            if (IsPCEligibleForQuestFromNPC(OBJECT_SELF, oPC))
             {
-                if (GetIsQuestStageEligible(OBJECT_SELF, oPC, i))
+                //SendMessageToPC(GetFirstPC(), "Quest stage "+IntToString(i)+" eligible");
+
+                string sTalktomeSound = GetLocalString(OBJECT_SELF, "talktome_sound");
+                AssignCommand(OBJECT_SELF, ClearAllActions());
+
+                if (sTalktomeSound != "")
                 {
-                    //SendMessageToPC(GetFirstPC(), "Quest stage "+IntToString(i)+" eligible");
-
-                    string sTalktomeSound = GetLocalString(OBJECT_SELF, "talktome_sound");
-                    AssignCommand(OBJECT_SELF, ClearAllActions());
-
-                    if (sTalktomeSound != "")
-                    {
-                        DelayCommand(0.05, AssignCommand(OBJECT_SELF, PlaySound(sTalktomeSound)));
-                    }
-                    else
-                    {
-                        DelayCommand(0.05, AssignCommand(OBJECT_SELF, PlayVoiceChat(VOICE_CHAT_TALKTOME, OBJECT_SELF)));
-                    }
-
-                    string sTalktomeText = GetLocalString(OBJECT_SELF, "talktome_text");
-                    if (sTalktomeText != "") DelayCommand(0.06, AssignCommand(OBJECT_SELF, SpeakString(sTalktomeText)));
-
-                    DelayCommand(0.07, TurnToFaceObject(oPC, OBJECT_SELF));
-                    DelayCommand(0.08, AssignCommand(OBJECT_SELF, PlayAnimation(ANIMATION_FIREFORGET_GREETING)));
-
-                    return;
+                    DelayCommand(0.05, AssignCommand(OBJECT_SELF, PlaySound(sTalktomeSound)));
                 }
+                else
+                {
+                    DelayCommand(0.05, AssignCommand(OBJECT_SELF, PlayVoiceChat(VOICE_CHAT_TALKTOME, OBJECT_SELF)));
+                }
+
+                string sTalktomeText = GetLocalString(OBJECT_SELF, "talktome_text");
+                if (sTalktomeText != "") DelayCommand(0.06, AssignCommand(OBJECT_SELF, SpeakString(sTalktomeText)));
+
+                DelayCommand(0.07, TurnToFaceObject(oPC, OBJECT_SELF));
+                DelayCommand(0.08, AssignCommand(OBJECT_SELF, PlayAnimation(ANIMATION_FIREFORGET_GREETING)));
+
+                return;
             }
         }
 

@@ -95,13 +95,6 @@
           "type": "resref",
           "value": "nw_aarcl002"
         }
-      },
-      {
-        "__struct_id": 16,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_wblms001"
-        }
       }
     ]
   },
@@ -549,6 +542,26 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "thug"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "spawn_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "rand_sewerthug"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",

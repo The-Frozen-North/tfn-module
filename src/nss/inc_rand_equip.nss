@@ -3,6 +3,7 @@
 #include "util_i_math"
 #include "x2_inc_itemprop"
 #include "nwnx_creature"
+#include "nwnx_item"
 #include "70_inc_itemprop"
 
 // Suggested order:
@@ -976,6 +977,8 @@ object _GetRandomItemFromChest(object oChest)
         nRandom--;
         oItem = GetNextItemInInventory(oChest);
     }
+    // Update scale
+    InitializeItem(oItem);
     return (oItem);
 }
 
@@ -1380,6 +1383,11 @@ void SetRandomEquipWeaponTypeWeight(object oCreature, int nBaseItem, int nWeight
 
 int IsItemSuitableForCreature(object oCreature, object oItem)
 {
+    // Respect ILR
+    if (NWNX_Item_GetMinEquipLevel(oItem) > GetHitDice(oCreature))
+    {
+        return 0;
+    }
     // Only deal in certain kinds of items
     int nBaseItem = GetBaseItemType(oItem);
     if (nBaseItem == BASE_ITEM_HELMET || nBaseItem == BASE_ITEM_AMULET || nBaseItem == BASE_ITEM_RING || nBaseItem == BASE_ITEM_BOOTS || nBaseItem == BASE_ITEM_BELT || nBaseItem == BASE_ITEM_CLOAK || nBaseItem == BASE_ITEM_GLOVES || nBaseItem == BASE_ITEM_BRACER || nBaseItem == BASE_ITEM_ARMOR || nBaseItem == BASE_ITEM_SMALLSHIELD || nBaseItem == BASE_ITEM_LARGESHIELD || nBaseItem == BASE_ITEM_TOWERSHIELD)

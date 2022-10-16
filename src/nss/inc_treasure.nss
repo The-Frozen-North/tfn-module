@@ -108,6 +108,12 @@ void AddEWR(object oItem)
 void InitializeItem(object oItem);
 void InitializeItem(object oItem)
 {
+    float fScale = GetLocalFloat(oItem, "scale");
+    if (fScale > 0.0)
+    {
+        SetObjectVisualTransform(oItem, OBJECT_VISUAL_TRANSFORM_SCALE, fScale);
+    }
+    
 // never do this again for items
     if (GetLocalInt(oItem, "initialized") == 1)
     {
@@ -153,6 +159,8 @@ void InitializeItem(object oItem)
         nGold *= (nMaxStackSize - 1);
         NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + nGold);
     }
+    
+    
     
 
     SetIdentified(oItem, nWasIdentified);

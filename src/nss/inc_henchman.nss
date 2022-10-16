@@ -203,6 +203,10 @@ void ScaleHenchman(object oHench)
         {
             nClass = CLASS_TYPE_WEAPON_MASTER;
             nPackage = 139;
+            if (nHenchmanLevel == 7)
+            {
+                NWNX_Creature_AddFeatByLevel(oHench, FEAT_WEAPON_OF_CHOICE_HEAVYFLAIL, 7);
+            }
         }
         else if (sResRef == "hen_nathyrra" && nHenchmanLevel == 8)
         {

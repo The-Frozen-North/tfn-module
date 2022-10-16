@@ -1,4 +1,7 @@
 void main()
 {
-    ActionStartConversation(GetLastUsedBy());
+    if (GetIsPC(GetLastUsedBy()))
+    {
+        ActionStartConversation(GetLastUsedBy());
+    }
 }

@@ -44,6 +44,15 @@ void main()
 
        string sResRef = GetStringLeft(GetResRef(OBJECT_SELF), 4);
        if (sResRef != "acad") DelayCommand(0.5, WarningMessage(oPC));
+       
+       // Texture overrides
+       string sScript = GetLocalString(OBJECT_SELF, "texoverride_script");
+       if (sScript != "")
+       {
+           SetScriptParam("pc", ObjectToString(oPC));
+           SetScriptParam("action", "load");
+           ExecuteScript(sScript, OBJECT_SELF);
+       }
 
        SendDebugMessage(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+", tag: "+GetTag(OBJECT_SELF)+", resref: "+GetResRef(OBJECT_SELF)+", climate: "+GetLocalString(OBJECT_SELF, "climate"));
 
@@ -52,6 +61,8 @@ void main()
        SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 50, oPC);
 
        ValidateMount(oPC);
+       
+       UpdateQuestgiverHighlights(OBJECT_SELF, oPC);
        
        if (PlayerGetsRestedXPInArea(oPC, OBJECT_SELF))
         {
@@ -76,7 +87,7 @@ void main()
            }
        }
 
-       string sScript = GetLocalString(OBJECT_SELF, "enter_script");
+       sScript = GetLocalString(OBJECT_SELF, "enter_script");
        if (sScript != "") ExecuteScript(sScript, OBJECT_SELF);
 
        //if (GetLocalInt(OBJECT_SELF, "instance") == 1)
