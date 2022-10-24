@@ -17,6 +17,7 @@ void main()
 
     object oSpeaker = GetLastSpeaker();
     object oTarget  = OBJECT_INVALID;
+    string sConv = GetLocalString(OBJECT_SELF, "conversation_override");
 
     int bCanRespond = GetAbilityScore(OBJECT_SELF, ABILITY_INTELLIGENCE) >= 6;
 
@@ -29,7 +30,7 @@ void main()
             gsCBGetIsPerceived(oSpeaker))
         {
             ClearAllActions(TRUE);
-            BeginConversation();
+            BeginConversation(sConv);
         }
         break;
 

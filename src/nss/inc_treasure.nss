@@ -108,11 +108,13 @@ void AddEWR(object oItem)
 void InitializeItem(object oItem);
 void InitializeItem(object oItem)
 {
+    if (!GetIsObjectValid(oItem)) { return; }
     float fScale = GetLocalFloat(oItem, "scale");
     if (fScale > 0.0)
     {
         SetObjectVisualTransform(oItem, OBJECT_VISUAL_TRANSFORM_SCALE, fScale);
     }
+    
     
 // never do this again for items
     if (GetLocalInt(oItem, "initialized") == 1)

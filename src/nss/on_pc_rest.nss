@@ -95,6 +95,7 @@ void main()
     if (GetLocalInt(oPC, "ambushed") == 1)
     {
         SendMessageToPC(oPC, "You cannot rest while you are being ambushed.");
+        AssignCommand(oPC, ClearAllActions());
         return;
     }
 

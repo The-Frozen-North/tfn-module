@@ -3,6 +3,7 @@
 #include "x3_inc_string"
 #include "inc_webhook"
 #include "nwnx_damage"
+#include "nwnx_item"
 #include "inc_nwnx"
 #include "inc_general"
 #include "inc_sqlite_time"
@@ -126,6 +127,17 @@ void main()
         else
         {
             SetCurrentHitPoints(oPC, nStoredHP);
+        }
+        
+        // Items you can't drop shouldn't have weight
+        object oTest = GetFirstItemInInventory(oPC);
+        while (GetIsObjectValid(oTest))
+        {
+            if (GetPlotFlag(oTest))
+            {
+                NWNX_Item_SetWeight(oTest, 0);
+            }
+            oTest = GetNextItemInInventory(oPC);
         }
     }
 // otherwise, assume they're new and do the whole new PC routine

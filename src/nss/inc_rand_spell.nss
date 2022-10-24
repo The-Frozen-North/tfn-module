@@ -4083,6 +4083,10 @@ void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1,
             AssignCommand(GetModule(), DelayCommand(10.0, LoadSpellbook(nClass, oCreature, nFixedIndex, sOverrideResRef, 1)));
         }
     }
+    else
+    {
+        NWNX_Creature_RestoreSpells(oCreature, -1);
+    }
 }
 
 void SeedingSpellbooksComplete(object oCreature=OBJECT_SELF)

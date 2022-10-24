@@ -10,6 +10,12 @@ void main()
     object oPerceived = GetLastPerceived();
 
     int nHeard = GetLastPerceptionHeard();
+    
+    string sScript = GetLocalString(OBJECT_SELF, "perception_script");
+    if (sScript != "")
+    {
+        ExecuteScript(sScript, OBJECT_SELF);
+    }
 
 // don't return if heard
     if ((GetLastPerceptionVanished() || GetLastPerceptionInaudible()) && !nHeard)

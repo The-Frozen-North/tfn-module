@@ -217,12 +217,13 @@ void main()
 // these types should never be skipped
                 if (nType == OBJECT_TYPE_CREATURE)
                 {
+                   int bQuestNPC = 0;
                    for (nQuestLoop = 1; nQuestLoop < 20; nQuestLoop++)
                    {
                         sQuest = GetLocalString(oObject, "quest"+IntToString(nQuestLoop));
                         sQuestName = GetSubString(sQuest, 3, 27);
 
-                        int bQuestNPC = 0;
+                        
                         if (GetStringLeft(sQuestName, 2) == "q_")
                         {
                             SetLocalString(oModule, "quests", AddListItem(GetLocalString(oModule, "quests"), sQuestName, TRUE));
@@ -234,19 +235,19 @@ void main()
                             SetLocalString(oModule, "bounties", AddListItem(GetLocalString(oModule, "bounties"), sQuestName, TRUE));
                             bQuestNPC = 1;
                         }
-                        
-                        // Maintain a list of NPCs on the area too
-                        // This is needed to know what to check for questgiver highlights without having to
-                        // iterate over everything in the area more times
-                        if (bQuestNPC)
-                        {
-                            // Don't mess with enemies
-                            int nFaction = NWNX_Creature_GetFaction(oObject);
-                            if (GetPlotFlag(oObject) || GetImmortal(oObject) || nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER || nFaction == STANDARD_FACTION_MERCHANT)
-                            {
-                                SetLocalString(oArea, "quest_npcs", AddListItem(GetLocalString(oArea, "quest_npcs"), ObjectToString(oObject), TRUE));
-                            }
-                        }
+                   }
+                   
+                   // Maintain a list of NPCs on the area too
+                   // This is needed to know what to check for questgiver highlights without having to
+                   // iterate over everything in the area more times
+                   if (bQuestNPC)
+                   {
+                       // Don't mess with enemies
+                       int nFaction = NWNX_Creature_GetFaction(oObject);
+                       if (GetPlotFlag(oObject) || GetImmortal(oObject) || nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER || nFaction == STANDARD_FACTION_MERCHANT)
+                       {
+                           SetLocalString(oArea, "quest_npcs", AddListItem(GetLocalString(oArea, "quest_npcs"), ObjectToString(oObject), TRUE));
+                       }
                    }
 
                    if ( (GetLocalString(oObject, "quest1") != "" || GetLocalString(oObject, "merchant") != "") && (GetPlotFlag(oObject) || GetImmortal(oObject)) )
