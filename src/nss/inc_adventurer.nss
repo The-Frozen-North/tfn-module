@@ -3944,8 +3944,11 @@ void RevealTrueNameToPlayer(object oAdventurer, object oPC)
 void DesignateAdventurerAsPartyLeader(object oAdventurer)
 {
     SetLocalObject(oAdventurer, "adventurer_leader", oAdventurer);
-    SetLocalInt(oAdventurer, "adventurer_party_size", 1);
-    SetLocalObject(oAdventurer, "adventurer_party1", oAdventurer);
+    if (GetLocalInt(oAdventurer, "adventurer_party_size") < 1)
+    {
+        SetLocalInt(oAdventurer, "adventurer_party_size", 1);
+        SetLocalObject(oAdventurer, "adventurer_party1", oAdventurer);
+    }
 }
 
 // Add oAdventurer to oLeader's little adventuring group.
@@ -3980,6 +3983,15 @@ object GetAdventurerPartyLeader(object oAdventurer)
         object oMember = GetLocalObject(oAdventurer, "adventurer_party" + IntToString(i));
         SetLocalObject(oMember, "adventurer_leader", oAdventurer);
     }
+    DesignateAdventurerAsPartyLeader(oAdventurer);
+    // Setting the party type will potentially set a bunch of variables on the new leader
+    // This is important in some cases, eg if the assassin leader gets killed by random spawns
+    // then another member will take up their job of talking to the PC and drop the note on death
+    int nPartyType = GetLocalInt(oAdventurer, "adventurer_party_type");
+    if (nPartyType > 0)
+    {
+        SetAdventurerPartyType(oAdventurer, nPartyType);
+    }
     return oAdventurer;
 }
 
@@ -4003,7 +4015,6 @@ void SetAdventurerPartyType(object oAdventurer, int nPartyType)
     SetLocalString(oAdventurer, "conversation_override", "adventureparty" + IntToString(nPartyType));
     if (nPartyType == ADVENTURER_PARTY_HOSTILE_ASSASSIN)
     {
-        SetLocalInt(oAdventurer, "semiboss", 1);
         SetLocalInt(oAdventurer, "cr", GetHitDice(oAdventurer));
         SetLocalInt(oAdventurer, "area_cr", GetLocalInt(GetArea(oAdventurer), "cr"));
         DeleteLocalInt(oAdventurer, "no_credit");
@@ -4011,6 +4022,7 @@ void SetAdventurerPartyType(object oAdventurer, int nPartyType)
         SetLocalString(oLeader, "perception_script", "percep_advp1");
         SetLocalString(oLeader, "heartbeat_script", "hb_advp1");
         SetLocalString(oLeader, "death_script", "ondeath_assnote");
+        SetLocalInt(oLeader, "semiboss", 1);
         
     }
     else if (nPartyType == ADVENTURER_PARTY_REST_ASSASSIN)
