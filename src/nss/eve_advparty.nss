@@ -72,6 +72,7 @@ void main()
     // 5 guys, 2x HD-3, 3x HD-4
     int nRoll = d4();
     int i;
+    WriteTimestampedLogEntry("eve_advparty: roll = " + IntToString(nRoll));
     object oLeader;
     // Don't go below 3 hd
     if (nRoll == 1 && nAdventurerHD >= 5)
@@ -111,7 +112,7 @@ void main()
         }
     }
     // can't make HD+1 if HD already 12
-    else if (nRoll == 4 || nAdventurerHD == 12)
+    else if (nRoll <= 4 || nAdventurerHD == 12)
     {
         oLeader = CreateEventCreature("adventurer");
         AdvanceCreatureAlongAdventurerPath(oLeader, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD);
@@ -132,10 +133,13 @@ void main()
     
     // Set party type
     int nPartySize = GetAdventurerPartySize(oLeader);
-    for (i=1; i<=nPartySize; i++)
+    if (nPartySize >= 1)
     {
-        object oAdventurer = GetAdventurerPartyMemberByIndex(oLeader, i);
-        SetAdventurerPartyType(oAdventurer, nPartyType);
+        for (i=1; i<=nPartySize; i++)
+        {
+            object oAdventurer = GetAdventurerPartyMemberByIndex(oLeader, i);
+            SetAdventurerPartyType(oAdventurer, nPartyType);
+        }
     }
     
     SendDebugMessage("Spawned event adventurer party type " + IntToString(nPartyType));

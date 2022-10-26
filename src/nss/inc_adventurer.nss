@@ -255,9 +255,10 @@ int SelectAdventurerPathAssassin()
         if (_IsAdventurerPathSuitableForAssassin(i))
         {   
             nRandom -= GetAdventurerPathWeight(i);
-            i++;
         }
+        i++;
     }
+    //WriteTimestampedLogEntry("Selected assassin path: " + IntToString(i));
     return i;
 }
 
@@ -654,7 +655,10 @@ void AdventurerResetFeats(object oCreature)
     {
         int nFeat = NWNX_Creature_GetFeatByIndex(oCreature, nFeats - 1);
         int nLevel = NWNX_Creature_GetFeatGrantLevel(oCreature, nFeat);
-        NWNX_Creature_RemoveFeatByLevel(oCreature, nFeat, nLevel);
+        if (nLevel > 0)
+        {
+            NWNX_Creature_RemoveFeatByLevel(oCreature, nFeat, nLevel);
+        }
         NWNX_Creature_RemoveFeat(oCreature, nFeat);
         nFeats--;
     }
@@ -3472,10 +3476,12 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
     {
         AddRandomFeats(oCreature, RAND_FEAT_LIST_ROGUE_BONUS, nNumFighterBonusFeats - nUsedFighterBonusFeats);
     }
+    // Why is there TMI :(
+    //WriteTimestampedLogEntry("feat");
     AddRandomFeats(oCreature, RAND_FEAT_LIST_RANDOM, nRemainingFeats);
-    
+    //WriteTimestampedLogEntry("skills");
     AddRandomAdventurerSkills(oCreature, nRemainingSkillpoints);
-    
+    //WriteTimestampedLogEntry("gender/appearance/soundset");
     RandomiseGenderAndAppearance(oCreature);
     RandomiseCreatureSoundset_Average(oCreature);
     
@@ -3487,7 +3493,6 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
     {
         NWNX_Creature_SetFamiliarCreatureType(oCreature, Random(11));
     }
-    
     if (!bOverrideSpellbooks)
     {
         for (i=1; i<=3; i++)
@@ -3526,7 +3531,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
             }
         }
     }
-    
+    //WriteTimestampedLogEntry("spellbook prep");
     // Load or seed a spellbook
     int bStartedSeeding = 0;
     for (i=1; i<=3; i++)
@@ -3601,6 +3606,8 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         // The spellbook seeder needs to know this.
         SetLocalInt(oCreature, "noncaster", 1);
     }
+    
+    //WriteTimestampedLogEntry("Advanced adventurer " + GetAdventurerTrueName(oCreature) + " along path " + IntToString(nPath) + ", hd=" + (IntToString(nHD)));
 }
 
 int GetRandomItemTierFromAdventurerHD(int nHD)

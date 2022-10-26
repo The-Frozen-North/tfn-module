@@ -131,6 +131,7 @@ object MakeAssassinNote(object oAssassin, object oPC)
     }
     else
     {
+        // In an ideal world this message should never appear
         SetDescription(oNote, "This note was carried by an assassin in " +GetName(GetArea(oAssassin)) + ". It is too bloodstained to make out what it might have once said.");
     }
     return oNote;
