@@ -65,7 +65,11 @@ int _SelectFeatList(object oCreature)
 
     int nBAB = GetBaseAttackBonus(oCreature);
     float fHD = IntToFloat(GetHitDice(oCreature));
-    float fAdditionalBAB = (IntToFloat(nBAB)/fHD) - 0.5;
+    float fAdditionalBAB = 0.5;
+    if (fHD != 0.0)
+    {
+        fAdditionalBAB = (IntToFloat(nBAB)/fHD) - 0.5;
+    }
 
     int nCaster = GetLevelByClass(CLASS_TYPE_WIZARD, oCreature)
                 + GetLevelByClass(CLASS_TYPE_SORCERER, oCreature)
@@ -74,7 +78,11 @@ int _SelectFeatList(object oCreature)
                 + GetLevelByClass(CLASS_TYPE_PALE_MASTER, oCreature)
                 + (GetLevelByClass(CLASS_TYPE_BARD, oCreature)/2);
 
-    float fCasterProportion = IntToFloat(nCaster)/fHD;
+    float fCasterProportion = 0.0;
+    if (fHD != 0.0)
+    {
+        fCasterProportion = IntToFloat(nCaster)/fHD;
+    }
 
     if (fCasterProportion >= 0.8)
     {

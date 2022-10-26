@@ -1,5 +1,6 @@
 #include "util_i_csvlists"
 #include "inc_ai_combat"
+#include "inc_adv_assassin"
 
 string ChooseSpawnRef(object oArea, int nTarget)
 {
@@ -55,6 +56,49 @@ void CreateAmbush(int nTarget, object oArea, object oPC, location lLocation, loc
     }
 }
 
+int CreateAdventurerAmbush(location lLocation, object oPC)
+{
+    int nSenderType = GetAdventurerAssassinSender(oPC);
+    if (nSenderType > ADVENTURER_ASSASSIN_SENDER_NONE && GetHitDice(oPC) >= 3)
+    {
+        object oModule = GetModule();
+        int bTwoAssassins = 0;
+        int nLeaderHD = GetHitDice(oPC) - 2;
+        if (Random(100) < 50 && nLeaderHD > 2)
+        {
+            nLeaderHD -= 2;
+            bTwoAssassins = 1;
+        }
+        object oLeader = SpawnAdventurer(lLocation, SelectAdventurerPathAssassin(), nLeaderHD);
+        DesignateAdventurerAsPartyLeader(oLeader);
+        SetAdventurerPartyType(oLeader, ADVENTURER_PARTY_REST_ASSASSIN);
+        if (bTwoAssassins)
+        {
+            object oSideKick = SpawnAdventurer(lLocation, SelectAdventurerPathAssassin(), nLeaderHD);
+            AddAdventurerToParty(oSideKick, oLeader);
+            ChangeToStandardFaction(oSideKick, STANDARD_FACTION_HOSTILE);
+            SetIsTemporaryEnemy(oPC, oSideKick);
+            AssignCommand(oSideKick, gsCBDetermineCombatRound(oPC));
+            DestroyObject(oSideKick, 300.0);
+            SetName(oSideKick, "Unknown Assailant");
+            SetAdventurerPartyType(oSideKick, ADVENTURER_PARTY_REST_ASSASSIN);
+            AssignCommand(oModule, DelayCommand(1.0, AssignCommand(oSideKick, FastBuff())));
+            AssignCommand(oModule, DelayCommand(1.5, AssignCommand(oSideKick, gsCBDetermineCombatRound(oPC))));
+        }
+        ChangeToStandardFaction(oLeader, STANDARD_FACTION_HOSTILE);
+        SetIsTemporaryEnemy(oPC, oLeader);
+        AssignCommand(oLeader, gsCBDetermineCombatRound(oPC));
+        SetName(oLeader, "Unknown Assailant");
+        DestroyObject(oLeader, 300.0);
+        SetLocalObject(oLeader, "adventurer_party_target", oPC);
+        SetLocalInt(oLeader, "adventurer_party_sender", nSenderType);
+        AssignCommand(oModule, DelayCommand(1.0, AssignCommand(oLeader, FastBuff())));
+        AssignCommand(oModule, DelayCommand(1.5, AssignCommand(oLeader, gsCBDetermineCombatRound(oPC))));
+        return 1;
+    }
+    return 0;
+}
+
 
 void main()
 {
@@ -64,8 +108,20 @@ void main()
     int nTarget = GetLocalInt(OBJECT_SELF, "target");
 
     object oArea = GetAreaFromLocation(lLocation);
+    int bMakeRegularAmbush = 1;
+    
+    // Tiny chance for adventurer assassins instead
+    if (Random(100) == 0)
+    // Testing 1%s at full odds is an exercise in insanity
+    //if (1)
+    {
+        bMakeRegularAmbush = !CreateAdventurerAmbush(GetLocation(OBJECT_SELF), oPC);
+    }
 
-    CreateAmbush(nTarget, oArea, oPC, GetLocation(OBJECT_SELF), lLocation);
+    if (bMakeRegularAmbush)
+    {
+        CreateAmbush(nTarget, oArea, oPC, GetLocation(OBJECT_SELF), lLocation);
+    }
 
     DestroyObject(OBJECT_SELF);
 }

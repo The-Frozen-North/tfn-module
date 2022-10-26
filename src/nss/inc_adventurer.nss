@@ -1,4 +1,5 @@
 #include "nwnx_creature"
+#include "nwnx_player"
 #include "inc_rand_feat"
 #include "inc_rand_appear"
 #include "inc_rand_equip"
@@ -62,6 +63,12 @@ const int ADVENTURER_PATH_HIGHEST = 51;
 // Ignore this and roll your own if a specific adventurer type is needed for some reason
 int SelectAdventurerPath();
 
+// As SelectAdventurerPath except it picks only paths that might become assassins.
+int SelectAdventurerPathAssassin();
+
+// Feed a ADVENTURER_PARTY constant to pick a suitable SelectAdventurerPath function for that party.
+int SelectAdventurerPathForPartyType(int nPartyType);
+
 // Set oCreature to be a nHD randomised adventurer along the given progression path.
 // oCreature should be the standard adventurer UTC for several reasons:
 // 1) It has no feats
@@ -79,6 +86,43 @@ void EquipAdventurer(object oAdventurer);
 // If bAdvance, AdvanceCreatureAlongAdventurerPath will be called for the given path and HD
 // If bEquip AND bAdvance, EquipAdventurer will be called.
 object SpawnAdventurer(location lSpawn, int nPath, int nHD, int bAdvance=1, int bEquip=1);
+
+// Generate a real name for oAdventurer.
+// This is not revealed to a PC, but is tracked for consistency.
+void GenerateTrueName(object oAdventurer);
+
+// Reveal oAdventurer's true name to oPC and their party.
+void RevealTrueNameToPlayer(object oAdventurer, object oPC);
+
+string GetAdventurerTrueName(object oAdventurer);
+
+// Mark oAdventurer as the leader of their little group.
+void DesignateAdventurerAsPartyLeader(object oAdventurer);
+
+// Add oAdventurer to oLeader's little adventuring group.
+// DOES NOT ADD THEM TO A PLAYER PARTY. Use the inc_follower stuff for that.
+void AddAdventurerToParty(object oAdventurer, object oLeader);
+
+// Adventurer party type constants
+const int ADVENTURER_PARTY_HOSTILE_ASSASSIN = 1;
+const int ADVENTURER_PARTY_FRIENDLY_GENERIC = 2;
+const int ADVENTURER_PARTY_REST_ASSASSIN = 3;
+
+// Return the leader of oAdventurer's adventurer party.
+// If they are dead or destroyed, oAdventurer will become the new leader.
+object GetAdventurerPartyLeader(object oAdventurer);
+
+// Return the original/highest size that oAdventurer's party has ever been.
+// If people have died or been destroyed since then, this is not updated
+int GetAdventurerPartySize(object oAdventurer);
+
+// Return oAdventurer's party members by index (starting from 1, not 0)
+// oAdventurer itself will occupy one of these positions
+object GetAdventurerPartyMemberByIndex(object oAdventurer, int nIndex);
+
+void SetAdventurerPartyType(object oAdventurer, int nPartyType);
+
+
 
 ////////////////////////////////////////
 
@@ -167,6 +211,64 @@ int SelectAdventurerPath()
         i++;
     }
     return i;
+}
+
+int _IsAdventurerPathSuitableForAssassin(int nPath)
+{
+    if (nPath == ADVENTURER_PATH_PALADIN12 ||
+        nPath == ADVENTURER_PATH_MONK8ROGUE3PDK1 ||
+        nPath == ADVENTURER_PATH_SORCERER2PALADIN5AA5 ||
+        nPath == ADVENTURER_PATH_PALADIN7TORM5 ||
+        nPath == ADVENTURER_PATH_BARBARIAN7TORM5 ||
+        nPath == ADVENTURER_PATH_ROGUE4FIGHTER4TORM4 ||
+        nPath == ADVENTURER_PATH_ROGUE4PALADIN4TORM4 ||
+        nPath == ADVENTURER_PATH_PALADIN7DD5 ||
+        nPath == ADVENTURER_PATH_PALADIN8HARPER4 ||
+        nPath == ADVENTURER_PATH_FIGHTER4PDK5PALADIN3 ||
+        nPath == ADVENTURER_PATH_RANGER7PDK5 ||
+        nPath == ADVENTURER_PATH_MONK8PDK4 ||
+        nPath == ADVENTURER_PATH_PALADIN4PDK5TORM3 ||
+        nPath == ADVENTURER_PATH_BARBARIAN7PDK5 ||
+        nPath == ADVENTURER_PATH_FIGHTER4PDK5ROGUE3 ||
+        nPath == ADVENTURER_PATH_BARD7PDK5)
+        {
+            return 0;
+        }
+    return 1;
+}
+
+int SelectAdventurerPathAssassin()
+{
+    int nTotalWeight = 0;
+    int i;
+    for (i=1; i<= ADVENTURER_PATH_HIGHEST; i++)
+    {
+        if (_IsAdventurerPathSuitableForAssassin(i))
+        {   
+            nTotalWeight += GetAdventurerPathWeight(i);
+        }
+    }
+    int nRandom = Random(nTotalWeight+1);
+    i = 1;
+    while (nRandom > 0 && i <= ADVENTURER_PATH_HIGHEST)
+    {
+        if (_IsAdventurerPathSuitableForAssassin(i))
+        {   
+            nRandom -= GetAdventurerPathWeight(i);
+        }
+        i++;
+    }
+    //WriteTimestampedLogEntry("Selected assassin path: " + IntToString(i));
+    return i;
+}
+
+int SelectAdventurerPathForPartyType(int nPartyType)
+{
+    if (nPartyType == ADVENTURER_PARTY_HOSTILE_ASSASSIN || nPartyType == ADVENTURER_PARTY_REST_ASSASSIN)
+    {
+        return SelectAdventurerPathAssassin();
+    }
+    return SelectAdventurerPath();
 }
 
 int GetRacialTypeForAdventurerPath(int nPath)
@@ -553,7 +655,10 @@ void AdventurerResetFeats(object oCreature)
     {
         int nFeat = NWNX_Creature_GetFeatByIndex(oCreature, nFeats - 1);
         int nLevel = NWNX_Creature_GetFeatGrantLevel(oCreature, nFeat);
-        NWNX_Creature_RemoveFeatByLevel(oCreature, nFeat, nLevel);
+        if (nLevel > 0)
+        {
+            NWNX_Creature_RemoveFeatByLevel(oCreature, nFeat, nLevel);
+        }
         NWNX_Creature_RemoveFeat(oCreature, nFeat);
         nFeats--;
     }
@@ -635,6 +740,7 @@ void AddRandomAdventurerSkills(object oCreature, int nSkillpoints)
     int nHD = GetHitDice(oCreature);
     int nMaxRank = nHD + 3;
     int nNumDesired = GetLocalInt(oCreature, "adventurer_num_desired_skills");
+    // No zero division please
     if (nNumDesired == 0)
     {
         return;
@@ -663,6 +769,10 @@ void AddRandomAdventurerSkills(object oCreature, int nSkillpoints)
 
 void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
 {
+    if (!GetIsObjectValid(oCreature))
+    {
+        return;
+    }
     if (nHD < 1) { return; }
     else if (nPath <= 0 || nPath > ADVENTURER_PATH_HIGHEST)
     {
@@ -672,7 +782,10 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
     int nRacialType = GetRacialTypeForAdventurerPath(nPath);
     NWNX_Creature_SetRacialType(oCreature, nRacialType);
     AdjustAdventurerAlignment(oCreature, nPath);
-    
+ 
+    GenerateTrueName(oCreature);
+    NWNX_Creature_SetChallengeRating(oCreature, IntToFloat(nHD));
+ 
     // There are Problems here.
     // Namely there is seemingly no way to add a class to a creature
     // without getting involved in one level of its default package
@@ -3343,8 +3456,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
     
     
     // End of all the path handling...
-    
-        
+            
     int nNumFighterBonusFeats = 0;
     int nFighter = GetLevelByClass(CLASS_TYPE_FIGHTER, oCreature);
     if (nFighter > 0)
@@ -3364,10 +3476,12 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
     {
         AddRandomFeats(oCreature, RAND_FEAT_LIST_ROGUE_BONUS, nNumFighterBonusFeats - nUsedFighterBonusFeats);
     }
+    // Why is there TMI :(
+    //WriteTimestampedLogEntry("feat");
     AddRandomFeats(oCreature, RAND_FEAT_LIST_RANDOM, nRemainingFeats);
-    
+    //WriteTimestampedLogEntry("skills");
     AddRandomAdventurerSkills(oCreature, nRemainingSkillpoints);
-    
+    //WriteTimestampedLogEntry("gender/appearance/soundset");
     RandomiseGenderAndAppearance(oCreature);
     RandomiseCreatureSoundset_Average(oCreature);
     
@@ -3379,7 +3493,6 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
     {
         NWNX_Creature_SetFamiliarCreatureType(oCreature, Random(11));
     }
-    
     if (!bOverrideSpellbooks)
     {
         for (i=1; i<=3; i++)
@@ -3418,7 +3531,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
             }
         }
     }
-    
+    //WriteTimestampedLogEntry("spellbook prep");
     // Load or seed a spellbook
     int bStartedSeeding = 0;
     for (i=1; i<=3; i++)
@@ -3493,6 +3606,8 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         // The spellbook seeder needs to know this.
         SetLocalInt(oCreature, "noncaster", 1);
     }
+    
+    //WriteTimestampedLogEntry("Advanced adventurer " + GetAdventurerTrueName(oCreature) + " along path " + IntToString(nPath) + ", hd=" + (IntToString(nHD)));
 }
 
 int GetRandomItemTierFromAdventurerHD(int nHD)
@@ -3705,3 +3820,228 @@ object SpawnAdventurer(location lSpawn, int nPath, int nHD, int bAdvance=1, int 
     }
     return oAdventurer;
 }
+
+void GenerateTrueName(object oAdventurer)
+{
+    int nRacialType = GetRacialType(oAdventurer);
+    int nGender = GetGender(oAdventurer);
+    int nFirstNametype = NAME_FIRST_GENERIC_MALE;
+    int nLastNametype = NAME_LAST_HUMAN;
+    if (nRacialType == RACIAL_TYPE_HUMAN)
+    {
+        if (nGender == GENDER_MALE)
+        {
+            nFirstNametype = NAME_FIRST_HUMAN_MALE;
+        }
+        else
+        {
+            nFirstNametype = NAME_FIRST_HUMAN_FEMALE;
+        }
+        nLastNametype = NAME_LAST_HUMAN;
+    }
+    else if (nRacialType == RACIAL_TYPE_DWARF)
+    {
+        if (nGender == GENDER_MALE)
+        {
+            nFirstNametype = NAME_FIRST_DWARF_MALE;
+        }
+        else
+        {
+            nFirstNametype = NAME_FIRST_DWARF_FEMALE;
+        }
+        nLastNametype = NAME_LAST_DWARF;
+    }
+    else if (nRacialType == RACIAL_TYPE_ELF)
+    {
+        if (nGender == GENDER_MALE)
+        {
+            nFirstNametype = NAME_FIRST_ELF_MALE;
+        }
+        else
+        {
+            nFirstNametype = NAME_FIRST_ELF_FEMALE;
+        }
+        nLastNametype = NAME_LAST_ELF;
+    }
+    else if (nRacialType == RACIAL_TYPE_GNOME)
+    {
+        if (nGender == GENDER_MALE)
+        {
+            nFirstNametype = NAME_FIRST_GNOME_MALE;
+        }
+        else
+        {
+            nFirstNametype = NAME_FIRST_GNOME_FEMALE;
+        }
+        nLastNametype = NAME_LAST_GNOME;
+    }
+    else if (nRacialType == RACIAL_TYPE_HALFELF)
+    {
+        if (nGender == GENDER_MALE)
+        {
+            nFirstNametype = NAME_FIRST_HALFELF_MALE;
+        }
+        else
+        {
+            nFirstNametype = NAME_FIRST_HALFELF_FEMALE;
+        }
+        nLastNametype = NAME_LAST_HALFELF;
+    }
+    else if (nRacialType == RACIAL_TYPE_HALFLING)
+    {
+        if (nGender == GENDER_MALE)
+        {
+            nFirstNametype = NAME_FIRST_HALFLING_MALE;
+        }
+        else
+        {
+            nFirstNametype = NAME_FIRST_HALFLING_FEMALE;
+        }
+        nLastNametype = NAME_LAST_HALFLING;
+    }
+    else if (nRacialType == RACIAL_TYPE_HALFORC)
+    {
+        if (nGender == GENDER_MALE)
+        {
+            nFirstNametype = NAME_FIRST_HALFORC_MALE;
+        }
+        else
+        {
+            nFirstNametype = NAME_FIRST_HALFORC_FEMALE;
+        }
+        nLastNametype = NAME_LAST_HALFORC;
+    }
+    SetLocalString(oAdventurer, "adventurer_firstname", RandomName(nFirstNametype));
+    SetLocalString(oAdventurer, "adventurer_lastname", RandomName(nLastNametype));
+}
+
+string GetAdventurerTrueName(object oAdventurer)
+{
+    string sTrueName = GetLocalString(oAdventurer, "adventurer_firstname") + " " + GetLocalString(oAdventurer, "adventurer_lastname");
+    return sTrueName;
+}
+
+// Reveal oAdventurer's true name to oPC and their party.
+void RevealTrueNameToPlayer(object oAdventurer, object oPC)
+{
+    string sTrueName = GetLocalString(oAdventurer, "adventurer_firstname") + " " + GetLocalString(oAdventurer, "adventurer_lastname");
+    NWNX_Player_SetCreatureNameOverride(oPC, oAdventurer, sTrueName);
+    object oTest = GetFirstFactionMember(oPC);
+    while (GetIsObjectValid(oTest))
+    {
+        if (GetIsPC(oTest))
+        {
+            NWNX_Player_SetCreatureNameOverride(oTest, oAdventurer, sTrueName);
+        }
+        oTest = GetNextFactionMember(oPC);
+    }
+    location lPC = GetLocation(oPC);
+    oTest = GetFirstObjectInShape(SHAPE_SPHERE, 20.0, lPC, TRUE);
+    while (GetIsObjectValid(oTest))
+    {
+        if (GetIsPC(oTest))
+        {
+            NWNX_Player_SetCreatureNameOverride(oTest, oAdventurer, sTrueName);
+        }
+        oTest = GetNextObjectInShape(SHAPE_SPHERE, 20.0, lPC, TRUE);
+    }
+}
+
+// Mark oAdventurer as the leader of their little group.
+void DesignateAdventurerAsPartyLeader(object oAdventurer)
+{
+    SetLocalObject(oAdventurer, "adventurer_leader", oAdventurer);
+    if (GetLocalInt(oAdventurer, "adventurer_party_size") < 1)
+    {
+        SetLocalInt(oAdventurer, "adventurer_party_size", 1);
+        SetLocalObject(oAdventurer, "adventurer_party1", oAdventurer);
+    }
+}
+
+// Add oAdventurer to oLeader's little adventuring group.
+// DOES NOT ADD THEM TO A PLAYER PARTY. Use the inc_follower stuff for that.
+void AddAdventurerToParty(object oAdventurer, object oLeader)
+{
+    SetLocalObject(oAdventurer, "adventurer_leader", oLeader);
+    int nOldPartySize = GetLocalInt(oLeader, "adventurer_party_size");
+    SetLocalObject(oLeader, "adventurer_party" + IntToString(nOldPartySize+1), oAdventurer);
+    int i;
+    for (i=1; i<=nOldPartySize+1; i++)
+    {
+        object oPartyMember = GetLocalObject(oLeader, "adventurer_party" + IntToString(i));
+        SetLocalObject(oAdventurer, "adventurer_party" + IntToString(i), oPartyMember);
+        SetLocalObject(oPartyMember, "adventurer_party" + IntToString(nOldPartySize + 1), oAdventurer);
+        SetLocalInt(oPartyMember, "adventurer_party_size", nOldPartySize + 1);
+    }
+}
+
+object GetAdventurerPartyLeader(object oAdventurer)
+{
+    object oLeader = GetLocalObject(oAdventurer, "adventurer_leader");
+    if (GetIsObjectValid(oLeader) && !GetIsDead(oLeader))
+    {
+        return oLeader;
+    }
+    // oAdventurer is the new leader, update all members accordingly
+    int nPartySize = GetLocalInt(oLeader, "adventurer_party_size");
+    int i;
+    for (i=1; i<=nPartySize; i++)
+    {
+        object oMember = GetLocalObject(oAdventurer, "adventurer_party" + IntToString(i));
+        SetLocalObject(oMember, "adventurer_leader", oAdventurer);
+    }
+    DesignateAdventurerAsPartyLeader(oAdventurer);
+    // Setting the party type will potentially set a bunch of variables on the new leader
+    // This is important in some cases, eg if the assassin leader gets killed by random spawns
+    // then another member will take up their job of talking to the PC and drop the note on death
+    int nPartyType = GetLocalInt(oAdventurer, "adventurer_party_type");
+    if (nPartyType > 0)
+    {
+        SetAdventurerPartyType(oAdventurer, nPartyType);
+    }
+    return oAdventurer;
+}
+
+int GetAdventurerPartySize(object oAdventurer)
+{
+    return GetLocalInt(oAdventurer, "adventurer_party_size");
+}
+
+object GetAdventurerPartyMemberByIndex(object oAdventurer, int nIndex)
+{
+    return GetLocalObject(oAdventurer, "adventurer_party" + IntToString(nIndex));
+}
+
+void SetAdventurerPartyType(object oAdventurer, int nPartyType)
+{
+    SetLocalInt(oAdventurer, "adventurer_party_type", nPartyType);
+    if (nPartyType != ADVENTURER_PARTY_FRIENDLY_GENERIC)
+    {
+        DeleteLocalInt(oAdventurer, "no_stealth");
+    }
+    SetLocalString(oAdventurer, "conversation_override", "adventureparty" + IntToString(nPartyType));
+    if (nPartyType == ADVENTURER_PARTY_HOSTILE_ASSASSIN)
+    {
+        SetLocalInt(oAdventurer, "cr", GetHitDice(oAdventurer));
+        SetLocalInt(oAdventurer, "area_cr", GetLocalInt(GetArea(oAdventurer), "cr"));
+        DeleteLocalInt(oAdventurer, "no_credit");
+        object oLeader = GetAdventurerPartyLeader(oAdventurer);
+        SetLocalString(oLeader, "perception_script", "percep_advp1");
+        SetLocalString(oLeader, "heartbeat_script", "hb_advp1");
+        SetLocalString(oLeader, "death_script", "ondeath_assnote");
+        SetLocalInt(oLeader, "semiboss", 1);
+        
+    }
+    else if (nPartyType == ADVENTURER_PARTY_REST_ASSASSIN)
+    {
+        SetLocalInt(oAdventurer, "semiboss", 1);
+        SetLocalInt(oAdventurer, "cr", GetHitDice(oAdventurer));
+        SetLocalInt(oAdventurer, "area_cr", GetHitDice(oAdventurer));
+        DeleteLocalInt(oAdventurer, "no_credit");
+        object oLeader = GetAdventurerPartyLeader(oAdventurer);
+        SetLocalString(oLeader, "death_script", "ondeath_assnote");
+    }
+}
+
+
+

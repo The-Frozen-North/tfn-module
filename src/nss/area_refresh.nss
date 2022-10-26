@@ -154,7 +154,7 @@ void main()
         }
     }
 
-// 50% chance of an event
+// 50% chance of an event, unless overridden
     int nEventSpawns = GetLocalInt(OBJECT_SELF, "event_spawn_points");
     int nEventChance = GetLocalInt(OBJECT_SELF, "event_chance");
     if (nEventChance <= 0)
@@ -260,6 +260,9 @@ void main()
             }
         }
     //}
+    
+    
+    
 
 // ==============================
 // Hand-placed creatures
@@ -276,7 +279,11 @@ void main()
 
 // do not clean up creatures that have a PC master
             if (GetIsObjectValid(oOldCreature) && GetLocalString(oOldCreature, "master") == "")
+            {
                 DestroyObject(oOldCreature);
+                // Remove from the quest npc list on the area
+                RemoveLocalListItem(OBJECT_SELF, "quest_npcs", ObjectToString(oOldCreature));
+            }
          }
          int nCreatures = GetLocalInt(OBJECT_SELF, "creatures");
 
@@ -293,8 +300,19 @@ void main()
                 lCreatureLocation = Location(OBJECT_SELF, vCreaturePosition, GetLocalFloat(OBJECT_SELF, "creature_o"+IntToString(i)));
                 oCreature = CreateObject(OBJECT_TYPE_CREATURE, GetLocalString(OBJECT_SELF, "creature_resref"+IntToString(i)), lCreatureLocation);
 
-// store the creature so it can deleted later on refresh
+                // store the creature so it can deleted later on refresh
                 SetLocalObject(OBJECT_SELF, "creature"+IntToString(i), oCreature);
+                
+                // Add to quest npc list if required
+                int nFaction = NWNX_Creature_GetFaction(oCreature);
+                if (GetPlotFlag(oCreature) || GetImmortal(oCreature) || nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER || nFaction == STANDARD_FACTION_MERCHANT)
+                {
+                    string sQuest = GetLocalString(oCreature, "quest1");
+                    if (sQuest != "")
+                    {
+                        AddLocalListItem(OBJECT_SELF, "quest_npcs", ObjectToString(oCreature));
+                    }
+                }
             }
          }
      //}

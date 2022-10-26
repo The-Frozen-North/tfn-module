@@ -1301,6 +1301,10 @@ void main()
    string sColdIron = "A series of these weapons were constructed for the defense of the library fortress of Candlekeep some 200 years ago. The keep had acquired a tome detailing the imprisonment of the pit fiend Aegatohl, and a score of malevolent creatures came to claim it. A small horde was held at bay by the Knights of the Mailed Fist, along with the unexpected assistance of Devon's Privateers, a group of pirates. The tome was later destroyed.";
 
    PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "Cold Iron ", "", sColdIron, 2, 2, 2, 1, 1, 1, ItemPropertyAttackBonus(1), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, IP_CONST_DAMAGEBONUS_1d6), ItemPropertyBonusSavingThrow(IP_CONST_SAVEBASETYPE_FORTITUDE, 1));
+   
+   string sBlessed = "This weapon bears the mark of the Morninglord, and is shrouded in a faint holy aura. While its magic is weaker than more conventional enchanted weaponry, it still possesses additional effectivenss against undead beings.";
+   
+   PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "Blessed ", "", sBlessed, 2, 1, 2, 1, 3, 2, ItemPropertyEnhancementBonusVsRace(IP_CONST_RACIALTYPE_UNDEAD, 1), ItemPropertyDamageBonusVsRace(IP_CONST_RACIALTYPE_UNDEAD, IP_CONST_DAMAGETYPE_DIVINE, IP_CONST_DAMAGEBONUS_2), ItemPropertyNoDamage());
 
 // ------------------------------------------
 // Range weapons

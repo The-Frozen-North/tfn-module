@@ -202,11 +202,11 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
     }
 
 
-   //SendDebugMessage("Loot T1Weight: "+IntToString(nT1Weight));
-   //SendDebugMessage("Loot T2Weight: "+IntToString(nT2Weight));
-   //SendDebugMessage("Loot T3Weight: "+IntToString(nT3Weight));
-   //SendDebugMessage("Loot T4Weight: "+IntToString(nT4Weight));
-   //SendDebugMessage("Loot T5Weight: "+IntToString(nT5Weight));
+   SendDebugMessage("Loot T1Weight: "+IntToString(nT1Weight));
+   SendDebugMessage("Loot T2Weight: "+IntToString(nT2Weight));
+   SendDebugMessage("Loot T3Weight: "+IntToString(nT3Weight));
+   SendDebugMessage("Loot T4Weight: "+IntToString(nT4Weight));
+   SendDebugMessage("Loot T5Weight: "+IntToString(nT5Weight));
 
    nCombinedWeight = nT1Weight + nT2Weight + nT3Weight + nT4Weight + nT5Weight;
    //SendDebugMessage("Combined: "+IntToString(nCombinedWeight));
