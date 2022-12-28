@@ -308,7 +308,7 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_EXAMINE_OBJECT_BEFORE", "on_pc_examineb");
     NWNX_Events_SubscribeEvent("NWNX_ON_EXAMINE_OBJECT_AFTER", "on_pc_examinea");
-    
+
     NWNX_Events_SubscribeEvent("NWNX_ON_EFFECT_APPLIED_AFTER", "on_effect_applya");
 
 // seems to happen a little too early, like 0.5 second too early?
@@ -334,7 +334,7 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_GIVE_ITEM_BEFORE", "dm_chk_dev");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SET_VARIABLE_BEFORE", "dm_chk_dev");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_GIVE_LEVEL_BEFORE", "dm_chk_dev");
-    
+
     NWNX_Events_SubscribeEvent("NWNX_ON_DEBUG_RUN_SCRIPT_BEFORE", "dm_chk_dev");
     NWNX_Events_SubscribeEvent("NWNX_ON_DEBUG_RUN_SCRIPT_CHUNK_BEFORE", "dm_chk_dev");
 
@@ -356,9 +356,9 @@ void main()
 // Check and do certain logic on spawning of objects.
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SPAWN_OBJECT_BEFORE", "dm_spawnb");
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SPAWN_OBJECT_AFTER", "dm_spawna");
-    
+
     NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_DROP_ITEM_BEFORE", "on_item_dropb");
-    
+
 
     ServerWebhook("The Frozen North is starting!", "The Frozen North server is starting up. Once the module is stable and ready for players to login, we'll let you know.");
 
@@ -388,7 +388,7 @@ void main()
    // * 1.72: Activating this switch below will enable hardcore DnD rules for evasion and improved
    // * evasion. Evasion feats will only work in light or no armor. Also a character must not
    // * be helpless ie. under effects of stun, paralysis, petrify, sleep or timestop.
-   SetModuleSwitch (MODULE_SWITCH_HARDCORE_EVASION_RULES, TRUE);
+   SetModuleSwitch (MODULE_SWITCH_HARDCORE_EVASION_RULES, FALSE);
 
    // * 1.72: Activating this switch below will disable "polymorph end" check which is
    // * performed every 6 seconds via pseudo heartbeat in order to clean all polymorph
@@ -611,7 +611,7 @@ void main()
    string sAreaResRef;
    location lBaseLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
    object oAreaRefresher;
-   
+
    LoadAllPrettifyPlaceables();
 
 // Loop through all objects in the module.
@@ -668,7 +668,7 @@ void main()
     InitializeHouses("core");
 
     SpawnPCBloodstains();
-    
+
 
 // set Yesgar to spawn 1 minute after module starts
     SetLocalInt(OBJECT_SELF, "yesgar_count", 190);
