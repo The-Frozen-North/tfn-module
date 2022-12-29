@@ -15,6 +15,18 @@ int CharismaModifiedPersuadeGold(object oPC, int nGold);
 // Returns the gold, discounted by charisma.
 int CharismaDiscountedGold(object oPC, int nGold);
 
+// Round a gold value to a "reasonable" number. Asking someone for 276 gold seems a bit oddly specific?
+int RoundedGoldValue(int nGold);
+
+int RoundedGoldValue(int nGold)
+{
+    int nRet = nGold;
+    if (nRet < 10) { return nRet; }
+    if (nRet < 100) { return 5 * (nRet / 5); }
+    if (nRet < 1000) { return 10 * (nRet / 10); }
+    return 50 * (nRet / 50);
+}
+
 int CharismaModifiedGold(object oPC, int nGold)
 {
     int nPCCharisma = (GetAbilityScore(oPC, ABILITY_CHARISMA) - 10);
@@ -28,15 +40,14 @@ int CharismaModifiedGold(object oPC, int nGold)
 
     float fModifier = 1.0 + (IntToFloat(nModifier)/100);
 
-    return FloatToInt(IntToFloat(nGold) * fModifier);
+    int nRet = FloatToInt(IntToFloat(nGold) * fModifier);
+    return RoundedGoldValue(nRet);
 }
 
 int CharismaModifiedPersuadeGold(object oPC, int nGold)
 {
     int nRet = FloatToInt(CharismaModifiedGold(oPC, nGold) * PERSUADE_DISCOUNT_MODIFIER);
-    if (nRet < 10) { return nRet; }
-    if (nRet < 100) { return 5 * (nRet / 5); }
-    return 10 * (nRet / 10);
+    return RoundedGoldValue(nRet);
 }
 
 int CharismaDiscountedGold(object oPC, int nGold)
@@ -52,7 +63,8 @@ int CharismaDiscountedGold(object oPC, int nGold)
 
     float fModifier = 1.0 - (IntToFloat(nModifier)/100);
 
-    return FloatToInt(IntToFloat(nGold) * fModifier);
+    int nRet = FloatToInt(IntToFloat(nGold) * fModifier);
+    return RoundedGoldValue(nRet);
 }
 
 //void main() {}

@@ -41,8 +41,9 @@ void FastBuff(int bInstant = TRUE)
     BuffIfNotBuffed(SPELL_BLESS, bInstant);
     BuffIfNotBuffed(SPELL_PRAYER, bInstant);
     BuffIfNotBuffed(SPELL_AID, bInstant);
-    BuffIfNotBuffed(SPELL_DIVINE_POWER, bInstant);
     BuffIfNotBuffed(SPELL_DIVINE_FAVOR, bInstant);
+    BuffIfNotBuffed(SPELL_DIVINE_POWER, bInstant);
+    
 
     // Ranger/Druid buffs
     BuffIfNotBuffed(SPELL_CAMOFLAGE, bInstant);

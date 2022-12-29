@@ -19,6 +19,7 @@ void main()
             {
                 ChangeToStandardFaction(oAdventurer, STANDARD_FACTION_HOSTILE);
                 SetIsTemporaryEnemy(oPC, oAdventurer);
+                AssignCommand(oAdventurer, FastBuff());
                 AssignCommand(oAdventurer, gsCBDetermineCombatRound(oPC));
             }
         }

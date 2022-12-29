@@ -16,6 +16,53 @@ int GetShipCostPersuade(object oSpeaker, object oPlayer, int nTarget);
 //
 void PayShipAndTravel(object oSpeaker, object oPlayer, int nTarget, int bPersuade = FALSE);
 
+// Make nTries to jump OBJECT_SELF to lTarget. If it doesn't work the first time, tries again every second.
+// DON'T USE if the lTarget is in the same area, use ReallyJumpToLocationInSameArea instead
+void ReallyJumpToLocation(location lTarget, int nTries);
+// As ReallyJumpToLocation, for use when OBJECT_SELf and lTarget were always in the same area.
+void ReallyJumpToLocationInSameArea(location lTarget, float fDist=-1.0, int nTries=20);
+
+
+void ReallyJumpToLocation(location lTarget, int nTries)
+{
+    object oTargetArea = GetAreaFromLocation(lTarget);
+    object oMyArea = GetArea(OBJECT_SELF);
+    if (!GetIsObjectValid(oMyArea))
+    {
+        return;
+    }
+    if (oMyArea == oTargetArea)
+    {
+        return;
+    }
+    nTries--;
+    JumpToLocation(lTarget);
+    if (nTries > 0)
+    {
+        DelayCommand(1.0, ReallyJumpToLocation(lTarget, nTries));
+    }
+}
+
+void ReallyJumpToLocationInSameArea(location lTarget, float fDist=-1.0, int nTries=20)
+{
+    location lMe = GetLocation(OBJECT_SELF);
+    if (fDist < 0.0)
+    {
+        fDist = GetDistanceBetweenLocations(lMe, lTarget);
+    }
+    float fThisDist = GetDistanceBetweenLocations(lMe, lTarget);
+    if (fThisDist * 2.0 < fDist || fThisDist < 8.0)
+    {
+        return;
+    }
+    JumpToLocation(lTarget);
+    nTries--;
+    if (nTries > 0)
+    {
+        DelayCommand(1.0, ReallyJumpToLocationInSameArea(lTarget));
+    }
+}
+
 int GetShipCost(object oSpeaker, object oPlayer, int nTarget)
 {
     int nCost = CharismaDiscountedGold(oPlayer, GetLocalInt(oSpeaker, "ship"+IntToString(nTarget)+"_cost"));
@@ -65,7 +112,17 @@ void PayShipAndTravel(object oSpeaker, object oPlayer, int nTarget, int bPersuad
     RemoveMount(oPlayer);
 
     FadeToBlack(oPlayer);
-    DelayCommand(2.5, AssignCommand(oPlayer, JumpToLocation(GetLocation(oDestination))));
+    location lPlayer = GetLocation(oPlayer);
+    location lTarget = GetLocation(oDestination);
+    if (GetAreaFromLocation(lPlayer) == GetAreaFromLocation(lTarget))
+    {
+        DelayCommand(2.5, AssignCommand(oPlayer, ReallyJumpToLocationInSameArea(lTarget, 5.0, 20)));
+    }
+    else
+    {
+        DelayCommand(2.5, AssignCommand(oPlayer, ReallyJumpToLocation(lTarget, 20)));
+    }
+    
     DelayCommand(5.0, FadeFromBlack(oPlayer));
 }
 

@@ -3982,23 +3982,40 @@ object GetAdventurerPartyLeader(object oAdventurer)
     {
         return oLeader;
     }
-    // oAdventurer is the new leader, update all members accordingly
-    int nPartySize = GetLocalInt(oLeader, "adventurer_party_size");
+    // Look for a new alive group leader, then update all members accordingly
+    int nPartySize = GetAdventurerPartySize(oAdventurer);
     int i;
+    oLeader = OBJECT_INVALID;
     for (i=1; i<=nPartySize; i++)
     {
-        object oMember = GetLocalObject(oAdventurer, "adventurer_party" + IntToString(i));
-        SetLocalObject(oMember, "adventurer_leader", oAdventurer);
+        object oMember = GetAdventurerPartyMemberByIndex(oAdventurer, i);
+        if (!GetIsDead(oMember) && GetIsObjectValid(oMember))
+        {
+            oLeader = oMember;
+            break;
+        }
     }
-    DesignateAdventurerAsPartyLeader(oAdventurer);
-    // Setting the party type will potentially set a bunch of variables on the new leader
-    // This is important in some cases, eg if the assassin leader gets killed by random spawns
-    // then another member will take up their job of talking to the PC and drop the note on death
-    int nPartyType = GetLocalInt(oAdventurer, "adventurer_party_type");
-    if (nPartyType > 0)
+    if (GetIsObjectValid(oLeader))
     {
-        SetAdventurerPartyType(oAdventurer, nPartyType);
+        // Update all party members leader markers, deliberately including those that are dead
+        for (i=1; i<=nPartySize; i++)
+        {
+            object oMember = GetAdventurerPartyMemberByIndex(oAdventurer, i);
+            SetLocalObject(oMember, "adventurer_leader", oLeader);
+        }
+        DesignateAdventurerAsPartyLeader(oLeader);
+        // Setting the party type will potentially set a bunch of variables on the new leader
+        // This is important in some cases, eg if the assassin leader gets killed by random spawns
+        // then another member will take up their job of talking to the PC and drop the note on death
+        int nPartyType = GetLocalInt(oLeader, "adventurer_party_type");
+        if (nPartyType > 0)
+        {
+            SetAdventurerPartyType(oLeader, nPartyType);
+        }
+        return oLeader;
     }
+    // If we didn't find a new leader, assume the last adventurer standing was it
+    // (might be a case for returning the old leader here instead, though)
     return oAdventurer;
 }
 

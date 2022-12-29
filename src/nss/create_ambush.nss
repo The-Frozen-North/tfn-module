@@ -111,7 +111,7 @@ void main()
     int bMakeRegularAmbush = 1;
     
     // Tiny chance for adventurer assassins instead
-    if (Random(100) == 0)
+    if (Random(100) < 2)
     // Testing 1%s at full odds is an exercise in insanity
     //if (1)
     {

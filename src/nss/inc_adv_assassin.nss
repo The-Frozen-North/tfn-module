@@ -198,9 +198,10 @@ int GetAdventurerAssassinSender(object oPC)
 object GetAdventurerPartyTarget(object oAdventurer, object oInteractingPC)
 {
     // Do this from the leader's perspective
-    if (GetAdventurerPartyLeader(oAdventurer) != oAdventurer)
+    object oLeader = GetAdventurerPartyLeader(oAdventurer);
+    if (oLeader != oAdventurer)
     {
-        return GetAdventurerPartyTarget(GetAdventurerPartyLeader(oAdventurer), oInteractingPC);
+        return GetAdventurerPartyTarget(oLeader, oInteractingPC);
     }
     object oLast = GetLocalObject(oAdventurer, "adventurer_party_target");
     if (GetIsObjectValid(oLast) && GetArea(oLast) == GetArea(oAdventurer))

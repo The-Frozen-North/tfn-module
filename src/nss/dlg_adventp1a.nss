@@ -17,6 +17,7 @@ void main()
 			object oAdventurer = GetAdventurerPartyMemberByIndex(OBJECT_SELF, i);
 			ChangeToStandardFaction(oAdventurer, STANDARD_FACTION_HOSTILE);
 			SetIsTemporaryEnemy(oPC, oAdventurer);
+            AssignCommand(oAdventurer, FastBuff());
 			AssignCommand(oAdventurer, gsCBDetermineCombatRound(oPC));
         }
 	}
