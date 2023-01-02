@@ -21,7 +21,7 @@ Last Updated: $timestamp ($hash)"
 
 $PWD/tools/linux/nasher/nasher install --erfUtil:"$PWD/tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/tools/linux/nwnsc/nwnsc" --installDir:"$PWD" --nssFlags:"-oe -i $PWD/nwn-base-scripts" --no --modDescription="$desc"
 
-rm server/config/common.env
+# rm server/config/common.env
 rm server/modules/TFN.mod
 rm server/database/spawns.sqlite3
 rm server/database/treasures.sqlite3
