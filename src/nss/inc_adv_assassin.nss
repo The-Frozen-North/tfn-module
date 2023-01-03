@@ -259,7 +259,14 @@ object GetAdventurerPartyTarget(object oAdventurer, object oInteractingPC)
         }
     }
     
-    SetLocalObject(oAdventurer, "adventurer_party_target", oLast);
-    SetLocalInt(oAdventurer, "adventurer_party_sender", nSender);
+    // If the leader dies, the other party members should inherit this too
+    int nPartySize = GetAdventurerPartySize(oAdventurer);
+    int i;
+    for (i=1; i<=nPartySize; i++)
+    {
+        object oMember = GetAdventurerPartyMemberByIndex(oAdventurer, i);
+        SetLocalObject(oMember, "adventurer_party_target", oLast);
+        SetLocalInt(oMember, "adventurer_party_sender", nSender);
+    }
     return oLast;    
 }

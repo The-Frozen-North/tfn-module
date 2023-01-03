@@ -18,7 +18,6 @@ void main()
             if (!GetLocalInt(oAdventurer, "no_attack"))
             {
                 ChangeToStandardFaction(oAdventurer, STANDARD_FACTION_HOSTILE);
-                SetIsTemporaryEnemy(oPC, oAdventurer);
                 AssignCommand(oAdventurer, FastBuff());
                 AssignCommand(oAdventurer, gsCBDetermineCombatRound(oPC));
             }

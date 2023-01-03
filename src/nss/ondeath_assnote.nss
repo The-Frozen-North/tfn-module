@@ -2,9 +2,12 @@
 
 void main()
 {
-    object oPC = GetAdventurerPartyTarget(OBJECT_SELF, OBJECT_INVALID);
-    if (GetIsObjectValid(oPC) && GetArea(oPC) == GetArea(OBJECT_SELF))
+    if (GetAdventurerPartyLeader(OBJECT_SELF) == OBJECT_SELF)
     {
-        MakeAssassinNote(OBJECT_SELF, oPC);
+        object oPC = GetAdventurerPartyTarget(OBJECT_SELF, OBJECT_INVALID);
+        if (GetIsObjectValid(oPC) && GetArea(oPC) == GetArea(OBJECT_SELF))
+        {
+            MakeAssassinNote(OBJECT_SELF, oPC);
+        }
     }
 }
