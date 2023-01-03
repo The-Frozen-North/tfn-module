@@ -459,10 +459,10 @@ void LoadAllPrettifyPlaceables()
         object oArea = GetObjectByTag(sAreaTag);
         // Testing code: remove to make this really work on all areas
         // Running this via NWScript debug window should have OBJECT_SELF as something other than the module and should therefore create placeables in the other areas
-        if (OBJECT_SELF == GetModule() ^ (sAreaTag == "nw_northroad" || sAreaTag == "ud_east"))
-        {
-            continue;
-        }
+        //if (OBJECT_SELF == GetModule() ^ (sAreaTag == "nw_northroad" || sAreaTag == "ud_east"))
+        //{
+        //    continue;
+        //}
         location lLoc = Location(oArea, vPosition, IntToFloat(nFacing));
         object oPlaceable = CreateObject(OBJECT_TYPE_PLACEABLE, sResRef, lLoc);
         if (!GetIsObjectValid(oPlaceable))

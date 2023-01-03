@@ -1096,31 +1096,55 @@ void RemoveAnimalSpellEffects(object oCreature)
     if (GetHasSpellEffect(SPELL_BULLS_STRENGTH, oCreature))
     {
         FloatingTextStringOnCreature("*The Strength of the Bull has been displaced*", oCreature, FALSE);
+        if (OBJECT_SELF != oCreature)
+        {
+            FloatingTextStringOnCreature("*The Strength of the Bull has been displaced*", OBJECT_SELF, FALSE);
+        }
         RemoveEffectsFromSpell(oCreature, SPELL_BULLS_STRENGTH);
     }
     if (GetHasSpellEffect(SPELL_CATS_GRACE, oCreature))
     {
         FloatingTextStringOnCreature("*The Grace of the Cat has been displaced*", oCreature, FALSE);
+        if (OBJECT_SELF != oCreature)
+        {
+            FloatingTextStringOnCreature("*The Grace of the Cat has been displaced*", OBJECT_SELF, FALSE);
+        }
         RemoveEffectsFromSpell(oCreature, SPELL_CATS_GRACE);
     }
     if (GetHasSpellEffect(SPELL_ENDURANCE, oCreature))
     {
         FloatingTextStringOnCreature("*The Endurance of Nature has been displaced*", oCreature, FALSE);
+        if (OBJECT_SELF != oCreature)
+        {
+            FloatingTextStringOnCreature("*The Endurance of Nature has been displaced*", OBJECT_SELF, FALSE);
+        }
         RemoveEffectsFromSpell(oCreature, SPELL_ENDURANCE);
     }
     if (GetHasSpellEffect(SPELL_FOXS_CUNNING, oCreature))
     {
         FloatingTextStringOnCreature("*The Cunning of the Fox has been displaced*", oCreature, FALSE);
+        if (OBJECT_SELF != oCreature)
+        {
+            FloatingTextStringOnCreature("*The Cunning of the Fox has been displaced*", OBJECT_SELF, FALSE);
+        }
         RemoveEffectsFromSpell(oCreature, SPELL_FOXS_CUNNING);
     }
     if (GetHasSpellEffect(SPELL_OWLS_WISDOM, oCreature))
     {
         FloatingTextStringOnCreature("*The Wisdom of the Owl has been displaced*", oCreature, FALSE);
+        if (OBJECT_SELF != oCreature)
+        {
+            FloatingTextStringOnCreature("*The Wisdom of the Owl has been displaced*", OBJECT_SELF, FALSE);
+        }
         RemoveEffectsFromSpell(oCreature, SPELL_OWLS_WISDOM);
     }
     if (GetHasSpellEffect(SPELL_EAGLE_SPLEDOR, oCreature))
     {
         FloatingTextStringOnCreature("*The Splendor of the Eagle has been displaced*", oCreature, FALSE);
+        if (OBJECT_SELF != oCreature)
+        {
+            FloatingTextStringOnCreature("*The Splendor of the Eagle has been displaced*", OBJECT_SELF, FALSE);
+        }
         RemoveEffectsFromSpell(oCreature, SPELL_EAGLE_SPLEDOR);
     }
 }

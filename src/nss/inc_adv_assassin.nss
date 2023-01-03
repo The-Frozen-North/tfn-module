@@ -198,9 +198,10 @@ int GetAdventurerAssassinSender(object oPC)
 object GetAdventurerPartyTarget(object oAdventurer, object oInteractingPC)
 {
     // Do this from the leader's perspective
-    if (GetAdventurerPartyLeader(oAdventurer) != oAdventurer)
+    object oLeader = GetAdventurerPartyLeader(oAdventurer);
+    if (oLeader != oAdventurer)
     {
-        return GetAdventurerPartyTarget(GetAdventurerPartyLeader(oAdventurer), oInteractingPC);
+        return GetAdventurerPartyTarget(oLeader, oInteractingPC);
     }
     object oLast = GetLocalObject(oAdventurer, "adventurer_party_target");
     if (GetIsObjectValid(oLast) && GetArea(oLast) == GetArea(oAdventurer))
@@ -258,7 +259,14 @@ object GetAdventurerPartyTarget(object oAdventurer, object oInteractingPC)
         }
     }
     
-    SetLocalObject(oAdventurer, "adventurer_party_target", oLast);
-    SetLocalInt(oAdventurer, "adventurer_party_sender", nSender);
+    // If the leader dies, the other party members should inherit this too
+    int nPartySize = GetAdventurerPartySize(oAdventurer);
+    int i;
+    for (i=1; i<=nPartySize; i++)
+    {
+        object oMember = GetAdventurerPartyMemberByIndex(oAdventurer, i);
+        SetLocalObject(oMember, "adventurer_party_target", oLast);
+        SetLocalInt(oMember, "adventurer_party_sender", nSender);
+    }
     return oLast;    
 }
