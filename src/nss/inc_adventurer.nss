@@ -205,7 +205,7 @@ int SelectAdventurerPath()
     }
     int nRandom = Random(nTotalWeight+1);
     i = 1;
-    while (nRandom > 0 && i < ADVENTURER_PATH_HIGHEST)
+    while (nRandom > 0 && i <= ADVENTURER_PATH_HIGHEST)
     {
         nRandom -= GetAdventurerPathWeight(i);
         i++;
