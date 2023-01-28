@@ -50,7 +50,7 @@ void SetTemporaryInt(string sName, int nValue, float fSeconds = 60.0)
     // Assign the clear command to the module
     // If OBJECT_SELF (such as a henchman) is destroyed before this ticks down
     // the var will not be unset until the server is restarted
-    if (fSeconds > 0.0) 
+    if (fSeconds > 0.0)
     {
         AssignCommand(oModule, DelayCommand(fSeconds, DeleteLocalInt(oModule, sName)));
     }
@@ -68,11 +68,11 @@ int GetTemporaryInt(string sName)
 
 int CanSavePCInfo(object oPC)
 {
-    if (NWNX_Creature_GetIsBartering(oPC))
-    {
-        SendDebugMessage("Can't save BIC for "+GetName(oPC)+" because bartering", TRUE);
-        return 0;
-    }
+    //if (NWNX_Creature_GetIsBartering(oPC))
+    //{
+    //    SendDebugMessage("Can't save BIC for "+GetName(oPC)+" because bartering", TRUE);
+    //    return 0;
+    //}
 
     int bPolymorph = FALSE;
 
@@ -156,7 +156,7 @@ void SavePCInfo(object oPC)
 
     ExportMinimap(oPC);
     MapPin_SavePCMapPins(oPC);
-        
+
     SQLocalsPlayer_SetInt(oPC, "CURRENT_HP", GetCurrentHitPoints(oPC));
 }
 
