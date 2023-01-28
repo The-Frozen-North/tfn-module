@@ -29,6 +29,13 @@ void CopyKey()
     }
 }
 
+void GeneratePickpocketItem(string sType = "")
+{
+    object oItem = GenerateTierItem(GetHitDice(OBJECT_SELF), GetHitDice(OBJECT_SELF), OBJECT_SELF, sType);
+    SetDroppableFlag(oItem, FALSE);
+    SetPickpocketableFlag(oItem, TRUE);
+}
+
 //const int GS_TIMEOUT = 7200; //2 hours
 
 void main()
@@ -81,14 +88,30 @@ void main()
                 SetPickpocketableFlag(oPotion, TRUE);
             }
 
-            if (d10() == 1)
+            if (d8() == 1) GeneratePickpocketItem("Misc");
+
+            // 1 in 20 chance of generating something that may not be a misc item
+            if (d20() == 1) GeneratePickpocketItem();
+
+            int nGold = d3(GetHitDice(OBJECT_SELF));
+
+            // 3x the gold on bosses
+            if (GetLocalInt(OBJECT_SELF, "boss") == 1)
             {
-                object oItem = GenerateTierItem(GetHitDice(OBJECT_SELF), GetHitDice(OBJECT_SELF), OBJECT_SELF, "Misc");
-                SetDroppableFlag(oItem, FALSE);
-                SetPickpocketableFlag(oItem, TRUE);
+                nGold = nGold * 3;
+                GeneratePickpocketItem("Misc");
+                GeneratePickpocketItem("Misc");
+                if (d3() == 1) GeneratePickpocketItem();
+            }
+            // 2x the gold on semibosses or immortals (quest/unique npcs usually)
+            else if (GetLocalInt(OBJECT_SELF, "semiboss") == 1 || GetImmortal(OBJECT_SELF))
+            {
+                nGold = nGold * 2;
+                GeneratePickpocketItem("Misc");
+                if (d6() == 1) GeneratePickpocketItem();
             }
 
-            object oGold = CreateItemOnObject("nw_it_gold001", OBJECT_SELF, d2(GetHitDice(OBJECT_SELF)));
+            object oGold = CreateItemOnObject("nw_it_gold001", OBJECT_SELF, nGold);
             SetDroppableFlag(oGold, FALSE);
             SetPickpocketableFlag(oGold, TRUE);
         break;
@@ -112,7 +135,7 @@ void main()
         fCR = fCR * 1.5; // 50% increase for semibosses
         iAreaCR = FloatToInt(IntToFloat(iAreaCR) * 1.2);
     }
-    
+
     // Create random weapons before scanning, it's sensible
     string sScript = GetLocalString(OBJECT_SELF, "spawn_script");
     //WriteTimestampedLogEntry("ai_onspawn for " + GetName(OBJECT_SELF) + "-> spawn script = " + sScript);
@@ -179,5 +202,5 @@ void main()
         SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
     }
 
-    
+
 }
