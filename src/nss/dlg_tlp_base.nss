@@ -5,6 +5,7 @@ void main()
 
     if (GetIsDeveloper(oPC))
     {
+        SendDiscordLogMessage(GetName(oPC) + " used the developer menu to enter a system area.");
         AssignCommand(oPC, ActionJumpToLocation(Location(GetObjectByTag("_BASE"), Vector(), 0.0)));
     }
 }

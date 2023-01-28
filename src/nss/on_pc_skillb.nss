@@ -27,5 +27,6 @@ void main()
             SendMessageToPC(OBJECT_SELF, "You cannot pickpocket other player's henchman.");
             NWNX_Events_SkipEvent();
         }
+        WriteTimestampedLogEntry(GetName(OBJECT_SELF) + " attempted pickpocket on " + GetName(oTarget));
     }
 }

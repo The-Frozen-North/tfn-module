@@ -5,6 +5,8 @@ void main()
 
     if (GetIsDeveloper(oPC))
     {
+        // For completeness, maybe
+        SendDiscordLogMessage(GetName(oPC) + " used the developer menu to kill themselves.");
         ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDeath(), oPC);
     }
 }

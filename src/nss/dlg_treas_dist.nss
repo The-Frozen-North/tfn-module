@@ -7,6 +7,7 @@ void main()
 
     if (GetIsDeveloper(oPC))
     {
+        SendDiscordLogMessage(GetName(OBJECT_SELF)+" viewed the treasure distribution store.");
         OpenStore(GetObjectByTag(TREASURE_DISTRIBUTION), oPC);
     }
 }
