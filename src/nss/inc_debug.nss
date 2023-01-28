@@ -1,3 +1,5 @@
+#include "nwnx_webhook"
+
 // Log it to a description object that can be viewed if set for debug.
 // Optionally, put it in the log as well regardless
 void SendDebugMessage(string sMessage, int bLog = FALSE);
@@ -47,22 +49,55 @@ int GetIsDeveloper(object oPC)
 {
     string sPCCDKey = GetPCPublicCDKey(oPC);
     string sPCName = GetPCPlayerName(oPC);
-    string sAdminCDKey = Get2DAString("env", "Value", 0);
-    string sAdminName = Get2DAString("env", "Value", 1);
-
-    if (sAdminCDKey == "" || sAdminName == "") return FALSE;
-
-    if (sPCName == sAdminName && sPCCDKey == sAdminCDKey)
+    
+    int nKeyLine;
+    int nNameLine;
+    
+    // First iteration: lines 0 (key) and 1 (name)
+    // After: line 4 (key) and 5 (name)
+    int i;
+    for (i=1; i<=2; i++)
     {
-        SendMessageToPC(oPC, "Your Public CD Key --> " + sPCCDKey);
-        SendMessageToPC(oPC, "Your PC Player Name --> " + sPCName);
-        SendMessageToPC(oPC, "Your env.2da CD Key --> '" + sAdminCDKey + "'");
-        SendMessageToPC(oPC, "Your env.2da Name --> '" + sAdminName + "'");
-        return TRUE;
+        if (i == 1)
+        {
+            nKeyLine = 0;
+            nNameLine = 1;
+        }
+        else if (i == 2)
+        {
+            nKeyLine = 4;
+            nNameLine = 5;
+        }
+        
+        string sAdminName = Get2DAString("env", "Value", nNameLine);
+        string sAdminCDKey = Get2DAString("env", "Value", nKeyLine);
+
+        if (sAdminCDKey == "" || sAdminName == "") return FALSE;
+
+        if (sPCName == sAdminName && sPCCDKey == sAdminCDKey)
+        {
+            SendMessageToPC(oPC, "Your Public CD Key --> " + sPCCDKey);
+            SendMessageToPC(oPC, "Your PC Player Name --> " + sPCName);
+            SendMessageToPC(oPC, "Your env.2da CD Key --> '" + sAdminCDKey + "'");
+            SendMessageToPC(oPC, "Your env.2da Name --> '" + sAdminName + "'");
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+void SendDiscordLogMessage(string sMessage)
+{
+    if (GetLocalInt(GetModule(), "dev") == 0)
+    {
+        NWNX_WebHook_SendWebHookHTTPS("discordapp.com", Get2DAString("env", "Value", 2), sMessage);
     }
     else
     {
-        return FALSE;
+        // Try anyway
+        NWNX_WebHook_SendWebHookHTTPS("discordapp.com", Get2DAString("env", "Value", 2), sMessage);
+        // But the log is good
+        WriteTimestampedLogEntry("Webhook message: " + sMessage);
     }
 }
 

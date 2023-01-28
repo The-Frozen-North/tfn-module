@@ -27,8 +27,10 @@ void main()
     if (GetIsDead(oBim)) return;
     if (GetHenchmanCount(oPC) > 0) return;
 
-    SetMaster(oBim, oPC);
-
-    AssignCommand(oBim, ActionMoveToObject(oPC));
-    DelayCommand(4.0, PlayVoiceChat(VOICE_CHAT_HELLO, oBim));
+    if (!GetIsObjectValid(GetMasterByUUID(oBim)))
+    {
+        SetMaster(oBim, oPC);
+        AssignCommand(oBim, ActionMoveToObject(oPC));
+        DelayCommand(4.0, PlayVoiceChat(VOICE_CHAT_HELLO, oBim));
+    }
 }

@@ -260,7 +260,7 @@ void _GetAvailableSpellSlots(object oCreature, int nClass)
             // -> the final bonus is (class level / 2) rounded up
             // aka ((class level + 1)/2) rounded down
             nClassLevel += (GetLevelByClass(CLASS_TYPE_PALE_MASTER, oCreature)+1)/2;
-            WriteTimestampedLogEntry("Class " + IntToString(nClass) + " gets Pale Master boost");
+            //WriteTimestampedLogEntry("Class " + IntToString(nClass) + " gets Pale Master boost");
         }
         
     }
@@ -3986,8 +3986,8 @@ void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1,
     // nFixedIndex: 2, or maybe 3 if someone is insane
     // = 26 or 27 at a stretch, max for campaign db is 32
     json jObj = GetCampaignJson("randspellbooks", sResRef + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex));
-    WriteTimestampedLogEntry("Retrieve: " + sResRef + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex) + " in " + GetName(GetArea(oCreature)));
-    WriteTimestampedLogEntry(JsonDump(jObj));
+    //WriteTimestampedLogEntry("Retrieve: " + sResRef + "_rsb_" + IntToString(nClass) + "_" + IntToString(nFixedIndex) + " in " + GetName(GetArea(oCreature)));
+    //WriteTimestampedLogEntry(JsonDump(jObj));
     if (!bSpellsOnly)
     {
         int nNumCasterFeats = GetLocalInt(oCreature, "rand_feat_caster");

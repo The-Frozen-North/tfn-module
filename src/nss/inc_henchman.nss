@@ -120,8 +120,59 @@ void RehireHenchman(object oPlayer)
     if (GetLocalString(oModule, "hen_xanos_master") == sUUID) SetMaster(GetObjectByTag("hen_xanos"), oPlayer);
 }
 
+object GetPawnshopForHenchman(object oHench)
+{
+    string sTag = GetTag(oHench);
+    if (sTag == "hen_daelan" || sTag == "hen_bim" || sTag == "hen_linu" || sTag == "hen_tomi" || sTag == "hen_sharwyn")
+    {
+        return GetObjectByTag("mer_olgerd");
+    }
+    else if (sTag == "hen_boddyknock" || sTag == "hen_grimgnaw")
+    {
+        return GetObjectByTag("mer_haljal");
+    }
+    else if (sTag == "hen_valen" || sTag == "hen_nathyrra")
+    {
+        return GetObjectByTag("mer_ravyn");
+    }
+    else if (sTag == "hen_dorna" || sTag == "hen_mischa" || sTag == "hen_xanos")
+    {
+        return GetObjectByTag("mer_branson");
+    }
+    return OBJECT_INVALID;
+}
+
 void DismissHenchman(object oHench)
 {
+    // They take their store items and sell them at the local pawnshop. After all, they never upgrade their gear with "real" loot items
+    // (I guess they wouldn't sell potions they picked up though, but those stay in their inventory)
+    object oStore = GetLocalObject(oHench, "merchant");
+    object oPawnshop = GetPawnshopForHenchman(oHench);
+    object oTest = GetFirstItemInInventory(oStore);
+    if (GetIsObjectValid(oPawnshop) && GetObjectType(oPawnshop) == OBJECT_TYPE_STORE)
+    {
+        WriteTimestampedLogEntry("Copy " + GetName(oHench) + "'s items to " + GetName(oPawnshop) + ", test item = " + GetName(oTest));
+        while (GetIsObjectValid(oTest))
+        {
+            if (!GetPlotFlag(oTest))
+            {
+                CopyItem(oTest, oPawnshop, TRUE);
+            }
+            oTest = GetNextItemInInventory(oStore);
+        }
+    }
+    else
+    {
+        if (!GetIsObjectValid(oPawnshop))
+        {
+            WriteTimestampedLogEntry("Warning: Henchman " + GetName(oHench) + " was dismissed but has no pawnshop to put their items in");
+        }
+        else if (GetObjectType(oPawnshop) != OBJECT_TYPE_STORE)
+        {
+            WriteTimestampedLogEntry("Warning: Henchmen " + GetName(oHench) + " had a valid pawnshop but this object is not a store");
+        }
+    }
+    DestroyObject(oStore, 10.0);
     ClearMaster(oHench);
     PlayVoiceChat(VOICE_CHAT_GOODBYE, oHench);
     AssignCommand(oHench, ActionMoveToObject(GetNearestObject(OBJECT_TYPE_DOOR)));

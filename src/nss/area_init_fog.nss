@@ -12,7 +12,8 @@ void createFog(object oArea, int nStepSize) {
       float z = GetGroundHeight(lLocation);
       vector vPosition = Vector(IntToFloat(i), IntToFloat(j), z);
       location lPlaceableLocation = Location(oArea, vPosition, 0.0);
-      CreateObject(OBJECT_TYPE_PLACEABLE, "tm_pl_fog50_vl", lPlaceableLocation, FALSE, "FOG_TAG");         
+      object oFog = CreateObject(OBJECT_TYPE_PLACEABLE, "tm_pl_fog50_vl", lPlaceableLocation, FALSE, "FOG_TAG");         
+      SetPlotFlag(oFog, TRUE);
     }                                                  
   }                                                    
 }      

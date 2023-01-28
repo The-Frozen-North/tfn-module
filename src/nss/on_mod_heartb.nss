@@ -185,6 +185,9 @@ void DoRevive(object oDead)
                  ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_RESTORATION), lLocation);
                  ClearMaster(oDead);
                  DestroyObject(oDead);
+                 // Delete their store if it exists or it will be floating around in memory until restart
+                 object oStore = GetLocalObject(oDead, "merchant");
+                 DestroyObject(oStore);
             }
         }
 }

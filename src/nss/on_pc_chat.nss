@@ -13,6 +13,64 @@ int CheckDeadSpeak(object oPC)
     return bDead;
 }
 
+void DebugBusyNPC(int nTries=0)
+{
+    WriteTimestampedLogEntry("Reacting to TALKTOME: " + GetName(OBJECT_SELF));
+    WriteTimestampedLogEntry("    action = " + IntToString(GetCurrentAction(OBJECT_SELF)));
+    WriteTimestampedLogEntry("    in conversation = " + IntToString(IsInConversation(OBJECT_SELF)));
+    
+    if (IsInConversation(OBJECT_SELF))
+    {
+        object oSpeaker = GetPCSpeaker();
+        WriteTimestampedLogEntry("    in conversation with = " + GetName(oSpeaker) + " or " + ObjectToString(oSpeaker));
+        if (!GetIsObjectValid(oSpeaker) || GetArea(oSpeaker) != GetArea(OBJECT_SELF))
+        {
+            if (nTries == 0)
+            {
+                ClearAllActions();
+                SpeakString("Huh? I thought I was talking to someone else.");
+                WriteTimestampedLogEntry("    -> clear all actions");
+                DelayCommand(1.0, DebugBusyNPC(nTries+1));
+                return;
+            }
+            else if (nTries == 1)
+            {
+                ClearAllActions();
+                SpeakString("What if I take a tiny, metaphorical walk to clear my head?");
+                WriteTimestampedLogEntry("    -> move to own location");
+                ActionMoveToLocation(GetLocation(OBJECT_SELF));
+                DelayCommand(1.0, DebugBusyNPC(nTries+1));
+                return;
+            }
+            else if (nTries == 2)
+            {
+                ClearAllActions();
+                SpeakString("Maybe I should stop being shy and try starting up conversation myself?");
+                location lLoc = GetLocation(OBJECT_SELF);
+                object oTest = GetFirstObjectInShape(SHAPE_SPHERE, 10.0, lLoc, TRUE);
+                while (GetIsObjectValid(oTest))
+                {
+                    if (!GetIsDead(oTest) && GetIsPC(oTest))
+                    {
+                        ActionStartConversation(oTest);
+                        WriteTimestampedLogEntry("    -> try talking to " + GetName(oTest));
+                        DelayCommand(1.0, DebugBusyNPC(nTries+1));
+                        return;
+                    }
+                    oTest = GetNextObjectInShape(SHAPE_SPHERE, 10.0, lLoc, TRUE);
+                }
+                WriteTimestampedLogEntry("    (couldn't find PC to talk to)");
+                return;
+            }
+        }
+    }
+    
+    if (nTries > 0)
+    {
+        SpeakString("Sorry about that. I'm ready to speak to you now.");
+    }
+}
+
 void main()
 {
   object oPC = GetPCChatSpeaker();
@@ -107,5 +165,33 @@ void main()
   {
     PlayVoiceChat(VOICE_CHAT_LAUGH, oPC);
     AssignCommand(oPC, ActionPlayAnimation(ANIMATION_LOOPING_TALK_LAUGHING));
+  }
+  
+  // Temporary. Investigating the stuck NPC issue
+  if (GetStringLeft(sMessage, 10) == "TALK TO ME")
+  {
+      WriteTimestampedLogEntry(GetName(oPC) + " screamed TALK TO ME.");
+      location lLoc = GetLocation(oPC);
+      object oTest = GetFirstObjectInShape(SHAPE_SPHERE, 10.0, lLoc, TRUE);
+      int nCount = 0;
+      while (GetIsObjectValid(oTest))
+      {
+          if (!GetIsDead(oTest) && !GetIsPC(oTest))
+          {
+              AssignCommand(oTest, DebugBusyNPC());
+              nCount++;
+          }
+          oTest = GetNextObjectInShape(SHAPE_SPHERE, 10.0, lLoc, TRUE);
+      }
+      string sFeedback;
+      if (nCount == 0)
+      {
+          SendMessageToPC(oPC, "There is no immediate reaction to your outburst.");
+      }
+      else
+      {
+        sFeedback = "Your outburst attracts the attention of " + IntToString(nCount) + " nearby " + (nCount > 1 ? "people" : "person") + ".";
+        SendMessageToPC(oPC, sFeedback);
+      }
   }
 }

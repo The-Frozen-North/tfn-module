@@ -14,6 +14,7 @@ void main()
         return;
     }
     SendMessageToAllDMs(GetName(oDev) + " is running dev_revealmap in area: " + GetName(GetArea(oDev)) + ", tag: " + GetTag(GetArea(oDev)));
+    SendDiscordLogMessage(GetName(oDev) + " used the developer script to fully explore " + GetName(GetArea(oDev)) + ", tag: " + GetTag(GetArea(oDev)));
 	ExploreAreaForPlayer(GetArea(oDev), oDev);
 }
 

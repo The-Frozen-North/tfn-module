@@ -5,6 +5,7 @@ void main()
 
     if (GetIsDeveloper(oPC))
     {
+        SendDiscordLogMessage(GetName(oPC) + " used the developer menu to give themselves enough experience to reach level 12.");
         GiveXPToCreature(oPC, 100000);
     }
 }

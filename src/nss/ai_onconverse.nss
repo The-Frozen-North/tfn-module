@@ -30,6 +30,7 @@ void main()
             gsCBGetIsPerceived(oSpeaker))
         {
             ClearAllActions(TRUE);
+            WriteTimestampedLogEntry(GetName(oSpeaker) + " (" + ObjectToString(oSpeaker) + ") talked to " + GetName(OBJECT_SELF));
             BeginConversation(sConv);
         }
         break;

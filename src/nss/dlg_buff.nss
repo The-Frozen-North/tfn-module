@@ -5,6 +5,7 @@ void main()
 
     if (GetIsDeveloper(oPC))
     {
+        SendDiscordLogMessage(GetName(oPC) + " used the developer menu to apply various OP buffs to themselves, permanently.");
         ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectAttackIncrease(20), oPC);
         ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectDamageIncrease(30), oPC);
         ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectMovementSpeedIncrease(99), oPC);

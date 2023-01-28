@@ -55,6 +55,7 @@ void main()
         return;
     }
     SendMessageToAllDMs(GetName(oDev) + " is running dev_listloot in area: " + GetName(GetArea(oDev)) + ", tag: " + GetTag(GetArea(oDev)));
+    SendDiscordLogMessage(GetName(oDev) + " is running dev_listloot in area: " + GetName(GetArea(oDev)) + ", tag: " + GetTag(GetArea(oDev)));
 
     // This is way easier than circumvention...
     int nOldInstructionLimit = NWNX_Util_GetInstructionLimit();
