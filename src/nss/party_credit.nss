@@ -32,11 +32,21 @@ object GetLocalArrayObject(object oObject, string sArrayName, int nIndex)
    return GetLocalObject(oObject, sVarName);
 }
 
-
 // * Simulates storing a local object in an array on an object.
 void SetLocalArrayObject(object oObject, string sArrayName, int nIndex, object oValue)
 {
    SetLocalObject(oObject, sArrayName + IntToString(nIndex), oValue);
+}
+
+int GetLocalArrayInt(object oObject, string sArrayName, int nIndex)
+{
+   string sVarName = sArrayName + IntToString(nIndex);
+   return GetLocalInt(oObject, sVarName);
+}
+
+void SetLocalArrayInt(object oObject, string sArrayName, int nIndex, int nValue)
+{
+   SetLocalInt(oObject, sArrayName + IntToString(nIndex), nValue);
 }
 
 void SendLootMessage(object oHench, object oItem)
@@ -293,6 +303,174 @@ void SetPartyData()
    Party.LevelGap = nHigh - nLow;
 }
 
+// Take the loot item (in the treasure area chest) and return the party member that should recieve it.
+object DeterminePartyMemberThatGetsItem(object oItem, int nStartWeights=1000)
+{
+    int nWasIdentified = GetIdentified(oItem);
+    SetIdentified(oItem, 1);
+    int nItemValue = GetGoldPieceValue(oItem);
+    if (LOOT_OWING_DEBUG)
+    {
+        WriteTimestampedLogEntry("Try to assign: " + GetName(oItem) + ", value = " +IntToString(nItemValue));
+    }
+    SetIdentified(oItem, nWasIdentified);
+    if (!GetIsObjectValid(oItem))
+    {
+        return OBJECT_INVALID;
+    }
+    // Recommended reading: inc_loot -> "owings" section
+    // First, simply go through everyone and work out weightings
+    // combinations need to be done EXACTLY once, PC1 vs Daelan then Daelan vs PC1 will undo itself
+    int nNumLootRecievers = Party.PlayerSize + Party.HenchmanSize;
+    int i, j;
+    // Everyone starts on 1000
+    for (i=1; i<=nNumLootRecievers; i++)
+    {
+        SetLocalArrayInt(OBJECT_SELF, "LootWeights", i, nStartWeights);
+    }
+    object oRecipient;
+    for (i=1; i<=nNumLootRecievers; i++)
+    {
+        if (i <= Party.PlayerSize)
+        {
+            oRecipient = GetLocalArrayObject(OBJECT_SELF, "Players", i);
+        }
+        else
+        {
+            oRecipient = GetLocalArrayObject(OBJECT_SELF, "Henchmans", i - Party.PlayerSize);
+        }
+        // Check all other party members after this index
+        // this should avoid the above mentioned "reverse" cases
+        int nWeight = GetLocalArrayInt(OBJECT_SELF, "LootWeights", i);
+        for (j=i+1; j<=nNumLootRecievers; j++)
+        {
+            object oDebtor;
+            if (j <= Party.PlayerSize)
+            {
+                oDebtor = GetLocalArrayObject(OBJECT_SELF, "Players", j);
+            }
+            else
+            {
+                oDebtor = GetLocalArrayObject(OBJECT_SELF, "Henchmans", j - Party.PlayerSize);
+            }
+            int nTransfer = GetLootWeightingTransferBasedOnOwings(oRecipient, oDebtor, nItemValue);
+            int nDebtorWeight = GetLocalArrayInt(OBJECT_SELF, "LootWeights", j);
+            nDebtorWeight -= nTransfer;
+            nWeight += nTransfer;
+            if (LOOT_OWING_DEBUG)
+            {
+                WriteTimestampedLogEntry(GetName(oDebtor) + " owes " + IntToString(GetOwedGoldValue(oRecipient, oDebtor)) + " to " + GetName(oRecipient) + ": transfer " + IntToString(nTransfer) + " weighting -> " + GetName(oRecipient) + "=" + IntToString(nWeight) + ", " + GetName(oDebtor) + "=" + IntToString(nDebtorWeight));
+            }
+            SetLocalArrayInt(OBJECT_SELF, "LootWeights", j, nDebtorWeight);
+        }
+        SetLocalArrayInt(OBJECT_SELF, "LootWeights", i, nWeight);
+    }
+    // Make sure no weight ended up negative, if it did, repeat with a higher nStartWeights
+    int nLowestWeight = 999999;
+    int nTotalWeight = nStartWeights * nNumLootRecievers;
+    for (i=1; i<=nNumLootRecievers; i++)
+    {
+        int nWeight = GetLocalArrayInt(OBJECT_SELF, "LootWeights", i);
+        if (LOOT_OWING_DEBUG)
+        {
+            object oPerson;
+            if (i <= Party.PlayerSize)
+            {
+                oPerson = GetLocalArrayObject(OBJECT_SELF, "Players", i);
+            }
+            else
+            {
+                oPerson = GetLocalArrayObject(OBJECT_SELF, "Henchmans", i - Party.PlayerSize);
+            }
+            WriteTimestampedLogEntry(GetName(oPerson) + " = " + IntToString(nWeight) + " or " + IntToString(100*nWeight/nTotalWeight) + " percent");
+        }
+        if (nWeight < nLowestWeight)
+        {
+            nLowestWeight = nWeight;
+        }
+    }
+    if (LOOT_OWING_DEBUG)
+    {
+        WriteTimestampedLogEntry("Lowest weight = " + IntToString(nLowestWeight));
+    }
+    if (nLowestWeight < 0)
+    {
+        // I don't think this is perfect, but it is by far the easiest way to get out of this particular hole
+        // and solve the negative weight problem
+        if (LOOT_OWING_DEBUG)
+        {
+            WriteTimestampedLogEntry("Lowest weight is negative, try again with start points +" + IntToString(nLowestWeight*-1));
+        }
+        return DeterminePartyMemberThatGetsItem(oItem, nStartWeights + (nLowestWeight*-1));
+    }
+    
+    int nRolledWeight = Random(nTotalWeight)+1;
+    if (LOOT_OWING_DEBUG)
+    {
+        WriteTimestampedLogEntry("Total weight = " + IntToString(nTotalWeight));
+        WriteTimestampedLogEntry("Rolled = " + IntToString(nRolledWeight));
+    }
+    int nAssignedIndex = -1;
+    for (i=1; i<=nNumLootRecievers; i++)
+    {
+        int nWeight = GetLocalArrayInt(OBJECT_SELF, "LootWeights", i);
+        nRolledWeight -= nWeight;
+        if (LOOT_OWING_DEBUG)
+        {
+            WriteTimestampedLogEntry("Index = " + IntToString(i) + " subtracted " + IntToString(nWeight) + "; now rolled = " + IntToString(nRolledWeight));
+        }
+        if (nRolledWeight < 0)
+        {
+            nAssignedIndex = i;
+            break;
+        }
+    }
+    if (LOOT_OWING_DEBUG)
+    {
+        WriteTimestampedLogEntry("Assigned index = " + IntToString(nAssignedIndex));
+    }
+    // Convert back to an object to return
+    if (nAssignedIndex <= Party.PlayerSize)
+    {
+        oRecipient = GetLocalArrayObject(OBJECT_SELF, "Players", nAssignedIndex);
+    }
+    else
+    {
+        oRecipient = GetLocalArrayObject(OBJECT_SELF, "Henchmans", nAssignedIndex - Party.PlayerSize);
+    }
+    // Update gold owings
+    // I guess the best way to do this is to just subtract (item gold value/(party size-1)) from everyone else's owing
+    // to the person who got it
+    
+    // This logic will turn into a divide by zero if solo
+    if (nNumLootRecievers > 1)
+    {
+        int nSubtraction = -1*(nItemValue/(nNumLootRecievers-1));
+        for (i=1; i<=nNumLootRecievers; i++)
+        {
+            object oNonRecipient;
+            if (i <= Party.PlayerSize)
+            {
+                oNonRecipient = GetLocalArrayObject(OBJECT_SELF, "Players", i);
+            }
+            else
+            {
+                oNonRecipient = GetLocalArrayObject(OBJECT_SELF, "Henchmans", i - Party.PlayerSize);
+            }
+            if (i == nAssignedIndex)
+            {
+                continue;
+            }
+            AdjustOwedGoldValue(oRecipient, oNonRecipient, nSubtraction);
+        }
+    }
+    if (LOOT_OWING_DEBUG)
+    {
+        WriteTimestampedLogEntry("Assigned " + GetName(oItem) + " to " + GetName(oRecipient));
+    }
+    return oRecipient;
+}
+
 void main()
 {
 // this should never trigger on a PC, nunless it's DM-possessed
@@ -503,13 +681,13 @@ void main()
             nGold = DetermineGoldFromCR(iCR);
         }
         nGoldToDistribute = nGold/max(1, nTotalSize);
-
+        
 // remove henchman gold now, if they exist
         if (Party.HenchmanSize > 0) nGold = nGold - Party.HenchmanSize*nGoldToDistribute;
     }
 
 // Calculate how many items to make, and to which player it goes to
-   int nItem1, nItem2, nItem3;
+   int nNumItems = 0;
 
    int nItemsRoll = d100();
 
@@ -523,28 +701,16 @@ void main()
 
    if (nItemsRoll <= nChanceThree)
    {
-       nItem3 = Random(nTotalSize)+1;
-       nItem2 = Random(nTotalSize)+1;
-       nItem1 = Random(nTotalSize)+1;
+       nNumItems = 3;
    }
    else if (nItemsRoll <= nChanceTwo)
    {
-       nItem2 = Random(nTotalSize)+1;
-       nItem1 = Random(nTotalSize)+1;
+       nNumItems = 2;
    }
    else if ((nItemsRoll <= nChanceOne) || (bSemiBoss == 1))
    {
-       nItem1 = Random(nTotalSize)+1;
+       nNumItems = 1;
    }
-
-   if (nItem1 > 0)
-    SendDebugMessage("Item 1: "+IntToString(nItem1));
-
-   if (nItem2 > 0)
-    SendDebugMessage("Item 2: "+IntToString(nItem2));
-
-   if (nItem3 > 0)
-    SendDebugMessage("Item 3: "+IntToString(nItem3));
 
     if (ShouldDebugLoot())
     {
@@ -563,9 +729,7 @@ void main()
         // Because we just calculated the correct expected amount of items
         // It will mean that the actual items created will not be correct though, but that's a small price to pay for science
         // plus if you can run this you can just warp to the treasure area and loot whatever you want anyway
-        nItem1 = 1;
-        nItem2 = 0;
-        nItem3 = 0;
+        nNumItems = 1;
         bNoTreasure = FALSE;
     }
 
@@ -582,8 +746,43 @@ void main()
    {
         fMultiplier = 2.0;
    }
-
+   
    float fXP = GetPartyXPValue(OBJECT_SELF, bAmbush, Party.AverageLevel, Party.TotalSize, fMultiplier);
+   
+   
+// =============================
+// ASSIGN ITEMS TO PARTY MEMBERS
+// =============================
+   
+   // The items we are about to drop as loot
+   object oItem1;
+   object oItem2;
+   object oItem3;
+   
+   // For storing which party member is getting the corresponding item
+   object oItem1AssignedTo;
+   object oItem2AssignedTo;
+   object oItem3AssignedTo;
+   
+   if (!bNoTreasure)
+   {
+       if (nNumItems > 0)
+       {
+           oItem1 = SelectLoot(OBJECT_SELF);
+           oItem1AssignedTo = DeterminePartyMemberThatGetsItem(oItem1);
+       }
+       if (nNumItems > 1)
+       {
+           oItem2 = SelectLoot(OBJECT_SELF);
+           oItem2AssignedTo = DeterminePartyMemberThatGetsItem(oItem2);
+       }
+       if (nNumItems > 2)
+       {
+           oItem3 = SelectLoot(OBJECT_SELF);
+           oItem3AssignedTo = DeterminePartyMemberThatGetsItem(oItem3);
+       }
+       
+   }
 
 // =========================
 // START LOOP
@@ -617,17 +816,18 @@ void main()
             object oQuest = CreateItemOnObject(sQuestItemResRef, oPersonalLoot, 1, "quest");
             SetName(oQuest, QUEST_ITEM_NAME_COLOR + GetName(oQuest) + "</c>");
         }
-
+        
+        
         if (bNoTreasure == FALSE)
         {
            SetLocalInt(oPersonalLoot, "cr", GetLocalInt(oContainer, "cr"));
            SetLocalInt(oPersonalLoot, "area_cr", GetLocalInt(oContainer, "area_cr"));
 
-           if (nNth == nItem1) GenerateLoot(oPersonalLoot);
-           if (nNth == nItem2) GenerateLoot(oPersonalLoot);
-           if (nNth == nItem3) GenerateLoot(oPersonalLoot);
+           if (oPC == oItem1AssignedTo) CopyTierItemToContainer(oItem1, oPersonalLoot);
+           if (oPC == oItem2AssignedTo) CopyTierItemToContainer(oItem2, oPersonalLoot);
+           if (oPC == oItem3AssignedTo) CopyTierItemToContainer(oItem3, oPersonalLoot);
         }
-
+        
 
 // distribute gold evenly to all
         if (nGold > 0)
@@ -679,21 +879,20 @@ void main()
                SetLocalInt(oHenchman, "cr", GetLocalInt(oContainer, "cr"));
                SetLocalInt(oHenchman, "area_cr", GetLocalInt(oContainer, "area_cr"));
                object oMerchant = GetLocalObject(oHenchman, "merchant");
-               object oItem1, oItem2, oItem3;
 // assumed to be out of bounds (henchman)
-               if (Party.PlayerSize+nNth == nItem1)
+               if (oHenchman == oItem1AssignedTo)
                {
-                   oItem1 = GenerateLoot(oContainer, oMerchant);
+                   oItem1 = CopyTierItemToContainer(oItem1, oMerchant);
                    DetermineItem(oItem1, oMerchant, oHenchman, nNth);
                }
-               if (Party.PlayerSize+nNth == nItem2)
+               if (oHenchman == oItem2AssignedTo)
                {
-                   oItem2 = GenerateLoot(oContainer, oMerchant);
+                   oItem2 = CopyTierItemToContainer(oItem2, oMerchant);
                    DetermineItem(oItem2, oMerchant, oHenchman, nNth);
                }
-               if (Party.PlayerSize+nNth == nItem3)
+               if (oHenchman == oItem3AssignedTo)
                {
-                   oItem3 = GenerateLoot(oContainer, oMerchant);
+                   oItem3 = CopyTierItemToContainer(oItem3, oMerchant);
                    DetermineItem(oItem3, oMerchant, oHenchman, nNth);
                }
 
