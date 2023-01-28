@@ -238,7 +238,8 @@ void SetPartyData()
       else if (!GetIsDead(oMbr) && !GetIsPC(oMbr) && nAssociateType > 0
                && nAssociateType != ASSOCIATE_TYPE_DOMINATED
                && nAssociateType != ASSOCIATE_TYPE_FAMILIAR
-               && nAssociateType != ASSOCIATE_TYPE_ANIMALCOMPANION)
+               && nAssociateType != ASSOCIATE_TYPE_ANIMALCOMPANION
+               && GetLocalInt(oMbr, "no_xp_penalty") != 1)
       {
           nTotalSize++;
           if (GetStringLeft(GetResRef(oMbr), 3) == "hen") // only named henchman count for loot distro
@@ -502,7 +503,7 @@ void main()
             nGold = DetermineGoldFromCR(iCR);
         }
         nGoldToDistribute = nGold/max(1, nTotalSize);
-        
+
 // remove henchman gold now, if they exist
         if (Party.HenchmanSize > 0) nGold = nGold - Party.HenchmanSize*nGoldToDistribute;
     }
@@ -581,7 +582,7 @@ void main()
    {
         fMultiplier = 2.0;
    }
-   
+
    float fXP = GetPartyXPValue(OBJECT_SELF, bAmbush, Party.AverageLevel, Party.TotalSize, fMultiplier);
 
 // =========================

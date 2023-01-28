@@ -36,20 +36,36 @@ void main()
         nDuration = nDuration * 2;  //Duration is +100%
     }
     //Summon the appropriate creature based on the summoner level
-    if (spell.Level <= 5)
+    if (spell.Class == CLASS_TYPE_PALE_MASTER)
     {
-        //Tyrant Fog Zombie
-        eSummon = EffectSummonCreature("sum_zombtyrant",VFX_FNF_SUMMON_UNDEAD);
-    }
-    else if ((spell.Level >= 6) && (spell.Level <= 9))
-    {
-        //Skeleton Warrior
-        eSummon = EffectSummonCreature("sum_skelwar",VFX_FNF_SUMMON_UNDEAD);
+        if (spell.Level <= 5)
+        {
+            //Tyrant Fog Zombie
+            eSummon = EffectSummonCreature("sum_pm_zomtyrant",VFX_FNF_SUMMON_UNDEAD);
+        }
+        else if ((spell.Level >= 6) && (spell.Level <= 9))
+        {
+            //Skeleton Warrior
+            eSummon = EffectSummonCreature("sum_pm_skelwar",VFX_FNF_SUMMON_UNDEAD);
+        }
     }
     else
     {
-        //Skeleton Chieftain
-        eSummon = EffectSummonCreature("sum_skelchief",VFX_FNF_SUMMON_UNDEAD);
+        if (spell.Level <= 5)
+        {
+            //Tyrant Fog Zombie
+            eSummon = EffectSummonCreature("sum_zombtyrant",VFX_FNF_SUMMON_UNDEAD);
+        }
+        else if ((spell.Level >= 6) && (spell.Level <= 9))
+        {
+            //Skeleton Warrior
+            eSummon = EffectSummonCreature("sum_skelwar",VFX_FNF_SUMMON_UNDEAD);
+        }
+        else
+        {
+            //Skeleton Chieftain
+            eSummon = EffectSummonCreature("sum_skelchief",VFX_FNF_SUMMON_UNDEAD);
+        }
     }
     //Apply the summon visual and summon the two undead.
     ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, eSummon, spell.Loc, DurationToSeconds(nDuration));

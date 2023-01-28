@@ -34,8 +34,6 @@ void main_delayed()
         SetAssociateState(NW_ASC_DISTANCE_2_METERS);
     }
 
-    DetermineMaxHitPoints(OBJECT_SELF);
-
     //1.71: multisummoning feature
     int maxSummonModule = GetModuleSwitchValue("71_UNLIMITED_SUMMONING");
     int maxSummonPC = GetLocalInt(oMaster,"71_UNLIMITED_SUMMONING");
@@ -60,6 +58,8 @@ void main_delayed()
 
 void main()
 {
+    DetermineMaxHitPoints(OBJECT_SELF);
+
      //Sets up the special henchmen listening patterns
     SetAssociateListenPatterns();
 

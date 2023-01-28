@@ -46,7 +46,7 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 0
+    "value": -1
   },
   "CurrentHitPoints": {
     "type": "short",
@@ -186,7 +186,7 @@
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 0
+    "value": 3
   },
   "NoPermDeath": {
     "type": "byte",
@@ -525,6 +525,21 @@
         "Value": {
           "type": "cexostring",
           "value": "hb_ghost"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "X2_L_IS_INCORPOREAL"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
         }
       }
     ]

@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 6.0
+    "value": 15.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 6
+          "value": 12
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 10
+    "value": 12
   },
   "Conversation": {
     "type": "resref",
@@ -46,11 +46,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": -2
+    "value": 0
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 48
+    "value": 96
   },
   "DecayTime": {
     "type": "dword",
@@ -67,7 +67,7 @@
   },
   "Dex": {
     "type": "byte",
-    "value": 16
+    "value": 18
   },
   "Disarmable": {
     "type": "byte",
@@ -80,28 +80,28 @@
         "__struct_id": 16384,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_wraithclaw"
+          "value": "cre_wraithclawg"
         }
       },
       {
         "__struct_id": 32768,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_wraithclaw"
+          "value": "cre_wraithclawg"
         }
       },
       {
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_spectralsg"
+          "value": "cre_spectrals"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 5
+    "value": 2
   },
   "FeatList": {
     "type": "list",
@@ -131,17 +131,22 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 100
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 289
         }
       }
     ]
   },
   "FirstName": {
-    "id": 12822,
+    "id": 12780,
     "type": "cexolocstring",
-    "value": {
-      "0": "Wraith"
-    }
+    "value": {}
   },
   "fortbonus": {
     "type": "short",
@@ -157,7 +162,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 48
+    "value": 96
   },
   "Int": {
     "type": "byte",
@@ -189,11 +194,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 48
+    "value": 108
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 6
+    "value": 10
   },
   "NoPermDeath": {
     "type": "byte",
@@ -201,7 +206,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 32
+    "value": 253
   },
   "PerceptionRange": {
     "type": "byte",
@@ -229,55 +234,55 @@
   },
   "ScriptAttacked": {
     "type": "resref",
-    "value": "ai_onattacked"
+    "value": "nw_ch_ac5"
   },
   "ScriptDamaged": {
     "type": "resref",
-    "value": "ai_ondamaged"
+    "value": "nw_ch_ac5"
   },
   "ScriptDeath": {
     "type": "resref",
-    "value": "ai_ondeath"
+    "value": "nw_ch_ac7"
   },
   "ScriptDialogue": {
     "type": "resref",
-    "value": "ai_onconverse"
+    "value": "nw_ch_ac4"
   },
   "ScriptDisturbed": {
     "type": "resref",
-    "value": "ai_ondisturb"
+    "value": "nw_ch_ac8"
   },
   "ScriptEndRound": {
     "type": "resref",
-    "value": "ai_oncombrnd"
+    "value": "nw_ch_ac3"
   },
   "ScriptHeartbeat": {
     "type": "resref",
-    "value": "ai_onheartb"
+    "value": "nw_ch_ac1"
   },
   "ScriptOnBlocked": {
     "type": "resref",
-    "value": "ai_onblocked"
+    "value": "nw_ch_ace"
   },
   "ScriptOnNotice": {
     "type": "resref",
-    "value": "ai_onpercep"
+    "value": "nw_ch_ac2"
   },
   "ScriptRested": {
     "type": "resref",
-    "value": "ai_onrest"
+    "value": "nw_ch_aca"
   },
   "ScriptSpawn": {
     "type": "resref",
-    "value": "ai_onspawn"
+    "value": "nw_ch_summon_9"
   },
   "ScriptSpellAt": {
     "type": "resref",
-    "value": "ai_onspellcast"
+    "value": "nw_ch_acb"
   },
   "ScriptUserDefine": {
     "type": "resref",
-    "value": "ai_onuserdef"
+    "value": "nw_ch_acd"
   },
   "SkillList": {
     "type": "list",
@@ -321,7 +326,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 11
         }
       },
       {
@@ -342,7 +347,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 0
         }
       },
       {
@@ -518,7 +523,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_WRAITH"
+    "value": "NW_S_WRAITH"
   },
   "Tail_New": {
     "type": "dword",
@@ -530,11 +535,26 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "wraith"
+    "value": "sum_pm_wraith"
   },
   "VarTable": {
     "type": "list",
     "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "no_xp_penalty"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
       {
         "__struct_id": 0,
         "Name": {
