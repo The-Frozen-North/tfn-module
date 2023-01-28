@@ -86,7 +86,7 @@ void DetermineHorseEffects(object oPC)
         NWNX_Creature_SetMovementRateFactorCap(oPC, 1.0 + (IntToFloat(nSpeedBonus) / 100.0));
     }
 
-    int nACPenalty = 4;
+    int nACPenalty = 2;
     int nACBonus = 0;
     //int nSpellFailure = GetRidingSpellFailure(oPC);
 
@@ -102,7 +102,7 @@ void DetermineHorseEffects(object oPC)
     effect eLink = EffectLinkEffects(EffectACDecrease(nACPenalty), EffectMovementSpeedIncrease(nSpeedBonus));
 
 // determine ab penalties
-    int nABPenalty = 1;
+    int nABPenalty = 0;
     if (GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oPC)))
     {
        nABPenalty = 4;
@@ -110,7 +110,7 @@ void DetermineHorseEffects(object oPC)
        if (GetHasFeat(FEAT_MOUNTED_ARCHERY, oPC))
             nABPenalty = 2;
     }
-    eLink = EffectLinkEffects(EffectAttackDecrease(nABPenalty), eLink);
+    if (nABPenalty > 0) eLink = EffectLinkEffects(EffectAttackDecrease(nABPenalty), eLink);
 
 // no tumblin' on a mount
     eLink = EffectLinkEffects(EffectSkillDecrease(SKILL_TUMBLE, 50), eLink);

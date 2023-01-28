@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 187
+    "value": 147
   },
   "BodyBag": {
     "type": "byte",
@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 15
+    "value": 13
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 6.0
+    "value": 12.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 6
+          "value": 11
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 10
+    "value": 14
   },
   "Conversation": {
     "type": "resref",
@@ -46,11 +46,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": -2
+    "value": 0
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 48
+    "value": 55
   },
   "DecayTime": {
     "type": "dword",
@@ -61,13 +61,14 @@
     "value": ""
   },
   "Description": {
-    "id": 12821,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Dark and dangerous creatures from the dreaded lower planes, Shadow Fiends never hunger or thirst, attacking only to satisfy their desire to do evil."
+    }
   },
   "Dex": {
     "type": "byte",
-    "value": 16
+    "value": 20
   },
   "Disarmable": {
     "type": "byte",
@@ -80,28 +81,28 @@
         "__struct_id": 16384,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_wraithclaw"
+          "value": "cre_sfiendclaw"
         }
       },
       {
         "__struct_id": 32768,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_wraithclaw"
+          "value": "cre_sfiendclaw"
         }
       },
       {
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_spectralsg"
+          "value": "x1_it_creitemun1"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 5
+    "value": 2
   },
   "FeatList": {
     "type": "list",
@@ -110,14 +111,28 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 0
+          "value": 228
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 228
+          "value": 10
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 26
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 28
         }
       },
       {
@@ -131,16 +146,23 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 291
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 289
         }
       }
     ]
   },
   "FirstName": {
-    "id": 12822,
+    "id": 12761,
     "type": "cexolocstring",
     "value": {
-      "0": "Wraith"
+      "0": "Summoned Shadow Fiend"
     }
   },
   "fortbonus": {
@@ -157,11 +179,11 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 48
+    "value": 55
   },
   "Int": {
     "type": "byte",
-    "value": 14
+    "value": 12
   },
   "Interruptable": {
     "type": "byte",
@@ -189,11 +211,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 48
+    "value": 77
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 6
+    "value": 12
   },
   "NoPermDeath": {
     "type": "byte",
@@ -201,7 +223,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 32
+    "value": 253
   },
   "PerceptionRange": {
     "type": "byte",
@@ -217,7 +239,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 322
+    "value": 284
   },
   "Race": {
     "type": "byte",
@@ -229,55 +251,55 @@
   },
   "ScriptAttacked": {
     "type": "resref",
-    "value": "ai_onattacked"
+    "value": "nw_ch_ac5"
   },
   "ScriptDamaged": {
     "type": "resref",
-    "value": "ai_ondamaged"
+    "value": "nw_ch_ac5"
   },
   "ScriptDeath": {
     "type": "resref",
-    "value": "ai_ondeath"
+    "value": "nw_ch_ac7"
   },
   "ScriptDialogue": {
     "type": "resref",
-    "value": "ai_onconverse"
+    "value": "nw_ch_ac4"
   },
   "ScriptDisturbed": {
     "type": "resref",
-    "value": "ai_ondisturb"
+    "value": "nw_ch_ac8"
   },
   "ScriptEndRound": {
     "type": "resref",
-    "value": "ai_oncombrnd"
+    "value": "nw_ch_ac3"
   },
   "ScriptHeartbeat": {
     "type": "resref",
-    "value": "ai_onheartb"
+    "value": "nw_ch_ac1"
   },
   "ScriptOnBlocked": {
     "type": "resref",
-    "value": "ai_onblocked"
+    "value": "nw_ch_ace"
   },
   "ScriptOnNotice": {
     "type": "resref",
-    "value": "ai_onpercep"
+    "value": "nw_ch_ac2"
   },
   "ScriptRested": {
     "type": "resref",
-    "value": "ai_onrest"
+    "value": "nw_ch_aca"
   },
   "ScriptSpawn": {
     "type": "resref",
-    "value": "ai_onspawn"
+    "value": "nw_ch_summon_9"
   },
   "ScriptSpellAt": {
     "type": "resref",
-    "value": "ai_onspellcast"
+    "value": "nw_ch_acb"
   },
   "ScriptUserDefine": {
     "type": "resref",
-    "value": "ai_onuserdef"
+    "value": "nw_ch_acd"
   },
   "SkillList": {
     "type": "list",
@@ -321,28 +343,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 14
         }
       },
       {
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 12
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 9
+          "value": 14
         }
       },
       {
@@ -384,7 +392,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 10
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
         }
       },
       {
@@ -405,7 +420,14 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 12
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 14
         }
       },
       {
@@ -482,7 +504,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 107
+    "value": 78
   },
   "SpecAbilityList": {
     "type": "list",
@@ -491,11 +513,11 @@
         "__struct_id": 4,
         "Spell": {
           "type": "word",
-          "value": 204
+          "value": 36
         },
         "SpellCasterLevel": {
           "type": "byte",
-          "value": 5
+          "value": 11
         },
         "SpellFlags": {
           "type": "byte",
@@ -510,7 +532,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 10
+    "value": 12
   },
   "Subrace": {
     "type": "cexostring",
@@ -518,7 +540,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_WRAITH"
+    "value": "X1_S_SHFIEND"
   },
   "Tail_New": {
     "type": "dword",
@@ -530,7 +552,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "wraith"
+    "value": "sum_sd_shadowf"
   },
   "VarTable": {
     "type": "list",
@@ -540,6 +562,36 @@
         "Name": {
           "type": "cexostring",
           "value": "X2_L_IS_INCORPOREAL"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "X2_SPECIAL_COMBAT_AI_SCRIPT"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "x2_ai_shadow"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "no_xp_penalty"
         },
         "Type": {
           "type": "dword",
@@ -581,6 +633,6 @@
   },
   "Wis": {
     "type": "byte",
-    "value": 14
+    "value": 12
   }
 }

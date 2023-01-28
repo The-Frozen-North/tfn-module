@@ -88,7 +88,7 @@ void main()
   }
 
    int nSaveDC     =  StringToInt(Get2DAString(X2_IP_POISONWEAPON_2DA,"SaveDC",nRow));
-   int nDuration   =  StringToInt(Get2DAString(X2_IP_POISONWEAPON_2DA,"Duration",nRow));
+   float fDuration   =  120.0 + TurnsToSeconds(d3()); // lasts 2 turns + d3 turns
    int nPoisonType =  StringToInt(Get2DAString(X2_IP_POISONWEAPON_2DA,"PoisonType",nRow)) ;
    int nApplyDC    =  StringToInt(Get2DAString(X2_IP_POISONWEAPON_2DA,"ApplyCheckDC",nRow)) ;
 
@@ -97,6 +97,9 @@ void main()
    {
        // * Force attacks of opportunity
        AssignCommand(oPC,ClearAllActions(TRUE));
+
+       // poisons do not last as long for the unskilled
+       fDuration = 30.0 + RoundsToSeconds(d6()); // lasts 5 rounds + d6 rounds
 
 
        // Poison restricted to assassins and blackguards only?
@@ -111,7 +114,7 @@ void main()
        if (nCheck < nApplyDC)
        {
            object oCreator = GetPoisonEffectCreator(oPC);
-           AssignCommand(oCreator,ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectAbilityDecrease(nPoisonType, d2(1)), oPC, IntToFloat(nDuration)));
+           AssignCommand(oCreator,ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectAbilityDecrease(nPoisonType, d2(1)), oPC, fDuration));
            ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_POISON_S), oPC);
            FloatingTextStrRefOnCreature(83368,oPC);               //"Failed"
            return;
@@ -128,7 +131,7 @@ void main()
     }
 
     itemproperty ip = ItemPropertyOnHitProps(IP_CONST_ONHIT_ITEMPOISON,nSaveDC,nPoisonType);
-   IPSafeAddItemProperty(oTarget, ip,IntToFloat(nDuration),X2_IP_ADDPROP_POLICY_KEEP_EXISTING,TRUE,TRUE);
+   IPSafeAddItemProperty(oTarget, ip,fDuration,X2_IP_ADDPROP_POLICY_KEEP_EXISTING,TRUE,TRUE);
 
    effect eVis = EffectVisualEffect(VFX_IMP_PULSE_NATURE);
    //technically this is not 100% safe but since there is no way to retrieve the sub
@@ -136,7 +139,7 @@ void main()
    if (IPGetItemHasItemOnHitPropertySubType(oTarget, 19))
    {
        FloatingTextStrRefOnCreature(83361,oPC);         //"Weapon is coated with poison"
-       IPSafeAddItemProperty(oTarget, ItemPropertyVisualEffect(ITEM_VISUAL_ACID),IntToFloat(nDuration),X2_IP_ADDPROP_POLICY_KEEP_EXISTING,TRUE,FALSE);
+       IPSafeAddItemProperty(oTarget, ItemPropertyVisualEffect(ITEM_VISUAL_ACID),fDuration,X2_IP_ADDPROP_POLICY_KEEP_EXISTING,TRUE,FALSE);
        ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, GetItemPossessor(oTarget));
    }
    else
