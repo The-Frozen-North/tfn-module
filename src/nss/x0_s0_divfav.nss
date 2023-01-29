@@ -37,7 +37,7 @@ void main()
     effect eVis = EffectVisualEffect(VFX_IMP_HEAD_HOLY);
     effect eImpact = EffectVisualEffect(VFX_FNF_LOS_HOLY_30);
 
-    int nScale = spell.Level / 3;
+    int nScale = spell.Level / 4;
     // * must fall between +1 and +5
     if (nScale < 1)
         nScale = 1;
