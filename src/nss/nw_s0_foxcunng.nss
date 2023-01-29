@@ -14,6 +14,7 @@
 #include "70_inc_spells"
 #include "x0_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -45,7 +46,7 @@ void main()
     //Set Adjust Ability Score effect
     eRaise = EffectAbilityIncrease(ABILITY_INTELLIGENCE, nRaise);
     effect eLink = EffectLinkEffects(eRaise, eDur);
-    
+
     RemoveAnimalSpellEffects(spell.Target);
 
     //Apply the VFX impact and effects

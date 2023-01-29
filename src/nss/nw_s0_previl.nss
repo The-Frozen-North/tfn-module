@@ -16,6 +16,7 @@
 
 #include "70_inc_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -59,5 +60,6 @@ void main()
     //Fire cast spell at event for the specified target
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
     //ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
+    RemoveClericArmorClassSpellEffects(spell.Target);
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nDuration));
 }

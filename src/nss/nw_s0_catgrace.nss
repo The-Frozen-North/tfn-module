@@ -20,6 +20,7 @@
 #include "70_inc_spells"
 #include "x0_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -51,7 +52,7 @@ void main()
     //Create the Ability Bonus effect with the correct modifier
     eDex = EffectAbilityIncrease(ABILITY_DEXTERITY,nModify);
     effect eLink = EffectLinkEffects(eDex, eDur);
-    
+
     RemoveAnimalSpellEffects(spell.Target);
 
     //Apply visual and bonus effects

@@ -18,6 +18,7 @@ NOTE: Official rules say +6, we can only go to +5
 #include "70_inc_spells"
 #include "nw_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -65,11 +66,7 @@ void main()
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
 
 // divine power does not stack with this
-    if (GetHasSpellEffect(SPELL_DIVINE_POWER, OBJECT_SELF))
-    {
-        FloatingTextStringOnCreature("*Divine power was dispelled*", spell.Target, FALSE);
-        RemoveEffectsFromSpell(spell.Target, SPELL_DIVINE_POWER);
-    }
+    DisplaceSpell(spell.Target, SPELL_DIVINE_POWER, "Divine Power");
 
     //Apply VFX impact and bonus effects
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, spell.Target);

@@ -54,6 +54,23 @@ doing so, do this only if running original event has no longer sense.
 #include "nwnx_effect"
 #include "inc_debug"
 
+void RemoveMagicVestmentEffect(object oPC, string sTag)
+{
+    effect eEffect = GetFirstEffect(oPC);
+
+    while (GetIsEffectValid(eEffect))
+    {
+        if (GetEffectTag(eEffect) == sTag)
+        {
+            RemoveEffect(oPC, eEffect);
+            FloatingTextStringOnCreature("*Magic Vestment was removed*", oPC);
+            break;
+        }
+
+        eEffect = GetNextEffect(oPC);
+    }
+}
+
 void main()
 {
     object oItem = GetPCItemLastUnequipped();
@@ -77,7 +94,18 @@ void main()
         SetLocalInt(oPC,"UnPolymorph_HP",GetCurrentHitPoints(oPC));
         DelayCommand(0.0,ExecuteScript("70_mod_polymorph",oPC));
     }
-    
+
+    int nItemType = GetBaseItemType(oItem);
+
+    if (nItemType == BASE_ITEM_LARGESHIELD || nItemType == BASE_ITEM_SMALLSHIELD || nItemType == BASE_ITEM_TOWERSHIELD)
+    {
+        RemoveMagicVestmentEffect(oPC, "magic_vestment_shield");
+    }
+    else if (nItemType == BASE_ITEM_ARMOR)
+    {
+        RemoveMagicVestmentEffect(oPC, "magic_vestment_armor");
+    }
+
     // If the item created some self buffs on the user, remove them.
     int nIndex = 1;
     int bRemovedNotify = 0;
@@ -107,12 +135,12 @@ void main()
                     FloatingTextStringOnCreature("As you unequip the " + GetName(oItem) + ", some effects it created were dispelled.", oPC, FALSE);
                 }
                 break;
-            }                
+            }
             eTest = GetNextEffect(oPC);
         }
         DeleteLocalInt(oItem, sVar);
         nIndex++;
-        
+
     }
 
 }

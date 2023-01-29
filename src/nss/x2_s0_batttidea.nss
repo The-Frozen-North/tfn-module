@@ -28,6 +28,7 @@ thats module-related)
 
 #include "70_inc_spells"
 #include "x0_i0_spells"
+#include "inc_spells"
 
 void main()
 {
@@ -66,6 +67,7 @@ void main()
             {
                 //Apply the VFX impact and linked effects
                 DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
+                DisplaceSpell(oTarget, SPELL_PRAYER, "Prayer");
                 ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oTarget);
             }
         }

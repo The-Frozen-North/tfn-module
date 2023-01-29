@@ -16,6 +16,7 @@
 #include "70_inc_spells"
 #include "x0_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -80,6 +81,7 @@ void main()
             //Fire spell cast at event for target
             SignalEvent(oTarget, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
             //Apply VFX impact and bonus effects
+            DisplaceSpell(oTarget, SPELL_BATTLETIDE, "Battletide");
             ApplyEffectToObject(DURATION_TYPE_INSTANT, ePosVis, oTarget);
             ApplyEffectToObject(DURATION_TYPE_TEMPORARY, ePosLink, oTarget, DurationToSeconds(nDuration));
         }
@@ -90,6 +92,7 @@ void main()
             if(!MyResistSpell(spell.Caster, oTarget))
             {
                 //Apply VFX impact and bonus effects
+                DisplaceSpell(oTarget, SPELL_BATTLETIDE, "Battletide");
                 ApplyEffectToObject(DURATION_TYPE_INSTANT, eNegVis, oTarget);
                 ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eNegLink, oTarget, DurationToSeconds(nDuration));
             }

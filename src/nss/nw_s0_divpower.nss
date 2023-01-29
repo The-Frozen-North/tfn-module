@@ -31,6 +31,7 @@ Patch 1.71
 #include "70_inc_spells"
 #include "nw_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -113,11 +114,7 @@ void main()
 
 
 // divine favor does not stack with this
-    if (GetHasSpellEffect(SPELL_DIVINE_FAVOR, OBJECT_SELF))
-    {
-        FloatingTextStringOnCreature("*Divine favor was dispelled*", spell.Target, FALSE);
-        RemoveEffectsFromSpell(spell.Target, SPELL_DIVINE_FAVOR);
-    }
+    DisplaceSpell(spell.Target, SPELL_DIVINE_FAVOR, "Divine Favor");
 
     //Apply Link and VFX effects to the target
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nCasterLevel));

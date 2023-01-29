@@ -21,6 +21,7 @@ thats module-related)
 
 #include "70_inc_spells"
 #include "x0_i0_spells"
+#include "inc_spells"
 
 void main()
 {
@@ -42,6 +43,7 @@ void main()
         SignalEvent(oTarget, EventSpellCastAt(aoe.AOE, spell.Id, FALSE));
 
         //Apply the VFX impact and effects
+        RemoveClericArmorClassSpellEffects(oTarget);
         ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oTarget);
     }
 }

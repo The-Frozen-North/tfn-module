@@ -29,6 +29,7 @@ Patch 1.70
 #include "70_inc_spells"
 #include "x0_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -101,6 +102,7 @@ void main()
             //Apply VFX impact and bonus effects
             DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
             DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, DurationToSeconds(nDuration)));
+            DelayCommand(fDelay, DisplaceSpell(oTarget, SPELL_AID, "Aid"));
         }
         //Get the next target in the specified area around the caster
         oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);

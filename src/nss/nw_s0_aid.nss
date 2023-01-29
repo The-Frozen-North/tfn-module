@@ -21,6 +21,7 @@ Patch 1.70
 #include "70_inc_spells"
 #include "x0_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -62,4 +63,5 @@ void main()
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, spell.Target);
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eHP, spell.Target, DurationToSeconds(nDuration));
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nDuration));
+    DisplaceSpell(spell.Target, SPELL_BLESS, "Bless");
 }

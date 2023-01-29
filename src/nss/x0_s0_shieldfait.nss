@@ -23,6 +23,7 @@ Patch 1.70
 #include "70_inc_spells"
 #include "x0_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -59,6 +60,7 @@ void main()
     //Fire spell cast at event for target
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
     //Apply VFX impact and bonus effects
+    RemoveClericArmorClassSpellEffects(spell.Target);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, spell.Target);
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nDuration));
 }

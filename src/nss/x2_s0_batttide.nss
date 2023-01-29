@@ -28,6 +28,7 @@ thats module-related)
 #include "70_inc_spells"
 #include "x2_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -74,6 +75,7 @@ void main()
 
     //prevent stacking
     RemoveEffectsFromSpell(spell.Target, spell.Id);
+    DisplaceSpell(spell.Target, SPELL_PRAYER, "Prayer");
 
     //Apply the VFX impact and linked effects
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));

@@ -21,13 +21,78 @@ Patch 1.70
 - VFX added if cast on weapon on ground
 */
 
+// this spell was revamped to apply an AC bonus effect instead of it being a temporary item property
+// shield and armor does NOT stack
+
 #include "70_inc_spells"
 #include "x2_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
-void AddACBonusToArmor(object oMyArmor, float fDuration, int nAmount)
+/*
+int HasEffectTag(object oPC, string sTag)
 {
-    IPSafeAddItemProperty(oMyArmor,ItemPropertyACBonus(nAmount), fDuration, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING, FALSE, TRUE);
+    effect eEffect = GetFirstEffect(oPC);
+
+    while (GetIsEffectValid(eEffect))
+    {
+        if (GetEffectTag(eEffect) == sTag)
+        {
+            return TRUE;
+            break;
+        }
+
+        eEffect = GetNextEffect(oPC);
+    }
+
+    return FALSE;
+}
+*/
+
+void ApplyMagicVestmentEffect(object oPossessor, object oCaster, int nSpellId, effect eDur, effect eVis, int nDuration, int nAmount, int nItemType = 0)
+{
+    SignalEvent(oPossessor, EventSpellCastAt(oCaster, nSpellId, FALSE));
+    DelayCommand(1.3, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oPossessor));
+
+    effect eEffect, eLink;
+
+    if (nItemType == BASE_ITEM_ARMOR)
+    {
+        eEffect = EffectACIncrease(nAmount, AC_ARMOUR_ENCHANTMENT_BONUS);
+        eLink = EffectLinkEffects(eDur, eEffect);
+        eLink = TagEffect(eLink, "magic_vestment_armor");
+        /*
+        if (HasEffectTag(oPossessor, "magic_vestment_shield"))
+        {
+            FloatingTextStringOnCreature("*Magic Vestment Shield AC Bonus removed, Magic Vestment Armor AC bonus applied*", oCaster, FALSE);
+        }
+        else
+        {
+            FloatingTextStringOnCreature("*Magic Vestment Armor AC bonus applied*", oCaster, FALSE);
+        }
+        */
+        FloatingTextStringOnCreature("*Magic Vestment Armor AC bonus applied*", oCaster, FALSE);
+    }
+    else
+    {
+        eEffect = EffectACIncrease(nAmount, AC_SHIELD_ENCHANTMENT_BONUS);
+        eLink = EffectLinkEffects(eDur, eEffect);
+        eLink = TagEffect(eLink, "magic_vestment_shield");
+         /*
+        if (HasEffectTag(oPossessor, "magic_vestment_armor"))
+        {
+            FloatingTextStringOnCreature("*Magic Vestment Armor AC Bonus removed, Magic Vestment Shield AC bonus applied*", oCaster, FALSE);
+        }
+        else
+        {
+            FloatingTextStringOnCreature("*Magic Vestment Shield AC bonus applied*", oCaster, FALSE);
+        }
+        */
+        FloatingTextStringOnCreature("*Magic Vestment Shield AC bonus applied*", oCaster, FALSE);
+    }
+
+    RemoveClericArmorClassSpellEffects(oPossessor);
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oPossessor, DurationToSeconds(nDuration));
 }
 
 void main()
@@ -58,30 +123,50 @@ void main()
         nAmount = spell.Limit;
     }
 
-    object oMyArmor = IPGetTargetedOrEquippedArmor(TRUE);
-    object oPossessor = GetItemPossessor(oMyArmor);
+    object oArmor = GetItemInSlot(INVENTORY_SLOT_CHEST, spell.Target);
+    object oShield = GetItemInSlot(INVENTORY_SLOT_LEFTHAND, spell.Target);
+
+// if the left hand is not actually a shield, nullify it for further checks/logic
+    int nItemType = GetBaseItemType(oShield);
+    if (nItemType != BASE_ITEM_LARGESHIELD && nItemType != BASE_ITEM_SMALLSHIELD && nItemType != BASE_ITEM_TOWERSHIELD) oShield = OBJECT_INVALID;
+
+    object oTargetedArmor = spell.Target;
+    object oPossessor = GetItemPossessor(oTargetedArmor);
 
     if (spell.Meta & METAMAGIC_EXTEND)
     {
         nDuration = nDuration * 2; //Duration is +100%
     }
 
-    if(GetIsObjectValid(oMyArmor))
+    if(GetIsObjectValid(oTargetedArmor) && GetObjectType(oTargetedArmor) == OBJECT_TYPE_ITEM)
     {
-        SignalEvent(oPossessor, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
-        if(GetIsObjectValid(oPossessor))
+        int nTargetedItemType = GetBaseItemType(oTargetedArmor);
+
+        if(nTargetedItemType == BASE_ITEM_ARMOR)
         {
-            DelayCommand(1.3, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oPossessor));
-            ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eDur, oPossessor, DurationToSeconds(nDuration));
+            ApplyMagicVestmentEffect(oPossessor, spell.Caster, spell.Id, eDur, eVis, nDuration, nAmount, BASE_ITEM_ARMOR);
+        }
+        else if (nTargetedItemType == BASE_ITEM_LARGESHIELD || nTargetedItemType == BASE_ITEM_SMALLSHIELD || nTargetedItemType == BASE_ITEM_TOWERSHIELD)
+        {
+            ApplyMagicVestmentEffect(oPossessor, spell.Caster, spell.Id, eDur, eVis, nDuration, nAmount);
         }
         else
         {
-            DelayCommand(1.3, ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eVis, spell.Loc));
+            FloatingTextStringOnCreature("*Magic Vestment can only be cast on an equipped armor or shield*", spell.Caster, FALSE);
         }
-        AddACBonusToArmor(oMyArmor, DurationToSeconds(nDuration), nAmount);
+    }
+    else if (GetIsObjectValid(oArmor))
+    {
+        oPossessor = GetItemPossessor(oArmor);
+        ApplyMagicVestmentEffect(oPossessor, spell.Caster, spell.Id, eDur, eVis, nDuration, nAmount, BASE_ITEM_ARMOR);
+    }
+    else if (GetIsObjectValid(oShield))
+    {
+        oPossessor = GetItemPossessor(oShield);
+        ApplyMagicVestmentEffect(oPossessor, spell.Caster, spell.Id, eDur, eVis, nDuration, nAmount);
     }
     else
     {
-        FloatingTextStrRefOnCreature(83826, spell.Caster);
+        FloatingTextStringOnCreature("*Magic Vestment can only be cast on an equipped armor or shield*", spell.Caster, FALSE);
     }
 }

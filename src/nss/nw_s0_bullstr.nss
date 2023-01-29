@@ -10,6 +10,7 @@
 #include "70_inc_spells"
 #include "x0_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -42,7 +43,7 @@ void main()
     //Set the ability bonus effect
     eStr = EffectAbilityIncrease(ABILITY_STRENGTH,nModify);
     effect eLink = EffectLinkEffects(eStr, eDur);
-    
+
     RemoveAnimalSpellEffects(spell.Target);
 
     //Appyly the VFX impact and ability bonus effect
