@@ -22,6 +22,9 @@
 
 void main()
 {
+  // Only procs 25% of the time
+  if (d4() > 1) return;
+
   // Get Caster Level
   int nLevel = GetCasterLevel(OBJECT_SELF);
   // Assume minimum caster level if variable is not found

@@ -31,26 +31,25 @@ void AddFlamingEffectToWeapon(object oMyWeapon, float fDuration, int nCasterLeve
     {
         IPRemoveAllItemProperties(oMyWeapon,DURATION_TYPE_TEMPORARY);
     }
-
+    //1.72: support for damage type override
+    SetLocalInt(oMyWeapon, IntToString(spell.Id)+"_DAMAGE_TYPE", spell.DamageType);
+    int nWeaponVFX = ITEM_VISUAL_FIRE;
+    switch(spell.DamageType)
+    {
+    case DAMAGE_TYPE_ACID: nWeaponVFX = ITEM_VISUAL_ACID; break;
+    case DAMAGE_TYPE_COLD: nWeaponVFX = ITEM_VISUAL_COLD; break;
+    case DAMAGE_TYPE_ELECTRICAL: nWeaponVFX = ITEM_VISUAL_ELECTRICAL; break;
+    case DAMAGE_TYPE_NEGATIVE: nWeaponVFX = ITEM_VISUAL_EVIL; break;
+    case DAMAGE_TYPE_POSITIVE: case DAMAGE_TYPE_DIVINE: nWeaponVFX = ITEM_VISUAL_HOLY; break;
+    case DAMAGE_TYPE_SONIC: case DAMAGE_TYPE_MAGICAL: nWeaponVFX = ITEM_VISUAL_SONIC; break;
+    }
     if(IPGetIsMeleeWeapon(oMyWeapon))
     {
         //1.72: apply the weapon vfx itemproperty only on melee weapons
-        IPSafeAddItemProperty(oMyWeapon, ItemPropertyVisualEffect(ITEM_VISUAL_FIRE), fDuration, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING, FALSE, TRUE);
+        IPSafeAddItemProperty(oMyWeapon, ItemPropertyVisualEffect(nWeaponVFX), fDuration, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING, FALSE, TRUE);
     }
-
-    int iBonus = 0;
-
-    if (nCasterLevel >= 12)
-    {
-        iBonus = 2;
-    }
-    else if (nCasterLevel >= 6)
-    {
-        iBonus = 1;
-    }
-
     // If the spell is cast again, any previous itemproperties matching are removed.
-    IPSafeAddItemProperty(oMyWeapon, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_FIRE,6+iBonus), fDuration, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+    IPSafeAddItemProperty(oMyWeapon, ItemPropertyOnHitCastSpell(124,nCasterLevel), fDuration, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
 }
 
 void main()

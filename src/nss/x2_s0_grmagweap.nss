@@ -75,7 +75,7 @@ void main()
     effect eVis = EffectVisualEffect(VFX_IMP_SUPER_HEROISM);
     effect eDur = ExtraordinaryEffect(EffectVisualEffect(VFX_DUR_CESSATE_POSITIVE));
     int nDuration = spell.Level;
-    int nCasterLvl = spell.Level / 4;
+    int nCasterLvl = spell.Level / 3;
 
     if (nCasterLvl < 2)
         nCasterLvl = 2;

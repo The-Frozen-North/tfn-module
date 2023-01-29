@@ -113,7 +113,7 @@ void main()
     effect eDur = ExtraordinaryEffect(EffectVisualEffect(VFX_DUR_CESSATE_POSITIVE));
 
     int nDuration  = spell.Level;
-    int nAmount = spell.Level/4;
+    int nAmount = spell.Level/3;
     if (nAmount < 0)
     {
         nAmount = 1;

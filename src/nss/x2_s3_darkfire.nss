@@ -28,6 +28,9 @@
 
 void main()
 {
+  // Only procs 25% of the time
+  if (d4() > 1) return;
+
   // Get Caster Level
   int nLevel = GetCasterLevel(OBJECT_SELF);
   //1.72: support for damage type override
