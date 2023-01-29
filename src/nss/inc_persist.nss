@@ -19,6 +19,7 @@ void SavePCInfo(object oPC);
 // Put simply, without checking this, a PC can polymorph, deposit their life savings into their house
 // then log out and back in, and because their BIC isn't saved their gold will be both in their inventory
 // and in their house
+// If FALSE, writes a string explaining why to the module to the module's UNABLE_TO_SAVE_INFO variable
 int CanSavePCInfo(object oPC);
 
 // Set a temporary global integer that lasts X seconds. Default 60.0.
@@ -37,6 +38,8 @@ void ImportMinimap(object oPC);
 // -------------------------------------------------------------------------
 // FUNCTIONS
 // -------------------------------------------------------------------------
+
+const string UNABLE_TO_SAVE_INFO = "inc_persist_cant_save_reason";
 
 // -------------------------------------------------------------------------
 // TEMPORARY
@@ -68,9 +71,12 @@ int GetTemporaryInt(string sName)
 
 int CanSavePCInfo(object oPC)
 {
+    object oMod = GetModule();
+    DeleteLocalString(oMod, UNABLE_TO_SAVE_INFO);
     //if (NWNX_Creature_GetIsBartering(oPC))
     //{
     //    SendDebugMessage("Can't save BIC for "+GetName(oPC)+" because bartering", TRUE);
+    //    SetLocalString(oMod, UNABLE_TO_SAVE_INFO, "Your progress cannot be saved while bartering.");
     //    return 0;
     //}
 
@@ -90,6 +96,7 @@ int CanSavePCInfo(object oPC)
     if (bPolymorph)
     {
         SendDebugMessage("Can't save BIC for "+GetName(oPC)+" because polymorphed", TRUE);
+        SetLocalString(oMod, UNABLE_TO_SAVE_INFO, "Your progress cannot be saved while polymorphed.");
         return 0;
     }
     return 1;

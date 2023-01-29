@@ -33,8 +33,10 @@ void main()
 // already have a henchman? dont allow players to cheese the dialogue and get another henchman without persuade checks
     if (GetHenchmanCount(oPC) > 0) return;
 
-    SetMaster(oBim, oPC);
-
-    AssignCommand(oBim, ActionMoveToObject(oPC));
-    DelayCommand(4.0, PlayVoiceChat(VOICE_CHAT_HELLO, oBim));
+    if (!GetIsObjectValid(GetMasterByUUID(oBim)))
+    {
+        SetMaster(oBim, oPC);
+        AssignCommand(oBim, ActionMoveToObject(oPC));
+        DelayCommand(4.0, PlayVoiceChat(VOICE_CHAT_HELLO, oBim));
+    }
 }

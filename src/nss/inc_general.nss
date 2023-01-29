@@ -22,6 +22,8 @@ void KillTaunt(object oKiller, object oKilled);
 // Will copy vars, and return the new item.
 object CopyItemToExistingTarget(object oItem, object oTarget);
 
+string GetRespawnLocationName(object oPC);
+
 object CopyItemToExistingTarget(object oItem, object oTarget)
 {
     if (GetIsObjectValid(oTarget))
@@ -621,6 +623,45 @@ void DetermineMaxHitPoints(object oCreature)
     //SendDebugMessage(GetName(oCreature) + " hp: " + IntToString(GetCurrentHitPoints(oCreature)), TRUE);
     //SendDebugMessage(GetName(oCreature) + " max hp: " + IntToString(GetMaxHitPoints(oCreature)), TRUE);
 }
+
+string GetRespawnLocationName(object oPC)
+{
+    string sRespawn = SQLocalsPlayer_GetString(oPC, "respawn");
+    if (sRespawn != "")
+    {
+        if (sRespawn == "NEVERWINTER")
+        {
+            sRespawn = "Neverwinter";
+        }
+        else if (sRespawn == "LITH")
+        {
+            sRespawn = "Lith My'athar";
+        }
+        else if (sRespawn == "HIGHCLIFF")
+        {
+            sRespawn = "Highcliff";
+        }
+        else if (sRespawn == "PORT_LLAST")
+        {
+            sRespawn = "Port Llast";
+        }
+        else
+        {
+            object oChosenRespawn = GetObjectByTag("RESPAWN_"+sRespawn);
+            if (GetIsObjectValid(oChosenRespawn))
+            {
+                sRespawn = GetName(GetArea(oChosenRespawn));
+            }
+            else
+            {
+                sRespawn = "Neverwinter";
+            }
+        }
+        return sRespawn;
+    }
+    return "Neverwinter";
+}
+
 
 // sets this creature faction standing to 50 for commoners, merchants, and defenders
 void FactionReset(object oPC);

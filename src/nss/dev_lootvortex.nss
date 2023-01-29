@@ -81,6 +81,7 @@ void main()
         return;
     }
     SendMessageToAllDMs(GetName(oDev) + " is running dev_lootvortex in area: " + GetName(GetArea(oDev)));
+    SendDiscordLogMessage(GetName(oDev) + " is running dev_lootvortex in area: " + GetName(GetArea(oDev)));
 
 
     SetLocalObject(GetModule(), "dev_lootvortex", oDev);

@@ -26,6 +26,7 @@ const int RAND_FEAT_LIST_ROGUE_BONUS = 3;
 const int RAND_FEAT_LIST_GENERAL = 4;
 const int RAND_FEAT_LIST_RANGED = 5;
 const int RAND_FEAT_LIST_MELEE = 6;
+const int RAND_FEAT_LIST_FAVORED_ENEMY = 7;
 
 
 // Adds nCount total random feats to oCreature drawn from nFeatList.
@@ -225,7 +226,7 @@ int _EvaluateRandomFeat_Melee(object oCreature, int nFeat)
     if (nFeat == FEAT_WEAPON_FINESSE)
     {
         int nModDiff = GetAbilityModifier(ABILITY_DEXTERITY, oCreature) - GetAbilityModifier(ABILITY_STRENGTH, oCreature);
-        return max(0, 50*nModDiff);
+        return max(0, 70*nModDiff);
     }
     if (nFeat == FEAT_WEAPON_FOCUS_DAGGER)
     {
@@ -383,6 +384,111 @@ int _AddToChoiceArray(int nFeatID, int nBaseWeight, object oCreature)
     Array_PushBack_Int(RAND_FEAT_TEMP_ARRAY, nFeatID, GetModule());
     Array_PushBack_Int(RAND_FEAT_TEMP_WEIGHT_ARRAY, nWeight, GetModule());
     return nWeight;
+}
+
+int _BuildFeatChoiceArray_FavoredEnemy(object oCreature)
+{
+    Array_Clear(RAND_FEAT_TEMP_ARRAY, GetModule());
+    Array_Clear(RAND_FEAT_TEMP_WEIGHT_ARRAY, GetModule());
+    int nTotalWeight = 0;
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_ABERRATION, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_ABERRATION, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_ANIMAL, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_ANIMAL, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_BEAST, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_BEAST, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_CONSTRUCT, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_CONSTRUCT, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_DRAGON, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_DRAGON, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_DWARF, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_DWARF, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_ELEMENTAL, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_ELEMENTAL, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_ELF, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_ELF, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_FEY, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_FEY, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_GIANT, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_GIANT, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_GNOME, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_GNOME, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_GOBLINOID, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_GOBLINOID, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_HALFELF, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_HALFELF, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_HALFLING, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_HALFLING, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_HALFORC, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_HALFORC, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_HUMAN, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_HUMAN, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_MAGICAL_BEAST, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_MAGICAL_BEAST, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_MONSTROUS, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_MONSTROUS, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_ORC, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_ORC, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_OUTSIDER, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_OUTSIDER, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_REPTILIAN, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_REPTILIAN, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_SHAPECHANGER, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_SHAPECHANGER, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_UNDEAD, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_UNDEAD, 100, oCreature);
+    }
+    if (!GetHasFeat(FEAT_FAVORED_ENEMY_VERMIN, oCreature))
+    {
+        nTotalWeight += _AddToChoiceArray(FEAT_FAVORED_ENEMY_VERMIN, 100, oCreature);
+    }
+    
+    return nTotalWeight;
 }
 
 int _BuildFeatChoiceArray_General(object oCreature)
@@ -579,7 +685,10 @@ int _BuildFeatChoiceArray(int nFeatList, object oCreature)
         case RAND_FEAT_LIST_MELEE:
         {
             return _BuildFeatChoiceArray_Melee(oCreature);
-
+        }
+        case RAND_FEAT_LIST_FAVORED_ENEMY:
+        {
+            return _BuildFeatChoiceArray_FavoredEnemy(oCreature);
         }
     }
     return 0;

@@ -152,5 +152,11 @@ void main()
     DelayCommand(5.0, FloatingTextStringOnCreature("Welcome to The Frozen North!", oPC, FALSE));
     DelayCommand(6.0, FloatingTextStringOnCreature("Please read your \"Adventurer's Handbook\" for rules and information.", oPC, FALSE));
     DelayCommand(7.0, FloatingTextStringOnCreature("https://discord.gg/qKqRUDZ", oPC, FALSE));
+    string sRespawn = SQLocalsPlayer_GetString(oPC, "respawn");
+    if (sRespawn != "")
+    {
+        sRespawn = GetRespawnLocationName(oPC);
+        DelayCommand(9.0, FloatingTextStringOnCreature("You have chosen to respawn in " + sRespawn + ".", oPC, FALSE));
+    }
 
 }

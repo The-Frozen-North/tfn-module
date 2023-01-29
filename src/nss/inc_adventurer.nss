@@ -3493,6 +3493,11 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
     {
         NWNX_Creature_SetFamiliarCreatureType(oCreature, Random(11));
     }
+    if (GetLevelByClass(CLASS_TYPE_RANGER, oCreature) > 0)
+    {
+        int nNumFavoredEnemies = 1 + (GetLevelByClass(CLASS_TYPE_RANGER, oCreature))/5;
+        AssignCommand(GetModule(), DelayCommand(6.0, AddRandomFeats(oCreature, RAND_FEAT_LIST_FAVORED_ENEMY, nNumFavoredEnemies)));
+    }
     if (!bOverrideSpellbooks)
     {
         for (i=1; i<=3; i++)

@@ -12,10 +12,17 @@ void main()
         WriteTimestampedLogEntry("DM: "+GetName(OBJECT_SELF)+" could not jump to an area because it was invalid");
         NWNX_Events_SkipEvent();
     }
-    else if (GetStringLeft(GetResRef(oArea), 1) == "_" && !GetIsDeveloper(OBJECT_SELF))
+    else if (GetStringLeft(GetResRef(oArea), 1) == "_")
     {
-        SendMessageToPC(OBJECT_SELF, "Only a developer is allowed to go to this area.");
-        WriteTimestampedLogEntry("DM: "+GetName(OBJECT_SELF)+" was not allowed to jump to developer only area: "+GetResRef(oArea));
-        NWNX_Events_SkipEvent();
+        if (!GetIsDeveloper(OBJECT_SELF))
+        {
+            SendMessageToPC(OBJECT_SELF, "Only a developer is allowed to go to this area.");
+            WriteTimestampedLogEntry("DM: "+GetName(OBJECT_SELF)+" was not allowed to jump to developer only area: "+GetResRef(oArea));
+            NWNX_Events_SkipEvent();
+        }
+        else
+        {
+            SendDiscordLogMessage(GetName(OBJECT_SELF) + " entered " + GetName(oArea) + " using the DM warp menu.");
+        }
     }
 }

@@ -53,6 +53,13 @@ void main()
            SetScriptParam("action", "load");
            ExecuteScript(sScript, OBJECT_SELF);
        }
+       
+       // This should help confirm the rollback issue is due to NWNX_Creature_GetIsBartering returning true when it shouldn't
+       if (!CanSavePCInfo(oPC))
+       {
+           string sFeedback = GetLocalString(GetModule(), UNABLE_TO_SAVE_INFO);
+           DelayCommand(1.0, FloatingTextStringOnCreature(sFeedback, oPC, FALSE));
+       }
 
        SendDebugMessage(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+", tag: "+GetTag(OBJECT_SELF)+", resref: "+GetResRef(OBJECT_SELF)+", climate: "+GetLocalString(OBJECT_SELF, "climate"));
 

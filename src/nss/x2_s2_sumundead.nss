@@ -52,7 +52,7 @@ void main()
     else if (nCasterLevel >= 9)
     {
         //Wraith
-        eSummon = EffectSummonCreature("X2_S_WRAITH",VFX_FNF_SUMMON_UNDEAD,0.0f,1);
+        eSummon = EffectSummonCreature("sum_pm_wraith",VFX_FNF_SUMMON_UNDEAD,0.0f,1);
     }
     // * Apply the summon visual and summon the two undead.
     // * ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eVis, GetSpellTargetLocation());

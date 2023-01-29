@@ -5,6 +5,7 @@ void main()
 
     if (GetIsDeveloper(oPC))
     {
+        SendDiscordLogMessage(GetName(oPC) + " used the developer menu to enter the treasure staging area.");
         AssignCommand(oPC, ActionJumpToLocation(Location(GetObjectByTag("_TREASURE"), Vector(), 0.0)));
     }
 }
