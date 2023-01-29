@@ -92,10 +92,10 @@ int GetStoneToFleshSalveCharges(object oCreature)
                 }
                 ipTest = GetNextItemProperty(oTest);
             }
-            
+
         }
         oTest = GetNextItemInInventory(oCreature);
-    } 
+    }
     return 0;
 }
 
@@ -216,7 +216,7 @@ void DoMoraleCry(object oCreature)
 
      SetLocalInt(oCreature, "morale_cried", 1);
 
-    
+
      ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectFrightened(), oCreature, IntToFloat(d3(2)));
 
     if (!GetHasEffect(EFFECT_TYPE_PETRIFY, oCreature))
@@ -660,6 +660,16 @@ string GetRespawnLocationName(object oPC)
         return sRespawn;
     }
     return "Neverwinter";
+}
+
+
+// sets this creature faction standing to 50 for commoners, merchants, and defenders
+void FactionReset(object oPC);
+void FactionReset(object oPC)
+{
+       SetStandardFactionReputation(STANDARD_FACTION_COMMONER, 50, oPC);
+       SetStandardFactionReputation(STANDARD_FACTION_MERCHANT, 50, oPC);
+       SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 50, oPC);
 }
 
 //void main(){}

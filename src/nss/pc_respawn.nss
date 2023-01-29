@@ -46,9 +46,7 @@ void main()
 // Teleport back to the respawn location
     AssignCommand(oRespawner, JumpToLocation(lRespawnLocation));
 
-     SetStandardFactionReputation(STANDARD_FACTION_COMMONER, 50, oRespawner);
-     SetStandardFactionReputation(STANDARD_FACTION_MERCHANT, 50, oRespawner);
-     SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 50, oRespawner);
+    FactionReset(oRespawner);
 
     ExecuteScript("pc_dth_penalty", oRespawner);
 
