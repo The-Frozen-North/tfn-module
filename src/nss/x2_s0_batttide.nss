@@ -75,7 +75,7 @@ void main()
 
     //prevent stacking
     RemoveEffectsFromSpell(spell.Target, spell.Id);
-    DisplaceSpell(spell.Target, SPELL_PRAYER, "Prayer");
+    RemoveClericAttackDamageBonusSpellEffects(spell.Caster);
 
     //Apply the VFX impact and linked effects
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));

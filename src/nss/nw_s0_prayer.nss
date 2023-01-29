@@ -92,7 +92,7 @@ void main()
             if(!MyResistSpell(spell.Caster, oTarget))
             {
                 //Apply VFX impact and bonus effects
-                DisplaceSpell(oTarget, SPELL_BATTLETIDE, "Battletide");
+                RemoveClericAttackDamageBonusSpellEffects(spell.Caster);
                 ApplyEffectToObject(DURATION_TYPE_INSTANT, eNegVis, oTarget);
                 ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eNegLink, oTarget, DurationToSeconds(nDuration));
             }

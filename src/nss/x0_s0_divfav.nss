@@ -65,8 +65,7 @@ void main()
     //Fire spell cast at event for target
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
 
-// divine power does not stack with this
-    DisplaceSpell(spell.Target, SPELL_DIVINE_POWER, "Divine Power");
+    RemoveClericAttackDamageBonusSpellEffects(spell.Caster);
 
     //Apply VFX impact and bonus effects
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, spell.Target);

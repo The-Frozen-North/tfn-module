@@ -112,9 +112,7 @@ void main()
     //Fire cast spell at event for the specified target
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
 
-
-// divine favor does not stack with this
-    DisplaceSpell(spell.Target, SPELL_DIVINE_FAVOR, "Divine Favor");
+    RemoveClericAttackDamageBonusSpellEffects(spell.Caster);
 
     //Apply Link and VFX effects to the target
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nCasterLevel));

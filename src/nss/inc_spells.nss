@@ -27,6 +27,14 @@ void RemoveAnimalSpellEffects(object oCreature)
     DisplaceSpell(oCreature, SPELL_EAGLE_SPLEDOR, "Eagle's Splendor");
 }
 
+void RemoveClericAttackDamageBonusSpellEffects(object oCreature)
+{
+   DisplaceSpell(oCreature, SPELL_DIVINE_FAVOR, "Divine Favor");
+   DisplaceSpell(oCreature, SPELL_DIVINE_POWER, "Divine Power");
+   DisplaceSpell(oCreature, SPELL_PRAYER, "Prayer");
+   DisplaceSpell(oCreature, SPELL_BATTLETIDE, "Battletide");
+}
+
 void RemoveClericArmorClassSpellEffects(object oCreature)
 {
    DisplaceSpell(oCreature, SPELL_SHIELD_OF_FAITH, "Shield of Faith");

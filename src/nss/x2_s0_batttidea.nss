@@ -67,7 +67,7 @@ void main()
             {
                 //Apply the VFX impact and linked effects
                 DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
-                DisplaceSpell(oTarget, SPELL_PRAYER, "Prayer");
+                RemoveClericAttackDamageBonusSpellEffects(spell.Caster);
                 ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oTarget);
             }
         }
