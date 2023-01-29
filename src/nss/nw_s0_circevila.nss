@@ -43,7 +43,7 @@ void main()
         SignalEvent(oTarget, EventSpellCastAt(aoe.AOE, spell.Id, FALSE));
 
         //Apply the VFX impact and effects
-        RemoveClericArmorClassSpellEffects(oTarget);
+        //RemoveClericArmorClassSpellEffects(oTarget);
         ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oTarget);
     }
 }

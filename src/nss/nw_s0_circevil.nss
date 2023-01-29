@@ -61,7 +61,7 @@ void main()
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, spell.Target);
 
     //Create an instance of the AOE Object using the Apply Effect function
-    RemoveClericArmorClassSpellEffects(spell.Target);
+    //RemoveClericArmorClassSpellEffects(spell.Target);
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nDuration));
     spellsSetupNewAOE("VFX_MOB_CIRCGOOD");
 }

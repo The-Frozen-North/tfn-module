@@ -39,8 +39,8 @@ void RemoveClericArmorClassSpellEffects(object oCreature)
 {
    DisplaceSpell(oCreature, SPELL_SHIELD_OF_FAITH, "Shield of Faith");
    DisplaceSpell(oCreature, SPELL_MAGIC_VESTMENT, "Magic Vestment");
-   DisplaceSpell(oCreature, SPELL_PROTECTION_FROM_EVIL, "Protection from Evil");
-   DisplaceSpell(oCreature, SPELL_PROTECTION_FROM_GOOD, "Protection from Good");
-   DisplaceSpell(oCreature, SPELL_MAGIC_CIRCLE_AGAINST_EVIL, "Magic Circle against Evil");
-   DisplaceSpell(oCreature, SPELL_MAGIC_CIRCLE_AGAINST_GOOD, "Magic Circle against Good");
+   //DisplaceSpell(oCreature, SPELL_PROTECTION_FROM_EVIL, "Protection from Evil");
+   //DisplaceSpell(oCreature, SPELL_PROTECTION_FROM_GOOD, "Protection from Good");
+   //DisplaceSpell(oCreature, SPELL_MAGIC_CIRCLE_AGAINST_EVIL, "Magic Circle against Evil");
+   //DisplaceSpell(oCreature, SPELL_MAGIC_CIRCLE_AGAINST_GOOD, "Magic Circle against Good");
 }

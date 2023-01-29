@@ -43,7 +43,7 @@ void main()
 
         //Apply the VFX impact and effects
         //ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
-        RemoveClericArmorClassSpellEffects(oTarget);
+        //RemoveClericArmorClassSpellEffects(oTarget);
         ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oTarget);
      }
 }
