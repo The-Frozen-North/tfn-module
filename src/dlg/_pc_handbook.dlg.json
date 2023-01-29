@@ -1562,7 +1562,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 37
+                "value": 38
               },
               "IsChild": {
                 "type": "byte",
@@ -1581,7 +1581,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 31
+                "value": 37
               },
               "IsChild": {
                 "type": "byte",
@@ -1600,7 +1600,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 28
+                "value": 31
               },
               "IsChild": {
                 "type": "byte",
@@ -1619,7 +1619,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 24
+                "value": 28
               },
               "IsChild": {
                 "type": "byte",
@@ -1638,7 +1638,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 23
+                "value": 24
               },
               "IsChild": {
                 "type": "byte",
@@ -1657,7 +1657,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 22
+                "value": 23
               },
               "IsChild": {
                 "type": "byte",
@@ -1676,7 +1676,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 21
+                "value": 22
               },
               "IsChild": {
                 "type": "byte",
@@ -1685,6 +1685,25 @@
             },
             {
               "__struct_id": 7,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 21
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 8,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -2067,7 +2086,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 665
+    "value": 668
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -4187,6 +4206,75 @@
           "type": "cexolocstring",
           "value": {
             "0": "Debug"
+          }
+        }
+      },
+      {
+        "__struct_id": 38,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 16
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_advtime"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Advance 4 hours"
           }
         }
       }

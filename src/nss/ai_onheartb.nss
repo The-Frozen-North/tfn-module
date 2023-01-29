@@ -4,6 +4,8 @@
 
 void main()
 {
+    if (GetIsDead(OBJECT_SELF)) return;
+
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_HEART_BEAT));
 
     if (GetLocalInt(OBJECT_SELF, "no_pet") == 0)
@@ -20,6 +22,9 @@ void main()
             SummonAnimalCompanion();
         }
     }
+
+    int nCurrentAction = GetCurrentAction(OBJECT_SELF);
+    int bBusy = nCurrentAction == ACTION_ATTACKOBJECT || nCurrentAction == ACTION_CASTSPELL;
 
     int nCombatInt = GetLocalInt(OBJECT_SELF, "combat");
 
@@ -39,6 +44,44 @@ void main()
     }
 
     int nCombat = GetIsInCombat(OBJECT_SELF);
+
+    // torch stuff
+    object oArea = GetArea(OBJECT_SELF);
+    object oTorch = GetItemPossessedBy(OBJECT_SELF, "NW_IT_TORCH001");
+
+    if (GetIsObjectValid(oTorch))
+    {
+        // outside and night time? or underground?
+        int bTorchUsable = (!GetIsAreaInterior(oArea) && GetIsNight()) || GetIsAreaAboveGround(oArea) == AREA_UNDERGROUND;
+        int bTorchEquipped = GetTag(GetItemInSlot(INVENTORY_SLOT_LEFTHAND, OBJECT_SELF)) == "NW_IT_TORCH001";
+
+        if (!nCombat && bTorchUsable && !bBusy)
+        {
+            if (!bTorchEquipped) ActionEquipItem(oTorch, INVENTORY_SLOT_LEFTHAND);
+        }
+        else
+        {
+            if (bTorchEquipped)
+            {
+                ActionUnequipItem(oTorch);
+
+                object oOffhand = GetLocalObject(OBJECT_SELF, "offhand");
+                if (GetIsObjectValid(oOffhand))
+                {
+                    NWNX_Creature_RunEquip(OBJECT_SELF, oOffhand, INVENTORY_SLOT_LEFTHAND);
+                }
+            }
+
+            if (GetLocalInt(OBJECT_SELF, "range") == 1)
+            {
+                EquipRange();
+            }
+            else
+            {
+                EquipMelee();
+            }
+        }
+    }
 
     if (GetLocalInt(OBJECT_SELF, "no_stealth") == 0 && GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0 && (!nCombat || GetHasFeat(FEAT_HIDE_IN_PLAIN_SIGHT)))
         SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
@@ -77,7 +120,7 @@ void main()
 
         if (GetLocalInt(OBJECT_SELF, "no_wander") == 1) fMaxDistance = 0.0;
 // Not in combat? Different/Invalid area? Too far from spawn?
-        if (GetLocalInt(OBJECT_SELF, "ambient") != 1 && !nCombat && ((fDistanceFromSpawn == -1.0) || (fDistanceFromSpawn > fMaxDistance)))
+        if (GetLocalInt(OBJECT_SELF, "ambient") != 1 && !nCombat && !bBusy && ((fDistanceFromSpawn == -1.0) || (fDistanceFromSpawn > fMaxDistance)))
         {
             AssignCommand(OBJECT_SELF, ClearAllActions());
             MoveToNewLocation(lSpawn, OBJECT_SELF);
