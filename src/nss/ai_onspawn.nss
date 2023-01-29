@@ -31,7 +31,7 @@ void CopyKey()
 
 void GeneratePickpocketItem(string sType = "")
 {
-    object oItem = GenerateTierItem(GetHitDice(OBJECT_SELF), GetHitDice(OBJECT_SELF), OBJECT_SELF, sType);
+    object oItem = GenerateTierItem(GetHitDice(OBJECT_SELF), GetLocalInt(GetArea(OBJECT_SELF), "area_cr"), OBJECT_SELF, sType);
     SetDroppableFlag(oItem, FALSE);
     SetPickpocketableFlag(oItem, TRUE);
 }
