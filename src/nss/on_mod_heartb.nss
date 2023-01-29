@@ -20,6 +20,28 @@ int GetIsDeadOrPetrified(object oCreature)
     return FALSE;
 }
 
+void ResetFactionsAttempt(object oPC)
+{
+// reset it if in combatcombat
+       if (GetIsInCombat(oPC))
+       {
+           DeleteLocalInt(oPC, "faction_reset");
+           return;
+       }
+
+// on 5th hb continue, otherwise increment
+       int nFactionReset = GetLocalInt(oPC, "faction_reset");
+       if (nFactionReset < 4)
+       {
+           SetLocalInt(oPC, "faction_reset", nFactionReset + 1);
+           return;
+       }
+
+       FactionReset(oPC);
+
+       DeleteLocalInt(oPC, "faction_reset");
+}
+
 void DoRevive(object oDead)
 {
         if (GetIsInCombat(oDead)) return;
