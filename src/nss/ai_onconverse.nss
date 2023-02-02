@@ -40,7 +40,17 @@ void main()
                gsCBGetHasAttackTarget()) &&
             gsCBGetIsPerceived(oSpeaker))
         {
-            gsCBDetermineAttackTarget(oSpeaker);
+            // Don't react if you can hear but not see
+            // While it might be realistic, it can cause masses of enemies rush out of all nearby rooms
+            // to try to kill players
+            if (!(GetObjectHeard(oSpeaker, OBJECT_SELF) && !GetObjectSeen(oSpeaker, OBJECT_SELF)))
+            {
+                gsCBDetermineAttackTarget(oSpeaker);
+            }
+            else
+            {
+                //SendMessageToPC(GetFirstPC(), GetName(OBJECT_SELF) + " heard but can't see " + GetName(oSpeaker));
+            }
         }
         break;
 
