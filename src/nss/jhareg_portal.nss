@@ -1,6 +1,8 @@
 void main()
 {
     object oPC = GetLastUsedBy();
+    
+    if (!GetIsPC(oPC)) return;
 
     if (GetIsInCombat(oPC)) return;
 
