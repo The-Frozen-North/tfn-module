@@ -18,9 +18,10 @@
 #include "inc_prettify"
 
 const int SEED_SPAWNS = 0;
-const int SEED_TREASURES = 1;
+const int SEED_TREASURES = 0;
 const int SEED_SPELLBOOKS = 0;
 const int SEED_PRETTIFY_PLACEABLES = 0;
+const int SEED_TREASUREMAPS = 1;
 
 void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)
 {
@@ -113,6 +114,26 @@ void main()
 
     if (FindSubString(NWNX_Administration_GetServerName(), "SEED") > -1)
     {
+        // Fix area tags to be their resrefs
+        // This is normally done a bit later in module loading
+        // This otherwise breaks things relying on area tags and GetAreaByTag later
+        // because if you save something with a tag that gets changed, then when it comes to real runtime
+        // it changes!
+        // And suddenly the efficient search of GetObjectByTag falls flat on its face and you find yourself wanting to loop over areas instaed
+        object oArea = GetFirstArea();
+        while (GetIsObjectValid(oArea))
+        {
+            string sResRef = GetResRef(oArea);
+            // Skip the system areas or copied areas. They are prepended with an underscore.
+            if (GetStringLeft(sResRef, 1) != "_")
+            {
+                SetTag(oArea, sResRef);
+                
+            }
+            oArea = GetNextArea();
+            continue;
+        }
+            
         // When debugging one aspect of seeding, reseeding everything makes iterations take ages
         if (SEED_SPAWNS)
         //if (TRUE)
@@ -190,6 +211,16 @@ void main()
        {
             WriteTimestampedLogEntry("==============================");
             WriteTimestampedLogEntry("WARNING: Not seeding treasures!");
+            WriteTimestampedLogEntry("==============================");
+       }
+       if (SEED_TREASUREMAPS)
+       {
+            ExecuteScript("seed_treasuremap");
+       }
+       else
+       {
+            WriteTimestampedLogEntry("==============================");
+            WriteTimestampedLogEntry("WARNING: Not seeding treamaps!");
             WriteTimestampedLogEntry("==============================");
        }
        if (SEED_SPELLBOOKS)

@@ -2,6 +2,7 @@
 
 void main()
 {
+    int nAreaCount = 0;
     object oArea = GetFirstArea();
     while (GetIsObjectValid(oArea))
     {
@@ -114,6 +115,8 @@ void main()
                 WriteTimestampedLogEntry("Deleted " + IntToString(nCount) + " puzzles that were in this area");
             }
         }
+        nAreaCount++;
+        //if (nAreaCount >= 5) { break; }
         oArea = GetNextArea();
     }
 }
