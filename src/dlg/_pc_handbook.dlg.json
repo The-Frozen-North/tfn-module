@@ -1562,7 +1562,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 38
+                "value": 39
               },
               "IsChild": {
                 "type": "byte",
@@ -1581,7 +1581,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 37
+                "value": 38
               },
               "IsChild": {
                 "type": "byte",
@@ -1978,7 +1978,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 36
+                "value": 37
               },
               "IsChild": {
                 "type": "byte",
@@ -1997,7 +1997,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 35
+                "value": 36
               },
               "IsChild": {
                 "type": "byte",
@@ -2016,7 +2016,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 34
+                "value": 35
               },
               "IsChild": {
                 "type": "byte",
@@ -2035,7 +2035,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 33
+                "value": 34
               },
               "IsChild": {
                 "type": "byte",
@@ -2044,6 +2044,25 @@
             },
             {
               "__struct_id": 4,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 33
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 5,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -2086,7 +2105,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 668
+    "value": 669
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -4151,6 +4170,51 @@
         },
         "Script": {
           "type": "resref",
+          "value": "dlg_tlp_charwood"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Charwood"
+          }
+        }
+      },
+      {
+        "__struct_id": 37,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
           "value": "dlg_tlp_core"
         },
         "Sound": {
@@ -4165,7 +4229,7 @@
         }
       },
       {
-        "__struct_id": 37,
+        "__struct_id": 38,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -4210,7 +4274,7 @@
         }
       },
       {
-        "__struct_id": 38,
+        "__struct_id": 39,
         "ActionParams": {
           "type": "list",
           "value": []
