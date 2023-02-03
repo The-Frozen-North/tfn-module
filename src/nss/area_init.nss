@@ -6,6 +6,22 @@
 #include "nw_inc_gff"
 #include "inc_loot"
 
+void MakeBook(object oObject)
+{
+    string sDescription = GetLocalString(oObject, "description");
+
+    object oExamine = CreateObject(OBJECT_TYPE_PLACEABLE, "invisiblebook", GetLocation(oObject));
+    SetName(oExamine, " ");
+    SetDescription(oExamine, GetDescription(oObject));
+
+// set a description on the book itself, to avoid players examining it to read it instead of "using" the book
+    if (sDescription == "") sDescription = "Bound in leather, this tome looks well worn, and the writing on the cover has already started to fade.";
+    SetDescription(oObject, sDescription);
+
+    SetLocalObject(oObject, "examine", oExamine);
+    SetPlotFlag(oObject, TRUE);
+}
+
 vector StringToVector(string sVector)
 {
     vector vVector;
@@ -223,12 +239,12 @@ void main()
                         sQuest = GetLocalString(oObject, "quest"+IntToString(nQuestLoop));
                         sQuestName = GetSubString(sQuest, 3, 27);
 
-                        
+
                         if (GetStringLeft(sQuestName, 2) == "q_")
                         {
                             SetLocalString(oModule, "quests", AddListItem(GetLocalString(oModule, "quests"), sQuestName, TRUE));
                             bQuestNPC = 1;
-                            
+
                         }
                         else if (GetStringLeft(sQuestName, 2) == "b_")
                         {
@@ -236,7 +252,7 @@ void main()
                             bQuestNPC = 1;
                         }
                    }
-                   
+
                    // Maintain a list of NPCs on the area too
                    // This is needed to know what to check for questgiver highlights without having to
                    // iterate over everything in the area more times
@@ -386,6 +402,10 @@ void main()
                        if (GetLocalInt(oObject, "keep") == 1) SetLocalInt(oArea, "treasure_keep"+IntToString(nTreasures), 1);
 
                         DestroyObject(oObject);
+                   }
+                   else if (GetTag(oObject) == "book")
+                   {
+                        DelayCommand(0.1, MakeBook(oObject));
                    }
 // Otherwise, make it plot. It's likely a sign or a static item.
                    else
