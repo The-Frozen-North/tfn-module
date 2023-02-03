@@ -29,6 +29,14 @@ const string QUEST_COMPLETE_COLOR = "#50ffa0";
 //                             Function Definitions
 // -----------------------------------------------------------------------------
 
+int HideDiscord(object oPC);
+int HideDiscord(object oPC)
+{
+    if (GetCampaignInt(GetPCPublicCDKey(GetPCSpeaker()), "hide_discord")) return TRUE;
+
+    return FALSE;
+}
+
 int GetPlayerCount()
 {
     object oPCCount = GetFirstPC();
@@ -124,11 +132,11 @@ struct NWNX_WebHook_Message SetWebhookCustomField(struct NWNX_WebHook_Message st
 
 struct NWNX_WebHook_Message BuildWebhookMessageTemplate(object oPC)
 {
-    struct NWNX_WebHook_Message stMessage; 
+    struct NWNX_WebHook_Message stMessage;
     stMessage.sAuthorName = GetName(oPC);
     stMessage.sAuthorIconURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oPC)) + "t.png";
     stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oPC)) + "m.png";
-    
+
     // Fields are always 3 to a line
     // If there aren't 3 discord spaces the other fields out evently
 
@@ -144,26 +152,26 @@ struct NWNX_WebHook_Message BuildWebhookMessageTemplate(object oPC)
 
     if (GetLevelByPosition(2, oPC) > 0)
       sClassLabel = "CLASSES";
-  
+
     // To get two rows of two items and aligned neatly, two dummy fields are needed
     // Might replace these with something someday, who knows
-  
+
     stMessage.sField3Name = " ";
     stMessage.sField3Value = "";
     stMessage.iField3Inline = TRUE;
-    
+
     stMessage.sField4Name = "PARTY SIZE";
     stMessage.sField4Value = GetPartySizeString(oPC);
     stMessage.iField4Inline = TRUE;
-    
+
     stMessage.sField5Name = sClassLabel;
     stMessage.sField5Value = GetClassesAndLevels(oPC);
     stMessage.iField5Inline = TRUE;
-    
+
     stMessage.sField6Name = " ";
     stMessage.sField6Value = "";
     stMessage.iField6Inline = TRUE;
-    
+
     //stMessage.sField5Name = "LOREM";
     //stMessage.sField5Value = "Yummy sweetrolls.";
     //stMessage.iField5Inline = TRUE;
@@ -171,9 +179,9 @@ struct NWNX_WebHook_Message BuildWebhookMessageTemplate(object oPC)
     //stMessage.sField6Name = "IPSUM";
     //stMessage.sField6Value = "What is it? Dragons?";
     //stMessage.iField6Inline = TRUE;
-    
-    
-    
+
+
+
     return stMessage;
 }
 
@@ -206,13 +214,15 @@ void LogWebhook(object oPC, int nLogMode)
     stMessage.sField1Value = IntToString(nPlayers);
 
     //stMessage.sFooterText = GetName(GetModule());
-   
+
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", Get2DAString("env", "Value", 2), stMessage);
     SendDiscordLogMessage(sConstructedMsg);
 }
 
 void LevelUpWebhook(object oPC)
 {
+  if (HideDiscord(oPC)) return;
+
   string sConstructedMsg;
   struct NWNX_WebHook_Message stMessage = BuildWebhookMessageTemplate(oPC);
   stMessage.sColor = LEVEL_UP_COLOR;
@@ -229,21 +239,23 @@ void LevelUpWebhook(object oPC)
 void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE);
 void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
 {
+    if (HideDiscord(oPC)) return;
+
     string sConstructedMsg;
     struct NWNX_WebHook_Message stMessage = BuildWebhookMessageTemplate(oPC);
     stMessage.sColor = DEATH_COLOR;
     stMessage.sTitle = "DEATH";
     string sAction = "killed";
     stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oKiller)) + "m.png";
-    
+
     if (bPetrified)
     {
       stMessage.sTitle = "PETRIFICATION";
       sAction = "petrified";
     }
-    
+
     string sName = GetName(oKiller);
-    
+
     if (sName == "")
     {
        sName = "an unknown object";
@@ -261,7 +273,7 @@ void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
        }
     }
     stMessage.sDescription = "**"+GetName(oPC)+"** was "+sAction+" by "+sName+".";
-    
+
     //stMessage.sFooterText = GetName(GetModule());
     //stMessage.iTimestamp = SQLite_GetTimeStamp();
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", Get2DAString("env", "Value", 2), stMessage);
@@ -272,6 +284,8 @@ void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
 void BossDefeatedWebhook(object oPC, object oDead);
 void BossDefeatedWebhook(object oPC, object oDead)
 {
+    if (HideDiscord(oPC)) return;
+
 // don't continue if this isn't set, prevents it from being played twice
     if (GetLocalInt(oDead, "defeated_webhook") != 1)
     {
@@ -282,25 +296,25 @@ void BossDefeatedWebhook(object oPC, object oDead)
     {
        oPC = GetMaster(oPC);
     }
-    
+
 // still not a PC? do nothing
     if (!GetIsPC(oPC))
     {
        return;
     }
-    
+
 // do not send the webhook if the PC is higher/equal level to the boss
     if (GetHitDice(oPC) >= GetHitDice(oDead))
     {
       return;
     }
-    
+
     string sConstructedMsg;
     struct NWNX_WebHook_Message stMessage = BuildWebhookMessageTemplate(oPC);
     stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oDead)) + "m.png";
     stMessage.sColor = BOSS_DEFEATED_COLOR;
     stMessage.sTitle = "BOSS DEFEATED";
-    
+
     stMessage.sDescription = "**"+GetName(oPC)+"** has defeated **"+GetName(oDead)+"**!";
 
     //stMessage.sFooterText = GetName(GetModule());
@@ -335,6 +349,8 @@ void ServerWebhook(string sTitle, string sDescription)
 void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE);
 void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
 {
+    if (HideDiscord(oPC)) return;
+
     if (GetGoldPieceValue(oItem) < 14000)
     {
         return;
@@ -359,7 +375,7 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
     string sTitle;
     string sDescription = "**" + sName + "** has " + sAcquisitionMethod;
     int nPlayers = GetPlayerCount();
-    
+
     stMessage = SetWebhookCustomField(stMessage, 1, "ITEM TYPE", GetStringByStrRef(StringToInt(Get2DAString("baseitems", "Name", GetBaseItemType(oItem)))));
     stMessage = SetWebhookCustomField(stMessage, 2, "VALUE", IntToString(GetGoldPieceValue(oItem)));
 
@@ -380,9 +396,9 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
     stMessage.sTitle = sTitle;
     stMessage.sColor = VALUABLE_ITEM_COLOR;
     stMessage.sDescription = sDescription;
-    
-    
-    
+
+
+
     //SendDebugMessage("ValuableItemWebhook: " + sDescription);
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", Get2DAString("env", "Value", 2), stMessage);
     SendDiscordLogMessage(sConstructedMsg);
@@ -392,10 +408,12 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
 void HouseBuyWebhook(object oPC, int nGoldCost, object oArea);
 void HouseBuyWebhook(object oPC, int nGoldCost, object oArea)
 {
+    if (HideDiscord(oPC)) return;
+
     string sConstructedMsg;
     string sName = GetName(oPC);
     struct NWNX_WebHook_Message stMessage = BuildWebhookMessageTemplate(oPC);
-    
+
     // PC has purchased a house in Area for Gold!
     string sTitle = "HOUSE PURCHASED";
     string sDescription = "**" + sName + "** has purchased a house in " + GetName(oArea) + " for " + IntToString(nGoldCost) + " gold!";
@@ -403,7 +421,7 @@ void HouseBuyWebhook(object oPC, int nGoldCost, object oArea)
     stMessage.sTitle = sTitle;
     stMessage.sColor = HOUSE_BUY_COLOR;
     stMessage.sAuthorName = sName;
-    
+
     stMessage.sDescription = sDescription;
 
     //SendDebugMessage("HouseBuyWebhook: " + sDescription);
@@ -415,10 +433,12 @@ void HouseBuyWebhook(object oPC, int nGoldCost, object oArea)
 void QuestCompleteWebhook(object oPC, string sQuestName);
 void QuestCompleteWebhook(object oPC, string sQuestName)
 {
+    if (HideDiscord(oPC)) return;
+
     string sConstructedMsg;
     string sName = GetName(oPC);
-    struct NWNX_WebHook_Message stMessage = BuildWebhookMessageTemplate(oPC); 
-    
+    struct NWNX_WebHook_Message stMessage = BuildWebhookMessageTemplate(oPC);
+
     // PC has purchased a house in Area for Gold!
     string sTitle = "QUEST COMPLETED";
     string sDescription = "**" + sName + "** has completed **" + sQuestName + "**!";
@@ -426,7 +446,7 @@ void QuestCompleteWebhook(object oPC, string sQuestName)
 
     stMessage.sTitle = sTitle;
     stMessage.sColor = QUEST_COMPLETE_COLOR;
-    
+
     stMessage.sDescription = sDescription;
 
 
