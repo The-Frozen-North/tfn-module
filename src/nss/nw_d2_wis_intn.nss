@@ -1,4 +1,4 @@
-#include "NW_I0_PLOT"
+#include "nw_i0_plot"
 
 int StartingConditional()
 {
