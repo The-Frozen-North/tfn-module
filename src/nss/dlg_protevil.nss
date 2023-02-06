@@ -1,0 +1,4 @@
+void main()
+{
+    ActionCastSpellAtObject(SPELL_PROTECTION_FROM_EVIL, GetPCSpeaker(), METAMAGIC_ANY, TRUE, 0, PROJECTILE_PATH_TYPE_DEFAULT, TRUE);
+}

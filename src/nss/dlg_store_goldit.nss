@@ -1,4 +1,6 @@
+#include "inc_ctoken"
+
 void main()
 {
-    SetCustomToken(29901, IntToString(GetCampaignInt(GetPCPublicCDKey(GetPCSpeaker()), "gold")));
+    SetCustomToken(CTOKEN_HOUSE_GOLDSTORAGE, IntToString(GetCampaignInt(GetPCPublicCDKey(GetPCSpeaker()), "gold")));
 }

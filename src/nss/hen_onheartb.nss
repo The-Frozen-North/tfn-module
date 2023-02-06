@@ -85,6 +85,11 @@ void main()
     if (GetIsObjectValid(oStoredMaster) && !GetIsInCombat(OBJECT_SELF) && GetIsDead(oStoredMaster))
     {
         ClearAllActions(TRUE);
+        // The function this variable controls can get stuck set to 1
+        // which results in the henchman not doing anything except stand there being a punching bag
+        // I have no direct evidence that this function is to blame, but given this behaviour
+        // is most common after a PC dies and the henchman moved next to them, it's a really big culprit
+        __TurnCombatRoundOn(FALSE);
         ActionMoveToObject(oStoredMaster, TRUE);
         return; // don't do any more actions that might interrupt this
     }

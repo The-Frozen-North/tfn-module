@@ -783,6 +783,7 @@ void main()
        }
        
    }
+   
 
 // =========================
 // START LOOP
@@ -798,7 +799,7 @@ void main()
           GiveXPToPC(oPC, fXP);
           AdvanceQuest(OBJECT_SELF, oPC, GetLocalInt(OBJECT_SELF, "quest_kill"));
       }
-
+      
 // only proceed with loot code if container exists
       if (GetIsObjectValid(oContainer))
       {
@@ -833,7 +834,7 @@ void main()
         if (nGold > 0)
         {
             if (nNth == Party.PlayerSize) nGoldToDistribute = nGold; // if this is the last player, give them the remaining gold
-            SetLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT, nGoldToDistribute);
+            SetLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT, GetLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT) + nGoldToDistribute);
             nGold = nGold - nGoldToDistribute;
         }
 

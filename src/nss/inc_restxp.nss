@@ -256,6 +256,11 @@ void GiveHouseRestingXP(object oPC)
     object oArea = GetArea(oPC);
     if (IsEligibleForHouseRestingXP(oPC) && GetTag(oArea) == GetHomeTag(oPC))
     {
+        if (GetRestedXPPercentage(oPC) >= 1.0)
+        {
+            FloatingTextStringOnCreature("You cannot accumulate more Rested XP!", oPC, FALSE);
+            return;
+        }
         int nNow = SQLite_GetTimeStamp();
         SQLocalsPlayer_SetInt(oPC, "RestXP_LastHouseRest", nNow);
         int nHouseCost = GetCampaignInt(GetPCPublicCDKey(oPC), "house_cost");

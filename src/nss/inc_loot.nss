@@ -805,6 +805,11 @@ void DecrementLootAndDestroyIfEmpty(object oOpener, object oLootParent, object o
     {
         NWNX_Visibility_SetVisibilityOverride(oOpener, oLootParent, NWNX_VISIBILITY_HIDDEN);
     }
+    else
+    {
+        // Placeables instead become unusable
+        NWNX_Player_SetPlaceableUsable(oOpener, oLootParent, FALSE);
+    }
 
 // 0 or less unlooted means everyone has already looted this.
     if (nUnlooted <= 0)
@@ -813,8 +818,9 @@ void DecrementLootAndDestroyIfEmpty(object oOpener, object oLootParent, object o
 
         if (bIsTreasure)
         {
-            AssignCommand(oLootParent, ActionPlayAnimation(ANIMATION_PLACEABLE_CLOSE));
-            DestroyObject(oLootParent, 2.5);
+            // Leave it open! People who have looted it fully won't be able to use it any more though
+            //AssignCommand(oLootParent, ActionPlayAnimation(ANIMATION_PLACEABLE_CLOSE));
+            //DestroyObject(oLootParent, 2.5);
             // Assume this is a placeable treasure, close it then destroy it.
         }
         else
@@ -852,6 +858,18 @@ void OpenPersonalLoot(object oContainer, object oPC)
         if (nGold <= 0)
         {
             FloatingTextStringOnCreature(NO_LOOT, oPC, FALSE);
+            int bIsTreasure = GetStringLeft(GetResRef(oContainer), 6) == "treas_";
+    
+            // Hide the lootbag
+            if (!bIsTreasure)
+            {
+                NWNX_Visibility_SetVisibilityOverride(oPC, oContainer, NWNX_VISIBILITY_HIDDEN);
+            }
+            else
+            {
+                // Flag placeable unusable for this NPC
+                NWNX_Player_SetPlaceableUsable(oPC, oContainer, FALSE);
+            }
         }
     }
 // if there are no items in it, destroy it immediately and do the logic

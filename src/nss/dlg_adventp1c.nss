@@ -33,6 +33,7 @@
 #include "inc_adventurer"
 #include "inc_adv_assassin"
 #include "inc_ai_combat"
+#include "inc_ctoken"
 
 string GenerateInsult(object oPC)
 {
@@ -141,25 +142,25 @@ int StartingConditional()
             return 0;
         }
         sMessage = "Excuse me, but " + (nAdventurerPartySize > 1 ? "we're" : "I'm") + " looking for someone in particular. Please, don't distract me.";
-        SetCustomToken(100000, sMessage);
+        SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, sMessage);
         return 1;
     }
     if (GetScriptParam("pcoffershelp") != "")
     {
         sMessage = "Sorry, as much as " + (nAdventurerPartySize > 1 ? "we'd" : "I'd") + " love the help, I can't risk word getting out that I'm waiting here.";
-        SetCustomToken(100000, sMessage);
+        SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, sMessage);
         return 1;
     }
     if (GetScriptParam("pcsuspicious") != "")
     {
         sMessage = "I've already asked you to leave " + (nAdventurerPartySize > 1 ? "us" : "me") + " alone once. " + (nAdventurerPartySize > 1 ? "We" : "I") + " won't take too kindly to needing to ask again.";
-        SetCustomToken(100000, sMessage);
+        SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, sMessage);
         return 1;
     }
     if (GetScriptParam("attacknontarget") != "")
     {
         sMessage = "If you're not going to leave " + (nAdventurerPartySize > 1 ? "us" : "me") + " alone, I'm afraid I have to insist.";
-        SetCustomToken(100000, sMessage);
+        SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, sMessage);
         AttackParty(oPC);
         return 1;
     }
@@ -170,7 +171,7 @@ int StartingConditional()
         if (GetIsSkillSuccessful(oPC, SKILL_INTIMIDATE, 18 + GetHitDice(OBJECT_SELF)))
         {
             sMessage = "You know, I think " + (nAdventurerPartySize > 1 ? "we" : "I") + " might have bitten off a bit more than " + (nAdventurerPartySize > 1 ? "we" : "I") + " can chew this time. Farewell... for now.";
-            SetCustomToken(100000, sMessage);
+            SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, sMessage);
             int i;
             int nPartySize = GetAdventurerPartySize(OBJECT_SELF);
             for (i=1; i<=nPartySize; i++)

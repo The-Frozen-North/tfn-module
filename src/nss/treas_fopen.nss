@@ -10,6 +10,7 @@ void DestroyPlot()
 void main()
 {
      object oPC = GetLastUsedBy();
+     SpeakString("fopen");
 
      ExecuteScript("remove_invis", oPC);
 

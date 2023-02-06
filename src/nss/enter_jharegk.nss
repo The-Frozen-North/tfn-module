@@ -5,6 +5,7 @@ void main()
 {
     object oPC = GetEnteringObject();
 
+    // Update Karlat's visibility
     if (!GetIsObjectValid(oPC)) return;
 
     if (GetQuestEntry(oPC, "q_charwood_karlat") == 1)

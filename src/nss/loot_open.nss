@@ -2,5 +2,6 @@
 
 void main()
 {
+    SpeakString("Boing");
     OpenPersonalLoot(OBJECT_SELF, GetLastUsedBy());
 }

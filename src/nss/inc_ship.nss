@@ -66,7 +66,7 @@ void ReallyJumpToLocationInSameArea(location lTarget, float fDist=-1.0, int nTri
 int GetShipCost(object oSpeaker, object oPlayer, int nTarget)
 {
     int nCost = CharismaDiscountedGold(oPlayer, GetLocalInt(oSpeaker, "ship"+IntToString(nTarget)+"_cost"));
-    SetCustomToken(4501, IntToString(nCost));
+    SetCustomToken(CTOKEN_SHIP_COST, IntToString(nCost));
 
     return nCost;
 }
@@ -74,7 +74,7 @@ int GetShipCost(object oSpeaker, object oPlayer, int nTarget)
 int GetShipCostPersuade(object oSpeaker, object oPlayer, int nTarget)
 {
     int nCost = CharismaModifiedPersuadeGold(oPlayer, GetShipCost(oSpeaker, oPlayer, nTarget));
-    SetCustomToken(4502, IntToString(nCost));
+    SetCustomToken(CTOKEN_SHIP_PERSUADE_COST, IntToString(nCost));
 
     return nCost;
 }

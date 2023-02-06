@@ -1,6 +1,7 @@
 #include "inc_adventurer"
 #include "inc_adv_assassin"
 #include "inc_ai_combat"
+#include "inc_ctoken"
 
 int StartingConditional()
 {
@@ -34,17 +35,17 @@ int StartingConditional()
         SetLocalInt(OBJECT_SELF, "talkedto" + ObjectToString(oPC), 1);
         if (bNeverwinterTavern)
         {
-            SetCustomToken(100000, "Greetings, friend! I'm " + GetAdventurerTrueName(OBJECT_SELF) + ", just stopping to enjoy a few drinks. Care to join " + (nAdventurerPartySize > 1 ? "us" : "me") + "?");
+            SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, "Greetings, friend! I'm " + GetAdventurerTrueName(OBJECT_SELF) + ", just stopping to enjoy a few drinks. Care to join " + (nAdventurerPartySize > 1 ? "us" : "me") + "?");
         }
         else
         {
             if (GetLocalInt(oArea, "ambush"))
             {
-                SetCustomToken(100000, "Greetings, friend! I'm " + GetAdventurerTrueName(OBJECT_SELF) + ", another adventurer. In these troubled times, we need to look out for each other - " + (nAdventurerPartySize > 1 ? "we" : "I") + " can help make sure you can rest safely.");
+                SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, "Greetings, friend! I'm " + GetAdventurerTrueName(OBJECT_SELF) + ", another adventurer. In these troubled times, we need to look out for each other - " + (nAdventurerPartySize > 1 ? "we" : "I") + " can help make sure you can rest safely.");
             }
             else
             {
-                SetCustomToken(100000, "Greetings, friend! I'm " + GetAdventurerTrueName(OBJECT_SELF) + ", another adventurer. In these troubled times, we need to look out for each other.");
+                SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, "Greetings, friend! I'm " + GetAdventurerTrueName(OBJECT_SELF) + ", another adventurer. In these troubled times, we need to look out for each other.");
             }
         }            
     }
@@ -53,19 +54,19 @@ int StartingConditional()
         nRoll = Random(4);
         if (nRoll == 0)
         {
-            SetCustomToken(100000, "Doing all right, I hope?");
+            SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, "Doing all right, I hope?");
         }
         else if (nRoll == 1)
         {
-            SetCustomToken(100000, "I trust all is well?");
+            SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, "I trust all is well?");
         }
         else if (nRoll == 2)
         {
-            SetCustomToken(100000, "Stay safe, traveller.");
+            SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, "Stay safe, traveller.");
         }
         else if (nRoll == 3)
         {
-            SetCustomToken(100000, "Look after yourself out there.");
+            SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, "Look after yourself out there.");
         }
     }
     
