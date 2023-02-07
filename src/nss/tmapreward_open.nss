@@ -23,6 +23,32 @@ void main()
 			ExecuteScript("party_credit");
 			DeleteLocalInt(OBJECT_SELF, "no_credit");
 		}
+        object oPersonalLoot = GetObjectByUUID(GetLocalString(OBJECT_SELF, "personal_loot_"+GetPCPublicCDKey(oUser, TRUE)));        
+        int nGoldToAdd = 0;
+        object oTest = GetFirstItemInInventory(oPersonalLoot);
+        while (GetIsObjectValid(oTest))
+        {
+            int nIdentified = GetIdentified(oTest);
+            SetIdentified(oTest, TRUE);
+            int nGold = GetGoldPieceValue(oTest);
+            int nTurnToGold = 0;
+            if (nGold < 200)
+            {
+                nTurnToGold = 1;
+            }
+            else if (!GetIsItemPropertyValid(GetFirstItemProperty(oTest)))
+            {
+                nTurnToGold = 1;
+            }
+            if (nTurnToGold && GetTag(oTest) != "treasuremap")
+            {
+                nGoldToAdd += nGold;
+                DestroyObject(oTest);
+            }
+            SetIdentified(oTest, nIdentified);
+            oTest = GetNextItemInInventory(oPersonalLoot);
+        }
+        SetLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT, GetLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT) + nGoldToAdd);
 		SetLocalInt(OBJECT_SELF, "doneloot", 1);
 	}
 

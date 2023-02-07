@@ -80,7 +80,7 @@ int GetAreaTileHash(object oArea);
 // Opens a treasure map display for oPC.
 // Displays the given map ID at the given ACR.
 // Nothing happens if these are invalid.
-void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR);
+void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJECT_INVALID);
 
 string tmVectorToString(vector vVec);
 
@@ -1112,8 +1112,18 @@ void TreasureMapSwatch(object oPC)
 }
 
 
-void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR)
+void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJECT_INVALID)
 {	
+    SetLocalObject(oPC, "opened_treasuremap", oMap);
+    int nScale = GetPlayerDeviceProperty(oPC, PLAYER_DEVICE_PROPERTY_GUI_SCALE);
+    float fScale = IntToFloat(nScale)/100.0;
+
+    float fGeometryRectPos = -1.0;
+    if (nScale != 100)
+    {
+        SendMessageToPC(oPC, "Due to an engine bug the map may not display correctly with your UI scaling. This should be fixed in a future NWN update, but keeping the map close to the top left of the screen should help with this.");
+        fGeometryRectPos = 0.0;
+    }
     // "-" may not be legal for sqlite, I don't want to find out what happens then or if it's possible to do something
     // bad to the db in this case
     if (nACR < 0)
@@ -1129,12 +1139,19 @@ void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR)
     SqlStep(sql);
     json jDrawListElements = SqlGetJson(sql, 0);
     
-	json jImage = NuiImage(JsonString("tm_metal02"), JsonInt(NUI_ASPECT_EXACTSCALED), JsonInt(NUI_HALIGN_CENTER), JsonInt(NUI_VALIGN_MIDDLE));
+	json jImage = NuiWidth(NuiImage(JsonString("tm_metal02"), JsonInt(NUI_ASPECT_EXACTSCALED), JsonInt(NUI_HALIGN_CENTER), JsonInt(NUI_VALIGN_MIDDLE)), IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS));
 	
 	jImage = NuiDrawList(jImage, JsonBool(0), jDrawListElements);
 	
 	json jLayout = JsonArray();
 	jLayout = JsonArrayInsert(jLayout, jImage);
+    
+    json jButton = NuiId(NuiHeight(NuiButton(JsonString("Dig")), 40.0), "digbutton");
+    json jButtonArray = JsonArray();
+    jButtonArray = JsonArrayInsert(jButtonArray, NuiSpacer());
+    jButtonArray = JsonArrayInsert(jButtonArray, jButton);
+    jButtonArray = JsonArrayInsert(jButtonArray, NuiSpacer());
+    jLayout = JsonArrayInsert(jLayout, NuiRow(jButtonArray));
 	
 	json root = NuiCol(jLayout);
 	
@@ -1152,7 +1169,8 @@ void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR)
     
     int token = NuiCreate(oPC, nui, "treasuremap");
     // Testing this suggests the NUI border takes 20px on the X axis and 53px on the Y
-	NuiSetBind(oPC, token, "geometry", NuiRect(-1.0, -1.0, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 20.0, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 53.0));
+    // Plus an extra 50px for the button...
+	NuiSetBind(oPC, token, "geometry", NuiRect(fGeometryRectPos, fGeometryRectPos, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 20.0, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 50.0 + 53.0));
 	NuiSetBind(oPC, token, "collapse", JsonInt(0));
 }
 
@@ -1546,7 +1564,7 @@ void UseTreasureMap(object oMap)
         nPuzzleID = SqlGetInt(sql, 0);
         SetLocalInt(oMap, "puzzleid", nPuzzleID);
     }
-    DisplayTreasureMapUI(GetItemPossessor(oMap), nPuzzleID, nACR);
+    DisplayTreasureMapUI(GetItemPossessor(oMap), nPuzzleID, nACR, oMap);
 }
 
 int GetAreaTileHash(object oArea)
@@ -1603,6 +1621,7 @@ string tmVectorToString(vector vVec)
 // True if one should drop, F if not
 int RollForTreasureMap(object oSource=OBJECT_SELF)
 {   
+    object oArea = GetArea(oSource);
     int nChance = TREASURE_MAP_CHANCE;
     if (GetLocalInt(oSource, "boss"))
     {
@@ -1612,8 +1631,19 @@ int RollForTreasureMap(object oSource=OBJECT_SELF)
     {
         nChance *= TREASURE_MAP_SEMIBOSS_MULTIPLIER;
     }
+    else
+    {
+        // Don't make maps for objects whose CR is less than the area's set CR
+        // this is usually going to be low level containers like barrels
+        int nAreaCR = GetLocalInt(oArea, "area_cr");
+        int nThisCR = GetLocalInt(oSource, "area_cr");
+        if (nThisCR < nAreaCR && nAreaCR > 0)
+        {
+            return 0;
+        }
+    }
     
-    object oArea = GetArea(oSource);
+    
     
     float fAreaMultiplier = GetLocalFloat(oArea, AREA_TREASURE_MAP_MULTIPLIER);
     if (fAreaMultiplier != 0.0)
