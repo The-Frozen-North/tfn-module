@@ -7,6 +7,7 @@
 #include "util_i_math"
 #include "nw_i0_plot" 
 #include "inc_treasure"
+#include "inc_treasuremap"
 
 // ===========================================================
 // START CONSTANTS
@@ -124,6 +125,7 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 
 // Open a personal loot. Called from a containing object.
 void OpenPersonalLoot(object oContainer, object oPC);
+
 
 
 // ===========================================================
@@ -517,10 +519,15 @@ object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, ob
     {
         sNonUnique = "NonUnique";
     }
-
+    
 // 2 out of 3 misc items will always be gems/jewelry
 // Unless you're a shop, in which case this is just wasted UI space because there's no reason to ever buy these items
-    if (sType == "Misc" && d100() <= MISC_CHANCE_TO_BE_JEWEL && GetObjectType(oContainer) != OBJECT_TYPE_STORE) sType = "Jewels";
+    if (sType == "Misc" && d100() <= MISC_CHANCE_TO_BE_JEWEL && GetObjectType(oContainer) != OBJECT_TYPE_STORE)
+    {
+        sType = "Jewels";
+    }
+    
+    
 
 // never NU
     if (sType == "Misc" || sType == "Apparel" || sType == "Scrolls" || sType == "Jewels")
@@ -790,7 +797,7 @@ void DecrementLootAndDestroyIfEmpty(object oOpener, object oLootParent, object o
     if (GetIsObjectValid(GetFirstItemInInventory(oPersonalLoot))) return;
 
 // play a closing sound
-    AssignCommand(oOpener, PlaySound("as_sw_clothcl1"));
+    //AssignCommand(oOpener, PlaySound("as_sw_clothcl1"));
 
     int nUnlooted = GetLocalInt(oLootParent, "unlooted")-1;
 
@@ -818,10 +825,14 @@ void DecrementLootAndDestroyIfEmpty(object oOpener, object oLootParent, object o
 
         if (bIsTreasure)
         {
-            // Leave it open! People who have looted it fully won't be able to use it any more though
+            // Assume this is a placeable treasure, close it then destroy it.
+            // Mysteriously disappearing placeables is a bit strange
             //AssignCommand(oLootParent, ActionPlayAnimation(ANIMATION_PLACEABLE_CLOSE));
             //DestroyObject(oLootParent, 2.5);
-            // Assume this is a placeable treasure, close it then destroy it.
+            
+            // Stay open, but be unusuable
+            SetUseableFlag(oLootParent, FALSE);
+            
         }
         else
         {

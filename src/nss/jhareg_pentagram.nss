@@ -46,7 +46,7 @@ void main()
         object oThis = GetPentagramDummy(i);
         //AssignCommand(oThis, SpeakString(IntToString(i)));
         object oNext = GetPentagramDummy(i+1);
-        DelayCommand(IntToFloat(i), ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectBeam(VFX_BEAM_SILENT_EVIL, oThis, BODY_NODE_CHEST, FALSE, 1.0), oNext));
+        DelayCommand(IntToFloat(i)/30.0, ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectBeam(VFX_BEAM_SILENT_EVIL, oThis, BODY_NODE_CHEST, FALSE, 1.0), oNext));
         //SendMessageToPC(GetFirstPC(), "Beam between " + ObjectToString(oThis) + " " + IntToString(i) + " and " + ObjectToString(oNext) + " " + IntToString(i+1));
     }
 }

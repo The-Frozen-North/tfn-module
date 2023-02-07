@@ -570,6 +570,7 @@ void main()
    SetUserDefinedItemEventPrefix("is_");
 
    SetEventScript(GetModule(), EVENT_SCRIPT_MODULE_ON_PLAYER_GUIEVENT, "on_guiselect");
+   SetEventScript(GetModule(), EVENT_SCRIPT_MODULE_ON_NUI_EVENT, "on_nuievent");
 
 // Load treasure tables
    int nIndex;

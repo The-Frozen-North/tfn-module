@@ -40,6 +40,7 @@ void ImportMinimap(object oPC);
 // -------------------------------------------------------------------------
 
 const string UNABLE_TO_SAVE_INFO = "inc_persist_cant_save_reason";
+const string IGNORE_BARTER_SAVE_CHECK = "IGNORE_BARTER_SAVE_CHECK";
 
 // -------------------------------------------------------------------------
 // TEMPORARY
@@ -73,12 +74,20 @@ int CanSavePCInfo(object oPC)
 {
     object oMod = GetModule();
     DeleteLocalString(oMod, UNABLE_TO_SAVE_INFO);
-    //if (NWNX_Creature_GetIsBartering(oPC))
-    //{
-    //    SendDebugMessage("Can't save BIC for "+GetName(oPC)+" because bartering", TRUE);
-    //    SetLocalString(oMod, UNABLE_TO_SAVE_INFO, "Your progress cannot be saved while bartering.");
-    //    return 0;
-    //}
+    int nIgnoreBarterCheck = GetLocalInt(oPC, IGNORE_BARTER_SAVE_CHECK);
+    if (NWNX_Creature_GetIsBartering(oPC))
+    {
+        if (nIgnoreBarterCheck)
+        {
+            DeleteLocalInt(oPC, IGNORE_BARTER_SAVE_CHECK);
+        }
+        else
+        {
+            SendDebugMessage("Can't save BIC for "+GetName(oPC)+" because bartering", TRUE);
+            SetLocalString(oMod, UNABLE_TO_SAVE_INFO, "Your progress cannot be saved continuously while you are bartering. Resting or entering a new area will save it normally, though.");
+            return 0;
+        }
+    }
 
     int bPolymorph = FALSE;
 

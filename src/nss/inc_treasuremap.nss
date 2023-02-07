@@ -1,5 +1,6 @@
 #include "nwnx_area"
 #include "nwnx_util"
+#include "nwnx_item"
 #include "nw_inc_nui"
 
 // Include for treasure maps and various functions for interacting with them.
@@ -56,6 +57,18 @@ const float TREASUREMAP_X_LENGTH = 20.0;
 const float TREASUREMAP_X_WIDTH = 4.0;
 
 
+// Probability of generating a treasure map.
+// The actual probability is this value/1000, IE this value is in tenths of percent, 5 = 5/1000 = 0.5% = 1/200.
+//const int TREASURE_MAP_CHANCE = 500; // testing, it's really high but not guaranteed
+const int TREASURE_MAP_CHANCE = 4; // 0.4%
+
+const int TREASURE_MAP_BOSS_MULTIPLIER = 25; // 10%
+const int TREASURE_MAP_SEMIBOSS_MULTIPLIER = 10; // 4%
+
+// Float variable set on area: Probability of a treasure map is multiplied by this value
+const string AREA_TREASURE_MAP_MULTIPLIER = "treasuremap_multiplier";
+
+
 /////////////////////
 // External functions
 /////////////////////
@@ -69,22 +82,36 @@ int GetAreaTileHash(object oArea);
 // Nothing happens if these are invalid.
 void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR);
 
-// Initialise a treasure map.
-// Assigns it a map ID and records its corresponding puzzle ID.
-// Calling this with values already set will ensure they are still good to use.
-void InitialiseTreasureMap(object oMap, int nACR);
-
 string tmVectorToString(vector vVec);
 
-
-// A wrapper for DisplayTreasureMapUI that instead operates off a map item.
-object DisplayTreasureMapUIFromMapItem(object oPC, object oItem);
 
 // Return the solution location for nPuzzleID.
 location GetPuzzleSolutionLocation(int nPuzzleID);
 
 // Display a swatch of surface material colours to oPC
 void TreasureMapSwatch(object oPC);
+
+// Roll the probabilties for a treasure map drop.
+// True if one should drop, False if not
+int RollForTreasureMap(object oSource=OBJECT_SELF);
+
+// Do RollForTreasureMap and, if one is generated set up the staging map and return its OID
+// return OBJECT_INVALID if nothing was generated
+object MaybeGenerateTreasureMap(int nObjectACR);
+
+// Sets up the progenitor map to match the given ACR (in the treasure system area) and returns its OID.
+// Does not copy it to another container. Use inc_loot's CopyTierItemToContainer for that.
+// If sLocation is given, adds some text to the description about where it was found
+object SetupProgenitorTreasureMap(int nObjectACR, string sLocation="");
+
+// Do what needs doing when oMap's unique power is used.
+void UseTreasureMap(object oMap);
+
+void CompleteTreasureMap(object oMap);
+
+int DoesLocationCompleteMap(object oMap, location lTest);
+
+int GetIsSurfacematDiggable(int nSurfacemat);
 
 ///////////////////////
 // Intended for seeding
@@ -1451,7 +1478,7 @@ void CalculateTreasureMaps(int nPuzzleID)
     SqlStep(sql);
 }
 
-void InitialiseTreasureMap(object oMap, int nACR)
+void InitialiseTreasureMap(object oMap, int nACR, string sLocation="")
 {
     if (nACR > TREASUREMAP_ACR_MAX)
     {
@@ -1461,8 +1488,34 @@ void InitialiseTreasureMap(object oMap, int nACR)
     {
         nACR = TREASUREMAP_ACR_MIN;
     }
+    
+    // This is set very roughly to the value of one item from these
+    int nValue = 50 + (20 * nACR);
+    if (nACR >= 12) { nValue += (nACR*11) ; }
+    else if (nACR >= 9) { nValue += (nACR * 8); }
+    else if (nACR >= 6) { nValue += (nACR * 2); }
+    
+    // Then multiply up by a bit...
+    nValue *= 3;
+    
+    int nBaseValue = NWNX_Item_GetBaseGoldPieceValue(oMap);
+    NWNX_Item_SetAddGoldPieceValue(oMap, nValue - nBaseValue);
+    SetLocalInt(oMap, "acr", nACR);
+    SetDescription(oMap, "");
+    if (sLocation != "")
+    {
+        string sDesc = GetDescription(oMap);
+        sDesc += "\n\nThis map was obtained in " + sLocation + ".";
+        SetDescription(oMap, sDesc);
+    }
+}
+    
+void UseTreasureMap(object oMap)
+{
     int nPuzzleID = GetLocalInt(oMap, "puzzleid");
+    int nACR = GetLocalInt(oMap, "acr");
     string sAreaTag = "";
+    int nAssignPuzzle = 1;
     if (nPuzzleID > 0)
     {
         // Ensure existing data is good and usable
@@ -1478,19 +1531,22 @@ void InitialiseTreasureMap(object oMap, int nACR)
             int nMinACR = SqlGetInt(sql, 0);
             if (nMinACR <= nACR)
             {
-                return;
+                nAssignPuzzle = 0;
             }
         }
     }
-    string sQuery = "SELECT puzzleid " +
-        "FROM treasuremaps WHERE minacr <= @minacr";
-    sQuery = sQuery + " ORDER BY RANDOM() LIMIT 1;";
-    sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions", sQuery);
-    SqlBindInt(sql, "@minacr", nACR);
-    SqlStep(sql);
-    nPuzzleID = SqlGetInt(sql, 0);
-    SetLocalInt(oMap, "puzzleid", nPuzzleID);
-    SetLocalInt(oMap, "mapcr", nACR);
+    if (nAssignPuzzle)
+    {
+        string sQuery = "SELECT puzzleid " +
+            "FROM treasuremaps WHERE minacr <= @minacr";
+        sQuery = sQuery + " ORDER BY RANDOM() LIMIT 1;";
+        sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions", sQuery);
+        SqlBindInt(sql, "@minacr", nACR);
+        SqlStep(sql);
+        nPuzzleID = SqlGetInt(sql, 0);
+        SetLocalInt(oMap, "puzzleid", nPuzzleID);
+    }
+    DisplayTreasureMapUI(GetItemPossessor(oMap), nPuzzleID, nACR);
 }
 
 int GetAreaTileHash(object oArea)
@@ -1532,7 +1588,6 @@ location GetPuzzleSolutionLocation(int nPuzzleID)
         {
             break;
         }
-        SendMessageToPC(GetFirstPC(), GetName(oArea));
     }
     
     return Location(oArea, vPos, 0.0);
@@ -1544,3 +1599,98 @@ string tmVectorToString(vector vVec)
     return sOut;
 }
 
+// Roll the probabilties for a treasure map drop from a random creature or placeable.
+// True if one should drop, F if not
+int RollForTreasureMap(object oSource=OBJECT_SELF)
+{   
+    int nChance = TREASURE_MAP_CHANCE;
+    if (GetLocalInt(oSource, "boss"))
+    {
+        nChance *= TREASURE_MAP_BOSS_MULTIPLIER;
+    }    
+    else if (GetLocalInt(oSource, "semiboss"))
+    {
+        nChance *= TREASURE_MAP_SEMIBOSS_MULTIPLIER;
+    }
+    
+    object oArea = GetArea(oSource);
+    
+    float fAreaMultiplier = GetLocalFloat(oArea, AREA_TREASURE_MAP_MULTIPLIER);
+    if (fAreaMultiplier != 0.0)
+    {
+        nChance = FloatToInt(IntToFloat(nChance) * fAreaMultiplier);
+    }
+    if (Random(1000) < nChance)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int DoesLocationCompleteMap(object oMap, location lTest)
+{
+    int nPuzzleID = GetLocalInt(oMap, "puzzleid");
+    location lSolution = GetPuzzleSolutionLocation(nPuzzleID);
+    if (GetAreaFromLocation(lSolution) == GetAreaFromLocation(lTest))
+    {
+        if (GetDistanceBetweenLocations(lSolution, lTest) <= TREASUREMAP_LOCATION_TOLERANCE)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+object SetupProgenitorTreasureMap(int nObjectACR, string sLocation="")
+{
+    // Treasure generation expects a valid OID to copy that's in a system area
+    // I guess we give it one
+    object oModule = GetModule();
+    object oProgenitor = GetLocalObject(oModule, "seed_treasure_map");
+    if (!GetIsObjectValid(oProgenitor))
+    {
+        location lProgenitor = Location(GetObjectByTag("_TREASURE"), Vector(2.0, 0.0, 0.0), 0.0);
+        oProgenitor = CreateObject(OBJECT_TYPE_ITEM, "treasuremap", lProgenitor, FALSE, "treasuremap");
+        SetIdentified(oProgenitor, TRUE);
+        SetLocalObject(oModule, "seed_treasure_map", oProgenitor);
+        if (!GetIsObjectValid(oProgenitor))
+        {
+            WriteTimestampedLogEntry("ERROR: couldn't make seed treasure map");
+        }
+    }
+    InitialiseTreasureMap(oProgenitor, nObjectACR, sLocation);
+    return oProgenitor;
+}
+
+
+// Do RollForTreasureMap and, if one is generated set up the staging map and return its OID
+// return OBJECT_INVALID if nothing was generated
+object MaybeGenerateTreasureMap(int nObjectACR)
+{
+    if (!RollForTreasureMap())
+    {
+        return OBJECT_INVALID;
+    }
+    
+    string sLocation = GetName(GetArea(OBJECT_SELF));
+    
+    return SetupProgenitorTreasureMap(nObjectACR, sLocation);
+}
+
+void CompleteTreasureMap(object oMap)
+{
+    ExecuteScript("tmap_complete", oMap);
+}
+
+int GetIsSurfacematDiggable(int nSurfacemat)
+{
+    if (nSurfacemat == 4 || // stone
+        nSurfacemat == 10 || // metal
+        nSurfacemat == 22 || // stonebridge
+        nSurfacemat == 9 || // carpet
+        nSurfacemat == 5) //wood
+    {
+        return 0;
+    }
+    return 1;
+}

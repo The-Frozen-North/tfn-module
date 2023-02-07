@@ -218,10 +218,11 @@ void DoRevive(object oDead)
 void main()
 {
     object oPC = GetFirstPC();
-
+    object oModule = GetModule();
+    
     ExportAllCharacters();
 
-    object oModule = GetModule();
+    
 
     string sBounties = GetLocalString(oModule, "bounties");
 

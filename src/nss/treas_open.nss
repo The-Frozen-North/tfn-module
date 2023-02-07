@@ -9,6 +9,5 @@ void main()
 
 // don't do anything if not a PC
      if (!GetIsPC(oPC)) return;
-    SpeakString("boing");
      OpenPersonalLoot(OBJECT_SELF, oPC);
 }

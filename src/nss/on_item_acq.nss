@@ -85,6 +85,26 @@ void main()
             AddKeyToPlayer(oPC, oItem);
         }
     }
+    
+    // Item containers should retroactively be given unique power self only for renaming
+    if (GetBaseItemType(oItem) == BASE_ITEM_LARGEBOX)
+    {
+        itemproperty ipTest = GetFirstItemProperty(oItem);
+        int nFound = 0;
+        while (GetIsItemPropertyValid(ipTest))
+        {
+            if (GetItemPropertyType(ipTest) == ITEM_PROPERTY_CAST_SPELL)
+            {
+                nFound = 1;
+                break;
+            }
+            ipTest = GetNextItemProperty(oItem);
+        }
+        if (!nFound)
+        {
+            IPSafeAddItemProperty(oItem, ItemPropertyCastSpell(IP_CONST_CASTSPELL_UNIQUE_POWER_SELF_ONLY, IP_CONST_CASTSPELL_NUMUSES_UNLIMITED_USE));
+        }
+    }
 
     ExecuteScript("remove_invis", oPC);
 
