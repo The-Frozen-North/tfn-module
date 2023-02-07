@@ -1,88 +1,12 @@
 {
   "__data_type": "UTC ",
-  "Appearance_Head": {
-    "type": "byte",
-    "value": 1
-  },
   "Appearance_Type": {
     "type": "word",
-    "value": 495
-  },
-  "ArmorPart_RFoot": {
-    "type": "byte",
-    "value": 1
+    "value": 277
   },
   "BodyBag": {
     "type": "byte",
     "value": 0
-  },
-  "BodyPart_Belt": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_LBicep": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_LFArm": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_LFoot": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_LHand": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_LShin": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_LShoul": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_LThigh": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_Neck": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_Pelvis": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_RBicep": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_RFArm": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_RHand": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_RShin": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_RShoul": {
-    "type": "byte",
-    "value": 0
-  },
-  "BodyPart_RThigh": {
-    "type": "byte",
-    "value": 1
-  },
-  "BodyPart_Torso": {
-    "type": "byte",
-    "value": 1
   },
   "Cha": {
     "type": "byte",
@@ -90,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 6.0
+    "value": 5.0
   },
   "ClassList": {
     "type": "list",
@@ -103,26 +27,10 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 6
+          "value": 5
         }
       }
     ]
-  },
-  "Color_Hair": {
-    "type": "byte",
-    "value": 1
-  },
-  "Color_Skin": {
-    "type": "byte",
-    "value": 1
-  },
-  "Color_Tattoo1": {
-    "type": "byte",
-    "value": 1
-  },
-  "Color_Tattoo2": {
-    "type": "byte",
-    "value": 1
   },
   "Comment": {
     "type": "cexostring",
@@ -142,7 +50,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 60
+    "value": 50
   },
   "DecayTime": {
     "type": "dword",
@@ -170,24 +78,17 @@
     "type": "list",
     "value": [
       {
-        "__struct_id": 1,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "cre_luskanhelm"
-        }
-      },
-      {
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_luskanplate"
+          "value": "nw_aarcl011"
         }
       },
       {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_halbp1"
+          "value": "cre_hqgsword"
         }
       }
     ]
@@ -224,13 +125,6 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 23
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
           "value": 32
         }
       },
@@ -238,7 +132,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 112
+          "value": 107
         }
       },
       {
@@ -254,6 +148,13 @@
           "type": "word",
           "value": 46
         }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 145
+        }
       }
     ]
   },
@@ -261,7 +162,7 @@
     "id": 12657,
     "type": "cexolocstring",
     "value": {
-      "0": "Luskan Knight"
+      "0": "Luskan Heavy Infantry"
     }
   },
   "fortbonus": {
@@ -278,7 +179,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 60
+    "value": 50
   },
   "Int": {
     "type": "byte",
@@ -296,33 +197,13 @@
     "type": "byte",
     "value": 0
   },
-  "ItemList": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "InventoryRes": {
-          "type": "resref",
-          "value": "nw_it_torch001"
-        },
-        "Repos_PosX": {
-          "type": "word",
-          "value": 0
-        },
-        "Repos_Posy": {
-          "type": "word",
-          "value": 0
-        }
-      }
-    ]
-  },
   "LastName": {
     "type": "cexolocstring",
     "value": {}
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 100
+    "value": 0
   },
   "Lootable": {
     "type": "byte",
@@ -330,7 +211,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 72
+    "value": 60
   },
   "NaturalAC": {
     "type": "byte",
@@ -350,7 +231,7 @@
   },
   "Phenotype": {
     "type": "int",
-    "value": 3
+    "value": 0
   },
   "Plot": {
     "type": "byte",
@@ -358,7 +239,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 1288
+    "value": 99
   },
   "Race": {
     "type": "byte",
@@ -469,7 +350,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 5
+          "value": 9
         }
       },
       {
@@ -546,7 +427,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 5
+          "value": 9
         }
       },
       {
@@ -623,7 +504,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 147
+    "value": 148
   },
   "SpecAbilityList": {
     "type": "list",
@@ -643,11 +524,11 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "nwguard"
+    "value": "luskan_soldier"
   },
   "Tail_New": {
     "type": "dword",
-    "value": 59
+    "value": 0
   },
   "TemplateList": {
     "type": "list",
@@ -655,27 +536,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "luskan_knight"
-  },
-  "VarTable": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "heartbeat_script"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 3
-        },
-        "Value": {
-          "type": "cexostring",
-          "value": "hb_horse"
-        }
-      }
-    ]
+    "value": "luskan_heavy"
   },
   "WalkRate": {
     "type": "int",
