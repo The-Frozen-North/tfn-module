@@ -1,3 +1,5 @@
+#include "inc_ctoken"
+
 void main()
 {
     object oPC = GetPCSpeaker();
@@ -9,7 +11,7 @@ void main()
 
         TakeGoldFromCreature(nGold, oPC, TRUE);
         SetCampaignInt(sCDKey, "gold", GetCampaignInt(sCDKey, "gold")+nGold);
-        SetCustomToken(29901, IntToString(GetCampaignInt(sCDKey, "gold")));
+        SetCustomToken(CTOKEN_HOUSE_GOLDSTORAGE, IntToString(GetCampaignInt(sCDKey, "gold")));
         ExportSingleCharacter(oPC);
         PlaySound("it_coins");
     }

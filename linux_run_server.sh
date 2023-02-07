@@ -40,6 +40,7 @@ cp database/spawns.sqlite3 server/database/spawns.sqlite3
 cp database/treasures.sqlite3 server/database/treasures.sqlite3
 cp database/randspellbooks.sqlite3 server/database/randspellbooks.sqlite3
 cp database/prettify.sqlite3 server/database/prettify.sqlite3
+cp database/tmapsolutions.sqlite3 server/database/tmapsolutions.sqlite3
 cp -r override/. server/override
 
 cp server/env/env.2da server/override/env.2da

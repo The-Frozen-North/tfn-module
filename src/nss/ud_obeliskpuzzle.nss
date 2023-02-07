@@ -105,10 +105,14 @@ void main()
     }
     
     // See if the puzzle is complete
-    int bDone = 1;
+    int nState0 = 0;
+    int nState1 = 0;
+    int PUZZLE_MAX_FORCED = GetLocalInt(oArea, "PUZZLE_MAX_FORCED");
     int nMyState = GetLocalInt(OBJECT_SELF, "tilestate");
     int x;
     int y;
+    int bGiveUpCheckingPuzzle = 0;
+    
     for (x=0; x<PUZZLE_GRID_SIZE; x++)
     {
         for (y=0; y<PUZZLE_GRID_SIZE; y++)
@@ -117,17 +121,39 @@ void main()
             object oTile = GetLocalObject(oArea, sVar);
             if (GetIsObjectValid(oTile))
             {
-                if (GetLocalInt(oTile, "tilestate") != nMyState)
+                if (GetLocalInt(oTile, "tilestate"))
                 {
-                    bDone = 0;
-                    break;
+                    nState1++;
+                }
+                else
+                {
+                    nState0++;
                 }
             }
+            // Once this is the case there's no longer any point in checking more tiles because we can't autocomplete
+            if (nState0 > PUZZLE_MAX_FORCED && nState1 > PUZZLE_MAX_FORCED)
+            {
+                bGiveUpCheckingPuzzle = 1;
+                break;
+            }
         }
-        if (!bDone)
+        if (bGiveUpCheckingPuzzle)
         {
             break;
         }
+    }
+    
+    int bDone = 0;
+    if (nState1 == 0 || nState0 == 0)
+    {
+        bDone = 1;
+    }
+    
+    object oLever = GetLocalObject(oArea, "UDObeliskLever");
+    if (nState0 <= PUZZLE_MAX_FORCED || nState1 <= PUZZLE_MAX_FORCED)
+    {
+        // Signal that lever pull will work
+        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_ELEMENTAL_PROTECTION), oLever);
     }
     
     if (bDone)

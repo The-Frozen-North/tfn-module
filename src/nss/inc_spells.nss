@@ -44,3 +44,17 @@ void RemoveClericArmorClassSpellEffects(object oCreature)
    //DisplaceSpell(oCreature, SPELL_MAGIC_CIRCLE_AGAINST_EVIL, "Magic Circle against Evil");
    //DisplaceSpell(oCreature, SPELL_MAGIC_CIRCLE_AGAINST_GOOD, "Magic Circle against Good");
 }
+
+int GetIsProtectedFromEvil(object oCreature)
+{
+    if (GetHasSpellEffect(SPELL_PROTECTION_FROM_EVIL, oCreature))
+    {
+        return 1;
+    }
+    // Testing suggests this should also work, including on things just standing in the circle
+    if (GetHasSpellEffect(SPELL_MAGIC_CIRCLE_AGAINST_EVIL, oCreature))
+    {
+        return 1;
+    }
+    return 0;
+}

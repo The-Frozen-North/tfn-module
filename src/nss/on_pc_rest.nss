@@ -363,6 +363,13 @@ void main()
             {
                 SendMessageToPC(oPC, "You feel like you would benefit from a rest in your own home...");
             }
+            if (NWNX_Creature_GetIsBartering(oPC))
+            {
+                // Force a save on rest. It shouldn't be possible to actually be bartering here
+                SetLocalInt(oPC, IGNORE_BARTER_SAVE_CHECK, 1);
+                ExportSingleCharacter(oPC);
+                SendMessageToPC(oPC, "Your progress has been saved.");
+            }
 
         case REST_EVENTTYPE_REST_CANCELLED:
             StopFade(oPC);

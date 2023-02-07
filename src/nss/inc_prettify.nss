@@ -377,7 +377,7 @@ int CanPrettifiedPlaceableBePlacedAtLocation(struct PrettifyPlaceableSettings pp
 
 void ClearPrettifyPlaceableDBForArea(object oArea)
 {
-    string sArea = GetTag(oArea);
+    string sArea = GetResRef(oArea);
     sqlquery sql = SqlPrepareQueryCampaign("prettify", "DELETE FROM placeables WHERE areatag = @tag");
     SqlBindString(sql, "@tag", sArea);
     SqlStep(sql);
@@ -406,7 +406,8 @@ void WritePrettifiedPlaceableLocationToDB(struct PrettifyPlaceableSettings pps, 
     float fScale = (IntToFloat(Random(101))/100.0 * fScaleDeviation) + pps.fMinScale;
     int nFacing = Random(360);
     vector vPosition = GetPositionFromLocation(lLoc);
-    string sAreaTag = GetTag(oArea);
+    // Area tags are set to their resrefs later anyway
+    string sAreaTag = GetResRef(oArea);
     sql = SqlPrepareQueryCampaign("prettify",
         "INSERT INTO placeables " +
         "(resref, areatag, position, facing, scale, replacetexture1, replacetexture1to, " +

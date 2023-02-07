@@ -1,3 +1,5 @@
+#include "inc_ctoken"
+
 int StartingConditional()
 {
     object oPC = GetPCSpeaker();
@@ -436,7 +438,7 @@ int StartingConditional()
         }
     }
 
-    SetCustomToken(12213, GetLocalString(OBJECT_SELF, "gossip"+IntToString(Random(nCount)+1)));
+    SetCustomToken(CTOKEN_GOSSIP, GetLocalString(OBJECT_SELF, "gossip"+IntToString(Random(nCount)+1)));
 
     return TRUE;
 }

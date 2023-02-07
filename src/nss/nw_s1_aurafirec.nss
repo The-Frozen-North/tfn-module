@@ -25,7 +25,7 @@ void main()
     //Declare major variables
     aoesDeclareMajorVariables();
     int nHD = GetHitDice(aoe.Creator);
-    int nDC = 10 + nHD/3;
+    int nDC = 7 + nHD/3;
     nHD = nHD/3+1;
     int nDamage;
     effect eDam;
@@ -41,14 +41,13 @@ void main()
             //Roll damage
             nDamage = d4(nHD);
             //Make a saving throw check
-            if(MySavingThrow(SAVING_THROW_FORT, oTarget, nHD, SAVING_THROW_TYPE_FIRE, aoe.Creator))
+            if(!MySavingThrow(SAVING_THROW_FORT, oTarget, nDC, SAVING_THROW_TYPE_FIRE, aoe.Creator))
             {
-                nDamage = nDamage / 2;
+                //Set the damage effect
+                eDam = EffectDamage(nDamage, DAMAGE_TYPE_FIRE);
+                ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
+                ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam, oTarget);
             }
-            //Set the damage effect
-            eDam = EffectDamage(nDamage, DAMAGE_TYPE_FIRE);
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
-            ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam, oTarget);
         }
         //Get next target in spell area
         oTarget = GetNextInPersistentObject(aoe.AOE);

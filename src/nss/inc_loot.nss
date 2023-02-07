@@ -7,6 +7,7 @@
 #include "util_i_math"
 #include "nw_i0_plot" 
 #include "inc_treasure"
+#include "inc_treasuremap"
 
 // ===========================================================
 // START CONSTANTS
@@ -124,6 +125,7 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 
 // Open a personal loot. Called from a containing object.
 void OpenPersonalLoot(object oContainer, object oPC);
+
 
 
 // ===========================================================
@@ -517,10 +519,15 @@ object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, ob
     {
         sNonUnique = "NonUnique";
     }
-
+    
 // 2 out of 3 misc items will always be gems/jewelry
 // Unless you're a shop, in which case this is just wasted UI space because there's no reason to ever buy these items
-    if (sType == "Misc" && d100() <= MISC_CHANCE_TO_BE_JEWEL && GetObjectType(oContainer) != OBJECT_TYPE_STORE) sType = "Jewels";
+    if (sType == "Misc" && d100() <= MISC_CHANCE_TO_BE_JEWEL && GetObjectType(oContainer) != OBJECT_TYPE_STORE)
+    {
+        sType = "Jewels";
+    }
+    
+    
 
 // never NU
     if (sType == "Misc" || sType == "Apparel" || sType == "Scrolls" || sType == "Jewels")
@@ -790,7 +797,7 @@ void DecrementLootAndDestroyIfEmpty(object oOpener, object oLootParent, object o
     if (GetIsObjectValid(GetFirstItemInInventory(oPersonalLoot))) return;
 
 // play a closing sound
-    AssignCommand(oOpener, PlaySound("as_sw_clothcl1"));
+    //AssignCommand(oOpener, PlaySound("as_sw_clothcl1"));
 
     int nUnlooted = GetLocalInt(oLootParent, "unlooted")-1;
 
@@ -805,6 +812,11 @@ void DecrementLootAndDestroyIfEmpty(object oOpener, object oLootParent, object o
     {
         NWNX_Visibility_SetVisibilityOverride(oOpener, oLootParent, NWNX_VISIBILITY_HIDDEN);
     }
+    else
+    {
+        // Placeables instead become unusable
+        NWNX_Player_SetPlaceableUsable(oOpener, oLootParent, FALSE);
+    }
 
 // 0 or less unlooted means everyone has already looted this.
     if (nUnlooted <= 0)
@@ -813,9 +825,14 @@ void DecrementLootAndDestroyIfEmpty(object oOpener, object oLootParent, object o
 
         if (bIsTreasure)
         {
-            AssignCommand(oLootParent, ActionPlayAnimation(ANIMATION_PLACEABLE_CLOSE));
-            DestroyObject(oLootParent, 2.5);
             // Assume this is a placeable treasure, close it then destroy it.
+            // Mysteriously disappearing placeables is a bit strange
+            //AssignCommand(oLootParent, ActionPlayAnimation(ANIMATION_PLACEABLE_CLOSE));
+            //DestroyObject(oLootParent, 2.5);
+            
+            // Stay open, but be unusuable
+            SetUseableFlag(oLootParent, FALSE);
+            
         }
         else
         {
@@ -852,6 +869,18 @@ void OpenPersonalLoot(object oContainer, object oPC)
         if (nGold <= 0)
         {
             FloatingTextStringOnCreature(NO_LOOT, oPC, FALSE);
+            int bIsTreasure = GetStringLeft(GetResRef(oContainer), 6) == "treas_";
+    
+            // Hide the lootbag
+            if (!bIsTreasure)
+            {
+                NWNX_Visibility_SetVisibilityOverride(oPC, oContainer, NWNX_VISIBILITY_HIDDEN);
+            }
+            else
+            {
+                // Flag placeable unusable for this NPC
+                NWNX_Player_SetPlaceableUsable(oPC, oContainer, FALSE);
+            }
         }
     }
 // if there are no items in it, destroy it immediately and do the logic

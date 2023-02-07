@@ -14,7 +14,7 @@ void main()
                 FloatingTextStringOnCreature("You cannot use house storage while polymorphed or bartering.", oPC, FALSE);
                 return;
             }
-            SetCustomToken(29901, IntToString(GetCampaignInt(GetPCPublicCDKey(oPC), "gold")));
+            SetCustomToken(CTOKEN_HOUSE_GOLDSTORAGE, IntToString(GetCampaignInt(GetPCPublicCDKey(oPC), "gold")));
             ActionStartConversation(GetLastUsedBy(), "", TRUE, FALSE);
         }
         else

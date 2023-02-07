@@ -94,15 +94,18 @@ void main()
 
     while(GetIsObjectValid(oTarget))
     {
-        if(oTarget != spell.Caster && spellsIsTarget(oTarget,spell.TargetType,spell.Caster))
+        if (spellsIsTarget(oTarget,spell.TargetType,spell.Caster))
         {
-            fDelay = GetRandomDelay(0.4, 1.1);
-            //Fire spell cast at event for target
-            SignalEvent(oTarget, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
-            //Apply VFX impact and bonus effects
-            DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
-            DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, DurationToSeconds(nDuration)));
-            DelayCommand(fDelay, DisplaceSpell(oTarget, SPELL_AID, "Aid"));
+            if (oTarget != spell.Caster || GetIsObjectValid(GetSpellCastItem()))
+            {
+                fDelay = GetRandomDelay(0.4, 1.1);
+                //Fire spell cast at event for target
+                SignalEvent(oTarget, EventSpellCastAt(spell.Caster, spell.Id, FALSE));
+                //Apply VFX impact and bonus effects
+                DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
+                DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, DurationToSeconds(nDuration)));
+                DelayCommand(fDelay, DisplaceSpell(oTarget, SPELL_AID, "Aid"));
+            }
         }
         //Get the next target in the specified area around the caster
         oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);

@@ -52,6 +52,7 @@ copy database\spawns.sqlite3 server\database\spawns.sqlite3
 copy database\treasures.sqlite3 server\database\treasures.sqlite3
 copy database\randspellbooks.sqlite3 server\database\randspellbooks.sqlite3
 copy database\prettify.sqlite3 server\database\prettify.sqlite3
+copy database\tmapsolutions.sqlite3 server\database\tmapsolutions.sqlite3
 robocopy override server\override
 
 copy server\env\env.2da server\override\env.2da

@@ -2,5 +2,5 @@
 
 void main()
 {
-    SetCustomToken(23450, IntToString(GetHouseSellPrice(GetPCSpeaker())));
+    SetCustomToken(CTOKEN_HOUSE_SELLPRICE, IntToString(GetHouseSellPrice(GetPCSpeaker())));
 }

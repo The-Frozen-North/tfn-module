@@ -9,6 +9,5 @@ void main()
 
 // don't do anything if not a PC
      if (!GetIsPC(oPC)) return;
-
      OpenPersonalLoot(OBJECT_SELF, oPC);
 }

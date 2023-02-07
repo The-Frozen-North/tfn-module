@@ -1,3 +1,5 @@
+#include "inc_ctoken"
+
 const float PERSUADE_DISCOUNT_MODIFIER = 0.66;
 const float PERSUADE_BONUS_MODIFIER = 1.5;
 

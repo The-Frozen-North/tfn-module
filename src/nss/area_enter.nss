@@ -60,6 +60,12 @@ void main()
            string sFeedback = GetLocalString(GetModule(), UNABLE_TO_SAVE_INFO);
            DelayCommand(1.0, FloatingTextStringOnCreature(sFeedback, oPC, FALSE));
        }
+       if (NWNX_Creature_GetIsBartering(oPC))
+       {
+           // Force a save on area enter. It shouldn't be possible to actually be bartering here
+           SetLocalInt(oPC, IGNORE_BARTER_SAVE_CHECK, 1);
+           ExportSingleCharacter(oPC);
+       }
 
        SendDebugMessage(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+", tag: "+GetTag(OBJECT_SELF)+", resref: "+GetResRef(OBJECT_SELF)+", climate: "+GetLocalString(OBJECT_SELF, "climate"));
 

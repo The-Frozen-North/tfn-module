@@ -564,7 +564,12 @@ object gsCBGetAttackTarget(object oObject = OBJECT_SELF, object oTarget = OBJECT
 //----------------------------------------------------------------
 object gsCBGetLastAttackTarget(object oObject = OBJECT_SELF)
 {
-    return GetLocalObject(oObject, "GS_CB_ATTACK_TARGET");
+    object oRet = GetLocalObject(oObject, "GS_CB_ATTACK_TARGET");
+    if (!GetIsDead(oRet))
+    {
+        return oRet;
+    }
+    return OBJECT_INVALID;
 }
 //----------------------------------------------------------------
 int gsCBGetHasAttackTarget(object oObject = OBJECT_SELF)

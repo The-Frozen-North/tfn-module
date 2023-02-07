@@ -52,7 +52,7 @@ void main()
             }
             else
             {
-                ActionMoveToObject(oPerceived, TRUE, 0.0);
+                //ActionMoveToObject(oPerceived, TRUE, 0.0);
             }
         }
     }

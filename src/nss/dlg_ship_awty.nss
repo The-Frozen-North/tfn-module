@@ -1,3 +1,5 @@
+#include "inc_ctoken"
+
 int StartingConditional()
 {
     object oPC = GetPCSpeaker();
@@ -23,7 +25,7 @@ int StartingConditional()
         sString = "Aye, we're more than halfway there.";
     }
 
-    SetCustomToken(4503, sString);
+    SetCustomToken(CTOKEN_SHIP_PROGRESS, sString);
 
     return TRUE;
 }

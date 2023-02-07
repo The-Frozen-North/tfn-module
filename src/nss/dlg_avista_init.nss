@@ -9,6 +9,6 @@ void main()
     int nCost = CharismaModifiedGold(oPC, nLocalCost);
     int nPersuadeCost = CharismaModifiedPersuadeGold(oPC, nLocalCost);
 
-    SetCustomToken(4950, IntToString(nCost));
-    SetCustomToken(4951, IntToString(nPersuadeCost));
+    SetCustomToken(CTOKEN_FERRY_COST, IntToString(nCost));
+    SetCustomToken(CTOKEN_FERRY_PERSUADE_COST, IntToString(nPersuadeCost));
 }
