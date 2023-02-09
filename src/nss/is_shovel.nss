@@ -28,6 +28,7 @@ void main()
             return;
         }
     }
+    ClearAllActions();
     
     FadeToBlack(OBJECT_SELF, FADE_SPEED_MEDIUM);
     DelayCommand(4.0, FadeFromBlack(OBJECT_SELF, FADE_SPEED_MEDIUM));

@@ -6,7 +6,7 @@ void main()
 
     int nXP = GetXP(oPC);
 
-    int nCost = CharismaModifiedGold(oPC, GetXP(oPC)/GetLocalInt(OBJECT_SELF, "cost_factor"));
+    int nCost = CharismaDiscountedGold(oPC, GetXP(oPC)/GetLocalInt(OBJECT_SELF, "cost_factor"));
 
     if (GetGold(oPC) >= nCost)
     {

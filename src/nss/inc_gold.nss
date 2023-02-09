@@ -8,13 +8,14 @@ const int MERCHANT_MODIFIER_CAP = 20;
 
 const int CHARISMA_MODIFIER = 2;
 
-// Returns the gold, modifed by charisma.
+// Returns the gold, increased by high charisma (eg quest reward).
 int CharismaModifiedGold(object oPC, int nGold);
 
-// Returns the gold, modifed by charisma and discounted by persuade.
+// Returns the gold cost of some service reduced by high charisma
+// then discounted by successful persuade.
 int CharismaModifiedPersuadeGold(object oPC, int nGold);
 
-// Returns the gold, discounted by charisma.
+// Returns the gold, reduced by high charisma. (eg services)
 int CharismaDiscountedGold(object oPC, int nGold);
 
 // Round a gold value to a "reasonable" number. Asking someone for 276 gold seems a bit oddly specific?
@@ -48,7 +49,7 @@ int CharismaModifiedGold(object oPC, int nGold)
 
 int CharismaModifiedPersuadeGold(object oPC, int nGold)
 {
-    int nRet = FloatToInt(CharismaModifiedGold(oPC, nGold) * PERSUADE_DISCOUNT_MODIFIER);
+    int nRet = FloatToInt(CharismaDiscountedGold(oPC, nGold) * PERSUADE_DISCOUNT_MODIFIER);
     return RoundedGoldValue(nRet);
 }
 

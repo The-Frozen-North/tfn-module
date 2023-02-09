@@ -53,19 +53,26 @@ void main()
     DelayCommand(1.0, SavePCInfo(oRespawner));
     if (GetPCPublicCDKey(oRespawner) != "") DelayCommand(1.1, ExportSingleCharacter(oRespawner));
 
-// if they are respawning in the hall of justice in NW and are less than level 5, let's give them a recruit
-    if (GetQuestEntry(oRespawner, "q_wailing") >= 4 && GetHitDice(oRespawner) < 5 && GetTag(GetAreaFromLocation(lRespawnLocation)) == "core_hall")
+    object oArea = GetAreaFromLocation(lRespawnLocation);
+// if they are respawning in the hall of justice in NW and are less than level 4, let's give them a recruit
+    if (GetQuestEntry(oRespawner, "q_wailing") >= 4 && GetHitDice(oRespawner) < 4 && GetTag(GetAreaFromLocation(lRespawnLocation)) == "core_hall")
     {
-        object oMilitia = CreateObject(OBJECT_TYPE_CREATURE, "militia", lRespawnLocation);
-        SetFollowerMaster(oMilitia, oRespawner);
+        object oMilitia = GetLocalObject(oArea, "helper_militia");
+        if (!GetIsObjectValid(oMilitia) || GetIsObjectValid(GetMaster(oMilitia)) || GetArea(oMilitia) != oArea)
+        {    
+            oMilitia = CreateObject(OBJECT_TYPE_CREATURE, "militia", lRespawnLocation);
+            SetLocalObject(oArea, "helper_militia", oMilitia);
+        }
         DelayCommand(3.0, PlayVoiceChat(VOICE_CHAT_HELLO, oMilitia));
-        DelayCommand(6.0, AssignCommand(oMilitia, SpeakString("Sedos sent me to assist you after you have fallen in battle. I will help you on your mission.")));
+        DelayCommand(6.0, AssignCommand(oMilitia, SpeakString("Sedos sent me to assist you after you have fallen in battle. I will help you on your mission, if you wish.")));
         DelayCommand(9.0, AssignCommand(oMilitia, SpeakString("There are also adventurers that might be willing to help you out in the Trade of Blades, across the bridge.")));
     }
     else if (GetTag(GetAreaFromLocation(lRespawnLocation)) == "core_hall" && GetHitDice(oRespawner) < 8 && GetQuestEntry(oRespawner, "q_wailing") >= 11)
     {
-        object oFenthick = GetObjectByTag("core_fenthick");
-        object oSergol = GetNearestObjectByTag("NW_DEATH_CLERIC", oFenthick);
-        DelayCommand(3.0, AssignCommand(oSergol, SpeakString("Sedos seems to think her militia are not so helpful now, but as I heard you can leave the city, you might find similar help in the mercenary enclaves of Port Llast.")));
+        object oMilitia = GetLocalObject(oArea, "helper_militia");
+        if (!GetIsObjectValid(GetMaster(oMilitia)) && GetArea(oMilitia) == oArea)
+        {  
+            DelayCommand(3.0, AssignCommand(oMilitia, SpeakString("Sedos seems to think that we might not so helpful to you now thaty you are more experienced, but as I heard you can leave the city, you might find similar help in the mercenary enclaves of Port Llast.")));
+        }
     }
 }

@@ -6,7 +6,7 @@ void main()
 
     int nLocalCost = GetLocalInt(OBJECT_SELF, "cost");
 
-    int nCost = CharismaModifiedGold(oPC, nLocalCost);
+    int nCost = CharismaDiscountedGold(oPC, nLocalCost);
     int nPersuadeCost = CharismaModifiedPersuadeGold(oPC, nLocalCost);
 
     SetCustomToken(CTOKEN_RELEVEL_COST, IntToString(nCost));

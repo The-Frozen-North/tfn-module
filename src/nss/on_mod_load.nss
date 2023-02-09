@@ -18,10 +18,10 @@
 #include "inc_prettify"
 
 const int SEED_SPAWNS = 0;
-const int SEED_TREASURES = 0;
+const int SEED_TREASURES = 1;
 const int SEED_SPELLBOOKS = 0;
 const int SEED_PRETTIFY_PLACEABLES = 0;
-const int SEED_TREASUREMAPS = 1;
+const int SEED_TREASUREMAPS = 1; // it takes only about ~30s to check the existing maps
 
 void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)
 {
