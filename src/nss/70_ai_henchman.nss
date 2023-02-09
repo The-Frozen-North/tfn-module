@@ -69,6 +69,9 @@ void main()
     // * This is the nearest enemy
     object oNearestTarget = GetNearestSeenEnemy();//1.72: using GetNearestSeenEnemy now in order to apply fix for EE issue
 
+    
+
+
     //    SpeakString("Henchman combat dude");
 
     // ****************************************
@@ -92,13 +95,30 @@ void main()
     // June 2/04: Fix for when henchmen is told to use stealth until next fight
     if(GetLocalInt(OBJECT_SELF, "X2_HENCH_STEALTH_MODE")==2)
         SetLocalInt(OBJECT_SELF, "X2_HENCH_STEALTH_MODE", 0);
+    
+    // Dead master changes things. Suddenly stand ground doing nothing while being pummelled isn't ideal
+    int bMasterDead = GetIsDead(GetMaster(OBJECT_SELF));
 
     // MODIFIED FEBRUARY 13 2003
     // The associate will not engage in battle if in Stand Ground mode unless
     // he takes damage
-    if(GetAssociateState(NW_ASC_MODE_STAND_GROUND))//1.72: no longer will associates breaks the stand ground command
+    if(!bMasterDead && GetAssociateState(NW_ASC_MODE_STAND_GROUND))//1.72: no longer will associates breaks the stand ground command
     {
         return;
+    }
+    
+    // If master dead, don't stand there being attacked and standing AFK when there are things to kill
+    // because they have to die to be able to revive the master, and as a human playing the game
+    // that is what you want them to do
+    
+    if (bMasterDead && (!GetIsObjectValid(oIntruder) || GetIsDead(oIntruder)) && GetIsInCombat(OBJECT_SELF))
+    {
+        oIntruder = GetLastAttacker();
+        if (!GetIsObjectValid(oIntruder) || GetIsDead(oIntruder))
+        {
+            // Give up, for now
+            oIntruder = OBJECT_INVALID;
+        }
     }
 
     if(BashDoorCheck(oIntruder)) return;

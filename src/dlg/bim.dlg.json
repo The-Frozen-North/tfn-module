@@ -696,6 +696,102 @@
               },
               "Index": {
                 "type": "dword",
+                "value": 2
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 1
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": "vs_hhenchm1_051"
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Hey there. Congratulations on completing your training! Need an extra sword arm? It's a hard world out there, many face the perils around Neverwinter and never return. Together, we might just live to be the ones to make a difference."
+          }
+        }
+      },
+      {
+        "__struct_id": 11,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
                 "value": 9
               },
               "IsChild": {
@@ -763,7 +859,7 @@
         }
       },
       {
-        "__struct_id": 11,
+        "__struct_id": 12,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -812,7 +908,7 @@
         }
       },
       {
-        "__struct_id": 12,
+        "__struct_id": 13,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -900,7 +996,7 @@
         }
       },
       {
-        "__struct_id": 13,
+        "__struct_id": 14,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -949,7 +1045,7 @@
         }
       },
       {
-        "__struct_id": 14,
+        "__struct_id": 15,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -998,7 +1094,7 @@
         }
       },
       {
-        "__struct_id": 15,
+        "__struct_id": 16,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1090,7 +1186,7 @@
         }
       },
       {
-        "__struct_id": 16,
+        "__struct_id": 17,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1142,7 +1238,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 333
+    "value": 373
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -1551,7 +1647,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 11
+                "value": 12
               },
               "IsChild": {
                 "type": "byte",
@@ -1616,7 +1712,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 12
+                "value": 13
               },
               "IsChild": {
                 "type": "byte",
@@ -1681,7 +1777,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 13
+                "value": 14
               },
               "IsChild": {
                 "type": "byte",
@@ -1746,7 +1842,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 14
+                "value": 15
               },
               "IsChild": {
                 "type": "byte",
@@ -1881,7 +1977,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 16
+          "value": 17
         }
       },
       {
@@ -1896,7 +1992,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 15
+          "value": 16
         }
       },
       {
@@ -1911,11 +2007,26 @@
         },
         "Index": {
           "type": "dword",
-          "value": 10
+          "value": 11
         }
       },
       {
         "__struct_id": 3,
+        "Active": {
+          "type": "resref",
+          "value": "dlg_bim_grad"
+        },
+        "ConditionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Index": {
+          "type": "dword",
+          "value": 10
+        }
+      },
+      {
+        "__struct_id": 4,
         "Active": {
           "type": "resref",
           "value": "dlg_qst_ckgradtk"
@@ -1930,7 +2041,7 @@
         }
       },
       {
-        "__struct_id": 4,
+        "__struct_id": 5,
         "Active": {
           "type": "resref",
           "value": "dlg_qst_ckgrad"
@@ -1945,7 +2056,7 @@
         }
       },
       {
-        "__struct_id": 5,
+        "__struct_id": 6,
         "Active": {
           "type": "resref",
           "value": ""

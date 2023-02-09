@@ -4,7 +4,7 @@ void main()
 {
     object oPC = GetPCSpeaker();
 
-    int nCost = CharismaModifiedGold(oPC, GetLocalInt(OBJECT_SELF, "cost"));
+    int nCost = CharismaDiscountedGold(oPC, GetLocalInt(OBJECT_SELF, "cost"));
 
     if (GetGold(oPC) >= nCost)
     {

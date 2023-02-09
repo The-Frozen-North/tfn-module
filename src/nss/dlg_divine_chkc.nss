@@ -4,7 +4,7 @@ int StartingConditional()
 {
     object oPC = GetPCSpeaker();
 
-    if (GetGold(oPC) >= CharismaModifiedGold(oPC, GetLocalInt(OBJECT_SELF, "cost")))
+    if (GetGold(oPC) >= CharismaDiscountedGold(oPC, GetLocalInt(OBJECT_SELF, "cost")))
     {
         return TRUE;
     }

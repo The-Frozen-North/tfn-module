@@ -141,10 +141,10 @@ struct MapProcessingSettings
     // Polygons with an area less than this proportion of the total image area are discarded
     // tested: 0.02/(real number of scans per side of the map)
     float MAPDATA_MINIMUM_POLYGON_AREA;
-    
+
     // Text on the image. Used to make the Underdark maps suck a bit less.
     string sText;
-    
+
     // The offset (in scan intervals, not real UI pixels) to draw the red X to mark the dig point at.
     float fCrossOffsetX;
     float fCrossOffsetY;
@@ -182,90 +182,90 @@ void CalculateTreasureMaps(int nPuzzleID);
 
 json SurfacematToNuiColor(int nSurfacemat)
 {
-	if (nSurfacemat == 0) { return NuiColor(50, 50, 50, TREASUREMAP_OVERLAY_OPACITY); }	// "NotDefined" = walls
-	if (nSurfacemat == 1) { return NuiColor(130, 100, 50, TREASUREMAP_OVERLAY_OPACITY); }	// Dirt
-	if (nSurfacemat == 2) { return NuiColor(100, 100, 100, TREASUREMAP_OVERLAY_OPACITY); }	// "Obscuring"
-	if (nSurfacemat == 3) { return NuiColor(70, 130, 70, TREASUREMAP_OVERLAY_OPACITY); }	// Grass - light green
-	if (nSurfacemat == 4) { return NuiColor(200, 200, 200, TREASUREMAP_OVERLAY_OPACITY); }	// Stone - grey
-	if (nSurfacemat == 5) { return NuiColor(165, 140, 50, TREASUREMAP_OVERLAY_OPACITY); }	// Wood
-	if (nSurfacemat == 6) { return NuiColor(50, 125, 255, TREASUREMAP_OVERLAY_OPACITY); }	// Walkable water - light blue
-	if (nSurfacemat == 7) { return NuiColor(215, 255, 255, TREASUREMAP_OVERLAY_OPACITY); }	// "nonwalk" - pale cyan
-	if (nSurfacemat == 8) { return NuiColor(225, 225, 225, TREASUREMAP_OVERLAY_OPACITY); }	// "transparent" - pale grey
-	if (nSurfacemat == 9) { return NuiColor(190, 110, 105, TREASUREMAP_OVERLAY_OPACITY); }	    // Carpet - red
-	if (nSurfacemat == 10) { return NuiColor(145, 145, 145, TREASUREMAP_OVERLAY_OPACITY); }	// Metal - grey, slightly darker than stone
-	if (nSurfacemat == 11) { return NuiColor(100, 160, 255, TREASUREMAP_OVERLAY_OPACITY); }	// Puddle - lighter than walkable water
-	if (nSurfacemat == 12) { return NuiColor(40, 80, 50, TREASUREMAP_OVERLAY_OPACITY); }	// Swamp - dark turquoise
-	if (nSurfacemat == 13) { return NuiColor(90, 90, 70, TREASUREMAP_OVERLAY_OPACITY); }	// Mud - mid brown
-	if (nSurfacemat == 14) { return NuiColor(70, 100, 75, TREASUREMAP_OVERLAY_OPACITY); }	// Leaves - darker green than grass
-	if (nSurfacemat == 15) { return NuiColor(255, 0, 0, TREASUREMAP_OVERLAY_OPACITY); }	    // Lava - dark red
-	if (nSurfacemat == 16) { return NuiColor(0, 0, 0, TREASUREMAP_OVERLAY_OPACITY); }	    // Bottomless pit - black
-	if (nSurfacemat == 17) { return NuiColor(0, 55, 150, TREASUREMAP_OVERLAY_OPACITY); }	// Deep water - dark blue
-	if (nSurfacemat == 18) { return NuiColor(220, 200, 135, TREASUREMAP_OVERLAY_OPACITY); }	// Door - as wood
-	if (nSurfacemat == 19) { return NuiColor(255, 255, 255, TREASUREMAP_OVERLAY_OPACITY); }	// Snow - white
-	if (nSurfacemat == 20) { return NuiColor(240, 200, 0, TREASUREMAP_OVERLAY_OPACITY); }	// Sand - dark orange
-	if (nSurfacemat == 21) { return NuiColor(215, 255, 255, TREASUREMAP_OVERLAY_OPACITY); }	// "Barebones" - also pale cyan
-	if (nSurfacemat == 22) { return NuiColor(200, 200, 200, TREASUREMAP_OVERLAY_OPACITY); }	// "Stonebridge" - as stone
-	if (nSurfacemat == -1) { return NuiColor(0, 0, 0, TREASUREMAP_OVERLAY_OPACITY); }	// invalid (edge of map) - black
-	
-	return NuiColor(255, 100, 100, TREASUREMAP_OVERLAY_OPACITY); // Unknown - Bright pink?
+    if (nSurfacemat == 0) { return NuiColor(50, 50, 50, TREASUREMAP_OVERLAY_OPACITY); } // "NotDefined" = walls
+    if (nSurfacemat == 1) { return NuiColor(130, 100, 50, TREASUREMAP_OVERLAY_OPACITY); }   // Dirt
+    if (nSurfacemat == 2) { return NuiColor(100, 100, 100, TREASUREMAP_OVERLAY_OPACITY); }  // "Obscuring"
+    if (nSurfacemat == 3) { return NuiColor(70, 130, 70, TREASUREMAP_OVERLAY_OPACITY); }    // Grass - light green
+    if (nSurfacemat == 4) { return NuiColor(200, 200, 200, TREASUREMAP_OVERLAY_OPACITY); }  // Stone - grey
+    if (nSurfacemat == 5) { return NuiColor(165, 140, 50, TREASUREMAP_OVERLAY_OPACITY); }   // Wood
+    if (nSurfacemat == 6) { return NuiColor(50, 125, 255, TREASUREMAP_OVERLAY_OPACITY); }   // Walkable water - light blue
+    if (nSurfacemat == 7) { return NuiColor(215, 255, 255, TREASUREMAP_OVERLAY_OPACITY); }  // "nonwalk" - pale cyan
+    if (nSurfacemat == 8) { return NuiColor(225, 225, 225, TREASUREMAP_OVERLAY_OPACITY); }  // "transparent" - pale grey
+    if (nSurfacemat == 9) { return NuiColor(190, 110, 105, TREASUREMAP_OVERLAY_OPACITY); }      // Carpet - red
+    if (nSurfacemat == 10) { return NuiColor(145, 145, 145, TREASUREMAP_OVERLAY_OPACITY); } // Metal - grey, slightly darker than stone
+    if (nSurfacemat == 11) { return NuiColor(100, 160, 255, TREASUREMAP_OVERLAY_OPACITY); } // Puddle - lighter than walkable water
+    if (nSurfacemat == 12) { return NuiColor(40, 80, 50, TREASUREMAP_OVERLAY_OPACITY); }    // Swamp - dark turquoise
+    if (nSurfacemat == 13) { return NuiColor(90, 90, 70, TREASUREMAP_OVERLAY_OPACITY); }    // Mud - mid brown
+    if (nSurfacemat == 14) { return NuiColor(70, 100, 75, TREASUREMAP_OVERLAY_OPACITY); }   // Leaves - darker green than grass
+    if (nSurfacemat == 15) { return NuiColor(255, 0, 0, TREASUREMAP_OVERLAY_OPACITY); }     // Lava - dark red
+    if (nSurfacemat == 16) { return NuiColor(0, 0, 0, TREASUREMAP_OVERLAY_OPACITY); }       // Bottomless pit - black
+    if (nSurfacemat == 17) { return NuiColor(0, 55, 150, TREASUREMAP_OVERLAY_OPACITY); }    // Deep water - dark blue
+    if (nSurfacemat == 18) { return NuiColor(220, 200, 135, TREASUREMAP_OVERLAY_OPACITY); } // Door - as wood
+    if (nSurfacemat == 19) { return NuiColor(255, 255, 255, TREASUREMAP_OVERLAY_OPACITY); } // Snow - white
+    if (nSurfacemat == 20) { return NuiColor(240, 200, 0, TREASUREMAP_OVERLAY_OPACITY); }   // Sand - dark orange
+    if (nSurfacemat == 21) { return NuiColor(215, 255, 255, TREASUREMAP_OVERLAY_OPACITY); } // "Barebones" - also pale cyan
+    if (nSurfacemat == 22) { return NuiColor(200, 200, 200, TREASUREMAP_OVERLAY_OPACITY); } // "Stonebridge" - as stone
+    if (nSurfacemat == -1) { return NuiColor(0, 0, 0, TREASUREMAP_OVERLAY_OPACITY); }   // invalid (edge of map) - black
+
+    return NuiColor(255, 100, 100, TREASUREMAP_OVERLAY_OPACITY); // Unknown - Bright pink?
 }
 
 
 void TreasureMapScanLocation(location lLoc, int nWidth, int nHeight, float fDistPerPoint=1.0)
 {
-	vector vPos = GetPositionFromLocation(lLoc);
-	object oArea = GetAreaFromLocation(lLoc);
-	object oModule = GetModule();
-	vector vStart = Vector(vPos.x - (fDistPerPoint * IntToFloat(nWidth)/2.0), vPos.y - (fDistPerPoint * IntToFloat(nHeight)/2.0), 0.0);
-	int x, y;
-	for (x=0; x<nWidth; x++)
-	{
-		for (y=0; y<nHeight; y++)
-		{
-			float fX = vStart.x + (fDistPerPoint * x);
-			float fY = vStart.y + (fDistPerPoint * y);
-			vector vScan = Vector(fX, fY, 0.0);
-			location lScan = Location(oArea, vScan, 0.0);
+    vector vPos = GetPositionFromLocation(lLoc);
+    object oArea = GetAreaFromLocation(lLoc);
+    object oModule = GetModule();
+    vector vStart = Vector(vPos.x - (fDistPerPoint * IntToFloat(nWidth)/2.0), vPos.y - (fDistPerPoint * IntToFloat(nHeight)/2.0), 0.0);
+    int x, y;
+    for (x=0; x<nWidth; x++)
+    {
+        for (y=0; y<nHeight; y++)
+        {
+            float fX = vStart.x + (fDistPerPoint * x);
+            float fY = vStart.y + (fDistPerPoint * y);
+            vector vScan = Vector(fX, fY, 0.0);
+            location lScan = Location(oArea, vScan, 0.0);
             lScan = Location(oArea, Vector(fX, fY, GetGroundHeight(lScan)), 0.0);
-			int nSurfacemat = GetSurfaceMaterial(lScan);
+            int nSurfacemat = GetSurfaceMaterial(lScan);
             // This method requires mirroring along the y axis to reflect what you see (north facing) ingame
             // This is probably the easiest place to get this done before getting into polygon algorithms
             int y2 = (nHeight-1)-y;
-			SetLocalInt(oModule, "map_" + IntToString(x) + "_" + IntToString(y2), nSurfacemat);
+            SetLocalInt(oModule, "map_" + IntToString(x) + "_" + IntToString(y2), nSurfacemat);
             //WriteTimestampedLogEntry("Scan " + IntToString(x) + ", " +  IntToString(y2) + " = " + IntToString(nSurfacemat));;
-		}
-	}
+        }
+    }
 }
 
 vector GetVectorToMoveScanLocationWithinAreaBounds(location lLoc, int nWidth, int nHeight, float fDistPerPoint=1.0)
 {
-    
+
     vector vPos = GetPositionFromLocation(lLoc);
     //WriteTimestampedLogEntry("Scan midpoint = " + tmVectorToString(vPos));
-	object oArea = GetAreaFromLocation(lLoc);
+    object oArea = GetAreaFromLocation(lLoc);
     vector vStart = Vector(vPos.x - (fDistPerPoint * IntToFloat(nWidth)/2.0), vPos.y - (fDistPerPoint * IntToFloat(nHeight)/2.0), 0.0);
     //WriteTimestampedLogEntry("Scan start point = " + tmVectorToString(vStart));
-    
+
     // Small amount of buffer
     float fAreaXMax = IntToFloat(10 * GetAreaSize(AREA_WIDTH, oArea)) + 3.0;
     float fAreaYMax = IntToFloat(10 * GetAreaSize(AREA_HEIGHT, oArea)) + 3.0;
-    
+
     //WriteTimestampedLogEntry("Area max dimensions: " + FloatToString(fAreaXMax) + ", " + FloatToString(fAreaYMax));
-    
+
     float fWidth = IntToFloat(nWidth);
     float fHeight = IntToFloat(nHeight);
-    
+
     float fXStart = vStart.x;
     float fYStart = vStart.y;
-    
+
     float fXEnd = vStart.x + (nWidth * fDistPerPoint);
     float fYEnd = vStart.y + (nHeight * fDistPerPoint);
-    
+
     vector vAdjust = Vector(0.0, 0.0, 0.0);
-    
+
     float fAdjust;
-    
-    
+
+
     // Covering both sides of the map
     if (fWidth * fDistPerPoint >= fAreaXMax)
     {
@@ -280,7 +280,7 @@ vector GetVectorToMoveScanLocationWithinAreaBounds(location lLoc, int nWidth, in
         else if (fXEnd > fAreaXMax)
         {
             fAdjust = fAreaXMax - fXEnd;
-        }        
+        }
         else
         {
             fAdjust = 0.0;
@@ -300,7 +300,7 @@ vector GetVectorToMoveScanLocationWithinAreaBounds(location lLoc, int nWidth, in
         else if (fYEnd > fAreaYMax)
         {
             fAdjust = fAreaYMax - fYEnd;
-        }        
+        }
         else
         {
             fAdjust = 0.0;
@@ -324,7 +324,7 @@ struct MapCell
     json jSurfacemats;
     // Simply a list of all the different surfacemats in this cell
     json jUniqueSurfacemats;
-    
+
 };
 
 struct MapCell _GetMapCell(int x, int y, int nEndX, int nEndY, int nStartX, int nStartY)
@@ -333,11 +333,11 @@ struct MapCell _GetMapCell(int x, int y, int nEndX, int nEndY, int nStartX, int 
     object oModule = GetModule();
     mpOut.jSurfacemats = JsonArray();
     mpOut.jUniqueSurfacemats = JsonArray();
-    
+
     int x2, y2;
-    
+
     int xpos = 0;
-    
+
     // Wrangled loops to make the checks occur in the right order
     for (y2=1; y2>=0; y2--)
     {
@@ -416,12 +416,12 @@ float _GetAreaFromVertices(json jVerts)
     float x2 = JsonGetFloat(JsonArrayGet(jVerts, 2));
     float y1 = JsonGetFloat(JsonArrayGet(jVerts, 1));
     fTotal = fTotal + y1 * (xn - x2);
-    
+
     float xnMinusOne = JsonGetFloat(JsonArrayGet(jVerts, nLength-4));
     float x1 = JsonGetFloat(JsonArrayGet(jVerts, 0));
     float yn = JsonGetFloat(JsonArrayGet(jVerts, nLength-1));
     fTotal = fTotal + yn * (xnMinusOne - x1);
-    
+
     if (fTotal < 0.0)
     {
         fTotal *= -1.0;
@@ -440,10 +440,10 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
     SetLocalInt(oModule, "ProcessMapDataRun", nRun+1);
     string sVar = "ProcessMapData" + IntToString(nRun);
     //WriteTimestampedLogEntry("ProcessMapData width=" + IntToString(nEndX) + ", height=" + IntToString(nEndY) + ", var = " + sVar);
-    
+
     float fStartX = IntToFloat(nStartX);
     float fStartY = IntToFloat(nStartY);
-    
+
     //////////////////////////////////////////
     // 1) Most popular colour fills background
     //////////////////////////////////////////
@@ -476,46 +476,46 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
             //WriteTimestampedLogEntry("New most popular surfacemat: " + IntToString(nBackgroundSurfacemat) + " with squarecount=" + IntToString(nBackgroundSurfacematCount));
         }
     }
-    
+
     //////////////////////
     // BUILD POLYGONS
     //////////////////////
-    
+
     // The NUI drawing will work best trying to draw lines on a background rather than pixels I think
     // In any case, pixel-based simplification is going to look rather silly trying to deal with
     // features that have curved or slanted edges without getting into a horrible mess
-    
+
     // Really what this needs is to try to convert regions of the same surfacemat into a polygon and cull exterior vertices
     // that don't distort the outer shape too much
     // and then check for and deal with any "holes" (which should reduce to a recursive problem)
-    
+
     // -> marching squares https://en.wikipedia.org/wiki/Marching_squares
     // -> discard polygon if too small
     // -> trim excess vertices:     remove verts and see how much the polygon's area changes
     //                              don't let it vary more than some percent in either direction
-    
+
     // Life might be a bit simpler without dealing with final window coordinates so early
     // but converting all vertex coords later sounds slow
     float fPixelsPerSampleX = IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS)/IntToFloat(nEndX - nStartX);
-	float fPixelsPerSampleY = IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS)/IntToFloat(nEndY - nStartY);
+    float fPixelsPerSampleY = IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS)/IntToFloat(nEndY - nStartY);
     float fImageTotalArea = IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS*TREASUREMAP_WINDOW_DIMENSIONS);
     float fMinimumAcceptedPolygonArea = fImageTotalArea * mpSettings.MAPDATA_MINIMUM_POLYGON_AREA;
-    
+
 
     // This algorithm makes sorting the resulting line fragments into discrete polygons pretty hard
     // One option is to simply make a massive pool of fragments on a per-surfacemat basis and join them up...
     // But that would result in "holes" appearing as polygons of their own
     // and the whole thing sounds like a computational nightmare
-    
+
     // The alternative is to work out from the cell type which cell(s) need to be checked to make a closed final polygon
     // The hardest part of this is dealing with cells 5 and 10, the ones that produce two different line fragments
     // ... but only one of these fragments will connect to the line that we have started
     // Given that each cell outcome makes exactly one line fragment that connects to the one started initially
     // it should be possible to identify the next cell to check unambiguously
     // This approach still has problems with "holes" in final polygons
-    // It has to work out which pixels are "done" 
-    
-    
+    // It has to work out which pixels are "done"
+
+
     // This approach:
     // Search every 2x2 CELL in the map data
     // Those that have all of their four vertices made up of the same surfacemat can be ignored
@@ -527,9 +527,9 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
     // It will eventually come full circle and be a true enclosed region.
     // Repeat from the same cell that started this process for all the other non-background surfacemats involved in the "collision"
     // Continue until all edge-containing cells have been processed
-    
+
     // Then try to cull vertices based on the area calculation mentioned above
-    
+
     // Somewhere to keep polygons as they are found.
     // jPolygonsBySurfacemat[nSurfacemat] contains an array of polygons of that surface material
     // each polygon is made up of an array of floats of vertex coordinates
@@ -538,7 +538,7 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
     {
         jPolygonsBySurfacemat = JsonArrayInsert(jPolygonsBySurfacemat, JsonArray());
     }
-    
+
     for (x=nStartX; x<nEndX; x++)
     {
         for (y=nStartY; y<nEndY; y++)
@@ -549,7 +549,7 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
             {
                 continue;
             }
-            
+
             struct MapCell mpCurrent = _GetMapCell(x, y, nEndX, nEndY, nStartX, nStartY);
             int nNumSurfacemats = JsonGetLength(mpCurrent.jUniqueSurfacemats);
             // There is no need to trace anything when there is only 1 surface material in the cell
@@ -647,7 +647,7 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
                                 fVert2yOffset = 0.0;
                             }
                             else if (nMatch == 5)
-                            {                                
+                            {
                                 // Bottom left - Top right parallels
                                 // Catch the top line
                                 //WriteTimestampedLogEntry("Last verts = " + FloatToString(fLastVertx) + ", " + FloatToString(fLastVerty));
@@ -697,16 +697,16 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
                                     fVert2yOffset = 1.0;
                                 }
                             }
-                            
+
                             fVert1x = (x2 - fStartX) + fVert1xOffset;
                             fVert1y = (y2 - fStartY) + fVert1yOffset;
                             fVert2x = (x2 - fStartX) + fVert2xOffset;
                             fVert2y = (y2 - fStartY) + fVert2yOffset;
-                            
+
                             // Work out which offset we are moving along
                             float fThisVertexOffsetx;
                             float fThisVertexOffsety;
-                            
+
                             if (bFirstVertex)
                             {
                                 // Write two coordinate pairs instead of one
@@ -743,24 +743,24 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
                                     fLastVerty = fVert1y;
                                     fThisVertexOffsetx = fVert1xOffset;
                                     fThisVertexOffsety = fVert1yOffset;
-                                }                                    
+                                }
                                 int nVertexArrLength = JsonGetLength(jVertices);
                                 if (nVertexArrLength > 6)
                                 {
                                     float fTwoBeforex = JsonGetFloat(JsonArrayGet(jVertices, nVertexArrLength - 4));
                                     float fTwoBeforey = JsonGetFloat(JsonArrayGet(jVertices, nVertexArrLength - 3));
-                                    
+
                                     float fLastx = JsonGetFloat(JsonArrayGet(jVertices, nVertexArrLength - 2));
                                     float fLasty = JsonGetFloat(JsonArrayGet(jVertices, nVertexArrLength - 1));
-                                    
+
                                     float fThreeBeforex = JsonGetFloat(JsonArrayGet(jVertices, nVertexArrLength - 6));
                                     float fThreeBeforey = JsonGetFloat(JsonArrayGet(jVertices, nVertexArrLength - 5));
-                                    
+
                                     //WriteTimestampedLogEntry("3 before: " + FloatToString(fThreeBeforex) + ", " + FloatToString(fThreeBeforey));
                                     //WriteTimestampedLogEntry("2 before: " + FloatToString(fTwoBeforex) + ", " +FloatToString(fTwoBeforey));
                                     //WriteTimestampedLogEntry("1 before: " + FloatToString(fLastx) + ", " +FloatToString(fLasty));
-                                    
-                                    
+
+
                                     // Don't divide by zero when calcing gradients
                                     // Instead of gradient=infinity, this will make it extremely large but still consistent
                                     float fDx = (fTwoBeforex - fThreeBeforex);
@@ -768,9 +768,9 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
                                     {
                                         fDx = 0.0000000001;
                                     }
-                                    
+
                                     float fGradientThreeToTwo = (fTwoBeforey - fThreeBeforey)/fDx;
-                                    
+
                                     fDx = (fLastx - fTwoBeforex);
                                     if (fDx == 0.0)
                                     {
@@ -791,15 +791,15 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
                                         jVertices = JsonArrayDel(jVertices, nVertexArrLength - 4);
                                     }
                                 }
-                                
-                                
+
+
                             }
                             // Set this place as done, don't start tracing here
                             if (nMatch != 5 && nMatch != 10)
                             {
                                 SetLocalInt(oModule, sVar + "_" + IntToString(FloatToInt(x2)) + "_" + IntToString(FloatToInt(y2)) + "handled" + IntToString(nThisSurfacemat), 1);
                             }
-                            
+
                             // Find the next cell coordinates and keep going
                             // (fThisVertexOffsetx, fThisVertexOffsety) will land between two of the cell's edges
                             // we go that way
@@ -821,7 +821,7 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
                                 y2 += 1.0;
                             }
                             //WriteTimestampedLogEntry("Finished processing match " + IntToString(nMatch) + ", move to " + FloatToString(x2) + ", " + FloatToString(y2));
-                            
+
                             // But make sure we haven't looped back round to the first vertex in the polygon
                             if (fLastVertx == fFirstVertx && fLastVerty == fFirstVerty)
                             {
@@ -830,8 +830,8 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
                             }
                             nMatch = _GetCellMatchIndex(_GetMapCell(FloatToInt(x2), FloatToInt(y2), nEndX, nEndY, nStartX, nStartY), nThisSurfacemat);
                         }
-                        
-                        
+
+
                         // Cull vertices where the total area change is small enough
                         float fArea = _GetAreaFromVertices(jVertices);
                         //WriteTimestampedLogEntry("Polygon has area " + FloatToString(fArea) + " min accepted " + FloatToString(fMinimumAcceptedPolygonArea));
@@ -845,7 +845,7 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
                             {
                                 fVertexCullAreaDeltaThreshold = mpSettings.MAPDATA_MINIMUM_AREA_CULL_THRESHOLD;
                             }
-                            
+
                             while (TRUE)
                             {
                                 // Verts are in pairs. Have to consider and handle them in pairs.
@@ -871,23 +871,23 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
                                     continue;
                                 }
                                 //WriteTimestampedLogEntry("Do not cull vertex " + IntToString(nIndexToTry) + ": area delta = " + FloatToString(fAreaDelta));
-                                nIndexToTry++;                            
+                                nIndexToTry++;
                             }
-                            
+
                             // Ensure the shape is closed (if the first/last verts are culled it isn't)
                             float fx1 = JsonGetFloat(JsonArrayGet(jVertices, 0));
                             float fy1 = JsonGetFloat(JsonArrayGet(jVertices, 1));
-                            
+
                             float fyn = JsonGetFloat(JsonArrayGet(jVertices, JsonGetLength(jVertices)-1));
                             float fxn = JsonGetFloat(JsonArrayGet(jVertices, JsonGetLength(jVertices)-2));
-                            
+
                             if (fx1 != fxn || fy1 != fyn)
                             {
                                 jVertices = JsonArrayInsert(jVertices, JsonFloat(fx1));
                                 jVertices = JsonArrayInsert(jVertices, JsonFloat(fy1));
                             }
-                            
-                            
+
+
                             // Save the polygon we traced
                             json jThisSurfacematPolygons = JsonArrayGet(jPolygonsBySurfacemat, nThisSurfacemat);
                             jThisSurfacematPolygons = JsonArrayInsert(jThisSurfacematPolygons, jVertices);
@@ -904,13 +904,13 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
             SetLocalInt(oModule, sPixelvar + "handled", 1);
         }
     }
-    
+
     ////////////////////////////
     // PROCESS INTO NUI DRAWLIST
     ////////////////////////////
     json jDrawListElements = JsonArray();
     json jPoints = JsonArray();
-    
+
     jPoints = JsonArrayInsert(jPoints, JsonFloat(0.0));
     jPoints = JsonArrayInsert(jPoints, JsonFloat(0.0));
     jPoints = JsonArrayInsert(jPoints, JsonFloat(IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS)));
@@ -925,7 +925,7 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
     int nPolygons = 1;
     // On "holes": by definition, the area of a simple polygon that entirely contains another must be larger than the one it contains
     // Therefore, drawing polygons in order of decreasing area is probably the way to go here
-    
+
     json jPolygonsByArea = JsonObject();
     // jPolygonsByArea[area] = [array[surfacemat, vertex array]]
     // it seems pretty unlikely that two polygons will have the exact same area but you never know
@@ -970,7 +970,7 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
         //WriteTimestampedLogEntry("Make drawlist for polygons of area " + sArea + ": " + JsonDump(jPolygonsAtThisArea));
         for (j=0; j<nNumPolygonsAtThisArea; j++)
         {
-            
+
             json jData = JsonArrayGet(jPolygonsAtThisArea, j);
             int nThisSurfacemat = JsonGetInt(JsonArrayGet(jData, 0));
             //WriteTimestampedLogEntry("Making polygon for surfacemat " + IntToString(nThisSurfacemat));
@@ -982,54 +982,54 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
             nCoordinates += JsonGetLength(jVertices);
         }
     }
-    
+
     // It wouldn't be a treasure map without an X to mark the spot
     float fMidX = mpSettings.fCrossOffsetX + IntToFloat(nEndX - nStartX)/2;
     float fMidY = mpSettings.fCrossOffsetY + IntToFloat(nEndY - nStartY)/2;
-    
+
     // For a little bit of variety, let's rotate these a little randomly
     // It's still an X if the two lines don't meet at exactly right angles
-    
+
     // Xs themselves are always rectangular (please please fill function don't break on rectangles)
     // So we have four pairs of coordinates
     float fTRx = TREASUREMAP_X_LENGTH/2;
     float fTRy = TREASUREMAP_X_WIDTH/2;
-    
+
     float fBRx = TREASUREMAP_X_LENGTH/2;
     float fBRy = -TREASUREMAP_X_WIDTH/2;
-    
+
     float fTLx = -TREASUREMAP_X_LENGTH/2;
     float fTLy = TREASUREMAP_X_WIDTH/2;
-    
+
     float fBLx = -TREASUREMAP_X_LENGTH/2;
     float fBLy = -TREASUREMAP_X_WIDTH/2;
 
     // To get the first line of the x, we have to rotate these ~45deg
     // To get the second, we rotate ~135
     // Then add the midpoints calculated above to all coordinates, and it should be good
-    
+
     float fCrossX = fMidX * fPixelsPerSampleX;
     float fCrossY = fMidY * fPixelsPerSampleY;
-    
+
     for (i=0; i<2; i++)
     {
         json jVertices = JsonArray();
         float fRotation = IntToFloat((i*90) + 45 + Random(17) - 8);
         jVertices = JsonArrayInsert(jVertices, JsonFloat(fMidX * fPixelsPerSampleX + (fTRx * cos(fRotation)) - (fTRy * sin(fRotation))));
         jVertices = JsonArrayInsert(jVertices, JsonFloat(fMidY * fPixelsPerSampleY + (fTRx * sin(fRotation)) + (fTRy * cos(fRotation))));
-        
+
         jVertices = JsonArrayInsert(jVertices, JsonFloat(fMidX * fPixelsPerSampleX + (fBRx * cos(fRotation)) - (fBRy * sin(fRotation))));
         jVertices = JsonArrayInsert(jVertices, JsonFloat(fMidY * fPixelsPerSampleY + (fBRx * sin(fRotation)) + (fBRy * cos(fRotation))));
-        
+
         jVertices = JsonArrayInsert(jVertices, JsonFloat(fMidX * fPixelsPerSampleX + (fBLx * cos(fRotation)) - (fBLy * sin(fRotation))));
         jVertices = JsonArrayInsert(jVertices, JsonFloat(fMidY * fPixelsPerSampleY + (fBLx * sin(fRotation)) + (fBLy * cos(fRotation))));
-        
+
         jVertices = JsonArrayInsert(jVertices, JsonFloat(fMidX * fPixelsPerSampleX + (fTLx * cos(fRotation)) - (fTLy * sin(fRotation))));
         jVertices = JsonArrayInsert(jVertices, JsonFloat(fMidY * fPixelsPerSampleY + (fTLx * sin(fRotation)) + (fTLy * cos(fRotation))));
-        
+
         jDrawListElements = JsonArrayInsert(jDrawListElements, NuiDrawListPolyLine(JsonBool(1), NuiColor(180, 0, 0, TREASUREMAP_OVERLAY_OPACITY), JsonBool(1), JsonFloat(0.0), jVertices));
     }
-    
+
     // Area-defined map label
     if (mpSettings.sText != "")
     {
@@ -1043,11 +1043,11 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
         }
         jDrawListElements = JsonArrayInsert(jDrawListElements, NuiDrawListText(JsonBool(1), NuiColor(0, 0, 0, 200), NuiRect(fStartX, fStartY, 80.0, 28.0), JsonString(mpSettings.sText)));
     }
-    
-    
-    
+
+
+
     //WriteTimestampedLogEntry("Returned " + IntToString(nPolygons) + " polygons with " + IntToString(nCoordinates/2) + " total vertices");
-    
+
     return jDrawListElements;
 }
 
@@ -1056,44 +1056,44 @@ void TreasureMapSwatch(object oPC)
     float fColumn2X = 100.0;
     float fYPerLine = 20.0;
     json jDrawListElements = JsonArray();
-    
+
     int nSurfacemat;
     for (nSurfacemat=0; nSurfacemat<=22; nSurfacemat++)
     {
         json jColour = SurfacematToNuiColor(nSurfacemat);
         string sName = Get2DAString("surfacemat", "Label", nSurfacemat);
-        
+
         float fXColumnOffset = nSurfacemat >= 15 ? 200.0 : 0.0;
-        
+
         float fY = IntToFloat(nSurfacemat % 15) * fYPerLine;
         jDrawListElements = JsonArrayInsert(jDrawListElements, NuiDrawListText(JsonBool(1), NuiColor(0, 0, 0, 255), NuiRect(fXColumnOffset, fY, fXColumnOffset+fColumn2X, fYPerLine), JsonString(sName)));
-        
-        
+
+
         json jPoints = JsonArray();
         jPoints = JsonArrayInsert(jPoints, JsonFloat(fXColumnOffset+fColumn2X));
         jPoints = JsonArrayInsert(jPoints, JsonFloat(fY));
-        
+
         jPoints = JsonArrayInsert(jPoints, JsonFloat(fXColumnOffset+fColumn2X + fYPerLine));
         jPoints = JsonArrayInsert(jPoints, JsonFloat(fY));
-        
+
         jPoints = JsonArrayInsert(jPoints, JsonFloat(fXColumnOffset+fColumn2X + fYPerLine));
         jPoints = JsonArrayInsert(jPoints, JsonFloat(fY + fYPerLine));
-        
+
         jPoints = JsonArrayInsert(jPoints, JsonFloat(fXColumnOffset+fColumn2X));
         jPoints = JsonArrayInsert(jPoints, JsonFloat(fY + fYPerLine));
-        
+
         jDrawListElements = JsonArrayInsert(jDrawListElements, NuiDrawListPolyLine(JsonBool(1), jColour, JsonBool(1), JsonFloat(0.0), jPoints));
     }
-    
+
     json jImage = NuiImage(JsonString("tm_metal02"), JsonInt(NUI_ASPECT_EXACTSCALED), JsonInt(NUI_HALIGN_CENTER), JsonInt(NUI_VALIGN_MIDDLE));
-	jImage = NuiDrawList(jImage, JsonBool(0), jDrawListElements);
-	
-	json jLayout = JsonArray();
-	jLayout = JsonArrayInsert(jLayout, jImage);
-	
-	json root = NuiCol(jLayout);
-	
-	json nui = NuiWindow(
+    jImage = NuiDrawList(jImage, JsonBool(0), jDrawListElements);
+
+    json jLayout = JsonArray();
+    jLayout = JsonArrayInsert(jLayout, jImage);
+
+    json root = NuiCol(jLayout);
+
+    json nui = NuiWindow(
         root,
         JsonString("Treasure Map Swatch"),
         NuiBind("geometry"),
@@ -1102,18 +1102,18 @@ void TreasureMapSwatch(object oPC)
         JsonBool(TRUE), // closable
         JsonBool(FALSE), // transparent
         JsonBool(TRUE)); // border
-        
-            
-    
+
+
+
     int token = NuiCreate(oPC, nui, "treasuremap");
     // Testing this suggests the NUI border takes 20px on the X axis and 53px on the Y
-	NuiSetBind(oPC, token, "geometry", NuiRect(-1.0, -1.0, 400.0, 25*fYPerLine));
-	NuiSetBind(oPC, token, "collapse", JsonInt(0));
+    NuiSetBind(oPC, token, "geometry", NuiRect(-1.0, -1.0, 400.0, 25*fYPerLine));
+    NuiSetBind(oPC, token, "collapse", JsonInt(0));
 }
 
 
 void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJECT_INVALID)
-{	
+{
     SetLocalObject(oPC, "opened_treasuremap", oMap);
     int nScale = GetPlayerDeviceProperty(oPC, PLAYER_DEVICE_PROPERTY_GUI_SCALE);
     float fScale = IntToFloat(nScale)/100.0;
@@ -1132,30 +1132,30 @@ void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJEC
     }
     nACR = (nACR/TREASUREMAP_ACR_STEP)*TREASUREMAP_ACR_STEP;
     string sJsonData = "json" + IntToString(nACR);
-	sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions",
+    sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions",
             "SELECT " + sJsonData +
             " FROM treasuremaps WHERE puzzleid = @puzzleid;");
     SqlBindInt(sql, "@puzzleid", nPuzzleID);
     SqlStep(sql);
     json jDrawListElements = SqlGetJson(sql, 0);
-    
-	json jImage = NuiWidth(NuiImage(JsonString("tm_metal02"), JsonInt(NUI_ASPECT_EXACTSCALED), JsonInt(NUI_HALIGN_CENTER), JsonInt(NUI_VALIGN_MIDDLE)), IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS));
-	
-	jImage = NuiDrawList(jImage, JsonBool(0), jDrawListElements);
-	
-	json jLayout = JsonArray();
-	jLayout = JsonArrayInsert(jLayout, jImage);
-    
+
+    json jImage = NuiWidth(NuiImage(JsonString("tm_metal02"), JsonInt(NUI_ASPECT_EXACTSCALED), JsonInt(NUI_HALIGN_CENTER), JsonInt(NUI_VALIGN_MIDDLE)), IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS));
+
+    jImage = NuiDrawList(jImage, JsonBool(0), jDrawListElements);
+
+    json jLayout = JsonArray();
+    jLayout = JsonArrayInsert(jLayout, jImage);
+
     json jButton = NuiId(NuiHeight(NuiButton(JsonString("Dig")), 40.0), "digbutton");
     json jButtonArray = JsonArray();
     jButtonArray = JsonArrayInsert(jButtonArray, NuiSpacer());
     jButtonArray = JsonArrayInsert(jButtonArray, jButton);
     jButtonArray = JsonArrayInsert(jButtonArray, NuiSpacer());
     jLayout = JsonArrayInsert(jLayout, NuiRow(jButtonArray));
-	
-	json root = NuiCol(jLayout);
-	
-	json nui = NuiWindow(
+
+    json root = NuiCol(jLayout);
+
+    json nui = NuiWindow(
         root,
         JsonString("Treasure Map"),
         NuiBind("geometry"),
@@ -1164,14 +1164,14 @@ void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJEC
         JsonBool(TRUE), // closable
         JsonBool(FALSE), // transparent
         JsonBool(TRUE)); // border
-        
-            
-    
+
+
+
     int token = NuiCreate(oPC, nui, "treasuremap");
     // Testing this suggests the NUI border takes 20px on the X axis and 53px on the Y
     // Plus an extra 50px for the button...
-	NuiSetBind(oPC, token, "geometry", NuiRect(fGeometryRectPos, fGeometryRectPos, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 20.0, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 50.0 + 53.0));
-	NuiSetBind(oPC, token, "collapse", JsonInt(0));
+    NuiSetBind(oPC, token, "geometry", NuiRect(fGeometryRectPos, fGeometryRectPos, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 20.0, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 50.0 + 53.0));
+    NuiSetBind(oPC, token, "collapse", JsonInt(0));
 }
 
 int CanAreaHaveTreasureMaps(object oArea)
@@ -1219,7 +1219,7 @@ int IsTreasureLocationValid(location lLoc)
     }
     object oArea = GetAreaFromLocation(lLoc);
     vector vLoc = GetPositionFromLocation(lLoc);
-    
+
     // Check for forbid waypoints
     object oTest = GetFirstObjectInShape(SHAPE_SPHERE, TREASUREMAP_AVOID_WP_RADIUS, lLoc, FALSE, OBJECT_TYPE_WAYPOINT);
     while (GetIsObjectValid(oTest))
@@ -1230,11 +1230,11 @@ int IsTreasureLocationValid(location lLoc)
         }
         oTest = GetNextObjectInShape(SHAPE_SPHERE, TREASUREMAP_AVOID_WP_RADIUS, lLoc, FALSE, OBJECT_TYPE_WAYPOINT);
     }
-    
-    
+
+
     int nTreeMaxDepth = GetAreaSize(AREA_WIDTH, oArea) * GetAreaSize(AREA_HEIGHT, oArea);
     //int nTreeMaxDepth = 10;
-    
+
     // Try to find a way to get from the location to a transition object
     // This is usually a door or trigger
     oTest = GetFirstObjectInArea(oArea);
@@ -1304,23 +1304,23 @@ void CreateNewTreasureMapPuzzleAtLocation(location lLoc)
         "position TEXT, " +
         "tilehash INTEGER, " +
         "minacr INTEGER";
-        
+
     for (i=TREASUREMAP_ACR_MIN; i<=TREASUREMAP_ACR_MAX; i++)
     {
         sQuery = sQuery + ", json" + IntToString(i) + " TEXT";
     }
     sQuery = sQuery + ");";
-        
+
     sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions", sQuery);
     SqlStep(sql);
-    
+
     object oArea = GetAreaFromLocation(lLoc);
     int nMinAcr = GetLocalInt(oArea, "cr");
     if (nMinAcr < TREASUREMAP_ACR_MIN)
     {
         nMinAcr = TREASUREMAP_ACR_MIN;
     }
-    
+
     sql = SqlPrepareQueryCampaign("tmapsolutions",
         "INSERT INTO treasuremaps " +
         "(areatag, position, minacr) " +
@@ -1329,7 +1329,7 @@ void CreateNewTreasureMapPuzzleAtLocation(location lLoc)
     SqlBindVector(sql, "@position", GetPositionFromLocation(lLoc));
     SqlBindInt(sql, "@minacr", nMinAcr);
     SqlStep(sql);
-    
+
     sql = SqlPrepareQueryCampaign("tmapsolutions", "SELECT LAST_INSERT_ROWID()");
     SqlStep(sql);
     int nPuzzleID = SqlGetInt(sql, 0);
@@ -1359,7 +1359,7 @@ void CalculateTreasureMaps(int nPuzzleID)
         }
         n++;
     }
-    
+
     // Small buffer of empty space is allowed
     int nAreaX = 3 + (10*GetAreaSize(AREA_WIDTH, oArea));
     int nAreaY = 3 + (10*GetAreaSize(AREA_HEIGHT, oArea));
@@ -1394,11 +1394,11 @@ void CalculateTreasureMaps(int nPuzzleID)
     int nRealScanCount = 100;
     fInterval = IntToFloat(nEdgeRealWorldSize)/IntToFloat(nRealScanCount);
     if (fInterval < 0.7)
-    { 
+    {
         fInterval = 0.7;
         nRealScanCount = FloatToInt(IntToFloat(nEdgeRealWorldSize)/fInterval);
     }
-    
+
     //WriteTimestampedLogEntry("Scanning has " + IntToString(nRealScanCount) + " intervals");
     location lLoc = Location(oArea, vLoc, 0.0);
     vector vScanAdjustment = GetVectorToMoveScanLocationWithinAreaBounds(lLoc, nRealScanCount, nRealScanCount, fInterval);
@@ -1407,19 +1407,19 @@ void CalculateTreasureMaps(int nPuzzleID)
     location lLocScan = Location(oArea, vPosScan, 0.0);
     NWNX_Util_SetInstructionsExecuted(0);
     TreasureMapScanLocation(lLocScan, nRealScanCount, nRealScanCount, fInterval);
-    
+
     struct MapProcessingSettings mpSettings;
     mpSettings.sText = GetLocalString(oArea, TREASUREMAP_AREA_TEXT);
     mpSettings.MAPDATA_AREA_CULL_THRESHOLD_PROPORTION = 0.002;
     mpSettings.MAPDATA_MINIMUM_AREA_CULL_THRESHOLD = 12.0;
-    
+
     int nAreaCR = GetLocalInt(oArea, "cr");
     if (nAreaCR < TREASUREMAP_ACR_MIN) { nAreaCR = TREASUREMAP_ACR_MIN; }
     if (nAreaCR > TREASUREMAP_ACR_MAX) { nAreaCR = TREASUREMAP_ACR_MAX; }
-    
+
     // Go to the first possible step
     nAreaCR = (nAreaCR/TREASUREMAP_ACR_STEP)*TREASUREMAP_ACR_STEP;
-    
+
     int nCurrentACR;
     for (nCurrentACR=nAreaCR; nCurrentACR<=TREASUREMAP_ACR_MAX; nCurrentACR+=TREASUREMAP_ACR_STEP)
     {
@@ -1427,64 +1427,64 @@ void CalculateTreasureMaps(int nPuzzleID)
         int nNumFewerScansForThisACR = FloatToInt(fCRDiff * TREASUREMAP_PROPORTION_DISTANCE_REMOVED_PER_ACR * IntToFloat(nRealScanCount));
         int nScanCountForThisACR = nRealScanCount - nNumFewerScansForThisACR;
         //WriteTimestampedLogEntry("Scancount: " + IntToString(nRealScanCount) + " - " + IntToString(nNumFewerScansForThisACR) + " -> " + IntToString(nScanCountForThisACR));
-        
+
         // We calculated the offset for the scan based on the MAXIMUM scan distance
         // there is no guarantee that it's the same with the reduced scan count due to ACR increase...
         vector vOffsetForThisACR = GetVectorToMoveScanLocationWithinAreaBounds(lLoc, nScanCountForThisACR, nScanCountForThisACR, fInterval);
         vector vOffsetFromScanCentreForThisACR = vPosScan - (vLoc + vOffsetForThisACR);
-        
+
         // ProcessMapData takes two variables per axis
         // 1)   Ending interval index.
         //      Easy to calc when we know the start.
         // 2)   Number of intervals at the start of map data to ignore.
         //      If there was no offset, we'd split the reduced interval count in 2 and take it off both sides.
         //      Now that there is an offset, we have to calc this more carefully.
-        
+
         //      We know the vector (in game metres) that maps the location we would scan at
         //      if we were using this reduced number of intervals
         //      to the vector we actually did the scanning at.
-        
+
         //      It should be possible to convert that to a number of checks by dividing it by fInterval
         //      and hopefully adding this to the value that would be used if we didn't have to adjust at all
-        
+
         // The negation here in the x axis seems to fix some left/right mirroring issues.
         // I'm assuming has to do with the fact that y axis was inverted at some point scanning but x wasn't
         // but my brain is fried and my mathematical reasoning is failing me
         int nOffsetIntervalsX = FloatToInt(-vOffsetFromScanCentreForThisACR.x/fInterval);
         int nOffsetIntervalsY = FloatToInt(vOffsetFromScanCentreForThisACR.y/fInterval);
-        
+
         int nNonOffsetIntervalCount = nNumFewerScansForThisACR/2;
-        
-        
+
+
         //WriteTimestampedLogEntry("vOffsetFromScanCentreForThisACR " + tmVectorToString(vOffsetFromScanCentreForThisACR));
-        
+
         // Same deal with negating the x axis adjustment
         mpSettings.fCrossOffsetX = -(vScanAdjustment.x - vOffsetFromScanCentreForThisACR.x)/fInterval;
         mpSettings.fCrossOffsetY = (vScanAdjustment.y - vOffsetFromScanCentreForThisACR.y)/fInterval;
-        
+
         mpSettings.MAPDATA_MINIMUM_POLYGON_AREA = 0.02 / IntToFloat(nScanCountForThisACR);
-        
+
         int nStartIntervalX = nNonOffsetIntervalCount+nOffsetIntervalsX;
         int nStartIntervalY = nNonOffsetIntervalCount+nOffsetIntervalsY;
-        
+
         //WriteTimestampedLogEntry("Process map data: X = " + IntToString(nStartIntervalX) + " to " + IntToString(nStartIntervalX+nScanCountForThisACR) + ", Y = " + IntToString(nStartIntervalY) + " to " + IntToString(nStartIntervalY+nScanCountForThisACR));
-        
+
         // This will be very very prone to TMI
-        NWNX_Util_SetInstructionsExecuted(0);        
-        
+        NWNX_Util_SetInstructionsExecuted(0);
+
         json jDrawListElements = ProcessTreasureMapData(nStartIntervalX+nScanCountForThisACR, nStartIntervalY+nScanCountForThisACR, nStartIntervalX, nStartIntervalY, mpSettings);
-        
+
         string sJsonFieldName = "json" + IntToString(nCurrentACR);
         sql = SqlPrepareQueryCampaign("tmapsolutions",
         "UPDATE treasuremaps " +
         "SET " + sJsonFieldName + " = @value " +
         "WHERE puzzleid = @puzzleid;");
-        
+
         SqlBindJson(sql, "@value", jDrawListElements);
         SqlBindInt(sql, "@puzzleid", nPuzzleID);
         SqlStep(sql);
     }
-    
+
     // Save area tile hash
     int nTileHash = GetAreaTileHash(oArea);
     sql = SqlPrepareQueryCampaign("tmapsolutions",
@@ -1494,6 +1494,19 @@ void CalculateTreasureMaps(int nPuzzleID)
     SqlBindInt(sql, "@value", nTileHash);
     SqlBindInt(sql, "@puzzleid", nPuzzleID);
     SqlStep(sql);
+}
+
+int GetTreasureMapGoldValue(int nACR)
+{
+    // This is set very roughly to the value of one item from these
+    int nValue = 50 + (20 * nACR);
+    if (nACR >= 12) { nValue += (nACR*11) ; }
+    else if (nACR >= 9) { nValue += (nACR * 8); }
+    else if (nACR >= 6) { nValue += (nACR * 2); }
+
+    // Then multiply up by a bit...
+    nValue *= 3;
+    return nValue;
 }
 
 void InitialiseTreasureMap(object oMap, int nACR, string sLocation="")
@@ -1506,16 +1519,9 @@ void InitialiseTreasureMap(object oMap, int nACR, string sLocation="")
     {
         nACR = TREASUREMAP_ACR_MIN;
     }
-    
-    // This is set very roughly to the value of one item from these
-    int nValue = 50 + (20 * nACR);
-    if (nACR >= 12) { nValue += (nACR*11) ; }
-    else if (nACR >= 9) { nValue += (nACR * 8); }
-    else if (nACR >= 6) { nValue += (nACR * 2); }
-    
-    // Then multiply up by a bit...
-    nValue *= 3;
-    
+
+    int nValue = GetTreasureMapGoldValue(nACR);
+
     int nBaseValue = NWNX_Item_GetBaseGoldPieceValue(oMap);
     NWNX_Item_SetAddGoldPieceValue(oMap, nValue - nBaseValue);
     SetLocalInt(oMap, "acr", nACR);
@@ -1527,7 +1533,7 @@ void InitialiseTreasureMap(object oMap, int nACR, string sLocation="")
         SetDescription(oMap, sDesc);
     }
 }
-    
+
 void UseTreasureMap(object oMap)
 {
     int nPuzzleID = GetLocalInt(oMap, "puzzleid");
@@ -1590,7 +1596,7 @@ location GetPuzzleSolutionLocation(int nPuzzleID)
     SqlStep(sql);
     string sAreaTag = SqlGetString(sql, 0);
     vector vPos = SqlGetVector(sql, 1);
-    
+
     object oArea;
     int n=0;
     while (TRUE)
@@ -1607,7 +1613,7 @@ location GetPuzzleSolutionLocation(int nPuzzleID)
             break;
         }
     }
-    
+
     return Location(oArea, vPos, 0.0);
 }
 
@@ -1620,13 +1626,13 @@ string tmVectorToString(vector vVec)
 // Roll the probabilties for a treasure map drop from a random creature or placeable.
 // True if one should drop, F if not
 int RollForTreasureMap(object oSource=OBJECT_SELF)
-{   
+{
     object oArea = GetArea(oSource);
     int nChance = TREASURE_MAP_CHANCE;
     if (GetLocalInt(oSource, "boss"))
     {
         nChance *= TREASURE_MAP_BOSS_MULTIPLIER;
-    }    
+    }
     else if (GetLocalInt(oSource, "semiboss"))
     {
         nChance *= TREASURE_MAP_SEMIBOSS_MULTIPLIER;
@@ -1642,9 +1648,9 @@ int RollForTreasureMap(object oSource=OBJECT_SELF)
             return 0;
         }
     }
-    
-    
-    
+
+
+
     float fAreaMultiplier = GetLocalFloat(oArea, AREA_TREASURE_MAP_MULTIPLIER);
     if (fAreaMultiplier != 0.0)
     {
@@ -1701,9 +1707,9 @@ object MaybeGenerateTreasureMap(int nObjectACR)
     {
         return OBJECT_INVALID;
     }
-    
+
     string sLocation = GetName(GetArea(OBJECT_SELF));
-    
+
     return SetupProgenitorTreasureMap(nObjectACR, sLocation);
 }
 

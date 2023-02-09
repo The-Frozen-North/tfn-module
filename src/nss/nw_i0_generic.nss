@@ -107,6 +107,7 @@
 #include "70_inc_ai"
 #include "x0_i0_behavior"
 #include "x0_i0_anims"
+#include "inc_sqlite_time"
 
 
 /**********************************************************************
@@ -914,7 +915,13 @@ int __InCombatRound()
         return FALSE;
     }
     //SpeakString("DEBUG:: In Combat Round, busy.");
-    return GetLocalInt(OBJECT_SELF, "X2_L_MUTEXCOMBATROUND");
+    int nNow = SQLite_GetTimeStamp();
+    int nOld = GetLocalInt(OBJECT_SELF, "X2_L_MUTEXCOMBATROUND");
+    if (nNow - nOld > 10)
+    {
+        return 0;
+    }
+    return 1;
 }
 //::///////////////////////////////////////////////
 //:: __TurnCombatRoundOn
@@ -935,7 +942,7 @@ void __TurnCombatRoundOn(int bBool)
 {
     if(bBool)
     {
-        SetLocalInt(OBJECT_SELF, "X2_L_MUTEXCOMBATROUND", TRUE);
+        SetLocalInt(OBJECT_SELF, "X2_L_MUTEXCOMBATROUND", SQLite_GetTimeStamp());
     }
     else
     {

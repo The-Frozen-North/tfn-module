@@ -16,8 +16,15 @@ void main()
 
     SetLocalInt(oPC, "recruited_militia", 1);
 
-    object oMilitia = CreateObject(OBJECT_TYPE_CREATURE, "militia", GetLocation(oPC));
-    SetFollowerMaster(oMilitia, oPC);
+    object oArea = GetArea(oPC);
+    object oMilitia = GetLocalObject(oArea, "helper_militia");
+    if (!GetIsObjectValid(oMilitia) || GetArea(oMilitia) != oArea || GetIsDead(oMilitia) || GetIsObjectValid(GetMaster(oMilitia)))
+    {
+        oMilitia = CreateObject(OBJECT_TYPE_CREATURE, "militia", GetLocation(oPC));
+    }
+    // In the name of player choice, don't force the NPCs to join
+    // ... but really really encourage it
+    //SetFollowerMaster(oMilitia, oPC);
     DelayCommand(1.0, PlayVoiceChat(VOICE_CHAT_HELLO, oMilitia));
 
     object oBim = GetObjectByTag("hen_bim");
@@ -35,8 +42,9 @@ void main()
 
     if (!GetIsObjectValid(GetMasterByUUID(oBim)))
     {
-        SetMaster(oBim, oPC);
-        AssignCommand(oBim, ActionMoveToObject(oPC));
-        DelayCommand(4.0, PlayVoiceChat(VOICE_CHAT_HELLO, oBim));
+        //SetMaster(oBim, oPC);
+        SetLocalInt(oPC, "bim_graduate", 1);
+        DelayCommand(60.0, DeleteLocalInt(oPC, "bim_graduate"));
+        DelayCommand(5.0, AssignCommand(oBim, ActionStartConversation(oPC)));
     }
 }
