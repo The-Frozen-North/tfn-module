@@ -38,7 +38,7 @@
   },
   "ArmorPart_Neck": {
     "type": "byte",
-    "value": 1
+    "value": 3
   },
   "ArmorPart_Pelvis": {
     "type": "byte",
@@ -90,11 +90,11 @@
   },
   "Cloth1Color": {
     "type": "byte",
-    "value": 37
+    "value": 43
   },
   "Cloth2Color": {
     "type": "byte",
-    "value": 16
+    "value": 42
   },
   "Comment": {
     "type": "cexostring",
@@ -102,7 +102,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 160
+    "value": 10693
   },
   "Cursed": {
     "type": "byte",
@@ -116,34 +116,36 @@
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": ""
+    }
   },
   "Identified": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "Leather1Color": {
     "type": "byte",
-    "value": 37
+    "value": 43
   },
   "Leather2Color": {
     "type": "byte",
-    "value": 7
+    "value": 42
   },
   "LocalizedName": {
     "id": 12906,
     "type": "cexolocstring",
     "value": {
-      "0": "Lesser Wizard's Robe"
+      "0": "Master Wizard's Robe"
     }
   },
   "Metal1Color": {
     "type": "byte",
-    "value": 25
+    "value": 3
   },
   "Metal2Color": {
     "type": "byte",
-    "value": 9
+    "value": 3
   },
   "PaletteID": {
     "type": "byte",
@@ -156,6 +158,37 @@
   "PropertiesList": {
     "type": "list",
     "value": [
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 13
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 3
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 13
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 10
+        }
+      },
       {
         "__struct_id": 0,
         "ChanceAppear": {
@@ -195,11 +228,73 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 25
+          "value": 13
         },
         "CostValue": {
           "type": "word",
           "value": 1
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 13
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 10
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 13
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 2
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 13
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 10
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 25
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 4
         },
         "Param1": {
           "type": "byte",
@@ -230,7 +325,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 1
+          "value": 4
         },
         "Param1": {
           "type": "byte",
@@ -296,6 +391,6 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "armor121"
+    "value": "armor182"
   }
 }

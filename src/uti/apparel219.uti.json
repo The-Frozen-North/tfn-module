@@ -4,85 +4,9 @@
     "type": "dword",
     "value": 0
   },
-  "ArmorPart_Belt": {
-    "type": "byte",
-    "value": 11
-  },
-  "ArmorPart_LBicep": {
-    "type": "byte",
-    "value": 15
-  },
-  "ArmorPart_LFArm": {
-    "type": "byte",
-    "value": 8
-  },
-  "ArmorPart_LFoot": {
-    "type": "byte",
-    "value": 4
-  },
-  "ArmorPart_LHand": {
-    "type": "byte",
-    "value": 1
-  },
-  "ArmorPart_LShin": {
-    "type": "byte",
-    "value": 16
-  },
-  "ArmorPart_LShoul": {
-    "type": "byte",
-    "value": 0
-  },
-  "ArmorPart_LThigh": {
-    "type": "byte",
-    "value": 8
-  },
-  "ArmorPart_Neck": {
-    "type": "byte",
-    "value": 1
-  },
-  "ArmorPart_Pelvis": {
-    "type": "byte",
-    "value": 3
-  },
-  "ArmorPart_RBicep": {
-    "type": "byte",
-    "value": 15
-  },
-  "ArmorPart_RFArm": {
-    "type": "byte",
-    "value": 8
-  },
-  "ArmorPart_RFoot": {
-    "type": "byte",
-    "value": 4
-  },
-  "ArmorPart_RHand": {
-    "type": "byte",
-    "value": 1
-  },
-  "ArmorPart_Robe": {
-    "type": "byte",
-    "value": 6
-  },
-  "ArmorPart_RShin": {
-    "type": "byte",
-    "value": 16
-  },
-  "ArmorPart_RShoul": {
-    "type": "byte",
-    "value": 0
-  },
-  "ArmorPart_RThigh": {
-    "type": "byte",
-    "value": 8
-  },
-  "ArmorPart_Torso": {
-    "type": "byte",
-    "value": 19
-  },
   "BaseItem": {
     "type": "int",
-    "value": 16
+    "value": 80
   },
   "Charges": {
     "type": "byte",
@@ -90,11 +14,11 @@
   },
   "Cloth1Color": {
     "type": "byte",
-    "value": 37
+    "value": 1
   },
   "Cloth2Color": {
     "type": "byte",
-    "value": 16
+    "value": 1
   },
   "Comment": {
     "type": "cexostring",
@@ -102,52 +26,59 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 160
+    "value": 2832
   },
   "Cursed": {
     "type": "byte",
     "value": 0
   },
   "DescIdentified": {
+    "id": 13768,
     "type": "cexolocstring",
     "value": {
-      "0": "Wizards don these robes to keep them warm as they pore over musty tomes of magical lore in cold dank basement libraries, and it also increases their insight into magical arts."
+      "0": "This thick pelt can be worn as a cloak by human-sized creatures, or a loincloth by larger creatures. The beast that contributed its hide for this item is a mystery, but long slashes in skin indicate it was stabbed to death with sharp objects. Despite its enchanted nature, the hide still attracts fleas and retains the sweat and odors of its wearer."
     }
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": ""
+    }
   },
   "Identified": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "Leather1Color": {
     "type": "byte",
-    "value": 37
+    "value": 1
   },
   "Leather2Color": {
     "type": "byte",
-    "value": 7
+    "value": 1
   },
   "LocalizedName": {
-    "id": 12906,
+    "id": 13767,
     "type": "cexolocstring",
     "value": {
-      "0": "Lesser Wizard's Robe"
+      "0": "Cloak of the Strange Beast"
     }
   },
   "Metal1Color": {
     "type": "byte",
-    "value": 25
+    "value": 15
   },
   "Metal2Color": {
     "type": "byte",
-    "value": 9
+    "value": 15
+  },
+  "ModelPart1": {
+    "type": "byte",
+    "value": 10
   },
   "PaletteID": {
     "type": "byte",
-    "value": 58
+    "value": 18
   },
   "Plot": {
     "type": "byte",
@@ -164,11 +95,11 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 13
+          "value": 2
         },
         "CostValue": {
           "type": "word",
-          "value": 0
+          "value": 1
         },
         "Param1": {
           "type": "byte",
@@ -180,7 +111,38 @@
         },
         "PropertyName": {
           "type": "word",
-          "value": 13
+          "value": 1
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 7
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 1
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 23
         },
         "Subtype": {
           "type": "word",
@@ -195,7 +157,7 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 25
+          "value": 21
         },
         "CostValue": {
           "type": "word",
@@ -211,73 +173,11 @@
         },
         "PropertyName": {
           "type": "word",
-          "value": 52
+          "value": 27
         },
         "Subtype": {
           "type": "word",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 25
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 1
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 52
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 16
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 0
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 0
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 63
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 10
+          "value": 5
         }
       }
     ]
@@ -292,10 +192,10 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_CLOTH005"
+    "value": "NW_MAARCL031"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "armor121"
+    "value": "apparel219"
   }
 }
