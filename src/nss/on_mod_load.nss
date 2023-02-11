@@ -245,14 +245,18 @@ void main()
     {
         if (GetCampaignInt("spawns", "finished") != 1)
         {
+            NWNX_Administration_SetPlayerPassword(GetRandomUUID());
             SendDebugMessage("Spawns database is not complete", TRUE);
-            NWNX_Administration_ShutdownServer();
+            SendDiscordLogMessage("Cannot start server - Spawns database is not complete");
+            DelayCommand(60.0, NWNX_Administration_ShutdownServer());
             return;
         }
         else if (GetCampaignInt("treasures", "finished") != 1)
         {
+            NWNX_Administration_SetPlayerPassword(GetRandomUUID());
             SendDebugMessage("Treasures database is not complete", TRUE);
-            NWNX_Administration_ShutdownServer();
+            SendDiscordLogMessage("Cannot start server - Treasures database is not complete");
+            DelayCommand(60.0, NWNX_Administration_ShutdownServer());
             return;
         }
 
