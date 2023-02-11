@@ -59,7 +59,7 @@ void main()
     {
         object oMilitia = GetLocalObject(oArea, "helper_militia");
         if (!GetIsObjectValid(oMilitia) || GetIsObjectValid(GetMaster(oMilitia)) || GetArea(oMilitia) != oArea)
-        {    
+        {
             oMilitia = CreateObject(OBJECT_TYPE_CREATURE, "militia", lRespawnLocation);
             SetLocalObject(oArea, "helper_militia", oMilitia);
         }
@@ -71,8 +71,8 @@ void main()
     {
         object oMilitia = GetLocalObject(oArea, "helper_militia");
         if (!GetIsObjectValid(GetMaster(oMilitia)) && GetArea(oMilitia) == oArea)
-        {  
-            DelayCommand(3.0, AssignCommand(oMilitia, SpeakString("Sedos seems to think that we might not so helpful to you now thaty you are more experienced, but as I heard you can leave the city, you might find similar help in the mercenary enclaves of Port Llast.")));
+        {
+            DelayCommand(3.0, AssignCommand(oMilitia, SpeakString("Sedos seems to think that we might not be so helpful to you now that you are more experienced, but as I heard you can leave the city, you might find similar help in the mercenary enclaves of Port Llast.")));
         }
     }
 }
