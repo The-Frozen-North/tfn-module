@@ -1669,7 +1669,11 @@ int DoesLocationCompleteMap(object oMap, location lTest)
     location lSolution = GetPuzzleSolutionLocation(nPuzzleID);
     if (GetAreaFromLocation(lSolution) == GetAreaFromLocation(lTest))
     {
-        if (GetDistanceBetweenLocations(lSolution, lTest) <= TREASUREMAP_LOCATION_TOLERANCE)
+        float fDist = TREASUREMAP_LOCATION_TOLERANCE;
+        object oPC = GetItemPossessor(oMap);
+        float fSearch = IntToFloat(GetSkillRank(SKILL_SEARCH, oPC));
+        fDist = fDist + (fSearch * 0.05 * fDist);
+        if (GetDistanceBetweenLocations(lSolution, lTest) <= fDist)
         {
             return 1;
         }

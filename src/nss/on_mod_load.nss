@@ -18,10 +18,13 @@
 #include "inc_prettify"
 
 const int SEED_SPAWNS = 0;
-const int SEED_TREASURES = 1;
+const int SEED_TREASURES = 0;
 const int SEED_SPELLBOOKS = 0;
-const int SEED_PRETTIFY_PLACEABLES = 0;
-const int SEED_TREASUREMAPS = 1; // it takes only about ~30s to check the existing maps
+// These two check to see if stuff needs updating before doing it
+// Turning them off might shave off 30s to a minute from a seeding run but that is about it
+// When run from scratch they are by far the slowest of the bunch
+const int SEED_PRETTIFY_PLACEABLES = 1; // ~40 minutes
+const int SEED_TREASUREMAPS = 1;        // ~3 hours
 
 void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)
 {
@@ -179,7 +182,7 @@ void main()
            {
                // This does, surprisingly, manage to TMI without continuously bumping down the VM instruction limit
                NWNX_Util_SetInstructionsExecuted(0);
-    // Skip the system areas. They are prepended with an underscore.
+               // Skip the system areas. They are prepended with an underscore.
                if (GetStringLeft(GetResRef(oArea), 1) == "_")
                {
                    oArea = GetNextArea();
@@ -188,8 +191,16 @@ void main()
                string sScript = GetLocalString(oArea, "prettify_script");
                if (sScript != "")
                {
-                ExecuteScript(sScript, oArea);
-                WriteTimestampedLogEntry("Finished prettify seed script for " + GetResRef(oArea));
+                    if (DoesAreaNeedPrettifySeeding(oArea))
+                    {
+                        ExecuteScript(sScript, oArea);
+                        WriteTimestampedLogEntry("Finished prettify seed script for " + GetResRef(oArea));
+                        UpdatePrettifySavedHashForArea(oArea);
+                    }
+                    else
+                    {
+                        WriteTimestampedLogEntry(GetResRef(oArea) + "'s tiles are unchanged, no need to reprettify");
+                    }
                }
 
                oArea = GetNextArea();
@@ -245,14 +256,18 @@ void main()
     {
         if (GetCampaignInt("spawns", "finished") != 1)
         {
+            NWNX_Administration_SetPlayerPassword(GetRandomUUID());
             SendDebugMessage("Spawns database is not complete", TRUE);
-            NWNX_Administration_ShutdownServer();
+            SendDiscordLogMessage("Cannot start server - Spawns database is not complete");
+            DelayCommand(60.0, NWNX_Administration_ShutdownServer());
             return;
         }
         else if (GetCampaignInt("treasures", "finished") != 1)
         {
+            NWNX_Administration_SetPlayerPassword(GetRandomUUID());
             SendDebugMessage("Treasures database is not complete", TRUE);
-            NWNX_Administration_ShutdownServer();
+            SendDiscordLogMessage("Cannot start server - Treasures database is not complete");
+            DelayCommand(60.0, NWNX_Administration_ShutdownServer());
             return;
         }
 

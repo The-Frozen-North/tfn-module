@@ -1,6 +1,7 @@
 #include "nw_inc_nui"
 #include "inc_sqlite_time"
 #include "inc_treasuremap"
+#include "inc_horse"
 
 void main()
 {
@@ -29,6 +30,12 @@ void main()
         if (GetIsInCombat(oPC))
         {
             SendMessageToPC(oPC, "You cannot search for treasure while in combat.");
+            return;
+        }
+        
+        if (GetIsMounted(oPC))
+        {
+            SendMessageToPC(oPC, "You cannot search the ground beneath your feet while on horseback.");
             return;
         }
         
