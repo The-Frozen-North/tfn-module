@@ -2,7 +2,21 @@
 #include "inc_ai_combat"
 #include "inc_adv_assassin"
 
-string ChooseSpawnRef(object oArea, int nTarget)
+int ShouldUseUniqueEncounter(object oArea, int nTarget)
+{
+    int nUniqueChance = GetLocalInt(oArea, "random"+IntToString(nTarget)+"_unique_chance");
+
+    if (d100() <= nUniqueChance)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+string ChooseSpawnRef(object oArea, int nTarget, int nUnique)
 {
     string sTarget = "random"+IntToString(nTarget);
 
@@ -11,7 +25,7 @@ string ChooseSpawnRef(object oArea, int nTarget)
 
     int nUniqueChance = GetLocalInt(oArea, sTarget+"_unique_chance");
 
-    if (d100() <= nUniqueChance)
+    if (nUnique)
     {
         return GetListItem(sListUnique, Random(CountList(sListUnique)));
     }
@@ -31,9 +45,13 @@ void CreateAmbush(int nTarget, object oArea, object oPC, location lLocation, loc
     object oModule = GetModule();
 
     int i;
+    int bHasUsedUnique = 0;
     for (i = 0; i < nCount; i++)
     {
-        object oEnemy = CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), lLocation);
+        int nUnique = bHasUsedUnique ? 0 : ShouldUseUniqueEncounter(oArea, nTarget);
+        if (nUnique) { bHasUsedUnique = 1; }
+        string sSpawnRef = ChooseSpawnRef(oArea, nTarget, nUnique);
+        object oEnemy = CreateObject(OBJECT_TYPE_CREATURE, sSpawnRef, lLocation);
 
         SetLocalInt(oEnemy, "ambush", 1);
         SetLocalLocation(oEnemy, "ambush_location", lFallbackLocation);

@@ -25,6 +25,12 @@ void DestroyUndeadByArea(object oPedestal, string sAreaTag)
 
         oCreature = GetNextObjectInArea(oArea);
     }
+    
+    int nRefresh = GetLocalInt(oArea, "refresh");
+    if (nRefresh == 0)
+    {
+         SetLocalInt(oArea, "refresh", 1);
+    }
 }
 
 void main()

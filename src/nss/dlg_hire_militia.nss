@@ -21,6 +21,7 @@ void main()
     if (!GetIsObjectValid(oMilitia) || GetArea(oMilitia) != oArea || GetIsDead(oMilitia) || GetIsObjectValid(GetMaster(oMilitia)))
     {
         oMilitia = CreateObject(OBJECT_TYPE_CREATURE, "militia", GetLocation(oPC));
+        SetLocalObject(oArea, "helper_militia", oMilitia);
     }
     // In the name of player choice, don't force the NPCs to join
     // ... but really really encourage it

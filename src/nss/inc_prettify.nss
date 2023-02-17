@@ -4,6 +4,7 @@
 #include "x0_i0_position"
 #include "nwnx_object"
 #include "nwnx_util"
+#include "inc_treasuremap"
 
 
 struct PrettifyPlaceableSettings
@@ -128,6 +129,10 @@ void ClearPrettifyPlaceableDBForArea(object oArea);
 
 // Returns a PrettifyPlaceableSettings with sensible defaults.
 struct PrettifyPlaceableSettings GetDefaultPrettifySettings();
+
+int DoesAreaNeedPrettifySeeding(object oArea);
+
+void UpdatePrettifySavedHashForArea(object oArea);
 
 /////////////////////////////
 // INTERNAL STUFF
@@ -383,6 +388,51 @@ void ClearPrettifyPlaceableDBForArea(object oArea)
     SqlStep(sql);
 }
 
+int DoesAreaNeedPrettifySeeding(object oArea)
+{
+    int nHash = GetAreaTileHash(oArea);
+    sqlquery sql = SqlPrepareQueryCampaign("prettify",
+        "SELECT hash from areatilehashes WHERE areatag = @areatag;");
+    SqlBindString(sql, "@areatag", GetTag(oArea));
+    SqlStep(sql);
+    int nSavedHash = SqlGetInt(sql, 0);
+    if (nSavedHash != nHash)
+    {
+        WriteTimestampedLogEntry("Area hash " + IntToString(nHash) + " for " + GetTag(oArea) + " doesn't match saved " + IntToString(nSavedHash));
+        ClearPrettifyPlaceableDBForArea(oArea);
+        return 1;
+    }
+    return 0;
+}
+
+void UpdatePrettifySavedHashForArea(object oArea)
+{
+    int nHash = GetAreaTileHash(oArea);
+    string sAreaTag = GetTag(oArea);
+    sqlquery sql = SqlPrepareQueryCampaign("prettify", "SELECT hash from areatilehashes WHERE areatag = @areatag;");
+    SqlBindString(sql, "@areatag", sAreaTag);
+    SqlStep(sql);
+    int nSavedHash = SqlGetInt(sql, 0);
+    if (nSavedHash == 0 || SqlGetError(sql) != "")
+    {
+        sql = SqlPrepareQueryCampaign("prettify",
+        "INSERT INTO areatilehashes (areatag, hash) VALUES (@areatag, @areahash);" + 
+        ");");
+        SqlBindInt(sql, "@areahash", nHash);
+        SqlBindString(sql, "@areatag", sAreaTag);
+        SqlStep(sql);
+    }
+    else
+    {
+        sql = SqlPrepareQueryCampaign("prettify",
+            "UPDATE areatilehashes SET hash = @areahash WHERE areatag = @areatag;" + 
+            ");");
+        SqlBindInt(sql, "@areahash", nHash);
+        SqlBindString(sql, "@areatag", sAreaTag);
+        SqlStep(sql);
+    }
+}
+
 void WritePrettifiedPlaceableLocationToDB(struct PrettifyPlaceableSettings pps, location lLoc)
 {    
     sqlquery sql = SqlPrepareQueryCampaign("prettify",
@@ -398,6 +448,12 @@ void WritePrettifiedPlaceableLocationToDB(struct PrettifyPlaceableSettings pps, 
         "replacetexture2to TEXT, " +
         "replacetexture3 TEXT, " +
         "replacetexture3to TEXT" +
+        ");");
+    SqlStep(sql);
+    sql = SqlPrepareQueryCampaign("prettify",
+        "CREATE TABLE IF NOT EXISTS areatilehashes (" +
+        "areatag TEXT, " +
+        "hash INTEGER" +
         ");");
     SqlStep(sql);
     

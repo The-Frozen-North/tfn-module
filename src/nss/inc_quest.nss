@@ -18,6 +18,9 @@ const string QUEST_GIVER_NAME_COLOR = "<c\xff\xdc\x14>";
 // A light green
 const string QUEST_ITEM_NAME_COLOR = "<c\xb9\xff\xb9>";
 
+// Max number of quest_X variables to check per creature
+const int HIGHEST_QUEST_COUNT = 20;
+
 // Set a player's quest entry.
 void SetQuestEntry(object oPC, string sQuestEntry, int nValue);
 
@@ -158,7 +161,7 @@ int GetIsQuestStageEligible(object oQuestObject, object oPC, int nTarget, int bB
     if (!bBluff && GetQuestEntry(oPC, sQuestName) != (nQuestStage-1)) return FALSE;
 
     int i;
-    for (i = 1; i < 10; i++)
+    for (i = 1; i < HIGHEST_QUEST_COUNT; i++)
     {
 // return if there is a prerequisite quest stage and the player does not meet it
         string sPrereqQuest = GetLocalString(oQuestObject, sQuestTarget+"_prereq"+IntToString(i));
@@ -260,7 +263,7 @@ int IsPCEligibleForQuestFromNPC(object oNPC, object oPC)
 {
     //SendMessageToPC(GetFirstPC(), "Found a PC");
     int i;
-    for (i = 1; i < 20; i++)
+    for (i = 1; i < HIGHEST_QUEST_COUNT; i++)
     {
         if (GetIsQuestStageEligible(oNPC, oPC, i))
         {
@@ -296,7 +299,18 @@ void UpdateQuestgiverHighlights(object oArea, object oPC)
         object oGiver = StringToObject(GetListItem(sList, i));
         if (GetIsObjectValid(oGiver))
         {
-            if (IsPCEligibleForQuestFromNPC(oGiver, oPC))
+            int nHasQuest = 0;
+            int j;
+            for (j=0; j<HIGHEST_QUEST_COUNT; j++)
+            {
+                if (GetIsQuestStageEligible(oGiver, oPC, j) && !GetLocalInt(oGiver, "quest" + IntToString(j) + "_nohighlight"))
+                {
+                    nHasQuest = 1;
+                    break;
+                }
+            }
+            
+            if (nHasQuest)
             {
                 NWNX_Player_SetCreatureNameOverride(oPC, oGiver, QUEST_GIVER_NAME_COLOR + GetName(oGiver) + "</c>");
                 NWNX_Player_SetObjectHiliteColorOverride(oPC, oGiver, HILITE_QUEST_ELIGIBLE);
