@@ -18,7 +18,7 @@ void main()
     CopyChest(OBJECT_SELF, "_RangeRareT3NonUnique", 256, "", TRUE);
 
     int i;
-    int nMax = d3(2);
+    int nMax = d2(2);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Range", 4, TRUE);

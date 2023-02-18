@@ -35,13 +35,13 @@ void main()
     CopyChest(OBJECT_SELF, "_ArmorUncommonT4NonUnique", 256, "", TRUE);
 
     int i;
-    int nMax = d3(2);
+    int nMax = d2(3);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 4, TRUE);
     }
 
-    nMax = d3(2);
+    nMax = d2(3);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 4, TRUE);

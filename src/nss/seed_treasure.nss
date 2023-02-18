@@ -1,6 +1,7 @@
 #include "inc_treasure"
 #include "nwnx_admin"
 #include "nwnx_item"
+#include "nwnx_util"
 
 void CreateFabricator(object oAmmo, object oTargetChest)
 {
@@ -80,7 +81,7 @@ object ChangeWeaponModel(object oItem, int nModelType, int nModel)
 {
         int nBaseType = GetBaseItemType(oItem);
         object oRet;
-        int nSelectedModel;
+        int nSelectedModel = nModel;
 
         switch (nBaseType)
         {
@@ -95,9 +96,14 @@ object ChangeWeaponModel(object oItem, int nModelType, int nModel)
             }
             case BASE_ITEM_DWARVENWARAXE:
             {
-               nSelectedModel = nModel + 5;
-               if (nSelectedModel > 8)
-                   nSelectedModel = 8;
+               // up to 8 tops, only 6 other parts... which are shared with battleaxes
+               // but doing this to everything pushes them out of range and it goes invalid
+               if (nModelType == ITEM_APPR_WEAPON_MODEL_TOP)
+               {
+                   nSelectedModel = nModel + 5;
+                   if (nSelectedModel > 8)
+                       nSelectedModel = 8;
+               }
 
                oRet = CopyItemAndModify(oItem, ITEM_APPR_TYPE_WEAPON_MODEL, nModelType, nSelectedModel, TRUE);
                DestroyObject(oItem); // remove old item
@@ -122,7 +128,7 @@ object ChangeWeaponModel(object oItem, int nModelType, int nModel)
 // ------------------------------------------
 //
 
-void PopulateChestWeapon(string sSeedChestTag, string sPrependName, string sAppendName, string sDescription, int nTopModel, int nMiddleModel, int nBottomModel, int nTopColor, int nMiddleColor, int nBottomColor, itemproperty ipProp1, itemproperty ipProp2, itemproperty ipProp3, int nPhysicalBonus=0, int bNonUnique = FALSE)
+void PopulateChestWeapon(string sSeedChestTag, string sPrependName, string sAppendName, string sAppendTag, string sDescription, int nTopModel, int nMiddleModel, int nBottomModel, int nTopColor, int nMiddleColor, int nBottomColor, itemproperty ipProp1, itemproperty ipProp2, itemproperty ipProp3, int nPhysicalBonus=0, int bNonUnique = FALSE)
 {
    object oSeedChest = GetObjectByTag(sSeedChestTag);
    object oItem = GetFirstItemInInventory(oSeedChest);
@@ -241,6 +247,7 @@ void PopulateChestWeapon(string sSeedChestTag, string sPrependName, string sAppe
 
        SetIdentified(oNewItemStaging, FALSE);
        SetName(oNewItemStaging, sPrependName+sOldName+sAppendName); // set given name
+       SetTag(oNewItemStaging, GetTag(oNewItemStaging) + sAppendTag);
 
 // physical bonus? not considered magical so identify
 // this is the only case for composite or high quality items
@@ -268,13 +275,17 @@ void PopulateChestWeapon(string sSeedChestTag, string sPrependName, string sAppe
 
        oNewItem = CopyItemToExistingTarget(oNewItemStaging, oDistribution);
        DestroyObject(oNewItemStaging);
+       if (!GetIsObjectValid(oNewItem))
+       {
+            WriteTimestampedLogEntry("ERROR: PopulateChestWeapon failed to make an item (" + sPrependName + sAppendName + ") derived from " + GetName(oItem));
+       }
 
        oItem = GetNextItemInInventory(oSeedChest);
    }
 
 }
 
-void PopulateChestArmor(string sSeedChestTag, string sPrependName, string sAppendName, string sDescription, int nCloth1, int nCloth2, int nLeather1, int nLeather2, int nMetal1, int nMetal2, int nShoulder, int nForeArm, itemproperty ipProp1, itemproperty ipProp2, itemproperty ipProp3, int bNonUnique = FALSE)
+void PopulateChestArmor(string sSeedChestTag, string sPrependName, string sAppendName, string sAppendTag, string sDescription, int nCloth1, int nCloth2, int nLeather1, int nLeather2, int nMetal1, int nMetal2, int nShoulder, int nForeArm, itemproperty ipProp1, itemproperty ipProp2, itemproperty ipProp3, int bNonUnique = FALSE)
 {
 
    object oSeedChest = GetObjectByTag(sSeedChestTag);
@@ -311,10 +322,15 @@ void PopulateChestArmor(string sSeedChestTag, string sPrependName, string sAppen
 
        SetDescription(oNewItemStaging, sDescription);
        SetName(oNewItemStaging, sPrependName+sOldName+sAppendName);
+       SetTag(oNewItemStaging, GetTag(oNewItemStaging) + sAppendTag);
 
        if (bNonUnique) SetLocalInt(oNewItemStaging, "non_unique", 1);
 
        oNewItem = CopyItemToExistingTarget(oNewItemStaging, oDistribution);
+       if (!GetIsObjectValid(oNewItem))
+       {
+            WriteTimestampedLogEntry("ERROR: PopulateChestArmor failed to make an item (" + sPrependName + sAppendName + ") derived from " + GetName(oItem));
+       }
        DestroyObject(oNewItemStaging);
 
        oItem = GetNextItemInInventory(oSeedChest);
@@ -354,6 +370,14 @@ void CreateTypeLoot(string sType)
     for (nIndex = 1; nIndex < 500; nIndex++)
     {
        oItem = CreateObject(OBJECT_TYPE_ITEM, sType+IntToString(nIndex), lStaging);
+       // Force unique tags if they have a nw_ prefixed one
+       // This is to avoid the item getting merged into something else with the same tag and infinite stock
+       // when copied into a store - see lexicon CopyItem
+       if (GetStringLeft(GetTag(oItem), 3) == "nw_")
+       {
+           //WriteTimestampedLogEntry("Change tag for " + GetName(oItem) + " from nw_ prefix");
+           SetTag(oItem, GetResRef(oItem));
+       }
        oNewItem = CopyItem(oItem, oDistribution, TRUE);
 
        if (GetIdentified(oItem)) SetLocalInt(oNewItem, "identified", 1);
@@ -387,6 +411,7 @@ void CreateStagingScroll(string sResRef)
 
 void DistributeTreasureToStores(object oItem)
 {
+   //WriteTimestampedLogEntry("Distribute: " + GetName(oItem));
    object oContainer = GetObjectByTag(TREASURE_DISTRIBUTION);
    object oNewItem;
    string sTier, sType, sName, sResRef, sRarity, sNonUnique;
@@ -793,6 +818,8 @@ void CreateContainersForItemTypesByTier()
     }
 }
 
+void SeedTreasurePart2();
+
 void main()
 {
     // Destroying this is kinda important.
@@ -907,7 +934,29 @@ void main()
     CreateItemOnObject("manualwis", GetObjectByTag("_MiscT5"));
     CreateItemOnObject("manualcha", GetObjectByTag("_MiscT5"));
     CreateItemOnObject("manualint", GetObjectByTag("_MiscT5"));
+    
+    
+    
+    // Hypothesis: there's a limit to the number of items allowed in one container
+    // And everything beyond a certain point trying to stuff more in just gets told NO.
+    int nCount = 0;
+    WriteTimestampedLogEntry("Distributing to stores (early)...");
+    // stop at 2000, it could be an infinite loop at this point
+    object oContainer = GetObjectByTag(TREASURE_DISTRIBUTION);
+    object oDistributionItem = GetFirstItemInInventory(oContainer);
+    while (GetIsObjectValid(oDistributionItem))
+    {
+        DistributeTreasureToStores(oDistributionItem);
+        nCount++;
+        oDistributionItem = GetNextItemInInventory(oContainer);
+    }
+    
+    WriteTimestampedLogEntry("Distributing to stores (early) distributed " + IntToString(nCount) + " items");
+    DelayCommand(2.0, SeedTreasurePart2());
+}
 
+void SeedTreasurePart2()
+{
 // ==============================================
 //  ARMORS
 // ==============================================
@@ -915,9 +964,9 @@ void main()
 // +1, +2, +3 armors
    string sEnchantedArmor = "This magic armor grants additional protection to its wearer, but it doesn't bear the hallmarks of any specific maker.";
 
-   PopulateChestArmor("_ArmorSeed", "", " +1", sEnchantedArmor, 15, 6, 51, 15, 18, 19, 0, 0, ItemPropertyACBonus(1), ItemPropertyNoDamage(), ItemPropertyNoDamage(), TRUE);
-   PopulateChestArmor("_ArmorSeed", "", " +2", sEnchantedArmor, 15, 7, 7, 15, 10, 17, 0, 0, ItemPropertyACBonus(2), ItemPropertyNoDamage(), ItemPropertyNoDamage(), TRUE);
-   PopulateChestArmor("_ArmorSeed", "", " +3", sEnchantedArmor, 46, 23, 23, 46, 3, 39, 0, 0, ItemPropertyACBonus(3), ItemPropertyNoDamage(), ItemPropertyNoDamage(), TRUE);
+   PopulateChestArmor("_ArmorSeed", "", " +1", "p1", sEnchantedArmor, 15, 6, 51, 15, 18, 19, 0, 0, ItemPropertyACBonus(1), ItemPropertyNoDamage(), ItemPropertyNoDamage(), TRUE);
+   PopulateChestArmor("_ArmorSeed", "", " +2", "p2", sEnchantedArmor, 15, 7, 7, 15, 10, 17, 0, 0, ItemPropertyACBonus(2), ItemPropertyNoDamage(), ItemPropertyNoDamage(), TRUE);
+   PopulateChestArmor("_ArmorSeed", "", " +3", "p3", sEnchantedArmor, 46, 23, 23, 46, 3, 39, 0, 0, ItemPropertyACBonus(3), ItemPropertyNoDamage(), ItemPropertyNoDamage(), TRUE);
    SendDebugMessage("Treasure armors created", TRUE);
 
 // ==============================================
@@ -925,8 +974,8 @@ void main()
 // ==============================================
     object oItem;
     string sTier;
-    //location lStaging = GetTreasureStagingLocation();
-
+    location lStaging = GetTreasureStagingLocation();
+    int nIndex, i;
     for (nIndex = 1; nIndex < 90; nIndex++)
     {
        oItem = CreateObject(OBJECT_TYPE_ITEM, "potion"+IntToString(nIndex), lStaging);
@@ -1289,36 +1338,36 @@ void main()
 // ------------------------------------------
 
 // +1 dmg
-   PopulateChestWeapon("_MeleeSeed", "High Quality ", "", "", 2, 0, 0, 1, 1, 1, ItemPropertyNoDamage(), ItemPropertyNoDamage(), ItemPropertyNoDamage(), 1, TRUE);
+   PopulateChestWeapon("_MeleeSeed", "High Quality ", "", "hq", "", 2, 0, 0, 1, 1, 1, ItemPropertyNoDamage(), ItemPropertyNoDamage(), ItemPropertyNoDamage(), 1, TRUE);
 
 // +1, +2, and +3 melee and throwing weapons
    string sEnchanted = "This magic weapon has an enhancement bonus to attack and damage, but it doesn't bear the hallmarks of any specific maker.";
 
-   PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "", " +1", sEnchanted, 2, 0, 0, 3, 3, 3, ItemPropertyEnhancementBonus(1), ItemPropertyNoDamage(), ItemPropertyNoDamage(), 0, TRUE);
-   PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "", " +2", sEnchanted, 3, 0, 0, 2, 2, 2, ItemPropertyEnhancementBonus(2), ItemPropertyNoDamage(), ItemPropertyNoDamage(), 0, TRUE);
-   PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "", " +3", sEnchanted, 1, 3, 2, 4, 1, 4, ItemPropertyEnhancementBonus(3), ItemPropertyNoDamage(), ItemPropertyNoDamage(), 0, TRUE);
+   PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "", " +1", "p1", sEnchanted, 2, 0, 0, 3, 3, 3, ItemPropertyEnhancementBonus(1), ItemPropertyNoDamage(), ItemPropertyNoDamage(), 0, TRUE);
+   PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "", " +2", "p2", sEnchanted, 3, 0, 0, 2, 2, 2, ItemPropertyEnhancementBonus(2), ItemPropertyNoDamage(), ItemPropertyNoDamage(), 0, TRUE);
+   PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "", " +3", "p3", sEnchanted, 1, 3, 2, 4, 1, 4, ItemPropertyEnhancementBonus(3), ItemPropertyNoDamage(), ItemPropertyNoDamage(), 0, TRUE);
 
    string sColdIron = "A series of these weapons were constructed for the defense of the library fortress of Candlekeep some 200 years ago. The keep had acquired a tome detailing the imprisonment of the pit fiend Aegatohl, and a score of malevolent creatures came to claim it. A small horde was held at bay by the Knights of the Mailed Fist, along with the unexpected assistance of Devon's Privateers, a group of pirates. The tome was later destroyed.";
 
-   PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "Cold Iron ", "", sColdIron, 2, 2, 2, 1, 1, 1, ItemPropertyAttackBonus(1), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, IP_CONST_DAMAGEBONUS_1d6), ItemPropertyBonusSavingThrow(IP_CONST_SAVEBASETYPE_FORTITUDE, 1));
+   PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "Cold Iron ", "", "ci", sColdIron, 2, 2, 2, 1, 1, 1, ItemPropertyAttackBonus(1), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, IP_CONST_DAMAGEBONUS_1d6), ItemPropertyBonusSavingThrow(IP_CONST_SAVEBASETYPE_FORTITUDE, 1));
    
    string sBlessed = "This weapon bears the mark of the Morninglord, and is shrouded in a faint holy aura. While its magic is weaker than more conventional enchanted weaponry, it still possesses additional effectivenss against undead beings.";
    
-   PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "Blessed ", "", sBlessed, 2, 1, 2, 1, 3, 2, ItemPropertyEnhancementBonusVsRace(IP_CONST_RACIALTYPE_UNDEAD, 1), ItemPropertyDamageBonusVsRace(IP_CONST_RACIALTYPE_UNDEAD, IP_CONST_DAMAGETYPE_DIVINE, IP_CONST_DAMAGEBONUS_2), ItemPropertyNoDamage());
+   PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "Blessed ", "", "bls", sBlessed, 2, 1, 2, 1, 3, 2, ItemPropertyEnhancementBonusVsRace(IP_CONST_RACIALTYPE_UNDEAD, 1), ItemPropertyDamageBonusVsRace(IP_CONST_RACIALTYPE_UNDEAD, IP_CONST_DAMAGETYPE_DIVINE, IP_CONST_DAMAGEBONUS_2), ItemPropertyNoDamage());
 
 // ------------------------------------------
 // Range weapons
 // ------------------------------------------
 
 // +1 mighty
-   PopulateChestWeapon(TREASURE_RANGE_SEED_CHEST, "Composite ", "", "", 2, 3, 4, 1, 1, 1, ItemPropertyNoDamage(), ItemPropertyNoDamage(), ItemPropertyNoDamage(), 2, TRUE);
+   PopulateChestWeapon(TREASURE_RANGE_SEED_CHEST, "Composite ", "", "c", "", 2, 3, 4, 1, 1, 1, ItemPropertyNoDamage(), ItemPropertyNoDamage(), ItemPropertyNoDamage(), 2, TRUE);
 
    string sCompositeEnchanted = "This magic weapon has a bonus to attack. As well, it allows the wielder to add part of their strength modifier to the damage dealt.";
 
 // +1, +2, and +3
-   PopulateChestWeapon(TREASURE_RANGE_SEED_CHEST, "Composite ", " +1", sCompositeEnchanted, 2, 3, 4, 3, 3, 3, ItemPropertyAttackBonus(1), ItemPropertyMaxRangeStrengthMod(3), ItemPropertyNoDamage(), 0, TRUE);
-   PopulateChestWeapon(TREASURE_RANGE_SEED_CHEST, "Composite ", " +2", sCompositeEnchanted, 2, 3, 4, 2, 2, 2, ItemPropertyAttackBonus(2), ItemPropertyMaxRangeStrengthMod(4), ItemPropertyNoDamage(), 0, TRUE);
-   PopulateChestWeapon(TREASURE_RANGE_SEED_CHEST, "Composite ", " +3", sCompositeEnchanted, 2, 3, 4, 4, 4, 4, ItemPropertyAttackBonus(3), ItemPropertyMaxRangeStrengthMod(5), ItemPropertyNoDamage(), 0, TRUE);
+   PopulateChestWeapon(TREASURE_RANGE_SEED_CHEST, "Composite ", " +1", "c1", sCompositeEnchanted, 2, 3, 4, 3, 3, 3, ItemPropertyAttackBonus(1), ItemPropertyMaxRangeStrengthMod(3), ItemPropertyNoDamage(), 0, TRUE);
+   PopulateChestWeapon(TREASURE_RANGE_SEED_CHEST, "Composite ", " +2", "c2", sCompositeEnchanted, 2, 3, 4, 2, 2, 2, ItemPropertyAttackBonus(2), ItemPropertyMaxRangeStrengthMod(4), ItemPropertyNoDamage(), 0, TRUE);
+   PopulateChestWeapon(TREASURE_RANGE_SEED_CHEST, "Composite ", " +3", "c3", sCompositeEnchanted, 2, 3, 4, 4, 4, 4, ItemPropertyAttackBonus(3), ItemPropertyMaxRangeStrengthMod(5), ItemPropertyNoDamage(), 0, TRUE);
 
    SendDebugMessage("Treasure weapons created", TRUE);
 
@@ -1356,14 +1405,20 @@ void main()
 
     object oContainer = GetObjectByTag(TREASURE_DISTRIBUTION);
     object oDistributionItem = GetFirstItemInInventory(oContainer);
-
+    
+    WriteTimestampedLogEntry("Distributing to stores (late)...");
 // stop at 2000, it could be an infinite loop at this point
+    int nCount = 0;
     while (GetIsObjectValid(oDistributionItem))
     {
         DistributeTreasureToStores(oDistributionItem);
+        nCount++;
         oDistributionItem = GetNextItemInInventory(oContainer);
     }
     
+    WriteTimestampedLogEntry("Distributing to stores (late) distributed " + IntToString(nCount) + " items");
+    
+    WriteTimestampedLogEntry("Building treasures by item type...");
     CreateContainersForItemTypesByTier();
 
     CountItemsThroughTiers();
@@ -1372,4 +1427,6 @@ void main()
     SetCampaignInt("treasures", "finished", 1);
 
     SendDebugMessage("Distribution finished and treasures stored to DB", TRUE);
+    SetLocalInt(GetModule(), "seed_complete", 1);
 }
+

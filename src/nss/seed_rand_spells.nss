@@ -41,7 +41,7 @@ void SeedAdventurers(int nPath=-1, int nLevel=13, int nCounts=0)
         if (nPath > ADVENTURER_PATH_HIGHEST)
         {
             WriteTimestampedLogEntry("Finished seeding spellbooks for random adventurers!");
-            SetLocalInt(GetModule(), "seeded_spellbooks", 1);
+            SetLocalInt(GetModule(), "seed_complete", 1);
             return;
         }
         

@@ -18,7 +18,7 @@ void main()
         GenerateTierItem(0, 0, OBJECT_SELF, "", 3, bNonUnique);
     }
 
-    nMax = d3(3);
+    nMax = d2(3);
     for (i = 0; i < nMax; i++)
     {
         bNonUnique = Random(100) >= PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE;

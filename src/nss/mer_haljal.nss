@@ -31,13 +31,13 @@ void main()
     CopyChest(OBJECT_SELF, "_ArmorUncommonT3NonUnique", 256, "", TRUE);
 
     int i;
-    int nMax = d3(2);
+    int nMax = d2(2);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 4, TRUE);
     }
 
-    nMax = d3(2);
+    nMax = d2(2);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 4, TRUE);
@@ -54,19 +54,6 @@ void main()
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 3, TRUE);
     }
-
-    nMax = d6(3);
-    for (i = 0; i < nMax; i++)
-    {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 2, TRUE);
-    }
-
-    nMax = d6(3);
-    for (i = 0; i < nMax; i++)
-    {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 2, TRUE);
-    }
-
 
     for (i = 0; i < 4; i++)
     {
@@ -96,7 +83,7 @@ void main()
         GenerateTierItem(0, 0, OBJECT_SELF, "", 3, bNonUnique);
     }
 
-    nMax = d3(3);
+    nMax = d2(3);
     for (i = 0; i < nMax; i++)
     {
         bNonUnique = Random(100) >= PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE;

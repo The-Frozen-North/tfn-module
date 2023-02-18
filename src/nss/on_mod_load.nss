@@ -17,7 +17,7 @@
 #include "util_i_csvlists"
 #include "inc_prettify"
 
-const int SEED_SPAWNS = 0;
+const int SEED_SPAWNS = 1;
 const int SEED_TREASURES = 0;
 const int SEED_SPELLBOOKS = 0;
 // These two check to see if stuff needs updating before doing it
@@ -90,17 +90,129 @@ void InitializeHouses(string sArea)
     SetCampaignString("housing", sArea, sList);
 }
 
-void SeedSpellbookMonitor()
+void SeedMonitor()
 {
-    if (GetLocalInt(GetModule(), "seeded_spellbooks"))
+    int nStage = GetLocalInt(GetModule(), "seed_stage");
+    int nComplete = GetLocalInt(GetModule(), "seed_complete");
+    if (nComplete)
     {
-        SendDebugMessage("Seeding complete", TRUE);
-        NWNX_Administration_ShutdownServer();
+        SetLocalInt(GetModule(), "seed_stage", nStage+1);
+        // spawns
+        if (nStage == 0)
+        {
+            // Self-contained, one script instance for now
+            if (SEED_SPAWNS)
+            {
+                DeleteLocalInt(GetModule(), "seed_complete");
+                
+                // Destroy the databases to give it a clean slate.
+                DestroyCampaignDatabase("spawns");
+
+                object oArea = GetFirstArea();
+                string sAreaResRef;
+
+                // Loop through all areas in the module.
+                while (GetIsObjectValid(oArea))
+                {
+
+                    // Skip the system areas. They are prepended with an underscore.
+                    if (GetStringLeft(GetResRef(oArea), 1) == "_")
+                    {
+                        oArea = GetNextArea();
+                        continue;
+                    }
+
+                    ExecuteScript("seed_area_spawns", oArea);
+
+                    oArea = GetNextArea();
+
+               }
+               SetCampaignInt("spawns", "finished", 1);
+               SetLocalInt(GetModule(), "seed_complete", 1);
+            }
+        }
+        else if (nStage == 1)
+        {
+            // Treasures
+            // Not self contained, but will set seed_complete when done
+            if (SEED_TREASURES)
+            {
+                DeleteLocalInt(GetModule(), "seed_complete");
+                ExecuteScript("seed_treasure");
+            }
+        }
+        else if (nStage == 2)
+        {
+            // Spellbooks
+            // Not self contained, but will set seed_complete when done
+            if (SEED_SPELLBOOKS)
+            {
+                DeleteLocalInt(GetModule(), "seed_complete");
+                ExecuteScript("seed_rand_spells");
+            }
+        }
+        else if (nStage == 3)
+        {
+            // Prettify, self contained for now
+            if (SEED_PRETTIFY_PLACEABLES)
+            {
+               DeleteLocalInt(GetModule(), "seed_complete");
+               object oArea = GetFirstArea();
+               string sAreaResRef;
+
+               while (GetIsObjectValid(oArea))
+               {
+                   // This does, surprisingly, manage to TMI without continuously bumping down the VM instruction limit
+                   NWNX_Util_SetInstructionsExecuted(0);
+                   // Skip the system areas. They are prepended with an underscore.
+                   if (GetStringLeft(GetResRef(oArea), 1) == "_")
+                   {
+                       oArea = GetNextArea();
+                       continue;
+                   }
+                   string sScript = GetLocalString(oArea, "prettify_script");
+                   if (sScript != "")
+                   {
+                        if (DoesAreaNeedPrettifySeeding(oArea))
+                        {
+                            ExecuteScript(sScript, oArea);
+                            WriteTimestampedLogEntry("Finished prettify seed script for " + GetResRef(oArea));
+                            UpdatePrettifySavedHashForArea(oArea);
+                        }
+                        else
+                        {
+                            WriteTimestampedLogEntry(GetResRef(oArea) + "'s tiles are unchanged, no need to reprettify");
+                        }
+                   }
+
+                   oArea = GetNextArea();
+
+               }
+               SetLocalInt(GetModule(), "seed_complete", 1);
+            }
+        }
+        else if (nStage == 4)
+        {
+            // Treasure maps, self contained for now
+            if (SEED_TREASUREMAPS)
+            {
+                ExecuteScript("seed_treasuremap");
+            }
+        }
+        else 
+        {
+            // Done!
+            WriteTimestampedLogEntry("Finished seeding!");
+            WriteTimestampedLogEntry("Spawns were " + (SEED_SPAWNS ? "" : "NOT ") + "seeded.");
+            WriteTimestampedLogEntry("Treasures were " + (SEED_TREASURES ? "" : "NOT ") + "seeded.");
+            WriteTimestampedLogEntry("Random spellbooks were " + (SEED_SPELLBOOKS ? "" : "NOT ") + "seeded.");
+            WriteTimestampedLogEntry("Prettify placeables were " + (SEED_PRETTIFY_PLACEABLES ? "" : "NOT ") + "seeded.");
+            WriteTimestampedLogEntry("Treasure map locations were " + (SEED_TREASUREMAPS ? "" : "NOT ") + "seeded.");
+            NWNX_Administration_ShutdownServer();
+            return;
+        }
     }
-    else
-    {
-        DelayCommand(3.0, SeedSpellbookMonitor());
-    }
+    DelayCommand(1.0, SeedMonitor());
 }
 
 void main()
@@ -137,116 +249,9 @@ void main()
             continue;
         }
             
-        // When debugging one aspect of seeding, reseeding everything makes iterations take ages
-        if (SEED_SPAWNS)
-        //if (TRUE)
-        {
-    // Destroy the databases to give it a clean slate.
-           DestroyCampaignDatabase("spawns");
-
-           object oArea = GetFirstArea();
-           string sAreaResRef;
-
-    // Loop through all areas in the module.
-           while (GetIsObjectValid(oArea))
-           {
-
-    // Skip the system areas. They are prepended with an underscore.
-               if (GetStringLeft(GetResRef(oArea), 1) == "_")
-               {
-                   oArea = GetNextArea();
-                   continue;
-               }
-
-               ExecuteScript("seed_area_spawns", oArea);
-
-               oArea = GetNextArea();
-
-           }
-        }
-        else
-        {
-            WriteTimestampedLogEntry("============================");
-            WriteTimestampedLogEntry("WARNING: Not seeding spawns!");
-            WriteTimestampedLogEntry("============================");
-        }
-       SetCampaignInt("spawns", "finished", 1);
-       NWNX_Util_SetInstructionsExecuted(0);
-       if (SEED_PRETTIFY_PLACEABLES)
-       {
-
-           object oArea = GetFirstArea();
-           string sAreaResRef;
-
-           while (GetIsObjectValid(oArea))
-           {
-               // This does, surprisingly, manage to TMI without continuously bumping down the VM instruction limit
-               NWNX_Util_SetInstructionsExecuted(0);
-               // Skip the system areas. They are prepended with an underscore.
-               if (GetStringLeft(GetResRef(oArea), 1) == "_")
-               {
-                   oArea = GetNextArea();
-                   continue;
-               }
-               string sScript = GetLocalString(oArea, "prettify_script");
-               if (sScript != "")
-               {
-                    if (DoesAreaNeedPrettifySeeding(oArea))
-                    {
-                        ExecuteScript(sScript, oArea);
-                        WriteTimestampedLogEntry("Finished prettify seed script for " + GetResRef(oArea));
-                        UpdatePrettifySavedHashForArea(oArea);
-                    }
-                    else
-                    {
-                        WriteTimestampedLogEntry(GetResRef(oArea) + "'s tiles are unchanged, no need to reprettify");
-                    }
-               }
-
-               oArea = GetNextArea();
-
-           }
-        }
-        else
-        {
-            WriteTimestampedLogEntry("=============================");
-            WriteTimestampedLogEntry("WARNING: Not seeding prettify!");
-            WriteTimestampedLogEntry("=============================");
-        }
-
-       if (SEED_TREASURES)
-       {
-            ExecuteScript("seed_treasure");
-       }
-       else
-       {
-            WriteTimestampedLogEntry("==============================");
-            WriteTimestampedLogEntry("WARNING: Not seeding treasures!");
-            WriteTimestampedLogEntry("==============================");
-       }
-       if (SEED_TREASUREMAPS)
-       {
-            ExecuteScript("seed_treasuremap");
-       }
-       else
-       {
-            WriteTimestampedLogEntry("==============================");
-            WriteTimestampedLogEntry("WARNING: Not seeding treamaps!");
-            WriteTimestampedLogEntry("==============================");
-       }
-       if (SEED_SPELLBOOKS)
-       {
-            ExecuteScript("seed_rand_spells");
-            DelayCommand(6.0, SeedSpellbookMonitor());
-       }
-       else
-       {
-            WriteTimestampedLogEntry("===============================");
-            WriteTimestampedLogEntry("WARNING: Not seeding spellbooks!");
-            WriteTimestampedLogEntry("===============================");
-            // this normally shutsdown the server when done
-            NWNX_Administration_ShutdownServer();
-       }
+        // Set stage complete so the monitor knows to start
+        SetLocalInt(OBJECT_SELF, "seed_complete", 1);
+        SeedMonitor();
 
 
 
