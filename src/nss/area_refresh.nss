@@ -76,7 +76,7 @@ void main()
 // ==============================
 // clean up old treasures
     int nOldTreasure;
-    for (nOldTreasure = 0; nOldTreasure < 50; nOldTreasure++)
+    for (nOldTreasure = 0; nOldTreasure < 100; nOldTreasure++)
         DestroyObject(GetLocalObject(OBJECT_SELF, "treasure"+IntToString(nOldTreasure)));
 
      float fAreaSize = IntToFloat(GetAreaSize(AREA_HEIGHT, OBJECT_SELF)*GetAreaSize(AREA_WIDTH, OBJECT_SELF));

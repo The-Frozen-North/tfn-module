@@ -1505,7 +1505,7 @@ int GetTreasureMapGoldValue(int nACR)
     else if (nACR >= 6) { nValue += (nACR * 2); }
 
     // Then multiply up by a bit...
-    nValue *= 3;
+    nValue *= 4;
     return nValue;
 }
 
