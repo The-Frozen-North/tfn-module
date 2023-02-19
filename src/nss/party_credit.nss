@@ -194,14 +194,7 @@ void SendLootMessage(object oHench, object oItem, string sName="")
 
 void DetermineItem(object oItem, object oMerchant, object oHench, int nNth)
 {
-   // Henchmen keep these items for themselves
-   if (GetTag(oItem) == "treasuremap")
-   {
-       string sName = GetName(oItem);
-       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oHench, oItem, sName)));
-       DestroyObject(oItem);
-   }
-   else if (GetBaseItemType(oItem) == BASE_ITEM_POTIONS)
+   if (GetBaseItemType(oItem) == BASE_ITEM_POTIONS)
    {
        object oNewItem = CopyItem(oItem, oHench, TRUE);
        SetDroppableFlag(oNewItem, FALSE);
