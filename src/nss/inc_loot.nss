@@ -5,7 +5,7 @@
 #include "nwnx_item"
 #include "nwnx_visibility"
 #include "util_i_math"
-#include "nw_i0_plot" 
+#include "nw_i0_plot"
 #include "inc_treasure"
 #include "inc_treasuremap"
 
@@ -246,7 +246,7 @@ int GetOwedGoldValue(object oReceiver, object oDebtor)
     {
         nAmt *= -1;
     }
-    return nAmt;    
+    return nAmt;
 }
 
 // Return how many "owing points" to transfer from oDebtor to oReceiver for getting an item of nItemGoldValue
@@ -269,7 +269,7 @@ int GetLootWeightingTransferBasedOnOwings(object oReceiver, object oDebtor, int 
     // adding 10 means the split is 60/40 for all items
     // the exponential expression means that items are much more skewed the closer they are to the debt size
     // In TFN item gold value does not scale linearly with "desirableness" and this is an attempt to capture that
-    
+
     // If the item value > debt size, calc how much it exceeds by and subtract that from the item value
     // this will mean that the curve mirrors as value passes debt size and rapidly drops down to more even values
     // as the debt is exceeded
@@ -288,7 +288,7 @@ int GetLootWeightingTransferBasedOnOwings(object oReceiver, object oDebtor, int 
 void AdjustOwedGoldValue(object oReceiver, object oDebtor, int nAmount)
 {
     if (!GetIsPC(oReceiver) && !GetIsPC(oDebtor))
-    {      
+    {
         string sVar = "hench_" + GetTag(oReceiver) + "-" + GetTag(oDebtor);
         int nSaved = GetCampaignInt("lootowings", sVar);
         if (nSaved == 0)
@@ -382,7 +382,7 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
         SetLocalInt(GetModule(), LOOT_DEBUG_T3_WEIGHT, nT3Weight);
         SetLocalInt(GetModule(), LOOT_DEBUG_T4_WEIGHT, nT4Weight);
         SetLocalInt(GetModule(), LOOT_DEBUG_T5_WEIGHT, nT5Weight);
-        
+
         SendDebugMessage("Loot T1Weight: "+IntToString(nT1Weight));
         SendDebugMessage("Loot T2Weight: "+IntToString(nT2Weight));
         SendDebugMessage("Loot T3Weight: "+IntToString(nT3Weight));
@@ -399,7 +399,7 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
 
    nCombinedWeight = nT1Weight + nT2Weight + nT3Weight + nT4Weight + nT5Weight;
    //SendDebugMessage("Combined: "+IntToString(nCombinedWeight));
-   
+
    // This is better than crashing out with a TMI if it can happen for any reason
    // (this happened when trying to add the sigmoids for the first time)
    if (nCombinedWeight == 0)
@@ -519,15 +519,15 @@ object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, ob
     {
         sNonUnique = "NonUnique";
     }
-    
+
 // 2 out of 3 misc items will always be gems/jewelry
 // Unless you're a shop, in which case this is just wasted UI space because there's no reason to ever buy these items
     if (sType == "Misc" && d100() <= MISC_CHANCE_TO_BE_JEWEL && GetObjectType(oContainer) != OBJECT_TYPE_STORE)
     {
         sType = "Jewels";
     }
-    
-    
+
+
 
 // never NU
     if (sType == "Misc" || sType == "Apparel" || sType == "Scrolls" || sType == "Jewels")
@@ -578,7 +578,7 @@ object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, ob
     {
         return OBJECT_INVALID; // do not allow plot items to be created on stores
     }
-    
+
     int nCount = GetLocalInt(GetModule(), sType);
     SetLocalInt(GetModule(), sType, nCount+1);
     //WriteTimestampedLogEntry("SelectTierItem type " + sType + " " + sTier + " -> " + GetName(oItem));
@@ -593,6 +593,34 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 {
     object oItem = SelectTierItem(iCR, iAreaCR, sType, nTier, oContainer, bNonUnique);
     object oNewItem = CopyTierItemToContainer(oItem, oContainer);
+    return oNewItem;
+}
+
+object CopyTierItemToLocation(object oItem, location lTarget)
+{
+    if (!GetIsObjectValid(oItem))
+    {
+        return OBJECT_INVALID;
+    }
+    object oNewItem = CopyObject(oItem, lTarget, OBJECT_INVALID, "", TRUE);
+
+
+    //int nRarityCount = GetLocalInt(GetModule(), sRarity);
+    //SetLocalInt(GetModule(), sRarity, nRarityCount+1);
+
+// Set a stack size. Don't go above 50, due to certain stack sizes.
+    int nBaseType = GetBaseItemType(oNewItem);
+    if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT) SetItemStackSize(oNewItem, Random(45)+1);
+
+    // Boomerang items should always generate as stack size 1
+    if (GetItemHasItemProperty(oNewItem, ITEM_PROPERTY_BOOMERANG))
+    {
+        SetItemStackSize(oNewItem, 1);
+    }
+
+    // Set visual transforms, and do the rest if it wasn't done for any reason
+    InitializeItem(oNewItem);
+
     return oNewItem;
 }
 
@@ -615,13 +643,13 @@ object CopyTierItemToContainer(object oItem, object oContainer)
 // Set a stack size. Don't go above 50, due to certain stack sizes.
     int nBaseType = GetBaseItemType(oNewItem);
     if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT) SetItemStackSize(oNewItem, Random(45)+1);
-    
+
     // Boomerang items should always generate as stack size 1
     if (GetItemHasItemProperty(oNewItem, ITEM_PROPERTY_BOOMERANG))
     {
         SetItemStackSize(oNewItem, 1);
     }
-    
+
     // Set visual transforms, and do the rest if it wasn't done for any reason
     InitializeItem(oNewItem);
 
@@ -634,7 +662,7 @@ object CopyTierItemToContainer(object oItem, object oContainer)
 
 object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALID)
 {
-     
+
    if (GetLocalInt(GetModule(), "treasure_ready") != 1)
    {
        SendMessageToAllPCs("Treasure isn't ready. No treasure will be generated.");
@@ -646,12 +674,12 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
        SendMessageToAllPCs("Treasure is tainted. No treasure will be generated.");
        return OBJECT_INVALID;
    }
-   
+
    if (!GetIsObjectValid(oDestinationContainer))
    {
        oDestinationContainer = oLootSource;
    }
-   
+
    int iCR = GetLocalInt(oLootSource, "cr");
    int iAreaCR = GetLocalInt(oLootSource, "area_cr");
 
@@ -804,9 +832,9 @@ void DecrementLootAndDestroyIfEmpty(object oOpener, object oLootParent, object o
 // Decrement number of players who looted this, and destroy the loot container.
     SetLocalInt(oLootParent, "unlooted", nUnlooted);
     DestroyObject(oPersonalLoot);
-    
+
     int bIsTreasure = GetStringLeft(GetResRef(oLootParent), 6) == "treas_";
-    
+
     // Hide lootbags for players that have taken all their stuff
     if (!bIsTreasure)
     {
@@ -829,10 +857,10 @@ void DecrementLootAndDestroyIfEmpty(object oOpener, object oLootParent, object o
             // Mysteriously disappearing placeables is a bit strange
             //AssignCommand(oLootParent, ActionPlayAnimation(ANIMATION_PLACEABLE_CLOSE));
             //DestroyObject(oLootParent, 2.5);
-            
+
             // Stay open, but be unusuable
             SetUseableFlag(oLootParent, FALSE);
-            
+
         }
         else
         {
@@ -853,7 +881,7 @@ void OpenPersonalLoot(object oContainer, object oPC)
 
 // Get the personal container
     object oPersonalLoot = GetObjectByUUID(GetLocalString(oContainer, "personal_loot_"+GetPCPublicCDKey(oPC, TRUE)));
-    
+
     int nGold = GetLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT);
     if (nGold > 0)
     {
@@ -870,7 +898,7 @@ void OpenPersonalLoot(object oContainer, object oPC)
         {
             FloatingTextStringOnCreature(NO_LOOT, oPC, FALSE);
             int bIsTreasure = GetStringLeft(GetResRef(oContainer), 6) == "treas_";
-    
+
             // Hide the lootbag
             if (!bIsTreasure)
             {

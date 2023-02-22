@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 24
+    "value": 298
   },
   "BodyBag": {
     "type": "byte",
@@ -10,11 +10,11 @@
   },
   "Cha": {
     "type": "byte",
-    "value": 3
+    "value": 10
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 11.0
+    "value": 12.0
   },
   "ClassList": {
     "type": "list",
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 10
+    "value": 6
   },
   "Conversation": {
     "type": "resref",
@@ -46,49 +46,50 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 1
+    "value": 0
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 66
+    "value": 120
   },
   "DecayTime": {
     "type": "dword",
-    "value": 5000
+    "value": 300000
   },
   "Deity": {
     "type": "cexostring",
     "value": ""
   },
   "Description": {
+    "id": 12646,
     "type": "cexolocstring",
     "value": {
-      "0": "Created by demented wizards, Bone Golems are generally used to guard prized possessions. Their bodies are pieced together from various creatures, both humanoid and monster."
+      "0": "A magically animated flying weapon dances through the air, fighting like a warrior that can't be injured."
     }
   },
   "Dex": {
     "type": "byte",
-    "value": 9
+    "value": 10
   },
   "Disarmable": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "Equip_ItemList": {
     "type": "list",
     "value": [
       {
-        "__struct_id": 16384,
+        "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp005"
+          "value": "nw_maarcl080"
         }
       },
       {
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "it_creitemco008"
+          "value": "nw_it_creitemcon"
         }
       }
     ]
@@ -104,15 +105,51 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 2
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 228
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 289
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 44
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 45
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 46
         }
       }
     ]
   },
   "FirstName": {
+    "id": 12647,
     "type": "cexolocstring",
     "value": {
-      "0": "Bone Golem"
+      "0": "Animated Weapon"
     }
   },
   "fortbonus": {
@@ -121,7 +158,7 @@
   },
   "Gender": {
     "type": "byte",
-    "value": 0
+    "value": 4
   },
   "GoodEvil": {
     "type": "byte",
@@ -129,11 +166,11 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 66
+    "value": 120
   },
   "Int": {
     "type": "byte",
-    "value": 10
+    "value": 3
   },
   "Interruptable": {
     "type": "byte",
@@ -149,9 +186,7 @@
   },
   "LastName": {
     "type": "cexolocstring",
-    "value": {
-      "0": ""
-    }
+    "value": {}
   },
   "LawfulChaotic": {
     "type": "byte",
@@ -163,15 +198,15 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 66
+    "value": 96
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 12
+    "value": 0
   },
   "NoPermDeath": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "PaletteID": {
     "type": "byte",
@@ -191,7 +226,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 226
+    "value": 1063
   },
   "Race": {
     "type": "byte",
@@ -330,7 +365,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 15
+          "value": 0
         }
       },
       {
@@ -456,7 +491,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 65535
+    "value": 54
   },
   "SpecAbilityList": {
     "type": "list",
@@ -464,11 +499,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 75
+    "value": 0
   },
   "Str": {
     "type": "byte",
-    "value": 24
+    "value": 13
   },
   "Subrace": {
     "type": "cexostring",
@@ -476,7 +511,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "BoneGolem"
+    "value": "NW_MINOGON"
   },
   "Tail_New": {
     "type": "dword",
@@ -488,11 +523,31 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "bonegolem"
+    "value": "anim_weapon_12"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "spawn_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "spawn_animwpn12"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
-    "value": 3
+    "value": 7
   },
   "willbonus": {
     "type": "short",
@@ -504,6 +559,6 @@
   },
   "Wis": {
     "type": "byte",
-    "value": 11
+    "value": 10
   }
 }

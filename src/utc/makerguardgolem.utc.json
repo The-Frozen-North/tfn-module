@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 24
+    "value": 421
   },
   "BodyBag": {
     "type": "byte",
@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 11.0
+    "value": 18.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 12
+          "value": 20
         }
       }
     ]
@@ -46,11 +46,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 1
+    "value": 3
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 66
+    "value": 200
   },
   "DecayTime": {
     "type": "dword",
@@ -61,10 +61,9 @@
     "value": ""
   },
   "Description": {
+    "id": 84405,
     "type": "cexolocstring",
-    "value": {
-      "0": "Created by demented wizards, Bone Golems are generally used to guard prized possessions. Their bodies are pieced together from various creatures, both humanoid and monster."
-    }
+    "value": {}
   },
   "Dex": {
     "type": "byte",
@@ -72,23 +71,30 @@
   },
   "Disarmable": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "Equip_ItemList": {
     "type": "list",
     "value": [
       {
-        "__struct_id": 16384,
+        "__struct_id": 128,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp005"
+          "value": "apparel116"
+        }
+      },
+      {
+        "__struct_id": 65536,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "x2_it_crewpb004"
         }
       },
       {
         "__struct_id": 131072,
         "EquippedRes": {
           "type": "resref",
-          "value": "it_creitemco008"
+          "value": "x2_it_creitem010"
         }
       }
     ]
@@ -104,15 +110,23 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 228
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 289
         }
       }
     ]
   },
   "FirstName": {
+    "id": 90392,
     "type": "cexolocstring",
     "value": {
-      "0": "Bone Golem"
+      "0": "Guardian Golem"
     }
   },
   "fortbonus": {
@@ -129,7 +143,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 66
+    "value": 200
   },
   "Int": {
     "type": "byte",
@@ -149,9 +163,7 @@
   },
   "LastName": {
     "type": "cexolocstring",
-    "value": {
-      "0": ""
-    }
+    "value": {}
   },
   "LawfulChaotic": {
     "type": "byte",
@@ -163,11 +175,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 66
+    "value": 200
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 12
+    "value": 30
   },
   "NoPermDeath": {
     "type": "byte",
@@ -175,7 +187,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 20
+    "value": 1
   },
   "PerceptionRange": {
     "type": "byte",
@@ -191,7 +203,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 226
+    "value": 717
   },
   "Race": {
     "type": "byte",
@@ -330,7 +342,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 15
+          "value": 0
         }
       },
       {
@@ -456,7 +468,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 65535
+    "value": 389
   },
   "SpecAbilityList": {
     "type": "list",
@@ -464,11 +476,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 75
+    "value": 0
   },
   "Str": {
     "type": "byte",
-    "value": 24
+    "value": 44
   },
   "Subrace": {
     "type": "cexostring",
@@ -476,7 +488,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "BoneGolem"
+    "value": "maker2_guardian"
   },
   "Tail_New": {
     "type": "dword",
@@ -488,11 +500,61 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "bonegolem"
+    "value": "makerguardgolem"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "boss"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "defeated_webhook"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "perception_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "percep_maker2gol"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
-    "value": 3
+    "value": 1
   },
   "willbonus": {
     "type": "short",
