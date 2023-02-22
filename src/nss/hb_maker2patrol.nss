@@ -20,12 +20,17 @@ void Restore(object oTarget)
 {
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oTarget);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(9999), oTarget);
-    DelayCommand(3.0, AssignCommand(oTarget, gsCBDetermineCombatRound()));
+    DelayCommand(3.0, DeleteLocalObject(oTarget, "GS_CB_ATTACK_TARGET"));
+    //DelayCommand(3.0, AssignCommand(oTarget, gsCBDetermineCombatRound()));
 }
 
 void main()
 {
     if (GetIsInCombat(OBJECT_SELF))
+    {
+        return;
+    }
+    if (!GetCommandable())
     {
         return;
     }

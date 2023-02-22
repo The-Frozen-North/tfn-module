@@ -2,13 +2,30 @@
 
 #include "nw_i0_plot"
 
+void ReallyJumpToObject(object oTarget)
+{
+    ClearAllActions(TRUE);
+    DeleteLocalObject(OBJECT_SELF, "GS_CB_ATTACK_TARGET");
+    JumpToObject(oTarget);
+    //SendMessageToPC(GetFirstPC(), "jump");
+    // This seems to stop GS AI immediately deciding it wants to keep fighting...
+    // ... maybe?
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectCutsceneParalyze(), OBJECT_SELF, 6.0);
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectCutsceneImmobilize(), OBJECT_SELF, 6.0);
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectBlindness(), OBJECT_SELF, 6.0);
+    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectDeaf(), OBJECT_SELF, 6.0);
+    //DelayCommand(6.0, SendMessageToPC(GetFirstPC(), "canmove"));
+    DelayCommand(6.0, ClearAllActions(TRUE));
+}
+
 void main()
 {
-    object oWP = GetNearestObjectByTag("q4b_wp_scav_jump", OBJECT_SELF, 2);
+    // This can at most be 5th furthest waypoint
+    object oWP = GetNearestObjectByTag("q4b_wp_scav_jump", OBJECT_SELF, 4);
     if(GetLocalInt(OBJECT_SELF, "JUMPING") == 1)
         return;
     SetLocalInt(OBJECT_SELF, "JUMPING", 1);
-    ClearAllActions();
+    ClearAllActions(TRUE);
     PlayAnimation(ANIMATION_LOOPING_CONJURE1);
     PlaySpeakSoundByStrRef(84830);
     effect eVis = EffectVisualEffect(472);
@@ -24,6 +41,6 @@ void main()
         i++;
         oCreature = GetNearestCreature(CREATURE_TYPE_IS_ALIVE, TRUE, OBJECT_SELF, i);
     }
-    DelayCommand(3.0, JumpToObject(oWP));
+    DelayCommand(3.0, ReallyJumpToObject(oWP));
     DelayCommand(4.0, SetLocalInt(OBJECT_SELF, "JUMPING", 0));
 }

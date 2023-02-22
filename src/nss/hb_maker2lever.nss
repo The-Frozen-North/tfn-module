@@ -31,13 +31,14 @@ void main()
     DeleteLocalInt(OBJECT_SELF, "no_pc_count");
         
     int nDC = GetLocalInt(OBJECT_SELF, "dc");
-    float fRadius = 6.0;
+    float fRadius = 10.0;
     location lSelf = GetLocation(OBJECT_SELF);
     oTest = GetFirstObjectInShape(SHAPE_SPHERE, fRadius, lSelf);
     while (GetIsObjectValid(oTest))
     {
         if (!GetIsDead(oTest) && (GetIsPC(oTest) || GetIsPC(GetMaster(oTest))))
         {
+            //ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_FIREBALL), GetLocation(oTest));
             int nSkill = GetSkillRank(SKILL_SEARCH, oTest);
             if (GetIsInCombat(oTest))
             {
@@ -46,6 +47,10 @@ void main()
             if (GetActionMode(oTest, ACTION_MODE_DETECT))
             {
                 nSkill += 10;
+            }
+            if (GetDistanceBetween(oTest, OBJECT_SELF) < 5.0)
+            {
+                nSkill += 5;
             }
             if (nSkill + d20() >= nDC)
             {

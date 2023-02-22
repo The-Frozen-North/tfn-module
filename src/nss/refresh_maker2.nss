@@ -22,7 +22,6 @@ void MakeDuergarCorpse(object oTest, string sResRef)
     
     object oDuergar = CreateObject(OBJECT_TYPE_CREATURE, sResRef, GetLocation(oTest));
     ExecuteScript("ai_onspawn", oDuergar);
-    SendMessageToPC(GetFirstPC(), "duergar = " + GetName(oDuergar));
     SetLocalInt(oDuergar, "no_credit", 1);
     AssignCommand(oDuergar, SetIsDestroyable(FALSE, FALSE, FALSE));
     NWNX_Creature_SetCorpseDecayTime(oDuergar, 32000);
@@ -86,6 +85,12 @@ void main()
         SetLocalInt(oGolem, "patrolwaypoint", i*3);
         SetLocalInt(oGolem, "patrolgolem", 1);
         SetLocalInt(oGolem, "no_wander", 1);
+        // These stop elemental deaths happening which will mess with the corpse
+        // and make it unraisable
+        SetLocalInt(oGolem, "no_elem_death", 1);
+        SetLocalInt(oGolem, "gibbed", 1);
+        // Make sure they can be resurrected for a while
+        NWNX_Creature_SetCorpseDecayTime(oGolem, 600);
     }
     object oWPOctagon = GetWaypointByTag("maker2_trap_mid");
     location lOctagon = GetLocation(oWPOctagon);
@@ -95,7 +100,10 @@ void main()
     {
         if (GetLocalString(oTest, "treasure") == "high")
         {
-            SetLocalInt(oTest, "boss", 1);
+            if (d100() < 35)
+            {
+                SetLocalInt(oTest, "boss", 1);
+            }
         }
         oTest = GetNextObjectInShape(SHAPE_SPHERE, 10.0, lOctagon, FALSE, OBJECT_TYPE_PLACEABLE);
     }
@@ -288,4 +296,13 @@ void main()
         
     SetLocalInt(OBJECT_SELF, "scavenger_id", nScavengerID);
     SetLocalInt(OBJECT_SELF, "guardian_id", nGuardianID);
+    
+    // Randomise the initial numbers on the console
+    SetLocalInt(OBJECT_SELF, "digit_left", Random(10));
+    SetLocalInt(OBJECT_SELF, "digit_right", Random(10));
+    
+    // Reset console damage buildup
+    SetLocalInt(GetObjectByTag("q4b_action_lever"), "last_damage", 20);
+    
+    
 }

@@ -463,6 +463,7 @@ int GibsNPC(object oCreature)
     int nMaxHP = GetMaxHitPoints(oCreature);
 
     int bNoElementalDeath = d4() == 1;
+    if (GetLocalInt(oCreature, "no_elem_death")) { bNoElementalDeath = 1; }
 
     if (!bNoElementalDeath && (iCold > 0) && (iCold >= Random(nMaxHP)) && (nSize < CREATURE_SIZE_HUGE) && (iCold > iAcid) && (iCold > iElectric) && (iCold > iFire) && (iCold > iNegative) && (iCold > iDivine) && (iCold > iPositive) && (iCold > iMagic))
     {
