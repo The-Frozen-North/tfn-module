@@ -2805,7 +2805,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 128
+                "value": 129
               },
               "IsChild": {
                 "type": "byte",
@@ -2824,7 +2824,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 122
+                "value": 123
               },
               "IsChild": {
                 "type": "byte",
@@ -2855,7 +2855,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 120
+                "value": 121
               },
               "IsChild": {
                 "type": "byte",
@@ -2866,11 +2866,34 @@
               "__struct_id": 3,
               "Active": {
                 "type": "resref",
-                "value": "false"
+                "value": "dlg_q_chk_multi"
               },
               "ConditionParams": {
                 "type": "list",
-                "value": []
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "quest"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "q_golems"
+                    }
+                  },
+                  {
+                    "__struct_id": 1,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "stages"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "19,29"
+                    }
+                  }
+                ]
               },
               "Index": {
                 "type": "dword",
@@ -9224,7 +9247,19 @@
         "__struct_id": 101,
         "ActionParams": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "target"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "12"
+              }
+            }
+          ]
         },
         "Animation": {
           "type": "dword",
@@ -9272,7 +9307,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_q_adv"
         },
         "Sound": {
           "type": "resref",
@@ -9286,12 +9321,94 @@
           "id": 107610,
           "type": "cexolocstring",
           "value": {
-            "0": "The golems are powerful creatures. Thank you, <FirstName>... I am certain they will be of great aid to us in the battle to come."
+            "0": "The golems are powerful creatures. Thank you, <FirstName>... I am certain they will be of great aid to us in the battle to come. For a reward, I can offer this ring: may it protect you from harm in your adventures."
           }
         }
       },
       {
         "__struct_id": 102,
+        "ActionParams": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "target"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "11"
+              }
+            }
+          ]
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 120
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_q_adv"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "id": 107610,
+          "type": "cexolocstring",
+          "value": {
+            "0": "The golems are powerful creatures. Thank you, <FirstName>... I am certain they will be of great aid to us in the battle to come. For a reward, I can offer this ring: may it protect you from harm in your adventures."
+          }
+        }
+      },
+      {
+        "__struct_id": 103,
         "ActionParams": {
           "type": "list",
           "value": [
@@ -9343,7 +9460,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 121
+                "value": 122
               },
               "IsChild": {
                 "type": "byte",
@@ -9369,76 +9486,6 @@
           "type": "cexolocstring",
           "value": {
             "0": "Excellent work, <FirstName>! The beholders are formidable foes. If the Valsharess has been denied their aid, she has been severely weakened. I hope this ring helps you in times of danger."
-          }
-        }
-      },
-      {
-        "__struct_id": 103,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 123
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "id": 107614,
-          "type": "cexolocstring",
-          "value": {
-            "0": "I'm glad the illithid will not be marching against us, though I hope the bargain you struck with them is one we do not regret later. Sometimes we are forced to choose the lesser of two evils."
           }
         }
       },
@@ -9475,6 +9522,76 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 124
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "id": 107614,
+          "type": "cexolocstring",
+          "value": {
+            "0": "I'm glad the illithid will not be marching against us, though I hope the bargain you struck with them is one we do not regret later. Sometimes we are forced to choose the lesser of two evils."
+          }
+        }
+      },
+      {
+        "__struct_id": 105,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
                 "value": "false"
               },
               "ConditionParams": {
@@ -9483,7 +9600,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 128
+                "value": 129
               },
               "IsChild": {
                 "type": "byte",
@@ -9506,7 +9623,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 122
+                "value": 123
               },
               "IsChild": {
                 "type": "byte",
@@ -9541,7 +9658,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 120
+                "value": 121
               },
               "IsChild": {
                 "type": "byte",
@@ -9556,11 +9673,34 @@
               "__struct_id": 3,
               "Active": {
                 "type": "resref",
-                "value": "false"
+                "value": "dlg_q_chk_multi"
               },
               "ConditionParams": {
                 "type": "list",
-                "value": []
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "quest"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "q_golems"
+                    }
+                  },
+                  {
+                    "__struct_id": 1,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "stages"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "19,29"
+                    }
+                  }
+                ]
               },
               "Index": {
                 "type": "dword",
@@ -9577,76 +9717,6 @@
             },
             {
               "__struct_id": 4,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 124
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "id": 107617,
-          "type": "cexolocstring",
-          "value": {
-            "0": "Have you word of anything else?"
-          }
-        }
-      },
-      {
-        "__struct_id": 105,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": "1 area completed"
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -9679,10 +9749,10 @@
           "value": ""
         },
         "Text": {
-          "id": 107618,
+          "id": 107617,
           "type": "cexolocstring",
           "value": {
-            "0": "There is still much to be done. You have my thanks for your efforts so far, however."
+            "0": "Have you word of anything else?"
           }
         }
       },
@@ -9702,7 +9772,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "2 areas have been completed"
+          "value": "1 area completed"
         },
         "Delay": {
           "type": "dword",
@@ -9749,9 +9819,11 @@
           "value": ""
         },
         "Text": {
-          "id": 107619,
+          "id": 107618,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "There is still much to be done. You have my thanks for your efforts so far, however."
+          }
         }
       },
       {
@@ -9770,7 +9842,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "3 areas have been completed"
+          "value": "2 areas have been completed"
         },
         "Delay": {
           "type": "dword",
@@ -9817,7 +9889,7 @@
           "value": ""
         },
         "Text": {
-          "id": 107620,
+          "id": 107619,
           "type": "cexolocstring",
           "value": {}
         }
@@ -9838,7 +9910,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": ""
+          "value": "3 areas have been completed"
         },
         "Delay": {
           "type": "dword",
@@ -9863,7 +9935,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 129
+                "value": 128
               },
               "IsChild": {
                 "type": "byte",
@@ -9885,11 +9957,9 @@
           "value": ""
         },
         "Text": {
-          "id": 107635,
+          "id": 107620,
           "type": "cexolocstring",
-          "value": {
-            "0": "Zesyyr now controls House Maeviir? Then, I must assume Myrune is dead. Why did you do this, <FirstName>?"
-          }
+          "value": {}
         }
       },
       {
@@ -9955,10 +10025,10 @@
           "value": ""
         },
         "Text": {
-          "id": 107638,
+          "id": 107635,
           "type": "cexolocstring",
           "value": {
-            "0": "Yes, you are probably right. Myrune was desperately trying to cling to power. If she had the opportunity to bow before the Valsharess and live, she would."
+            "0": "Zesyyr now controls House Maeviir? Then, I must assume Myrune is dead. Why did you do this, <FirstName>?"
           }
         }
       },
@@ -10025,6 +10095,76 @@
           "value": ""
         },
         "Text": {
+          "id": 107638,
+          "type": "cexolocstring",
+          "value": {
+            "0": "Yes, you are probably right. Myrune was desperately trying to cling to power. If she had the opportunity to bow before the Valsharess and live, she would."
+          }
+        }
+      },
+      {
+        "__struct_id": 111,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 132
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
           "id": 107639,
           "type": "cexolocstring",
           "value": {
@@ -10036,7 +10176,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 3422
+    "value": 3480
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -17747,11 +17887,76 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_q_chk_multi"
               },
               "ConditionParams": {
                 "type": "list",
-                "value": []
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "quest"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "q_golems"
+                    }
+                  },
+                  {
+                    "__struct_id": 1,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "stages"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "19"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 102
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_q_chk_multi"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "quest"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "q_golems"
+                    }
+                  },
+                  {
+                    "__struct_id": 1,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "stages"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "29"
+                    }
+                  }
+                ]
               },
               "Index": {
                 "type": "dword",
@@ -17821,7 +18026,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 104
+                "value": 105
               },
               "IsChild": {
                 "type": "byte",
@@ -17867,7 +18072,7 @@
         },
         "Comment": {
           "type": "cexostring",
-          "value": "If Hive mother dead. This option only shows up once."
+          "value": ""
         },
         "Delay": {
           "type": "dword",
@@ -17888,7 +18093,86 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 102
+                "value": 105
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {}
+        }
+      },
+      {
+        "__struct_id": 121,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": "If Hive mother dead. This option only shows up once."
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "target"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "1"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 103
               },
               "IsChild": {
                 "type": "byte",
@@ -17918,7 +18202,7 @@
         }
       },
       {
-        "__struct_id": 121,
+        "__struct_id": 122,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -17954,7 +18238,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 104
+                "value": 105
               },
               "IsChild": {
                 "type": "byte",
@@ -17985,7 +18269,7 @@
         }
       },
       {
-        "__struct_id": 122,
+        "__struct_id": 123,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -18021,7 +18305,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 103
+                "value": 104
               },
               "IsChild": {
                 "type": "byte",
@@ -18048,69 +18332,6 @@
           "value": {
             "0": "The mind flayers are no longer allied with the Valsharess."
           }
-        }
-      },
-      {
-        "__struct_id": 123,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 104
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {}
         }
       },
       {
@@ -18150,7 +18371,70 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 107
+                "value": 105
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {}
+        }
+      },
+      {
+        "__struct_id": 125,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 108
               },
               "IsChild": {
                 "type": "byte",
@@ -18169,7 +18453,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 106
+                "value": 107
               },
               "IsChild": {
                 "type": "byte",
@@ -18188,7 +18472,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 105
+                "value": 106
               },
               "IsChild": {
                 "type": "byte",
@@ -18238,73 +18522,6 @@
           "value": {
             "0": "That's all for now."
           }
-        }
-      },
-      {
-        "__struct_id": 125,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 48
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {}
         }
       },
       {
@@ -18478,11 +18695,15 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 108
+                "value": 48
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
             }
           ]
@@ -18500,11 +18721,8 @@
           "value": ""
         },
         "Text": {
-          "id": 107734,
           "type": "cexolocstring",
-          "value": {
-            "0": "I helped Zesyyr seize control of House Maeviir."
-          }
+          "value": {}
         }
       },
       {
@@ -18566,10 +18784,10 @@
           "value": ""
         },
         "Text": {
-          "id": 107736,
+          "id": 107734,
           "type": "cexolocstring",
           "value": {
-            "0": "Myrune would have betrayed us to the Valsharess."
+            "0": "I helped Zesyyr seize control of House Maeviir."
           }
         }
       },
@@ -18632,8 +18850,11 @@
           "value": ""
         },
         "Text": {
+          "id": 107736,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "Myrune would have betrayed us to the Valsharess."
+          }
         }
       },
       {
@@ -18673,7 +18894,70 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 104
+                "value": 111
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {}
+        }
+      },
+      {
+        "__struct_id": 132,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 105
               },
               "IsChild": {
                 "type": "byte",

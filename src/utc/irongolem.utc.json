@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 16.0
+    "value": 14.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 18
+          "value": 17
         }
       }
     ]
@@ -46,11 +46,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 0
+    "value": -1
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 99
+    "value": 80
   },
   "DecayTime": {
     "type": "dword",
@@ -136,7 +136,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 99
+    "value": 80
   },
   "Int": {
     "type": "byte",
@@ -168,7 +168,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 99
+    "value": 80
   },
   "NaturalAC": {
     "type": "byte",
@@ -504,7 +504,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 33
+    "value": 32
   },
   "Subrace": {
     "type": "cexostring",
@@ -525,6 +525,26 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "irongolem"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "no_wander"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",

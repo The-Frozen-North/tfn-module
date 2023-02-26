@@ -19,6 +19,7 @@ void main()
         {
             SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, FALSE);
             string sConv = GetLocalString(OBJECT_SELF, "conversation_override");
+            AssignCommand(oTarget, ClearAllActions());
             BeginConversation(sConv, oTarget);
         }
     }

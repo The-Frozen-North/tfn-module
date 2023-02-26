@@ -8,7 +8,8 @@
 void TrapAtWaypoint(object oTest)
 {
     int nTrap = DetermineTrap(20);
-    object oTrap = CreateTrapAtLocation(nTrap, GetLocation(oTest), 2.5, "", STANDARD_FACTION_HOSTILE, "on_trap_disarm");
+    //object oTrap = CreateTrapAtLocation(nTrap, GetLocation(oTest), 2.5, "", STANDARD_FACTION_HOSTILE, "on_trap_disarm");
+    object oTrap = CreateTrapAtLocation(nTrap, GetLocation(oTest), 5.0, "", STANDARD_FACTION_HOSTILE, "on_trap_disarm");
     SetLocalInt(oTrap, "octagon_trap", 1);
 }
 
@@ -120,7 +121,8 @@ void main()
         else if (GetObjectType(oTest) == OBJECT_TYPE_WAYPOINT && GetTag(oTest) == "maker2_trap")
         {
             // Doing this in the loop causes TMI
-            DelayCommand(6.0, TrapAtWaypoint(oTest));
+            //DelayCommand(6.0, TrapAtWaypoint(oTest));
+            DelayCommand(6.0, TrapAtWaypoint(oWPOctagon));
         }
         else if (GetObjectType(oTest) == OBJECT_TYPE_WAYPOINT && GetTag(oTest) == "maker2_traplever")
         {

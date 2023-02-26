@@ -5,7 +5,7 @@ int StartingConditional()
     int nValue = StringToInt(GetScriptParam("value"));
 
     // Animal empathy is skill 0!
-    if ((nSkill == 0 && sSkill != "") || nValue == 0)
+    if ((nSkill == 0 && sSkill == "") || nValue == 0)
     {
         return FALSE;
     }

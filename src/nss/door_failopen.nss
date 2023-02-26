@@ -12,6 +12,12 @@ void main()
             SendMessageToPC(oPC, "You open the lock with the " + GetKeyName(sKeyTag) + " in your key bag.");
             SetLocked(OBJECT_SELF, FALSE);
             AssignCommand(OBJECT_SELF, ActionOpenDoor(OBJECT_SELF));
+            
+            string sScript = GetLocalString(OBJECT_SELF, "onopen_script");
+            if (sScript != "")
+            {
+                ExecuteScript(sScript, OBJECT_SELF);
+            }
         }
     }
     string sScript = GetLocalString(OBJECT_SELF, "onfailtoopen_script");

@@ -326,6 +326,9 @@ void main()
 // do not clean up creatures that have a PC master
             if (GetIsObjectValid(oOldCreature) && GetLocalString(oOldCreature, "master") == "")
             {
+                // This might allow new creatures to spawn directly on top of the old ones
+                // without it, they get offset a bit
+                ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectCutsceneGhost(), oOldCreature, 6.0);
                 DestroyObject(oOldCreature);
                 // Remove from the quest npc list on the area
                 RemoveLocalListItem(OBJECT_SELF, "quest_npcs", ObjectToString(oOldCreature));

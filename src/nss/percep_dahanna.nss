@@ -11,6 +11,7 @@ void main()
         object oMaker3 = GetObjectByTag("ud_maker3");
         if (FindListItem(GetLocalString(oMaker3, "pcs_entered"), sPC) > -1)
         {
+            AssignCommand(oPC, ClearAllActions());
             BeginConversation("", oPC);
         }
     }
