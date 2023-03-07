@@ -1,4 +1,5 @@
 #include "inc_loot"
+#include "inc_persist"
 
 void main()
 {
@@ -19,6 +20,15 @@ void main()
     SetLocalString(oReward, "owner", GetPCPublicCDKey(oOwner));
     SetLocalInt(oReward, "cr", GetLocalInt(oMap, "acr"));
     SetLocalInt(oReward, "area_cr", GetLocalInt(oMap, "acr"));
+    SetPlotFlag(oReward, 1);
+    AssignCommand(GetModule(), DelayCommand(280.0, SetPlotFlag(oReward, 0)));
     DestroyObject(oReward, 300.0);
     DestroyObject(OBJECT_SELF);
+    
+    // Force a PC save. That way there is no way they can keep their map
+    // and still be able to loot the chest too
+    if (CanSavePCInfo(oOwner))
+    {
+        AssignCommand(GetModule(), DelayCommand(0.1, SavePCInfo(oOwner)));
+    }
 }

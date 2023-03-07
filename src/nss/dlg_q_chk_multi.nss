@@ -71,6 +71,10 @@ int StartingConditional()
     for (i=0; i<nCount; i++)
     {
         int nStage = StringToInt(GetListItem(sStages, i));
+        if (nStage > 99)
+        {
+            SendDebugMessage("BAD STAGE: dlg_q_chk_multi quest=" + sQuest + " on " + GetName(OBJECT_SELF) + ": " + IntToString(nStage), TRUE);
+        }
         if (GetQuestEntry(oPC, sQuest) == nStage)
         {
             return 1;

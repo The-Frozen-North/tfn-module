@@ -54,10 +54,14 @@ void main()
         if (bGuardianGolemIsActive)
         {
             // Make a portal
-            object oPortal = CreateObject(OBJECT_TYPE_PLACEABLE, "portalblue", GetLocation(GetWaypointByTag("maker3_battleground_mid")));
-            SetPlotFlag(oPortal, 1);
-            DelayCommand(30.0, PortalCheckHB(oPortal));
-            SetEventScript(oPortal, EVENT_SCRIPT_PLACEABLE_ON_USED, "maker_portal");
+            if (!GetIsObjectValid(GetLocalObject(OBJECT_SELF, "exit_portal")))
+            {
+                object oPortal = CreateObject(OBJECT_TYPE_PLACEABLE, "portalblue", GetLocation(GetWaypointByTag("maker3_battleground_mid")));
+                SetPlotFlag(oPortal, 1);
+                DelayCommand(30.0, PortalCheckHB(oPortal));
+                SetEventScript(oPortal, EVENT_SCRIPT_PLACEABLE_ON_USED, "maker_portal");
+                SetLocalObject(OBJECT_SELF, "exit_portal", oPortal);
+            }
         }
         
         if (!HasListItem(sList, sPC))

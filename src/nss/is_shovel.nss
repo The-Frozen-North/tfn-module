@@ -1,4 +1,6 @@
 #include "inc_treasuremap"
+#include "inc_horse"
+
 
 void main()
 {
@@ -6,6 +8,10 @@ void main()
     {
         FloatingTextStringOnCreature("The shovel cannot be used in combat.", OBJECT_SELF);
         return;
+    }
+    if (GetIsMounted(OBJECT_SELF))
+    {
+        FloatingTextStringOnCreature("The shovel is not long enough to dig while mounted.", OBJECT_SELF);
     }
     location lSelf = GetLocation(OBJECT_SELF);
     int nSurfacemat = GetSurfaceMaterial(lSelf);

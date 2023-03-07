@@ -396,7 +396,10 @@ void gsAIActionRest()
         nHitPointsPer = 1;
 
     if (GetCurrentHitPoints() >= GetMaxHitPoints(OBJECT_SELF) - nHitPointsPer)
+    {
         ForceRest(OBJECT_SELF);
+        ExecuteScript("ai_onrest", OBJECT_SELF);
+    }
     else
         ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(nHitPointsPer), OBJECT_SELF);
 }

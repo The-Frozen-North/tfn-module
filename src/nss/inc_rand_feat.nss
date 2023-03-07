@@ -101,13 +101,13 @@ int _SelectFeatList(object oCreature)
         return RAND_FEAT_LIST_MELEE;
     }
     
-    if (fAdditionalBAB >= 0.25 && Random(100) < 50)
+    if (fAdditionalBAB >= 0.2 && Random(100) < 50)
     {
         if (bRanged) { return RAND_FEAT_LIST_RANGED; }
         return RAND_FEAT_LIST_MELEE;
     }
 
-    if (Random(100) < 50)
+    if (Random(100) < 25)
     {
         return RAND_FEAT_LIST_GENERAL;
     }

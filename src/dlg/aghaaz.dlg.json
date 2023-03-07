@@ -8838,7 +8838,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Get out of my sight, before I crush you into dust!"
+            "0": "Get out of my sight, before I beat you to a pulp!"
           }
         }
       }
@@ -8846,7 +8846,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 2624
+    "value": 2625
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -9676,7 +9676,7 @@
               "__struct_id": 1,
               "Active": {
                 "type": "resref",
-                "value": "dlg_q_chk_eli"
+                "value": "dlg_q_chk_multi"
               },
               "ConditionParams": {
                 "type": "list",
@@ -9685,11 +9685,22 @@
                     "__struct_id": 0,
                     "Key": {
                       "type": "cexostring",
-                      "value": "target"
+                      "value": "quest"
                     },
                     "Value": {
                       "type": "cexostring",
-                      "value": "1"
+                      "value": "q_golems"
+                    }
+                  },
+                  {
+                    "__struct_id": 1,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "stages"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "1,2"
                     }
                   }
                 ]
@@ -11376,19 +11387,7 @@
               },
               "ConditionParams": {
                 "type": "list",
-                "value": [
-                  {
-                    "__struct_id": 0,
-                    "Key": {
-                      "type": "cexostring",
-                      "value": "stages"
-                    },
-                    "Value": {
-                      "type": "cexostring",
-                      "value": ""
-                    }
-                  }
-                ]
+                "value": []
               },
               "Index": {
                 "type": "dword",
@@ -14383,27 +14382,15 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": "dlg_q_chk_eli2"
+                "value": ""
               },
               "ConditionParams": {
                 "type": "list",
-                "value": [
-                  {
-                    "__struct_id": 0,
-                    "Key": {
-                      "type": "cexostring",
-                      "value": "stages"
-                    },
-                    "Value": {
-                      "type": "cexostring",
-                      "value": ""
-                    }
-                  }
-                ]
+                "value": []
               },
               "Index": {
                 "type": "dword",
-                "value": 29
+                "value": 28
               },
               "IsChild": {
                 "type": "byte",
