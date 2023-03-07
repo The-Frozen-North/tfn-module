@@ -1,9 +1,11 @@
 int StartingConditional()
 {
-    int nSkill = StringToInt(GetScriptParam("skill"));
+    string sSkill = GetScriptParam("skill");
+    int nSkill = StringToInt(sSkill);
     int nValue = StringToInt(GetScriptParam("value"));
 
-    if (nSkill == 0 || nValue == 0)
+    // Animal empathy is skill 0!
+    if ((nSkill == 0 && sSkill == "") || nValue == 0)
     {
         return FALSE;
     }

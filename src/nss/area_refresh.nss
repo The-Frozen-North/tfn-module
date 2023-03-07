@@ -33,7 +33,7 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
       int nSpawns = GetLocalInt(oArea, "random"+IntToString(nTarget)+"_spawns");
       if (nSpawns == 0) return;
       int nTotalSpawns = nSpawns + (Random(nSpawns/4));
-      if (nTotalSpawns > nMax) nMax = 100;
+      if (nTotalSpawns > nMax) nTotalSpawns = 100;
 
 // Destroy all stored creatures.
 // typically done on a refresh
@@ -41,10 +41,55 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
       for (i = 1; i <= nMax; i++)
         DestroyObject(GetLocalObject(oArea, "random"+IntToString(nTarget)+"_creature"+IntToString(i)));
 
+
+
+      // Make spawns a little more even
+      // In areas with few strong creatures, they are much more likely to become clustered, making them
+      // way harder than whoever designed the area might have intended to the point of being
+      // just downright unfair
+      int nSpawnsToSpreadEvenly = (nTotalSpawns*60)/100;
+      int nEvenSpawnsPerSpawnPoint = nSpawnsToSpreadEvenly / nSpawnPoints;
+      int nLeftoverEvenSpawns = nSpawnsToSpreadEvenly - (nEvenSpawnsPerSpawnPoint * nSpawnPoints);
+      //WriteTimestampedLogEntry(IntToString(nTotalSpawns) + " total, " + IntToString(nSpawnsToSpreadEvenly) + " should be evenly, " + IntToString(nEvenSpawnsPerSpawnPoint) + " per spawn (over " + IntToString(nSpawnPoints) + " spawnpoints), " + IntToString(nLeftoverEvenSpawns) + " leftover");
+      nTotalSpawns -= nSpawnsToSpreadEvenly;
       object oCreature;
       location lLocation;
       vector vSpawnWP;
       int nSpawn;
+      int nSpawnPoint;
+      int nTotalSpawnsOfThisTarget = 1;
+      for (nSpawnPoint = 1; nSpawnPoint <= nSpawnPoints; nSpawnPoint++)
+      {
+          int nSpawnPointsRemaining = (nSpawnPoints+1) - nSpawnPoints;
+          int nNumAtThisSpawnPoint = nEvenSpawnsPerSpawnPoint;
+          int nChanceToUseLeftover = (nLeftoverEvenSpawns*100)/nSpawnPointsRemaining;
+          if (Random(100) < nChanceToUseLeftover)
+          {
+              nNumAtThisSpawnPoint++;
+              nLeftoverEvenSpawns--;
+          }
+          for (nSpawn = 1; nSpawn <= nNumAtThisSpawnPoint; nSpawn++)
+          {
+               lLocation = GetLocalLocation(oArea, "random"+IntToString(nTarget)+"_spawn_point"+IntToString(nSpawnPoint));
+               vSpawnWP = GetPositionFromLocation(lLocation);
+
+               oCreature = CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), Location(oArea, Vector(vSpawnWP.x, vSpawnWP.y, vSpawnWP.z), IntToFloat(Random(360)+1)));
+
+               if (sSpawnScript != "")
+               {
+                   // Stagger running this a bit, because large amounts of creature randomisation may cause server lag in places
+                   DelayCommand(0.3 * nSpawn, ExecuteScript(sSpawnScript, oCreature));
+               }
+
+    // Store the creature so it can be deleted later.
+               SetLocalObject(oArea, "random"+IntToString(nTarget)+"_creature"+IntToString(nTotalSpawnsOfThisTarget), oCreature);
+               nTotalSpawnsOfThisTarget++;
+          }
+          
+          
+      }
+      
+      // Do the rest randomly
       for (nSpawn = 1; nSpawn <= nTotalSpawns; nSpawn++)
       {
            lLocation = GetLocalLocation(oArea, "random"+IntToString(nTarget)+"_spawn_point"+IntToString(Random(nSpawnPoints)+1));
@@ -59,7 +104,8 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
            }
 
 // Store the creature so it can be deleted later.
-           SetLocalObject(oArea, "random"+IntToString(nTarget)+"_creature"+IntToString(nSpawn), oCreature);
+           SetLocalObject(oArea, "random"+IntToString(nTarget)+"_creature"+IntToString(nTotalSpawnsOfThisTarget), oCreature);
+           nTotalSpawnsOfThisTarget++;
       }
 }
 
@@ -280,6 +326,9 @@ void main()
 // do not clean up creatures that have a PC master
             if (GetIsObjectValid(oOldCreature) && GetLocalString(oOldCreature, "master") == "")
             {
+                // This might allow new creatures to spawn directly on top of the old ones
+                // without it, they get offset a bit
+                ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectCutsceneGhost(), oOldCreature, 6.0);
                 DestroyObject(oOldCreature);
                 // Remove from the quest npc list on the area
                 RemoveLocalListItem(OBJECT_SELF, "quest_npcs", ObjectToString(oOldCreature));

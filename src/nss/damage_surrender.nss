@@ -22,9 +22,10 @@ void main()
 
         SetLocalInt(OBJECT_SELF, "Generic_Surrender",1);
         SetLocalInt(OBJECT_SELF, "no_rest",1);
+        DeleteLocalObject(OBJECT_SELF, "GS_CB_ATTACK_TARGET");
         ChangeToStandardFaction(OBJECT_SELF, STANDARD_FACTION_COMMONER);
         SurrenderToEnemies();
-        ClearAllActions();
+        ClearAllActions(1);
         SpeakOneLinerConversation();
     }
 }

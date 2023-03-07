@@ -56,6 +56,25 @@ void UpdateQuestgiverHighlights(object oArea, object oPC);
 // True of oPC is eligible for a quest stage handed out by oNPC.
 int IsPCEligibleForQuestFromNPC(object oNPC, object oPC);
 
+// Variables on quest givers/items:
+
+// You refer to specific stages of quests with<stage, zero padded to 2 chars>_<journal tag>
+
+// questX -> <quest stage>
+// questX_prereqY -> <quest stage>
+// questX_reward_item -> resref of item to give
+// questX_reward_gold -> base gold, modified by Cha
+// questX_pc_script -> script name to be executed on the PC advancing the quest
+// questX_self_script -> script name to be executed on the NPC or thing advancing the quest
+// questX_reward_xp_level -> level to reward XP for, should be about the level PCs are expected to be when doing this
+// questX_reward_xp_tier -> a value 1-4, 1 is a very minor task. XP doubles every increase to this value
+// questX_nohighlight -> 1. This makes it so that the questgiver doesn't get a yellow highlight for PCs eligible to reach questX's quest stage
+//                          Used for NPCs that need to check quest states (eg a gate guard) but don't actually advance PCs to them.
+// questX_jumpstage -> 1. Normally, in order to be eligible for a quest stage, the PC has to be at the stage directly before.
+//                        (02_q_example would require a pc to have 01_q_example). This bypasses that, and allows "skipping"
+//                        values, but only if the new stage number is HIGHER than the old.
+
+
 // -------------------------------------------------------------------------
 // FUNCTIONS
 // -------------------------------------------------------------------------
@@ -158,7 +177,15 @@ int GetIsQuestStageEligible(object oQuestObject, object oPC, int nTarget, int bB
     int nQuestStage = StringToInt(GetSubString(sQuest, 0, 2));
     //SendMessageToPC(oPC, "Stage = " + IntToString(nQuestStage) + ", entry = " + IntToString(GetQuestEntry(oPC, sQuestName)));
 // Player must be behind by 1 of their quest entry. Skipped on bluff.
-    if (!bBluff && GetQuestEntry(oPC, sQuestName) != (nQuestStage-1)) return FALSE;
+
+    int bJump = GetLocalInt(oQuestObject, sQuestTarget + "_jumpstage");
+
+    int nCurrent = GetQuestEntry(oPC, sQuestName);
+    if (bJump)
+    {
+        if (nQuestStage <= nCurrent) return FALSE;
+    }
+    else if (!bBluff && nCurrent != (nQuestStage-1)) return FALSE;
 
     int i;
     for (i = 1; i < HIGHEST_QUEST_COUNT; i++)
@@ -241,7 +268,7 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FAL
     {
         QuestCompleteWebhook(oPC, jeQuest.sName);
     }
-    
+
     UpdateQuestgiverHighlights(GetArea(oQuestObject), oPC);
 }
 
@@ -309,7 +336,7 @@ void UpdateQuestgiverHighlights(object oArea, object oPC)
                     break;
                 }
             }
-            
+
             if (nHasQuest)
             {
                 NWNX_Player_SetCreatureNameOverride(oPC, oGiver, QUEST_GIVER_NAME_COLOR + GetName(oGiver) + "</c>");

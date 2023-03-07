@@ -32,6 +32,12 @@ void main()
         nAreaCR = FloatToInt(IntToFloat(nAreaCR) * fQualityMult);
     }
     
+    float fScale = GetLocalFloat(OBJECT_SELF, "scale");
+    if (fScale > 0.0)
+    {
+        SetObjectVisualTransform(OBJECT_SELF, OBJECT_VISUAL_TRANSFORM_SCALE, fScale);
+    }
+    
     // This may be unused now
     SetLocalInt(OBJECT_SELF, "cr", nAreaCR);
     // This is most definitely used

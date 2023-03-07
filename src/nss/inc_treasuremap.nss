@@ -2,6 +2,7 @@
 #include "nwnx_util"
 #include "nwnx_item"
 #include "nw_inc_nui"
+#include "inc_persist"
 
 // Include for treasure maps and various functions for interacting with them.
 
@@ -1675,6 +1676,12 @@ int DoesLocationCompleteMap(object oMap, location lTest)
         fDist = fDist + (fSearch * 0.05 * fDist);
         if (GetDistanceBetweenLocations(lSolution, lTest) <= fDist)
         {
+            if (!CanSavePCInfo(oPC))
+            {
+                FloatingTextStringOnCreature("You find some treasure, but cannot dig it up while polymorphed.", oPC, FALSE);
+                DelayCommand(6.0, FloatingTextStringOnCreature("You find some treasure, but cannot dig it up while polymorphed.", oPC, FALSE));
+                return 0;
+            }
             return 1;
         }
     }

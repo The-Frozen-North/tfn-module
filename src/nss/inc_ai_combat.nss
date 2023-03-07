@@ -769,6 +769,7 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
 
     //attack target
     oTarget = gsCBGetAttackTarget(OBJECT_SELF, oTarget);
+    //if (GetArea(OBJECT_SELF) == GetArea(GetFirstPC())) SendMessageToPC(GetFirstPC(), "DetermineCombatRound: " + GetName(OBJECT_SELF) + " -> " + GetName(oTarget));
 
     if (! GetIsObjectValid(oTarget))
     {
