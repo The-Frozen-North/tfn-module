@@ -9,10 +9,8 @@ void main()
         if (GetObjectType(oTest) == OBJECT_TYPE_CREATURE)
         {
             string sName = GetName(oTest);
-            SendMessageToPC(GetFirstPC(), GetName(oTest));
             if (sName == "Dahanna" || FindSubString(sName, "Duergar") > -1)
             {
-                SendMessageToPC(GetFirstPC(), "change defender");
                 ChangeToStandardFaction(oTest, STANDARD_FACTION_DEFENDER);
                 AssignCommand(oTest, SpeakString("defender"));
                 if (sName != "Dahanna")
