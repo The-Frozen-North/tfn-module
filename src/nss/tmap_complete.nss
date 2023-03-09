@@ -18,8 +18,9 @@ void main()
     SetName(oReward, sTreasureName);
     SetObjectVisualTransform(oReward, OBJECT_VISUAL_TRANSFORM_SCALE, 0.5);
     SetLocalString(oReward, "owner", GetPCPublicCDKey(oOwner));
-    SetLocalInt(oReward, "cr", GetLocalInt(oMap, "acr"));
-    SetLocalInt(oReward, "area_cr", GetLocalInt(oMap, "acr"));
+    int nLootLevel = (GetLocalInt(oMap, "acr")*3)/2;
+    SetLocalInt(oReward, "cr", nLootLevel);
+    SetLocalInt(oReward, "area_cr", nLootLevel);
     SetPlotFlag(oReward, 1);
     AssignCommand(GetModule(), DelayCommand(280.0, SetPlotFlag(oReward, 0)));
     DestroyObject(oReward, 300.0);

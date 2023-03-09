@@ -18,7 +18,7 @@
 #include "inc_prettify"
 
 const int SEED_SPAWNS = 1;
-const int SEED_TREASURES = 0;
+const int SEED_TREASURES = 1;
 const int SEED_SPELLBOOKS = 0;
 // These two check to see if stuff needs updating before doing it
 // Turning them off might shave off 30s to a minute from a seeding run but that is about it

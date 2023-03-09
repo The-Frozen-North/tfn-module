@@ -40,7 +40,7 @@ void main()
         }
 
         ExecuteScript("hb_friendify", oSpirit);
-        SetLocalString(OBJECT_SELF, "heartbeat_script", "hb_friendify");
+        SetLocalString(oSpirit, "heartbeat_script", "hb_friendify");
 
 
         SetPlotFlag(oSpirit, TRUE);

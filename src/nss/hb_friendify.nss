@@ -14,15 +14,35 @@ void main()
     if (!GetIsObjectValid(oPC))
         return;
 
+    int nAssociateType;
     while (GetIsObjectValid(oPC))
     {
         Befriend(oPC);
-        object oAssociate = GetFirstFactionMember(oPC, FALSE);
-        while (GetIsObjectValid(oAssociate))
+        for (nAssociateType=1; nAssociateType<=5; nAssociateType++)
         {
-             Befriend(oAssociate);
-            oAssociate = GetNextFactionMember(oPC, FALSE);
+            int n=1;
+            object oTest;
+            while (1)
+            {
+                oTest = GetAssociate(nAssociateType, oPC, n);
+                if (!GetIsObjectValid(oTest))
+                {
+                    break;
+                }
+                Befriend(oTest);
+                n++;
+            }
         }
         oPC = GetNextPC();
+    }
+    
+    DeleteLocalObject(OBJECT_SELF, "GS_CB_ATTACK_TARGET");
+    if (GetCurrentAction(OBJECT_SELF) == ACTION_ATTACKOBJECT)
+    {
+        object oTarget = GetAttackTarget();
+        if (GetIsPC(oTarget) || GetIsPC(GetMaster(oTarget)))
+        {
+            ClearAllActions(1);
+        }
     }
 }

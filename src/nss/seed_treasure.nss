@@ -506,6 +506,13 @@ void DistributeTreasureToStores(object oItem)
        {
            sTier = "T2";
        }
+       
+       // Force +3 monk gloves to t5
+       if (nEnchantValue == 3 && (nBaseType == BASE_ITEM_GLOVES || nBaseType == BASE_ITEM_BRACER))
+       {
+           sTier = "T5";
+           WriteTimestampedLogEntry("Forced monk gloves to t5: " + GetName(oItem));
+       }
 
 // Boost some full plates and tower shields to next tier
        if (sName == "Tower Shield +1") sTier = "T4";

@@ -9,6 +9,7 @@ void GiveHiPSFeatSafely(object oCreature);
 
 void GiveHiPSFeatSafely(object oCreature)
 {
+    SendDebugMessage("Add HiPS back to " + GetName(oCreature));
     object oSkin = GetItemInSlot(INVENTORY_SLOT_CARMOUR, oCreature);
     if (GetLevelByClass(CLASS_TYPE_SHADOWDANCER, oCreature) > 0)
     {
@@ -25,10 +26,14 @@ void GiveHiPSFeatSafely(object oCreature)
     }
     else if (GetLevelByClass(CLASS_TYPE_SHIFTER, oCreature) >= 7 && GetResRef(oSkin) == "x2_it_koboldcomm")
     {
-        IPSafeAddItemProperty(oSkin, ItemPropertyBonusFeat(FEAT_HIDE_IN_PLAIN_SIGHT));
+        IPSafeAddItemProperty(oSkin, ItemPropertyBonusFeat(IP_CONST_FEAT_HIDE_IN_PLAIN_SIGHT));
     }
 
     DeleteLocalInt(oCreature, "hips_cd");
+    if (GetIsInCombat(oCreature))
+    {
+        FloatingTextStringOnCreature("*You may Hide in Plain Sight again*", oCreature, FALSE);
+    }
 }
 
 void SendDiscordMessage(string sPath, string sMessage)

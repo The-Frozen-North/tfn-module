@@ -34,6 +34,7 @@ void main()
         SetLocalInt(oChest, "boss", 1);
         DeleteLocalInt(oChest, "locked");
         DeleteLocalInt(oChest, "trapped");
+        SetLocalInt(oChest, "area_cr", GetLocalInt(oArea, "cr")*2);
         ExecuteScript("treas_init", oChest);
         jLootChests = JsonArrayInsert(jLootChests, JsonString(ObjectToString(oChest)));
     }

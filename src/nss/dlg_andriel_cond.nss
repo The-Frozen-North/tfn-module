@@ -13,7 +13,7 @@ int StartingConditional()
 {
     object oPC = GetPCSpeaker();
     int nHD = GetHitDice(oPC);
-    int nGold = GetTreasureMapGoldValue(nHD);
+    int nGold = (140*GetTreasureMapGoldValue(nHD))/100;
     int nChaModified = CharismaDiscountedGold(oPC, nGold);
     // Persuade modified here is -15% cost, IE 85% of normal
     // This is because maps have actual gold return value
