@@ -40,8 +40,12 @@ void main()
     
     // This may be unused now
     SetLocalInt(OBJECT_SELF, "cr", nAreaCR);
-    // This is most definitely used
-    SetLocalInt(OBJECT_SELF, "area_cr", nAreaCR);
+    // This is most definitely used - reflects quality
+    // If something overwrote this, leave the old values alone
+    if (!GetLocalInt(OBJECT_SELF, "area_cr"))
+    {
+        SetLocalInt(OBJECT_SELF, "area_cr", nAreaCR);
+    }
 
     SetEventScript(OBJECT_SELF, EVENT_SCRIPT_PLACEABLE_ON_DEATH, "treas_death");
     GenerateTrapOnObject();

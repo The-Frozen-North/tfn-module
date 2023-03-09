@@ -1,4 +1,5 @@
 #include "inc_persist"
+#include "nwnx_util"
 
 // A light blue/purple. It's pretty.
 const string KEY_ITEM_NAME_COLOR = "<c\xa9\x96\xff>";
@@ -31,7 +32,7 @@ void AddKeyToPlayer(object oPC, object oKey)
     SQLocalsPlayer_SetInt(oPC, "haskeytag_" + sKeyTag, 1);
     string sDesc = GetDescription(oKey);
     SetCampaignString("key_info", sKeyTag + "_desc", sDesc);
-    string sName = GetName(oKey, TRUE);
+    string sName = NWNX_Util_StripColors(GetName(oKey));
     SetCampaignString("key_info", sKeyTag + "_name", sName);
     object oBag = GetItemPossessedBy(oPC, "keybag");
     if (!GetIsObjectValid(oBag))
