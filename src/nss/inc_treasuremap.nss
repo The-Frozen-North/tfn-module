@@ -1131,6 +1131,10 @@ void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJEC
     {
         return;
     }
+    if (nACR > TREASUREMAP_ACR_MAX)
+    {
+        nACR = TREASUREMAP_ACR_MAX;
+    }
     nACR = (nACR/TREASUREMAP_ACR_STEP)*TREASUREMAP_ACR_STEP;
     string sJsonData = "json" + IntToString(nACR);
     sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions",
@@ -1514,7 +1518,7 @@ void InitialiseTreasureMap(object oMap, int nACR, string sLocation="")
 {
     if (nACR > TREASUREMAP_ACR_MAX)
     {
-        nACR = TREASUREMAP_ACR_MIN;
+        nACR = TREASUREMAP_ACR_MAX;
     }
     if (nACR < TREASUREMAP_ACR_MIN)
     {
