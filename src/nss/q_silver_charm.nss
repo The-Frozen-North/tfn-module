@@ -10,9 +10,11 @@ void CureWerewolf(object oPC, object oTarget, int nCuredAppearance, int nCuredSo
     }
 
 // more than 25% hp, return
-    if (GetCurrentHitPoints(oTarget) > (GetMaxHitPoints(oTarget) / 4))
+// well not exactly. I'm not sure if toughness or constitution is counted
+    if (GetCurrentHitPoints(oTarget) > (GetMaxHitPoints(oTarget) / 2))
     {
         FloatingTextStringOnCreature("The silver charm failed in the cure attempt. The target must be injured until it is at least badly wounded.", oPC);
+        return;
     }
 
 // simulate unpolymorph visual effect
@@ -20,6 +22,9 @@ void CureWerewolf(object oPC, object oTarget, int nCuredAppearance, int nCuredSo
 
 // no credit at this point in case players kill them
     SetLocalInt(oTarget, "no_credit", 1);
+
+// heal them as the constitution loss from skin removal can kill them
+    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(100), oTarget);
 
     SetCreatureAppearanceType(oTarget, nCuredAppearance);
     SetPortraitResRef(oTarget, sCuredPortrait);
@@ -34,6 +39,24 @@ void CureWerewolf(object oPC, object oTarget, int nCuredAppearance, int nCuredSo
     NWNX_Creature_SetSoundset(oTarget, nCuredSoundset);
 
     ChangeToStandardFaction(oTarget, STANDARD_FACTION_DEFENDER);
+
+    object oObject = GetFirstObjectInArea(oTarget);
+
+// make everyone friendly and make them stop attacking as well
+    while (GetIsObjectValid(oObject))
+    {
+        if (GetAttackTarget(oObject) == oTarget)
+        {
+            AssignCommand(oObject, ClearAllActions());
+        }
+
+        ClearPersonalReputation(oTarget, oObject);
+        ClearPersonalReputation(oObject, oTarget);
+
+        oObject = GetNextObjectInArea(oTarget);
+    }
+
+    DeleteLocalObject(oTarget, "GS_CB_ATTACK_TARGET");
 
     AdvanceQuestSphere(oTarget, 1);
 

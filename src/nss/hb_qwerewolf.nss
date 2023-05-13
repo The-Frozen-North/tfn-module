@@ -12,7 +12,7 @@ void main()
     if (!GetIsAreaInterior(oArea) && GetIsDay())
     {
         ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectCutsceneGhost(), OBJECT_SELF);
-        ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectCutsceneImmobilize(), OBJECT_SELF);
+        ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectCutsceneParalyze(), OBJECT_SELF);
         NWNX_Visibility_SetVisibilityOverride(OBJECT_INVALID, OBJECT_SELF, NWNX_VISIBILITY_HIDDEN);
         SetPlotFlag(OBJECT_SELF, TRUE);
     }
@@ -23,12 +23,12 @@ void main()
         while (GetIsEffectValid(eEffect))
         {
             if (GetEffectType(eEffect) == EFFECT_TYPE_CUTSCENEGHOST) RemoveEffect(OBJECT_SELF, eEffect);
-            if (GetEffectType(eEffect) == EFFECT_TYPE_CUTSCENEIMMOBILIZE) RemoveEffect(OBJECT_SELF, eEffect);
+            if (GetEffectType(eEffect) == EFFECT_TYPE_CUTSCENE_PARALYZE) RemoveEffect(OBJECT_SELF, eEffect);
 
             eEffect = GetNextEffect(OBJECT_SELF);
         }
 
-        NWNX_Visibility_SetVisibilityOverride(OBJECT_INVALID, OBJECT_SELF, NWNX_VISIBILITY_HIDDEN);
-        SetPlotFlag(OBJECT_SELF, TRUE);
+        NWNX_Visibility_SetVisibilityOverride(OBJECT_INVALID, OBJECT_SELF, NWNX_VISIBILITY_VISIBLE);
+        SetPlotFlag(OBJECT_SELF, FALSE);
     }
 }
