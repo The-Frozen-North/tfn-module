@@ -52,7 +52,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_q_chk_eli1"
               },
               "ConditionParams": {
                 "type": "list",
@@ -60,7 +60,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 8
+                "value": 4
               },
               "IsChild": {
                 "type": "byte",
@@ -79,7 +79,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 7
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -98,7 +98,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 6
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
@@ -160,7 +160,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Welcome to the Tyrran Temple - tell me, are you here for Tyr's services, or perhaps the Lady Luck herself has guided you to us during these dark days?"
+            "0": "I welcome you to this house of Ilmater, <brother/sister>. What can I do for you?"
           }
         }
       },
@@ -209,7 +209,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Walk with luck gracing your every move, then. It's always a treasure to have this place graced by such capable heroes. Goodbye."
+            "0": "May the blessing of Tyr be upon you. Travel safe."
           }
         }
       },
@@ -241,88 +241,11 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 5
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 4
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 3
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 2
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_endurance"
         },
         "Sound": {
           "type": "resref",
@@ -335,7 +258,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I believe I can help you find your way about the town, certainly."
+            "0": "That I can do. Ilmater guide you in your hardships."
           }
         }
       },
@@ -367,81 +290,11 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 1
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 0
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_heal"
         },
         "Sound": {
           "type": "resref",
@@ -454,7 +307,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "How can I assist you, my <lord/lady>?"
+            "0": "It shall be done."
           }
         }
       },
@@ -462,7 +315,19 @@
         "__struct_id": 4,
         "ActionParams": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "respawn"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "HIGHCLIFF"
+              }
+            }
+          ]
         },
         "Animation": {
           "type": "dword",
@@ -499,7 +364,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 5
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
@@ -522,30 +387,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 2
+                "value": 0
               },
               "IsChild": {
                 "type": "byte",
@@ -560,7 +402,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_set_respawn"
         },
         "Sound": {
           "type": "resref",
@@ -573,7 +415,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Well, funny that you should ask that, being as that we're in a temple. Sorry, it was a joke... ah, those who seek out Tyr's services are never turned aside."
+            "0": "Of course. Should you perish in battle, you will respawn here."
           }
         }
       },
@@ -618,7 +460,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 5
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
@@ -641,30 +483,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 3
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 2
+                "value": 0
               },
               "IsChild": {
                 "type": "byte",
@@ -692,7 +511,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Then I suggest you take advantage of Haljal's wares at the Cracked Anvil. He takes great pride in the quality of his craftsmanship."
+            "0": "You must be mistaken, <sir/madam> - you are already set to respawn here."
           }
         }
       },
@@ -737,61 +556,11 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
+                "value": 5
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 3
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 2
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+                "value": 0
               }
             }
           ]
@@ -809,9 +578,10 @@
           "value": ""
         },
         "Text": {
+          "id": 30570,
           "type": "cexolocstring",
           "value": {
-            "0": "The Alliance Arms Inn is likely the best around. You can find it near the north gate into town."
+            "0": "Well... I'm hesitant to suggest it because of the danger involved. I have silver charms here which may yet drive the curse from their blood. You must subdue the beasts first and injure them until they are at least badly wounded... if you can."
           }
         }
       },
@@ -843,11 +613,31 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 6
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_shieldfaith"
+          "value": "dlg_q_adv1"
         },
         "Sound": {
           "type": "resref",
@@ -860,7 +650,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "May Tyr protect you in your travels."
+            "0": "Take them. And be quick, <brother/sister>. These charms may only work for those that have been recently afflicted. I doubt it will work on someone who is quite advanced in the disease, such as the Black Wolf himself."
           }
         }
       },
@@ -896,256 +686,6 @@
         },
         "Script": {
           "type": "resref",
-          "value": "dlg_heal"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Certainly! I would be happy to help you."
-          }
-        }
-      },
-      {
-        "__struct_id": 9,
-        "ActionParams": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Key": {
-                "type": "cexostring",
-                "value": "respawn"
-              },
-              "Value": {
-                "type": "cexostring",
-                "value": "PORT_LLAST"
-              }
-            }
-          ]
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 1
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 0
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": "dlg_set_respawn"
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "It is done, my friend. Rest assured that if you should ever fall in battle, you will find yourself inside this temple."
-          }
-        }
-      },
-      {
-        "__struct_id": 10,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 1
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 0
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
           "value": ""
         },
         "Sound": {
@@ -1159,7 +699,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Hmm. You must be mistaken. You're already set to respawn here!"
+            "0": "Those children - the town prays for them, we all do. I hope you will be their savior. And may Ilmater be at your side."
           }
         }
       }
@@ -1167,7 +707,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 242
+    "value": 212
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -1237,7 +777,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Goodbye."
+            "0": "Farewell."
           }
         }
       },
@@ -1302,7 +842,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I need some directions for town."
+            "0": "Can you please give me a buff?"
           }
         }
       },
@@ -1367,7 +907,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Let me ask about something else."
+            "0": "Can you please heal me?"
           }
         }
       },
@@ -1400,11 +940,54 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
+                "value": "dlg_chk_respawn"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "respawn"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "HIGHCLIFF"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 5
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
                 "value": ""
               },
               "ConditionParams": {
                 "type": "list",
-                "value": []
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "respawn"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "HIGHCLIFF"
+                    }
+                  }
+                ]
               },
               "Index": {
                 "type": "dword",
@@ -1432,77 +1015,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Is there a temple available?"
+            "0": "I would like to set my respawn point to here."
           }
         }
       },
       {
         "__struct_id": 4,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 5
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "I'll need someplace to buy equipment."
-          }
-        }
-      },
-      {
-        "__struct_id": 5,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1560,14 +1078,15 @@
           "value": ""
         },
         "Text": {
+          "id": 30446,
           "type": "cexolocstring",
           "value": {
-            "0": "Can you point me in the direction of an inn?"
+            "0": "Ander has sent me. He said you may have something to cure lycanthropy."
           }
         }
       },
       {
-        "__struct_id": 6,
+        "__struct_id": 5,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1625,14 +1144,15 @@
           "value": ""
         },
         "Text": {
+          "id": 30458,
           "type": "cexolocstring",
           "value": {
-            "0": "Can you give me a buff?"
+            "0": ""
           }
         }
       },
       {
-        "__struct_id": 7,
+        "__struct_id": 6,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1692,103 +1212,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I need healing."
-          }
-        }
-      },
-      {
-        "__struct_id": 8,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "dlg_chk_respawn"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": [
-                  {
-                    "__struct_id": 0,
-                    "Key": {
-                      "type": "cexostring",
-                      "value": "respawn"
-                    },
-                    "Value": {
-                      "type": "cexostring",
-                      "value": "PORT_LLAST"
-                    }
-                  }
-                ]
-              },
-              "Index": {
-                "type": "dword",
-                "value": 10
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 9
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Please set me to respawn in Port Llast."
+            "0": "I'll be on my way, then."
           }
         }
       }
