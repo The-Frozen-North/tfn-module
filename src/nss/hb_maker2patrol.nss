@@ -41,6 +41,15 @@ void main()
     int nPCInArea = 0;
     object oTest = GetFirstPC();
     object oArea = GetArea(OBJECT_SELF);
+    object oSpawnArea = GetAreaFromLocation(GetLocalLocation(OBJECT_SELF, "spawn"));
+    // Handle being lured out of the area
+    if (GetIsObjectValid(oSpawnArea) && oArea != oSpawnArea)
+    {
+        ClearAllActions(TRUE);
+        ActionJumpToLocation(GetLocalLocation(OBJECT_SELF, "spawn"));
+        return;
+    }
+    
     while (GetIsObjectValid(oTest))
     {
         if (GetArea(oTest) == oArea)
