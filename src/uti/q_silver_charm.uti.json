@@ -6,7 +6,7 @@
   },
   "BaseItem": {
     "type": "int",
-    "value": 22
+    "value": 79
   },
   "Charges": {
     "type": "byte",
@@ -14,55 +14,45 @@
   },
   "Comment": {
     "type": "cexostring",
-    "value": "1"
+    "value": ""
   },
   "Cost": {
     "type": "dword",
-    "value": 7195
+    "value": 8
   },
   "Cursed": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "DescIdentified": {
-    "id": 14306,
     "type": "cexolocstring",
     "value": {
-      "0": "Dynala Goldenhand, an elven ranger who wished to rid her homeland of its werejackal problem, forged this dagger. She was killed by a tribe of orcs in the Greypeak Mountains as she tracked the werejackal leader. "
+      "0": "Formed with the blessings of Neurik, priest of Highcliff, this smooth-surfaced charm has the power to save the souls of those recently afflicted with lycanthropy.\n\nHe noted that it won't work on someone who has been affected for quite some time, and that for it to even work, the infected must already be badly wounded.\n\nBeyond that one purpose, it is a very weak charm indeed."
     }
   },
   "Description": {
     "type": "cexolocstring",
     "value": {
-      "0": ""
+      "0": "Formed with the blessings of Neurik, priest of Highcliff, this smooth-surfaced charm has the power to save the souls of those recently afflicted with lycanthropy.\n\nHe noted that it won't work on someone who has been affected for quite some time, and that for it to even work, the infected must already be badly wounded.\n\nBeyond that one purpose, it is a very weak charm indeed."
     }
   },
   "Identified": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "LocalizedName": {
-    "id": 14307,
     "type": "cexolocstring",
     "value": {
-      "0": "Werebane"
+      "0": "Silver Charm"
     }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 43
-  },
-  "ModelPart2": {
-    "type": "byte",
-    "value": 32
-  },
-  "ModelPart3": {
-    "type": "byte",
-    "value": 32
+    "value": 34
   },
   "PaletteID": {
     "type": "byte",
-    "value": 34
+    "value": 1
   },
   "Plot": {
     "type": "byte",
@@ -79,11 +69,11 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 2
+          "value": 3
         },
         "CostValue": {
           "type": "word",
-          "value": 1
+          "value": 13
         },
         "Param1": {
           "type": "byte",
@@ -95,42 +85,11 @@
         },
         "PropertyName": {
           "type": "word",
-          "value": 6
+          "value": 15
         },
         "Subtype": {
           "type": "word",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 2
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 4
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 8
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 23
+          "value": 537
         }
       }
     ]
@@ -145,10 +104,30 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "weapon310"
+    "value": "q_silver_charm"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "weapon310"
+    "value": "q_silver_charm"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest1"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "02_q_artifacts_stolen"
+        }
+      }
+    ]
   }
 }
