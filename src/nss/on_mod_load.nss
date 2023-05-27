@@ -104,7 +104,7 @@ void SeedMonitor()
             if (SEED_SPAWNS)
             {
                 DeleteLocalInt(GetModule(), "seed_complete");
-                
+
                 // Destroy the databases to give it a clean slate.
                 DestroyCampaignDatabase("spawns");
 
@@ -199,7 +199,7 @@ void SeedMonitor()
                 ExecuteScript("seed_treasuremap");
             }
         }
-        else 
+        else
         {
             // Done!
             WriteTimestampedLogEntry("Finished seeding!");
@@ -243,12 +243,12 @@ void main()
             if (GetStringLeft(sResRef, 1) != "_")
             {
                 SetTag(oArea, sResRef);
-                
+
             }
             oArea = GetNextArea();
             continue;
         }
-            
+
         // Set stage complete so the monitor knows to start
         SetLocalInt(OBJECT_SELF, "seed_complete", 1);
         SeedMonitor();
@@ -409,6 +409,8 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_DM_SPAWN_OBJECT_AFTER", "dm_spawna");
 
     NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_DROP_ITEM_BEFORE", "on_item_dropb");
+
+    NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_WALK_TO_WAYPOINT_BEFORE", "stealth_move_fix");
 
 
     ServerWebhook("The Frozen North is starting!", "The Frozen North server is starting up. Once the module is stable and ready for players to login, we'll let you know.");
