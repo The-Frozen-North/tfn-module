@@ -467,7 +467,7 @@ int GibsNPC(object oCreature)
 
     if (!bNoElementalDeath && (iCold > 0) && (iCold >= Random(nMaxHP)) && (nSize < CREATURE_SIZE_HUGE) && (iCold > iAcid) && (iCold > iElectric) && (iCold > iFire) && (iCold > iNegative) && (iCold > iDivine) && (iCold > iPositive) && (iCold > iMagic))
     {
-        NWNX_Creature_SetSoundset(oCreature, 9999);
+        SetSoundset(oCreature, 9999);
         PrepareForElementalDeath("death_cold", oCreature);
 
         DelayCommand(0.1, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oCreature));
