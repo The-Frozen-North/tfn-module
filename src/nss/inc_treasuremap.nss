@@ -1118,13 +1118,19 @@ void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJEC
     SetLocalObject(oPC, "opened_treasuremap", oMap);
     int nScale = GetPlayerDeviceProperty(oPC, PLAYER_DEVICE_PROPERTY_GUI_SCALE);
     float fScale = IntToFloat(nScale)/100.0;
-
     float fGeometryRectPos = -1.0;
-    if (nScale != 100)
+    // prior to 8193.35 drawlists were not affected by UI scaling
+    // putting things in the top left corner of the screen was the only way to see what was going on.
+    if (GetPlayerBuildVersionMajor(oPC) == 8193 && GetPlayerBuildVersionMinor(oPC) < 35)
     {
-        SendMessageToPC(oPC, "Due to an engine bug the map may not display correctly with your UI scaling. This should be fixed in a future NWN update, but keeping the map close to the top left of the screen should help with this.");
-        fGeometryRectPos = 0.0;
+        if (nScale != 100)
+        {
+            SendMessageToPC(oPC, "Due to an engine bug the map may not display correctly with your UI scaling. This should be fixed in a future NWN update, but keeping the map close to the top left of the screen should help with this.");
+            fGeometryRectPos = 0.0;
+        }
     }
+    
+    
     // "-" may not be legal for sqlite, I don't want to find out what happens then or if it's possible to do something
     // bad to the db in this case
     if (nACR < 0)

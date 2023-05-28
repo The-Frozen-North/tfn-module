@@ -47,10 +47,13 @@ void main()
     }
     if(darkvision)
     {
-        ApplyEffectToObject(DURATION_TYPE_EQUIPPED,TagEffect(NWNXPatch_SetEffectTrueType(EffectVisualEffect(2),69),"EC_FEATFIX"),oPC);
+        // EffectVisualEffect(2) is VFX_DUR_ENTANGLE, aka why people keep logging in and getting planted
+        //ApplyEffectToObject(DURATION_TYPE_EQUIPPED,TagEffect(NWNXPatch_SetEffectTrueType(EffectVisualEffect(2),69),"EC_FEATFIX"),oPC);
     }
     if(lowvision)
     {
-        ApplyEffectToObject(DURATION_TYPE_EQUIPPED,TagEffect(NWNXPatch_SetEffectTrueType(EffectVisualEffect(1),69),"EC_FEATFIX"),oPC);
+        // 1 is VFX_DUR_DARKNESS, unsure what this is meant to do but it sounds like it makes a dark area around you
+        // ... why?
+        //ApplyEffectToObject(DURATION_TYPE_EQUIPPED,TagEffect(NWNXPatch_SetEffectTrueType(EffectVisualEffect(1),69),"EC_FEATFIX"),oPC);
     }
 }
