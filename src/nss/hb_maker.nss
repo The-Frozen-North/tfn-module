@@ -35,6 +35,11 @@ void MakeGolemCreature(location lLoc)
 
 void MakeANewGolem()
 {
+    // This is wrapped in DelayCommand, killing the maker between the two firing could be bad
+    if (GetIsDead(OBJECT_SELF))
+    {
+        return;
+    }
     // Find closest bonepile!
     object oArea = GetObjectByTag("ud_maker4");
     float fDist = 9999.0;
