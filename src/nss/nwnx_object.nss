@@ -15,6 +15,7 @@ const int NWNX_OBJECT_LOCALVAR_TYPE_FLOAT    = 2;
 const int NWNX_OBJECT_LOCALVAR_TYPE_STRING   = 3;
 const int NWNX_OBJECT_LOCALVAR_TYPE_OBJECT   = 4;
 const int NWNX_OBJECT_LOCALVAR_TYPE_LOCATION = 5;
+const int NWNX_OBJECT_LOCALVAR_TYPE_JSON     = 6;
 /// @}
 
 /// @anchor object_internal_types
@@ -39,6 +40,13 @@ const int NWNX_OBJECT_TYPE_INTERNAL_PORTAL = 15;
 const int NWNX_OBJECT_TYPE_INTERNAL_SOUND = 16;
 /// @}
 
+/// @anchor projectile_types
+/// @name Projectile VFX Types
+/// @{
+const int NWNX_OBJECT_SPELL_PROJECTILE_TYPE_DEFAULT = 6;
+const int NWNX_OBJECT_SPELL_PROJECTILE_TYPE_USE_PATH = 7;
+/// @}
+
 /// A local variable structure.
 struct NWNX_Object_LocalVariable
 {
@@ -61,17 +69,11 @@ int NWNX_Object_GetLocalVariableCount(object obj);
 /// @note As of build 8193.14, this function takes O(n) time, where n is the number
 ///       of locals on the object. Individual variable access with GetLocalXxx()
 ///       is now O(1) though.
-/// @note As of build 8193.14, this function may return variable type UNKNOWN
-///       if the value is the default (0/0.0/""/OBJECT_INVALID) for the type.
+/// @note As of build 8193.14, this function will not return a variable if the value is
+///       the default (0/0.0/""/OBJECT_INVALID/JsonNull()) for the type. They are considered not set.
+/// @note Will return type UNKNOWN for cassowary variables.
 /// @return An NWNX_Object_LocalVariable struct.
 struct NWNX_Object_LocalVariable NWNX_Object_GetLocalVariable(object obj, int index);
-
-/// @brief Convert an object id to the actual object.
-/// @param id The object id.
-/// @return An object from the provided object ID.
-/// @remark This is the counterpart to ObjectToString.
-/// @deprecated Use the basegame StringToObject() function. This will be removed in a future NWNX release.
-object NWNX_Object_StringToObject(string id);
 
 /// @brief Set oObject's position.
 /// @param oObject The object.
@@ -135,12 +137,6 @@ int NWNX_Object_GetAppearance(object oPlaceable);
 /// @return TRUE if the object has the visual effect applied to it
 int NWNX_Object_GetHasVisualEffect(object obj, int nVFX);
 
-/// @brief Check if an item can fit in an object's inventory.
-/// @param obj The object with an inventory.
-/// @param baseitem The base item id to check for a fit.
-/// @return TRUE if an item of base item type can fit in object's inventory
-int NWNX_Object_CheckFit(object obj, int baseitem);
-
 /// @brief Get an object's damage immunity.
 /// @param obj The object.
 /// @param damageType The damage type to check for immunity. Use DAMAGE_TYPE_* constants.
@@ -189,19 +185,6 @@ string NWNX_Object_GetTriggerGeometry(object oTrigger);
 ///
 /// @remark The minimum number of vertices is 3.
 void NWNX_Object_SetTriggerGeometry(object oTrigger, string sGeometry);
-
-/// @brief Add an effect to an object that displays an icon and has no other effect.
-/// @remark See effecticons.2da for a list of possible effect icons.
-/// @param obj The object to apply the effect.
-/// @param nIcon The icon id.
-/// @param fDuration If specified the effect will be temporary and last this length in seconds, otherwise the effect
-/// will be permanent.
-void NWNX_Object_AddIconEffect(object obj, int nIcon, float fDuration=0.0);
-
-/// @brief Remove an icon effect from an object that was added by the NWNX_Object_AddIconEffect() function.
-/// @param obj The object.
-/// @param nIcon The icon id.
-void NWNX_Object_RemoveIconEffect(object obj, int nIcon);
 
 /// @brief Export an object to the UserDirectory/nwnx folder.
 /// @param sFileName The filename without extension, 16 or less characters.
@@ -288,14 +271,6 @@ int NWNX_Object_GetInternalObjectType(object oObject);
 /// @return TRUE on success.
 int NWNX_Object_AcquireItem(object oObject, object oItem);
 
-/// @brief Cause oObject to face fDirection.
-/// @note This function is almost identical to SetFacing(), the only difference being that it allows you to specify
-/// the target object without the use of AssignCommand(). This is useful when you want to change the facing of an object
-/// in an ExecuteScriptChunk() call where AssignCommand() does not work.
-/// @param oObject The object to change its facing of
-/// @param fDirection The direction the object should face
-void NWNX_Object_SetFacing(object oObject, float fDirection);
-
 /// @brief Clear all spell effects oObject has applied to others.
 /// @param oObject The object that applied the spell effects.
 void NWNX_Object_ClearSpellEffectsOnOthers(object oObject);
@@ -318,14 +293,18 @@ int NWNX_Object_GetIsDestroyable(object oObject);
 /// @brief Checks for specific spell immunity. Should only be called in spellscripts
 /// @param oDefender The object defending against the spell.
 /// @param oCaster The object casting the spell.
+/// @param nSpellId The casted spell id. Default value is -1, which corrresponds to the normal game behaviour.
 /// @return -1 if defender has no immunity, 2 if the defender is immune
-int NWNX_Object_DoSpellImmunity(object oDefender, object oCaster);
+int NWNX_Object_DoSpellImmunity(object oDefender, object oCaster, int nSpellId=-1);
 
 /// @brief Checks for spell school/level immunities and mantles. Should only be called in spellscripts
 /// @param oDefender The object defending against the spell.
 /// @param oCaster The object casting the spell.
+/// @param nSpellId The casted spell id. Default value is -1, which corrresponds to the normal game behaviour.
+/// @param nSpellLevel The level of the casted spell. Default value is -1, which corrresponds to the normal game behaviour.
+/// @param nSpellSchool The school of the casted spell (SPELL_SCHOOL_* constant). Default value is -1, which corrresponds to the normal game behaviour.
 /// @return -1 defender no immunity. 2 if immune. 3 if immune, but the immunity has a limit (example: mantles)
-int NWNX_Object_DoSpellLevelAbsorption(object oDefender, object oCaster);
+int NWNX_Object_DoSpellLevelAbsorption(object oDefender, object oCaster, int nSpellId=-1, int nSpellLevel=-1, int nSpellSchool=-1);
 
 /// @brief Sets if a placeable has an inventory.
 /// @param obj The placeable.
@@ -380,6 +359,59 @@ void NWNX_Object_SetLastTriggered(object oObject, object oLast);
 /// @return The remaining duration, in seconds, or the zero on failure.
 float NWNX_Object_GetAoEObjectDurationRemaining(object oAoE);
 
+/// @brief Sets conversations started by oObject to be private or not.
+/// @note ActionStartConversation()'s bPrivateConversation parameter will overwrite this flag.
+/// @param oObject The object.
+/// @param bPrivate TRUE/FALSE.
+void NWNX_Object_SetConversationPrivate(object oObject, int bPrivate);
+
+/// @brief Sets the radius of a circle AoE object.
+/// @param oAoE The AreaOfEffect object.
+/// @param fRadius The radius, must be bigger than 0.0f.
+void NWNX_Object_SetAoEObjectRadius(object oAoE, float fRadius);
+
+/// @brief Gets the radius of a circle AoE object.
+/// @param oAoE The AreaOfEffect object.
+/// @return The radius or 0.0f on error
+float NWNX_Object_GetAoEObjectRadius(object oAoE);
+
+/// @brief Gets whether the last spell cast of oObject was spontaneous.
+/// @note Should be called in a spell script.
+/// @param oObject The object.
+/// @return true if the last spell was cast spontaneously
+int NWNX_Object_GetLastSpellCastSpontaneous(object oObject);
+
+/// @brief Gets the last spell cast domain level.
+/// @note Should be called in a spell script.
+/// @param oObject The object.
+/// @return Domain level of the cast spell, 0 if not a domain spell
+int NWNX_Object_GetLastSpellCastDomainLevel(object oObject);
+
+/// @brief Force the given object to carry the given UUID. Any other object currently owning the UUID is stripped of it.
+/// @param oObject The object
+/// @param sUUID The UUID to force
+void NWNX_Object_ForceAssignUUID(object oObject, string sUUID);
+
+/// @brief Returns how many items are in oObject's inventory.
+/// @param oObject A creature, placeable, or item.
+/// @return Returns a count of how many items are in oObject's inventory.
+int NWNX_Object_GetInventoryItemCount(object oObject);
+
+/// @brief Override the projectile visual effect of ranged/throwing weapons and spells.
+/// @param oCreature The creature.
+/// @param nProjectileType A @ref projectile_types "NWNX_OBJECT_SPELL_PROJECTILE_TYPE_*" constant or -1 to remove the override.
+/// @param nProjectilePathType A "PROJECTILE_PATH_TYPE_*" constant or -1 to ignore.
+/// @param nSpellID A "SPELL_*" constant. -1 to ignore.
+/// @param bPersist Whether the override should persist to the .bic file (for PCs).
+/// @note Persistence is enabled after a server reset by the first use of this function. Recommended to trigger on a dummy target OnModuleLoad to enable persistence.
+///       This will override all spell projectile VFX from oCreature until the override is removed.
+void NWNX_Object_OverrideSpellProjectileVFX(object oCreature, int nProjectileType = -1, int nProjectilePathType = -1, int nSpellID = -1, int bPersist = FALSE);
+
+/// @brief Returns TRUE if the last spell was cast instantly. This function should only be called in a spell script.
+/// @note To initialize the hooks used by this function it is recommended to call this function once in your module load script.
+/// @return TRUE if the last spell was instant.
+int NWNX_Object_GetLastSpellInstant();
+
 /// @}
 
 int NWNX_Object_GetLocalVariableCount(object obj)
@@ -404,13 +436,6 @@ struct NWNX_Object_LocalVariable NWNX_Object_GetLocalVariable(object obj, int in
     var.key  = NWNX_GetReturnValueString();
     var.type = NWNX_GetReturnValueInt();
     return var;
-}
-
-object NWNX_Object_StringToObject(string id)
-{
-    WriteTimestampedLogEntry("WARNING: NWNX_Object_StringToObject() is deprecated, please use the basegame's StringToObject()");
-
-    return StringToObject(id);
 }
 
 void NWNX_Object_SetPosition(object oObject, vector vPosition, int bUpdateSubareas = TRUE)
@@ -528,18 +553,6 @@ int NWNX_Object_GetHasVisualEffect(object obj, int nVFX)
     return NWNX_GetReturnValueInt();
 }
 
-int NWNX_Object_CheckFit(object obj, int baseitem)
-{
-    string sFunc = "CheckFit";
-
-    NWNX_PushArgumentInt(baseitem);
-    NWNX_PushArgumentObject(obj);
-
-    NWNX_CallFunction(NWNX_Object, sFunc);
-
-    return NWNX_GetReturnValueInt();
-}
-
 int NWNX_Object_GetDamageImmunity(object obj, int damageType)
 {
     string sFunc = "GetDamageImmunity";
@@ -620,25 +633,6 @@ void NWNX_Object_SetTriggerGeometry(object oTrigger, string sGeometry)
 
     NWNX_PushArgumentString(sGeometry);
     NWNX_PushArgumentObject(oTrigger);
-    NWNX_CallFunction(NWNX_Object, sFunc);
-}
-
-void NWNX_Object_AddIconEffect(object obj, int nIcon, float fDuration=0.0)
-{
-    string sFunc = "AddIconEffect";
-
-    NWNX_PushArgumentFloat(fDuration);
-    NWNX_PushArgumentInt(nIcon);
-    NWNX_PushArgumentObject(obj);
-    NWNX_CallFunction(NWNX_Object, sFunc);
-}
-
-void NWNX_Object_RemoveIconEffect(object obj, int nIcon)
-{
-    string sFunc = "RemoveIconEffect";
-
-    NWNX_PushArgumentInt(nIcon);
-    NWNX_PushArgumentObject(obj);
     NWNX_CallFunction(NWNX_Object, sFunc);
 }
 
@@ -788,15 +782,6 @@ int NWNX_Object_AcquireItem(object oObject, object oItem)
     return NWNX_GetReturnValueInt();
 }
 
-void NWNX_Object_SetFacing(object oObject, float fDirection)
-{
-    string sFunc = "SetFacing";
-
-    NWNX_PushArgumentFloat(fDirection);
-    NWNX_PushArgumentObject(oObject);
-    NWNX_CallFunction(NWNX_Object, sFunc);
-}
-
 void NWNX_Object_ClearSpellEffectsOnOthers(object oObject)
 {
     string sFunc = "ClearSpellEffectsOnOthers";
@@ -835,9 +820,10 @@ int NWNX_Object_GetIsDestroyable(object oObject)
     return NWNX_GetReturnValueInt();
 }
 
-int NWNX_Object_DoSpellImmunity(object oDefender, object oCaster)
+int NWNX_Object_DoSpellImmunity(object oDefender, object oCaster, int nSpellId=-1)
 {
     string sFunc = "DoSpellImmunity";
+    NWNX_PushArgumentInt(nSpellId);
     NWNX_PushArgumentObject(oCaster);
     NWNX_PushArgumentObject(oDefender);
     NWNX_CallFunction(NWNX_Object, sFunc);
@@ -845,9 +831,12 @@ int NWNX_Object_DoSpellImmunity(object oDefender, object oCaster)
     return  NWNX_GetReturnValueInt();
 }
 
-int NWNX_Object_DoSpellLevelAbsorption(object oDefender, object oCaster)
+int NWNX_Object_DoSpellLevelAbsorption(object oDefender, object oCaster, int nSpellId=-1, int nSpellLevel=-1, int nSpellSchool=-1)
 {
     string sFunc = "DoSpellLevelAbsorption";
+    NWNX_PushArgumentInt(nSpellSchool);
+    NWNX_PushArgumentInt(nSpellLevel);
+    NWNX_PushArgumentInt(nSpellId);
     NWNX_PushArgumentObject(oCaster);
     NWNX_PushArgumentObject(oDefender);
     NWNX_CallFunction(NWNX_Object, sFunc);
@@ -946,4 +935,90 @@ float NWNX_Object_GetAoEObjectDurationRemaining(object oAoE)
     NWNX_CallFunction(NWNX_Object, sFunc);
 
     return NWNX_GetReturnValueFloat();
+}
+
+void NWNX_Object_SetConversationPrivate(object oObject, int bPrivate)
+{
+    string sFunc = "SetConversationPrivate";
+
+    NWNX_PushArgumentInt(bPrivate);
+    NWNX_PushArgumentObject(oObject);
+
+    NWNX_CallFunction(NWNX_Object, sFunc);
+}
+
+void NWNX_Object_SetAoEObjectRadius(object oAoE, float fRadius)
+{
+    string sFunc = "SetAoEObjectRadius";
+
+    NWNX_PushArgumentFloat(fRadius);
+    NWNX_PushArgumentObject(oAoE);
+    NWNX_CallFunction(NWNX_Object, sFunc);
+}
+
+float NWNX_Object_GetAoEObjectRadius(object oAoE)
+{
+    string sFunc = "GetAoEObjectRadius";
+
+    NWNX_PushArgumentObject(oAoE);
+    NWNX_CallFunction(NWNX_Object, sFunc);
+
+    return NWNX_GetReturnValueFloat();
+}
+
+int NWNX_Object_GetLastSpellCastSpontaneous(object oObject)
+{
+    string sFunc = "GetLastSpellCastSpontaneous";
+
+    NWNX_PushArgumentObject(oObject);
+    NWNX_CallFunction(NWNX_Object, sFunc);
+
+    return NWNX_GetReturnValueInt();
+}
+
+int NWNX_Object_GetLastSpellCastDomainLevel(object oObject)
+{
+    string sFunc = "GetLastSpellCastDomainLevel";
+
+    NWNX_PushArgumentObject(oObject);
+    NWNX_CallFunction(NWNX_Object, sFunc);
+
+    return NWNX_GetReturnValueInt();
+}
+
+void NWNX_Object_ForceAssignUUID(object oObject, string sUUID)
+{
+    string sFunc = "ForceAssignUUID";
+
+    NWNX_PushArgumentString(sUUID);
+    NWNX_PushArgumentObject(oObject);
+    NWNX_CallFunction(NWNX_Object, sFunc);
+}
+
+int NWNX_Object_GetInventoryItemCount(object oObject)
+{
+    string sFunc = "GetInventoryItemCount";
+
+    NWNX_PushArgumentObject(oObject);
+    NWNX_CallFunction(NWNX_Object, sFunc);
+    return NWNX_GetReturnValueInt();
+}
+
+void NWNX_Object_OverrideSpellProjectileVFX(object oCreature, int nProjectileType = -1, int nProjectilePathType = -1, int nSpellID = -1, int bPersist = FALSE)
+{
+    string sFunc = "OverrideSpellProjectileVFX";
+
+    NWNX_PushArgumentInt(bPersist);
+    NWNX_PushArgumentInt(nSpellID);
+    NWNX_PushArgumentInt(nProjectilePathType);
+    NWNX_PushArgumentInt(nProjectileType);
+    NWNX_PushArgumentObject(oCreature);
+    NWNX_CallFunction(NWNX_Object, sFunc);
+}
+
+int NWNX_Object_GetLastSpellInstant()
+{
+    string sFunc = "GetLastSpellInstant";
+    NWNX_CallFunction(NWNX_Object, sFunc);
+    return NWNX_GetReturnValueInt();
 }

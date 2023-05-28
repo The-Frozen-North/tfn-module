@@ -36,7 +36,7 @@ void CureWerewolf(object oPC, object oTarget, int nCuredAppearance, int nCuredSo
     SetDescription(oTarget, "This man appears quite happy to be cured of his lycanthropy.");
 
     NWNX_Creature_SetClassByPosition(oTarget, 1, CLASS_TYPE_COMMONER);
-    NWNX_Creature_SetSoundset(oTarget, nCuredSoundset);
+    SetSoundset(oTarget, nCuredSoundset);
 
     ChangeToStandardFaction(oTarget, STANDARD_FACTION_DEFENDER);
 

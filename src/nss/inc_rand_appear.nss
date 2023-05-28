@@ -99,14 +99,14 @@ int RandomiseCreatureGender(object oCreature=OBJECT_SELF)
 {
     if (Random(2) == 1)
     {
-        NWNX_Creature_SetGender(oCreature, GENDER_FEMALE);
+        SetGender(oCreature, GENDER_FEMALE);
         return GENDER_FEMALE;
     }
     else
     {
-        NWNX_Creature_SetGender(oCreature, GENDER_MALE);
+        SetGender(oCreature, GENDER_MALE);
         return GENDER_MALE;
-    }    
+    }
 }
 
 void RandomiseCreatureHead(object oCreature=OBJECT_SELF)
@@ -230,10 +230,10 @@ void RandomiseCreatureSoundset_Average(object oCreature=OBJECT_SELF)
     {
         if (nGender == GENDER_MALE)
         {
-           Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 142, GetModule());   //gnome male annoying 
-           Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 178, GetModule());   //gnome male older 
-           Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 143, GetModule());   //gnome male pleasant 
-           Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 164, GetModule());   //gnome male typical 
+           Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 142, GetModule());   //gnome male annoying
+           Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 178, GetModule());   //gnome male older
+           Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 143, GetModule());   //gnome male pleasant
+           Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 164, GetModule());   //gnome male typical
         }
     }
     else if (nRace == RACIAL_TYPE_HALFLING)
@@ -295,7 +295,7 @@ void RandomiseCreatureSoundset_Average(object oCreature=OBJECT_SELF)
             if (GetLevelByClass(CLASS_TYPE_DRUID, oCreature)) { for (i=0; i<3; i++) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 140, GetModule()); } } // human male typical druid
         }
     }
-    
+
     if (nGender == GENDER_FEMALE)
     {
         Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 433, GetModule());   //female adventurer
@@ -320,7 +320,7 @@ void RandomiseCreatureSoundset_Average(object oCreature=OBJECT_SELF)
         if (nWiz) { for (i=0; i<8; i++) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 191, GetModule()); } } // human male wizard
         Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 420, GetModule()); // male archer
         Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 217, GetModule()); // male boisterous goodnatured
-        if (nGoodEvil != ALIGNMENT_GOOD) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 218, GetModule()); } // male brooding dark hero 
+        if (nGoodEvil != ALIGNMENT_GOOD) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 218, GetModule()); } // male brooding dark hero
         if (nInt <= 8) { for (i=0; i<10; i++) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 363, GetModule()); } } // male dumb hero
         if (nWiz) { for (i=0; i<6; i++) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 418, GetModule()); } } // male good wizard
         if (nWiz) { for (i=0; i<6; i++) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 222, GetModule()); } } // male high strung evangelist
@@ -335,11 +335,11 @@ void RandomiseCreatureSoundset_Average(object oCreature=OBJECT_SELF)
         if (fAB > 0.75) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 367, GetModule()); } // male stealth specialist
         if (fAB > 0.75) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 419, GetModule()); } // male typical fighter
     }
-    
+
     Array_Shuffle(RAND_APPEAR_TEMP_ARRAY, GetModule());
     int nSoundset = Array_At_Int(RAND_APPEAR_TEMP_ARRAY, 0, GetModule());
-    NWNX_Creature_SetSoundset(oCreature, nSoundset);
-    
+    SetSoundset(oCreature, nSoundset);
+
 }
 
 
@@ -381,7 +381,7 @@ void RandomiseCreatureSoundset_Rough(object oCreature=OBJECT_SELF)
             Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 176, GetModule());   //halforc female lout
         }
     }
-    
+
     if (nGender == GENDER_FEMALE)
     {
         Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 357, GetModule());  // female berserker
@@ -393,8 +393,8 @@ void RandomiseCreatureSoundset_Rough(object oCreature=OBJECT_SELF)
         Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 138, GetModule()); // human male older world weary
         Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 363, GetModule()); // male dumb hero
     }
-    
-    
+
+
     Array_Shuffle(RAND_APPEAR_TEMP_ARRAY, GetModule());
     if (Array_Size(RAND_APPEAR_TEMP_ARRAY, GetModule()) == 0)
     {
@@ -403,7 +403,7 @@ void RandomiseCreatureSoundset_Rough(object oCreature=OBJECT_SELF)
     else
     {
         int nSoundset = Array_At_Int(RAND_APPEAR_TEMP_ARRAY, 0, GetModule());
-        NWNX_Creature_SetSoundset(oCreature, nSoundset);
+        SetSoundset(oCreature, nSoundset);
     }
 }
 
@@ -465,7 +465,7 @@ void RandomiseCreatureSoundset_Intellectual(object oCreature=OBJECT_SELF)
         if (GetLevelByClass(CLASS_TYPE_DRUID, oCreature)) { for (i=0; i<6; i++) {   Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 223, GetModule()); } } // male reserved guardian
         if (fAB > 0.75) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 219, GetModule()); } // male violent fighter
     }
-    
+
     Array_Shuffle(RAND_APPEAR_TEMP_ARRAY, GetModule());
     if (Array_Size(RAND_APPEAR_TEMP_ARRAY, GetModule()) == 0)
     {
@@ -474,9 +474,9 @@ void RandomiseCreatureSoundset_Intellectual(object oCreature=OBJECT_SELF)
     else
     {
         int nSoundset = Array_At_Int(RAND_APPEAR_TEMP_ARRAY, 0, GetModule());
-        NWNX_Creature_SetSoundset(oCreature, nSoundset);
+        SetSoundset(oCreature, nSoundset);
     }
-    
+
 }
 
 void RandomiseCreatureSoundset_Old(object oCreature=OBJECT_SELF)
@@ -499,7 +499,7 @@ void RandomiseCreatureSoundset_Old(object oCreature=OBJECT_SELF)
     }
     else if (nRace == RACIAL_TYPE_GNOME && nGender == GENDER_MALE)
     {
-        for (i=0; i<2; i++) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 178, GetModule()); } // gnome male older 
+        for (i=0; i<2; i++) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 178, GetModule()); } // gnome male older
     }
     if (nGender == GENDER_MALE)
     {
@@ -510,7 +510,7 @@ void RandomiseCreatureSoundset_Old(object oCreature=OBJECT_SELF)
         Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 124, GetModule()); // human male older melancholy
         if (nWiz) { for (i=0; i<4; i++) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 181, GetModule()); } } // human male wizard old
     }
-    
+
     Array_Shuffle(RAND_APPEAR_TEMP_ARRAY, GetModule());
     if (Array_Size(RAND_APPEAR_TEMP_ARRAY, GetModule()) == 0)
     {
@@ -519,9 +519,9 @@ void RandomiseCreatureSoundset_Old(object oCreature=OBJECT_SELF)
     else
     {
         int nSoundset = Array_At_Int(RAND_APPEAR_TEMP_ARRAY, 0, GetModule());
-        NWNX_Creature_SetSoundset(oCreature, nSoundset);
+        SetSoundset(oCreature, nSoundset);
     }
-    
+
 }
 
 void RandomiseSkinColour(object oCreature=OBJECT_SELF)
@@ -540,7 +540,7 @@ void RandomiseHairColour(object oCreature=OBJECT_SELF)
     {
         nDarkerSkin = 0;
     }
-    
+
     if (!nDarkerSkin)
     {
         // Apparently, 1/4 of the first row colours are some kind of red
@@ -559,7 +559,7 @@ void RandomiseHairColour(object oCreature=OBJECT_SELF)
         }
     }
     else
-    {   
+    {
         // Red
         if (d10() == 10)
         {
@@ -588,7 +588,7 @@ void RandomiseHairColour(object oCreature=OBJECT_SELF)
 
 void RandomisePortrait(object oCreature=OBJECT_SELF)
 {
-    
+
     Array_Clear(RAND_APPEAR_TEMP_ARRAY, GetModule());
     int nRace = GetRacialType(oCreature);
     int nGender = GetGender(oCreature);
@@ -645,8 +645,8 @@ void RandomisePortrait(object oCreature=OBJECT_SELF)
             if (nAC >= 4 && nAC < 7) { for (i=0; i<3; i++) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_06_", GetModule()); } }
             if (nAC >= 6 && nGoodEvil == ALIGNMENT_EVIL) { for (i=0; i<5; i++) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_07_", GetModule()); } }
             if (nAC < 3) { for (i=0; i<2; i++) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_08_", GetModule()); } }
-            if (nAC < 1) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_22_", GetModule()); } 
-            if (nAC < 1 && fAB < 0.75) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_23_", GetModule()); } 
+            if (nAC < 1) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_22_", GetModule()); }
+            if (nAC < 1 && fAB < 0.75) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_23_", GetModule()); }
             if (nAC >= 6) { for (i=0; i<5; i++) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_09_", GetModule()); } }
             if (nAC >= 3 && nAC < 5) { for (i=0; i<5; i++) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_10_", GetModule()); } }
             if (fAB > 0.75 && nAC < 2) { for (i=0; i<3; i++) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_11_", GetModule()); } }
@@ -663,7 +663,7 @@ void RandomisePortrait(object oCreature=OBJECT_SELF)
             if (GetLevelByClass(CLASS_TYPE_ROGUE, oCreature)) { for (i=0; i<7; i++) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_26_", GetModule()); } }
             if (GetLevelByClass(CLASS_TYPE_BLACKGUARD, oCreature)) { for (i=0; i<15; i++) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_38_", GetModule()); } }
             if (nWiz) { for (i=0; i<3; i++) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_36_", GetModule()); } }
-            if (nAC >= 1 && nAC <=4 && fAB >= 0.75) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_39_", GetModule()); } 
+            if (nAC >= 1 && nAC <=4 && fAB >= 0.75) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_39_", GetModule()); }
             Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_53_", GetModule());
             if (nAC >= 4 && nAC <=6 && fAB >= 0.75) { for (i=0; i<4; i++) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_40_", GetModule()); } }
             if (nAC >= 6) { for (i=0; i<3; i++) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "hu_m_41_", GetModule()); } }
@@ -748,7 +748,7 @@ void RandomisePortrait(object oCreature=OBJECT_SELF)
         if (nGender == GENDER_MALE)
         {
             Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_m_08_", GetModule());
-            if (!nWiz) { 
+            if (!nWiz) {
                 Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_m_01_", GetModule());
                 Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_m_02_", GetModule());
                 Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_m_03_", GetModule());
@@ -757,10 +757,10 @@ void RandomisePortrait(object oCreature=OBJECT_SELF)
             }
             else
             {
-               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_m_06_", GetModule()); 
-               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_m_06_", GetModule()); 
-               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_m_07_", GetModule()); 
-               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_m_07_", GetModule()); 
+               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_m_06_", GetModule());
+               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_m_06_", GetModule());
+               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_m_07_", GetModule());
+               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_m_07_", GetModule());
             }
         }
         else if (nGender == GENDER_FEMALE)
@@ -768,15 +768,15 @@ void RandomisePortrait(object oCreature=OBJECT_SELF)
             Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_f_04_", GetModule());
             if (!nWiz)
             {
-               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_f_02_", GetModule()); 
-               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_f_03_", GetModule()); 
-               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_f_05_", GetModule()); 
+               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_f_02_", GetModule());
+               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_f_03_", GetModule());
+               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_f_05_", GetModule());
                if (nAC >= 6) { for (i=0; i<3; i++) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_f_07_", GetModule()); } }
             }
             else
             {
-               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_f_06_", GetModule());  
-               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_f_06_", GetModule());  
+               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_f_06_", GetModule());
+               Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "gn_f_06_", GetModule());
             }
         }
     }
@@ -786,20 +786,20 @@ void RandomisePortrait(object oCreature=OBJECT_SELF)
         {
             if (fAB >= 0.75 && nAC <= 4)
             {
-                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_01_", GetModule());    
-                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_03_", GetModule());    
-                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_04_", GetModule());    
-                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_06_", GetModule());    
-                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_08_", GetModule());    
+                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_01_", GetModule());
+                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_03_", GetModule());
+                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_04_", GetModule());
+                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_06_", GetModule());
+                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_08_", GetModule());
             }
             if (nAC <= 4)
             {
-                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_07_", GetModule()); 
-                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_02_", GetModule()); 
+                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_07_", GetModule());
+                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_02_", GetModule());
             }
             if (nAC > 4)
             {
-                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_05_", GetModule()); 
+                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "ha_f_05_", GetModule());
             }
         }
         else if (nGender == GENDER_MALE)
@@ -830,17 +830,17 @@ void RandomisePortrait(object oCreature=OBJECT_SELF)
             if (nWiz) { Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "or_f_05_", GetModule()); }
             else
             {
-                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "or_f_01_", GetModule());  
-                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "or_f_02_", GetModule());  
-                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "or_f_03_", GetModule());  
-                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "or_f_04_", GetModule());  
+                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "or_f_01_", GetModule());
+                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "or_f_02_", GetModule());
+                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "or_f_03_", GetModule());
+                Array_PushBack_Str(RAND_APPEAR_TEMP_ARRAY, "or_f_04_", GetModule());
             }
         }
     }
 
-    
+
     Array_Shuffle(RAND_APPEAR_TEMP_ARRAY, GetModule());
-    
+
     string sPortrait = Array_At_Str(RAND_APPEAR_TEMP_ARRAY, 0, GetModule());
     //if (Array_Size(RAND_APPEAR_TEMP_ARRAY, GetModule()) == 0)
     if (GetStringLength(sPortrait) == 0)

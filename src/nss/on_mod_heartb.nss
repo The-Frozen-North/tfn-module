@@ -3,7 +3,6 @@
 #include "inc_henchman"
 #include "inc_penalty"
 #include "inc_quest"
-#include "nwnx_util"
 #include "inc_sql"
 #include "inc_general"
 #include "inc_sqlite_time"
@@ -219,16 +218,16 @@ void main()
 {
     object oPC = GetFirstPC();
     object oModule = GetModule();
-    
+
     ExportAllCharacters();
 
-    
+
 
     string sBounties = GetLocalString(oModule, "bounties");
 
     if (GetIsObjectValid(oPC))
     {
-        int nTickCount = NWNX_Util_GetServerTicksPerSecond();
+        int nTickCount = GetTickRate();
         if (nTickCount <= 50) SendDebugMessage("Low tick count detected: "+IntToString(nTickCount), TRUE);
     }
 
