@@ -1,6 +1,69 @@
 #include "nw_inc_nui"
 #include "nw_inc_nui_insp"
 
+void MakeCustomWidget(object pc)
+{
+    json drawlist = JsonArray();
+    drawlist = JsonArrayInsert(drawlist, NuiDrawListText(
+        JsonInt(1),
+        NuiColor(255, 255, 255),
+        NuiRect(5.0, 5.0, 200.0, 200.0),
+        JsonString("Try Events: Hover MouseL MouseR"),
+        NUI_DRAW_LIST_ITEM_ORDER_AFTER,
+        NUI_DRAW_LIST_ITEM_RENDER_ALWAYS));
+    drawlist = JsonArrayInsert(drawlist, NuiDrawListText(
+        JsonInt(1),
+        NuiColor(0, 0, 255),
+        NuiRect(5.0, 20.0, 200.0, 200.0),
+        JsonString("Hover"),
+        NUI_DRAW_LIST_ITEM_ORDER_AFTER,
+        NUI_DRAW_LIST_ITEM_RENDER_MOUSE_HOVER));
+    drawlist = JsonArrayInsert(drawlist, NuiDrawListText(
+        JsonInt(1),
+        NuiColor(0, 255, 0),
+        NuiRect(5.0, 35.0, 200.0, 200.0),
+        JsonString("Mouse L"),
+        NUI_DRAW_LIST_ITEM_ORDER_AFTER,
+        NUI_DRAW_LIST_ITEM_RENDER_MOUSE_LEFT));
+    drawlist = JsonArrayInsert(drawlist, NuiDrawListText(
+        JsonInt(1),
+        NuiColor(255, 0, 0),
+        NuiRect(5.0, 50.0, 200.0, 200.0),
+        JsonString("Mouse R"),
+        NUI_DRAW_LIST_ITEM_ORDER_AFTER,
+        NUI_DRAW_LIST_ITEM_RENDER_MOUSE_RIGHT));
+    drawlist = JsonArrayInsert(drawlist, NuiDrawListText(
+        JsonInt(1),
+        NuiColor(255, 255, 0),
+        NuiRect(5.0, 65.0, 200.0, 200.0),
+        JsonString("Mouse M"),
+        NUI_DRAW_LIST_ITEM_ORDER_AFTER,
+        NUI_DRAW_LIST_ITEM_RENDER_MOUSE_MIDDLE));
+
+    json widget = NuiSpacer();
+    widget = NuiDrawList(widget, JsonInt(0)/*scissor*/, drawlist);
+    json jcol = JsonArray();
+    jcol = JsonArrayInsert(jcol, widget);
+    json root = NuiCol(jcol);
+    json nui = NuiWindow(
+        root,
+        JsonString("Widget Painting Demo"),
+        NuiBind("geometry"),
+        NuiBind("resizable"),
+        NuiBind("collapsed"),
+        NuiBind("closable"),
+        NuiBind("transparent"),
+        NuiBind("border"));
+
+    int token = NuiCreate(pc, nui, "customwidget");
+    NuiSetBind(pc, token, "collapsed", JsonBool(FALSE));
+    NuiSetBind(pc, token, "resizable", JsonBool(FALSE));
+    NuiSetBind(pc, token, "closable", JsonBool(TRUE));
+    NuiSetBind(pc, token, "transparent", JsonBool(FALSE));
+    NuiSetBind(pc, token, "border", JsonBool(TRUE));
+    NuiSetBind(pc, token, "geometry", NuiRect(10.0, 610.0, 200.0, 200.0));
+}
+
 void MakeSpreadsheet(object pc)
 {
     int datarowcount = 10;
@@ -123,8 +186,12 @@ void MakePortraitFlipper(object pc)
 
   row = JsonArray();
     json btnprev = NuiEnabled(NuiId(NuiButton(JsonString("<")), "btnprev"), NuiBind("btnpreve"));
+    btnprev = NuiTooltip(btnprev, JsonString("<-"));
+    btnprev = NuiDisabledTooltip(btnprev, JsonString("(nothing to go back to)"));
     json btnok   = NuiEnabled(NuiId(NuiButton(JsonString("Set")), "btnok"), NuiBind("btnoke"));
     json btnnext = NuiEnabled(NuiId(NuiButton(JsonString(">")), "btnnext"), NuiBind("btnnexte"));
+    btnnext = NuiTooltip(btnnext, JsonString("->"));
+    btnnext = NuiDisabledTooltip(btnnext, JsonString("(nothing to go forward to)"));
     row = JsonArrayInsert(row, NuiWidth(btnprev, 80.0));
     row = JsonArrayInsert(row, NuiSpacer());
     row = JsonArrayInsert(row, NuiWidth(btnok, 80.0));
@@ -135,7 +202,7 @@ void MakePortraitFlipper(object pc)
   json root = NuiCol(col);
 	json nui = NuiWindow(
     root,
-    NuiBind("po_resref"),
+    NuiBind("title"),
     NuiBind("geometry"),
     NuiBind("resizable"),
     NuiBind("collapsed"),
@@ -151,6 +218,8 @@ void MakePortraitFlipper(object pc)
   NuiSetBind(pc, token, "po_resref", JsonString(ref));
   NuiSetBind(pc, token, "btnpreve", JsonBool(0));
   NuiSetBind(pc, token, "btnnexte", JsonBool(1));
+
+  NuiSetBind(pc, token, "title", NuiStrRef(161));
 
   json combovalues = JsonArray();
   combovalues = JsonArrayInsert(combovalues, NuiComboEntry("Cats (164-167)", 0));
@@ -178,4 +247,5 @@ void main()
   MakeWindowInspector(pc);
   MakePortraitFlipper(pc);
   MakeSpreadsheet(pc);
+  MakeCustomWidget(pc);
 }

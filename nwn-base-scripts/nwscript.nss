@@ -71,6 +71,7 @@ int    DURATION_TYPE_PERMANENT  = 2;
 int    SUBTYPE_MAGICAL          = 8;
 int    SUBTYPE_SUPERNATURAL     = 16;
 int    SUBTYPE_EXTRAORDINARY    = 24;
+int    SUBTYPE_UNYIELDING       = 32;
 
 int    ABILITY_STRENGTH         = 0; // should be the same as in nwseffectlist.cpp
 int    ABILITY_DEXTERITY        = 1;
@@ -129,6 +130,25 @@ int    DAMAGE_TYPE_SONIC        = 2048;
 // The base weapon damage is the base damage delivered by the weapon before
 // any additional types of damage (e.g. fire) have been added.
 int    DAMAGE_TYPE_BASE_WEAPON  = 4096;
+int    DAMAGE_TYPE_CUSTOM1      = 8192;
+int    DAMAGE_TYPE_CUSTOM2      = 16384;
+int    DAMAGE_TYPE_CUSTOM3      = 32768;
+int    DAMAGE_TYPE_CUSTOM4      = 65536;
+int    DAMAGE_TYPE_CUSTOM5      = 131072;
+int    DAMAGE_TYPE_CUSTOM6      = 262144;
+int    DAMAGE_TYPE_CUSTOM7      = 524288;
+int    DAMAGE_TYPE_CUSTOM8      = 1048576;
+int    DAMAGE_TYPE_CUSTOM9      = 2097152;
+int    DAMAGE_TYPE_CUSTOM10     = 4194304;
+int    DAMAGE_TYPE_CUSTOM11     = 8388608;
+int    DAMAGE_TYPE_CUSTOM12     = 16777216;
+int    DAMAGE_TYPE_CUSTOM13     = 33554432;
+int    DAMAGE_TYPE_CUSTOM14     = 67108864;
+int    DAMAGE_TYPE_CUSTOM15     = 134217728;
+int    DAMAGE_TYPE_CUSTOM16     = 268435456;
+int    DAMAGE_TYPE_CUSTOM17     = 536870912;
+int    DAMAGE_TYPE_CUSTOM18     = 1073741824;
+int    DAMAGE_TYPE_CUSTOM19     = 2147483648;
 
 // Special versus flag just for AC effects
 int    AC_VS_DAMAGE_TYPE_ALL    = 4103;
@@ -532,6 +552,10 @@ int EFFECT_TYPE_CUTSCENEGHOST               = 83;
 int EFFECT_TYPE_CUTSCENEIMMOBILIZE          = 84;
 int EFFECT_TYPE_RUNSCRIPT                   = 85;
 int EFFECT_TYPE_ICON                        = 86;
+int EFFECT_TYPE_PACIFY                      = 87;
+int EFFECT_TYPE_BONUS_FEAT                  = 88;
+int EFFECT_TYPE_TIMESTOP_IMMUNITY           = 89;
+int EFFECT_TYPE_FORCE_WALK                  = 90;
 
 int ITEM_APPR_TYPE_SIMPLE_MODEL         = 0;
 int ITEM_APPR_TYPE_WEAPON_COLOR         = 1;
@@ -3339,6 +3363,19 @@ int FEAT_PLAYER_TOOL_08                     = 1113;
 int FEAT_PLAYER_TOOL_09                     = 1114;
 int FEAT_PLAYER_TOOL_10                     = 1115;
 
+// Subfeats for engine hardcoded entries
+int SUBFEAT_CALLED_SHOT_LEG                 = 65000;
+int SUBFEAT_CALLED_SHOT_ARMS                = 65001;
+int SUBFEAT_ELEMENTAL_SHAPE_EARTH           = 1004;
+int SUBFEAT_ELEMENTAL_SHAPE_WATER           = 1005;
+int SUBFEAT_ELEMENTAL_SHAPE_FIRE            = 1006;
+int SUBFEAT_ELEMENTAL_SHAPE_AIR             = 1007;
+int SUBFEAT_WILD_SHAPE_BROWN_BEAR           = 1008;
+int SUBFEAT_WILD_SHAPE_PANTHER              = 1009;
+int SUBFEAT_WILD_SHAPE_WOLF                 = 1010;
+int SUBFEAT_WILD_SHAPE_BOAR                 = 1011;
+int SUBFEAT_WILD_SHAPE_BADGER               = 1012;
+
 // Special Attack Defines
 int SPECIAL_ATTACK_INVALID              =   0;
 int SPECIAL_ATTACK_CALLED_SHOT_LEG      =   1;
@@ -3579,6 +3616,13 @@ int GUI_PANEL_EXAMINE_CREATURE  = 12;
 int GUI_PANEL_EXAMINE_ITEM      = 13;
 int GUI_PANEL_EXAMINE_PLACEABLE = 14;
 int GUI_PANEL_EXAMINE_DOOR      = 15;
+int GUI_PANEL_RADIAL_TILE       = 16;
+int GUI_PANEL_RADIAL_TRIGGER    = 17;
+int GUI_PANEL_RADIAL_CREATURE   = 18;
+int GUI_PANEL_RADIAL_ITEM       = 19;
+int GUI_PANEL_RADIAL_PLACEABLE  = 20;
+int GUI_PANEL_RADIAL_DOOR       = 21;
+int GUI_PANEL_RADIAL_QUICKBAR   = 22;
 
 int VOICE_CHAT_ATTACK           =   0;
 int VOICE_CHAT_BATTLECRY1       =   1;
@@ -5632,6 +5676,14 @@ int  FOG_COLOR_ORANGE_DARK      = 13395456;
 int  FOG_COLOR_BROWN            = 10053120;
 int  FOG_COLOR_BROWN_DARK       = 6697728;
 
+int  AREA_LIGHT_COLOR_MOON_AMBIENT  = 0;
+int  AREA_LIGHT_COLOR_MOON_DIFFUSE  = 1;
+int  AREA_LIGHT_COLOR_SUN_AMBIENT   = 2;
+int  AREA_LIGHT_COLOR_SUN_DIFFUSE   = 3;
+
+int  AREA_LIGHT_DIRECTION_MOON  = 0;
+int  AREA_LIGHT_DIRECTION_SUN   = 1;
+
 // these constants must match those in the AmbientSound.2da
 int AMBIENT_SOUND_NONE				= 0;
 int AMBIENT_SOUND_MEN_WHISPER_INSIDE		= 1;
@@ -5985,6 +6037,21 @@ int OBJECT_VISUAL_TRANSFORM_LERP_EASE_OUT                = 5; // sinf(x * M_PI *
 int OBJECT_VISUAL_TRANSFORM_LERP_QUADRATIC               = 6; // x * x
 int OBJECT_VISUAL_TRANSFORM_LERP_SMOOTHERSTEP            = 7; // (x * x * x * (x * (6.0 * x - 15.0) + 10.0))
 
+int OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_BASE              = 0;
+int OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_CREATURE_HEAD     = 254;
+int OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_CREATURE_TAIL     = 253;
+int OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_CREATURE_WINGS    = 252;
+int OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_CREATURE_CLOAK    = 243;
+
+int OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_ITEM_PART1        = 255;
+int OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_ITEM_PART2        = 254;
+int OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_ITEM_PART3        = 253;
+int OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_ITEM_PART4        = 252;
+int OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_ITEM_PART5        = 251;
+
+int OBJECT_VISUAL_TRANSFORM_BEHAVIOR_DEFAULT             = 0; // no special behavior
+int OBJECT_VISUAL_TRANSFORM_BEHAVIOR_BOUNCE              = 1; // when repeating a lerp, swap to and from states
+
 int VIBRATOR_MOTOR_ANY                                   = 0;
 int VIBRATOR_MOTOR_LEFT                                  = 1;
 int VIBRATOR_MOTOR_RIGHT                                 = 2;
@@ -6247,6 +6314,7 @@ int GUIEVENT_UNSELECT_CREATURE                      = 22;
 int GUIEVENT_EXAMINE_OBJECT                         = 23;
 int GUIEVENT_OPTIONS_OPEN                           = 24;
 int GUIEVENT_OPTIONS_CLOSE                          = 25;
+int GUIEVENT_RADIAL_OPEN                            = 26;
 
 int JSON_TYPE_NULL                                  = 0; // Also invalid
 int JSON_TYPE_OBJECT                                = 1;
@@ -6262,6 +6330,65 @@ string PLAYER_DEVICE_PROPERTY_GUI_WIDTH             = "gui_width";
 string PLAYER_DEVICE_PROPERTY_GUI_HEIGHT            = "gui_height";
 // The player's gui scale, in percent (factor 1.4 = 140)
 string PLAYER_DEVICE_PROPERTY_GUI_SCALE             = "gui_scale";
+// Client config values:
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_ANTIALIASING_MODE                    = "graphics.video.anti-aliasing-mode";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_ANISOTROPIC_FILTERING                = "graphics.video.anisotropic-filtering.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_GAMMA                                = "graphics.gamma";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_TEXTURE_ANIMATIONS                   = "graphics.texture-animations.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_SKYBOXES                             = "graphics.skyboxes.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_CREATURE_WIND                        = "graphics.creature-wind.mode";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_SECOND_STORY_TILES                   = "graphics.second-story-tiles.mode";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_TILE_BORDERS                         = "graphics.tile-borders.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_SPELL_TARGETING_EFFECT               = "graphics.spell-targeting-effect.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_TEXTURES_PACK                        = "graphics.textures.pack";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_GRASS                                = "graphics.grass.mode";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_GRASS_RENDER_DISTANCE                = "graphics.grass.render-distance";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_SHINY_WATER                          = "graphics.water.shiny";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_LIGHTING_MAX_LIGHTS                  = "graphics.lighting.max-lights";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_LIGHTING_ENHANCED                    = "graphics.lighting.enhanced";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_SHADOWS_ENVIRONMENT                  = "graphics.shadows.environment.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_SHADOWS_CREATURES                    = "graphics.shadows.creatures.mode";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_SHADOWS_MAX_CASTING_LIGHTS           = "graphics.shadows.max-casting-lights";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_EFFECTS_HIGH_QUALITY                 = "graphics.effects.high-quality";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_EFFECTS_CREATURE_ENVIRONMENT_MAPPING = "graphics.effects.creature-environment-mapping";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_KEYHOLING                            = "graphics.keyholing.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_KEYHOLING_WITH_TOOLTIP               = "graphics.keyholing.with-tooltip";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_KEYHOLING_DISABLES_CAMERA_COLLISIONS = "graphics.keyholing.disables-camera-collisions";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_FBO_SSAO                             = "graphics.fbo.ssao.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_FBO_HIGH_CONTRAST                    = "graphics.fbo.high-contrast.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_FBO_VIBRANCE                         = "graphics.fbo.vibrance.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_FBO_TOON                             = "graphics.fbo.toon.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_FBO_DOF                              = "graphics.fbo.dof.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_LOD                                  = "graphics.lod.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_RENDER_CLOAKS                        = "graphics.experimental.render-cloaks";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_GENERATE_PLT_WITH_SHADERS            = "graphics.experimental.generate-plt-with-shaders";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_HILITE                               = "graphics.hilite.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_HILITE_GLOW                          = "graphics.hilite.glow";
+string PLAYER_DEVICE_PROPERTY_INPUT_KEYBOARD_SHIFT_WALK_INVERTED            = "input.keyboard.shift-walk-mode-inverted";
+string PLAYER_DEVICE_PROPERTY_INPUT_MOUSE_HARDWARE_POINTER                  = "input.mouse.hardware-pointer";
+string PLAYER_DEVICE_PROPERTY_UI_SCALE                                      = "ui.scale";
+string PLAYER_DEVICE_PROPERTY_UI_LARGE_FONT                                 = "ui.large-font";
+string PLAYER_DEVICE_PROPERTY_UI_TOOLTIP_DELAY                              = "ui.tooltip-delay";
+string PLAYER_DEVICE_PROPERTY_UI_MOUSEOVER_FEEDBACK                         = "ui.mouseover-feedback";
+string PLAYER_DEVICE_PROPERTY_UI_TEXT_BUBBLE                                = "ui.text-bubble-mode";
+string PLAYER_DEVICE_PROPERTY_UI_TARGETING_FEEDBACK                         = "ui.targeting-feedback-mode";
+string PLAYER_DEVICE_PROPERTY_UI_FLOATING_TEXT_FEEDBACK                     = "ui.floating-text-feedback";
+string PLAYER_DEVICE_PROPERTY_UI_FLOATING_TEXT_FEEDBACK_DAMAGE_TOTALS_ONLY  = "ui.floating-text-feedback-damage-totals-only";
+string PLAYER_DEVICE_PROPERTY_UI_HIDE_QUICKCHAT_TEXT_IN_CHAT_WINDOW         = "ui.hide-quick-chat-text-in-chat-window";
+string PLAYER_DEVICE_PROPERTY_UI_CONFIRM_SELFCAST_SPELLS                    = "ui.confirm-self-cast-spells";
+string PLAYER_DEVICE_PROPERTY_UI_CONFIRM_SELFCAST_FEATS                     = "ui.confirm-self-cast-feats";
+string PLAYER_DEVICE_PROPERTY_UI_CONFIRM_SELFCAST_ITEMS                     = "ui.confirm-self-cast-items";
+string PLAYER_DEVICE_PROPERTY_UI_CHAT_PANE_PRIMARY_HEIGHT                   = "ui.chat.pane.primary.height";
+string PLAYER_DEVICE_PROPERTY_UI_CHAT_PANE_SECONDARY_HEIGHT                 = "ui.chat.pane.secondary.height";
+string PLAYER_DEVICE_PROPERTY_UI_CHAT_SWEAR_FILTER                          = "ui.chat.swear-filter.enabled";
+string PLAYER_DEVICE_PROPERTY_UI_PARTY_INVITE_POPUP                         = "ui.party.invite-popup.enabled";
+string PLAYER_DEVICE_PROPERTY_UI_SPELLBOOK_SORT_SPELLS                      = "ui.spellbook.sort-spells";
+string PLAYER_DEVICE_PROPERTY_UI_RADIAL_SPELLCASTING_ALWAYS_SUBRADIAL       = "ui.radial.spellcasting.always-show-as-subradial";
+string PLAYER_DEVICE_PROPERTY_UI_RADIAL_CLASS_ABILITIES_ALWAYS_SUBRADIAL    = "ui.radial.class-abilities.always-show-as-subradial";
+string PLAYER_DEVICE_PROPERTY_CAMERA_MODE                                   = "camera.mode";
+string PLAYER_DEVICE_PROPERTY_CAMERA_EDGE_TURNING                           = "camera.edge-turning";
+string PLAYER_DEVICE_PROPERTY_CAMERA_DIALOG_ZOOM                            = "camera.dialog-zoom";
+string PLAYER_DEVICE_PROPERTY_GAME_GORE                                     = "game.gore";
 
 int PLAYER_LANGUAGE_INVALID                         = -1;
 int PLAYER_LANGUAGE_ENGLISH                         = 0;
@@ -6401,6 +6528,113 @@ int JSON_SET_UNION                                  = 2;
 int JSON_SET_INTERSECT                              = 3;
 int JSON_SET_DIFFERENCE                             = 4;
 int JSON_SET_SYMMETRIC_DIFFERENCE                   = 5;
+
+// For SetShaderUniform*():
+
+int SHADER_UNIFORM_1                                = 0;
+int SHADER_UNIFORM_2                                = 1;
+int SHADER_UNIFORM_3                                = 2;
+int SHADER_UNIFORM_4                                = 3;
+int SHADER_UNIFORM_5                                = 4;
+int SHADER_UNIFORM_6                                = 5;
+int SHADER_UNIFORM_7                                = 6;
+int SHADER_UNIFORM_8                                = 7;
+int SHADER_UNIFORM_9                                = 8;
+int SHADER_UNIFORM_10                               = 9;
+int SHADER_UNIFORM_11                               = 10;
+int SHADER_UNIFORM_12                               = 11;
+int SHADER_UNIFORM_13                               = 12;
+int SHADER_UNIFORM_14                               = 13;
+int SHADER_UNIFORM_15                               = 14;
+int SHADER_UNIFORM_16                               = 15;
+
+// For SetSpellTargetingData():
+
+int SPELL_TARGETING_SHAPE_NONE                      = 0;
+int SPELL_TARGETING_SHAPE_SPHERE                    = 1;
+int SPELL_TARGETING_SHAPE_RECT                      = 2;
+int SPELL_TARGETING_SHAPE_CONE                      = 3;
+int SPELL_TARGETING_SHAPE_HSPHERE                   = 4;
+
+int SPELL_TARGETING_FLAGS_NONE                      = 0;
+int SPELL_TARGETING_FLAGS_HARMS_ENEMIES             = 1;
+int SPELL_TARGETING_FLAGS_HARMS_ALLIES              = 2;
+int SPELL_TARGETING_FLAGS_HELPS_ALLIES              = 4;
+int SPELL_TARGETING_FLAGS_IGNORES_SELF              = 8;
+int SPELL_TARGETING_FLAGS_ORIGIN_ON_SELF            = 16;
+int SPELL_TARGETING_FLAGS_SUPPRESS_WITH_TARGET      = 32;
+
+// These constants are for RegExpMatch() and RegExpIterate() only; do not mix with RegExpReplace():
+//
+// At most one grammar option must be chosen out of ECMAScript, basic, extended, awk, grep, egrep:
+//
+// Use the Modified ECMAScript regular expression grammar (https://en.cppreference.com/w/cpp/regex/ecmascript)
+int REGEXP_ECMASCRIPT                               =   0;
+// Use the basic POSIX regular expression grammar (http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html#tag_09_03).
+int REGEXP_BASIC                                    =   1;
+// Use the extended POSIX regular expression grammar (http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html#tag_09_04).
+int REGEXP_EXTENDED                                 =   2;
+// Use the regular expression grammar used by the awk utility in POSIX (http://pubs.opengroup.org/onlinepubs/9699919799/utilities/awk.html#tag_20_06_13_04).
+int REGEXP_AWK                                      =   4;
+// Use the regular expression grammar used by the grep utility in POSIX. This is effectively the same as the basic option with the addition of newline '\n' as an alternation separator.
+int REGEXP_GREP                                     =   8;
+// Use the regular expression grammar used by the grep utility, with the -E option, in POSIX. This is effectively the same as the extended option with the addition of newline '\n' as an alternation separator in addition to '|'.
+int REGEXP_EGREP                                    =  16;
+// Character matching should be performed without regard to case.
+int REGEXP_ICASE                                    =  32;
+// When performing matches, all marked sub-expressions (expr) are treated as non-marking sub-expressions (?:expr).
+int REGEXP_NOSUBS                                   =  64;
+
+// These constants are for RegExpReplace() only, do not mix with other RegExp functions:
+//
+// The first character in [first,last) will be treated as if it is not at the beginning of a line (i.e. ^ will not match [first,first)
+int REGEXP_MATCH_NOT_BOL                            = 1;
+// The last character in [first,last) will be treated as if it is not at the end of a line (i.e. $ will not match [last,last)
+int REGEXP_MATCH_NOT_EOL                            = 2;
+// "\b" will not match [first,first)
+int REGEXP_MATCH_NOT_BOW                            = 4;
+// "\b" will not match [last,last)
+int REGEXP_MATCH_NOT_EOW                            = 8;
+// If more than one match is possible, then any match is an acceptable result
+int REGEXP_MATCH_ANY                                = 16;
+// Do not match empty sequences
+int REGEXP_MATCH_NOT_NULL                           = 32;
+// Only match a sub-sequence that begins at first
+int REGEXP_MATCH_CONTINUOUS                         = 64;
+// --first is a valid iterator position. When set, causes match_not_bol and match_not_bow to be ignored
+int REGEXP_MATCH_PREV_AVAIL                         = 128;
+// Use ECMAScript rules to construct strings (http://ecma-international.org/ecma-262/5.1/#sec-15.5.4.11)
+int REGEXP_FORMAT_DEFAULT                           = 0;
+// Use POSIX sed utility rules (http://pubs.opengroup.org/onlinepubs/9699919799/utilities/sed.html#tag_20_116_13_03)
+int REGEXP_FORMAT_SED                               = 256;
+// Do not copy un-matched strings to the output
+int REGEXP_FORMAT_NO_COPY                           = 512;
+// Only replace the first match
+int REGEXP_FORMAT_FIRST_ONLY                        = 1024;
+
+int OBJECT_UI_DISCOVERY_DEFAULT                     = -1;
+int OBJECT_UI_DISCOVERY_NONE                        = 0;
+int OBJECT_UI_DISCOVERY_HILITE_MOUSEOVER            = 1;
+int OBJECT_UI_DISCOVERY_HILITE_TAB                  = 2;
+int OBJECT_UI_DISCOVERY_TEXTBUBBLE_MOUSEOVER        = 4;
+int OBJECT_UI_DISCOVERY_TEXTBUBBLE_TAB              = 8;
+
+int OBJECT_UI_TEXT_BUBBLE_OVERRIDE_NONE             = 0;
+int OBJECT_UI_TEXT_BUBBLE_OVERRIDE_REPLACE          = 1;
+int OBJECT_UI_TEXT_BUBBLE_OVERRIDE_PREPEND          = 2;
+int OBJECT_UI_TEXT_BUBBLE_OVERRIDE_APPEND           = 3;
+
+int CAMERA_FLAG_ENABLE_COLLISION                    = 1;
+int CAMERA_FLAG_DISABLE_COLLISION                   = 2;
+int CAMERA_FLAG_DISABLE_SHAKE                       = 4;
+int CAMERA_FLAG_DISABLE_SCROLL                      = 8;
+int CAMERA_FLAG_DISABLE_TURN                        = 16;
+int CAMERA_FLAG_DISABLE_TILT                        = 32;
+int CAMERA_FLAG_DISABLE_ZOOM                        = 64;
+
+int SETTILE_FLAG_RELOAD_GRASS                       = 1;
+int SETTILE_FLAG_RELOAD_BORDER                      = 2;
+int SETTILE_FLAG_RECOMPUTE_LIGHTING                 = 4;
 
 string sLanguage = "nwscript";
 
@@ -6907,13 +7141,17 @@ string IntToString(int nInteger);
 
 // Get the first object in oArea.
 // If no valid area is specified, it will use the caller's area.
+// - nObjectFilter: This allows you to filter out undesired object types, using bitwise "or".
+//   For example, to return only creatures and doors, the value for this parameter would be OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR
 // * Return value on error: OBJECT_INVALID
-object GetFirstObjectInArea(object oArea=OBJECT_INVALID);
+object GetFirstObjectInArea(object oArea=OBJECT_INVALID, int nObjectFilter = OBJECT_TYPE_ALL);
 
 // Get the next object in oArea.
 // If no valid area is specified, it will use the caller's area.
+// - nObjectFilter: This allows you to filter out undesired object types, using bitwise "or".
+//   For example, to return only creatures and doors, the value for this parameter would be OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR
 // * Return value on error: OBJECT_INVALID
-object GetNextObjectInArea(object oArea=OBJECT_INVALID);
+object GetNextObjectInArea(object oArea=OBJECT_INVALID, int nObjectFilter = OBJECT_TYPE_ALL);
 
 // Get the total from rolling (nNumDice x d2 dice).
 // - nNumDice: If this is less than 1, the value 1 will be used.
@@ -7618,6 +7856,8 @@ location GetLocation(object oObject);
 void ActionJumpToLocation(location lLocation);
 
 // Create a location.
+// The special constant LOCATION_INVALID describes a location with area equalling OBJECT_INVALID
+// and all other values 0.0f. Declared but not initialised location variables default to this value.
 location Location(object oArea, vector vPosition, float fOrientation);
 
 // Apply eEffect at lLocation.
@@ -7813,8 +8053,7 @@ effect EffectSilence();
 //
 // - oObject: the object for which you are changing the name (area, creature, placeable, item, or door).
 // - sNewName: the new name that the object will use.
-// Note: SetName() does not work on player objects.
-//       Setting an object's name to "" will make the object
+// Note: Setting an object's name to "" will make the object
 //       revert to using the name it had originally before any
 //       SetName() calls were made on the object.
 string GetName(object oObject, int bOriginalName=FALSE);
@@ -7957,8 +8196,12 @@ int GetHasSkill(int nSkill, object oCreature=OBJECT_SELF);
 
 // Use nFeat on oTarget.
 // - nFeat: FEAT_*
-// - oTarget
-void ActionUseFeat(int nFeat, object oTarget);
+// - oTarget: Target of the feat. Must be OBJECT_INVALID if lTarget is used.
+// - nSubFeat: - For feats with subdial options, use either:
+//        - SUBFEAT_* for some specific feats like called shot
+//        - spells.2da line of the subdial spell, eg 708 for Dragon Shape: Blue Dragon when using FEAT_EPIC_WILD_SHAPE_DRAGON
+// - lTarget: The location to use the feat at. oTarget must be OBJECT_INVALID for this to be used.
+void ActionUseFeat(int nFeat, object oTarget=OBJECT_SELF, int nSubFeat = 0, location lTarget=LOCATION_INVALID);
 
 // Runs the action "UseSkill" on the current creature
 // Use nSkill on oTarget.
@@ -9437,7 +9680,7 @@ effect EffectCutsceneParalyze();
 // Droppable items will appear on a creature's remains when the creature is killed.
 int GetDroppableFlag(object oItem);
 
-// returns TRUE if the placeable object is usable
+// returns TRUE if the object is usable
 int GetUseableFlag(object oObject=OBJECT_SELF);
 
 // returns TRUE if the item is stolen
@@ -10853,7 +11096,8 @@ void SetPhenoType(int nPhenoType, object oCreature=OBJECT_SELF);
 // DD would represent the amount of blue in the color.
 // If no valid area (or object) is specified, it uses the area of caller.
 // If an object other than an area is specified, will use the area that the object is currently in.
-void SetFogColor(int nFogType, int nFogColor, object oArea=OBJECT_INVALID);
+// If fFadeTime is above 0.0, it will fade to the new color in the amount of seconds specified. 
+void SetFogColor(int nFogType, int nFogColor, object oArea=OBJECT_INVALID, float fFadeTime = 0.0);
 
 // Gets the current cutscene state of the player specified by oCreature.
 // Returns TRUE if the player is in cutscene mode.
@@ -11288,8 +11532,7 @@ int GetAreaSize(int nAreaDimension, object oArea=OBJECT_INVALID);
 // Set the name of oObject.
 // - oObject: the object for which you are changing the name (a creature, placeable, item, or door).
 // - sNewName: the new name that the object will use.
-// Note: SetName() does not work on player objects.
-//       Setting an object's name to "" will make the object
+// Note: Setting an object's name to "" will make the object
 //       revert to using the name it had originally before any
 //       SetName() calls were made on the object.
 void SetName(object oObject, string sNewName="");
@@ -11328,9 +11571,10 @@ string GetPortraitResRef(object oTarget=OBJECT_SELF);
 //       to be set to PORTRAIT_INVALID.
 void SetPortraitResRef(object oTarget, string sPortraitResRef);
 
-// Set oPlaceable's useable object status.
-// Note: Only works on non-static placeables.
-void SetUseableFlag(object oPlaceable, int nUseableFlag);
+// Set oTarget's useable object status.
+// Note: Only works on non-static placeables, creatures, doors and items.
+// On items, it affects interactivity when they're on the ground, and not useability in inventory.
+void SetUseableFlag(object oTarget, int nUseableFlag);
 
 // Get the description of oObject.
 // - oObject: the object from which you are obtaining the description.
@@ -11693,15 +11937,19 @@ int SetEventScript(object oObject, int nHandler, string sScript);
 // Gets a visual transform on the given object.
 // - oObject can be any valid Creature, Placeable, Item or Door.
 // - nTransform is one of OBJECT_VISUAL_TRANSFORM_*
+// - nScope is one of OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_* and specific to the object type being VT'ed.
 // Returns the current (or default) value.
-float GetObjectVisualTransform(object oObject, int nTransform, int bCurrentLerp = FALSE);
+float GetObjectVisualTransform(object oObject, int nTransform, int bCurrentLerp = FALSE, int nScope = OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_BASE);
 
 // Sets a visual transform on the given object.
 // - oObject can be any valid Creature, Placeable, Item or Door.
 // - nTransform is one of OBJECT_VISUAL_TRANSFORM_*
 // - fValue depends on the transformation to apply.
+// - nScope is one of OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_* and specific to the object type being VT'ed.
+// - nBehaviorFlags: bitmask of OBJECT_VISUAL_TRANSFORM_BEHAVIOR_*.
+// - nRepeats: If > 0: N times, jump back to initial/from state after completing the transform. If -1: Do forever.
 // Returns the old/previous value.
-float SetObjectVisualTransform(object oObject, int nTransform, float fValue, int nLerpType = OBJECT_VISUAL_TRANSFORM_LERP_NONE, float fLerpDuration = 0.0, int bPauseWithGame = TRUE);
+float SetObjectVisualTransform(object oObject, int nTransform, float fValue, int nLerpType = OBJECT_VISUAL_TRANSFORM_LERP_NONE, float fLerpDuration = 0.0, int bPauseWithGame = TRUE, int nScope = OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_BASE, int nBehaviorFlags = OBJECT_VISUAL_TRANSFORM_BEHAVIOR_DEFAULT, int nRepeats = 0);
 
 // Sets an integer material shader uniform override.
 // - sMaterial needs to be a material on that object.
@@ -11811,12 +12059,14 @@ int GetSpecialization(object oCreature, int nClass = CLASS_TYPE_WIZARD);
 // Returns -1 on error
 int GetDomain(object oCreature, int nDomainIndex = 1, int nClass = CLASS_TYPE_CLERIC);
 
-// Returns the build number of oPlayer (i.e. 8193).
-// Returns 0 if the given object isn't a player or did not advertise their build info.
+// Returns the patch build number of oPlayer (i.e. the 8193 out of "87.8193.35-29 abcdef01").
+// Returns 0 if the given object isn't a player or did not advertise their build info, or the
+// player version is old enough not to send this bit of build info to the server.
 int GetPlayerBuildVersionMajor(object oPlayer);
 
-// Returns the patch revision of oPlayer (i.e. 8).
-// Returns 0 if the given object isn't a player or did not advertise their build info.
+// Returns the patch revision number of oPlayer (i.e. the 35 out of "87.8193.35-29 abcdef01").
+// Returns 0 if the given object isn't a player or did not advertise their build info, or the
+// player version is old enough not to send this bit of build info to the server.
 int GetPlayerBuildVersionMinor(object oPlayer);
 
 // Returns the script parameter value for a given parameter name.
@@ -11906,6 +12156,7 @@ void SqlDestroyDatabase(object oObject);
 
 // Returns "" if the last Sql command succeeded; or a human-readable error otherwise.
 // Additionally, all SQL errors are logged to the server log.
+// Additionally, all SQL errors are sent to all connected players.
 string SqlGetError(sqlquery sqlQuery);
 
 // Sets up a query.
@@ -11918,6 +12169,8 @@ string SqlGetError(sqlquery sqlQuery);
 // N.B.: You can pass sqlqueries into DelayCommand; HOWEVER
 //       *** they will NOT survive a game save/load ***
 //       Any commands on a restored sqlquery will fail.
+// N.B.: All uncommitted transactions left over at script termination are automatically rolled back.
+//       This ensures that no database handle will be left in an unusable state.
 // Please check the SQLite_README.txt file in lang/en/docs/ for the list of builtin functions.
 sqlquery SqlPrepareQueryCampaign(string sDatabase, string sQuery);
 
@@ -11937,6 +12190,8 @@ sqlquery SqlPrepareQueryCampaign(string sDatabase, string sQuery);
 // N.B.: You can pass sqlqueries into DelayCommand; HOWEVER
 //       *** they will NOT survive a game save/load ***
 //       Any commands on a restored sqlquery will fail.
+// N.B.: All uncommitted transactions left over at script termination are automatically rolled back.
+//       This ensures that no database handle will be left in an unusable state.
 // Please check the SQLite_README.txt file in lang/en/docs/ for the list of builtin functions.
 sqlquery SqlPrepareQueryObject(object oObject, string sQuery);
 
@@ -12189,7 +12444,7 @@ object GetLastGuiEventObject();
 //        You can still force show a panel with PopUpGUIPanel().
 //        You can still force examine an object with ActionExamine().
 // * nGuiPanel: A GUI_PANEL_* constant, except GUI_PANEL_PLAYER_DEATH.
-void SetGuiPanelDisabled(object oPlayer, int nGuiPanel, int bDisabled);
+void SetGuiPanelDisabled(object oPlayer, int nGuiPanel, int bDisabled, object oTarget = OBJECT_INVALID);
 
 // Gets the ID (1..8) of the last tile action performed in OnPlayerTileAction
 int GetLastTileActionId();
@@ -12229,15 +12484,19 @@ int JsonGetLength(json jValue);
 string JsonGetError(json jValue);
 
 // Create a NULL json value, seeded with a optional error message for JsonGetError().
+// You can say JSON_NULL for default parameters on functions to initialise with a null value.
 json JsonNull(string sError = "");
 
 // Create a empty json object.
+// You can say JSON_OBJECT for default parameters on functions to initialise with an empty object.
 json JsonObject();
 
 // Create a empty json array.
+// You can say JSON_ARRAY for default parameters on functions to initialise with an empty array.
 json JsonArray();
 
 // Create a json string value.
+// You can say JSON_STRING for default parameters on functions to initialise with a empty string.
 // NB: Strings are encoded to UTF-8 from the game-local charset.
 json JsonString(string sValue);
 
@@ -12248,6 +12507,7 @@ json JsonInt(int nValue);
 json JsonFloat(float fValue);
 
 // Create a json bool valye.
+// You can say JSON_TRUE or JSON_FALSE for default parameters on functions to initialise with a bool.
 json JsonBool(int bValue);
 
 // Returns a string representation of the json value.
@@ -12624,3 +12884,543 @@ string Get2DAColumn(string s2DA, int nColumnIdx);
 
 // Returns the number of defined rows in the 2da s2DA.
 int Get2DARowCount(string s2DA);
+
+// Set the subtype of eEffect to Unyielding and return eEffect.
+// (Effects default to magical if the subtype is not set)
+// Unyielding effects are not removed by resting, death or dispel magic, only by RemoveEffect().
+// Note: effects that modify state, Stunned/Knockdown/Deaf etc, WILL be removed on death.
+effect UnyieldingEffect(effect eEffect);
+
+// Set eEffect to ignore immunities and return eEffect.
+effect IgnoreEffectImmunity(effect eEffect);
+
+// Sets the global shader uniform for the player to the specified float.
+// These uniforms are not used by the base game and are reserved for module-specific scripting.
+// You need to add custom shaders that will make use of them.
+// In multiplayer, these need to be reapplied when a player rejoins.
+// - nShader: SHADER_UNIFORM_*
+void SetShaderUniformFloat(object oPlayer, int nShader, float fValue);
+
+// Sets the global shader uniform for the player to the specified integer.
+// These uniforms are not used by the base game and are reserved for module-specific scripting.
+// You need to add custom shaders that will make use of them.
+// In multiplayer, these need to be reapplied when a player rejoins.
+// - nShader: SHADER_UNIFORM_*
+void SetShaderUniformInt(object oPlayer, int nShader, int nValue);
+
+// Sets the global shader uniform for the player to the specified vec4.
+// These uniforms are not used by the base game and are reserved for module-specific scripting.
+// You need to add custom shaders that will make use of them.
+// In multiplayer, these need to be reapplied when a player rejoins.
+// - nShader: SHADER_UNIFORM_*
+void SetShaderUniformVec(object oPlayer, int nShader, float fX, float fY, float fZ, float fW);
+
+// Sets the spell targeting data manually for the player. This data is usually specified in spells.2da.
+// This data persists through spell casts; you're overwriting the entry in spells.2da for this session.
+// In multiplayer, these need to be reapplied when a player rejoins.
+// - nSpell: SPELL_*
+// - nShape: SPELL_TARGETING_SHAPE_*
+// - nFlags: SPELL_TARGETING_FLAGS_*
+void SetSpellTargetingData(object oPlayer, int nSpell, int nShape, float fSizeX, float fSizeY, int nFlags);
+
+// Sets the spell targeting data which is used for the next call to EnterTargetingMode() for this player.
+// If the shape is set to SPELL_TARGETING_SHAPE_NONE and the range is provided, the dotted line range indicator will still appear.
+// - nShape: SPELL_TARGETING_SHAPE_*
+// - nFlags: SPELL_TARGETING_FLAGS_*
+// - nSpell: SPELL_* (optional, passed to the shader but does nothing by default, you need to edit the shader to use it)
+// - nFeat: FEAT_* (optional, passed to the shader but does nothing by default, you need to edit the shader to use it)
+void SetEnterTargetingModeData(object oPlayer, int nShape, float fSizeX, float fSizeY, int nFlags, float fRange = 0.0f, int nSpell = -1, int nFeat = -1);
+
+// Gets the number of memorized spell slots for a given spell level.
+// - nClassType: a CLASS_TYPE_* constant. Must be a MemorizesSpells class.
+// - nSpellLevel: the spell level, 0-9.
+// Returns: the number of spell slots.
+int GetMemorizedSpellCountByLevel(object oCreature, int nClassType, int nSpellLevel);
+
+// Gets the spell id of a memorized spell slot.
+// - nClassType: a CLASS_TYPE_* constant. Must be a MemorizesSpells class.
+// - nSpellLevel: the spell level, 0-9.
+// - nIndex: the index of the spell slot. Bounds: 0 <= nIndex < GetMemorizedSpellCountByLevel()
+// Returns: a SPELL_* constant or -1 if the slot is not set.
+int GetMemorizedSpellId(object oCreature, int nClassType, int nSpellLevel, int nIndex);
+
+// Gets the ready state of a memorized spell slot.
+// - nClassType: a CLASS_TYPE_* constant. Must be a MemorizesSpells class.
+// - nSpellLevel: the spell level, 0-9.
+// - nIndex: the index of the spell slot. Bounds: 0 <= nIndex < GetMemorizedSpellCountByLevel()
+// Returns: TRUE/FALSE or -1 if the slot is not set.
+int GetMemorizedSpellReady(object oCreature, int nClassType, int nSpellLevel, int nIndex);
+
+// Gets the metamagic of a memorized spell slot.
+// - nClassType: a CLASS_TYPE_* constant. Must be a MemorizesSpells class.
+// - nSpellLevel: the spell level, 0-9.
+// - nIndex: the index of the spell slot. Bounds: 0 <= nIndex < GetMemorizedSpellCountByLevel()
+// Returns: a METAMAGIC_* constant or -1 if the slot is not set.
+int GetMemorizedSpellMetaMagic(object oCreature, int nClassType, int nSpellLevel, int nIndex);
+
+// Gets if the memorized spell slot has a domain spell.
+// - nClassType: a CLASS_TYPE_* constant. Must be a MemorizesSpells class.
+// - nSpellLevel: the spell level, 0-9.
+// - nIndex: the index of the spell slot. Bounds: 0 <= nIndex < GetMemorizedSpellCountByLevel()
+// Returns: TRUE/FALSE or -1 if the slot is not set.
+int GetMemorizedSpellIsDomainSpell(object oCreature, int nClassType, int nSpellLevel, int nIndex);
+
+// Set a memorized spell slot.
+// - nClassType: a CLASS_TYPE_* constant. Must be a MemorizesSpells class.
+// - nSpellLevel: the spell level, 0-9.
+// - nIndex: the index of the spell slot. Bounds: 0 <= nIndex < GetMemorizedSpellCountByLevel()
+// - nSpellId: a SPELL_* constant.
+// - bReady: TRUE to mark the slot ready.
+// - nMetaMagic: a METAMAGIC_* constant.
+// - bIsDomainSpell: TRUE for a domain spell.
+void SetMemorizedSpell(object oCreature, int nClassType, int nSpellLevel, int nIndex, int nSpellId, int bReady = TRUE, int nMetaMagic = METAMAGIC_NONE, int bIsDomainSpell = FALSE);
+
+// Set the ready state of a memorized spell slot.
+// - nClassType: a CLASS_TYPE_* constant. Must be a MemorizesSpells class.
+// - nSpellLevel: the spell level, 0-9.
+// - nIndex: the index of the spell slot. Bounds: 0 <= nIndex < GetMemorizedSpellCountByLevel()
+// - bReady: TRUE to mark the slot ready.
+void SetMemorizedSpellReady(object oCreature, int nClassType, int nSpellLevel, int nIndex, int bReady);
+
+// Clear a specific memorized spell slot.
+// - nClassType: a CLASS_TYPE_* constant. Must be a MemorizesSpells class.
+// - nSpellLevel: the spell level, 0-9.
+// - nIndex: the index of the spell slot. Bounds: 0 <= nIndex < GetMemorizedSpellCountByLevel()
+void ClearMemorizedSpell(object oCreature, int nClassType, int nSpellLevel, int nIndex);
+
+// Clear all memorized spell slots of a specific spell id, including metamagic'd ones.
+// - nClassType: a CLASS_TYPE_* constant. Must be a MemorizesSpells class.
+// - nSpellId: a SPELL_* constant.
+void ClearMemorizedSpellBySpellId(object oCreature, int nClassType, int nSpellId);
+
+// Gets the number of known spells for a given spell level.
+// - nClassType: a CLASS_TYPE_* constant. Must be a SpellBookRestricted class.
+// - nSpellLevel: the spell level, 0-9.
+// Returns: the number of known spells.
+int GetKnownSpellCount(object oCreature, int nClassType, int nSpellLevel);
+
+// Gets the spell id of a known spell.
+// - nClassType: a CLASS_TYPE_* constant. Must be a SpellBookRestricted class.
+// - nSpellLevel: the spell level, 0-9.
+// - nIndex: the index of the known spell. Bounds: 0 <= nIndex < GetKnownSpellCount()
+// Returns: a SPELL_* constant or -1 on error.
+int GetKnownSpellId(object oCreature, int nClassType, int nSpellLevel, int nIndex);
+
+// Gets if a spell is in the known spell list.
+// - nClassType: a CLASS_TYPE_* constant. Must be a SpellBookRestricted class.
+// - nSpellId: a SPELL_* constant.
+// Returns: TRUE if the spell is in the known spell list.
+int GetIsInKnownSpellList(object oCreature, int nClassType, int nSpellId);
+
+// Gets the amount of uses a spell has left.
+// - nClassType: a CLASS_TYPE_* constant.
+// - nSpellid: a SPELL_* constant.
+// - nMetaMagic: a METAMAGIC_* constant.
+// - nDomainLevel: the domain level, if a domain spell.
+// Returns: the amount of spell uses left.
+int GetSpellUsesLeft(object oCreature, int nClassType, int nSpellId, int nMetaMagic = METAMAGIC_NONE, int nDomainLevel = 0);
+
+// Gets the spell level at which a class gets a spell.
+// - nClassType: a CLASS_TYPE_* constant.
+// - nSpellId: a SPELL_* constant.
+// Returns: the spell level or -1 if the class does not get the spell.
+int GetSpellLevelByClass(int nClassType, int nSpellId);
+
+// Replaces oObject's animation sOld with sNew.
+// Specifying sNew = "" will restore the original animation.
+void ReplaceObjectAnimation(object oObject, string sOld, string sNew = "");
+
+// Sets the distance (in meters) at which oObject info will be sent to clients (default 45.0)
+// This is still subject to other limitations, such as perception ranges for creatures
+// Note: Increasing visibility ranges of many objects can have a severe negative effect on
+//       network latency and server performance, and rendering additional objects will
+//       impact graphics performance of clients. Use cautiously.
+void SetObjectVisibleDistance(object oObject, float fDistance=45.0f);
+
+// Gets oObject's visible distance, as set by SetObjectVisibleDistance()
+// Returns -1.0f on error
+float GetObjectVisibleDistance(object oObject);
+
+// Sets the active game pause state - same as if the player requested pause.
+void SetGameActivePause(int bState);
+
+// Returns >0 if the game is currently paused:
+// - 0: Game is not paused.
+// - 1: Timestop
+// - 2: Active Player Pause (optionally on top of timestop)
+int GetGamePauseState();
+
+// Set the gender of oCreature.
+// - nGender: a GENDER_* constant.
+void SetGender(object oCreature, int nGender);
+
+// Get the soundset of oCreature.
+// Returns -1 on error.
+int GetSoundset(object oCreature);
+
+// Set the soundset of oCreature, see soundset.2da for possible values.
+void SetSoundset(object oCreature, int nSoundset);
+
+// Ready a spell level for oCreature.
+// - nSpellLevel: 0-9
+// - nClassType: a CLASS_TYPE_* constant or CLASS_TYPE_INVALID to ready the spell level for all classes.
+void ReadySpellLevel(object oCreature, int nSpellLevel, int nClassType = CLASS_TYPE_INVALID);
+
+// Makes oCreature controllable by oPlayer, if player party control is enabled
+// Setting oPlayer=OBJECT_INVALID removes the override and reverts to regular party control behavior
+// NB: A creature is only controllable by one player, so if you set oPlayer to a non-Player object
+//    (e.g. the module) it will disable regular party control for this creature
+void SetCommandingPlayer(object oCreature, object oPlayer);
+
+// Sets oPlayer's camera limits that override any client configuration limits
+// Value of -1.0 means use the client config instead
+// NB: Like all other camera settings, this is not saved when saving the game
+void SetCameraLimits(object oPlayer, float fMinPitch = -1.0, float fMaxPitch = -1.0, float fMinDist = -1.0, float fMaxDist = -1.0);
+
+// Applies sRegExp on sValue, returning an array containing all matching groups.
+// * The regexp is not bounded by default (so /t/ will match "test").
+// * A matching result with always return a JSON_ARRAY with the full match as the first element.
+// * All matching groups will be returned as additional elements, depth-first.
+// * A non-matching result will return a empty JSON_ARRAY.
+// * If there was an error, the function will return JSON_NULL, with a error string filled in.
+// * nSyntaxFlags is a mask of REGEXP_*
+// * nMatchFlags is a mask of REGEXP_MATCH_* and REGEXP_FORMAT_*.
+// Examples:
+// * RegExpMatch("[", "test value")             -> null (error: "The expression contained mismatched [ and ].")
+// * RegExpMatch("nothing", "test value")       -> []
+// * RegExpMatch("^test", "test value")         -> ["test"]
+// * RegExpMatch("^(test) (.+)$", "test value") -> ["test value", "test", "value"]
+json RegExpMatch(string sRegExp, string sValue, int nSyntaxFlags = REGEXP_ECMASCRIPT, int nMatchFlags = REGEXP_FORMAT_DEFAULT);
+
+// Iterates sValue with sRegExp.
+// * Returns an array of arrays; where each sub-array contains first the full match and then all matched groups.
+// * Returns empty JSON_ARRAY if no matches are found.
+// * If there was an error, the function will return JSON_NULL, with a error string filled in.
+// * nSyntaxFlags is a mask of REGEXP_*
+// * nMatchFlags is a mask of REGEXP_MATCH_* and REGEXP_FORMAT_*.
+// Example: RegExpIterate("(\\d)(\\S+)", "1i 2am 3 4asentence"); -> [["1i", "1", "i"], ["2am", "2", "am"], ["4sentence", "4", "sentence"]]
+json RegExpIterate(string sRegExp, string sValue, int nSyntaxFlags = REGEXP_ECMASCRIPT, int nMatchFlags = REGEXP_FORMAT_DEFAULT);
+
+// Replaces all matching sRegExp in sValue with sReplacement.
+// * Returns a empty string on error.
+// * Please see the format documentation for replacement patterns.
+// * nSyntaxFlags is a mask of REGEXP_*
+// * nMatchFlags is a mask of REGEXP_MATCH_* and REGEXP_FORMAT_*.
+// * FORMAT_DEFAULT replacement patterns:
+//    $$    $
+//    $&    The matched substring.
+//    $`    The portion of string that precedes the matched substring.
+//    $'    The portion of string that follows the matched substring.
+//    $n    The nth capture, where n is a single digit in the range 1 to 9 and $n is not followed by a decimal digit.
+//    $nn   The nnth capture, where nn is a two-digit decimal number in the range 01 to 99.
+// Example: RegExpReplace("a+", "vaaalue", "[$&]")    => "v[aaa]lue"
+string RegExpReplace(string sRegExp, string sValue, string sReplacement, int nSyntaxFlags = REGEXP_ECMASCRIPT, int nMatchFlags = REGEXP_FORMAT_DEFAULT);
+
+// Get the contents of a file as string, as seen by the server's resman.
+// Note: If the file contains binary data it will return data up to the first null byte.
+// - nResType: a RESTYPE_* constant.
+// Returns "" if the file does not exist.
+string ResManGetFileContents(string sResRef, int nResType);
+
+// Compile a script and place it in the server's CURRENTGAME: folder.
+// Note: Scripts will persist for as long as the module is running.
+// SinglePlayer / Saves: Scripts that overwrite existing module scripts will persist to the save file.
+//                       New scripts, unknown to the module, will have to be re-compiled on module load when loading a save.
+// Returns "" on success or the error on failure.
+string CompileScript(string sScriptName, string sScriptData, int bWrapIntoMain = FALSE, int bGenerateNDB = FALSE);
+
+// Sets the object oPlayer's camera will be attached to.
+// - oTarget: A valid creature or placeable. If oTarget is OBJECT_INVALID, it will revert the camera back to oPlayer's character.
+//            The target must be known to oPlayer's client, this means it must be in the same area and within visible distance.
+//              - SetObjectVisibleDistance() can be used to increase this range.
+//              - If the target is a creature, it also must be within the perception range of oPlayer and perceived.
+// - bFindClearView: if TRUE, the client will attempt to find a camera position where oTarget is in view.
+// Notes:
+//       - If oTarget gets destroyed while oPlayer's camera is attached to it, the camera will revert back to oPlayer's character.
+//       - If oPlayer goes through a transition with its camera attached to a different object, it will revert back to oPlayer's character.
+//       - The object the player's camera is attached to is not saved when saving the game.
+void AttachCamera(object oPlayer, object oTarget, int bFindClearView = FALSE);
+
+// Get the current discoverability mask of oObject.
+// Returns -1 if oObject cannot have a discovery mask.
+int GetObjectUiDiscoveryMask(object oObject);
+
+// Sets the discoverability mask on oObject.
+// This allows toggling areahilite (TAB key by default) and mouseover discovery in the area view.
+// * nMask is a mask of OBJECT_UI_DISCOVERY_MODE_*
+// Will currently only work on Creatures, Doors (Hilite only), Items and Useable Placeables.
+// Does not affect inventory items.
+void SetObjectUiDiscoveryMask(object oObject, int nMask = OBJECT_UI_DISCOVERY_DEFAULT);
+
+// Sets a text override for the mouseover/tab-highlight text bubble of oObject.
+// Will currently only work on Creatures, Items and Useable Placeables.
+// * nMode is one of OBJECT_UI_TEXT_BUBBLE_OVERRIDE_*.
+void SetObjectTextBubbleOverride(object oObject, int nMode, string sText);
+
+// Immediately unsets a VTs for the given object, with no lerp.
+// * nScope: one of OBJECT_VISUAL_TRANSFORM_DATA_SCOPE_, or -1 for all scopes
+// Returns TRUE only if transforms were successfully removed (valid object, transforms existed).
+int ClearObjectVisualTransform(object oObject, int nScope = -1);
+
+// Gets an optional vecror of specific gui events in the module OnPlayerGuiEvent event.
+// GUIEVENT_RADIAL_OPEN - World vector position of radial if on tile.
+vector GetLastGuiEventVector();
+
+// Sets oPlayer's camera settings that override any client configuration settings
+// nFlags is a bitmask of CAMERA_FLAG_* constants;
+// NB: Like all other camera settings, this is not saved when saving the game
+void SetCameraFlags(object oPlayer, int nFlags=0);
+
+// Gets the light color in the area specified.
+// nColorType specifies the color type returned.
+//    Valid values for nColorType are the AREA_LIGHT_COLOR_* values.
+// If no valid area (or object) is specified, it uses the area of caller.
+// If an object other than an area is specified, will use the area that the object is currently in.
+int GetAreaLightColor(int nColorType, object oArea=OBJECT_INVALID);
+
+// Sets the light color in the area specified.
+// nColorType = AREA_LIGHT_COLOR_* specifies the color type.
+// nColor = FOG_COLOR_* specifies the color the fog is being set to.
+// The color can also be represented as a hex RGB number if specific color shades
+// are desired.
+// The format of a hex specified color would be 0xFFEEDD where
+// FF would represent the amount of red in the color
+// EE would represent the amount of green in the color
+// DD would represent the amount of blue in the color.
+// If no valid area (or object) is specified, it uses the area of caller.
+// If an object other than an area is specified, will use the area that the object is currently in.
+// If fFadeTime is above 0.0, it will fade to the new color in the amount of seconds specified. 
+void SetAreaLightColor(int nColorType, int nColor, object oArea=OBJECT_INVALID, float fFadeTime = 0.0);
+
+// Gets the light direction of origin in the area specified.
+// nLightType specifies whether the Moon or Sun light direction is returned.
+//    Valid values for nColorType are the AREA_LIGHT_DIRECTION_* values.
+// If no valid area (or object) is specified, it uses the area of caller.
+// If an object other than an area is specified, will use the area that the object is currently in.
+vector GetAreaLightDirection(int nLightType, object oArea=OBJECT_INVALID);
+
+// Sets the light direction of origin in the area specified.
+// nLightType = AREA_LIGHT_DIRECTION_* specifies the light type.
+// vDirection = specifies the direction of origin of the light type, i.e. the direction the sun/moon is in from the area.
+// If no valid area (or object) is specified, it uses the area of caller.
+// If an object other than an area is specified, will use the area that the object is currently in.
+// If fFadeTime is above 0.0, it will fade to the new color in the amount of seconds specified. 
+void SetAreaLightDirection(int nLightType, vector vDirection, object oArea=OBJECT_INVALID, float fFadeTime = 0.0);
+
+// This immediately aborts the running script.
+// - Will not emit an error to the server log by default.
+// - You can specify the optional sError to emit as a script error, which will be printed
+//   to the log and sent to all players, just like any other script error.
+// - Will not terminate other script recursion (e.g. nested ExecuteScript()) will resume as if the
+//   called script exited cleanly.
+// - This call will never return.
+void AbortRunningScript(string sError = "");
+
+// Generate a VM debug view into the current execution location.
+// - Names and symbols can only be resolved if debug information is available (NDB file).
+// - This call can be a slow call for large scripts.
+// - Setting bIncludeStack = TRUE will include stack info in the output, which could be a
+//   lot of data for large scripts. You can turn it off if you do not need the info.
+// Returned data format (JSON object):
+//   "frames": array of stack frames:
+//     "ip": instruction pointer into code
+//     "bp", "sp": current base/stack pointer
+//     "file", "line", "function": available only if NDB loaded correctly
+//   "stack": abbreviated stack data (only if bIncludeStack is TRUE)
+//     "type": one of the nwscript object types, OR:
+//     "type_unknown": hex code of AUX
+//     "data": type-specific payload. Not all type info is rendered in the interest of brevity.
+//             Only enough for you to re-identify which variable this might belong to.
+json GetScriptBacktrace(int bIncludeStack = TRUE);
+
+// Mark the current location in code as a jump target, identified by sLabel.
+// - Returns 0 on initial invocation, but will return nRetVal if jumped-to by LongJmp.
+// - sLabel can be any valid string (including empty); though it is recommended to pick
+//   something distinct. The responsibility of namespacing lies with you.
+// - Calling repeatedly with the same label will overwrite the previous jump location.
+//   If you want to nest them, you need to manage nesting state externally.
+int SetJmp(string sLabel);
+
+// Jump execution back in time to the point where you called SetJmp with the same label.
+// - This function is a GREAT way to get really hard-to-debug stack under/overflows.
+// - Will not work across script runs or script recursion; only within the same script.
+//   (However, it WILL work across includes - those go into the same script data in compilation)
+// - Will throw a script error if sLabel does not exist.
+// - Will throw a script error if no valid jump destination exists.
+// - You CAN jump to locations with compatible stack layout, including sibling functions.
+//   For the script to successfully finish, the entire stack needs to be correct (either in code or
+//   by jumping elsewhere again). Making sure this is the case is YOUR responsibility.
+// - The parameter nRetVal is passed to SetJmp, resuming script execution as if SetJmp returned
+//   that value (instead of 0).
+//   If you accidentally pass 0 as nRetVal, it will be silently rewritten to 1.
+//   Any other integer value is valid, including negative ones.
+// - This call will never return.
+void LongJmp(string sLabel, int nRetVal = 1);
+
+// Returns TRUE if the given sLabel is a valid jump target at the current code location.
+int GetIsValidJmp(string sLabel);
+
+// Create a Pacified effect, making the creature unable to attack anyone
+effect EffectPacified();
+
+// Get the current script recursion level.
+int GetScriptRecursionLevel();
+
+// Get the name of the script at a script recursion level.
+// - nRecursionLevel: Between 0 and <= GetScriptRecursionLevel() or -1 for the current recursion level.
+// Returns the script name or "" on error.
+string GetScriptName(int nRecursionLevel = -1);
+
+// Get the script chunk attached to a script recursion level.
+// - nRecursionLevel: Between 0 and <= GetScriptRecursionLevel() or -1 for the current recursion level.
+// Returns the script chunk or "" on error / no script chunk attached.
+string GetScriptChunk(int nRecursionLevel = -1);
+
+// Returns the patch postfix of oPlayer (i.e. the 29 out of "87.8193.35-29 abcdef01").
+// Returns 0 if the given object isn't a player or did not advertise their build info, or the
+// player version is old enough not to send this bit of build info to the server.
+int GetPlayerBuildVersionPostfix(object oPlayer);
+
+// Returns the patch commit sha1 of oPlayer (i.e. the "abcdef01" out of "87.8193.35-29 abcdef01").
+// Returns "" if the given object isn't a player or did not advertise their build info, or the
+// player version is old enough not to send this bit of build info to the server.
+string GetPlayerBuildVersionCommitSha1(object oPlayer);
+
+// In the spell script returns the feat used, or -1 if no feat was used
+int GetSpellFeatId();
+
+// Returns the given effects Link ID. There is no guarantees about this identifier other than
+// it is unique and the same for all effects linked to it.
+string GetEffectLinkId(effect eEffect);
+
+// If oCreature has nFeat, and nFeat is useable, returns the number of remaining uses left
+// or the maximum int value if the feat has unlimited uses (eg FEAT_KNOCKDOWN)
+// - nFeat: FEAT_*
+// - oCreature: Creature to check the feat of
+int GetFeatRemainingUses(int nFeat, object oCreature=OBJECT_SELF);
+
+// Change a tile in an area, it will also update the tile for all players in the area.
+// * Notes:
+//   - For optimal use you should be familiar with how tilesets / .set files work.
+//   - Will not update the height of non-creature objects.
+//   - Creatures may get stuck on non-walkable terrain.
+//
+// - locTile: The location of the tile.
+// - nTileID: the ID of the tile, for values see the .set file of the tileset.
+// - nOrientation: the orientation of the tile, 0-3.
+//                 0 = Normal orientation
+//                 1 = 90 degrees counterclockwise
+//                 2 = 180 degrees counterclockwise
+//                 3 = 270 degrees counterclockwise
+// - nHeight: the height of the tile.
+// - nFlags: a bitmask of SETTILE_FLAG_* constants.
+//           - SETTILE_FLAG_RELOAD_GRASS: reloads the area's grass, use if your tile used to have grass or should have grass now.
+//           - SETTILE_FLAG_RELOAD_BORDER: reloads the edge tile border, use if you changed a tile on the edge of the area.
+//           - SETTILE_FLAG_RECOMPUTE_LIGHTING: recomputes the area's lighting and static shadows, use most of time.
+void SetTile(location locTile, int nTileID, int nOrientation, int nHeight = 0, int nFlags = SETTILE_FLAG_RECOMPUTE_LIGHTING);
+
+// Get the ID of the tile at location locTile.
+// Returns -1 on error.
+int GetTileID(location locTile);
+
+// Get the orientation of the tile at location locTile.
+// Returns -1 on error.
+int GetTileOrientation(location locTile);
+
+// Get the height of the tile at location locTile.
+// Returns -1 on error.
+int GetTileHeight(location locTile);
+
+// All clients in oArea will reload the area's grass.
+// This can be used to update the grass of an area after changing a tile with SetTile() that will have or used to have grass.
+void ReloadAreaGrass(object oArea);
+
+// Set the state of the tile animation loops of the tile at location locTile.
+void SetTileAnimationLoops(location locTile, int bAnimLoop1, int bAnimLoop2, int bAnimLoop3);
+
+// Change multiple tiles in an area, it will also update the tiles for all players in the area.
+// Note: See SetTile() for additional information.
+// - oArea: the area to change one or more tiles of.
+// - jTileData: a JsonArray() with one or more JsonObject()s with the following keys:
+//               - index: the index of the tile as a JsonInt()
+//                        For example, a 3x3 area has the following tile indexes:
+//                        6 7 8
+//                        3 4 5
+//                        0 1 2
+//               - tileid: the ID of the tile as a JsonInt(), defaults to 0 if not set
+//               - orientation: the orientation of the tile as JsonInt(), defaults to 0 if not set
+//               - height: the height of the tile as JsonInt(), defaults to 0 if not set
+//               - animloop1: the state of a tile animation, 1/0 as JsonInt(), defaults to the current value if not set
+//               - animloop2: the state of a tile animation, 1/0 as JsonInt(), defaults to the current value if not set
+//               - animloop3: the state of a tile animation, 1/0 as JsonInt(), defaults to the current value if not set
+// - nFlags: a bitmask of SETTILE_FLAG_* constants.
+// - sTileset: if not empty, it will also change the area's tileset
+//             Warning: only use this if you really know what you're doing, it's very easy to break things badly.
+//                      Make sure jTileData changes *all* tiles in the area and to a tile id that's supported by sTileset.
+void SetTileJson(object oArea, json jTileData, int nFlags = SETTILE_FLAG_RECOMPUTE_LIGHTING, string sTileset = "");
+
+// All clients in oArea will reload the inaccesible border tiles.
+// This can be used to update the edge tiles after changing a tile with SetTile().
+void ReloadAreaBorder(object oArea);
+
+// Sets whether or not oCreatures's nIconId is flashing in their GUI icon bar.  If oCreature does not
+// have an icon associated with nIconId, nothing happens. This function does not add icons to 
+// oCreatures's GUI icon bar. The icon will flash until the underlying effect is removed or this 
+// function is called again with bFlashing = FALSE.
+// - oCreature: Player object to affect
+// - nIconId: Referenced to effecticons.2da or EFFECT_ICON_*
+// - bFlashing: TRUE to force an existing icon to flash, FALSE to to stop.
+void SetEffectIconFlashing(object oCreature, int nIconId, int bFlashing = TRUE);
+
+// Creates a bonus feat effect. These act like the Bonus Feat item property,
+// and do not work as feat prerequisites for levelup purposes.
+// - nFeat: FEAT_*
+effect EffectBonusFeat(int nFeat);
+
+// Returns the INVENTORY_SLOT_* constant of the last item equipped.  Can only be used in the
+// module's OnPlayerEquip event.  Returns -1 on error.
+int GetPCItemLastEquippedSlot();
+
+// Returns the INVENTORY_SLOT_* constant of the last item unequipped.  Can only be used in the
+// module's OnPlayerUnequip event.  Returns -1 on error.
+int GetPCItemLastUnequippedSlot();
+
+// Returns TRUE if the last spell was cast spontaneously
+// eg; a Cleric casting SPELL_CURE_LIGHT_WOUNDS when it is not prepared, using another level 1 slot
+int GetSpellCastSpontaneously();
+
+// Reset the given sqlquery, readying it for re-execution after it has been stepped.
+// All existing binds are kept untouched, unless bClearBinds is TRUE.
+// This command only works on successfully-prepared queries that have not errored out.
+void SqlResetQuery(sqlquery sqlQuery, int bClearBinds = FALSE);
+
+// Provides immunity to the effects of EffectTimeStop which allows actions during other creatures time stop effects
+effect EffectTimeStopImmunity();
+
+// Return the current game tick rate (mainloop iterations per second).
+// This is equivalent to graphics frames per second when the module is running inside a client.
+int GetTickRate();
+
+// Returns the level of the last spell cast. This value is only valid in a Spell script.
+int GetLastSpellLevel();
+
+// Returns the 32bit integer hash of sString
+// This hash is stable and will always have the same value for same input string, regardless of platform.
+// The hash algorithm is the same as the one used internally for strings in case statements, so you can do:
+//    switch (HashString(sString))
+//    {
+//         case "AAA":    HandleAAA(); break;
+//         case "BBB":    HandleBBB(); break;
+//    }
+// NOTE: The exact algorithm used is XXH32(sString) ^ XXH32(""). This means that HashString("") is 0.
+int HashString(string sString);
+
+// Returns the current microsecond counter value. This value is meaningless on its own, but can be subtracted
+// from other values returned by this function in the same script to get high resolution elapsed time:
+//     int nMicrosecondsStart = GetMicrosecondCounter();
+//     DoSomething();
+//     int nElapsedMicroseconds = GetMicrosecondCounter() - nMicrosecondsStart;
+int GetMicrosecondCounter();
+
+// Forces the creature to always walk
+effect EffectForceWalk();
