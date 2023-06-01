@@ -49,10 +49,10 @@ int GetIsDeveloper(object oPC)
 {
     string sPCCDKey = GetPCPublicCDKey(oPC);
     string sPCName = GetPCPlayerName(oPC);
-    
+
     int nKeyLine;
     int nNameLine;
-    
+
     // First iteration: lines 0 (key) and 1 (name)
     // After: line 4 (key) and 5 (name)
     int i;
@@ -68,7 +68,7 @@ int GetIsDeveloper(object oPC)
             nKeyLine = 4;
             nNameLine = 5;
         }
-        
+
         string sAdminName = Get2DAString("env", "Value", nNameLine);
         string sAdminCDKey = Get2DAString("env", "Value", nKeyLine);
 
@@ -88,14 +88,19 @@ int GetIsDeveloper(object oPC)
 
 void SendDiscordLogMessage(string sMessage)
 {
+// TODO: Refactor to include "inc_webhook" and use the same constant instead of a "magic number"
+    string sDiscordKey = Get2DAString("env", "Value", 2);
+
+    if (sDiscordKey == "") return;
+
     if (GetLocalInt(GetModule(), "dev") == 0)
     {
-        NWNX_WebHook_SendWebHookHTTPS("discordapp.com", Get2DAString("env", "Value", 2), sMessage);
+        NWNX_WebHook_SendWebHookHTTPS("discordapp.com", sDiscordKey, sMessage);
     }
     else
     {
         // Try anyway
-        NWNX_WebHook_SendWebHookHTTPS("discordapp.com", Get2DAString("env", "Value", 2), sMessage);
+        NWNX_WebHook_SendWebHookHTTPS("discordapp.com", sDiscordKey, sMessage);
         // But the log is good
         WriteTimestampedLogEntry("Webhook message: " + sMessage);
     }
