@@ -4,6 +4,9 @@
 const int LOG_IN = 1;
 const int LOG_OUT = 2;
 
+// the row in env.2da where the discord secret is stored
+const int ENV_DISCORD_KEY_ROW = 2;
+
 const string PLAYER_COLOR = "#42bcf5";
 const string LEVEL_UP_COLOR = "#ddf542";
 const string DEATH_COLOR = "#ed5426";
@@ -33,6 +36,21 @@ int HideDiscord(object oPC);
 int HideDiscord(object oPC)
 {
     if (GetCampaignInt(GetPCPublicCDKey(GetPCSpeaker()), "hide_discord")) return TRUE;
+
+    return FALSE;
+}
+
+string GetDiscordKey();
+string GetDiscordKey()
+{
+    return Get2DAString("env", "Value", ENV_DISCORD_KEY_ROW);
+}
+
+int DiscordEnabled();
+int DiscordEnabled()
+{
+// do we have a discord key set?
+    if (GetDiscordKey() != "") return TRUE;
 
     return FALSE;
 }
@@ -187,6 +205,8 @@ struct NWNX_WebHook_Message BuildWebhookMessageTemplate(object oPC)
 
 void LogWebhook(object oPC, int nLogMode)
 {
+    if (!DiscordEnabled()) return;
+
     string sConstructedMsg;
     string sName = GetName(oPC);
     struct NWNX_WebHook_Message stMessage = BuildWebhookMessageTemplate(oPC);
@@ -215,12 +235,13 @@ void LogWebhook(object oPC, int nLogMode)
 
     //stMessage.sFooterText = GetName(GetModule());
 
-    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", Get2DAString("env", "Value", 2), stMessage);
+    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
     SendDiscordLogMessage(sConstructedMsg);
 }
 
 void LevelUpWebhook(object oPC)
 {
+  if (!DiscordEnabled()) return;
   if (HideDiscord(oPC)) return;
 
   string sConstructedMsg;
@@ -231,7 +252,7 @@ void LevelUpWebhook(object oPC)
 
   //stMessage.sFooterText = GetName(GetModule());
   //stMessage.iTimestamp = SQLite_GetTimeStamp();
-  sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", Get2DAString("env", "Value", 2), stMessage);
+  sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", GetDiscordKey(), stMessage);
   SendDiscordLogMessage(sConstructedMsg);
 }
 
@@ -239,6 +260,7 @@ void LevelUpWebhook(object oPC)
 void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE);
 void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
 {
+    if (!DiscordEnabled()) return;
     if (HideDiscord(oPC)) return;
 
     string sConstructedMsg;
@@ -276,7 +298,7 @@ void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
 
     //stMessage.sFooterText = GetName(GetModule());
     //stMessage.iTimestamp = SQLite_GetTimeStamp();
-    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", Get2DAString("env", "Value", 2), stMessage);
+    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", GetDiscordKey(), stMessage);
     SendDiscordLogMessage(sConstructedMsg);
 }
 
@@ -284,6 +306,7 @@ void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
 void BossDefeatedWebhook(object oPC, object oDead);
 void BossDefeatedWebhook(object oPC, object oDead)
 {
+    if (!DiscordEnabled()) return;
     if (HideDiscord(oPC)) return;
 
 // don't continue if this isn't set, prevents it from being played twice
@@ -319,7 +342,7 @@ void BossDefeatedWebhook(object oPC, object oDead)
 
     //stMessage.sFooterText = GetName(GetModule());
     //stMessage.iTimestamp = SQLite_GetTimeStamp();
-    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", Get2DAString("env", "Value", 2), stMessage);
+    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", GetDiscordKey(), stMessage);
     SendDiscordLogMessage(sConstructedMsg);
 
     // delete this so it doesn't trigger again
@@ -328,6 +351,7 @@ void BossDefeatedWebhook(object oPC, object oDead)
 
 void ServerWebhook(string sTitle, string sDescription)
 {
+  if (!DiscordEnabled()) return;
   string sConstructedMsg;
   struct NWNX_WebHook_Message stMessage;
   stMessage.sUsername = SERVER_BOT;
@@ -342,13 +366,14 @@ void ServerWebhook(string sTitle, string sDescription)
 
   //stMessage.sFooterText = GetName(GetModule());
   //stMessage.iTimestamp = SQLite_GetTimeStamp();
-  sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", Get2DAString("env", "Value", 2), stMessage);
+  sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", GetDiscordKey(), stMessage);
   SendDiscordLogMessage(sConstructedMsg);
 }
 
 void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE);
 void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
 {
+    if (!DiscordEnabled()) return;
     if (HideDiscord(oPC)) return;
 
     if (GetGoldPieceValue(oItem) < 14000)
@@ -400,7 +425,7 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
 
 
     //SendDebugMessage("ValuableItemWebhook: " + sDescription);
-    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", Get2DAString("env", "Value", 2), stMessage);
+    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
     SendDiscordLogMessage(sConstructedMsg);
 }
 
@@ -408,6 +433,7 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
 void HouseBuyWebhook(object oPC, int nGoldCost, object oArea);
 void HouseBuyWebhook(object oPC, int nGoldCost, object oArea)
 {
+    if (!DiscordEnabled()) return;
     if (HideDiscord(oPC)) return;
 
     string sConstructedMsg;
@@ -425,7 +451,7 @@ void HouseBuyWebhook(object oPC, int nGoldCost, object oArea)
     stMessage.sDescription = sDescription;
 
     //SendDebugMessage("HouseBuyWebhook: " + sDescription);
-    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", Get2DAString("env", "Value", 2), stMessage);
+    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
     SendDiscordLogMessage(sConstructedMsg);
 }
 
@@ -433,6 +459,7 @@ void HouseBuyWebhook(object oPC, int nGoldCost, object oArea)
 void QuestCompleteWebhook(object oPC, string sQuestName);
 void QuestCompleteWebhook(object oPC, string sQuestName)
 {
+    if (!DiscordEnabled()) return;
     if (HideDiscord(oPC)) return;
 
     string sConstructedMsg;
@@ -451,7 +478,7 @@ void QuestCompleteWebhook(object oPC, string sQuestName)
 
 
     //SendDebugMessage("QuestCompleteWebhook: " + sDescription);
-    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", Get2DAString("env", "Value", 2), stMessage);
+    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
     SendDiscordLogMessage(sConstructedMsg);
 }
 
