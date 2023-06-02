@@ -292,6 +292,10 @@ void main()
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_PVP_SETTING, 2);
     NWNX_Administration_SetPlayOption(NWNX_ADMINISTRATION_OPTION_VALIDATE_SPELLS, TRUE);
 
+// Save initial passwords for use after everything is initialized and ready
+    SetLocalString(GetModule(), "PlayerPassword", NWNX_Administration_GetPlayerPassword());
+    SetLocalString(GetModule(), "DMPassword", NWNX_Administration_GetDMPassword());
+
 // Set a password until everything is initialized and ready
     NWNX_Administration_SetPlayerPassword(GetRandomUUID());
 
