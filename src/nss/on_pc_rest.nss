@@ -10,6 +10,24 @@
 #include "nwnx_visibility"
 #include "inc_restxp"
 
+// function to check if the campfire displaced the PC, if so interrupt the rest and teleport back
+void ValidatePosition(object oPC)
+{
+    location lStartingLocation = GetLocalLocation(oPC, "starting_rest_location");
+    float fStartingZ = GetPositionFromLocation(lStartingLocation).z;
+
+// get the difference in the z-axis between the starting location and current location
+// use absolute value (handles if the PC went below or above)
+    float fDifference = fabs(fStartingZ - GetPosition(oPC).z);
+
+// great enough difference? teleport the PC back
+    if (fDifference >= 2.0)
+    {
+        AssignCommand(oPC, ClearAllActions());
+        AssignCommand(oPC, ActionJumpToLocation(lStartingLocation));
+    }
+}
+
 // this function gets all creatures near a location and interrupts their rest + prevents resting for a bit
 // typically this should be applied to a campfire (uses around the same radius for creatures attaching to a campfire)
 void InterruptRest(location lLocation)
@@ -31,6 +49,7 @@ void InterruptRest(location lLocation)
 
 void ApplySleepVFX(object oCreature)
 {
+// elves don't snore, apparently
     if (GetRacialType(oCreature) == RACIAL_TYPE_ELF) return;
 
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_SLEEP), oCreature);
@@ -39,7 +58,7 @@ void ApplySleepVFX(object oCreature)
 void AnnounceRemainingRevivesOnCreature(object oCreature)
 {
     int nTimesRevived = GetTimesRevived(oCreature);
-    
+
     string sReviveMessage = "*" + GetName(oCreature);
 
     if (nTimesRevived >= 3)
@@ -54,7 +73,7 @@ void AnnounceRemainingRevivesOnCreature(object oCreature)
     {
         sReviveMessage += " can be revived two more times*";
     }
-    
+
     if (nTimesRevived > 0)
     {
         FloatingTextStringOnCreature(sReviveMessage, oCreature, TRUE);
@@ -127,6 +146,8 @@ void main()
 
             SendDebugMessage("Event: REST_STARTED");
 
+            SetLocalLocation(oPC, "starting_rest_location", GetLocation(oPC));
+
 // prevent PC from resting when there are enemies in line of sight
             oObjectLoop = GetFirstObjectInShape(SHAPE_SPHERE, fSize, lLocation, TRUE, OBJECT_TYPE_CREATURE);
             while (GetIsObjectValid(oObjectLoop))
@@ -189,6 +210,9 @@ void main()
                    oValidator = CreateObject(OBJECT_TYPE_CREATURE, "_cf_validator", lTarget);
 
                    oCampfire = CreateObject(OBJECT_TYPE_PLACEABLE, "_campfire", GetLocation(oValidator), FALSE, "_campfire");
+
+// the campfire may have put the PC in a bad spot, attempt to validate them
+                   DelayCommand(1.0, ValidatePosition(oPC));
 
                    DelayCommand(30.0, AssignCommand(oCampfire, PlayAnimation(ANIMATION_PLACEABLE_DEACTIVATE)));
                    DestroyObject(oCampfire, 60.0);
@@ -344,7 +368,7 @@ void main()
 
             if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_FAMILIAR, oPC))) DecrementRemainingFeatUses(oPC, FEAT_SUMMON_FAMILIAR);
             if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION, oPC)))  DecrementRemainingFeatUses(oPC, FEAT_ANIMAL_COMPANION);
-            
+
             AnnounceRemainingRevives(oPC);
             GiveHouseRestingXP(oPC);
             SendRestedXPNotifierToPC(oPC);
