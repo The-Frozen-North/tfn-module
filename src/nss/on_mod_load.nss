@@ -744,5 +744,5 @@ void main()
         SetLocalInt(GetModule(), "treasure_ready", 1);
    }
 
-   SetTlkOverride(40067, "While in Stealth mode, your character is nearly undetectable. Creatures will roll Listen and Spot checks versus your Move Silently and Hide skills. If you fail the skill check, you will be noticed by them.");
+   ExecuteScript("tlk_overrides");
 }

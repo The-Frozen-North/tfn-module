@@ -49,7 +49,7 @@ void AddFlamingEffectToWeapon(object oMyWeapon, float fDuration, int nCasterLeve
         IPSafeAddItemProperty(oMyWeapon, ItemPropertyVisualEffect(nWeaponVFX), fDuration, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING, FALSE, TRUE);
     }
     // If the spell is cast again, any previous itemproperties matching are removed.
-    IPSafeAddItemProperty(oMyWeapon, ItemPropertyOnHitCastSpell(124,nCasterLevel), fDuration, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+    IPSafeAddItemProperty(oMyWeapon, ItemPropertyDamageBonus(DAMAGE_TYPE_FIRE, DAMAGE_BONUS_1d4), fDuration, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
 }
 
 void main()

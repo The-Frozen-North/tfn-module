@@ -32,12 +32,14 @@ void main()
     effect eDur = EffectVisualEffect(VFX_DUR_CESSATE_POSITIVE);
     effect eSight = EffectSeeInvisible();
     effect eUltravision = EffectUltravision();
-    effect eSkill = EffectSkillIncrease(SKILL_SPOT, 20);
+    effect eSpot = EffectSkillIncrease(SKILL_SPOT, 20);
+    effect eSearch = EffectSkillIncrease(SKILL_SEARCH, 20);
 
 
     effect eLink = EffectLinkEffects(eVis, eSight);
-    eLink = EffectLinkEffects(eVis, eUltravision);
-    eLink = EffectLinkEffects(eVis, eSkill);
+    eLink = EffectLinkEffects(eLink, eUltravision);
+    eLink = EffectLinkEffects(eLink, eSpot);
+    eLink = EffectLinkEffects(eLink, eSearch);
     eLink = EffectLinkEffects(eLink, eDur);
 
     //Fire cast spell at event for the specified target

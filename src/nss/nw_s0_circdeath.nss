@@ -45,7 +45,6 @@ void main()
 
     int nCurrentHD;
     int bAlreadyAffected;
-    // uncap this for now
     int nMax = 40;// maximun hd creature affected, set this to 9 so that a lower HD creature is chosen automatically
     //Also 9 is the maximum HD a creature can have and still be affected by the spell
     float fDelay;
@@ -83,11 +82,6 @@ void main()
                      if(nCurrentHD < nLow && nCurrentHD <= nHD)
                      {
                          nLow = nCurrentHD;
-
-                         // Only allow it to work uncapped once.
-                         if (nCurrentHD >= 9 && nLow >= 9)
-                            nLow = 9;
-
                          oLowest = oTarget;
                          bContinueLoop = TRUE;
                      }

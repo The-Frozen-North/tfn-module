@@ -62,7 +62,7 @@ void main()
 {
     //1.72: pre-declare some of the spell informations to be able to process them
     spell.DurationType = SPELL_DURATION_TYPE_HOURS;
-    spell.Limit = 5;
+    spell.Limit = 2;
 
     if (!X2PreSpellCastCode())
     {
