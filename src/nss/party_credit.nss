@@ -244,7 +244,7 @@ void SetPartyData()
    location lLocation = GetLocation(OBJECT_SELF);
 
    object oMbr = GetFirstObjectInShape(SHAPE_SPHERE, fDst, lLocation, FALSE, OBJECT_TYPE_CREATURE);
-   
+
    object oExclusiveLooter = StringToObject(GetScriptParam("exclusivelooter"));
    if (GetIsObjectValid(oExclusiveLooter))
    {
@@ -437,7 +437,7 @@ int DeterminePartyMemberThatGetsItem(object oItem, int nStartWeights=1000)
         }
         return DeterminePartyMemberThatGetsItem(oItem, nStartWeights + (nLowestWeight*-1));
     }
-    
+
     int nRolledWeight = Random(nTotalWeight)+1;
     if (LOOT_OWING_DEBUG)
     {
@@ -475,7 +475,7 @@ int DeterminePartyMemberThatGetsItem(object oItem, int nStartWeights=1000)
     // Update gold owings
     // I guess the best way to do this is to just subtract (item gold value/(party size-1)) from everyone else's owing
     // to the person who got it
-    
+
     // This logic will turn into a divide by zero if solo
     if (nNumLootRecievers > 1)
     {
@@ -715,7 +715,7 @@ void main()
             nGold = DetermineGoldFromCR(iCR);
         }
         nGoldToDistribute = nGold/max(1, nTotalSize);
-        
+
 // remove henchman gold now, if they exist
         if (Party.HenchmanSize > 0) nGold = nGold - Party.HenchmanSize*nGoldToDistribute;
     }
@@ -725,6 +725,7 @@ void main()
 
    int nItemsRoll = d100();
 
+// boss always give a guaranteed 3 items
    if (bBoss)
    {
        nChanceThree = 100;
@@ -732,19 +733,26 @@ void main()
        nChanceOne = 0;
    }
 
+// no items
+   float fLootBagScale = 0.6;
 
    if (nItemsRoll <= nChanceThree)
    {
        nNumItems = 3;
+       fLootBagScale = 1.0;
    }
    else if (nItemsRoll <= nChanceTwo)
    {
        nNumItems = 2;
+       fLootBagScale = 0.9;
    }
    else if ((nItemsRoll <= nChanceOne) || (bSemiBoss == 1))
    {
        nNumItems = 1;
+       fLootBagScale = 0.8;
    }
+
+   SetObjectVisualTransform(oContainer, OBJECT_VISUAL_TRANSFORM_SCALE, fLootBagScale);
 
     if (ShouldDebugLoot())
     {
@@ -780,36 +788,36 @@ void main()
    {
         fMultiplier = 2.0;
    }
-   
+
    float fXP = GetPartyXPValue(OBJECT_SELF, bAmbush, Party.AverageLevel, Party.TotalSize, fMultiplier);
-   
-   
+
+
 // =============================
 // ASSIGN ITEMS TO PARTY MEMBERS
 // =============================
-         
+
    // Each item in this array is another array that contains the items assigned to this position
    json jAssignments = JsonArray();
-   
+
    // Eg three items: me (party index 1) gets a longsword, Daelan (party index 2) gets a shortbow and a gem
    // This array looks like:
    // 0: <nothing> (we index party members starting at 1 here)
    // 1: Array(longsword) -> goes to me
    // 2: Array(shortbow, gem) -> goes to daelan
    // The objects themselves are saved as ObjectToStrings of the real objects.
-   
+
    // This approach should prove a lot more flexible when it comes to adding and assigning special bonus drops
    // that count towards the gold debt system which exist outside the tier system
    // (vs. trying to force a way to put them into the tier stuff)
    // It should also be pretty easy to assign new stuff to everyone
-   
+
    // Make empty arrays for everyone
    int nNth;
    for(nNth = 0; nNth <= Party.PlayerSize + Party.HenchmanSize; nNth++)
    {
        jAssignments = JsonArrayInsert(jAssignments, JsonArray());
    }
-      
+
    if (!bNoTreasure)
    {
        for (nNth=1; nNth <= nNumItems; nNth++)
@@ -818,7 +826,7 @@ void main()
            int nAssignIndex = DeterminePartyMemberThatGetsItem(oItem);
            jAssignments = _AddItemToPartyMemberAssignments(jAssignments, oItem, nAssignIndex);
        }
-       
+
        // Independent treasure map chance
        object oMap = MaybeGenerateTreasureMap(iAreaCR);
        if (GetIsObjectValid(oMap))
@@ -841,7 +849,7 @@ void main()
           GiveXPToPC(oPC, fXP);
           AdvanceQuest(OBJECT_SELF, oPC, GetLocalInt(OBJECT_SELF, "quest_kill"));
       }
-      
+
 // only proceed with loot code if container exists
       if (GetIsObjectValid(oContainer))
       {
@@ -864,8 +872,8 @@ void main()
             object oQuest = CreateItemOnObject(sQuestItemResRef, oPersonalLoot, 1, "quest");
             SetName(oQuest, QUEST_ITEM_NAME_COLOR + GetName(oQuest) + "</c>");
         }
-        
-        
+
+
         if (bNoTreasure == FALSE)
         {
            SetLocalInt(oPersonalLoot, "cr", GetLocalInt(oContainer, "cr"));
@@ -880,7 +888,7 @@ void main()
                CopyTierItemToContainer(oSourceItem, oPersonalLoot);
            }
         }
-        
+
 
 // distribute gold evenly to all
         if (nGold > 0)
@@ -931,7 +939,7 @@ void main()
 // have to be set for treasure to function properly
                SetLocalInt(oHenchman, "cr", GetLocalInt(oContainer, "cr"));
                SetLocalInt(oHenchman, "area_cr", GetLocalInt(oContainer, "area_cr"));
-               
+
                object oMerchant = GetLocalObject(oHenchman, "merchant");
 // assumed to be out of bounds (henchman)
                int nExternalIndex = nNth + Party.PlayerSize;
