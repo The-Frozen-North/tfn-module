@@ -49,17 +49,17 @@ void main()
     //Determine AC Bonus based Level.
     if (spell.Level <= 6)
     {
-        nBonus = 3;
+        nBonus = 2;
     }
     else
     {
         if (spell.Level <= 12)
         {
-            nBonus = 4;
+            nBonus = 3;
         }
         else
         {
-            nBonus = 5;
+            nBonus = 4;
         }
      }
     //Make sure the Armor Bonus is of type Natural
