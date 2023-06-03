@@ -5,12 +5,14 @@ services:
     image: nwnxee/unified:b419e42
     tty: true
     stdin_open: true
-    env_file: ${PWD-.}/config/common-dev.env
+    env_file: ${PWD-.}/config/common.env
     environment:
     - NWN_PUBLICSERVER=0
     - NWN_SERVERNAME="The Frozen North DEV SEED"
     - NWN_PORT=5134
     - NWNX_SERVERLOGREDIRECTOR_LOG_LEVEL=6
+    - NWNX_PROFILER_SKIP=y
+    - NWNX_METRICS_INFLUXDB_SKIP=y
     ports:
     - '5134:5134/udp'
     volumes:
