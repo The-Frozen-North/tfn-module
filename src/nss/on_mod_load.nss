@@ -326,6 +326,7 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_TRAP_ENTER_BEFORE", "on_trap_enterb");
     NWNX_Events_SubscribeEvent("NWNX_ON_ITEM_USE_LORE_BEFORE", "on_pc_loreb");
     NWNX_Events_SubscribeEvent("NWNX_ON_ITEM_USE_LORE_AFTER", "on_pc_lorea");
+    NWNX_Events_SubscribeEvent("NWNX_ON_ITEM_EQUIP_BEFORE", "on_pc_equipb");
     NWNX_Events_SubscribeEvent("NWNX_ON_ITEM_DECREMENT_STACKSIZE_BEFORE", "on_stack_decb");
     NWNX_Events_SubscribeEvent("NWNX_ON_SPELL_INTERRUPTED_AFTER", "on_spellinta");
 
