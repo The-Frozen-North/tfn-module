@@ -1,6 +1,8 @@
 #include "inc_loot"
 #include "inc_respawn"
 
+// this script is used when the treasure is first ready to be unlocked
+// basically, whoever opens it initializes it for their party
 void DestroyPlot()
 {
     SetPlotFlag(OBJECT_SELF, FALSE);

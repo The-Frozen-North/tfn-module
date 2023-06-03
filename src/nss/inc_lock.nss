@@ -1,5 +1,5 @@
 const int BASE_LOCK_DC = 16;
-const int BASE_LOCK_CHANCE = 20;
+const int BASE_LOCK_CHANCE = 30;
 
 void GenerateLockOnObject(object oObject = OBJECT_SELF)
 {

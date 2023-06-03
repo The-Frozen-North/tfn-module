@@ -1,6 +1,7 @@
 #include "inc_loot"
 #include "inc_respawn"
 
+// this script is called when the treasure is opened (typically after it is unlocked or already unlocked)
 void main()
 {
      object oPC = GetLastUsedBy();

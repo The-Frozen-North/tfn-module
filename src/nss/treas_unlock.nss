@@ -1,3 +1,5 @@
+// this script is called when a treasure container is unlocked
+
 void main()
 {
     if (GetObjectType(GetLastUnlocked()) == OBJECT_TYPE_CREATURE) PlaySound("gui_picklockopen");

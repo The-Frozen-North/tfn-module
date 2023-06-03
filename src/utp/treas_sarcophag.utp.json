@@ -6,7 +6,7 @@
   },
   "Appearance": {
     "type": "dword",
-    "value": 19
+    "value": 20
   },
   "AutoRemoveKey": {
     "type": "byte",
@@ -36,7 +36,7 @@
     "id": 14537,
     "type": "cexolocstring",
     "value": {
-      "0": "An indecipherable message is scrawled on the tombside in fresh blood. You wonder what undead lord calls this sarcophagus his home."
+      "0": "An indecipherable message is scrawled on the tombside in fresh blood. You wonder what undead lord calls this tomb his home."
     }
   },
   "DisarmDC": {
@@ -86,7 +86,9 @@
   "LocName": {
     "id": 14710,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Tomb"
+    }
   },
   "OnClick": {
     "type": "resref",
@@ -162,7 +164,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 377
+    "value": 378
   },
   "Ref": {
     "type": "byte",
@@ -243,6 +245,21 @@
         "Value": {
           "type": "cexostring",
           "value": "high"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "strength_required"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 13
         }
       }
     ]

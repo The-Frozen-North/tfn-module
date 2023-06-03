@@ -1,3 +1,4 @@
+// this script is called when a treasure object is used but locked
 // since it's not really a container, just emulate the lock UX
 void main()
 {
