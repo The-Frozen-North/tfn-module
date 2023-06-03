@@ -13,7 +13,7 @@ void main()
 {
     // These are non-dynamic appearances
     //RandomiseGenderAndAppearance();
-    RandomiseCreatureSoundset_Rough();
+    //RandomiseCreatureSoundset_Rough();
     string sResRef = GetResRef(OBJECT_SELF);
     struct RandomWeaponResults rwr;
     if (sResRef == "mugger")
@@ -48,7 +48,7 @@ void main()
         // No shields please
         rwr.nOffHand = BASE_ITEM_INVALID;
     }
-    
+
     TryEquippingRandomItemOfTier(rwr.nMainHand, 1, 1, OBJECT_SELF, INVENTORY_SLOT_RIGHTHAND);
     TryEquippingRandomItemOfTier(rwr.nOffHand, 1, 1, OBJECT_SELF, INVENTORY_SLOT_LEFTHAND);
 }

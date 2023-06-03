@@ -392,6 +392,12 @@ void RandomiseCreatureSoundset_Rough(object oCreature=OBJECT_SELF)
     {
         Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 138, GetModule()); // human male older world weary
         Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 363, GetModule()); // male dumb hero
+        Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 119, GetModule());  // human male typical low class villain
+        Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 118, GetModule());  // human male typical brash scumbag
+        Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 177, GetModule()); // human male bully
+        Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 177, GetModule());
+        Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 177, GetModule());
+        Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 177, GetModule());
     }
 
 
@@ -456,8 +462,6 @@ void RandomiseCreatureSoundset_Intellectual(object oCreature=OBJECT_SELF)
         Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 115, GetModule());  // human male barbarian warrior
         Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 195, GetModule());  // human male farmer ("Don't make me have to adjust your attitude. I will.")
         if (GetLevelByClass(CLASS_TYPE_DRUID, oCreature)) { for (i=0; i<5; i++) {   Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 129, GetModule()); } } // human male older confident leader
-        Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 118, GetModule());  // human male typical brash scumbag
-        Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 119, GetModule());  // human male typical low class villain
         if (nWiz) { for (i=0; i<8; i++) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 191, GetModule()); } } // human male wizard
         if (nWiz) { for (i=0; i<4; i++) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 181, GetModule()); } } // human male wizard old
         if (nWiz) { for (i=0; i<6; i++) { Array_PushBack_Int(RAND_APPEAR_TEMP_ARRAY, 418, GetModule()); } } // male good wizard
