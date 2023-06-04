@@ -36,7 +36,7 @@ Patch 1.70
 void AddFlamingEffectToWeapon(object oTarget, float fDuration, int nCasterLvl)
 {
    // If the spell is cast again, any previous itemproperties matching are removed.
-   IPSafeAddItemProperty(oTarget, ItemPropertyOnHitCastSpell(124,nCasterLvl), fDuration, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+   IPSafeAddItemProperty(oTarget, ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_FIRE,IP_CONST_DAMAGEBONUS_1d4), fDuration, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
    IPSafeAddItemProperty(oTarget, ItemPropertyVisualEffect(ITEM_VISUAL_FIRE), fDuration, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING, FALSE, TRUE);
 }
 
@@ -62,13 +62,13 @@ void main()
             if(GetIsObjectValid(oPossessor))
             {
                 ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oPossessor);
-                ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eDur, oPossessor, RoundsToSeconds(nDuration));
+                ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eDur, oPossessor, TurnsToSeconds(nDuration));
             }
             else
             {
                 ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eVis, GetLocation(oTarget));
             }
-            AddFlamingEffectToWeapon(oTarget, RoundsToSeconds(nDuration), nCasterLvl);
+            AddFlamingEffectToWeapon(oTarget, TurnsToSeconds(nDuration), nCasterLvl);
         }
         else
         {
