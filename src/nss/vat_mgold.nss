@@ -1,4 +1,5 @@
 #include "x2_inc_itemprop"
+#include "tmog_inc_craft"
 
 void main()
 {
@@ -10,10 +11,12 @@ void main()
     //metal gold
     int iNewColor = 9;
 
+    HideFeedbackForCraftText(oPC, TRUE);
     object oItem = IPDyeArmor(GetItemInSlot(iSlot, oPC), iColorType, iNewColor);
 
     SetLocalInt(oPC, "iColor" + IntToString(iColorType), iNewColor);
     FloatingTextStringOnCreature("Color " + IntToString(iNewColor), oPC, FALSE);
 
     AssignCommand(oPC, ActionEquipItem(oItem, iSlot));
+    HideFeedbackForCraftText(oPC, FALSE);
 }
