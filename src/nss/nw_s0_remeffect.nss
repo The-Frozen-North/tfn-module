@@ -65,7 +65,7 @@ void main()
             while(GetIsEffectValid(eEffect))
             {
                 eCreator = GetTag(GetEffectCreator(eEffect));
-                if((GetEffectType(eEffect) == EFFECT_TYPE_ABILITY_DECREASE && eCreator != "70_EC_POISON") || eCreator == "70_EC_DISEASE")
+                if(GetEffectTag(eEffect) != "death_penalty" && (GetEffectType(eEffect) == EFFECT_TYPE_ABILITY_DECREASE && eCreator != "70_EC_POISON") || eCreator == "70_EC_DISEASE")
                 {
                     RemoveEffect(spell.Target,eEffect);
                 }
@@ -88,7 +88,7 @@ void main()
             while(GetIsEffectValid(eEffect))
             {
                 eCreator = GetTag(GetEffectCreator(eEffect));
-                if((GetEffectType(eEffect) == EFFECT_TYPE_ABILITY_DECREASE && eCreator != "70_EC_DISEASE") || eCreator == "70_EC_POISON")
+                if(GetEffectTag(eEffect) != "death_penalty" && (GetEffectType(eEffect) == EFFECT_TYPE_ABILITY_DECREASE && eCreator != "70_EC_DISEASE") || eCreator == "70_EC_POISON")
                 {
                     RemoveEffect(spell.Target,eEffect);
                 }

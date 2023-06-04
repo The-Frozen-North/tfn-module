@@ -168,7 +168,7 @@ void DetermineDeathEffectPenalty(object oCreature, int nCurrentHP = 0)
         return;
 
     effect ePenalty = SupernaturalEffect(EffectAbilityDecrease(ABILITY_CONSTITUTION, nTimesDied*(GetAbilityScore(oCreature, ABILITY_CONSTITUTION, TRUE)/4)));
-    TagEffect(ePenalty, "death_penalty");
+    ePenalty = TagEffect(ePenalty, "death_penalty");
 
     if (nCurrentHP == 0)
         nCurrentHP = GetCurrentHitPoints(oCreature);
