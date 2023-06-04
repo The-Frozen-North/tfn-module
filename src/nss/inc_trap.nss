@@ -57,6 +57,8 @@ int DetermineTrap(int iCR = 0)
    nCombinedWeight = nAcidWeight + nAcidSplashWeight + nElectricalWeight + nFireWeight + nFrostWeight + nGasWeight + nHolyWeight + nSonicWeight + nSpikeWeight + nTangleWeight;
 
    int nTrapRoll = Random(nCombinedWeight)+1;
+   // some traps are much more deadly than normal ones, mainly electrical and fire ones.
+   // as a result, these traps get pushed up to a higher tier
    int iCRBonus = 0;
    while (TRUE)
    {
@@ -65,6 +67,7 @@ int DetermineTrap(int iCR = 0)
        if (nTrapRoll <= 0)
        {
             nTrapType = TRAP_BASE_TYPE_MINOR_ACID;
+            iCRBonus = 1;
             break;
        }
 
@@ -79,7 +82,7 @@ int DetermineTrap(int iCR = 0)
        if (nTrapRoll <= 0)
        {
             nTrapType = TRAP_BASE_TYPE_MINOR_ELECTRICAL;
-            iCRBonus = 3;
+            iCRBonus = 4;
             break;
        }
 
@@ -87,7 +90,7 @@ int DetermineTrap(int iCR = 0)
        if (nTrapRoll <= 0)
        {
             nTrapType = TRAP_BASE_TYPE_MINOR_FIRE;
-            iCRBonus = 2;
+            iCRBonus = 3;
             break;
        }
 
@@ -151,7 +154,14 @@ int DetermineTrap(int iCR = 0)
 
     int nTrapTier;
 
-    if (iCR-iCRBonus >= 12)
+// subtract it with the CR bonus
+// for electrical/fire traps, this may bump them to a lower trap tier
+// i.e. you need to be in a level 19 CR area to get the possibility of the most dangerous electrical trap
+    if (iCR-iCRBonus >= 15)
+    {
+        nTrapTier = Random(3) + 1;
+    }
+    else if (iCR-iCRBonus >= 12)
     {
         nTrapTier = Random(3);
     }
@@ -167,8 +177,8 @@ int DetermineTrap(int iCR = 0)
     {
         nTrapTier = 0;
     }
-// if it is a negative value, it means that a high CR trap (fire or electrical) was chosen
-// with a low CR area. in cases like this used the weakest spike trap
+// if it is a negative value, it means that a high CR bonus trap (fire or electrical) was chosen
+// with a low CR area. in cases like this fallback to the weakest spike trap
     else
     {
         return TRAP_BASE_TYPE_MINOR_SPIKE;
@@ -196,7 +206,7 @@ void GenerateTrapOnObject(object oObject = OBJECT_SELF)
    if (GetLocalInt(oObject, "trapped") != 1) return;
 
    int nTrapChance;
-   int iCR = GetLocalInt(oObject, "cr");
+   int iCR = GetLocalInt(oObject, "area_cr");
 
    switch (GetObjectType(oObject))
    {
