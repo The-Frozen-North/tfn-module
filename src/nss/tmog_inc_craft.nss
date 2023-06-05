@@ -6,6 +6,7 @@
 */////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "inc_general"
 #include "nwnx_feedback"
+#include "inc_debug"
 
 const string TEMP_CHEST = "_crafting";
 
@@ -45,6 +46,29 @@ int CheckForTemporaryItemProperty (object oItem)
         ipProperty = GetNextItemProperty (oItem);
     }
     return FALSE;
+}
+
+string IntToPaddedString(int nX, int nLength = 3, int nSigned = FALSE)
+{
+    if(nSigned)
+        nLength--; // To allow for sign
+    string sResult = IntToString(nX);
+    // Trunctate to nLength rightmost characters
+    if(GetStringLength(sResult) > nLength)
+        sResult = GetStringRight(sResult, nLength);
+    // Pad the left side with zero
+    while(GetStringLength(sResult) < nLength)
+    {
+        sResult = "0" + sResult;
+    }
+    if(nSigned)
+    {
+        if(nX >= 0)
+            sResult = "+" + sResult;
+        else
+            sResult = "-" + sResult;
+    }
+    return sResult;
 }
 
 void HideFeedbackForCraftText (object oPlayer, int bHidden)
@@ -103,6 +127,7 @@ int GetIsWeapon (object oItem)
       case BASE_ITEM_SHURIKEN: return TRUE;
       case BASE_ITEM_TRIDENT: return TRUE;
       case BASE_ITEM_WHIP: return TRUE;
+      case BASE_ITEM_MAGICSTAFF: return TRUE;
    }
    return FALSE;
 }
@@ -397,7 +422,7 @@ int GetArmorModelSelected (object oPC)
 // Color - Used for weapon colors.
 int GetItemsMaxModels (object oItem, string sPart)
 {
-    return StringToInt (Get2DAString ("smi_list", sPart, GetBaseItemType (oItem)));
+    return StringToInt (Get2DAString ("tmog_smi_list", sPart, GetBaseItemType (oItem)));
 }
 
 object ChangeItemsAppearance (object oPC, object oTarget, int nToken, object oItem, int nDirection)
@@ -437,19 +462,50 @@ object ChangeItemsAppearance (object oPC, object oTarget, int nToken, object oIt
             {
                 NuiSetBind (oPC, nToken, "craft_warning_label", JsonString ("Model # " + IntToString (nModel)));
             }
+
             oNewItem2 = CopyItemAndModify (oItem, ITEM_APPR_TYPE_WEAPON_MODEL, nModelSelected, nModel, TRUE);
-            DestroyObject (oItem);
-            oNewItem = CopyItemAndModify (oNewItem2, ITEM_APPR_TYPE_WEAPON_COLOR, nModelSelected, nColor, TRUE);
-            DestroyObject (oNewItem2);
+            // failsafe, if the item does not exist assume creation failed and don't destroy the original item
+            if (GetIsObjectValid(oNewItem2))
+            {
+                oNewItem = CopyItemAndModify (oNewItem2, ITEM_APPR_TYPE_WEAPON_COLOR, nModelSelected, nColor, TRUE);
+                // another failsafe
+                if (GetIsObjectValid(oNewItem))
+                {
+                    // only destroy the original item if it succeeds at the end of the chain
+                    DestroyObject (oItem);
+                }
+                else
+                {
+                    NuiSetBind (oPC, nToken, "craft_warning_label", JsonString ("Model limit reached"));
+                }
+                // this will need to be destroyed regardless
+                DestroyObject(oNewItem2);
+            }
+            else
+            {
+                NuiSetBind (oPC, nToken, "craft_warning_label", JsonString ("Model limit reached"));
+            }
         }
         else
         {
-            oNewItem = CopyItemAndModify (oItem, ITEM_APPR_TYPE_WEAPON_COLOR, nModelSelected, nColor, TRUE);
-            DestroyObject (oItem);
+            oNewItem = CopyItemAndModify(oItem, ITEM_APPR_TYPE_WEAPON_COLOR, nModelSelected, nColor, TRUE);
+            // failsafe, if the item does not exist assume creation failed and don't destroy the original item
+            if (GetIsObjectValid(oNewItem))
+            {
+                DestroyObject (oItem);
+            }
+            else
+            {
+                NuiSetBind (oPC, nToken, "craft_warning_label", JsonString ("Model limit reached"));
+            }
         }
-        // Item selected 3 is the right hand, 4 is the left hand.
-        if (nItemSelected == 3) AssignCommand (oTarget, ActionEquipItem (oNewItem, INVENTORY_SLOT_RIGHTHAND));
-        else AssignCommand (oTarget, ActionEquipItem (oNewItem, INVENTORY_SLOT_LEFTHAND));
+
+        if (GetIsObjectValid(oNewItem))
+        {
+            // Item selected 3 is the right hand, 4 is the left hand.
+            if (nItemSelected == 3) AssignCommand (oTarget, ActionEquipItem (oNewItem, INVENTORY_SLOT_RIGHTHAND));
+            else AssignCommand (oTarget, ActionEquipItem (oNewItem, INVENTORY_SLOT_LEFTHAND));
+        }
     }
     // Armor.
     else if (nItemSelected == 0)
@@ -537,29 +593,72 @@ object ChangeItemsAppearance (object oPC, object oTarget, int nToken, object oIt
     else
     {
         int nSlot, nBaseItem = GetBaseItemType (oItem);
+        int nMinModel = 1;
         // Get max models and inventory slot.
         if (nBaseItem == BASE_ITEM_CLOAK)
         {
-            nMaxModel = 16;
             nSlot = INVENTORY_SLOT_CLOAK;
         }
         else if (nBaseItem == BASE_ITEM_HELMET)
         {
-            nMaxModel = 35;
+            // nMaxModel = 35;
             nSlot = INVENTORY_SLOT_HEAD;
         }
         else if (nBaseItem == BASE_ITEM_LARGESHIELD || nBaseItem == BASE_ITEM_SMALLSHIELD ||
-                 nBaseItem == BASE_ITEM_TOWERSHIELD)
+                 nBaseItem == BASE_ITEM_TOWERSHIELD || nBaseItem == BASE_ITEM_TORCH || nBaseItem == 94) // moon on a stick
         {
             nSlot = INVENTORY_SLOT_LEFTHAND;
-            if (nBaseItem == BASE_ITEM_SMALLSHIELD) nMaxModel = 64;
-            else if (nBaseItem == BASE_ITEM_LARGESHIELD) nMaxModel = 163;
-            else if (nBaseItem == BASE_ITEM_TOWERSHIELD) nMaxModel = 124;
+            // if (nBaseItem == BASE_ITEM_SMALLSHIELD) // nMaxModel = 64;
+            // else if (nBaseItem == BASE_ITEM_LARGESHIELD) // nMaxModel = 163;
+            // else if (nBaseItem == BASE_ITEM_TOWERSHIELD) // nMaxModel = 124;
+
+            nMinModel == 11;
         }
+
         nModel = GetItemAppearance (oItem, ITEM_APPR_TYPE_SIMPLE_MODEL, 0);
-        nModel = nModel + nDirection;
-        if (nModel > nMaxModel) nModel = 0;
-        else if (nModel < 0) nModel = nMaxModel;
+        // nModel = nModel + nDirection;
+        // if (nModel > nMaxModel) nModel = 0;
+        // else if (nModel < 0) nModel = nMaxModel;
+
+        // originally coded behavior for cloaks
+        if (nBaseItem == BASE_ITEM_CLOAK)
+        {
+            nMaxModel = 16;
+            nModel = nModel + nDirection;
+            if (nModel < 0) nModel = nMaxModel;
+            else if (nModel > nMaxModel) nModel = 1;
+        }
+        else
+        {
+            string sModelPrefix = Get2DAString("baseitems", "DefaultIcon", nBaseItem);
+            // remove the first character, as we are not retrieving icons
+            sModelPrefix = GetStringRight(sModelPrefix, GetStringLength(sModelPrefix) - 1);
+
+            ResManGetAliasFor(sModelPrefix + IntToPaddedString(nModel, 3), RESTYPE_MDL);
+            // get the next available model, look up to 12 models up or down depending on the direction
+            int i, nCurrentModel;
+            string sAlias, sModel;
+            for (i = 1; i < 13; i++)
+            {
+                nCurrentModel = nModel + (nDirection * i); // 1, 2, 3, or -1, -2, -3, etc...
+                sModel = sModelPrefix + "_" + IntToPaddedString(nCurrentModel, 3);
+                // SendDebugMessage(sModel);
+                sAlias = ResManGetAliasFor(sModel, RESTYPE_MDL);
+
+                if (sAlias != "")
+                {
+                    // SendDebugMessage("Model found: " + sAlias);
+                    nModel = nCurrentModel;
+                    break;
+                }
+            }
+
+            // if we reached the end without finding a valid model, show a warning
+            if (i == 12 && sAlias == "") NuiSetBind (oPC, nToken, "craft_warning_label", JsonString ("Model limit reached"));
+        }
+
+        if (nModel < nMinModel) nMinModel = 1;
+
         if (JsonGetString (NuiGetBind (oPC, nToken, "craft_warning_label")) != "CANNOT CRAFT!")
         {
             NuiSetBind (oPC, nToken, "craft_warning_label", JsonString ("Model # " + IntToString (nModel)));
