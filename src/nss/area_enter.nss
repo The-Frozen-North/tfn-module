@@ -53,7 +53,7 @@ void main()
            SetScriptParam("action", "load");
            ExecuteScript(sScript, OBJECT_SELF);
        }
-       
+
        // This should help confirm the rollback issue is due to NWNX_Creature_GetIsBartering returning true when it shouldn't
        if (!CanSavePCInfo(oPC))
        {
@@ -66,6 +66,9 @@ void main()
            SetLocalInt(oPC, IGNORE_BARTER_SAVE_CHECK, 1);
            ExportSingleCharacter(oPC);
        }
+
+       // do not allow players to keep windows open i.e. crafting
+       NuiDestroy(oPC, NuiGetEventWindow());
 
        SendDebugMessage(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+", tag: "+GetTag(OBJECT_SELF)+", resref: "+GetResRef(OBJECT_SELF)+", climate: "+GetLocalString(OBJECT_SELF, "climate"));
 
