@@ -91,44 +91,6 @@ int X2_UMD()
     object oCaster = OBJECT_SELF;
     int nSpellID = GetSpellId();
 
-    // -------------------------------------------------------------------------
-    // if we knew that spell we could also cast it from an item (may be redundant)
-    // -------------------------------------------------------------------------
-    if(GetHasSpell(nSpellID) > 0)
-    {
-        //SpeakString("I have memorized this spell, I must be able to cast it without UMD ");
-        return TRUE;
-    }
-
-    // -------------------------------------------------------------------------
-    // 1.70: if the caster has any class that is spell scroll limited to, he can cast without UMD
-    // -------------------------------------------------------------------------
-    itemproperty ip = GetFirstItemProperty(oItem);
-     while(GetIsItemPropertyValid(ip))
-     {
-      if(GetItemPropertyType(ip) == ITEM_PROPERTY_USE_LIMITATION_CLASS)
-      {
-       if(GetLevelByClass(GetItemPropertySubType(ip),oCaster))
-       {
-       return TRUE;
-       }
-      }
-     ip = GetNextItemProperty(oItem);
-     }
-
-    // -------------------------------------------------------------------------
-    // If the caster used the item and has no UMD Skill /and is not a rogue //removed, deprecated
-    // thus we assume he must be allowed to use it because the engine
-    // prevents people that are not capable of using an item from using it....
-    // -------------------------------------------------------------------------
-    if (!GetHasSkill(SKILL_USE_MAGIC_DEVICE, oCaster))
-    {
-        // ---------------------------------------------------------------------
-        //SpeakString("I have no UMD, thus I can cast the spell... ");
-        // ---------------------------------------------------------------------
-        return TRUE;
-    }
-
     string sPropID = Get2DAString("des_crft_spells","IPRP_SpellIndex",nSpellID);
 
     // -------------------------------------------------------------------------
@@ -147,11 +109,67 @@ int X2_UMD()
     }
 
     // -------------------------------------------------------------------------
+    // if we knew that spell we could also cast it from an item (may be redundant)
+    // -------------------------------------------------------------------------
+    if(GetHasSpell(nSpellID) > 0)
+    {
+        //SpeakString("I have memorized this spell, I must be able to cast it without UMD ");
+        return TRUE;
+    }
+
+    // -------------------------------------------------------------------------
+    // if the caster has any class that is spell scroll limited to and is within level, he can cast without UMD
+    // if he does NOT have the minimum level, then spellcraft is needed to successfully cast
+    // -------------------------------------------------------------------------
+    itemproperty ip = GetFirstItemProperty(oItem);
+     while(GetIsItemPropertyValid(ip))
+     {
+      if(GetItemPropertyType(ip) == ITEM_PROPERTY_USE_LIMITATION_CLASS)
+      {
+
+       int nRequiredClass = GetItemPropertySubType(ip);
+       if(GetLevelByClass(nRequiredClass, oCaster))
+       {
+            //return TRUE;
+
+            // knows spell? then allow
+            if (GetIsInKnownSpellList(oCaster, nRequiredClass, nSpellID)) return TRUE;
+
+            // otherwise, do a spellcraft check
+            int nSkill = SKILL_SPELLCRAFT;
+            if (GetIsSkillSuccessful(oCaster, nSkill, 18 + nInnateLevel))
+            {
+                return TRUE;
+            }
+
+            // only check once, which is not ideal. the PC may have a higher level class
+            // that allows them to skip the check entirely, probably doesnt matter
+            // based on the check before
+            break;
+       }
+      }
+     ip = GetNextItemProperty(oItem);
+     }
+
+    // -------------------------------------------------------------------------
+    // If the caster used the item and has no UMD Skill /and is not a rogue //removed, deprecated
+    // thus we assume he must be allowed to use it because the engine
+    // prevents people that are not capable of using an item from using it....
+    // -------------------------------------------------------------------------
+    if (!GetHasSkill(SKILL_USE_MAGIC_DEVICE, oCaster))
+    {
+        // ---------------------------------------------------------------------
+        //SpeakString("I have no UMD, thus I can cast the spell... ");
+        // ---------------------------------------------------------------------
+        return TRUE;
+    }
+
+    // -------------------------------------------------------------------------
     // Base DC for casting a spell from a scroll is 25+SpellLevel
     // We do not have a way to check for misshaps here but GetIsSkillSuccessful
-    /// does not return the required information
+    // does not return the required information
     // -------------------------------------------------------------------------
-    if (GetIsSkillSuccessful(oCaster,nSkill, 7+3*nInnateLevel))
+    if (GetIsSkillSuccessful(oCaster,nSkill, 10+2*nInnateLevel))
     {
         return TRUE;
     }

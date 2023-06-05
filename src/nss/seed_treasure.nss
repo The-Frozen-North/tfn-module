@@ -451,7 +451,7 @@ void DistributeTreasureToStores(object oItem)
    switch (nBaseType)
    {
        case BASE_ITEM_SPELLSCROLL:
-          nValue = nValue * 4;
+          nValue = nValue * 6;
        break;
    }
 
@@ -506,7 +506,7 @@ void DistributeTreasureToStores(object oItem)
        {
            sTier = "T2";
        }
-       
+
        // Force +3 monk gloves to t5
        if (nEnchantValue == 3 && (nBaseType == BASE_ITEM_GLOVES || nBaseType == BASE_ITEM_BRACER))
        {
@@ -528,7 +528,7 @@ void DistributeTreasureToStores(object oItem)
            if (FindSubString(sName, "+2") > -1 && sTier == "T3") sTier = "T4";
            if (FindSubString(sName, "+3") > -1 && sTier == "T4") sTier = "T5";
        }
-       
+
 
        if (GetStringLeft(sResRef, 4) == "misc") {sType = "Misc";}
        else if (nBaseType == BASE_ITEM_SPELLSCROLL) {sType = "Scrolls";}
@@ -820,7 +820,7 @@ void CreateContainersForItemTypesByTier()
                         }
                     }
                 }
-            }                    
+            }
         }
     }
 }
@@ -941,9 +941,9 @@ void main()
     CreateItemOnObject("manualwis", GetObjectByTag("_MiscT5"));
     CreateItemOnObject("manualcha", GetObjectByTag("_MiscT5"));
     CreateItemOnObject("manualint", GetObjectByTag("_MiscT5"));
-    
-    
-    
+
+
+
     // Hypothesis: there's a limit to the number of items allowed in one container
     // And everything beyond a certain point trying to stuff more in just gets told NO.
     int nCount = 0;
@@ -957,7 +957,7 @@ void main()
         nCount++;
         oDistributionItem = GetNextItemInInventory(oContainer);
     }
-    
+
     WriteTimestampedLogEntry("Distributing to stores (early) distributed " + IntToString(nCount) + " items");
     DelayCommand(2.0, SeedTreasurePart2());
 }
@@ -1357,9 +1357,9 @@ void SeedTreasurePart2()
    string sColdIron = "A series of these weapons were constructed for the defense of the library fortress of Candlekeep some 200 years ago. The keep had acquired a tome detailing the imprisonment of the pit fiend Aegatohl, and a score of malevolent creatures came to claim it. A small horde was held at bay by the Knights of the Mailed Fist, along with the unexpected assistance of Devon's Privateers, a group of pirates. The tome was later destroyed.";
 
    PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "Cold Iron ", "", "ci", sColdIron, 2, 2, 2, 1, 1, 1, ItemPropertyAttackBonus(1), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, IP_CONST_DAMAGEBONUS_1d6), ItemPropertyBonusSavingThrow(IP_CONST_SAVEBASETYPE_FORTITUDE, 1));
-   
+
    string sBlessed = "This weapon bears the mark of the Morninglord, and is shrouded in a faint holy aura. While its magic is weaker than more conventional enchanted weaponry, it still possesses additional effectivenss against undead beings.";
-   
+
    PopulateChestWeapon(TREASURE_MELEE_SEED_CHEST, "Blessed ", "", "bls", sBlessed, 2, 1, 2, 1, 3, 2, ItemPropertyEnhancementBonusVsRace(IP_CONST_RACIALTYPE_UNDEAD, 1), ItemPropertyDamageBonusVsRace(IP_CONST_RACIALTYPE_UNDEAD, IP_CONST_DAMAGETYPE_DIVINE, IP_CONST_DAMAGEBONUS_2), ItemPropertyNoDamage());
 
 // ------------------------------------------
@@ -1412,7 +1412,7 @@ void SeedTreasurePart2()
 
     object oContainer = GetObjectByTag(TREASURE_DISTRIBUTION);
     object oDistributionItem = GetFirstItemInInventory(oContainer);
-    
+
     WriteTimestampedLogEntry("Distributing to stores (late)...");
 // stop at 2000, it could be an infinite loop at this point
     int nCount = 0;
@@ -1422,14 +1422,14 @@ void SeedTreasurePart2()
         nCount++;
         oDistributionItem = GetNextItemInInventory(oContainer);
     }
-    
+
     WriteTimestampedLogEntry("Distributing to stores (late) distributed " + IntToString(nCount) + " items");
-    
+
     WriteTimestampedLogEntry("Building treasures by item type...");
     CreateContainersForItemTypesByTier();
 
     CountItemsThroughTiers();
-    
+
 
     SetCampaignInt("treasures", "finished", 1);
 
