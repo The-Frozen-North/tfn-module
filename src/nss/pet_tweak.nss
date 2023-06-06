@@ -158,7 +158,7 @@ void main()
 
     float fScale = 1.0;
 
-    float fACLevel = 1.0;
+    float fACLevel = 0.5;
 
     int nDamage, nStrength, nDexterity, nConstitution, nIntelligence, nWisdom, nCharisma;
     int nBaseAC = 0;
@@ -183,10 +183,8 @@ void main()
             nCharisma = 6;
 
             fConstitutionLevel = 0.5;
-            fDexterityLevel = 1.0;
-            fStrengthLevel = 0.5;
 
-            fACLevel = 1.5;
+            fACLevel = 1.0;
 
             fScale = 1.2;
             fScaleLevel = 0.05;
@@ -219,11 +217,9 @@ void main()
             nWisdom = 14;
             nCharisma = 4;
 
-            fConstitutionLevel = 0.25;
-            fDexterityLevel = 0.75;
-            fStrengthLevel = 0.25;
+            fDexterityLevel = 0.5;
 
-            fACLevel = 2.0;
+            fACLevel = 1.0;
 
             fScale = 2.0;
             fScaleLevel = 0.05;
@@ -252,10 +248,10 @@ void main()
             nWisdom = 13;
             nCharisma = 4;
 
-            fACLevel = 1.25;
+            fACLevel = 0.75;
 
-            fConstitutionLevel = 0.75;
-            fStrengthLevel = 0.75;
+            fConstitutionLevel = 0.25;
+            fStrengthLevel = 0.25;
 
             fScale = 0.9;
             fScaleLevel = 0.03;
@@ -279,9 +275,7 @@ void main()
             nWisdom = 12;
             nCharisma = 6;
 
-            fConstitutionLevel = 0.75;
-            fDexterityLevel = 0.25;
-            fStrengthLevel = 1.0;
+            fStrengthLevel = 0.5;
 
             fScale = 0.7;
             fScaleLevel = 0.06;
@@ -306,10 +300,7 @@ void main()
             nWisdom = 10;
             nCharisma = 12;
 
-
-            fDexterityLevel = 0.5;
             fConstitutionLevel = 0.25;
-            fStrengthLevel = 0.25;
             fCharismaLevel = 0.25;
 
             fScale = 1.0;
@@ -334,11 +325,9 @@ void main()
             nWisdom = 12;
             nCharisma = 12;
 
-            fACLevel = 1.5;
+            fACLevel = 0.75;
 
-            fDexterityLevel = 0.5;
-            fConstitutionLevel = 0.25;
-            fStrengthLevel = 0.25;
+            fDexterityLevel = 0.25;
 
             fScale = 1.0;
             fScaleLevel = 0.04;
@@ -359,9 +348,8 @@ void main()
             nWisdom = 12;
             nCharisma = 10;
 
-            fStrengthLevel = 0.75;
-            fDexterityLevel = 0.5;
-            fConstitutionLevel = 0.5;
+            fStrengthLevel = 0.25;
+            fConstitutionLevel = 0.25;
 
             fScale = 1.0;
             fScaleLevel = 0.03;
@@ -394,10 +382,8 @@ void main()
             nWisdom = 12;
             nCharisma = 10;
 
-
-            fStrengthLevel = 0.5;
-            fDexterityLevel = 0.75;
-            fConstitutionLevel = 0.5;
+            fDexterityLevel = 0.25;
+            fConstitutionLevel = 0.25;
 
             fScale = 1.0;
             fScaleLevel = 0.03;
@@ -430,10 +416,7 @@ void main()
             nWisdom = 10;
             nCharisma = 6;
 
-
-            fDexterityLevel = 0.75;
-            fConstitutionLevel = 0.5;
-            fStrengthLevel = 1.0;
+            fStrengthLevel = 0.5;
 
             fScale = 0.9;
             fScaleLevel = 0.04;
@@ -464,8 +447,7 @@ void main()
             nWisdom = 10;
             nCharisma = 3;
 
-            fDexterityLevel = 0.5;
-            fConstitutionLevel = 0.25;
+            fDexterityLevel = 0.25;
             fStrengthLevel = 0.25;
 
             fScale = 0.7;
@@ -513,9 +495,8 @@ void main()
             if (nMasterHitDice >= 6) NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_GREAT_CLEAVE);
             if (nMasterHitDice >= 9) NWNX_Creature_AddFeat(OBJECT_SELF, FEAT_IMPROVED_CRITICAL_CREATURE);
 
-            fDexterityLevel = 1.0;
-            fConstitutionLevel = 0.75;
-            fStrengthLevel = 0.75;
+            fDexterityLevel = 0.25;
+            fStrengthLevel = 0.25;
 
             fScale = 0.9;
             fScaleLevel = 0.03;
@@ -532,10 +513,7 @@ void main()
             nWisdom = 12;
             nCharisma = 10;
 
-
-            fDexterityLevel = 0.5;
-            fConstitutionLevel = 0.75;
-            fStrengthLevel = 1.0;
+            fStrengthLevel = 0.5;
 
             fScale = 0.7;
             fScaleLevel = 0.05;
@@ -559,11 +537,9 @@ void main()
             nWisdom = 12;
             nCharisma = 6;
 
-            fConstitutionLevel = 0.5;
-            fDexterityLevel = 1.0;
-            fStrengthLevel = 0.5;
+            fDexterityLevel = 0.5;
 
-            fACLevel = 1.5;
+            fACLevel = 0.75;
 
             fScale = 1.0;
             fScaleLevel = 0.09;
@@ -597,9 +573,8 @@ void main()
             nCharisma = 6;
 
 
-            fDexterityLevel = 1.0;
-            fConstitutionLevel = 0.25;
-            fStrengthLevel = 0.5;
+            fDexterityLevel = 0.25;
+            fStrengthLevel = 0.25;
 
             fScale = 1.0;
             fScaleLevel = 0.04;
@@ -638,9 +613,7 @@ void main()
             nCharisma = 10;
 
 
-            fDexterityLevel = 1.0;
-            fConstitutionLevel = 0.25;
-            fStrengthLevel = 0.25;
+            fDexterityLevel = 0.5;
 
             fScale = 0.9;
             fScaleLevel = 0.04;
@@ -669,8 +642,7 @@ void main()
             nWisdom = 12;
             nCharisma = 10;
 
-            fIntelligenceLevel = 0.75;
-            fDexterityLevel = 0.5;
+            fIntelligenceLevel = 0.5;
 
             fScale = 1.0;
             fScaleLevel = 0.03;
@@ -705,7 +677,7 @@ void main()
             nCharisma = 16;
 
 
-            fDexterityLevel = 1.0;
+            fDexterityLevel = 0.5;
 
             fScale = 2.0;
             fScaleLevel = 0.03;
@@ -728,9 +700,8 @@ void main()
             nCharisma = 16;
 
 
-            fDexterityLevel = 0.75;
-            fConstitutionLevel = 0.5;
-            fStrengthLevel = 0.5;
+            fDexterityLevel = 0.25;
+            fStrengthLevel = 0.25;
 
             fScale = 1.0;
             fScaleLevel = 0.04;
@@ -764,9 +735,7 @@ void main()
             nCharisma = 6;
 
 
-            fDexterityLevel = 1.0;
-            fConstitutionLevel = 0.25;
-            fStrengthLevel = 0.25;
+            fDexterityLevel = 0.5;
 
             fScale = 1.0;
             fScaleLevel = 0.04;

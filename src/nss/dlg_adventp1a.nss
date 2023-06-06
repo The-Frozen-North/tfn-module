@@ -7,18 +7,18 @@
 
 void main()
 {
-	object oPC = GetPCSpeaker();
-	if (GetScriptParam("attack") != "")
-	{;
-		int i;
-		int nPartySize = GetAdventurerPartySize(OBJECT_SELF);
-		for (i=1; i<=nPartySize; i++)
-		{
-			object oAdventurer = GetAdventurerPartyMemberByIndex(OBJECT_SELF, i);
-			ChangeToStandardFaction(oAdventurer, STANDARD_FACTION_HOSTILE);
-			SetIsTemporaryEnemy(oPC, oAdventurer);
+    object oPC = GetPCSpeaker();
+    if (GetScriptParam("attack") != "")
+    {;
+        int i;
+        int nPartySize = GetAdventurerPartySize(OBJECT_SELF);
+        for (i=1; i<=nPartySize; i++)
+        {
+            object oAdventurer = GetAdventurerPartyMemberByIndex(OBJECT_SELF, i);
+            ChangeToStandardFaction(oAdventurer, STANDARD_FACTION_HOSTILE);
+            SetIsTemporaryEnemy(oPC, oAdventurer);
             AssignCommand(oAdventurer, FastBuff());
-			AssignCommand(oAdventurer, gsCBDetermineCombatRound(oPC));
+            AssignCommand(oAdventurer, gsCBDetermineCombatRound(oPC));
         }
-	}
+    }
 }

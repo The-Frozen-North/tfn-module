@@ -119,6 +119,7 @@ struct RandomWeaponResults RollRandomWeaponTypesForCreature(object oCreature);
 
 const string RAND_EQUIP_GIVE_RANGED = "rand_equip_give_ranged";
 
+const string RAND_EQUIP_PREFER_BOW = "rand_equip_prefer_bow";
 
 const string RAND_EQUIP_TEMP_ARRAY = "rand_equip_temp";
 
@@ -657,6 +658,14 @@ int SelectRangedWeaponType(object oCreature)
     int nIndex = 0;
     int nMaxScore = 0;
     int nBaseItem;
+
+    // Arcane Archer only works with bows
+    int bForceBows = GetLevelByClass(CLASS_TYPE_ARCANE_ARCHER, oCreature);
+
+    // if we set a preference for bows, 2 out of 3 times we will force them to use bows
+    // however, the chance to use bows may actually still be greater because they may be randomly selected anyways
+    if (GetLocalInt(oCreature, RAND_EQUIP_PREFER_BOW) == 1 && d3() != 1) bForceBows = TRUE;
+
     for (nIndex = 0; nIndex < RAND_EQUIP_NUM_WEAPONTYPES; nIndex++)
     {
         nBaseItem = _GetWeaponTypeByIndex(nIndex);
@@ -666,8 +675,7 @@ int SelectRangedWeaponType(object oCreature)
             // Size restriction, no giving longbows to halflings
             if (nCreatureSize - nWeaponSize >= -1)
             {
-                // Arcane Archer only works on bows
-                if (GetLevelByClass(CLASS_TYPE_ARCANE_ARCHER, oCreature))
+                if (bForceBows)
                 {
                     if (nBaseItem != BASE_ITEM_LONGBOW && nBaseItem != BASE_ITEM_SHORTBOW)
                     {
@@ -724,10 +732,10 @@ struct RandomWeaponResults RollRandomWeaponTypesForCreature(object oCreature)
     rwrOut.nOffHand = BASE_ITEM_INVALID;
     rwrOut.nBackupMeleeWeapon = BASE_ITEM_INVALID;
     // Do we even WANT weapons?
-    
+
     // Give ranged and a random one handed backup melee weapon if something signalled to
     int bGiveRanged = GetLocalInt(oCreature, RAND_EQUIP_GIVE_RANGED);
-    
+
     // Melee: figure out what we want (one handed + shield, two weapons, two handers)
     int bShieldProficiency = GetHasFeat(FEAT_SHIELD_PROFICIENCY, oCreature);
     int bDualWield = 0;
@@ -744,7 +752,7 @@ struct RandomWeaponResults RollRandomWeaponTypesForCreature(object oCreature)
     {
         bDualWield = 1;
     }
-    
+
     if (GetLevelByClass(CLASS_TYPE_MONK, oCreature) > 0)
     {
         if (bDualWield && !bGiveRanged)
@@ -769,7 +777,7 @@ struct RandomWeaponResults RollRandomWeaponTypesForCreature(object oCreature)
             {
                 rwrOut.nMainHand = d2() == 1 ? BASE_ITEM_QUARTERSTAFF : BASE_ITEM_KAMA;
             }
-            
+
             return rwrOut;
         }
         // Otherwise, punchy punchy time
@@ -785,7 +793,7 @@ struct RandomWeaponResults RollRandomWeaponTypesForCreature(object oCreature)
             return rwrOut;
         }
     }
-    
+
     if (bGiveRanged)
     {
         rwrOut.nMainHand = SelectRangedWeaponType(oCreature);
@@ -874,7 +882,7 @@ string GetMundaneWeaponOfType(int nBaseItem)
 
     switch (nBaseItem)
     {
-       case BASE_ITEM_SMALLSHIELD: { sOut = "nw_ashsw001"; break; } 
+       case BASE_ITEM_SMALLSHIELD: { sOut = "nw_ashsw001"; break; }
        case BASE_ITEM_HELMET: { sOut = "nw_arhe006"; break; }
        case BASE_ITEM_LARGESHIELD: { sOut = "nw_ashlw001"; break; }
        case BASE_ITEM_TOWERSHIELD: { sOut = "nw_ashto001"; break; }
@@ -947,14 +955,14 @@ string GetMundaneArmorOfAC(int nAC)
             if (nRoll == 0) { sOut = "nw_aarcl012"; }
             else { sOut = "nw_aarcl003"; }
             break;
-        } 
+        }
         case 5:
         {
             nRoll = Random(2);
             if (nRoll == 0) { sOut = "nw_aarcl010"; }
             else { sOut = "nw_aarcl004"; }
             break;
-        } 
+        }
         case 6:
         {
             nRoll = Random(2);
@@ -1077,7 +1085,7 @@ object _EquipUndroppableItem(object oCreature, object oNew, int nSlot)
         {
             DestroyObject(oOldOffhand);
         }
-        
+
         return oNew;
     }
     else
@@ -1195,7 +1203,7 @@ object AddRandomItemOfTierToInventory(int nBaseItem, int nTier, int nUniqueChanc
             SetLocalInt(oNew, "unique", 1);
         }
     }
-    
+
     SetPickpocketableFlag(oNew, FALSE);
     SetDroppableFlag(oNew, FALSE);
     SetIdentified(oNew, TRUE);
@@ -1231,7 +1239,7 @@ int GetACOfArmorToEquip(object oCreature, int nMaxAC=8)
             nBestAC = nThisAC;
         }
         if (nMaxAC >= 3)
-        {  
+        {
             nThisAC = 3 + min(4, nDexMod);
             if (nThisAC > nBestAC)
             {
@@ -1239,7 +1247,7 @@ int GetACOfArmorToEquip(object oCreature, int nMaxAC=8)
                 nBestAC = nThisAC;
             }
             if (nMaxAC >= 4)
-            {  
+            {
                 nThisAC = 4 + min(4, nDexMod);
                 if (nThisAC > nBestAC)
                 {
@@ -1247,7 +1255,7 @@ int GetACOfArmorToEquip(object oCreature, int nMaxAC=8)
                     nBestAC = nThisAC;
                 }
                 if (nMaxAC >= 5)
-                {  
+                {
                     nThisAC = 5 + min(2, nDexMod);
                     if (nThisAC > nBestAC)
                     {
@@ -1255,7 +1263,7 @@ int GetACOfArmorToEquip(object oCreature, int nMaxAC=8)
                         nBestAC = nThisAC;
                     }
                     if (nMaxAC >= 6)
-                    {  
+                    {
                         nThisAC = 6 + min(1, nDexMod);
                         if (nThisAC > nBestAC)
                         {
@@ -1263,7 +1271,7 @@ int GetACOfArmorToEquip(object oCreature, int nMaxAC=8)
                             nBestAC = nThisAC;
                         }
                         if (nMaxAC >= 7)
-                        {  
+                        {
                             nThisAC = 7 + min(1, nDexMod);
                             if (nThisAC > nBestAC)
                             {
@@ -1271,7 +1279,7 @@ int GetACOfArmorToEquip(object oCreature, int nMaxAC=8)
                                 nBestAC = nThisAC;
                             }
                             if (nMaxAC >= 8)
-                            {  
+                            {
                                 nThisAC = 8 + min(1, nDexMod);
                                 if (nThisAC > nBestAC)
                                 {
@@ -1416,7 +1424,7 @@ int IsItemSuitableForCreature(object oCreature, object oItem)
             else
             {
                 // These are okay on anyone.
-                if (nItemPropertyType == ITEM_PROPERTY_AC_BONUS || 
+                if (nItemPropertyType == ITEM_PROPERTY_AC_BONUS ||
                     nItemPropertyType == ITEM_PROPERTY_AC_BONUS_VS_ALIGNMENT_GROUP ||
                     nItemPropertyType == ITEM_PROPERTY_AC_BONUS_VS_DAMAGE_TYPE ||
                     nItemPropertyType == ITEM_PROPERTY_AC_BONUS_VS_RACIAL_GROUP ||
@@ -1443,8 +1451,8 @@ int IsItemSuitableForCreature(object oCreature, object oItem)
                 // ITEM_PROPERTY_MIND_BLANK
                 // ITEM_PROPERTY_TRUE_SEEING
                 // ITEM_PROPERTY_TURN_RESISTANCE
-                
-                
+
+
                 else if (nItemPropertyType == ITEM_PROPERTY_ABILITY_BONUS)
                 {
                     int nAbility = GetItemPropertySubType(ipTest);
@@ -1482,7 +1490,7 @@ int IsItemSuitableForCreature(object oCreature, object oItem)
                        if (GetLevelByClass(CLASS_TYPE_CLERIC, oCreature) || GetLevelByClass(CLASS_TYPE_DRUID, oCreature) || GetLevelByClass(CLASS_TYPE_MONK, oCreature))
                         {
                             bSuitable = 1;
-                        } 
+                        }
                     }
                     else if (nAbility == ABILITY_CHARISMA)
                     {
@@ -1490,7 +1498,7 @@ int IsItemSuitableForCreature(object oCreature, object oItem)
                         if (GetLevelByClass(CLASS_TYPE_SORCERER, oCreature) || GetLevelByClass(CLASS_TYPE_PALADIN, oCreature) || GetLevelByClass(CLASS_TYPE_BARD, oCreature))
                         {
                             bSuitable = 1;
-                        } 
+                        }
                     }
                 }
                 else if (nItemPropertyType == ITEM_PROPERTY_BONUS_FEAT)
@@ -1531,7 +1539,7 @@ int IsItemSuitableForCreature(object oCreature, object oItem)
                 }
                 else if (nItemPropertyType == ITEM_PROPERTY_ONHITCASTSPELL)
                 {
-                    
+
                     // This is fine so long as it's not on gloves
                     if (nBaseItem != BASE_ITEM_GLOVES && nBaseItem != BASE_ITEM_BRACER)
                     {
@@ -1558,16 +1566,16 @@ int IsItemSuitableForCreature(object oCreature, object oItem)
                     }
                 }
             }
-            
-            
+
+
             if (bSuitable)
             {
                 break;
             }
             ipTest = GetNextItemProperty(oItem);
         }
-        
-        
+
+
         return bSuitable;
     }
     return 1;

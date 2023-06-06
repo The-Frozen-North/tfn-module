@@ -752,7 +752,9 @@ void main()
        fLootBagScale = 0.8;
    }
 
-   SetObjectVisualTransform(oContainer, OBJECT_VISUAL_TRANSFORM_SCALE, fLootBagScale);
+   // only do this if its an actual loot bag
+   if (GetResRef(oContainer) == "_loot_container")
+        SetObjectVisualTransform(oContainer, OBJECT_VISUAL_TRANSFORM_SCALE, fLootBagScale);
 
     if (ShouldDebugLoot())
     {
