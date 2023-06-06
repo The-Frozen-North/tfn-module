@@ -1,7 +1,5 @@
 git pull
 
-git -C nwn-assets pull || git clone https://github.com/urothis/nwn-assets.git nwn-assets
-
 @echo off
 echo.
 echo Checking to see if there is a previous module. If prompted, type 'Y' to delete the current module and module folder.
@@ -50,11 +48,11 @@ rmdir /s /q  server\override
 copy modules\TFN.mod server\modules\TFN.mod
 copy config\common.env server\config\common.env
 copy settings.tml server\settings.tml
-copy database\tmapsolutions.sqlite3 server\database\tmapsolutions.sqlite3
-copy database\spawns.sqlite3 server\database\spawns.sqlite3
-copy database\treasures.sqlite3 server\database\treasures.sqlite3
-copy database\randspellbooks.sqlite3 server\database\randspellbooks.sqlite3
-copy database\prettify.sqlite3 server\database\prettify.sqlite3
+copy seeded_database\tmapsolutions.sqlite3 server\database\tmapsolutions.sqlite3
+copy seeded_database\spawns.sqlite3 server\database\spawns.sqlite3
+copy seeded_database\treasures.sqlite3 server\database\treasures.sqlite3
+copy seeded_database\randspellbooks.sqlite3 server\database\randspellbooks.sqlite3
+copy seeded_database\prettify.sqlite3 server\database\prettify.sqlite3
 robocopy override server\override
 
 copy server\env\env.2da server\override\env.2da
