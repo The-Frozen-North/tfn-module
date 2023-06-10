@@ -6,7 +6,7 @@
   },
   "BaseItem": {
     "type": "int",
-    "value": 74
+    "value": 29
   },
   "Charges": {
     "type": "byte",
@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 16
+    "value": 1
   },
   "Cursed": {
     "type": "byte",
@@ -27,14 +27,13 @@
   "DescIdentified": {
     "type": "cexolocstring",
     "value": {
-      "0": "This handbook contains everything an adventurer would need to know about \"The Frozen North\", such as spell and class changes, world information, avocado recipes, etc. The server rules can also be found here.\n\nDue to it's magical nature, it is up to date and current. Or at least it should be...\n\nActivating the book will allow you to read it's contents."
+      "0": "This stone seems to resonate with immense divine energy. As you place your hand around it, you get a mental image of a familiar temple.\n\nThough, you feel a sense of foreboding and loss as you handle the stone. You feel your very coin purse jingle, as well as a sense of forgetfulness.\n\nActivating this stone should bring you back to the temple you last attuned with, but likely with some loss of experience and gold."
     }
   },
   "Description": {
-    "id": 58555,
     "type": "cexolocstring",
     "value": {
-      "0": ""
+      "0": "This stone seems to resonate with immense divine energy. As you place your hand around it, you get a mental image of a familiar temple.\n\nThough, you feel a sense of foreboding and loss as you handle the stone. You feel your very coin purse jingle, as well as a sense of forgetfulness.\n\nActivating this stone should bring you back to the temple you last attuned with, but likely with some loss of experience and gold."
     }
   },
   "Identified": {
@@ -42,15 +41,14 @@
     "value": 1
   },
   "LocalizedName": {
-    "id": 13027,
     "type": "cexolocstring",
     "value": {
-      "0": "Adventurer's Handbook"
+      "0": "Stone of Recall"
     }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 1
+    "value": 82
   },
   "PaletteID": {
     "type": "byte",
@@ -106,10 +104,14 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "_pc_handbook"
+    "value": "_stone_recall"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "_pc_handbook"
+    "value": "_stone_recall"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 82
   }
 }

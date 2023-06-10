@@ -6,6 +6,8 @@ const int LOG_OUT = 2;
 
 // the row in env.2da where the discord secret is stored
 const int ENV_DISCORD_KEY_ROW = 2;
+// the row in env.2da where the discord secret for sending bug reports is stored
+const int ENV_DISCORD_BUG_REPORT_KEY_ROW = 3;
 
 const string PLAYER_COLOR = "#42bcf5";
 const string LEVEL_UP_COLOR = "#ddf542";
@@ -15,6 +17,7 @@ const string SERVER_COLOR = "#9fe4fc";
 const string VALUABLE_ITEM_COLOR = "#96e6ff";
 const string HOUSE_BUY_COLOR = "#a000a0";
 const string QUEST_COMPLETE_COLOR = "#50ffa0";
+const string BUG_REPORT_COLOR = "#ffa500";
 
 #include "nwnx_player"
 #include "nwnx_webhook_rch"
@@ -469,7 +472,6 @@ void QuestCompleteWebhook(object oPC, string sQuestName)
     // PC has purchased a house in Area for Gold!
     string sTitle = "QUEST COMPLETED";
     string sDescription = "**" + sName + "** has completed **" + sQuestName + "**!";
-    int nPlayers = GetPlayerCount();
 
     stMessage.sTitle = sTitle;
     stMessage.sColor = QUEST_COMPLETE_COLOR;
@@ -479,6 +481,29 @@ void QuestCompleteWebhook(object oPC, string sQuestName)
 
     //SendDebugMessage("QuestCompleteWebhook: " + sDescription);
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
+    SendDiscordLogMessage(sConstructedMsg);
+}
+
+void BugReportWebhook(object oPC, string sMessage);
+void BugReportWebhook(object oPC, string sMessage)
+{
+    // string sDiscordKey = Get2DAString("env", "Value", ENV_DISCORD_BUG_REPORT_KEY_ROW);
+    // SendDebugMessage("key " + sDiscordKey);
+    // if (sDiscordKey == "") return;
+    string sDiscordKey = GetDiscordKey();
+
+    string sConstructedMsg;
+    string sName = GetName(oPC);
+    struct NWNX_WebHook_Message stMessage = BuildWebhookMessageTemplate(oPC);
+
+    string sTitle = "BUG REPORT";
+
+    stMessage.sTitle = sTitle;
+    stMessage.sColor = BUG_REPORT_COLOR;
+
+    stMessage.sDescription = sMessage;
+
+    sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", sDiscordKey, stMessage);
     SendDiscordLogMessage(sConstructedMsg);
 }
 

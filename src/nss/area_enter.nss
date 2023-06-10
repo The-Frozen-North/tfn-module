@@ -69,6 +69,7 @@ void main()
 
        // do not allow players to keep windows open i.e. crafting
        NuiDestroy(oPC, NuiGetEventWindow());
+       ExecuteScript("0e_load_menu", oPC);
 
        SendDebugMessage(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+", tag: "+GetTag(OBJECT_SELF)+", resref: "+GetResRef(OBJECT_SELF)+", climate: "+GetLocalString(OBJECT_SELF, "climate"));
 

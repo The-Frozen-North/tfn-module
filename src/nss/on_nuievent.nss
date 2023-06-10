@@ -7,6 +7,8 @@ void main()
     string sWindow = NuiGetWindowId(oPC, NuiGetEventWindow());
     ExecuteScript(sWindow + "_evt");
 
+    ExecuteScript("0e_window");
+
     if (GetResRef(GetArea(oPC)) == "blak_divine")
     {
         ExecuteScript("tmog_nui_event");

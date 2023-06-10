@@ -1,6 +1,6 @@
 void main()
 {
-    object oPC = GetPCSpeaker();
+    object oPC = GetItemActivator();
 
     ExecuteScript("pc_respawn", oPC);
 }

@@ -39,7 +39,7 @@ void main()
     SetCampaignString(GetPCPublicCDKey(oPC), "player_name", GetPCPlayerName(oPC));
 
     InitializeHouseMapPin(oPC);
-    
+
     AddRestedXPOnLogin(oPC);
 
     string sType = "player";
@@ -79,6 +79,7 @@ void main()
 
 // this item is deprecated
     DestroyObject(GetItemPossessedBy(oPC, "_dev_tool"));
+    DestroyObject(GetItemPossessedBy(oPC, "_pc_handbook"));
 
     DeleteLocalInt(oPC, "ambushed");
 
@@ -128,7 +129,7 @@ void main()
         {
             SetCurrentHitPoints(oPC, nStoredHP);
         }
-        
+
         // Items you can't drop shouldn't have weight
         object oTest = GetFirstItemInInventory(oPC);
         while (GetIsObjectValid(oTest))
@@ -148,9 +149,10 @@ void main()
 
     SetQuestEntry(oPC, "q_wailing", 1);
 
-    DelayCommand(4.0, CreateItemIfBlank(oPC, "_pc_handbook"));
+    DelayCommand(4.0, CreateItemIfBlank(oPC, "_stone_recall"));
+    DelayCommand(4.0, CreateItemIfBlank(oPC, "_unstucker"));
     DelayCommand(5.0, FloatingTextStringOnCreature("Welcome to The Frozen North!", oPC, FALSE));
-    DelayCommand(6.0, FloatingTextStringOnCreature("Please read your \"Adventurer's Handbook\" for rules and information.", oPC, FALSE));
+    DelayCommand(6.0, FloatingTextStringOnCreature("Please read the \"Information\" tab on the player menu for rules and information.", oPC, FALSE));
     DelayCommand(7.0, FloatingTextStringOnCreature("https://discord.gg/qKqRUDZ", oPC, FALSE));
     string sRespawn = SQLocalsPlayer_GetString(oPC, "respawn");
     if (sRespawn != "")
@@ -158,5 +160,4 @@ void main()
         sRespawn = GetRespawnLocationName(oPC);
         DelayCommand(9.0, FloatingTextStringOnCreature("You have chosen to respawn in " + sRespawn + ".", oPC, FALSE));
     }
-
 }
