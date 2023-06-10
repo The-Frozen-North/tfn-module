@@ -27,7 +27,7 @@ void main()
     effect eCone = EffectPoison(POISON_IRON_GOLEM);
     eCone = ExtraordinaryEffect(eCone);
     //Get first target in spell area
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 10.0, lTargetLocation, TRUE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 10.0, lTargetLocation, TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(oTarget != OBJECT_SELF && spellsIsTarget(oTarget, SPELL_TARGET_STANDARDHOSTILE, OBJECT_SELF))
@@ -40,6 +40,6 @@ void main()
             DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eCone, oTarget));
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 10.0, lTargetLocation, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 10.0, lTargetLocation, TRUE);
     }
 }

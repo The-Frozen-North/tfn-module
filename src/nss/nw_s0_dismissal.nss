@@ -43,7 +43,7 @@ void main()
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eImpact, spell.Loc);
     int nSpellDC = spell.DC + 6;
     //Get the first object in the are of effect
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while(GetIsObjectValid(oTarget))
     {
         //does the creature have a master.
@@ -71,6 +71,6 @@ void main()
             }
         }
         //Get next creature in the shape.
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }

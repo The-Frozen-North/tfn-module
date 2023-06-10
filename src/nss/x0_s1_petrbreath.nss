@@ -18,7 +18,7 @@ void main()
     location lTargetLocation = GetSpellTargetLocation();
 
     //Get first target in spell area
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(spellsIsTarget(oTarget, SPELL_TARGET_STANDARDHOSTILE, OBJECT_SELF))
@@ -31,6 +31,6 @@ void main()
             DelayCommand(fDelay, DoPetrification(nHitDice, oSelf, oTarget, nSpellID, 17));
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     }
 }

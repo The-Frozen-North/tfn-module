@@ -52,7 +52,7 @@ void main()
     }
 
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eImpact, spell.Loc);
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
@@ -96,7 +96,7 @@ void main()
             //After effects are removed we apply the immunity to mind spells to the target
             DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, DurationToSeconds(nDuration)));
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }
 

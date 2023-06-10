@@ -374,7 +374,7 @@ void main()
     effect eFNF = EffectVisualEffect(VFX_FNF_LOS_EVIL_30);
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eFNF, lTarget);
 
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_COLOSSAL, lTarget);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_COLOSSAL, lTarget);
 
     eHP = ExtraordinaryEffect(eHP);
     eLink = ExtraordinaryEffect(eLink);
@@ -413,7 +413,7 @@ void main()
             }
         }
 
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_COLOSSAL, lTarget);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_COLOSSAL, lTarget);
     }
     DecrementRemainingFeatUses(OBJECT_SELF, FEAT_BARD_SONGS);
 }

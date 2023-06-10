@@ -42,7 +42,7 @@ void main()
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eImpact, OBJECT_SELF);
 
     //Get first target in spell area
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_GARGANTUAN, lLoc, TRUE, OBJECT_TYPE_CREATURE|OBJECT_TYPE_AREA_OF_EFFECT);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_GARGANTUAN, lLoc, TRUE, OBJECT_TYPE_CREATURE|OBJECT_TYPE_AREA_OF_EFFECT);
     while(GetIsObjectValid(oTarget))
     {
         if(GetObjectType(oTarget) == OBJECT_TYPE_AREA_OF_EFFECT)//this ability also disperses any cloud effects in area of effect
@@ -79,7 +79,7 @@ void main()
             }
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_GARGANTUAN, lLoc, TRUE, OBJECT_TYPE_CREATURE|OBJECT_TYPE_AREA_OF_EFFECT);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_GARGANTUAN, lLoc, TRUE, OBJECT_TYPE_CREATURE|OBJECT_TYPE_AREA_OF_EFFECT);
     }
     //Apply the VFX impact and effects
     effect eAppear = EffectAppear();

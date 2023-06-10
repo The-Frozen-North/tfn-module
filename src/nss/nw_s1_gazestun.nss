@@ -42,7 +42,7 @@ void main()
 
     effect eLink = EffectLinkEffects(eDur, eVisDur);
     //Get first target in spell area
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     effect scaledEffect;
     int scaledDuration;
     while(GetIsObjectValid(oTarget))
@@ -64,6 +64,6 @@ void main()
             }
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     }
 }

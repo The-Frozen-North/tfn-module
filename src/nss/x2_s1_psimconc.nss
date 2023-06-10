@@ -46,7 +46,7 @@ void main()
 
     int nDC = 15 + (nCasterLvl/2);
     //Declare the spell shape, size and the location.  Capture the first target object in the shape.
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lTarget, FALSE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lTarget, FALSE);
     while(GetIsObjectValid(oTarget))//Cycle through the targets within the spell shape until an invalid object is captured.
     {
         if(oTarget != OBJECT_SELF && spellsIsTarget(oTarget, SPELL_TARGET_SELECTIVEHOSTILE, OBJECT_SELF))
@@ -81,6 +81,6 @@ void main()
             }
         }
        //Select the next target within the spell shape.
-       oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lTarget, FALSE);
+       oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lTarget, FALSE);
     }
 }

@@ -60,7 +60,7 @@ void main()
         SetLocalInt(aoe.AOE, "NW_SPELL_DELAY_BLAST_FIREBALL", TRUE);
         ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eExplode, lTarget);
         //Cycle through the targets in the explosion area
-        oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, lTarget, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
+        oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, lTarget, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
         while(GetIsObjectValid(oTarget))
         {
             if(spellsIsTarget(oTarget, spell.TargetType, aoe.Creator))
@@ -87,7 +87,7 @@ void main()
                 }
             }
             //Get next target in the sequence
-            oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, lTarget, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
+            oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, lTarget, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
         }
         DestroyObject(aoe.AOE, 1.0);
     }

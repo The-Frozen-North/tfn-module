@@ -55,7 +55,7 @@ void main()
     //Apply the FNF VFX impact to the target location
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eSmite, spell.Loc);
     //Get the first target in the spell area
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while (GetIsObjectValid(oTarget))
     {
         //Make a faction check
@@ -129,6 +129,6 @@ void main()
             }
         }
         //Get the next target in the spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }

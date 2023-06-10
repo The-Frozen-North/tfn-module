@@ -70,7 +70,7 @@ void main()
     }
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eLOS, spell.Target);
     //Determine enemies in the radius around the bard
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while (GetIsObjectValid(oTarget))
     {
         if (oTarget != spell.Target && spellsIsTarget(oTarget, spell.TargetType, spell.Target))
@@ -82,7 +82,7 @@ void main()
                 DelayCommand(0.01, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink2, oTarget, RoundsToSeconds(4)));
             }
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
     //Apply bonus and VFX effects to bard.
     RemoveSpellEffects(spell.Id,spell.Caster,spell.Target);

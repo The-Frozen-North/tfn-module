@@ -55,7 +55,7 @@ void main()
     float fDelay;
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eFNF, spell.Loc);
     //Get first target in the specified area
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while (GetIsObjectValid(oTarget))
     {
         fDelay = GetRandomDelay();
@@ -95,6 +95,6 @@ void main()
             }
         }
         //Get next target in the specified area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }

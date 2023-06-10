@@ -44,7 +44,7 @@ void main()
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eMeteor, spell.Loc);
     //Get first object in the spell area
     float fDelay;
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if (oTarget != spell.Caster && spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
@@ -74,6 +74,6 @@ void main()
             }
         }
         //Get next target in the spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }

@@ -52,7 +52,7 @@ void main()
 
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eFNF, spell.Loc);
     //Check for at least one valid object to start the main loop
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     if (GetIsObjectValid(oTarget))
     {
         bContinueLoop = TRUE;
@@ -65,7 +65,7 @@ void main()
         int nLow = nMax; //Set nLow to the lowest HD creature in the last pass through the loop
         bContinueLoop = FALSE; //Set this to false so that the loop only continues in the case of new low HD creature
         //Get first target creature in loop
-        oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
         while (GetIsObjectValid(oTarget))
         {
             //Make sure the currect target is not an enemy
@@ -88,7 +88,7 @@ void main()
                 }
             }
             //Get next target in shape to test for a new
-            oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+            oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
         }
         //Check to make sure that oLowest has changed
         if(bContinueLoop == TRUE)

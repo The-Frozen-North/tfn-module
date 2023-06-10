@@ -49,7 +49,7 @@ void main()
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, OBJECT_SELF);
 
     //Determine enemies in the radius around the bard
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, 10.0, GetLocation(OBJECT_SELF), TRUE, OBJECT_TYPE_CREATURE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPHERE, 10.0, GetLocation(OBJECT_SELF), TRUE, OBJECT_TYPE_CREATURE);
     int nDamage = GetHitDice(OBJECT_SELF);
     effect eDam = EffectDamage(nDamage,DAMAGE_TYPE_POSITIVE);
     while (GetIsObjectValid(oTarget))
@@ -74,6 +74,6 @@ void main()
                }
           }
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, 10.0, GetLocation(OBJECT_SELF), TRUE, OBJECT_TYPE_CREATURE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, 10.0, GetLocation(OBJECT_SELF), TRUE, OBJECT_TYPE_CREATURE);
     }
 }

@@ -40,7 +40,7 @@ void main()
 
     PlayDragonBattleCry();
     //Get first target in spell area
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 14.0, GetSpellTargetLocation());
+    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 14.0, GetSpellTargetLocation());
     while (GetIsObjectValid(oTarget))
     {
         if(oTarget != OBJECT_SELF && spellsIsTarget(oTarget, SPELL_TARGET_STANDARDHOSTILE, OBJECT_SELF))
@@ -62,6 +62,6 @@ void main()
                 DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT,eVis,oTarget));
             }
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 14.0, GetSpellTargetLocation());
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 14.0, GetSpellTargetLocation());
     }
 }

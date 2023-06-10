@@ -49,7 +49,7 @@ void main()
     //Play area impact VFX
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eXpl, spell.Loc);
     //Get the first target in the spell area
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while (GetIsObjectValid(oTarget))
     {
         if (spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
@@ -69,6 +69,6 @@ void main()
             }
         }
         //Get next object in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }

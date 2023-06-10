@@ -55,7 +55,7 @@ void main()
 
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eExplode, spell.Loc);
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eShake, spell.Caster, 2.0);
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
     while (GetIsObjectValid(oTarget))
     {
         if(oTarget != spell.Caster && spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
@@ -85,6 +85,6 @@ void main()
                 }
             }
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
     }
 }

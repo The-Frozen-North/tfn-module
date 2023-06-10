@@ -34,7 +34,7 @@ void main()
     effect eImpact = EffectVisualEffect(VFX_FNF_HOWL_ODD);
     float fDelay;
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eImpact, OBJECT_SELF);
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_COLOSSAL, GetLocation(OBJECT_SELF));
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_COLOSSAL, GetLocation(OBJECT_SELF));
     //Get first target in spell area
     while(GetIsObjectValid(oTarget))
     {
@@ -51,6 +51,6 @@ void main()
             }
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_COLOSSAL, GetLocation(OBJECT_SELF));
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_COLOSSAL, GetLocation(OBJECT_SELF));
     }
 }

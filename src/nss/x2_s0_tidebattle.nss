@@ -47,7 +47,7 @@ void main()
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eVis2, spell.Loc);
 
     //ApplyDamage and Effects to all targets in area
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     float fDelay;
     while(GetIsObjectValid(oTarget))
     {
@@ -74,6 +74,6 @@ void main()
             DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eLink, oTarget));
         }
         //Get next target in shape
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }

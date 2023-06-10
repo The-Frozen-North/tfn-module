@@ -69,7 +69,7 @@ void main()
 
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eImpact, spell.Loc);
 
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while (GetIsObjectValid(oTarget) && nAmount > 0)
     {
         if (spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
@@ -101,6 +101,6 @@ void main()
             }
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }

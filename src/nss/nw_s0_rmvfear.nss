@@ -58,7 +58,7 @@ void main()
     }
 
     //Get first target in the spell area
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc);
     while (GetIsObjectValid(oTarget))
     {
         //Only remove the fear effect from the people who are friends.
@@ -84,6 +84,6 @@ void main()
             DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, DurationToSeconds(nDuration)));
         }
         //Get the next target in the spell area.
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc);
     }
 }

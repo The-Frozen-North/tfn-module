@@ -46,7 +46,7 @@ void main()
     effect eCone;
     effect eVis = EffectVisualEffect(VFX_IMP_SONIC);
 
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     //Get first target in spell area
     while(GetIsObjectValid(oTarget))
     {
@@ -71,6 +71,6 @@ void main()
             }
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     }
 }

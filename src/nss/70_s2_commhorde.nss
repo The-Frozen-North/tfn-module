@@ -34,7 +34,7 @@ void main()
     }
 
     location lTarget = GetSpellTargetLocation();
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE,RADIUS_SIZE_COLOSSAL,lTarget,TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE,RADIUS_SIZE_COLOSSAL,lTarget,TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(spellsIsTarget(oTarget,SPELL_TARGET_ALLALLIES,oCaster) && GetAlignmentGoodEvil(oTarget) != ALIGNMENT_GOOD && GetHitDice(oTarget) < nHD)
@@ -48,6 +48,6 @@ void main()
             DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, HoursToSeconds(nLevel)));
             DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE,RADIUS_SIZE_COLOSSAL,lTarget,TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE,RADIUS_SIZE_COLOSSAL,lTarget,TRUE);
     }
 }

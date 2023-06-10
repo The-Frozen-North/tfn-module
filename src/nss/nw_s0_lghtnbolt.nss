@@ -59,7 +59,7 @@ void main()
     while(GetIsObjectValid(oTarget2) && GetDistanceToObject(oTarget2) <= spell.Range)
     {
         //Get first target in the lightning area by passing in the location of first target and the casters vector (position)
-        oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCYLINDER, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE, GetPosition(OBJECT_SELF));
+        oTarget = GetFirstObjectInShape(SHAPE_SPELLCYLINDER, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE, GetPosition(OBJECT_SELF));
         while (GetIsObjectValid(oTarget))
         {
            //Exclude the caster from the damage effects
@@ -93,7 +93,7 @@ void main()
                 }
            }
            //Get the next object in the lightning cylinder
-           oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCYLINDER, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE, GetPosition(OBJECT_SELF));
+           oTarget = GetNextObjectInShape(SHAPE_SPELLCYLINDER, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE, GetPosition(OBJECT_SELF));
         }
         nCnt++;
         oTarget2 = GetNearestObject(OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE, spell.Caster, nCnt);

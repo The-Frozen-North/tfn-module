@@ -50,7 +50,7 @@ void main()
     int nDamage;
 
     //Get first object in the target area
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_SMALL, lTarget);
+    oTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_SMALL, lTarget);
     //Cycle through the target area until all object have been targeted
     while(GetIsObjectValid(oTarget))
     {
@@ -78,6 +78,6 @@ void main()
             }
         }
         //Get next target in shape
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_SMALL, lTarget);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_SMALL, lTarget);
     }
 }

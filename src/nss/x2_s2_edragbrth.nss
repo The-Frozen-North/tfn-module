@@ -197,7 +197,7 @@ void main()
         lFinalTarget = Location(GetAreaFromLocation(lFinalTarget),vFinalPosition,GetFacingFromLocation(lFinalTarget));
     }
 
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 15.0, lFinalTarget, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 15.0, lFinalTarget, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
     while (GetIsObjectValid(oTarget))
     {
         if(oTarget != OBJECT_SELF && spellsIsTarget(oTarget,SPELL_TARGET_STANDARDHOSTILE, OBJECT_SELF))
@@ -240,6 +240,6 @@ void main()
                DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_PERMANENT,ePoison,oTarget));
             }
          }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 15.0, lFinalTarget, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE );
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 15.0, lFinalTarget, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE );
     }
 }

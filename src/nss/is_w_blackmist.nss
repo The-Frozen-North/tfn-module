@@ -19,7 +19,7 @@ void main()
     effect eVis = EffectVisualEffect(VFX_IMP_BLIND_DEAF_M);
 
     //Get the first target in the spell area
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lLoc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lLoc, TRUE);
     while (GetIsObjectValid(oTarget))
     {
         //Make Fort save
@@ -30,6 +30,6 @@ void main()
             ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
         }
         //Get next object in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lLoc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lLoc, TRUE);
     }
 }

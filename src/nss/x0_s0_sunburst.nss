@@ -75,7 +75,7 @@ void main()
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eLOS, spell.Loc);
 
     //Declare the spell shape, size and the location.  Capture the first target object in the shape.
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
     //Cycle through the targets within the spell shape until an invalid object is captured.
     while (GetIsObjectValid(oTarget))
     {
@@ -127,6 +127,6 @@ void main()
            }
        }
        //Select the next target within the spell shape.
-       oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
+       oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
     }
 }

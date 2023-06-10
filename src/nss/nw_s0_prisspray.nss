@@ -49,7 +49,7 @@ void main()
     //Set the delay to apply to effects based on the distance to the target
     float fDelay;
     //Get first target in the spell area
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, spell.Range, spell.Loc);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, spell.Range, spell.Loc);
     while (GetIsObjectValid(oTarget))
     {
         if (oTarget != spell.Caster && spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
@@ -89,7 +89,7 @@ void main()
             }
         }
         //Get next target in the spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, spell.Range, spell.Loc);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, spell.Range, spell.Loc);
     }
 }
 

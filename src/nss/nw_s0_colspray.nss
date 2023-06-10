@@ -64,7 +64,7 @@ void main()
 
 
     //Get first object in the spell cone
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, spell.Range, spell.Loc, TRUE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, spell.Range, spell.Loc, TRUE);
     //Cycle through the target until the current object is invalid
     while(GetIsObjectValid(oTarget))
     {
@@ -113,6 +113,6 @@ void main()
             }
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, spell.Range, spell.Loc, TRUE);
     }
 }

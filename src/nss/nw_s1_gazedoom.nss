@@ -46,7 +46,7 @@ void main()
     eLink = EffectLinkEffects(eLink, eSkill);
     eLink = EffectLinkEffects(eLink, eDur);
 
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, GetSpellTargetLocation());
+    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, GetSpellTargetLocation());
     effect immunityEffect;
     while(GetIsObjectValid(oTarget))
     {
@@ -62,6 +62,6 @@ void main()
                 DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, RoundsToSeconds(nDuration)));
             }
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, GetSpellTargetLocation());
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, GetSpellTargetLocation());
     }
 }

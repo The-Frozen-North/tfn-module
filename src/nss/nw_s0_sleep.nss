@@ -71,7 +71,7 @@ void main()
     }
     //nDuration += 2; //another bonus to the duration???
     //Get the first target in the spell area
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc);
     //If no valid targets exists ignore the loop
     if (GetIsObjectValid(oTarget))
     {
@@ -83,7 +83,7 @@ void main()
         nLow = nMax;
         bContinueLoop = FALSE;
         //Get the first creature in the spell area
-        oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
         while (GetIsObjectValid(oTarget))
         {
             //Make faction check to ignore allies
@@ -107,7 +107,7 @@ void main()
                 }
             }
             //Get the next target in the shape
-            oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+            oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
         }
         //Check to see if oLowest returned a valid object
         if(oLowest != OBJECT_INVALID)

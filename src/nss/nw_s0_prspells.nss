@@ -57,7 +57,7 @@ void main()
 
     float fDelay;
     //Get first target in spell area
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while(GetIsObjectValid(oTarget) && nTargets != 0)
     {
         if(spell.Caster != oTarget && spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
@@ -71,7 +71,7 @@ void main()
             nTargets--;
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
     DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, spell.Caster));
     DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Caster, DurationToSeconds(nDuration)));

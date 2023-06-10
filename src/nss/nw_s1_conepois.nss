@@ -116,7 +116,7 @@ void main()
     effect eCone = EffectPoison(nPoison);
     eCone = ExtraordinaryEffect(eCone);
     effect eVis = EffectVisualEffect(VFX_IMP_POISON_S);
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     //Get first target in spell area
     while(GetIsObjectValid(oTarget))
     {
@@ -130,6 +130,6 @@ void main()
             DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_PERMANENT, eCone, oTarget));
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     }
 }

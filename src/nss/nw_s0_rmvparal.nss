@@ -44,7 +44,7 @@ void main()
     float fDelay;
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eImpact, spell.Loc);
     //Get the first effect on the target
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc);
     while(GetIsObjectValid(oTarget) && nCnt < nRemove)
     {
         if(spellsIsTarget(oTarget,spell.TargetType,spell.Caster))
@@ -67,6 +67,6 @@ void main()
                 eParal = GetNextEffect(oTarget);
             }
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc);
     }
 }

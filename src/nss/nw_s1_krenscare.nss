@@ -31,7 +31,7 @@ void main()
     float fDelay;
     location lTarget = GetSpellTargetLocation();
     //Get first target in the spell cone
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_CONE, 11.0, lTarget, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_CONE, 11.0, lTarget, TRUE);
     effect scaledEffect;
     while(GetIsObjectValid(oTarget))
     {
@@ -51,6 +51,6 @@ void main()
             }
         }
         //Get next target in the spell cone
-        oTarget = FIX_GetNextObjectInShape(SHAPE_CONE, 11.0, lTarget, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_CONE, 11.0, lTarget, TRUE);
     }
 }

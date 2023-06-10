@@ -52,7 +52,7 @@ void main()
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eImpact, spell.Loc);
 
     //Get the first target in the radius around the caster
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
@@ -64,6 +64,6 @@ void main()
             ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, DurationToSeconds(nDuration));
         }
         //Get the next target in the specified area around the caster
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }

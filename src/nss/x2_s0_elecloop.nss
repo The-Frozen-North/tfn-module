@@ -74,7 +74,7 @@ void main()
     // Loop through all targets
     //--------------------------------------------------------------------------
 
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
     while (GetIsObjectValid(oTarget))
     {
         if (spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
@@ -140,6 +140,6 @@ void main()
             //------------------------------------------------------------------
             oLastValid = oTarget;
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
     }
 }

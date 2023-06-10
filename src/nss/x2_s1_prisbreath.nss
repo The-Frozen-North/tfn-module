@@ -40,7 +40,7 @@ void main()
     float fDelay;
 
     //Get first target in the spell area
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 20.0, GetSpellTargetLocation());
+    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 20.0, GetSpellTargetLocation());
     while (GetIsObjectValid(oTarget))
     {
         if (oTarget != OBJECT_SELF && spellsIsTarget(oTarget, SPELL_TARGET_STANDARDHOSTILE, OBJECT_SELF))
@@ -77,7 +77,7 @@ void main()
             }
         }
         //Get next target in the spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 20.0, GetSpellTargetLocation());
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 20.0, GetSpellTargetLocation());
     }
 }
 

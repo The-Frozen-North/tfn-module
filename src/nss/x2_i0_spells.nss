@@ -318,7 +318,7 @@ void DoMindBlast(int nDC, int nDuration, float fRange)
     effect eCone;
     effect eVis = EffectVisualEffect(VFX_IMP_SONIC);
 
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, fRange, lTargetLocation, TRUE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, fRange, lTargetLocation, TRUE);
 
     while(GetIsObjectValid(oTarget))
     {
@@ -365,7 +365,7 @@ void DoMindBlast(int nDC, int nDuration, float fRange)
             }
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, fRange, lTargetLocation, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, fRange, lTargetLocation, TRUE);
     }
 }
 

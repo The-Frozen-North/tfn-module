@@ -295,7 +295,7 @@ void DoGrenade(int nDice, int nSplashDamage, int vSmallHit, int vRingHit, int nD
     //Apply the fireball explosion at the location captured above.
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eExplode, lTarget);
 
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, fExplosionRadius, lTarget, TRUE, nObjectFilter);
+    oTarget = GetFirstObjectInShape(SHAPE_SPHERE, fExplosionRadius, lTarget, TRUE, nObjectFilter);
     //Cycle through the targets within the spell shape until an invalid object is captured.
     while (GetIsObjectValid(oTarget))
     {
@@ -313,7 +313,7 @@ void DoGrenade(int nDice, int nSplashDamage, int vSmallHit, int vRingHit, int nD
             }
         }
         //Select the next target within the spell shape.
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, fExplosionRadius, lTarget, TRUE, nObjectFilter);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, fExplosionRadius, lTarget, TRUE, nObjectFilter);
     }
 }
 
@@ -635,7 +635,7 @@ void DoMissileStorm(int nD6Dice, int nCap, int nSpell, int nMIRV = VFX_IMP_MIRV,
        */
     int nEnemies = 0;
 
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
     //Cycle through the targets within the spell shape until an invalid object is captured.
     while (GetIsObjectValid(oTarget))
     {
@@ -651,7 +651,7 @@ void DoMissileStorm(int nD6Dice, int nCap, int nSpell, int nMIRV = VFX_IMP_MIRV,
                 nEnemies++;
             }
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
      }
 
      if (nEnemies == 0) return; // * Exit if no enemies to hit
@@ -702,7 +702,7 @@ void DoMissileStorm(int nD6Dice, int nCap, int nSpell, int nMIRV = VFX_IMP_MIRV,
      if (nEnemies > nMissiles)
         nEnemies = nMissiles;
 
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
     if (nSpell == SPELL_BALL_LIGHTNING)//1.71: ball lightning has a single target area of effect
     {
         oTarget = spell.Target;
@@ -773,7 +773,7 @@ void DoMissileStorm(int nD6Dice, int nCap, int nSpell, int nMIRV = VFX_IMP_MIRV,
                 nCnt++;// * increment count of missiles fired
                 nRemainder--;
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE);
     }
 }
 //::///////////////////////////////////////////////
@@ -1277,7 +1277,7 @@ void spellsGenericAreaOfEffect(
     if (bPersistentObject)
         oTarget = GetFirstInPersistentObject();
     else
-        oTarget = FIX_GetFirstObjectInShape(nShape, fRadiusSize, lTargetLoc, bLineOfSight, nObjectFilter);
+        oTarget = GetFirstObjectInShape(nShape, fRadiusSize, lTargetLoc, bLineOfSight, nObjectFilter);
 
     while(GetIsObjectValid(oTarget))
     {
@@ -1341,7 +1341,7 @@ void spellsGenericAreaOfEffect(
         if (bPersistentObject)
             oTarget = GetNextInPersistentObject();
         else
-            oTarget = FIX_GetNextObjectInShape(nShape, fRadiusSize, lTargetLoc, bLineOfSight, nObjectFilter);
+            oTarget = GetNextObjectInShape(nShape, fRadiusSize, lTargetLoc, bLineOfSight, nObjectFilter);
 
     }
 }

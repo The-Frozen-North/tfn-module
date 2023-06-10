@@ -36,13 +36,13 @@ void main()
     effect ePoison = EffectPoison(POISON_GIANT_WASP_POISON);
     ePoison = ExtraordinaryEffect(ePoison);
 
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, 5.0, lTarget, TRUE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPHERE, 5.0, lTarget, TRUE);
     while(oTarget != OBJECT_INVALID)
     {
         if(!GetIsReactionTypeFriendly(oTarget))
         {
             ApplyEffectToObject(DURATION_TYPE_INSTANT, ePoison, oTarget);
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, 5.0, lTarget, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, 5.0, lTarget, TRUE);
     }
 }

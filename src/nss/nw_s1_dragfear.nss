@@ -39,7 +39,7 @@ void main()
     effect eLink = EffectLinkEffects(eFear, eDur);
 
     PlayDragonBattleCry();
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 14.0, GetSpellTargetLocation(), TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 14.0, GetSpellTargetLocation(), TRUE);
     //Get first target in spell area
     while(GetIsObjectValid(oTarget))
     {
@@ -60,6 +60,6 @@ void main()
             }
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 14.0, GetSpellTargetLocation(), TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 14.0, GetSpellTargetLocation(), TRUE);
     }
 }

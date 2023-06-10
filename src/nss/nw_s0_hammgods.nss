@@ -59,7 +59,7 @@ void main()
     int nDamage;
     //Apply the holy strike VFX
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eStrike, spell.Loc);
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while (GetIsObjectValid(oTarget))
     {
        //Make faction checks
@@ -91,6 +91,6 @@ void main()
              }
         }
         //Get next target in shape
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }

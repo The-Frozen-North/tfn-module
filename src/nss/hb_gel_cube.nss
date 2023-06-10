@@ -17,7 +17,7 @@ void main()
 {
    ExecuteScript("hb_ghost", OBJECT_SELF);
 
-   object oVictim = FIX_GetFirstObjectInShape(SHAPE_CUBE,4.0,GetLocation(OBJECT_SELF), TRUE, OBJECT_TYPE_CREATURE);
+   object oVictim = GetFirstObjectInShape(SHAPE_CUBE,4.0,GetLocation(OBJECT_SELF), TRUE, OBJECT_TYPE_CREATURE);
 
    while (GetIsObjectValid(oVictim))
    {
@@ -25,6 +25,6 @@ void main()
         {
             EngulfAndDamage(oVictim,OBJECT_SELF);
         }
-        oVictim = FIX_GetNextObjectInShape(SHAPE_CUBE,4.0,GetLocation(OBJECT_SELF), TRUE, OBJECT_TYPE_CREATURE);
+        oVictim = GetNextObjectInShape(SHAPE_CUBE,4.0,GetLocation(OBJECT_SELF), TRUE, OBJECT_TYPE_CREATURE);
    }
 }

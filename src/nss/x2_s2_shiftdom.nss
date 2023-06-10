@@ -57,7 +57,7 @@ void main()
     //--------------------------------------------------------------------------
     // Loop through all targets in the cone, but only dominate one!
     //--------------------------------------------------------------------------
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 10.0, lTargetLocation, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 10.0, lTargetLocation, TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(oTarget != OBJECT_SELF && spellsIsTarget(oTarget,SPELL_TARGET_SELECTIVEHOSTILE,OBJECT_SELF))
@@ -82,6 +82,6 @@ void main()
                 }
             }
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 10.0, lTargetLocation, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 10.0, lTargetLocation, TRUE);
     }
 }

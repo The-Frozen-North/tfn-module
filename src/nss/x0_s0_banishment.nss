@@ -54,7 +54,7 @@ void main()
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eImpact, spell.Loc);
 
     //Get the first object in the are of effect
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(nPool > 0 && (GetAssociateType(oTarget) == ASSOCIATE_TYPE_SUMMONED ||
@@ -92,6 +92,6 @@ void main()
             }
         }
         //Get next creature in the shape.
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }

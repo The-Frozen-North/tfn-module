@@ -25,7 +25,7 @@ void main()
             float fDelay;
 
             // Get first target
-            object oVictim = FIX_GetFirstObjectInShape(
+            object oVictim = GetFirstObjectInShape(
                 SHAPE_SPHERE,
                 RADIUS_SIZE_HUGE,
                 lTarget,
@@ -62,7 +62,7 @@ void main()
                 }
 
                 // Get next target
-                oVictim = FIX_GetNextObjectInShape(
+                oVictim = GetNextObjectInShape(
                     SHAPE_SPHERE,
                     RADIUS_SIZE_HUGE,
                     lTarget,

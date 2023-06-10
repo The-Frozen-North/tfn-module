@@ -61,7 +61,7 @@ void main()
         effect eVis = EffectVisualEffect(spell.DmgVfxL);
         ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eExplode, spell.Loc);
         //Cycle through the targets in the explosion area
-        object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
+        object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
         while(GetIsObjectValid(oTarget))
         {
             if(spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
@@ -88,7 +88,7 @@ void main()
                 }
             }
             //Get next target in the sequence
-            oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
+            oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
         }
     }
     else

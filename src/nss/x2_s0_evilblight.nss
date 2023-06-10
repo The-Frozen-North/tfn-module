@@ -48,7 +48,7 @@ void main()
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eVis, spell.Loc);
 
     //Get first target in the area of effect
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     float fDelay;
 
     while(GetIsObjectValid(oTarget))
@@ -75,6 +75,6 @@ void main()
             }
         }
         //Get next spell target
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }

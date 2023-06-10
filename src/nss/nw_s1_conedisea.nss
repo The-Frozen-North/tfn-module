@@ -74,7 +74,7 @@ void main()
     effect eCone = EffectDisease(nDisease);
     eCone = ExtraordinaryEffect(eCone);
     effect eVis = EffectVisualEffect(VFX_IMP_DISEASE_S);
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     //Get first target in spell area
     while(GetIsObjectValid(oTarget))
     {
@@ -89,6 +89,6 @@ void main()
             DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eCone, oTarget));
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     }
 }

@@ -70,7 +70,7 @@ void main()
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eSong, OBJECT_SELF, RoundsToSeconds(nDuration));
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eImpact, lTarget);
 
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_HUGE, lTarget);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_HUGE, lTarget);
     while(GetIsObjectValid(oTarget))
     {
         if(oTarget != OBJECT_SELF && AmIAHumanoid(oTarget) && spellsIsTarget(oTarget, SPELL_TARGET_SELECTIVEHOSTILE, OBJECT_SELF))
@@ -97,6 +97,6 @@ void main()
             }
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_HUGE, lTarget);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_HUGE, lTarget);
     }
 }

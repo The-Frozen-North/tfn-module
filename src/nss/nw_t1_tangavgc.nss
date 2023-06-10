@@ -35,7 +35,7 @@ void main()
     effect eVis = EffectVisualEffect(VFX_IMP_SLOW);
 
     //Find first target in the size
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_SMALL, lTarget);
+    oTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_SMALL, lTarget);
     //Cycle through the objects in the radius
     while (GetIsObjectValid(oTarget))
     {
@@ -49,6 +49,6 @@ void main()
             }
         }
         //Get next target in the shape.
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_SMALL, lTarget);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_SMALL, lTarget);
     }
 }

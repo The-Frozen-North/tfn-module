@@ -57,7 +57,7 @@ void main()
         //----------------------------------------------------------------------
 
         ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eImpact, spell.Loc);
-        object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT | OBJECT_TYPE_PLACEABLE );
+        object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT | OBJECT_TYPE_PLACEABLE );
         while (GetIsObjectValid(oTarget))
         {
             if(GetObjectType(oTarget) == OBJECT_TYPE_AREA_OF_EFFECT)
@@ -76,7 +76,7 @@ void main()
                 spellsDispelMagic(oTarget, nCasterLevel, eVis, eImpact, FALSE);
             }
 
-           oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT | OBJECT_TYPE_PLACEABLE);
+           oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT | OBJECT_TYPE_PLACEABLE);
         }
     }
 }

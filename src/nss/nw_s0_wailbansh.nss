@@ -54,7 +54,7 @@ void main()
     float fDelay;
     effect eDeath = EffectDeath();
     //Get the closest target from the spell target location
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     while(GetIsObjectValid(oTarget) && nCnt <= nToAffect)
     {
         if(spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
@@ -79,6 +79,6 @@ void main()
             nCnt++;
         }
         //Get the next closest target in the spell target location.
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
 }

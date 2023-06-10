@@ -52,7 +52,7 @@ void main()
 
         //Apply the VFX impact and effects
         ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eImpact, spell.Loc);
-        object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT | OBJECT_TYPE_PLACEABLE);
+        object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT | OBJECT_TYPE_PLACEABLE);
         while (GetIsObjectValid(oTarget))
         {
             if(GetObjectType(oTarget) == OBJECT_TYPE_AREA_OF_EFFECT)
@@ -71,7 +71,7 @@ void main()
             {
                 spellsDispelMagic(oTarget, spell.Level, eVis, eImpact, FALSE, TRUE);
             }
-            oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT | OBJECT_TYPE_PLACEABLE);
+            oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT | OBJECT_TYPE_PLACEABLE);
         }
     }
 }

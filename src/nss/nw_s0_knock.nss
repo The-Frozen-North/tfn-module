@@ -32,7 +32,7 @@ void main()
     spellsDeclareMajorVariables();
     object oTarget;
     effect eVis = EffectVisualEffect(VFX_IMP_KNOCK);
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, FALSE, OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, FALSE, OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
     float fDelay;
     int nResist;
 
@@ -64,6 +64,6 @@ void main()
                 FloatingTextStrRefOnCreature(83887,spell.Caster);
             }
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, FALSE, OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, FALSE, OBJECT_TYPE_DOOR | OBJECT_TYPE_PLACEABLE);
     }
 }

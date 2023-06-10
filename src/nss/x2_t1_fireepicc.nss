@@ -34,7 +34,7 @@ void main()
     effect eDam;
     int nSaveDC = 33;
     //Get first object in the target area
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lTarget);
+    oTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lTarget);
     //Cycle through the target area until all object have been targeted
     while(GetIsObjectValid(oTarget))
     {
@@ -55,6 +55,6 @@ void main()
             }
         }
         //Get next target in shape
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lTarget);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lTarget);
     }
 }

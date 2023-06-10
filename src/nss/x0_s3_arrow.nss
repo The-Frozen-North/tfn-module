@@ -39,14 +39,14 @@ void main()
 
     int nEnemies;
     location lLoc = GetLocation(spell.Target);
-    object oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE,RADIUS_SIZE_COLOSSAL,lLoc,TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE,RADIUS_SIZE_COLOSSAL,lLoc,TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(!GetIsReactionTypeFriendly(oTarget, spell.Caster))
         {
             nEnemies++;
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE,RADIUS_SIZE_COLOSSAL,lLoc,TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE,RADIUS_SIZE_COLOSSAL,lLoc,TRUE);
     }
 
     int nExtraMissiles = nMissiles / nEnemies;
@@ -66,7 +66,7 @@ void main()
         nEnemies = nMissiles;
 
     float fDelay;
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE,RADIUS_SIZE_COLOSSAL,lLoc,TRUE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPHERE,RADIUS_SIZE_COLOSSAL,lLoc,TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(!GetIsReactionTypeFriendly(oTarget, spell.Caster))
@@ -83,6 +83,6 @@ void main()
                 }
             }
         }
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE,RADIUS_SIZE_COLOSSAL,lLoc,TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE,RADIUS_SIZE_COLOSSAL,lLoc,TRUE);
     }
 }

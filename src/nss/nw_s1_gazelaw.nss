@@ -38,7 +38,7 @@ void main()
     effect eVis = EffectVisualEffect(VFX_IMP_DEATH);
 
     //Get first target in spell area
-    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(GetAlignmentLawChaos(oTarget) == ALIGNMENT_CHAOTIC)
@@ -58,6 +58,6 @@ void main()
             }
         }
         //Get next target in spell area
-        oTarget = FIX_GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     }
 }

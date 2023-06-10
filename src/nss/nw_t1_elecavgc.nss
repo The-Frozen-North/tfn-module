@@ -55,7 +55,7 @@ void main()
         ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
     }
 
-    object o2ndTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_LARGE, lTarget);
+    object o2ndTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_LARGE, lTarget);
     while (GetIsObjectValid(o2ndTarget) && nCount < nSecondary)
     {
         //check to see that the original target is not hit again.
@@ -81,6 +81,6 @@ void main()
             nCount++;
         }
         //Get next target in the shape.
-        o2ndTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_LARGE, lTarget);
+        o2ndTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_LARGE, lTarget);
     }
 }

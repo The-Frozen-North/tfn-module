@@ -66,7 +66,7 @@ void main()
     int nHDLeft = MaximizeOrEmpower(4,nLevel,spell.Meta);
     float fDelay;
     int nCurHD;
-    object oFirst = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+    object oFirst = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
 
     // Only start loop if there is a creature in the area of effect
     if(GetIsObjectValid(oFirst))
@@ -96,7 +96,7 @@ void main()
             }
 
             // Get next target
-            oTarget = FIX_GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+            oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
 
             // End of cycle, time to kill the lowest creature
             if (!GetIsObjectValid(oTarget))
@@ -127,7 +127,7 @@ void main()
                     // decrement remaining HD
                     nHDLeft -= nLow;
                     // restart the loop
-                    oTarget = FIX_GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
+                    oTarget = GetFirstObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
                 }
                 // reset counters
                 oLow = OBJECT_INVALID;
