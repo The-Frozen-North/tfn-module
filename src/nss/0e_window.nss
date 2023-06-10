@@ -122,7 +122,9 @@ void main()
             sMessage = StringReplace(sMessage, "\v", " | ");
             // sMessage = StringReplace(sMessage, "\b", " | ");
             // sMessage = StringReplace(sMessage, "\f", " | ");
-            sMessage = StringReplace(sMessage, "\"", "'");
+            // sMessage = StringReplace(sMessage, "\"", "'");
+
+            sMessage = RemoveIllegalCharacters(sMessage, " '?=+-,._abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 
             // remove any characters that are reserved in JSON
             // sMessage = StringReplace(sMessage, "[", "");
