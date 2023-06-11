@@ -487,10 +487,10 @@ void QuestCompleteWebhook(object oPC, string sQuestName)
 void BugReportWebhook(object oPC, string sMessage);
 void BugReportWebhook(object oPC, string sMessage)
 {
-    // string sDiscordKey = Get2DAString("env", "Value", ENV_DISCORD_BUG_REPORT_KEY_ROW);
+    string sDiscordKey = Get2DAString("env", "Value", ENV_DISCORD_BUG_REPORT_KEY_ROW);
     // SendDebugMessage("key " + sDiscordKey);
-    // if (sDiscordKey == "") return;
-    string sDiscordKey = GetDiscordKey();
+    if (sDiscordKey == "") return;
+    // string sDiscordKey = GetDiscordKey();
 
     string sConstructedMsg;
     string sName = GetName(oPC);
