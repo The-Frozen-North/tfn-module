@@ -190,8 +190,8 @@ spell.Meta = GetMetaMagicFeat();
  if(spell.Item == OBJECT_INVALID && spell.Class != CLASS_TYPE_INVALID && GetClassByPosition(2,spell.Caster) != CLASS_TYPE_INVALID && Get2DAString("spells","UserType",spell.Id) == "1" && Get2DAString("spells","FeatID",spell.Id) == "")
  {//spell can have its caster level increased by prestige classes
  SetLocalInt(GetModule(),"NWNXPATCH_RESULT",-1);
- //SetLocalString(GetModule(),"NWNX!PATCH!FUNCS!513",ObjectToString(spell.Caster)+"|"+IntToString(spell.Class));
- //DeleteLocalString(GetModule(),"NWNX!PATCH!FUNCS!513");
+ SetLocalString(GetModule(),"NWNX!PATCH!FUNCS!513",ObjectToString(spell.Caster)+"|"+IntToString(spell.Class));
+ DeleteLocalString(GetModule(),"NWNX!PATCH!FUNCS!513");
  int nMod = GetLocalInt(GetModule(),"NWNXPATCH_RESULT");
  DeleteLocalInt(GetModule(),"NWNXPATCH_RESULT");
   if(nMod > -1)//spell progression value from nwnx_patch
@@ -250,10 +250,6 @@ spell.Meta = GetMetaMagicFeat();
     }
    }
   }
-  if(spell.Class == spell.Class == CLASS_TYPE_DRUID && GetModuleSwitchValue("72_SHIFTER_ADDS_CASTER_LEVEL"))
-  {
-  spell.Level+= GetLevelByClass(CLASS_TYPE_SHIFTER,spell.Caster);
-  }
  }
  if(spell.DC > 126)//DC bug with negative primary ability
  {
@@ -278,26 +274,6 @@ spell.Meta = GetMetaMagicFeat();
  else if((spell.Meta == METAMAGIC_EMPOWER && !GetHasFeat(FEAT_EMPOWER_SPELL,spell.Caster)) || (spell.Meta == METAMAGIC_MAXIMIZE && !GetHasFeat(FEAT_MAXIMIZE_SPELL,spell.Caster)))
  {
  spell.Meta = METAMAGIC_NONE;//metamagic exploit with polymorph into Rakshasa
- }
- else if(GetIsPC(spell.Caster) && spell.Meta == METAMAGIC_NONE && spell.Item == OBJECT_INVALID && GetLevelByClass(CLASS_TYPE_SHIFTER,spell.Caster) > 0)
- {//1.72: Workaround for NWN:EE bug that disallow casting polymorph spells with metamagic
- effect eSearch = GetFirstEffect(spell.Caster);
-  while(GetIsEffectValid(eSearch))
-  {
-   if(GetEffectType(eSearch) == EFFECT_TYPE_POLYMORPH)
-   {
-    if(GetHasFeat(FEAT_EMPOWER_SPELL,spell.Caster))//if shifter has empower spell we will assume he wants to use it on spells from polymorph
-    {
-    spell.Meta = METAMAGIC_EMPOWER;
-    }
-    else if(GetHasFeat(FEAT_MAXIMIZE_SPELL,spell.Caster))//if shifter has maximize spell we will assume he wants to use it on spells from polymorph
-    {
-    spell.Meta = METAMAGIC_MAXIMIZE;
-    }
-   break;
-   }
-  eSearch = GetNextEffect(spell.Caster);
-  }
  }
 string sPrefix, sId = IntToString(spell.Id);
 object oSource = spell.Item != OBJECT_INVALID ? spell.Item : spell.Caster;
@@ -685,18 +661,6 @@ return !GetIsDead(oCreature);
 
 int GetSavingThrowAdjustedDamage(int nDamage, object oTarget, int nDC, int nSavingThrow, int nSaveType=SAVING_THROW_TYPE_NONE, object oSaveVersus=OBJECT_SELF)
 {
-    if(oSaveVersus != OBJECT_SELF && GetObjectType(OBJECT_SELF) == OBJECT_TYPE_AREA_OF_EFFECT)//1.72: special AOE handling for new nwnx_patch fix
-    {
-        //this checks whether is nwnx_patch or nwncx_patch in use; using internal code to avoid including 70_inc_nwnx
-        //SetLocalString(GetModule(),"NWNX!PATCH!FUNCS!12",".");
-        //DeleteLocalString(GetModule(),"NWNX!PATCH!FUNCS!12");
-        int retVal = GetLocalInt(GetModule(),"NWNXPATCH_RESULT");
-        DeleteLocalInt(GetModule(),"NWNXPATCH_RESULT");
-        if(retVal >= 201)//in version 2.01 saving throws from AOE spell will count spellcraft, however to make this work requires to put AOE object into the save functions
-        {                //there are good reasons why community patch changed all AOE spells to put AOE creator into this function, namely double debug, so this switcheroo
-            oSaveVersus = OBJECT_SELF;//will be performed only when nwnx_patch/nwncx_patch is running (which also fixes the double debug along other issues)
-        }
-    }
  if(nSavingThrow == SAVING_THROW_REFLEX)
  {
   if((!GetHasFeat(FEAT_EVASION,oTarget) && !GetHasFeat(FEAT_IMPROVED_EVASION,oTarget)) || (GetModuleSwitchValue("72_HARDCORE_EVASION_RULES") && !GetEvasionApplicable(oTarget)))
@@ -844,7 +808,7 @@ return oNew;
 void SetAreaOfEffectUndispellable(object oAOE)
 {
 SetLocalInt(oAOE,"X1_L_IMMUNE_TO_DISPEL",10);
-//AssignCommand(oAOE,SetIsDestroyable(FALSE));//removed, this leaves aura "alive" for few extra seconds after owner death
+AssignCommand(oAOE,SetIsDestroyable(FALSE));
 }
 
 void aoesCheckStillValid_continue(object oAOE, object oOwner, object oCreator, int nSpellId)//private
@@ -970,10 +934,6 @@ int spellsIsImmuneToPolymorph(object oCreature)
     {
     case APPEARANCE_TYPE_LICH:
     case APPEARANCE_TYPE_DEMI_LICH:
-    case APPEARANCE_TYPE_DRACOLICH:
-    case 464://Masterius
-    case 465://Masterius, Full Power
-    case 466://Witch King, Disguised
         return TRUE;
     }
     return GetLocalInt(oCreature,"IMMUNITY_POLYMORPH");
@@ -1098,4 +1058,38 @@ void ActionCastCheatSpellAtObject(int nSpell, object oTarget, int nMetaMagic, in
         SetLocalInt(OBJECT_SELF,"SPECIAL_ABILITY_CASTER_LEVEL_OVERRIDE",prevCL);
         SetLocalInt(OBJECT_SELF,"SPECIAL_ABILITY_METAMAGIC_OVERRIDE",prevMeta);
     }
+}
+
+int GetMonsterAbilityCasterLevel(int nDivideBy = 1, int nMultipliedBy = 1);
+int GetMonsterAbilityDC(int nDivideBy = 1);
+
+int GetMonsterAbilityCasterLevel(int nDivideBy = 1, int nMultipliedBy = 1)
+{
+ if(nDivideBy < 1)nDivideBy = 1;
+int retVal = GetHitDice(OBJECT_SELF)/nDivideBy;
+ if(retVal < 1) retVal = 1;
+ if(GetLocalInt(OBJECT_SELF,"MONSTER_ABILITY_CASTER_LEVEL_OVERRIDE") > 0)
+ {
+ return GetLocalInt(OBJECT_SELF,"MONSTER_ABILITY_CASTER_LEVEL_OVERRIDE");
+ }
+ else if(GetLocalInt(OBJECT_SELF,IntToString(GetSpellId())+"_ABILITY_CASTER_LEVEL_OVERRIDE") > 0)
+ {
+ return GetLocalInt(OBJECT_SELF,IntToString(GetSpellId())+"_ABILITY_CASTER_LEVEL_OVERRIDE");
+ }
+return retVal*nMultipliedBy+GetLocalInt(OBJECT_SELF,"MONSTER_ABILITY_CASTER_LEVEL_MODIFIER");
+}
+
+int GetMonsterAbilityDC(int nDivideBy = 1)
+{
+ if(nDivideBy < 1)nDivideBy = 1;
+int retVal = GetHitDice(OBJECT_SELF)/nDivideBy;
+ if(GetLocalInt(OBJECT_SELF,"MONSTER_ABILITY_DC_OVERRIDE") > 0)
+ {
+ return GetLocalInt(OBJECT_SELF,"MONSTER_ABILITY_DC_OVERRIDE");
+ }
+ else if(GetLocalInt(OBJECT_SELF,IntToString(GetSpellId())+"_ABILITY_DC_OVERRIDE") > 0)
+ {
+ return GetLocalInt(OBJECT_SELF,IntToString(GetSpellId())+"_ABILITY_DC_OVERRIDE");
+ }
+return 70+retVal+GetLocalInt(OBJECT_SELF,"MONSTER_ABILITY_DC_MODIFIER");
 }

@@ -12,8 +12,9 @@
 //:: Created On: May 14, 2000
 //:://////////////////////////////////////////////
 /*
+Patch 1.72
+- made effects supernatural - undispellable
 Patch 1.71
-
 - deaf/silenced creatures are not affected anymore
 - wrong target check (could affect other NPCs)
 - wrong duration and effect calculation (cumulative for each target in AoE)
@@ -32,6 +33,7 @@ void main()
     effect eImpact = EffectVisualEffect(VFX_FNF_HOWL_MIND);
     effect eLink = EffectLinkEffects(eHowl, eDur);
     eLink = EffectLinkEffects(eLink, eDur2);
+    eLink = SupernaturalEffect(eLink);
     float fDelay;
 
     int nHD = GetHitDice(OBJECT_SELF);

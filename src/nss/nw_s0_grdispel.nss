@@ -15,6 +15,7 @@
 void main()
 {
     //1.72: pre-declare some of the spell informations to be able to process them
+    spell.Limit = 15;
     spell.Range = RADIUS_SIZE_LARGE;
     spell.SR = NO;
     spell.TargetType = SPELL_TARGET_STANDARDHOSTILE;
@@ -34,9 +35,9 @@ void main()
     //--------------------------------------------------------------------------
     // Greater Dispell Magic is capped at caster level 15
     //--------------------------------------------------------------------------
-    if(nCasterLevel > 15)
+    if(nCasterLevel > spell.Limit)
     {
-        nCasterLevel = 15;
+        nCasterLevel = spell.Limit;
     }
 
     if (GetIsObjectValid(spell.Target))

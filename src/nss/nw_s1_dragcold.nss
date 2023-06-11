@@ -12,8 +12,9 @@
 //:: Created On: May 9, 2001
 //:://////////////////////////////////////////////
 /*
+Patch 1.72
+- fixed casting the spell on self not finding any targets in AoE
 Patch 1.70
-
 - wrong target check (could affect other NPCs)
 - damage was the same for all creatures in AoE
 - old evasion behaviour (now that evasion is applied will appear in log)
@@ -36,9 +37,18 @@ void main()
     effect eVis = EffectVisualEffect(VFX_IMP_FROST_S);
     effect eBreath;
 
+    location lTargetLocation = GetSpellTargetLocation();
+    if(lTargetLocation == GetLocation(OBJECT_SELF))
+    {
+        vector vFinalPosition = GetPositionFromLocation(lTargetLocation);
+        vFinalPosition.x+= cos(GetFacing(OBJECT_SELF));
+        vFinalPosition.y+= sin(GetFacing(OBJECT_SELF));
+        lTargetLocation = Location(GetAreaFromLocation(lTargetLocation),vFinalPosition,GetFacingFromLocation(lTargetLocation));
+    }
+
     PlayDragonBattleCry();
     //Get first target in spell area
-    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 14.0, GetSpellTargetLocation(), TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 14.0, lTargetLocation, TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(oTarget != OBJECT_SELF && spellsIsTarget(oTarget, SPELL_TARGET_STANDARDHOSTILE, OBJECT_SELF))
@@ -60,6 +70,6 @@ void main()
              }
         }
         //Get next target in spell area
-        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 14.0, GetSpellTargetLocation(), TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 14.0, lTargetLocation, TRUE);
     }
 }

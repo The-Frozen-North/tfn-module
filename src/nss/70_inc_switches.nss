@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------
 // * This switch will modify the curse to bypass the ability decrease immunity
 // * such as from negative energy protection spell.
-// * Note: Dependant on NWN(C)X_Patch plugin.
+// * Note: Dependant on NWN(C)X_Patch plugin. CURRENTLY NONFUNCTIONAL !!!
 //------------------------------------------------------------------------------
 const string MODULE_SWITCH_CURSE_IGNORE_ABILITY_DECREASE_IMMUNITY = "72_CURSE_IGNORE_ABILITY_DECREASE_IMMUNITY";
 
@@ -42,7 +42,7 @@ const string MODULE_SWITCH_DISABLE_AOE_SPELLS_STACKING = "72_DISABLE_AOE_SPELLS_
 // * the check until he attacks for the first time. Unlike DnD, the ammount of time the
 // * character is flatfooted is reduced to first flurry. Still, that gives considerable
 // * benefit to the attacker and makes intiative and feats improving initiative usefull.
-// * Note: Dependant on NWN(C)X_Patch plugin.
+// * Note: Dependant on NWN(C)X_Patch plugin. CURRENTLY NONFUNCTIONAL !!!
 //------------------------------------------------------------------------------
 const string MODULE_SWITCH_HARDCORE_INITIATIVE = "72_HARDCORE_INITIATIVE";
 
@@ -52,7 +52,7 @@ const string MODULE_SWITCH_HARDCORE_INITIATIVE = "72_HARDCORE_INITIATIVE";
 // * This defense denies another rogue the ability to sneak attack the character by flanking
 // * her, unless the attacker has at least four more rogue levels than the target does.
 // * Classes granting uncanny dodge stacks together for a purpose of this calculation.
-// * Note: Dependant on NWN(C)X_Patch plugin.
+// * Note: Dependant on NWN(C)X_Patch plugin. CURRENTLY NONFUNCTIONAL !!!
 //------------------------------------------------------------------------------
 const string MODULE_SWITCH_HARDCORE_UNCANNY_DODGE = "72_HARDCORE_UNCANNY_DODGE";
 
@@ -67,14 +67,14 @@ const string MODULE_SWITCH_HARDCORE_EVASION_RULES = "72_HARDCORE_EVASION_RULES";
 // * This switch will give flying creatures immunity to all ground traps.
 // * Specific traps can be set to ignore this immunity via "DISALLOW_FLYING" int 1
 // * variable on trigger.
-// * Note: Dependant on NWN(C)X_Patch plugin.
+// * Note: Dependant on NWN(C)X_Patch plugin. CURRENTLY NONFUNCTIONAL !!!
 //------------------------------------------------------------------------------
 const string MODULE_SWITCH_ENABLE_FLYING_TRAP_IMMUNITY = "72_ENABLE_FLYING_TRAP_IMMUNITY";
 
 //------------------------------------------------------------------------------
 // * This switch will disable all monk abilities in polymorph. That is monk AC from
 // * high wisdom, monk AC from class levels, monk speed and monk unarmed attack progression.
-// * Note: Dependant on NWN(C)X_Patch plugin.
+// * Note: Dependant on NWN(C)X_Patch plugin. CURRENTLY NONFUNCTIONAL !!!
 //------------------------------------------------------------------------------
 const string MODULE_SWITCH_DISABLE_MONK_ABILITIES_IN_POLYMORPH = "72_DISABLE_MONK_IN_POLYMORPH";
 
@@ -82,7 +82,7 @@ const string MODULE_SWITCH_DISABLE_MONK_ABILITIES_IN_POLYMORPH = "72_DISABLE_MON
 // * This switch will detach immunity to paralysis from the immunity to mind spells.
 // * This is usefull if you want to nerf the classic mind immunity spells and give higher
 // * meaning to the freedom of movement, PM/RDD or items with paralysis immunity.
-// * Note: Dependant on NWN(C)X_Patch plugin.
+// * Note: Dependant on NWN(C)X_Patch plugin. CURRENTLY NONFUNCTIONAL !!!
 //------------------------------------------------------------------------------
 const string MODULE_SWITCH_DISABLE_PARALYZE_MIND_SPELL_IMMUNITY = "72_DISABLE_PARALYZE_MIND_SPELL_IMMUNITY";
 
@@ -90,13 +90,13 @@ const string MODULE_SWITCH_DISABLE_PARALYZE_MIND_SPELL_IMMUNITY = "72_DISABLE_PA
 // * This switch will detach immunity to sneak attacks from the immunity to critical hits.
 // * This will allow to make a creature immune to critical hits but not sneak attack.
 // * Applies also to the Death Attack.
-// * Note: Dependant on NWN(C)X_Patch plugin.
+   // * Note: Dependant on NWN(C)X_Patch plugin. CURRENTLY NONFUNCTIONAL !!!
 //------------------------------------------------------------------------------
 const string MODULE_SWITCH_DISABLE_SNEAK_ATTACK_CRITICAL_IMMUNITY = "72_DISABLE_SNEAK_CRITICAL_IMMUNITY";
 
 //------------------------------------------------------------------------------
 // * This switch will completely disable all AC bonuses from tumble.
-// * Note: Dependant on NWN(C)X_Patch plugin.
+// * Note: Dependant on NWN(C)X_Patch plugin. CURRENTLY NONFUNCTIONAL !!!
 //------------------------------------------------------------------------------
 const string MODULE_SWITCH_DISABLE_TUMBLE_AC_BONUS = "72_DISABLE_TUMBLE_AC";
 
@@ -143,12 +143,6 @@ const string MODULE_SWITCH_POLYMORPH_MERGE_EVERYTHING = "72_POLYMORPH_MERGE_EVER
 const string MODULE_SWITCH_POLYMORPH_MERGE_CASTING_ABILITY = "72_POLYMORPH_MERGE_CASTING_ABILITY";
 
 //------------------------------------------------------------------------------
-// * This switch will make all associates to jump with player when using area transition
-// * leading into spot within the same area.
-//------------------------------------------------------------------------------
-const string MODULE_SWITCH_JUMP_ASSOCIATES_WITH_PLAYER = "72_JUMP_ASSOCIATES_WITH_PLAYER";
-
-//------------------------------------------------------------------------------
 // * This switch will allow to open henchman inventory even in modules where this feature
 // * wasn't implemented (like NWN Original Campaign).
 //------------------------------------------------------------------------------
@@ -180,13 +174,6 @@ const string MODULE_SWITCH_POLYMORPH_STACK_ABILITY_BONUSES = "71_POLYMORPH_STACK
 // * This switch will merge bracers or gloves in the "items" category.
 //------------------------------------------------------------------------------
 const string MODULE_SWITCH_POLYMORPH_MERGE_ARMS = "71_POLYMORPH_MERGE_ARMS";
-
-//------------------------------------------------------------------------------
-// * This switch will add Shifter levels into the Druid caster level calculation.
-// * This works only for druid spells cast normally, this won't work for druid
-// * spells cast from item, as special ability or from feat.
-//------------------------------------------------------------------------------
-const string MODULE_SWITCH_SHIFTER_ADDS_CASTER_LEVEL = "72_SHIFTER_ADDS_CASTER_LEVEL";
 
 //------------------------------------------------------------------------------
 // * This switch will apply Pale Master levels into the caster level calculation

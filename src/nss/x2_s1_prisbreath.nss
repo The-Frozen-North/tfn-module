@@ -11,8 +11,9 @@
 //:: Created On: Aug 09, 2003
 //:://////////////////////////////////////////////
 /*
+Pach 1.72
+- fixed casting the spell on self not finding any targets in AoE
 Patch 1.71
-
 - duration of blindness unified with other breaths (was several times higher than other breaths)
 - delay for VFX corrected (was always 0.5 for all targets)
 - added saving throw subtype (paralyse) versus paralyse effect
@@ -39,8 +40,17 @@ void main()
     int bTwoEffects;
     float fDelay;
 
+    location lTargetLocation = GetSpellTargetLocation();
+    if(lTargetLocation == GetLocation(OBJECT_SELF))
+    {
+        vector vFinalPosition = GetPositionFromLocation(lTargetLocation);
+        vFinalPosition.x+= cos(GetFacing(OBJECT_SELF));
+        vFinalPosition.y+= sin(GetFacing(OBJECT_SELF));
+        lTargetLocation = Location(GetAreaFromLocation(lTargetLocation),vFinalPosition,GetFacingFromLocation(lTargetLocation));
+    }
+
     //Get first target in the spell area
-    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 20.0, GetSpellTargetLocation());
+    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 20.0, lTargetLocation);
     while (GetIsObjectValid(oTarget))
     {
         if (oTarget != OBJECT_SELF && spellsIsTarget(oTarget, SPELL_TARGET_STANDARDHOSTILE, OBJECT_SELF))
@@ -77,7 +87,7 @@ void main()
             }
         }
         //Get next target in the spell area
-        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 20.0, GetSpellTargetLocation());
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 20.0, lTargetLocation);
     }
 }
 

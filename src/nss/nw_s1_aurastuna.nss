@@ -13,6 +13,8 @@
 //:://////////////////////////////////////////////
 /*
 Patch 1.72
+- fixed double duration scaling
+- added missing effect scaling
 - effects made undispellable (supernatural)
 Patch 1.70
 - wrong target check (could affect other NPCs)
@@ -28,9 +30,11 @@ void main()
     object oTarget = GetEnteringObject();
     effect eVis = EffectVisualEffect(VFX_IMP_STUN);
     effect eVis2 = EffectVisualEffect(VFX_DUR_MIND_AFFECTING_DISABLED);
-    effect eDeath = EffectStunned();
-    effect eLink = EffectLinkEffects(eVis2, eDeath);
+    effect eStun = EffectStunned();
+    effect eLink = GetScaledEffect(eStun, oTarget);
+    eLink = EffectLinkEffects(eVis2, eLink);
     eLink = SupernaturalEffect(eLink);
+
     int nDuration = GetHitDice(oCreator)/3 + 1;
     nDuration = GetScaledDuration(nDuration, oTarget);
     int nDC = 10 + GetHitDice(oCreator)/3;
@@ -42,7 +46,6 @@ void main()
         //Make a saving throw check
         if(!MySavingThrow(SAVING_THROW_WILL, oTarget, nDC, SAVING_THROW_TYPE_MIND_SPELLS, oCreator))
         {
-            nDuration = GetScaledDuration(nDuration, oTarget);
             //Apply the VFX impact and effects
             ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, RoundsToSeconds(nDuration));
             ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);

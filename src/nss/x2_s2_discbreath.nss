@@ -27,8 +27,9 @@
 //:: Created On: June, 17, 2003
 //:://////////////////////////////////////////////
 /*
+Pach 1.72
+- fixed bug in "cast on self" workaround that prevented the breath to work properly in case it was used at non zero Z position
 Patch 1.70
-
 - wrong target check (could affect other NPCs)
 - damage was the same for all creatures in AoE
 - old evasion behaviour (now that evasion is applied will appear in log)
@@ -80,10 +81,9 @@ void main()
 
         // In order to use the direction that OBJECT_SELF is facing, we have to
         // instead we pick a point slightly in front of OBJECT_SELF as the target.
-        vector lTargetPosition = GetPositionFromLocation(lFinalTarget);
-        vector vFinalPosition;
-        vFinalPosition.x = lTargetPosition.x +  cos(GetFacing(OBJECT_SELF));
-        vFinalPosition.y = lTargetPosition.y +  sin(GetFacing(OBJECT_SELF));
+        vector vFinalPosition = GetPositionFromLocation(lFinalTarget);//1.72: this will retain Z position
+        vFinalPosition.x+= cos(GetFacing(OBJECT_SELF));
+        vFinalPosition.y+= sin(GetFacing(OBJECT_SELF));
         lFinalTarget = Location(GetAreaFromLocation(lFinalTarget),vFinalPosition,GetFacingFromLocation(lFinalTarget));
     }
 

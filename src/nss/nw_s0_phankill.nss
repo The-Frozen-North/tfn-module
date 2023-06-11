@@ -57,7 +57,7 @@ void main()
                 if (!MySavingThrow(spell.SavingThrow, spell.Target, spell.DC, SAVING_THROW_TYPE_MIND_SPELLS, spell.Caster))
                 {
                     //Make a Fort save
-                    if (MySavingThrow(spell.SavingThrow, spell.Target, spell.DC, SAVING_THROW_TYPE_FEAR, spell.Caster))
+                    if (MySavingThrow(SAVING_THROW_FORT, spell.Target, spell.DC, SAVING_THROW_TYPE_FEAR, spell.Caster))
                     {
                          //Set the damage property
                          eDam = EffectDamage(nDamage, spell.DamageType);

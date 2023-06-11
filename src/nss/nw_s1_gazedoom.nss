@@ -13,8 +13,9 @@
 //:: Created On: Oct 22, 2001
 //:://////////////////////////////////////////////
 /*
+Pach 1.72
+- fixed casting the spell on self not finding any targets in AoE
 Patch 1.71
-
 - blinded/sightless creatures are not affected anymore
 - wrong target check (could affect other NPCs or self)
 - added delay into VFX and effects applications
@@ -46,7 +47,16 @@ void main()
     eLink = EffectLinkEffects(eLink, eSkill);
     eLink = EffectLinkEffects(eLink, eDur);
 
-    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, GetSpellTargetLocation());
+    location lTargetLocation = GetSpellTargetLocation();
+    if(lTargetLocation == GetLocation(OBJECT_SELF))
+    {
+        vector vFinalPosition = GetPositionFromLocation(lTargetLocation);
+        vFinalPosition.x+= cos(GetFacing(OBJECT_SELF));
+        vFinalPosition.y+= sin(GetFacing(OBJECT_SELF));
+        lTargetLocation = Location(GetAreaFromLocation(lTargetLocation),vFinalPosition,GetFacingFromLocation(lTargetLocation));
+    }
+
+    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation);
     effect immunityEffect;
     while(GetIsObjectValid(oTarget))
     {
@@ -62,6 +72,6 @@ void main()
                 DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, RoundsToSeconds(nDuration)));
             }
         }
-        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, GetSpellTargetLocation());
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation);
     }
 }

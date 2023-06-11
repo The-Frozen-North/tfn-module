@@ -22,8 +22,9 @@
 //:: Created On: 2003-Oct-14
 //:://////////////////////////////////////////////
 /*
+Pach 1.72
+- fixed bug in "cast on self" workaround that prevented the breath to work properly in case it was used at non zero Z position
 Patch 1.71
-
 - fixed breath to target placeable and door as it was intented
 - poison made extraordinary
 */
@@ -182,7 +183,6 @@ void main()
     // Loop over all creatures, doors and placeables in the area of effect
     //------------------------------------------------------------------
     location lFinalTarget = GetSpellTargetLocation();
-    vector vFinalPosition;
     if ( lFinalTarget == GetLocation(OBJECT_SELF) )
     {
         // Since the target and origin are the same, we have to determine the
@@ -191,9 +191,9 @@ void main()
 
         // In order to use the direction that OBJECT_SELF is facing, we have to
         // instead we pick a point slightly in front of OBJECT_SELF as the target.
-        vector lTargetPosition = GetPositionFromLocation(lFinalTarget);
-        vFinalPosition.x = lTargetPosition.x +  cos(GetFacing(OBJECT_SELF));
-        vFinalPosition.y = lTargetPosition.y +  sin(GetFacing(OBJECT_SELF));
+        vector vFinalPosition = GetPositionFromLocation(lFinalTarget);//1.72: this will retain Z position
+        vFinalPosition.x+= cos(GetFacing(OBJECT_SELF));
+        vFinalPosition.y+= sin(GetFacing(OBJECT_SELF));
         lFinalTarget = Location(GetAreaFromLocation(lFinalTarget),vFinalPosition,GetFacingFromLocation(lFinalTarget));
     }
 

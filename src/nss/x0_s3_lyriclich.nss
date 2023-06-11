@@ -14,8 +14,9 @@
 //:: Created On:
 //:://////////////////////////////////////////////
 /*
+Patch 1.72
+- caster level of the horrid wilting will be equal to bard level (minimum 10)
 Patch 1.71
-
 - not useable silenced anymore
 - added deaf failure chance
 */
@@ -41,6 +42,12 @@ void main()
     {
         DecrementRemainingFeatUses(OBJECT_SELF, FEAT_BARD_SONGS);
         PlaySound("as_cv_flute2");
+
+        int nLevel = GetLevelByClass(CLASS_TYPE_BARD);
+        if(nLevel < 10) nLevel = 10;
+        int prevCL = GetLocalInt(OBJECT_SELF,"SPECIAL_ABILITY_CASTER_LEVEL_OVERRIDE");
+        SetLocalInt(OBJECT_SELF,"SPECIAL_ABILITY_CASTER_LEVEL_OVERRIDE",nLevel);
         ActionCastSpellAtObject(SPELL_HORRID_WILTING, OBJECT_SELF, METAMAGIC_ANY, TRUE, 0, PROJECTILE_PATH_TYPE_DEFAULT, TRUE);
+        DelayCommand(1.1,SetLocalInt(OBJECT_SELF,"SPECIAL_ABILITY_CASTER_LEVEL_OVERRIDE",prevCL));//reset override to previous value to avoid affecting anything else
     }
 }

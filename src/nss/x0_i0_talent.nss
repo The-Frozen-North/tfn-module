@@ -1783,7 +1783,7 @@ int TalentMeleeAttack(object oIntruder = OBJECT_INVALID)
             EquipAppropriateWeapons(oTarget);
             //MyPrintString("TalentMeleeAttack: Talent Use Successful");
             // February 6 2003: Did not have a clear all actions before it
-            ActionUseTalentOnObject(tUse, oTarget);
+            bkTalentFilter(tUse, oTarget);
             return TRUE;
         }
         else
@@ -1817,8 +1817,8 @@ int TalentSneakAttack()
          object oFriend = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN, CREATURE_TYPE_IS_ALIVE, TRUE);
          while(GetIsObjectValid(oFriend))
          {
-             object oTarget = GetLastHostileActor(oFriend);                                                           //1.72: do not attack friends and only attack seen targets
-             if(GetIsObjectValid(oTarget) && !GetIsDead(oTarget) && !GetAssociateState(NW_ASC_MODE_DYING, oTarget) && !GetIsFriend(oTarget) && GetObjectSeen(oTarget))
+             object oTarget = GetLastHostileActor(oFriend);                                                           //1.72: do not attack friends
+             if(GetIsObjectValid(oTarget) && !GetIsDead(oTarget) && !GetAssociateState(NW_ASC_MODE_DYING, oTarget) && !GetIsFriend(oTarget))
              {                                      //1.71: high ai will not try to sneak immunes
                  if(GetAILevel() < AI_LEVEL_HIGH || (!GetIsImmune(oTarget,IMMUNITY_TYPE_SNEAK_ATTACK,OBJECT_SELF) && !GetIsImmune(oTarget,IMMUNITY_TYPE_CRITICAL_HIT,OBJECT_SELF)))
                  {

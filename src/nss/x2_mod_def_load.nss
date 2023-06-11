@@ -48,6 +48,10 @@ void main()
        // SetModuleSwitch (MODULE_SWITCH_AOE_HURT_NEUTRAL_NPCS, TRUE);
    }
 
+   // * 1.72: Activating this switch below will modify spell DC of all regular spells to
+   // * use spell level of the class who cast it instead of innate level.
+   // SetModuleSwitch (MODULE_SWITCH_SPELL_DC_BASED_ON_CLASS_SPELL_LEVEL, TRUE);
+
    // * 1.72: Activating this switch below will modify curse effect to ignore immunity to ability decrease.
    // * Note: Dependant on NWN(C)X_Patch plugin. CURRENTLY NONFUNCTIONAL !!!
    // SetModuleSwitch (MODULE_SWITCH_CURSE_IGNORE_ABILITY_DECREASE_IMMUNITY, TRUE);

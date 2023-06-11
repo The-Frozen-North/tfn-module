@@ -16,8 +16,9 @@
 //:://////////////////////////////////////////////
 //:: Last Update By: Andrew Nobbs May 01, 2003
 /*
+Patch 1.72
+- fixed stacking of the spell which was still possible with potions
 Patch 1.70
-
 - damage wasn't random
 */
 
@@ -57,10 +58,7 @@ void main()
     {
         RemoveSpecificEffect(EFFECT_TYPE_ELEMENTALSHIELD,spell.Target);
     }
-    if (GetHasSpellEffect(spell.Id, spell.Target))
-    {
-        RemoveEffectsFromSpell(spell.Target,spell.Id);
-    }
+    RemoveEffectsFromSpell(spell.Target, spell.Id);
 
     //Enter Metamagic conditions
     if (spell.Meta & METAMAGIC_EXTEND)

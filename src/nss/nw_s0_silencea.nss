@@ -29,7 +29,7 @@ and without need to make SR checks
 void main()
 {
     //1.72: pre-declare some of the spell informations to be able to process them
-    spell.TargetType = SPELL_TARGET_SELECTIVEHOSTILE;
+    spell.TargetType = SPELL_TARGET_STANDARDHOSTILE;
 
     //Declare major variables including Area of Effect Object
     aoesDeclareMajorVariables();
@@ -48,11 +48,9 @@ void main()
         //Fire cast spell at event for the specified target
         SignalEvent(oTarget, EventSpellCastAt(aoe.AOE, spell.Id, GetIsEnemy(oTarget, aoe.Creator)));
 
-        if(spellsIsTarget(oTarget, spell.TargetType, aoe.Creator) && MyResistSpell(aoe.Creator,oTarget))
+        if(spellsIsTarget(oTarget, spell.TargetType, aoe.Creator) && !MyResistSpell(aoe.Creator,oTarget))
         {
-            return;
-        }
-
-        ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oTarget);
+            ApplyEffectToObject(DURATION_TYPE_PERMANENT, eLink, oTarget);
+        }        
     }
 }

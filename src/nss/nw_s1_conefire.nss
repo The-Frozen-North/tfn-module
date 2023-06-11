@@ -17,8 +17,9 @@
 //:: Note: Changed the faction check to GetIsEnemy
 //:://////////////////////////////////////////////
 /*
+Pach 1.72
+- fixed casting the spell on self not finding any targets in AoE
 Patch 1.70
-
 - area of effect size prolonged to 11.0 to match the distance of the cone usage/visual
 - successful save reduced damage for all remaining creatures in the area of effect
 - damage was the same for all creatures in AoE
@@ -44,6 +45,14 @@ void main()
     nDice *= 2;
 
     location lTargetLocation = GetSpellTargetLocation();
+    if(lTargetLocation == GetLocation(OBJECT_SELF))
+    {
+        vector vFinalPosition = GetPositionFromLocation(lTargetLocation);
+        vFinalPosition.x+= cos(GetFacing(OBJECT_SELF));
+        vFinalPosition.y+= sin(GetFacing(OBJECT_SELF));
+        lTargetLocation = Location(GetAreaFromLocation(lTargetLocation),vFinalPosition,GetFacingFromLocation(lTargetLocation));
+    }
+
     effect eCone;
     effect eVis = EffectVisualEffect(VFX_IMP_FLAME_S);
     object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);

@@ -30,12 +30,10 @@ void main()
     effect eExplode = EffectVisualEffect(VFX_FNF_LOS_NORMAL_30);
     effect eVis = EffectVisualEffect(VFX_IMP_HEAD_NATURE);
     effect eDeaf = ExtraordinaryEffect(EffectDeaf());
-    effect eBlind = ExtraordinaryEffect(EffectBlindness());
-    effect eLink = EffectLinkEffects(eDeaf, eBlind);
     effect eShake = EffectVisualEffect(VFX_FNF_SCREEN_SHAKE);
     //Get the spell target location as opposed to the spell target.
     location lTarget = GetSpellTargetLocation();
-    int nDuration = 2;
+    int nDuration = 5;
 
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eShake, OBJECT_SELF, RoundsToSeconds(3));
 
@@ -54,7 +52,7 @@ void main()
             if(!MySavingThrow(SAVING_THROW_FORT, oTarget, 15, SAVING_THROW_TYPE_SONIC, oCaster))
             {
                 // Apply effects to the currently selected target.
-                DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, RoundsToSeconds(nDuration)));
+                DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eDeaf, oTarget, RoundsToSeconds(nDuration)));
                 //This visual effect is applied to the target object not the location as above.  This visual effect
                 //represents the flame that erupts on the target not on the ground.
                 DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));

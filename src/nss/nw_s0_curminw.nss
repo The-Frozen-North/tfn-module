@@ -28,7 +28,7 @@ Patch 1.71
 void main()
 {
     //1.72: pre-declare some of the spell informations to be able to process them
-    spell.Dice = 0;
+    spell.Dice = 4;
     spell.DamageType = DAMAGE_TYPE_POSITIVE;
     spell.SavingThrow = SAVING_THROW_WILL;
     spell.TargetType = SPELL_TARGET_SINGLETARGET;
@@ -41,8 +41,8 @@ void main()
 
     //declare major variables
     spellsDeclareMajorVariables();
-    int nDice = spell.Dice;
-    int nNumDice = 0;
+    int nDice = 1;
+    int nNumDice = spell.Dice;
     int nMaxExtraDamage = 0;
     int vfx_impactHurt = spell.DmgVfxS;
     int vfx_impactHeal = VFX_IMP_HEAD_HEAL;
@@ -63,16 +63,11 @@ void main()
     }
 
     //Calculate damage
-    //int nDamage = MaximizeOrEmpower(nDice,nNumDice,spell.Meta,nExtraDamage);
-    int nDamage = 4;
+    int nDamage = MaximizeOrEmpower(nDice,nNumDice,spell.Meta,nExtraDamage);
 
     if(!(spell.Meta & METAMAGIC_EMPOWER) && spell.Item == OBJECT_INVALID && GetHasFeat(FEAT_HEALING_DOMAIN_POWER, spell.Caster))
     {   // * if the caster has healing domain, the spell is empowered
-        nDamage = 6;
-    }
-    else if (spell.Meta == METAMAGIC_EMPOWER)
-    {
-        nDamage = 6;
+        nDamage = nDamage + (nDamage/2);
     }
 
     if(!spellsIsRacialType(spell.Target, RACIAL_TYPE_UNDEAD))

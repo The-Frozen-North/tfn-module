@@ -23,7 +23,17 @@ void main()
     location lLocal = GetSpellTargetLocation();
     string sTag = GetStringLowerCase(GetTag(oItem));
 
-    if(sTag == "alldemonbottle")
+    if(GetTag(oPC) == "72_EC_DEATH")//1.72 workaround for the EffectDeath() ignoring death immunity if used outside of the spellscript
+    {
+        oTarget = GetLocalObject(oPC,"TARGET");
+        SetCommandable(FALSE,oTarget);//special workaround for action cancel issue
+        effect eImmunity = EffectImmunity(IMMUNITY_TYPE_DEATH);
+        ApplyEffectToObject(DURATION_TYPE_INSTANT,eImmunity,oTarget);//workaround against a possibility of target having death immunity only against specific race, alignment or trap
+        ApplyEffectToObject(DURATION_TYPE_INSTANT,EffectDeath(),oTarget);//engine hack to get proper feedback
+        RemoveEffect(oTarget,eImmunity);
+        SetCommandable(TRUE,oTarget);
+    }
+    else if(sTag == "alldemonbottle")
     {
         //Djinn won't come out if PC is in combat
         if (!GetIsInCombat(oPC))

@@ -27,6 +27,7 @@ void main()
 {
     //1.72: pre-declare some of the spell informations to be able to process them
     spell.DurationType = SPELL_DURATION_TYPE_ROUNDS;
+    spell.Limit = 50;
 
     if (!X2PreSpellCastCode())
     {
@@ -42,7 +43,7 @@ void main()
         return ; // does nothing if caster already has haste
     }
     effect eDur = EffectVisualEffect(VFX_DUR_CESSATE_POSITIVE);
-    effect eFast = EffectMovementSpeedIncrease(150);
+    effect eFast = EffectMovementSpeedIncrease(100+spell.Limit);
     effect eLink = EffectLinkEffects(eFast, eDur);
 
     int nDuration = spell.Level;

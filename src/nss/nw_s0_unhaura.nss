@@ -13,6 +13,10 @@
 //:: Created By: Preston Watamaniuk
 //:: Created On: Sept 28, 2001
 //:://////////////////////////////////////////////
+/*
+Patch 1.72
+- fixed stacking of the spell which was still possible with potions
+*/
 
 #include "70_inc_spells"
 #include "x0_i0_spells"
@@ -72,7 +76,7 @@ void main()
     {
         RemoveSpecificEffect(EFFECT_TYPE_ELEMENTALSHIELD,spell.Target);
     }
-    RemoveSpellEffects(spell.Id,spell.Caster,spell.Target);
+    RemoveEffectsFromSpell(spell.Target, spell.Id);
 
     //Fire cast spell at event for the specified target
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));

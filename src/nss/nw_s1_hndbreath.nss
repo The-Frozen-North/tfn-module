@@ -15,8 +15,9 @@
 //:: Note: Changed the faction check to GetIsEnemy
 //:://////////////////////////////////////////////
 /*
+Pach 1.72
+- fixed casting the spell on self not finding any targets in AoE
 Patch 1.71
-
 - added missing saving throw check
 - increased damage to take account of saving throw
 - damage was the same for all creatures in AoE
@@ -34,6 +35,13 @@ void main()
     int nDice = 1+(nHD/4);
     float fDelay;
     location lTargetLocation = GetSpellTargetLocation();
+    if(lTargetLocation == GetLocation(OBJECT_SELF))
+    {
+        vector vFinalPosition = GetPositionFromLocation(lTargetLocation);
+        vFinalPosition.x+= cos(GetFacing(OBJECT_SELF));
+        vFinalPosition.y+= sin(GetFacing(OBJECT_SELF));
+        lTargetLocation = Location(GetAreaFromLocation(lTargetLocation),vFinalPosition,GetFacingFromLocation(lTargetLocation));
+    }
     object oTarget;
     effect eCone;
     effect eVis = EffectVisualEffect(VFX_IMP_FLAME_S);

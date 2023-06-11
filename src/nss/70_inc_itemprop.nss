@@ -517,12 +517,6 @@ void IPWildShapeMergeItemProperties(object oOld, object oNew, int bWeapon = FALS
 {
     if(GetIsObjectValid(oOld) && GetIsObjectValid(oNew))
     {
-        if(oOld == oNew)//1.72: sanity check to prevent possible server lockdown in case unexpected things happens
-        {
-            SendMessageToAllDMs("WARNING! IPWildShapeMergeItemProperties attempting to merge properties from item onto same item!");
-            WriteTimestampedLogEntry("WARNING! IPWildShapeMergeItemProperties attempting to merge properties from item onto same item!");
-            return;
-        }
         itemproperty ip = GetFirstItemProperty(oOld);
         while (GetIsItemPropertyValid(ip))
         {

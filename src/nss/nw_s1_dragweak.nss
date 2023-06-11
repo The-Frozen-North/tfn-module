@@ -13,8 +13,9 @@
 //:: Updated On: Oct 21, 2003
 //:://////////////////////////////////////////////
 /*
+Patch 1.72
+- fixed casting the spell on self not finding any targets in AoE
 Patch 1.70
-
 - saving throw type changed to fortitude
 - wrong target check (could affect other NPCs)
 > breath weapon damage and DC calculation changed in order to allow higher values
@@ -35,9 +36,18 @@ void main()
     effect eBreath = EffectAbilityDecrease(ABILITY_STRENGTH, nDamage);
     eBreath = SupernaturalEffect(eBreath);
 
+    location lTargetLocation = GetSpellTargetLocation();
+    if(lTargetLocation == GetLocation(OBJECT_SELF))
+    {
+        vector vFinalPosition = GetPositionFromLocation(lTargetLocation);
+        vFinalPosition.x+= cos(GetFacing(OBJECT_SELF));
+        vFinalPosition.y+= sin(GetFacing(OBJECT_SELF));
+        lTargetLocation = Location(GetAreaFromLocation(lTargetLocation),vFinalPosition,GetFacingFromLocation(lTargetLocation));
+    }
+
     PlayDragonBattleCry();
     //Get first target in spell area
-    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 14.0, GetSpellTargetLocation(), TRUE);
+    object oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 14.0, lTargetLocation, TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(oTarget != OBJECT_SELF && spellsIsTarget(oTarget, SPELL_TARGET_STANDARDHOSTILE, OBJECT_SELF))
@@ -58,6 +68,6 @@ void main()
             }
         }
         //Get next target in spell area
-        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 14.0, GetSpellTargetLocation(), TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 14.0, lTargetLocation, TRUE);
     }
 }

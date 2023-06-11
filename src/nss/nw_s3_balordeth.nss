@@ -12,8 +12,9 @@
 //:: Created On: Jan 9, 2002
 //:://////////////////////////////////////////////
 /*
+Patch 1.72
+- script will additionally run default OnDeath script handler for npcs
 Patch 1.71
-
 - fixed spell resistance issue that in certain situation blocked damage application
 */
 
@@ -61,5 +62,13 @@ void main()
          }
        //Select the next target within the spell shape.
        oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_HUGE, lTarget, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_DOOR);
+    }
+
+    //1.72: checking this is neccessary in order to avoid endless loop that would lock down game
+    //in a case where user would already do this but the other way around, ie. executing this
+    //script from nw_c2_default7
+    if(GetEventScript(OBJECT_SELF,EVENT_SCRIPT_CREATURE_ON_DEATH) == "nw_s3_balordeth")
+    {
+        ExecuteScript(GetAssociateType(OBJECT_SELF) == ASSOCIATE_TYPE_NONE ? "nw_c2_default7" : "nw_ch_ac7",OBJECT_SELF);
     }
 }

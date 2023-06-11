@@ -144,21 +144,9 @@ object FindSingleRangedTarget();
 // Gets the nearest enemy.
 object GetNearestEnemy(object oSource=OBJECT_SELF, int nNth = 1)
 {
-    object oTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, oSource, nNth);
-    if(nNth == 1 && oTarget == OBJECT_INVALID)//1.72: fix for new NWN:EE bug
-    {
-        int nTh = 1;
-        oTarget = GetNearestObject(OBJECT_TYPE_CREATURE,oSource,nTh);
-        while(oTarget != OBJECT_INVALID)
-        {
-            if(GetIsEnemy(oTarget))
-            {
-                return oTarget;
-            }
-            oTarget = GetNearestObject(OBJECT_TYPE_CREATURE,oSource,++nTh);
-        }
-    }
-    return oTarget;
+    return GetNearestCreature(CREATURE_TYPE_REPUTATION,
+                              REPUTATION_TYPE_ENEMY,
+                              oSource, nNth);
 }
 
 
@@ -190,20 +178,6 @@ object GetNearestPerceivedEnemy(object oSource=OBJECT_SELF, int nNth = 1, int nC
     if(GetIsObjectValid(oTarget))
         return oTarget; // found one
 
-    if(nNth == 1 && nCriteriaType == 1000 && oTarget == OBJECT_INVALID)//1.72: fix for new NWN:EE bug
-    {
-        int nTh = 1;
-        oTarget = GetNearestObject(OBJECT_TYPE_CREATURE,oSource,nTh);
-        while(oTarget != OBJECT_INVALID)
-        {
-            if(GetIsEnemy(oTarget) && GetObjectSeen(oTarget))
-            {
-                return oTarget;
-            }
-            oTarget = GetNearestObject(OBJECT_TYPE_CREATURE,oSource,++nTh);
-        }
-    }
-
         // * NEVER NEVER Look for heard enemies.
         // * it makes creatures go 'hunting' for enemies way past
         // * where they should be looking for them.
@@ -233,21 +207,11 @@ object GetNearestPerceivedEnemy(object oSource=OBJECT_SELF, int nNth = 1, int nC
 // heard but not seen; for that, use GetNearestPerceivedEnemy instead.
 object GetNearestSeenEnemy(object oSource=OBJECT_SELF, int nNth = 1)
 {
-    object oTarget = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, oSource, nNth, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
-    if(nNth == 1 && oTarget == OBJECT_INVALID)//1.72: fix for new NWN:EE bug
-    {
-        int nTh = 1;
-        oTarget = GetNearestObject(OBJECT_TYPE_CREATURE,oSource,nTh);
-        while(oTarget != OBJECT_INVALID)
-        {
-            if(GetIsEnemy(oTarget) && GetObjectSeen(oTarget))
-            {
-                return oTarget;
-            }
-            oTarget = GetNearestObject(OBJECT_TYPE_CREATURE,oSource,++nTh);
-        }
-    }
-    return oTarget;
+    return GetNearestCreature(CREATURE_TYPE_REPUTATION,
+                              REPUTATION_TYPE_ENEMY,
+                              oSource, nNth,
+                              CREATURE_TYPE_PERCEPTION,
+                              PERCEPTION_SEEN);
 }
 
 //Returns the nearest object that can be seen, then checks for

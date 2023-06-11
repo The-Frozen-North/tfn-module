@@ -13,8 +13,9 @@
 //:://////////////////////////////////////////////
 // Modified March 2003: Remove Expeditious Retreat effects
 /*
+Patch 1.72
+- fixed stacking of the spell with expeditios retreat which was still possible with potions
 Patch 1.71
-
 - haste from other sources won't be removed anymore
 */
 
@@ -36,10 +37,7 @@ void main()
     //Declare major variables
     spellsDeclareMajorVariables();
 
-    if (GetHasSpellEffect(SPELL_EXPEDITIOUS_RETREAT, spell.Target))
-    {
-        RemoveSpellEffects(SPELL_EXPEDITIOUS_RETREAT, spell.Caster, spell.Target);
-    }
+    RemoveEffectsFromSpell(spell.Target, SPELL_EXPEDITIOUS_RETREAT);
 
     effect eHaste = EffectHaste();
     effect eVis = EffectVisualEffect(VFX_IMP_HASTE);

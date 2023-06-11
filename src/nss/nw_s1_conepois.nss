@@ -13,8 +13,9 @@
 //:: Created On: May 22, 2001
 //:://////////////////////////////////////////////
 /*
+Pach 1.72
+- fixed casting the spell on self not finding any targets in AoE
 Patch 1.71
-
 - area of effect size prolonged to 11.0 to match the distance of the cone usage/visual
 - wrong target check (could affect other NPCs)
 - shape size wasn't correct (started with 10.0 then continued with 11.0, which
@@ -28,6 +29,13 @@ void main()
 {
     //Declare major variables
     location lTargetLocation = GetSpellTargetLocation();
+    if(lTargetLocation == GetLocation(OBJECT_SELF))
+    {
+        vector vFinalPosition = GetPositionFromLocation(lTargetLocation);
+        vFinalPosition.x+= cos(GetFacing(OBJECT_SELF));
+        vFinalPosition.y+= sin(GetFacing(OBJECT_SELF));
+        lTargetLocation = Location(GetAreaFromLocation(lTargetLocation),vFinalPosition,GetFacingFromLocation(lTargetLocation));
+    }
     object oTarget;
     float fDelay;
     int nHD = GetHitDice(OBJECT_SELF);

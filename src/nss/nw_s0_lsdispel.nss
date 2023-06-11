@@ -15,6 +15,7 @@
 void main()
 {
     //1.72: pre-declare some of the spell informations to be able to process them
+    spell.Limit = 5;
     spell.Range = RADIUS_SIZE_LARGE;
     spell.SR = NO;
     spell.TargetType = SPELL_TARGET_STANDARDHOSTILE;
@@ -35,9 +36,9 @@ void main()
     //--------------------------------------------------------------------------
     // Lesser Magic is capped at caster level 5
     //--------------------------------------------------------------------------
-    if(nCasterLevel > 5)
+    if(nCasterLevel > spell.Limit)
     {
-        nCasterLevel = 5;
+        nCasterLevel = spell.Limit;
     }
 
 

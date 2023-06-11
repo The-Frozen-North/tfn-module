@@ -16,8 +16,9 @@
 //:: Note: Changed the faction check to GetIsEnemy
 //:://////////////////////////////////////////////
 /*
+Patch 1.72
+- made effects supernatural - undispellable
 Patch 1.71
-
 - deaf/silenced creatures are not affected anymore
 - wrong target check (could affect other NPCs)
 - added scaling into fear effect
@@ -62,7 +63,7 @@ void main()
                 scaledEffect = GetScaledEffect(eHowl, oTarget);
                 scaledEffect = EffectLinkEffects(eLink, scaledEffect);
                 //Apply the VFX impact and effects
-                DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, scaledEffect, oTarget, RoundsToSeconds(scaledDuration)));
+                DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, SupernaturalEffect(scaledEffect), oTarget, RoundsToSeconds(scaledDuration)));
 //                DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
             }
         }

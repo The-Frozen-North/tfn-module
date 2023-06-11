@@ -12,8 +12,9 @@
 //:: Created On: May 14, 2000
 //:://////////////////////////////////////////////
 /*
+Patch 1.72
+- made effects supernatural - undispellable
 Patch 1.71
-
 - deaf/silenced creatures are not affected anymore
 - wrong target check (could affect other NPCs)
 - wrong duration calculation (cumulative for each target in AoE)
@@ -59,7 +60,7 @@ void main()
                 scaledEffect = EffectLinkEffects(eLink, scaledEffect);
                 //Apply the VFX impact and effects
                 DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
-                DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, scaledEffect, oTarget, RoundsToSeconds(scaledDuration)));
+                DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, SupernaturalEffect(scaledEffect), oTarget, RoundsToSeconds(scaledDuration)));
             }
         }
         //Get next target in spell area

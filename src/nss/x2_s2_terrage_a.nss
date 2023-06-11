@@ -23,7 +23,7 @@
 //:: Created On: 2003-07-10
 //:://////////////////////////////////////////////
 /*
-Patch 1.71
+Patch 1.72
 
 - immunity to mind spells was ommited
 - fear immune targets was automatically struck by paralysis/shaken effect without any save
@@ -60,7 +60,7 @@ void main()
         if(!MySavingThrow(SAVING_THROW_WILL, oTarget, nDC, SAVING_THROW_TYPE_FEAR))
         {
             //workaround to avoid issue with automatically failing saving throw
-            if(GetIsImmune(oTarget,IMMUNITY_TYPE_FEAR,OBJECT_SELF))
+            if(GetIsImmune(oTarget,IMMUNITY_TYPE_FEAR,OBJECT_SELF) || GetIsImmune(oTarget,IMMUNITY_TYPE_MIND_SPELLS,OBJECT_SELF))
             {
                 ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectFrightened(), oTarget);
                 return;

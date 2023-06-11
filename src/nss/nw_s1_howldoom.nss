@@ -12,8 +12,9 @@
 //:: Created On: Jan 8, 2002
 //:://////////////////////////////////////////////
 /*
+Patch 1.72
+- made effects supernatural - undispellable
 Patch 1.71
-
 - deaf/silenced creatures are not affected anymore
 - wrong target check (could affect other NPCs)
 - added missing delay in saving throw VFX
@@ -30,6 +31,7 @@ void main()
     int nDC = 10 + (nHD/4);
     int nDuration = 1 + (nHD/4);
     effect eLink = CreateDoomEffectsLink();
+    eLink = SupernaturalEffect(eLink);
     effect eVis = EffectVisualEffect(VFX_IMP_DOOM);
     effect eImpact = EffectVisualEffect(VFX_FNF_HOWL_ODD);
     float fDelay;

@@ -13,8 +13,9 @@
 //:: Created On: Oct 22, 2001
 //:://////////////////////////////////////////////
 /*
+Patch 1.72
+- fixed stacking of the spell which was still possible with potions
 Patch 1.70
-
 - deaf/silenced creatures are not affected anymore (sound descriptor)
 */
 
@@ -85,7 +86,7 @@ void main()
         oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE);
     }
     //Apply bonus and VFX effects to bard.
-    RemoveSpellEffects(spell.Id,spell.Caster,spell.Target);
+    RemoveEffectsFromSpell(spell.Target, spell.Id);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, spell.Target);
     DelayCommand(0.01, ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nLevel)));
     SignalEvent(spell.Target, EventSpellCastAt(spell.Caster, spell.Id, FALSE));

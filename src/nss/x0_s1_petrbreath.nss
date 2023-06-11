@@ -7,6 +7,10 @@
 //:: Created By: Naomi Novik
 //:: Created On: 11/14/2002
 //::///////////////////////////////////////////////////
+/*
+Pach 1.72
+- added code to make this spell functional in case it is ever used on self
+*/
 
 #include "x0_i0_spells"
 
@@ -16,6 +20,13 @@ void main()
     int nHitDice = GetHitDice(OBJECT_SELF);
 
     location lTargetLocation = GetSpellTargetLocation();
+    if(lTargetLocation == GetLocation(OBJECT_SELF))
+    {
+        vector vFinalPosition = GetPositionFromLocation(lTargetLocation);
+        vFinalPosition.x+= cos(GetFacing(OBJECT_SELF));
+        vFinalPosition.y+= sin(GetFacing(OBJECT_SELF));
+        lTargetLocation = Location(GetAreaFromLocation(lTargetLocation),vFinalPosition,GetFacingFromLocation(lTargetLocation));
+    }
 
     //Get first target in spell area
     oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);

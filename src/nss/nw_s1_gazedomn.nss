@@ -12,8 +12,9 @@
 //:: Created On: May 9, 2001
 //:://////////////////////////////////////////////
 /*
+Pach 1.72
+- fixed casting the spell on self not finding any targets in AoE
 Patch 1.71
-
 - blinded/sightless creatures are not affected anymore
 - wrong target check (could affect other NPCs)
 - wrong duration and effect calculation (cumulative for each target in AoE)
@@ -39,6 +40,13 @@ void main()
     nDC = 10 + (nHD/2);
 
     location lTargetLocation = GetSpellTargetLocation();
+    if(lTargetLocation == GetLocation(OBJECT_SELF))
+    {
+        vector vFinalPosition = GetPositionFromLocation(lTargetLocation);
+        vFinalPosition.x+= cos(GetFacing(OBJECT_SELF));
+        vFinalPosition.y+= sin(GetFacing(OBJECT_SELF));
+        lTargetLocation = Location(GetAreaFromLocation(lTargetLocation),vFinalPosition,GetFacingFromLocation(lTargetLocation));
+    }
     effect eGaze = EffectDominated();
     effect eVis = EffectVisualEffect(VFX_IMP_DOMINATE_S);
     effect eDur = EffectVisualEffect(VFX_DUR_CESSATE_NEGATIVE);

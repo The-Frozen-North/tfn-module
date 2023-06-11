@@ -28,6 +28,7 @@ Patch 1.71
 void main()
 {
     //1.72: pre-declare some of the spell informations to be able to process them
+    spell.SavingThrow = SAVING_THROW_FORT;
     spell.TargetType = SPELL_TARGET_STANDARDHOSTILE;
 
     //Declare major variables

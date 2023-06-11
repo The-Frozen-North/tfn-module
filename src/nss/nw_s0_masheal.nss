@@ -11,8 +11,9 @@
 //:: Created On: April 11, 2001
 //:://////////////////////////////////////////////
 /*
+Patch 1.72
+- won't fire signal event on wrong targets
 Patch 1.70
-
 - dying targets wasn't healed to their maximum hitpoints
 */
 
@@ -54,13 +55,13 @@ void main()
         //Check to see if the target is an undead
         if (spellsIsRacialType(oTarget, RACIAL_TYPE_UNDEAD))
         {
-            //Fire cast spell at event for the specified target
-            SignalEvent(oTarget, EventSpellCastAt(spell.Caster, spell.Id));
-            //Make a touch attack
-            nTouch = TouchAttackRanged(oTarget);
-            if (nTouch > 0)
+            if(spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
             {
-                if(spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
+                //Fire cast spell at event for the specified target
+                SignalEvent(oTarget, EventSpellCastAt(spell.Caster, spell.Id));
+                //Make a touch attack
+                nTouch = TouchAttackRanged(oTarget);
+                if (nTouch > 0)
                 {
                     //Make an SR check
                     if (!MyResistSpell(spell.Caster, oTarget, fDelay))
@@ -75,7 +76,7 @@ void main()
                         //Detemine the damage to inflict to the undead
                         nDamage =  GetCurrentHitPoints(oTarget) - nModify;
                         //1.72: this will do nothing by default, but allows to dynamically enforce saving throw
-                        if(MySavingThrow(spell.SavingThrow, spell.Target, spell.DC, spell.SaveType, spell.Caster))
+                        if(MySavingThrow(spell.SavingThrow, oTarget, spell.DC, spell.SaveType, spell.Caster))
                         {
                             nDamage/= 2;
                         }

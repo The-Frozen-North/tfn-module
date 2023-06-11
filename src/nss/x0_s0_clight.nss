@@ -55,7 +55,12 @@ void main()
             return;
         }
         itemproperty ip = ItemPropertyLight (IP_CONST_LIGHTBRIGHTNESS_BRIGHT, IP_CONST_LIGHTCOLOR_WHITE);
-        IPSafeAddItemProperty(spell.Target, ip, HoursToSeconds(24),X2_IP_ADDPROP_POLICY_REPLACE_EXISTING,TRUE,TRUE);
+        IPSafeAddItemProperty(spell.Target, ip, 0.0,X2_IP_ADDPROP_POLICY_REPLACE_EXISTING,TRUE,TRUE);
+        //casting this spell on every crap and then sell it is very well known exploit
+        if(GetIsPC(spell.Caster) && !GetIsDM(spell.Caster) && GetPCPublicCDKey(spell.Caster,FALSE) != "")
+        {
+            SetStolenFlag(spell.Target, TRUE);//sets item to be stolen, thus harder to sell
+        }
     }
     else
     {

@@ -14,6 +14,11 @@
 //:: Created On: Jan 7, 2002
 //:: Updated On: Oct 20, 2003, Georg Zoeller
 //:://////////////////////////////////////////////
+/*
+Patch 1.72
+- caster level is now limited to 40 as per description
+- dispells two spells when used in aoe as per description
+*/
 
 #include "70_inc_spells"
 #include "x0_i0_spells"
@@ -22,6 +27,7 @@
 void main()
 {
     //1.72: pre-declare some of the spell informations to be able to process them
+    spell.Limit = 40;
     spell.Range = RADIUS_SIZE_LARGE;
     spell.SR = NO;
     spell.TargetType = SPELL_TARGET_STANDARDHOSTILE;
@@ -36,6 +42,15 @@ void main()
     spellsDeclareMajorVariables();
     effect  eVis        = EffectVisualEffect(VFX_IMP_HEAD_ODD);
     effect  eImpact     = EffectVisualEffect(VFX_FNF_DISPEL_DISJUNCTION);
+    int      nCasterLevel = spell.Level;
+
+    //--------------------------------------------------------------------------
+    // Mordenkainen's Disjunction is capped at caster level 40
+    //--------------------------------------------------------------------------
+    if(nCasterLevel > spell.Limit)
+    {
+        nCasterLevel = spell.Limit;
+    }
 
     if (GetIsObjectValid(spell.Target))
     {
@@ -70,6 +85,8 @@ void main()
             else
             {
                 spellsDispelMagic(oTarget, spell.Level, eVis, eImpact, FALSE, TRUE);
+                effect eNull;
+                spellsDispelMagic(oTarget, spell.Level, eNull, eNull, FALSE, FALSE);
             }
             oTarget = GetNextObjectInShape(SHAPE_SPHERE, spell.Range, spell.Loc, TRUE, OBJECT_TYPE_CREATURE | OBJECT_TYPE_AREA_OF_EFFECT | OBJECT_TYPE_PLACEABLE);
         }

@@ -12,8 +12,9 @@
 //:: Created On: May 9, 2001
 //:://////////////////////////////////////////////
 /*
+Pach 1.72
+- fixed casting the spell on self not finding any targets in AoE
 Patch 1.71
-
 - blinded/sightless creatures are not affected anymore
 - wrong target check (could affect other NPCs)
 - added scaling into fear effect
@@ -34,6 +35,13 @@ void main()
     int nDuration = 1 + (nHD/3);
     int nDC = 10 + (nHD/2);
     location lTargetLocation = GetSpellTargetLocation();
+    if(lTargetLocation == GetLocation(OBJECT_SELF))
+    {
+        vector vFinalPosition = GetPositionFromLocation(lTargetLocation);
+        vFinalPosition.x+= cos(GetFacing(OBJECT_SELF));
+        vFinalPosition.y+= sin(GetFacing(OBJECT_SELF));
+        lTargetLocation = Location(GetAreaFromLocation(lTargetLocation),vFinalPosition,GetFacingFromLocation(lTargetLocation));
+    }
     effect eGaze = EffectFrightened();
 //    effect eVis = EffectVisualEffect(VFX_IMP_FEAR_S); //invalid vfx
     effect eDur = EffectVisualEffect(VFX_DUR_CESSATE_NEGATIVE);

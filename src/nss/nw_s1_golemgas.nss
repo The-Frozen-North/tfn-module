@@ -11,8 +11,9 @@
 //:: Created On: May 22, 2001
 //:://////////////////////////////////////////////
 /*
+Patch 1.72
+- area of effect size prolonged to 11.0 to match the distance of the cone usage/visual
 Patch 1.71
-
 - wrong target check (could affect other NPCs)
 - poison made extraordinary
 */
@@ -27,7 +28,7 @@ void main()
     effect eCone = EffectPoison(POISON_IRON_GOLEM);
     eCone = ExtraordinaryEffect(eCone);
     //Get first target in spell area
-    oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 10.0, lTargetLocation, TRUE);
+    oTarget = GetFirstObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     while(GetIsObjectValid(oTarget))
     {
         if(oTarget != OBJECT_SELF && spellsIsTarget(oTarget, SPELL_TARGET_STANDARDHOSTILE, OBJECT_SELF))
@@ -40,6 +41,6 @@ void main()
             DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eCone, oTarget));
         }
         //Get next target in spell area
-        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 10.0, lTargetLocation, TRUE);
+        oTarget = GetNextObjectInShape(SHAPE_SPELLCONE, 11.0, lTargetLocation, TRUE);
     }
 }

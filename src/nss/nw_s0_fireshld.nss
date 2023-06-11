@@ -13,6 +13,10 @@
 //:: Created On: Jan 7, 2002
 //:://////////////////////////////////////////////
 //:: Created On: Aug 28, 2003, GZ: Fixed stacking issue
+/*
+Patch 1.72
+- fixed stacking of the spell which was still possible with potions
+*/
 
 #include "70_inc_spells"
 #include "x0_i0_spells"
@@ -54,10 +58,7 @@ void main()
         RemoveSpecificEffect(EFFECT_TYPE_ELEMENTALSHIELD,spell.Target);
     }
     //  *GZ: No longer stack this spell
-    if (GetHasSpellEffect(spell.Id,spell.Target))
-    {
-         RemoveSpellEffects(spell.Id, spell.Caster, spell.Target);
-    }
+    RemoveEffectsFromSpell(spell.Target, spell.Id);
 
     //Enter Metamagic conditions
     if (spell.Meta & METAMAGIC_EXTEND)
