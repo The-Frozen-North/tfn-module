@@ -124,7 +124,7 @@ void main()
             // sMessage = StringReplace(sMessage, "\f", " | ");
             // sMessage = StringReplace(sMessage, "\"", "'");
 
-            sMessage = RemoveIllegalCharacters(sMessage, " '?=+-,._abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+            // sMessage = RemoveIllegalCharacters(sMessage, " '?=+-,._abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 
             // remove any characters that are reserved in JSON
             // sMessage = StringReplace(sMessage, "[", "");

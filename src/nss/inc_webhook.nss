@@ -281,7 +281,11 @@ void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
 
     string sName = GetName(oKiller);
 
-    if (sName == "")
+    if (GetObjectType(oKiller) == OBJECT_TYPE_TRIGGER)
+    {
+       sName = "a trap";
+    }
+    else if (sName == "")
     {
        sName = "an unknown object";
     }
