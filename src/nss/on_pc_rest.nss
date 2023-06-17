@@ -113,7 +113,7 @@ void main()
 
     if (GetLocalInt(oPC, "ambushed") == 1)
     {
-        SendMessageToPC(oPC, "You cannot rest while you are being ambushed.");
+        SendMessageToPC(oPC, "You cannot rest while you are being ambushed!");
         AssignCommand(oPC, ClearAllActions());
         return;
     }
@@ -154,7 +154,7 @@ void main()
             {
                 if (GetIsReactionTypeHostile(oPC, oObjectLoop) && !GetIsDead(oObjectLoop))
                 {
-                    FloatingTextStringOnCreature("You cannot rest when there are enemies nearby.", oPC, FALSE);
+                    FloatingTextStringOnCreature("You cannot rest while there are enemies nearby.", oPC, FALSE);
                     AssignCommand(oPC, ClearAllActions());
                     return;
                     break;
@@ -380,7 +380,7 @@ void main()
                 }
                 else
                 {
-                    SendMessageToPC(oPC, "You are gaining resting experience in this area. You do no need to repeatedly rest to accumulate this.");
+                    SendMessageToPC(oPC, "You are gaining Rested XP in this area. You do not need to repeatedly rest to accumulate this.");
                 }
             }
             if (IsEligibleForHouseRestingXP(oPC))

@@ -504,6 +504,7 @@ void BugReportWebhook(object oPC, string sMessage)
 
     stMessage.sTitle = sTitle;
     stMessage.sColor = BUG_REPORT_COLOR;
+    stMessage.sUsername = "nwnx-webhook-bugs";
 
     stMessage.sDescription = sMessage;
 

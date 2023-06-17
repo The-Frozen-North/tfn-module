@@ -187,19 +187,10 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
    float fRestedProportion = bQuest ? RESTEDXP_QUEST_INCREASE : RESTEDXP_KILL_INCREASE;
    float fPreRestAdjusted = fModifier * fXpAmount;
    float fAdjustedXpAmount = GetRestModifiedExperience(fPreRestAdjusted, oPC, fRestedProportion);
-   string sRested = "";
+   string sRestedBonus = "";
    if (fAdjustedXpAmount > fPreRestAdjusted)
    {
-        float fRealRestBonus = ((fAdjustedXpAmount / fPreRestAdjusted) * 100) - 100.0;
-        if (bQuest)
-        {
-            sRested = ", Rested: " + NeatFloatToString(fRealRestBonus, 1) + "%";
-        }
-        else
-        {
-            sRested = "Rested Experience bonus: +" + NeatFloatToString(fAdjustedXpAmount - fPreRestAdjusted) + " (" + NeatFloatToString(fRealRestBonus, 1) + "%)";
-            SendMessageToPC(oPC, sRested);
-        }
+      sRestedBonus = " (+" + NeatFloatToString(fAdjustedXpAmount - fPreRestAdjusted) + " Rested Bonus)";
    }
 
    if (bQuest)
@@ -209,7 +200,7 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
       string sBonus = "Bonus";
       if (nTotal < 0) sBonus = "Penalty";
 
-      FloatingTextStringOnCreature("*XP "+sBonus+": "+IntToString(nTotal)+" (Wisdom: "+IntToString(nWisdomMod)+"%"+sFavoredBonus+ sRested +")*", oPC, FALSE);
+      FloatingTextStringOnCreature("*XP "+sBonus+": "+IntToString(nTotal)+" (Wisdom: "+IntToString(nWisdomMod)+"%"+sFavoredBonus+")*", oPC, FALSE);
    }
 
    SendDebugMessage("fAdjustedXP without truncation: "+FloatToString(fAdjustedXpAmount));
@@ -219,7 +210,7 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
    fAdjustedXpAmount = Truncate(fAdjustedXpAmount);
 
 
-   SendMessageToPC(oPC, "Experience Points Gained:  "+RemoveTrailingZeros(FloatToString(fAdjustedXpAmount, 3, 2)));
+   SendMessageToPC(oPC, "Experience Points Gained:  "+RemoveTrailingZeros(FloatToString(fAdjustedXpAmount, 3, 2)) + sRestedBonus);
 
 
    int iStoredRemainderXP = SQLocalsPlayer_GetInt(oPC, "xp_remainder");

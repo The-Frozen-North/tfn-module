@@ -1,6 +1,6 @@
 #include "x3_inc_string"
 #include "inc_debug"
-//#include "util_i_color"
+#include "inc_general"
 
 int CheckDeadSpeak(object oPC)
 {
@@ -8,7 +8,7 @@ int CheckDeadSpeak(object oPC)
     if (bDead)
     {
         SetPCChatMessage("");
-        SendMessageToPC(oPC, "The dead cannot speak.");
+        SendColorMessageToPC(oPC, "The dead cannot speak", MESSAGE_COLOR_DANGER);
     }
     return bDead;
 }
@@ -18,7 +18,7 @@ void DebugBusyNPC(int nTries=0)
     WriteTimestampedLogEntry("Reacting to TALKTOME: " + GetName(OBJECT_SELF));
     WriteTimestampedLogEntry("    action = " + IntToString(GetCurrentAction(OBJECT_SELF)));
     WriteTimestampedLogEntry("    in conversation = " + IntToString(IsInConversation(OBJECT_SELF)));
-    
+
     if (IsInConversation(OBJECT_SELF))
     {
         object oSpeaker = GetPCSpeaker();
@@ -64,7 +64,7 @@ void DebugBusyNPC(int nTries=0)
             }
         }
     }
-    
+
     if (nTries > 0)
     {
         SpeakString("Sorry about that. I'm ready to speak to you now.");
@@ -166,7 +166,7 @@ void main()
     PlayVoiceChat(VOICE_CHAT_LAUGH, oPC);
     AssignCommand(oPC, ActionPlayAnimation(ANIMATION_LOOPING_TALK_LAUGHING));
   }
-  
+
   // Temporary. Investigating the stuck NPC issue
   if (GetStringLeft(sMessage, 10) == "TALK TO ME")
   {

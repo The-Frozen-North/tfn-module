@@ -151,6 +151,7 @@ void main()
 
     DelayCommand(4.0, CreateItemIfBlank(oPC, "_stone_recall"));
     DelayCommand(4.0, CreateItemIfBlank(oPC, "_unstucker"));
+    DelayCommand(4.0, CreateItemIfBlank(oPC, "_pc_menu_toggler"));
     DelayCommand(5.0, FloatingTextStringOnCreature("Welcome to The Frozen North!", oPC, FALSE));
     DelayCommand(6.0, FloatingTextStringOnCreature("Please read the \"Information\" tab on the player menu for rules and information.", oPC, FALSE));
     DelayCommand(7.0, FloatingTextStringOnCreature("https://discord.gg/qKqRUDZ", oPC, FALSE));

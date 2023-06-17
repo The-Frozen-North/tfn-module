@@ -3,6 +3,7 @@
 #include "inc_sqlite_time"
 #include "inc_housing"
 #include "inc_debug"
+#include "inc_general"
 
 // The cap of rested XP for a PC is (this variable * amount of xp to reach next level, not counting PC's current progress)
 const float RESTEDXP_CAP_BASE = 700.0;
@@ -108,7 +109,7 @@ string NeatFloatToString(float fFloat, int nMaxDecimals=2)
         }
         break;
     }
-    
+
     while (1)
     {
         string sLastChar = GetStringRight(sOut, 1);
@@ -168,8 +169,7 @@ void SendRestedXPNotifierToPC(object oPC)
     {
         float fPercentage = GetRestedXPPercentage(oPC);
         string sMes = "Rested XP: " + NeatFloatToString(fRestedXP, 1) + " (" + NeatFloatToString(100*fPercentage, 1) + "% of maximum)";
-        FloatingTextStringOnCreature(sMes, oPC, FALSE);
-        
+        SendColorMessageToPC(oPC, sMes, MESSAGE_COLOR_INFO);
     }
 }
 
@@ -192,7 +192,7 @@ void AddRestedXPOnLogin(object oPC)
         // We can't really give them anything. :(
         // Definitely DON'T assume them to have last logged in at epoch time 0
         if (nLogout <= 100) { return; }
-        
+
         float fDelta = IntToFloat(nNow - nLogout);
         fDelta *= RESTEDXP_OFFLINE_MULTIPLIER;
         SendDebugMessage(GetName(oPC) + "'s login rest xp in seconds: " + NeatFloatToString(fDelta, 2), TRUE);
@@ -231,7 +231,7 @@ float GetRestModifiedExperience(float fBaseXP, object oPC, float fIncrease)
         {
             SQLocalsPlayer_SetFloat(oPC, RESTEDXP_PLAYER_VAR, fRestedXP - fRestedXPAddition);
             return (fBaseXP + fRestedXPAddition);
-        }        
+        }
     }
     return fBaseXP;
 }
@@ -244,7 +244,7 @@ int IsEligibleForHouseRestingXP(object oPC)
         int nNow = SQLite_GetTimeStamp();
         int nDelta = nNow - nLastRest;
         if (nDelta >= RESTEDXP_HOUSE_REST_COOLDOWN)
-        {  
+        {
             return 1;
         }
     }
@@ -284,11 +284,11 @@ void GiveHouseRestingXP(object oPC)
     }
     else if (!GetIsPlayerHomeless(oPC) && GetTag(oArea) == GetHomeTag(oPC))
     {
-        FloatingTextStringOnCreature("You aren't yet tired enough to get a fully refreshing sleep.", oPC, FALSE);
+        FloatingTextStringOnCreature("You aren't tired enough yet to get a fully refreshing sleep.", oPC, FALSE);
     }
 }
 
 void SendOnEnterRestedPopup(object oPC)
 {
-    SendMessageToPC(oPC, "This area feels safe and comfortable enough that you are gaining Rested XP. This will increase experience gained from kills until depleted. Logging out here will continue to add Rested XP at a lower rate.");
+    SendColorMessageToPC(oPC, "This area feels safe and comfortable enough that you are gaining Rested XP. This will increase experience gained from kills until depleted. Logging out here will continue to add Rested XP at a lower rate.", MESSAGE_COLOR_INFO);
 }

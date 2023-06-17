@@ -54,7 +54,7 @@ void main()
     if (sEvent == "click" && sElem == "btn_pc_summary")
     {
         string sRespawn = GetRespawnLocationName(oPlayer);
-        SendMessageToPC(oPlayer, "You have chosen to respawn in " + sRespawn + ".");
+        SendColorMessageToPC(oPlayer, "You have chosen to respawn in " + sRespawn + ".", MESSAGE_COLOR_INFO);
         SendRestedXPNotifierToPC(oPlayer);
         // PopUpPlayerSummaryGUIPanel(oPlayer, "pcsummarywin");
     }
@@ -117,9 +117,12 @@ void main()
         {
             // remove line breaks and quotation marks, this appears to break the webhook
             sMessage = StringReplace(sMessage, "\n", " | ");
-            sMessage = StringReplace(sMessage, "\r", " | ");
-            sMessage = StringReplace(sMessage, "\t", " | ");
-            sMessage = StringReplace(sMessage, "\v", " | ");
+
+            // most of these are not sanitized because it can cause issues with more characters removed than desired
+            // that said, I was testing with lorem ipsum which may have inserted these - most PCs probably just type into it
+            // sMessage = StringReplace(sMessage, "\r", " | ");
+            // sMessage = StringReplace(sMessage, "\t", " | ");
+            // sMessage = StringReplace(sMessage, "\v", " | ");
             // sMessage = StringReplace(sMessage, "\b", " | ");
             // sMessage = StringReplace(sMessage, "\f", " | ");
             // sMessage = StringReplace(sMessage, "\"", "'");
@@ -140,7 +143,7 @@ void main()
                 WriteTimestampedLogEntry ("!!!BUG REPORT!!! [" + GetName (GetArea (oPlayer)) + "] Location: " + sLocation);
                 WriteTimestampedLogEntry ("!!!BUG REPORT!!! [" + GetPCPlayerName (oPlayer) + " : " + GetName (oPlayer) + "] " + sMessage);
                 // Thank the player for the report.
-                SendMessageToPC (oPlayer, "Your report has been sent. Thank you!");
+                SendColorMessageToPC (oPlayer, "Your report has been sent. Thank you!", MESSAGE_COLOR_SUCCESS);
 
                 BugReportWebhook(oPlayer, sLocation + " " + sMessage);
                 NuiDestroy (oPlayer, nToken);

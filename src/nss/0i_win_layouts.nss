@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "0i_window"
 #include "nw_inc_nui_insp"
+#include "inc_sql"
 
 const string WIKI_LINK = "https://github.com/b5635/the-frozen-north/wiki";
 const string DISCORD_LINK = "discord.gg/qKqRUDZ";
@@ -74,6 +75,9 @@ void SetupPlayerGUIPanel (object oPC, json jCol, float fWinWidth, float fWinHeig
 
 void PopUpPlayerHorGUIPanel (object oPC)
 {
+    if (SQLocalsPlayer_GetInt(oPC, "pc_menu_disabled") == 1)
+        return;
+
     // Set a variable so we don't save the windows position when it is created.
     // This keeps the players last x,y position of the window from being erased.
     SetLocalInt (oPC, "0_No_Win_Save", TRUE);
@@ -141,6 +145,9 @@ void PopUpPlayerVerGUIPanel (object oPC)
 // Setup the Player Info layout GUIPanel.
 void PopUpPlayerInfoGUIPanel (object oPC)
 {
+    if (SQLocalsPlayer_GetInt(oPC, "pc_menu_disabled") == 1)
+        return;
+
     // Set a variable so we don't save the windows position when it is created.
     // This keeps the players last x,y position of the window from being erased.
     SetLocalInt (oPC, "0_No_Win_Save", TRUE);

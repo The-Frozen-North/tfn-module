@@ -4,6 +4,7 @@
 #include "nwnx_object"
 #include "nwnx_effect"
 #include "x0_i0_match"
+#include "util_i_color"
 
 const float MORALE_RADIUS = 30.0;
 const float REMAINS_DECAY = 120.0;
@@ -14,6 +15,11 @@ const int MORALE_PANIC_DAMAGE_DC = 6;
 // Threshold = Max HP / MORALE_PANIC_HEALTH_DIVIDE_FACTOR
 const int MORALE_PANIC_HEALTH_DIVIDE_FACTOR = 3;
 const int MORALE_PANIC_GROUP_FACTOR_CAP = 5;
+
+const int MESSAGE_COLOR_INFO = COLOR_CYAN;
+const int MESSAGE_COLOR_SUCCESS = COLOR_GREEN;
+const int MESSAGE_COLOR_DANGER = COLOR_RED_LIGHT;
+const int MESSAGE_COLOR_SERVER = 0x666666;
 
 // Makes the killer play a voice sometimes. Won't work if the killer is a PC or if the killer was not hostile.
 void KillTaunt(object oKiller, object oKilled);
@@ -673,4 +679,9 @@ void FactionReset(object oPC)
        SetStandardFactionReputation(STANDARD_FACTION_DEFENDER, 50, oPC);
 }
 
+void SendColorMessageToPC(object oPC, string szMessage, int nMessageColor);
+void SendColorMessageToPC(object oPC, string szMessage, int nMessageColor)
+{
+    SendMessageToPC(oPC, HexColorString(szMessage, nMessageColor));
+}
 //void main(){}
