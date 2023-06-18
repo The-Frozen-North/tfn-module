@@ -395,6 +395,17 @@ void RotAway(object oCreature)
 {
     SetObjectVisualTransform(oCreature, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, GetPosition(oCreature).z-10.0, OBJECT_VISUAL_TRANSFORM_LERP_LINEAR, 30.0);
     DestroyObject(oCreature, 10.0);
+
+    location lLocation = GetLocation(oCreature);
+    int nSize = GetCreatureSize(oCreature);
+    float fSize = 0.4*IntToFloat(nSize);
+    int i;
+
+    while (i < 50)
+    {
+        DelayCommand(0.2 * IntToFloat(i),  ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_ACID_L, FALSE, fSize), lLocation));
+        i++;
+    }
 }
 
 int Gibs(object oCreature, int bForce = FALSE)
@@ -449,6 +460,13 @@ int Gibs(object oCreature, int bForce = FALSE)
     return TRUE;
 }
 
+void ElectricDeath(object oCreature)
+{
+    Gibs(oCreature, TRUE);
+    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDeath(TRUE, FALSE), oCreature);
+}
+
+
 int GibsNPC(object oCreature)
 {
     int iCold = GetDamageDealtByType(DAMAGE_TYPE_COLD);
@@ -476,13 +494,13 @@ int GibsNPC(object oCreature)
         SetSoundset(oCreature, 9999);
         PrepareForElementalDeath("death_cold", oCreature);
 
-        DelayCommand(0.1, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oCreature));
-        DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectVisualEffect(VFX_DUR_ICESKIN), oCreature));
-        DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectVisualEffect(VFX_DUR_FREEZE_ANIMATION), oCreature));
-        DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectMissChance(100), oCreature));
-        DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectCutsceneImmobilize(), oCreature));
-        DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectParalyze(), oCreature));
-        DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectCutsceneParalyze(), oCreature));
+        DelayCommand(0.05, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oCreature));
+        DelayCommand(0.1, ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectVisualEffect(VFX_DUR_ICESKIN), oCreature));
+        DelayCommand(0.1, ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectVisualEffect(VFX_DUR_FREEZE_ANIMATION), oCreature));
+        DelayCommand(0.1, ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectPacified(), oCreature));
+        DelayCommand(0.1, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectCutsceneImmobilize(), oCreature));
+        DelayCommand(0.1, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectParalyze(), oCreature));
+        DelayCommand(0.1, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectCutsceneParalyze(), oCreature));
         DelayCommand(IntToFloat(d4(2)), ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDeath(TRUE, FALSE), oCreature));
 
         return TRUE;
@@ -509,7 +527,7 @@ int GibsNPC(object oCreature)
         PrepareForElementalDeath("death_electric", oCreature);
 
         DelayCommand(0.1, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), oCreature));
-        DelayCommand(0.15, ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectMissChance(100), oCreature));
+        DelayCommand(0.15, ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectPacified(), oCreature));
         DelayCommand(0.15, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectCutsceneImmobilize(), oCreature));
         //DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectParalyze(), oCreature));
         //DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectCutsceneParalyze(), oCreature));
@@ -517,7 +535,7 @@ int GibsNPC(object oCreature)
         DelayCommand(0.2, AssignCommand(oCreature, ActionPlayAnimation(ANIMATION_LOOPING_SPASM, 2.0, 15.0)));
         DelayCommand(0.3, AssignCommand(oCreature, ActionPlayAnimation(ANIMATION_LOOPING_SPASM, 2.0, 15.0)));
         DelayCommand(0.4, AssignCommand(oCreature, ActionPlayAnimation(ANIMATION_LOOPING_SPASM, 2.0, 15.0)));
-        DelayCommand(2.0+IntToFloat(d2(1)), ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDeath(TRUE, FALSE), oCreature));
+        DelayCommand(2.0+IntToFloat(d2(1)), ElectricDeath(oCreature));
 
         AssignCommand(oModule, DelayCommand(0.6+(IntToFloat(d10(5))*0.01), DoSpasm(oCreature)));
         AssignCommand(oModule, DelayCommand(1.0+(IntToFloat(d10(5))*0.01), DoSpasm(oCreature)));

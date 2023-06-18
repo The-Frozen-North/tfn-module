@@ -13,6 +13,7 @@ void main()
     AssignCommand(oRemains, SetFacing(IntToFloat(Random(360))));
 
     AssignCommand(oModule, DelayCommand(0.1, ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_FROST_L, FALSE, 0.3*fSize), lLocation)));
+    AssignCommand(oModule, DelayCommand(0.1, ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_FROST_S, FALSE, 1.5*fSize), lLocation)));
     AssignCommand(oModule, DelayCommand(0.2, ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(1), oIce)));
     AssignCommand(oModule, DelayCommand(REMAINS_DECAY, DestroyObject(oRemains)));
 
