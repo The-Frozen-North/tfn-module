@@ -18,7 +18,9 @@ void main()
 
             object oTarget = gsCBGetLastAttackTarget();
 
+// if the enemy spellcaster is within range, switch to it 25% of the time if already attacking
             if (oCaster != oTarget &&
+                d4() == 1 &&
                 (gsCBGetIsFollowing() ||
                  GetDistanceToObject(oCaster) <=
                  GetDistanceToObject(oTarget) + 5.0))

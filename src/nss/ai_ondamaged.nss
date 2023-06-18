@@ -40,8 +40,11 @@ void main()
     {
         object oTarget = gsCBGetLastAttackTarget();
 
+// if the latest damager is is greater than the last damager, only switch to that target 25% of the time if already attacking
         if (GetIsObjectValid(oHighestDamager) &&
-            oHighestDamager != oTarget)
+            oHighestDamager != oTarget &&
+            d4() == 1
+            )
         {
             gsCBDetermineCombatRound(oHighestDamager);
         }
