@@ -60,7 +60,7 @@ void TFNRespawnHenchman(string sResRef);
 int GetHenchmanCount(object oPlayer)
 {
     int nCount = 0;
-
+    /*
     if (GetIsPC(oPlayer))
     {
         object oParty = GetFirstFactionMember(oPlayer, FALSE);
@@ -70,7 +70,24 @@ int GetHenchmanCount(object oPlayer)
             if (GetStringLeft(GetResRef(oParty), 3) == "hen" && GetMaster(oParty) == oPlayer) nCount = nCount + 1;
             oParty = GetNextFactionMember(oPlayer, FALSE);
         }
-    }
+    */
+
+    string sUUID = GetObjectUUID(oPlayer);
+    object oModule = GetModule();
+
+    if (GetLocalString(oModule, "hen_daelan_master") == sUUID) nCount++;
+    if (GetLocalString(oModule, "hen_linu_master") == sUUID) nCount++;
+    if (GetLocalString(oModule, "hen_tomi_master") == sUUID) nCount++;
+    if (GetLocalString(oModule, "hen_sharwyn_master") == sUUID) nCount++;
+    if (GetLocalString(oModule, "hen_boddyknock_master") == sUUID) nCount++;
+    if (GetLocalString(oModule, "hen_grimgnaw_master") == sUUID) nCount++;
+    if (GetLocalString(oModule, "hen_valen_master") == sUUID) nCount++;
+    if (GetLocalString(oModule, "hen_nathyrra_master") == sUUID) nCount++;
+    if (GetLocalString(oModule, "hen_bim_master") == sUUID) nCount++;
+    if (GetLocalString(oModule, "hen_dorna_master") == sUUID) nCount++;
+    if (GetLocalString(oModule, "hen_mischa_master") == sUUID) nCount++;
+    if (GetLocalString(oModule, "hen_xanos_master") == sUUID) nCount++;
+
     return nCount;
 }
 
