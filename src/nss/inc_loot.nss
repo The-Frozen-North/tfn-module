@@ -31,7 +31,7 @@ const int BASE_DEFAULT_WEIGHT = 2;
 const int BASE_WEAPON_WEIGHT = 9;
 const int BASE_ARMOR_WEIGHT = 2;
 const int BASE_APPAREL_WEIGHT = 4;
-const int BASE_SCROLL_WEIGHT = 3;
+const int BASE_SCROLL_WEIGHT = 6;
 const int BASE_POTION_WEIGHT = 12;
 const int BASE_MISC_WEIGHT = 10;
 
