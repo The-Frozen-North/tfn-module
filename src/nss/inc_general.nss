@@ -702,4 +702,17 @@ void SendColorMessageToPC(object oPC, string szMessage, int nMessageColor)
 {
     SendMessageToPC(oPC, HexColorString(szMessage, nMessageColor));
 }
+
+// cleans up any animal companion or familiar on death
+void DestroyPet(object oCreature);
+void DestroyPet(object oCreature)
+{
+    object oPet = GetLocalObject(oCreature, "pet");
+
+    if (!GetIsObjectValid(oPet))
+        return;
+
+    ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_UNSUMMON), GetLocation(oPet));
+    DestroyObject(oPet);
+}
 //void main(){}

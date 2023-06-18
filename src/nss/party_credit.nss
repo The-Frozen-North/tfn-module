@@ -51,13 +51,16 @@ void SetLocalArrayInt(object oObject, string sArrayName, int nIndex, int nValue)
    SetLocalInt(oObject, sArrayName + IntToString(nIndex), nValue);
 }
 
-void SendLootMessage(object oHench, object oItem, string sName="")
+void SendLootMessage(object oHench, object oItem)
 {
 
     object oOwner = oHench;
 
     if (GetIsDead(oOwner))
         return;
+
+    string sName = GetName(oItem);
+
     if (sName == "")
     {
         if (!GetIsObjectValid(oItem))
@@ -76,8 +79,9 @@ void SendLootMessage(object oHench, object oItem, string sName="")
             case BASE_ITEM_CRAFTMATERIALSML:      return; break;
         }
 
-        sName = GetName(oItem);
-
+        // this code doesn't actually work, because the item is automatically identified when put into their merchant inventory
+        // there's not a really good way to solve this, even though we can set their item to be unidentified
+        /*
         if (!GetIdentified(oItem))
         {
             switch (nBaseItem)
@@ -181,14 +185,29 @@ void SendLootMessage(object oHench, object oItem, string sName="")
 
             sName = sName+" (unidentified)";
         }
+        */
     }
-    object oPC = GetFirstPC();
+
+    if (GetLocalInt(oItem, "unidentified") == 1)
+    {
+        switch (d4())
+        {
+            case 1: PlayVoiceChat(VOICE_CHAT_LOOKHERE, oOwner); break;
+            case 2: PlayVoiceChat(VOICE_CHAT_CHEER, oOwner); break;
+        }
+    }
+
+    object oPC = GetFirstFactionMember(oOwner);
     while (GetIsObjectValid(oPC))
     {
         if (GetArea(oPC) == GetArea(oOwner))
-            NWNX_Player_FloatingTextStringOnCreature(oPC, oOwner, "*"+GetName(oOwner)+" receives "+sName+"*");
+        {
+            //NWNX_Player_FloatingTextStringOnCreature(oPC, oOwner, "*"+GetName(oOwner)+" receives "+sName+"*");
+            // this is probably better because it mirrors how players pick up items
+            SendMessageToPC(oPC, GetName(oOwner)+" Acquired Item: "+sName);
+        }
 
-        oPC = GetNextPC();
+        oPC = GetNextFactionMember(oPC);
     }
 }
 
@@ -952,6 +971,12 @@ void main()
                {
                    object oSourceItem = StringToObject(JsonGetString(JsonArrayGet(jItemArray, nAssignedItemIndex)));
                    object oRealItem = CopyTierItemToContainer(oSourceItem, oMerchant);
+
+// items that are copied to a merchant are automatically identified, this is a hack to store that status somehow
+// so that when henchmans pick it up, they can do an appropriate voice emote
+                   if (!GetIdentified(oSourceItem))
+                      SetLocalInt(oRealItem, "unidentified", 1);
+
                    DetermineItem(oRealItem, oMerchant, oHenchman, nNth);
                }
 

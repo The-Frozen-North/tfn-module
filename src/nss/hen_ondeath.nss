@@ -30,7 +30,9 @@ void main()
 
     KillTaunt(GetLastHostileActor(OBJECT_SELF), OBJECT_SELF);
 
-    if (GibsNPC(OBJECT_SELF))
+    DestroyPet(OBJECT_SELF);
+
+    if (Gibs(OBJECT_SELF))
     {
         DoMoraleCheckSphere(OBJECT_SELF, MORALE_PANIC_GIB_DC);
     }

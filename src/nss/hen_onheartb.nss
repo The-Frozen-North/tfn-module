@@ -43,13 +43,13 @@ void main()
     {
         oStoredMaster = GetMasterByStoredUUID(OBJECT_SELF);
     }
-    
+
     // After curing petrification, this will add them back to the party
     if (!GetIsObjectValid(GetMaster(OBJECT_SELF)))
     {
         SetMaster(OBJECT_SELF, oStoredMaster);
     }
-    
+
     // That bebilith can unequip shields/armour
     if (!GetIsInCombat(OBJECT_SELF))
     {
@@ -126,14 +126,14 @@ void main()
             SummonAnimalCompanion();
         }
     }
-    
+
 
     string sScript = GetLocalString(OBJECT_SELF, "heartbeat_script");
     if (sScript != "") ExecuteScript(sScript);
 
     //1.72: this happens when the henchman is not hired and there is no pc in his area
     if (GetAILevel() == AI_LEVEL_VERY_LOW) return;
-    
+
     // Have paladins try to remove diseases on nearby non-enemies
     if (!GetIsInCombat() && GetIsObjectValid(oStoredMaster) && GetHasFeat(FEAT_REMOVE_DISEASE, OBJECT_SELF))
     {
@@ -175,6 +175,11 @@ void main()
     }
 
     object oMaster = GetMaster();
+
+// if alive and master exists
+    if (GetIsObjectValid(oMaster) && !GetIsDead(oMaster))
+        DeleteLocalInt(OBJECT_SELF, "no_master_count");
+
     if(!GetAssociateState(NW_ASC_IS_BUSY))
     {
 

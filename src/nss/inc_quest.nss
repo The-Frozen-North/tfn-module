@@ -259,7 +259,6 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FAL
         if (SQLocalsPlayer_GetInt(oPC, sVar) == 0) SQLocalsPlayer_SetInt(oPC, sVar, SQLite_GetTimeStamp()+BOUNTY_RESET_TIME);
     }
 
-    FloatingTextStringOnCreature("*Your journal has been updated*", oPC, FALSE);
     if (GetObjectType(oQuestObject) == OBJECT_TYPE_ITEM)
         FloatingTextStringOnCreature("*You stash away "+GetName(oQuestObject)+" for safe keeping*", oPC, FALSE);
 

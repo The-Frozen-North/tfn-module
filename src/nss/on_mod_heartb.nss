@@ -21,7 +21,7 @@ int GetIsDeadOrPetrified(object oCreature)
 
 void ResetFactionsAttempt(object oPC)
 {
-// reset it if in combatcombat
+// reset it if in combat
        if (GetIsInCombat(oPC))
        {
            DeleteLocalInt(oPC, "faction_reset");
@@ -203,12 +203,23 @@ void DoRevive(object oDead)
 // destroy henchman if still not alive and master isn't found
             if (!GetIsPC(oDead) && GetIsDeadOrPetrified(oDead) && GetStringLeft(GetResRef(oDead), 3) == "hen" && !bMasterFound)
             {
-                 ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_RESTORATION), lLocation);
-                 ClearMaster(oDead);
-                 DestroyObject(oDead);
-                 // Delete their store if it exists or it will be floating around in memory until restart
-                 object oStore = GetLocalObject(oDead, "merchant");
-                 DestroyObject(oStore);
+                 // how long has it been since I can't find my master after I'm dead?
+                 int nNoMasterCount = GetLocalInt(oDead, "no_master_count");
+
+                 // if dead for quite a while with no master, reset
+                 if (nNoMasterCount >= MAX_NO_MASTER_COUNT)
+                 {
+                     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_RESTORATION), lLocation);
+                     ClearMaster(oDead);
+                     DestroyObject(oDead);
+                     // Delete their store if it exists or it will be floating around in memory until restart
+                     object oStore = GetLocalObject(oDead, "merchant");
+                     DestroyObject(oStore);
+                 }
+                 else // otherwise increment
+                 {
+                    SetLocalInt(oDead, "no_master_count", nNoMasterCount + 1);
+                 }
             }
         }
 }

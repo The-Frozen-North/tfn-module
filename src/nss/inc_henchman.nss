@@ -5,6 +5,9 @@
 #include "x0_i0_match"
 #include "x2_inc_itemprop"
 
+// max number of heartbeats before the henchman respawns/resets
+const int MAX_NO_MASTER_COUNT = 50;
+
 // =======================================================
 // PROTOTYPES
 // =======================================================
@@ -188,7 +191,7 @@ void CheckMasterAssignment(object oHench)
 
     int nCount = GetLocalInt(oHench, "no_master_count");
 
-    if (nCount >= 50)
+    if (nCount >= MAX_NO_MASTER_COUNT)
     {
         DismissHenchman(oHench);
     }
@@ -210,13 +213,13 @@ void _ScaleHenchmanWeaponry(object oHench, int nBonus)
     {
         IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench), ItemPropertyAttackBonus(nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
     }
-    
+
     // Don't put deflection bonus on offhand melees
     if (!IPGetIsMeleeWeapon(GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench)))
     {
         IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench), ItemPropertyACBonus(nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
     }
-    
+
     IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_ARMS, oHench), ItemPropertyAttackBonus(nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
     IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_ARMS, oHench), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
 }
@@ -283,14 +286,14 @@ void ScaleHenchman(object oHench)
             return;
         }
         nHenchmanLevel = GetHitDice(oHench);
-        
+
         // We want more powerful itemprops to overwrite the weaker ones
         // Not doing this results in the henchman's equipment having a ILR that is too high to allow them to reequip it
         // if something like a Bebilith comes along and forces it off them
-        
+
         // Eg level 12 Bim's Longsword has a gold value of 146k from just Enhancement +1-3 and Attack +1-3
         // Despite the fact it functions as regular Longsword +3 in all ways
-        
+
         // Moving the attribute bonus onto the amulet in an attempt to go with the whole "this is the rest of the henchman's slots" thing
         // The result is that the amulet will have an absurd value, but that shouldn't matter... probably...
         // ...hopefully nobody writes a script that forcefully takes off amulets, or they'll need to fix this :)
@@ -311,7 +314,7 @@ void ScaleHenchman(object oHench)
             break;
             case 6:
                 IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_NECK, oHench), ItemPropertyACBonus(2), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
-                
+
                 _ScaleHenchmanWeaponry(oHench, 1);
             break;
             case 7:

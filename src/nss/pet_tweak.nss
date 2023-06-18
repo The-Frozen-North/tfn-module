@@ -97,6 +97,9 @@ void main()
 // stop if no master
     if (oMaster == OBJECT_INVALID) return;
 
+// store itself on the master, and vice versa
+    SetLocalObject(oMaster, "pet", OBJECT_SELF);
+    SetLocalObject(OBJECT_SELF, "master", oMaster);
 
     int nMasterHitDice;
     switch (nAssociateType)

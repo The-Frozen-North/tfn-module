@@ -69,6 +69,8 @@ void main()
 
     TakeGoldFromCreature(1000, OBJECT_SELF, TRUE);
 
+    DestroyPet(OBJECT_SELF);
+
     if (GetLocalInt(OBJECT_SELF, "defeated_webhook") == 1)
     {
         BossDefeatedWebhook(oKiller, OBJECT_SELF);
