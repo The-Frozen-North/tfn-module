@@ -78,7 +78,6 @@ void main()
     GiveHiPSFeatSafely(oPC);
 
 // this item is deprecated
-    DestroyObject(GetItemPossessedBy(oPC, "_dev_tool"));
     DestroyObject(GetItemPossessedBy(oPC, "_pc_handbook"));
 
     DeleteLocalInt(oPC, "ambushed");
@@ -148,6 +147,15 @@ void main()
     }
 
     SetQuestEntry(oPC, "q_wailing", 1);
+
+    if (GetIsDeveloper(oPC))
+    {
+        DelayCommand(4.0, CreateItemIfBlank(oPC, "_dev_tool"));
+    }
+    else
+    {
+        DestroyObject(GetItemPossessedBy(oPC, "_dev_tool"));
+    }
 
     DelayCommand(4.0, CreateItemIfBlank(oPC, "_stone_recall"));
     DelayCommand(4.0, CreateItemIfBlank(oPC, "_unstucker"));
