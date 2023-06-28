@@ -100,6 +100,16 @@ const int RANDOM_WEAPON_IS_RANGED = 40;
 const int PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE = 100;
 const int STORE_RANDOM_T5_CHANCE = 3;
 
+// #013250 - a fairly dark aquamarine.
+//const int OPENED_LOOT_HIGHLIGHT = 12880;
+//const string OPENED_LOOT_HIGHLIGHT_STRING = "<c\x01\x32\x50>";
+
+
+const int OPENED_LOOT_HIGHLIGHT = 0x6464d0;
+// #808080 - grey
+const string OPENED_LOOT_HIGHLIGHT_STRING = "<c\x80\x80\x80>";
+
+
 
 // ===========================================================
 // START PROTOTYPES
@@ -878,6 +888,15 @@ void OpenPersonalLoot(object oContainer, object oPC)
 {
 // don't do anything if not a PC
     if (!GetIsPC(oPC)) return;
+    
+    string sVar = "HighlightChange_" + GetPCPublicCDKey(oPC, TRUE) + "_" + ObjectToString(oPC);
+    if (!GetLocalInt(oContainer, sVar))
+    {
+        NWNX_Player_SetObjectHiliteColorOverride(oPC, oContainer, OPENED_LOOT_HIGHLIGHT);
+        NWNX_Player_SetPlaceableNameOverride(oPC, oContainer, OPENED_LOOT_HIGHLIGHT_STRING + GetName(oContainer) + "</c>");
+        SetLocalInt(oContainer, sVar, 1);
+    }
+    
 
 // Get the personal container
     object oPersonalLoot = GetObjectByUUID(GetLocalString(oContainer, "personal_loot_"+GetPCPublicCDKey(oPC, TRUE)));

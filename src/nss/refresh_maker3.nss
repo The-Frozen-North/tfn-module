@@ -189,7 +189,7 @@ void main()
             else if (GetTag(oTest) == "maker3_aghaazguard_clay")
             {
                 DestroyOldCreature(oTest);
-                DelayCommand(6.0, MakeFactionGolem(oTest, "golem_clay", nAghaazBossFaction, "attack_m3bossfac", "golemaghaaz"));
+                DelayCommand(6.0, MakeFactionGolem(oTest, "golem_clay_reg", nAghaazBossFaction, "attack_m3bossfac", "golemaghaaz"));
             }
             else if (GetTag(oTest) == "maker3_aghaazguard_flesh")
             {
@@ -204,12 +204,12 @@ void main()
             else if (GetTag(oTest) == "maker3_aghaaz_stone")
             {
                 DestroyOldCreature(oTest);
-                DelayCommand(6.0, MakeFactionGolem(oTest, "golem_stone", nAghaazFaction, "attack_fachost", "golemaghaaz"));
+                DelayCommand(6.0, MakeFactionGolem(oTest, "golem_stone_reg", nAghaazFaction, "attack_fachost", "golemaghaaz"));
             }
             else if (GetTag(oTest) == "maker3_aghaaz_clay")
             {
                 DestroyOldCreature(oTest);
-                DelayCommand(6.0, MakeFactionGolem(oTest, "golem_clay", nAghaazFaction, "attack_fachost", "golemaghaaz"));
+                DelayCommand(6.0, MakeFactionGolem(oTest, "golem_clay_reg", nAghaazFaction, "attack_fachost", "golemaghaaz"));
             }
             else if (GetTag(oTest) == "maker3_aghaaz")
             {

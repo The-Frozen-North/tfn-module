@@ -19,6 +19,7 @@ void main()
             SetIsTemporaryEnemy(oPC, oAdventurer);
             AssignCommand(oAdventurer, FastBuff());
             AssignCommand(oAdventurer, gsCBDetermineCombatRound(oPC));
+            SetName(oAdventurer, "Bounty Hunter");
         }
     }
 }

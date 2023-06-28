@@ -19,19 +19,23 @@ const int GOLD_ITEM_VALUE_CAP = 3000;
 int GetXPOnRespawn(object oPlayer)
 {
     int nXP = GetXP(oPlayer);
-    int nHD = GetLevelFromXP(nXP);
-    int nPenalty = 30 * nHD;
-// * You cannot lose a level by dying
-    int nMin = ((nHD * (nHD - 1)) / 2) * 1000;
+    if (nXP >= 3000)
+    {
+        int nHD = GetLevelFromXP(nXP);
+        int nPenalty = 30 * nHD;
+    // * You cannot lose a level by dying
+        int nMin = ((nHD * (nHD - 1)) / 2) * 1000;
 
-// you cannot be reduced below 1 xp
-    if (nMin < 1) nMin = 1;
+    // you cannot be reduced below 1 xp
+        if (nMin < 1) nMin = 1;
 
-    int nNewXP = nXP - nPenalty;
+        int nNewXP = nXP - nPenalty;
 
-    if (nNewXP < nMin) nNewXP = nMin;
-
-    return nNewXP;
+        if (nNewXP < nMin) nNewXP = nMin;
+        
+        return nNewXP;
+    }
+    return nXP;    
 }
 
 int GetItemGoldValue(object oItem)
@@ -95,8 +99,23 @@ int GetGoldLossOnRespawn(object oPlayer)
 
     if (nGoldLoss > nCap)
         nGoldLoss = nCap;
+    
+    if (nGoldLoss > nGold)
+    {
+        nGoldLoss = nGold;
+    }
 
     return nGoldLoss;
+}
+
+string GetRespawnLossText(object oPlayer)
+{
+    string sPenalty = IntToString(GetXP(oPlayer) - GetXPOnRespawn(oPlayer)) + " XP and " + IntToString(GetGoldLossOnRespawn(oPlayer)) + " gold";
+    if (GetXP(oPlayer) < 3000)
+    {
+        sPenalty = "no penalty";
+    }
+    return(sPenalty);
 }
 
 //void main() {}

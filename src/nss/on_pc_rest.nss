@@ -247,7 +247,7 @@ void main()
                     nAmbushRoll = d100();
 
                     int bSafeRest = FALSE;
-                    object oSafeRest = GetNearestObjectByTag("_safe_rest");
+                    object oSafeRest = GetNearestObjectByTag("_safe_rest", oPC);
                     float fDistanceToSafeRest = GetDistanceBetween(oPC, oSafeRest);
                     if (GetIsObjectValid(oSafeRest) && fDistanceToSafeRest > 0.0 && fDistanceToSafeRest < 50.0)
                     {
@@ -383,7 +383,7 @@ void main()
                     SendMessageToPC(oPC, "You are gaining Rested XP in this area. You do not need to repeatedly rest to accumulate this.");
                 }
             }
-            if (IsEligibleForHouseRestingXP(oPC))
+            if (IsEligibleForHouseRestingXP(oPC) &&  GetRestedXPPercentage(oPC) < 0.95)
             {
                 SendMessageToPC(oPC, "You feel like you would benefit from a rest in your own home...");
             }

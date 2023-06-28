@@ -20,6 +20,7 @@ void main()
                 ChangeToStandardFaction(oAdventurer, STANDARD_FACTION_HOSTILE);
                 AssignCommand(oAdventurer, FastBuff());
                 AssignCommand(oAdventurer, gsCBDetermineCombatRound(oPC));
+                SetName(oAdventurer, "Bounty Hunter");
             }
         }
     }

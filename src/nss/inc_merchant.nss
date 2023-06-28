@@ -4,7 +4,7 @@
 #include "inc_debug"
 
 // The time, in seconds, between reloading a store's contents
-const int MERCHANT_STORE_RESTOCK_TIME = 86400;
+const int MERCHANT_STORE_RESTOCK_TIME = 82800; // 23h, can shop at the same time each day for new stock if you want
 
 // Set on stores to indicate the last time (SQLite_GetTimeStamp)
 // the store was last restocked at

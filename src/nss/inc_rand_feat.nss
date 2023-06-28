@@ -226,7 +226,11 @@ int _EvaluateRandomFeat_Melee(object oCreature, int nFeat)
     if (nFeat == FEAT_WEAPON_FINESSE)
     {
         int nModDiff = GetAbilityModifier(ABILITY_DEXTERITY, oCreature) - GetAbilityModifier(ABILITY_STRENGTH, oCreature);
-        return max(0, 70*nModDiff);
+        if (nModDiff > 0)
+        {
+            return max(0, 40*nModDiff*nModDiff);
+        }
+        return 0;
     }
     if (nFeat == FEAT_WEAPON_FOCUS_DAGGER)
     {
@@ -323,7 +327,7 @@ int _EvaluateRandomFeat_Ranged(object oCreature, int nFeat)
     if (nFeat == FEAT_RAPID_SHOT)
     {
         if (GetHasFeat(FEAT_RAPID_RELOAD, oCreature)) { return 0;}
-        return 1000;
+        return 100;
     }
     if (nFeat == FEAT_RAPID_RELOAD)
     {
@@ -347,7 +351,9 @@ int _EvaluateRandomFeat_Ranged(object oCreature, int nFeat)
     }
     if (nFeat == FEAT_ZEN_ARCHERY)
     {
-        return max(0, 20*(GetAbilityModifier(ABILITY_WISDOM, oCreature) - GetAbilityModifier(ABILITY_DEXTERITY, oCreature)));
+        int nModDiff = GetAbilityModifier(ABILITY_WISDOM, oCreature) - GetAbilityModifier(ABILITY_DEXTERITY, oCreature);
+        if (nModDiff < 0) { return 0; }
+        return max(0, 40*nModDiff*nModDiff);
     }
     return 0;
 }
@@ -753,6 +759,22 @@ void _DelayedFixWeaponSpecificFeats(object oCreature)
         }
     }
     int nBaseItem = GetBaseItemType(oWeapon);
+    // Deal with rapid shot/reload mixups
+    // there's no point in having both, now we know what weapon type we have we can sort it
+    if (nBaseItem == BASE_ITEM_LIGHTCROSSBOW || nBaseItem == BASE_ITEM_HEAVYCROSSBOW)
+    {
+        if (GetHasFeat(FEAT_RAPID_SHOT, oCreature))
+        {
+            NWNX_Creature_RemoveFeat(oCreature, FEAT_RAPID_SHOT);
+            NWNX_Creature_AddFeat(oCreature, FEAT_RAPID_RELOAD);
+        }
+    }
+    else if (GetHasFeat(FEAT_RAPID_RELOAD, oCreature))
+    {
+        NWNX_Creature_RemoveFeat(oCreature, FEAT_RAPID_RELOAD);
+        NWNX_Creature_AddFeat(oCreature, FEAT_RAPID_SHOT);
+    }
+    
     if (GetHasFeat(FEAT_WEAPON_FOCUS_DAGGER, oCreature))
     {
         int nRealWeaponFocus;

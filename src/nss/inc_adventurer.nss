@@ -41,7 +41,7 @@ const int ADVENTURER_PATH_FIGHTER7DD5 = 33;
 const int ADVENTURER_PATH_PALADIN7DD5 = 34;
 const int ADVENTURER_PATH_ROGUE4FIGHTER4DD4 = 35;
 const int ADVENTURER_PATH_PALADIN8HARPER4 = 36;
-const int ADVENTURER_PATH_WIZARD5PM7 = 37;
+const int ADVENTURER_PATH_WIZARD3PM9 = 37;
 const int ADVENTURER_PATH_RANGER7PDK5 = 38;
 const int ADVENTURER_PATH_FIGHTER4PDK5PALADIN3 = 39;
 const int ADVENTURER_PATH_MONK8PDK4 = 40;
@@ -319,7 +319,7 @@ int GetRacialTypeForAdventurerPath(int nPath)
         }
         // Int penalty is bad for wizards
         case ADVENTURER_PATH_WIZARD12:
-        case ADVENTURER_PATH_WIZARD5PM7:
+        case ADVENTURER_PATH_WIZARD3PM9:
         {
             nHalforcWeight /= 20;
             break;
@@ -504,7 +504,7 @@ void AdjustAdventurerAlignment(object oCreature, int nPath)
             nLawChaos = d2() == 1 ? ALIGNMENT_NEUTRAL : ALIGNMENT_LAWFUL;
             break;
         }
-        case ADVENTURER_PATH_WIZARD5PM7:
+        case ADVENTURER_PATH_WIZARD3PM9:
         {
             // Non good
             nGoodEvil = d2() == 1 ? ALIGNMENT_NEUTRAL : ALIGNMENT_EVIL;
@@ -815,7 +815,16 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
     int nRemainingSkillpoints = 0;
     int nUsedFighterBonusFeats = 0;
     int nUsedRogueBonusFeats = 0;
-    int bFinesseAdjust = (nRacialType == RACIAL_TYPE_GNOME || nRacialType == RACIAL_TYPE_HALFLING);
+    int bFinesseAdjust = 0; 
+    if (nRacialType == RACIAL_TYPE_GNOME || nRacialType == RACIAL_TYPE_HALFLING)
+    {
+        bFinesseAdjust = 1;
+    }
+    else if (d10() == 10)
+    {
+        bFinesseAdjust = 1;
+    }
+    
     // Whether or not the path overrides the spellbooks (if unset this instead churns out something randomly)
     int bOverrideSpellbooks = 0;
     if (nPath <= ADVENTURER_PATH_WIZARD12)
@@ -1104,7 +1113,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_WISDOM, 14);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CHARISMA, 8);
         
-        int nAbilityToIncrease = ABILITY_STRENGTH;
+        int nAbilityToIncrease = ABILITY_DEXTERITY;
         if (bFinesseAdjust)
         {
             SetAdventurerMaxArmorAC(oCreature, 4);
@@ -1165,7 +1174,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_WISDOM, 14);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CHARISMA, 8);
         
-        int nAbilityToIncrease = ABILITY_STRENGTH;
+        int nAbilityToIncrease = ABILITY_DEXTERITY;
         if (bFinesseAdjust)
         {
             SetAdventurerMaxArmorAC(oCreature, 4);
@@ -1332,7 +1341,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_INTELLIGENCE, 8);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_WISDOM, 12);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CHARISMA, 8);
-        
+        bFinesseAdjust = 1;
         int nAbilityToIncrease = ABILITY_STRENGTH;
         if (bFinesseAdjust)
         {
@@ -2390,7 +2399,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
             NWNX_Creature_SetSkillRank(oCreature, SKILL_SEARCH, 4); // 8
         }
     }
-    else if (nPath == ADVENTURER_PATH_WIZARD5PM7)
+    else if (nPath == ADVENTURER_PATH_WIZARD3PM9)
     {
         NWNX_Creature_SetClassByPosition(oCreature, 0, CLASS_TYPE_WIZARD, TRUE);
         NWNX_Creature_SetMaxHitPointsByLevel(oCreature, 1, _GetHitDieForClass(CLASS_TYPE_WIZARD));
@@ -2399,7 +2408,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         for (nCurrentHD=2; nCurrentHD<=nHD; nCurrentHD++)
         {
             int nClass = CLASS_TYPE_WIZARD;
-            if (nCurrentHD >= 6)
+            if (nCurrentHD >= 4)
             {
                 nClass = CLASS_TYPE_PALE_MASTER;
             }
@@ -2430,6 +2439,10 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         
         AddAdventurerDesiredSkill(oCreature, SKILL_SPELLCRAFT);
         AddAdventurerDesiredSkill(oCreature, SKILL_CONCENTRATION);
+        
+        AddAdventurerSpellbookType(oCreature, CLASS_TYPE_WIZARD, RAND_SPELL_ARCANE_CONTROLLER);
+        AddAdventurerSpellbookType(oCreature, CLASS_TYPE_WIZARD, RAND_SPELL_ARCANE_SINGLE_TARGET_BALANCED);
+        bOverrideSpellbooks = 1;
     }
     else if (nPath == ADVENTURER_PATH_RANGER7PDK5)
     {
@@ -2455,14 +2468,14 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
             nRemainingSkillpoints += (GetAbilityModifier(ABILITY_INTELLIGENCE, oCreature) + _GetSkillpointsPerLevelInClass(nClass) + bIsHuman);
         }
         
-        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_STRENGTH, 10);
-        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_DEXTERITY, 14);
+        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_STRENGTH, 12);
+        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_DEXTERITY, 16);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CONSTITUTION, 14);
-        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_INTELLIGENCE, 16);
+        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_INTELLIGENCE, 12);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_WISDOM, 12);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CHARISMA, 10);
         
-        int nAbilityToIncrease = ABILITY_STRENGTH;
+        int nAbilityToIncrease = ABILITY_DEXTERITY;
         if (bFinesseAdjust)
         {
             SetAdventurerMaxArmorAC(oCreature, 4);
@@ -3011,14 +3024,14 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
             nRemainingSkillpoints += (GetAbilityModifier(ABILITY_INTELLIGENCE, oCreature) + _GetSkillpointsPerLevelInClass(nClass) + bIsHuman);
         }
         
-        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_STRENGTH, 16);
-        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_DEXTERITY, 14);
+        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_STRENGTH, 14);
+        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_DEXTERITY, 16);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CONSTITUTION, 16);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_INTELLIGENCE, 10);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_WISDOM, 10);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CHARISMA, 10);
         
-        int nAbilityToIncrease = ABILITY_STRENGTH;
+        int nAbilityToIncrease = ABILITY_DEXTERITY;
         if (bFinesseAdjust)
         {
             SetAdventurerMaxArmorAC(oCreature, 4);
@@ -3178,14 +3191,14 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
             nRemainingSkillpoints += (GetAbilityModifier(ABILITY_INTELLIGENCE, oCreature) + _GetSkillpointsPerLevelInClass(nClass) + bIsHuman);
         }
         
-        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_STRENGTH, 16);
-        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_DEXTERITY, 14);
+        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_STRENGTH, 14);
+        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_DEXTERITY, 16);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CONSTITUTION, 14);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_INTELLIGENCE, 10);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_WISDOM, 14);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CHARISMA, 10);
         
-        int nAbilityToIncrease = ABILITY_STRENGTH;
+        int nAbilityToIncrease = ABILITY_DEXTERITY;
         if (bFinesseAdjust)
         {
             SetAdventurerMaxArmorAC(oCreature, 4);
@@ -3355,14 +3368,14 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
             nRemainingSkillpoints += (GetAbilityModifier(ABILITY_INTELLIGENCE, oCreature) + _GetSkillpointsPerLevelInClass(nClass) + bIsHuman);
         }
         
-        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_STRENGTH, 16);
-        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_DEXTERITY, 14);
+        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_STRENGTH, 14);
+        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_DEXTERITY, 16);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CONSTITUTION, 14);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_INTELLIGENCE, 13);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_WISDOM, 11);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CHARISMA, 10);
         
-        int nAbilityToIncrease = ABILITY_STRENGTH;
+        int nAbilityToIncrease = ABILITY_DEXTERITY;
         if (bFinesseAdjust)
         {
             SetAdventurerMaxArmorAC(oCreature, 4);
@@ -3429,12 +3442,13 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
             nRemainingSkillpoints += (GetAbilityModifier(ABILITY_INTELLIGENCE, oCreature) + _GetSkillpointsPerLevelInClass(nClass) + bIsHuman);
         }
         
-        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_STRENGTH, 16);
-        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_DEXTERITY, 14);
+        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_STRENGTH, 14);
+        NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_DEXTERITY, 16);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CONSTITUTION, 14);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_INTELLIGENCE, 10);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_WISDOM, 14);
         NWNX_Creature_SetRawAbilityScore(oCreature, ABILITY_CHARISMA, 10);
+        bFinesseAdjust = 1;
         
         int nAbilityToIncrease = ABILITY_STRENGTH;
         if (bFinesseAdjust)
@@ -3452,10 +3466,40 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_TUMBLE);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISCIPLINE);
     }
-    
-    
-    
     // End of all the path handling...
+    
+    // Decide on range vs melee
+    
+    // If you've built strength, why are you getting a ranged weapon?
+    int nDexMod = GetAbilityModifier(ABILITY_DEXTERITY, oCreature);
+    int nWisMod = GetAbilityModifier(ABILITY_WISDOM, oCreature);
+    int nStrMod = GetAbilityModifier(ABILITY_STRENGTH, oCreature);
+    
+    int bNoRange = 0;
+    
+    if (nStrMod > nDexMod && nStrMod > nWisMod)
+    {
+        bNoRange = 1;
+    }
+    
+    if (GetLevelByClass(CLASS_TYPE_ARCANE_ARCHER, oCreature) > 0)
+    {
+        bNoRange = 0;
+    }
+    
+    //SendDebugMessage("Dex: " + IntToString(nDexMod) + ", Wis: " + IntToString(nWisMod) + ", Str: " + IntToString(nStrMod) + ", melee only: " + IntToString(bNoRange));
+  
+    if (!bNoRange)
+    {
+        if (Random(100) < 25 || GetLevelByClass(CLASS_TYPE_ARCANE_ARCHER, oCreature) > 0)
+        {
+            if (GetLevelByClass(CLASS_TYPE_WEAPON_MASTER, oCreature) <= 0)
+            {
+                SetLocalInt(oCreature, RAND_EQUIP_GIVE_RANGED, 1);
+            }
+        }
+    }
+    
             
     int nNumFighterBonusFeats = 0;
     int nFighter = GetLevelByClass(CLASS_TYPE_FIGHTER, oCreature);
@@ -3744,15 +3788,7 @@ void EquipAdventurer(object oAdventurer)
     else if (nHD >= 9) { nWeaponTier = 4; }
     else if (nHD >= 5) { nWeaponTier = 3; }
     else if (nHD >= 4) { nWeaponTier = 2; }
-    
-    if (Random(100) < 20 || GetLevelByClass(CLASS_TYPE_ARCANE_ARCHER, oAdventurer) > 0)
-    {
-        if (GetLevelByClass(CLASS_TYPE_WEAPON_MASTER, oAdventurer) <= 0)
-        {
-            SetLocalInt(oAdventurer, RAND_EQUIP_GIVE_RANGED, 1);
-        }
-    }
-    
+        
     
     struct RandomWeaponResults rwr = RollRandomWeaponTypesForCreature(oAdventurer);
     object oMain = TryEquippingRandomItemOfTier(rwr.nMainHand, nWeaponTier, nUniqueChance, oAdventurer, INVENTORY_SLOT_RIGHTHAND);

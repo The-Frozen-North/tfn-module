@@ -2204,6 +2204,25 @@
               },
               "Index": {
                 "type": "dword",
+                "value": 37
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
                 "value": 36
               },
               "IsChild": {
@@ -2236,7 +2255,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 930
+    "value": 937
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -4627,6 +4646,63 @@
           "type": "cexolocstring",
           "value": {
             "0": "Farewell."
+          }
+        }
+      },
+      {
+        "__struct_id": 37,
+        "ActionParams": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "waypoint"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "nwood_dryad_tele_wp"
+              }
+            }
+          ]
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_warpwaypoint"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Farewell. <StartAction>[Follow Aawill's directions to the dryad.]</Start>"
           }
         }
       }

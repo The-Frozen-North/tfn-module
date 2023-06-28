@@ -5,7 +5,7 @@
 void main()
 {
     object oPC = GetLastPerceived();
-    if (GetIsPC(oPC) && GetLastPerceptionSeen() && !IsInConversation(OBJECT_SELF))
+    if (GetIsPC(oPC) && GetLastPerceptionSeen() && !IsInConversation(OBJECT_SELF) && !GetIsInCombat(OBJECT_SELF))
     {
         string sPC = GetPCPublicCDKey(oPC) + GetName(oPC);;
         object oMaker3 = GetObjectByTag("ud_maker3");
