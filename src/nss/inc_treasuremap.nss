@@ -1604,32 +1604,37 @@ int GetAreaTileHash(object oArea)
 
 location GetPuzzleSolutionLocation(int nPuzzleID)
 {
-    sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions",
-            "SELECT areatag, position" +
-            " FROM treasuremaps WHERE puzzleid = @puzzleid;");
-    SqlBindInt(sql, "@puzzleid", nPuzzleID);
-    SqlStep(sql);
-    string sAreaTag = SqlGetString(sql, 0);
-    vector vPos = SqlGetVector(sql, 1);
-
-    object oArea;
-    int n=0;
-    while (TRUE)
+    if (nPuzzleID > 0)
     {
-        oArea = GetObjectByTag(sAreaTag, n);
-        n++;
-        if (!GetIsObjectValid(oArea))
-        {
-            location lInvalid;
-            return lInvalid;
-        }
-        if (GetArea(oArea) == oArea)
-        {
-            break;
-        }
-    }
+        sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions",
+                "SELECT areatag, position" +
+                " FROM treasuremaps WHERE puzzleid = @puzzleid;");
+        SqlBindInt(sql, "@puzzleid", nPuzzleID);
+        SqlStep(sql);
+        string sAreaTag = SqlGetString(sql, 0);
+        vector vPos = SqlGetVector(sql, 1);
 
-    return Location(oArea, vPos, 0.0);
+        object oArea;
+        int n=0;
+        while (TRUE)
+        {
+            oArea = GetObjectByTag(sAreaTag, n);
+            n++;
+            if (!GetIsObjectValid(oArea))
+            {
+                location lInvalid;
+                return lInvalid;
+            }
+            if (GetArea(oArea) == oArea)
+            {
+                break;
+            }
+        }
+
+        return Location(oArea, vPos, 0.0);
+    }
+    location lOut;
+    return lOut;
 }
 
 string tmVectorToString(vector vVec)
@@ -1682,21 +1687,24 @@ int DoesLocationCompleteMap(object oMap, location lTest)
 {
     int nPuzzleID = GetLocalInt(oMap, "puzzleid");
     location lSolution = GetPuzzleSolutionLocation(nPuzzleID);
-    if (GetAreaFromLocation(lSolution) == GetAreaFromLocation(lTest))
+    if (GetIsObjectValid(GetAreaFromLocation(lSolution)))
     {
-        float fDist = TREASUREMAP_LOCATION_TOLERANCE;
-        object oPC = GetItemPossessor(oMap);
-        float fSearch = IntToFloat(GetSkillRank(SKILL_SEARCH, oPC));
-        fDist = fDist + (fSearch * 0.05 * fDist);
-        if (GetDistanceBetweenLocations(lSolution, lTest) <= fDist)
+        if (GetAreaFromLocation(lSolution) == GetAreaFromLocation(lTest))
         {
-            if (!CanSavePCInfo(oPC))
+            float fDist = TREASUREMAP_LOCATION_TOLERANCE;
+            object oPC = GetItemPossessor(oMap);
+            float fSearch = IntToFloat(GetSkillRank(SKILL_SEARCH, oPC));
+            fDist = fDist + (fSearch * 0.05 * fDist);
+            if (GetDistanceBetweenLocations(lSolution, lTest) <= fDist)
             {
-                FloatingTextStringOnCreature("You find some treasure, but cannot dig it up while polymorphed.", oPC, FALSE);
-                DelayCommand(6.0, FloatingTextStringOnCreature("You find some treasure, but cannot dig it up while polymorphed.", oPC, FALSE));
-                return 0;
+                if (!CanSavePCInfo(oPC))
+                {
+                    FloatingTextStringOnCreature("You find some treasure, but cannot dig it up while polymorphed.", oPC, FALSE);
+                    DelayCommand(6.0, FloatingTextStringOnCreature("You find some treasure, but cannot dig it up while polymorphed.", oPC, FALSE));
+                    return 0;
+                }
+                return 1;
             }
-            return 1;
         }
     }
     return 0;
