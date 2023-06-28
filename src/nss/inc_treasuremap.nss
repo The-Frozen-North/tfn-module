@@ -1125,7 +1125,7 @@ void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJEC
     {
         if (nScale != 100)
         {
-            SendMessageToPC(oPC, "Due to an engine bug the map may not display correctly with your UI scaling. This should be fixed in a future NWN update, but keeping the map close to the top left of the screen should help with this.");
+            SendMessageToPC(oPC, "Due to an engine bug the map may not display correctly with your UI scaling. This is fixed in 8193.35 onwards. Otherwise, keeping the map close to the top left of the screen should help with this.");
             fGeometryRectPos = 0.0;
         }
     }
@@ -1159,9 +1159,12 @@ void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJEC
 
     json jButton = NuiId(NuiHeight(NuiButton(JsonString("Dig")), 40.0), "digbutton");
     json jButtonArray = JsonArray();
-    jButtonArray = JsonArrayInsert(jButtonArray, NuiSpacer());
+    json jNoteLabel = NuiLabel(JsonString("Notes:"), JsonInt(NUI_HALIGN_LEFT), JsonInt(NUI_VALIGN_MIDDLE));
+    json jNoteField = NuiHeight(NuiWidth(NuiTextEdit(JsonString(""), NuiBind("tmap_notes"), 30, 0), 180.0), 40.0);
+    
+    jButtonArray = JsonArrayInsert(jButtonArray, jNoteLabel);
+    jButtonArray = JsonArrayInsert(jButtonArray, jNoteField);
     jButtonArray = JsonArrayInsert(jButtonArray, jButton);
-    jButtonArray = JsonArrayInsert(jButtonArray, NuiSpacer());
     jLayout = JsonArrayInsert(jLayout, NuiRow(jButtonArray));
 
     json root = NuiCol(jLayout);
@@ -1181,6 +1184,7 @@ void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJEC
     int token = NuiCreate(oPC, nui, "treasuremap");
     // Testing this suggests the NUI border takes 20px on the X axis and 53px on the Y
     // Plus an extra 50px for the button...
+    NuiSetBind(oPC, token, "tmap_notes", JsonString(GetLocalString(oMap, "treasuremap_notes")));
     NuiSetBind(oPC, token, "geometry", NuiRect(fGeometryRectPos, fGeometryRectPos, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 20.0, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 50.0 + 53.0));
     NuiSetBind(oPC, token, "collapse", JsonInt(0));
 }

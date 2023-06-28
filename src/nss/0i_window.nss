@@ -9,26 +9,6 @@
 #include "0i_database"
 #include "nw_inc_nui"
 
-// ********** Player menu constants *********
-const string PM_NAME = "Player Menu";
-const int PM_RESIZE = FALSE;
-const int PM_COLLAPSE = TRUE;
-const int PM_CLOSE = FALSE;
-const int PM_TRANSPARENT = FALSE;
-const int PM_BORDER = TRUE;
-const float PM_WIN_HORIZONTAL_HEIGHT = 130.0f;
-const float PM_WIN_HORIZONTAL_WIDTH = 355.0f;
-// const float PM_WIN_VERTICAL_HEIGHT = 178.0f;
-// const float PM_WIN_VERTICAL_WIDTH = 228.0f;
-
-// TRUE turns the buttons on, FALSE turns the buttons off.
-const int PM_INFO = TRUE;
-const int PM_BUG_REPORT = TRUE;
-const int PM_DESCRIPTION = TRUE;
-const int PM_DICE = TRUE;
-const int PM_OPTIONS = TRUE;
-const int PM_PC_SUMMARY = TRUE;
-
 // Return the middle of the screen for the x position.
 // oPC using the menu.
 // fMenuWidth - the width of the menu to display.

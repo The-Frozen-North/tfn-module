@@ -416,6 +416,8 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_DROP_ITEM_BEFORE", "on_item_dropb");
 
     NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_WALK_TO_WAYPOINT_BEFORE", "stealth_move_fix");
+    
+    NWNX_Events_SubscribeEvent("NWNX_ON_CALENDAR_DUSK", "on_calendar_dusk");
 
 
     ServerWebhook("The Frozen North is starting!", "The Frozen North server is starting up. Once the module is stable and ready for players to login, we'll let you know.");

@@ -9,6 +9,7 @@
 #include "inc_webhook"
 #include "inc_general"
 #include "inc_restxp"
+#include "inc_sqlite_time"
 
 void main()
 {
@@ -21,6 +22,8 @@ void main()
   int    nIdx    = NuiGetEventArrayIndex();
   string sWndId  = NuiGetWindowId (oPlayer, nToken);
   int bNumberRolls;
+  // Philos's original coordinate saving DB code
+  /*
   // This is a "menu has been moved event".
   if (sEvent == "watch" && sElem == "window_geometry")
   {
@@ -42,6 +45,10 @@ void main()
           SetServerDatabaseFloat (oPlayer, PLAYER_TABLE, sWndId + "y", fY);
       }
   }
+  */
+  // This now does all that.
+  HandleEditModeEvents();
+  
   // This is a player menu event.
   if (sWndId == "pcplayerwin")
   {
@@ -49,7 +56,7 @@ void main()
     if (sEvent == "click" && sElem == "btn_info") PopUpPlayerInfoGUIPanel (oPlayer);
     if (sEvent == "click" && sElem == "btn_bug_report") PopUpBugReportGUIPanel (oPlayer, "pcbugwin");
     if (sEvent == "click" && sElem == "btn_options") PopUpOptionsGUIPanel(oPlayer, "pcoptionswin");
-    if (sEvent == "click" && sElem == "btn_desc") PopUpCharacterDescriptionGUIPanel (oPlayer);
+    if (sEvent == "click" && sElem == "btn_pcactions") PopUpPCActionsPanel(oPlayer, "pcactionswin");
     if (sEvent == "click" && sElem == "btn_dice") PopUpDiceGUIPanel (oPlayer, "pcdicewin");
     if (sEvent == "click" && sElem == "btn_pc_summary")
     {
@@ -69,21 +76,43 @@ void main()
     // This is a player options event.
   else if (sWndId == "pcoptionswin")
   {
-        if (sEvent == "watch" && sElem == "hide_discord_label")
-        {
-            int bHideDiscord = JsonGetInt (NuiGetBind (oPlayer, nToken, "hide_discord_value"));
-
-            if (bHideDiscord)
-            {
-                DeleteCampaignVariable(GetPCPublicCDKey(oPlayer), "hide_discord");
-                NuiSetBind (oPlayer, nToken, "hide_discord_value", JsonBool (FALSE));
-            }
-            else
-            {
-                SetCampaignInt(GetPCPublicCDKey(oPlayer), "hide_discord", TRUE);
-                NuiSetBind (oPlayer, nToken, "hide_discord_value", JsonBool (TRUE));
-            }
-        }
+      string sKey = GetPCPublicCDKey(oPlayer, TRUE);
+      if (sEvent == "watch" && sElem == "hide_discord_label")
+      {
+          int bHideDiscord = JsonGetInt (NuiGetBind (oPlayer, nToken, "hide_discord_value"));
+      
+          if (bHideDiscord)
+          {
+              DeleteCampaignVariable(sKey, "hide_discord");
+              NuiSetBind (oPlayer, nToken, "hide_discord_value", JsonBool (FALSE));
+          }
+          else
+          {
+              SetCampaignInt(sKey, "hide_discord", TRUE);
+              NuiSetBind (oPlayer, nToken, "hide_discord_value", JsonBool (TRUE));
+          }
+      }
+      else if (sEvent == "watch" && sElem == "restxp_ui")
+      {
+          int nOldValue = GetCampaignInt(sKey, "option_restxp_ui");
+          int nNewValue = JsonGetInt(NuiGetBind(oPlayer, nToken, "restxp_ui"));
+          SetCampaignInt(sKey, "option_restxp_ui", nNewValue);
+          // 0 off, 1: always on, 2: resting areas only
+          // We might need to hide it or show it
+          ShowOrHideRestXPUI(oPlayer);
+      }
+      else if (sEvent == "watch" && sElem == "xp_bar")
+      {
+          int nOldValue = GetCampaignInt(sKey, "option_pc_xpbar");
+          int nNewValue = JsonGetInt(NuiGetBind(oPlayer, nToken, "xp_bar"));
+          SetCampaignInt(sKey, "option_pc_xpbar", nNewValue);
+          ShowOrHideXPBarUI(oPlayer);
+          
+      }
+      else if (sEvent == "click" && sElem == "open_customisation")
+      {
+          DisplayUIMasterConfigurationInterface(oPlayer);
+      }
   }
   // This is the bug report event.
   else if (sWndId == "pcbugwin")
@@ -304,5 +333,45 @@ void main()
         }
         SetLocalInt (oPlayer, "0_Broadcast", nSelected);
     }
+  }
+  else if (sWndId == "pcactionswin")
+  {
+        // Which button was "clicked" in the player menu event.
+        if (sEvent == "click" && sElem == "btn_editdesc") PopUpCharacterDescriptionGUIPanel(oPlayer);
+        if (sEvent == "click" && sElem == "btn_unstuck")
+        {
+            int nNow = SQLite_GetTimeStamp();
+            int nLast = GetLocalInt(oPlayer, "unstucker_last");
+            if (nNow - nLast < 2)
+            {
+                SendMessageToPC(oPlayer, "You cannot do this again so soon.");
+                return;
+            }
+            SetLocalInt(oPlayer, "unstucker_last", nNow);
+            if (GetIsInCombat(oPlayer))
+            {
+                FloatingTextStringOnCreature("*You can't use this while in combat!*", oPlayer, FALSE);
+                return;
+            }
+            object oCreature = CreateObject(OBJECT_TYPE_CREATURE, "_unstucker", GetLocation(oPlayer));
+            AssignCommand(oPlayer, JumpToLocation(GetLocation(oCreature)));
+            DestroyObject(oCreature);
+        }
+        if (sEvent == "click" && sElem == "btn_respawn") PopUpRespawnConfirmation(oPlayer, "pcrespawnconfirmwin");
+        if (sEvent == "click" && sElem == "btn_pcactions") PopUpPCActionsPanel(oPlayer, "pcactionswin");
+  }
+  else if (sWndId == "pcrespawnconfirmwin")
+  {
+        // Which button was "clicked" in the player menu event.
+        if (sEvent == "click" && sElem == "btn_editdesc") PopUpCharacterDescriptionGUIPanel(oPlayer);
+        if (sEvent == "click" && sElem == "btn_respawnconfyes")
+        {
+            ExecuteScript("pc_respawn", oPlayer);
+            NuiDestroy(oPlayer, nToken);
+        }
+        if (sEvent == "click" && sElem == "btn_respawnconfno")
+        {
+            NuiDestroy(oPlayer, nToken);
+        }
   }
 }

@@ -1,4 +1,5 @@
 #include "inc_webhook"
+#include "nwnx_creature"
 
 void main()
 {
@@ -19,11 +20,13 @@ void main()
     if (nDruids == 0)
     {
         FloatingTextStringOnCreature("All of the shadow druids are dead and peace has returned to the Spirit of the Wood.", GetLastKiller());
-
+        // refresh_realm needs to undo this stuff later!
+        
         object oArea = GetArea(oSpirit);
 
         SetFogColor(FOG_TYPE_ALL, FOG_COLOR_WHITE, GetArea(oSpirit));
-
+        SendDebugMessage("Spirit's original faction: " + IntToString(NWNX_Creature_GetFaction(oSpirit)));
+        SetLocalInt(oSpirit, "original_faction", NWNX_Creature_GetFaction(oSpirit));
         ChangeToStandardFaction(oSpirit, STANDARD_FACTION_DEFENDER);
 
         object oObject = GetFirstObjectInArea(oArea);
@@ -38,6 +41,7 @@ void main()
         {
             BossDefeatedWebhook(GetLastHostileActor(), oSpirit);
         }
+        SetLocalInt(oArea, "pacified", 1);
 
         ExecuteScript("hb_friendify", oSpirit);
         SetLocalString(oSpirit, "heartbeat_script", "hb_friendify");

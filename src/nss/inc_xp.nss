@@ -8,6 +8,12 @@
 #include "inc_debug"
 #include "inc_sql"
 #include "x3_inc_string"
+#include "inc_nui_config"
+
+// I think this is the easiest way around the cyclical include
+// Update the XP bar NUI for oPC.
+void UpdateXPBarUI(object oPC);
+
 #include "inc_restxp"
 
 // The amount of bonus or penalty XP modified by level.
@@ -75,6 +81,10 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE);
 // Gives nXp amount to oPC, wisdom adjusted
 // with bonuses/penalties related to the target level
 void GiveQuestXPToPC(object oPC, int nTier, int nLevel, int bBluff = FALSE);
+
+// Create or destroy the XP bar NUI for oPC.
+void ShowOrHideXPBarUI(object oPC);
+
 
 
 // ------------------ INTERNAL FUNCTIONS ----------------
@@ -241,6 +251,8 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
 
    if (iWhole > 0)
        SetXP(oPC, GetXP(oPC) + iWhole);
+   
+   UpdateXPBarUI(oPC);
 }
 
 void GiveQuestXPToPC(object oPC, int nTier, int nLevel, int bBluff = FALSE)
@@ -391,6 +403,148 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
 
 
 // ********************************  DEFINITIONS  ******************************************
+
+
+
+void XPBar(object oPC)
+{
+    string sKey = GetPCPublicCDKey(oPC, TRUE);
+    int nSetting = GetCampaignInt(sKey, "option_pc_xpbar");
+    if (nSetting < 1)
+    {
+        return;
+    }
+    
+    string sWindow = "pc_xpbar";
+    json jLabels = JsonArray();
+    jLabels = JsonArrayInsert(jLabels, JsonString("Horizontal"));
+    jLabels = JsonArrayInsert(jLabels, JsonString("Vertical"));
+    json jValues = JsonArray();
+    jValues = JsonArrayInsert(jValues, JsonInt(0));
+    jValues = JsonArrayInsert(jValues, JsonInt(1));
+    // Config first.
+    AddInterfaceConfigOptionFineMovement(sWindow, 200, 200, 400, 20);
+    AddInterfaceConfigOptionDropdown(sWindow, "orientation", "Orientation", "Whether the bar should be horizontal (fills left to right) or vertical (fills bottom to top).", jLabels, jValues, 0);
+    AddInterfaceConfigOptionColorPick(sWindow, "backgroundcolor", "Background Color", "The color of the background, or \"empty\" parts of the bar.", NuiColor(0, 0, 0, 255));
+    AddInterfaceConfigOptionColorPick(sWindow, "progresscolor", "Progress Color", "The color of the gained XP progress, or \"filled\" parts of the bar.", NuiColor(75, 220, 120, 255));
+    AddInterfaceConfigOptionColorPick(sWindow, "restedcolor", "Rested XP Color", "The color of the your Rested XP potential.", NuiColor(0, 50, 0, 255));
+    AddInterfaceConfigOptionColorPick(sWindow, "edgecolor", "Edge Color", "The color of the edges of the bar.", NuiColor(0, 0, 0, 255));
+    AddInterfaceConfigOptionTextEntry(sWindow, "numgraduations", "Num Graduations", "The number of graduation marks along the bar.", "9");
+    AddInterfaceConfigOptionColorPick(sWindow, "graduationcolor", "Graduation Color", "The color of the graduation marks along the bar.", NuiColor(20, 20, 20, 255));
+    AddInterfaceConfigOptionCheckBox(sWindow, "textvisible", "Progress Text", "Whether to show progress percent on the middle of the bar.", 1);
+    AddInterfaceConfigOptionColorPick(sWindow, "textcolor", "Progress Text Color", "Color of the progress text on the bar.", NuiColor(100, 100, 100, 255));
+    
+    json jBackgroundColor = GetNuiConfigBind(sWindow, "backgroundcolor");
+    json jFilledColor = GetNuiConfigBind(sWindow, "progresscolor");
+    json jRestedColor = GetNuiConfigBind(sWindow, "restedcolor");
+    json jEdgeColor = GetNuiConfigBind(sWindow, "edgecolor");
+    json jGraduationColor = GetNuiConfigBind(sWindow, "graduationcolor");
+    json jTextVisible = GetNuiConfigBind(sWindow, "textvisible");
+    json jTextColor = GetNuiConfigBind(sWindow, "textcolor");
+    
+    // The bar itself is a few components, drawn on top of each other.
+    
+    // 1) Background.
+    // 2) Filled
+    // 3) Rested
+    // 4) Graduation
+    // 5) Edge
+    
+    // We do graduation before edge so everything except the "teeth" can be squished by the edge
+    // If edge was afterwards it would have to be a long series of drawlists, which binds can't really change
+    // Making it one big drawlist and then covering it up later gets around that
+    
+    json jBackgroundDrawListCoords = NuiBind("background_coords");
+    //json jBackgroundDrawList = NuiDrawListPolyLine(JsonBool(1), jBackgroundColor, JsonBool(1), JsonFloat(1.0), jBackgroundDrawListCoords);
+    json jBackgroundDrawList = NuiDrawListPolyLine(JsonBool(1), jBackgroundColor, JsonBool(1), JsonFloat(1.0), jBackgroundDrawListCoords);
+    
+    json jFilledDrawListCoords = NuiBind("filled_coords");
+    json jFilledDrawList = NuiDrawListPolyLine(JsonBool(1), jFilledColor, JsonBool(1), JsonFloat(1.0), jFilledDrawListCoords);
+    
+    json jRestedDrawListCoords = NuiBind("rested_coords");
+    json jRestedDrawList = NuiDrawListPolyLine(JsonBool(1), jRestedColor, JsonBool(1), JsonFloat(1.0), jRestedDrawListCoords);
+    
+    json jGraduationDrawListCoords = NuiBind("graduation_coords");
+    json jGraduationDrawList = NuiDrawListPolyLine(JsonBool(1), jGraduationColor, JsonBool(0), JsonFloat(1.0), jGraduationDrawListCoords);
+    
+    json jEdgeDrawListCoords = NuiBind("edge_coords");
+    json jEdgeDrawList = NuiDrawListPolyLine(JsonBool(1), jEdgeColor, JsonBool(0), JsonFloat(1.0), jEdgeDrawListCoords);
+    
+    json jTextPos = NuiBind("text_pos");
+    json jTextContent = NuiBind("text_content");
+    json jTextDrawList = NuiDrawListText(jTextVisible, jTextColor, jTextPos, jTextContent);
+    
+    json jDrawListArray = JsonArray();
+    jDrawListArray = JsonArrayInsert(jDrawListArray, jBackgroundDrawList);
+    jDrawListArray = JsonArrayInsert(jDrawListArray, jFilledDrawList);
+    jDrawListArray = JsonArrayInsert(jDrawListArray, jRestedDrawList);
+    jDrawListArray = JsonArrayInsert(jDrawListArray, jGraduationDrawList);
+    jDrawListArray = JsonArrayInsert(jDrawListArray, jEdgeDrawList);
+    
+    
+    
+    jDrawListArray = JsonArrayInsert(jDrawListArray, jTextDrawList);
+    
+    float fWinSizeX = 400.0;
+    float fWinSizeY = 40.0;
+    
+    float fMidX = IntToFloat(GetPlayerDeviceProperty(oPC, PLAYER_DEVICE_PROPERTY_GUI_WIDTH)/2) - (fWinSizeX/2);
+    float fMidY = IntToFloat(GetPlayerDeviceProperty(oPC, PLAYER_DEVICE_PROPERTY_GUI_HEIGHT))*0.8 - (fWinSizeY/2);
+    
+    json jGeometry = GetPersistentWindowGeometryBind(oPC, sWindow, NuiRect(fMidX, fMidY, fWinSizeX, fWinSizeY));
+    
+    json jLabel = NuiLabel(JsonString(""), JsonInt(NUI_HALIGN_CENTER), JsonInt(NUI_VALIGN_MIDDLE));
+    jLabel = NuiDrawList(jLabel, JsonBool(0), jDrawListArray);
+    
+    json jLayout = JsonArray();
+    jLayout = JsonArrayInsert(jLayout, jLabel);
+    
+    json jRoot = NuiRow(jLayout);
+        
+    json jNui = EditableNuiWindow(sWindow, "XP Bar", jRoot, "", jGeometry, 0, 0, 0, JsonBool(1), JsonBool(0)); 
+    //json jNui = NuiWindow(jRoot, JsonBool(FALSE), jGeometry, JsonBool(0), JsonBool(0), JsonBool(0), JsonBool(0), JsonBool(0)); 
+    
+    int nToken = NuiCreate(oPC, jNui, sWindow);
+    // This thing wants to be much too small for this crude stuff
+    SetIsInterfaceConfigurable(oPC, nToken, 0, 0);
+    LoadNuiConfigBinds(oPC, nToken);
+    
+    
+    // The event script can calculate all the drawlist coordinates...
+    SetScriptParam("init", "init");
+    SetScriptParam("pc", ObjectToString(oPC));
+    SetScriptParam("token", IntToString(nToken));
+    SetScriptParam("updatebar", "1");
+    ExecuteScript("pc_xpbar_evt", OBJECT_SELF);
+}
+
+
+void ShowOrHideXPBarUI(object oPC)
+{
+    int nNewValue = GetCampaignInt(GetPCPublicCDKey(oPC, TRUE), "option_pc_xpbar");
+    // We might need to hide it
+    if (nNewValue == 0)
+    {
+        NuiDestroy(oPC, NuiFindWindow(oPC, "pc_xpbar"));
+    }
+    // We might need to show it
+    else if (nNewValue == 1)
+    {
+        XPBar(oPC);
+    }
+}
+
+void UpdateXPBarUI(object oPC)
+{
+    int nToken = NuiFindWindow(oPC, "pc_xpbar");
+    if (nToken != 0)
+    {
+        SetScriptParam("pc", ObjectToString(oPC));
+        SetScriptParam("token", IntToString(nToken));
+        SetScriptParam("updatebar", "1");
+        ExecuteScript("pc_xpbar_evt", OBJECT_SELF);
+    }
+}
 
 
 //void main(){}

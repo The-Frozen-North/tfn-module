@@ -89,7 +89,9 @@ void main()
         // which results in the henchman not doing anything except stand there being a punching bag
         // I have no direct evidence that this function is to blame, but given this behaviour
         // is most common after a PC dies and the henchman moved next to them, it's a really big culprit
-        __TurnCombatRoundOn(FALSE);
+        //__TurnCombatRoundOn(FALSE);
+        // This uses ActionDoCommand to clear it, which can clearly get interrupted somehow
+        SetLocalInt(OBJECT_SELF, "X2_L_MUTEXCOMBATROUND", 0);
         ActionMoveToObject(oStoredMaster, TRUE);
         return; // don't do any more actions that might interrupt this
     }

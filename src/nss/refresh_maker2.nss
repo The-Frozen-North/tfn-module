@@ -65,12 +65,12 @@ void main()
             else if (nRoll < 90)
             {
                 // Stone golem
-                sResRef = "golem_stone";
+                sResRef = "golem_stone_reg";
             }
             else
             {
                 // Clay golem
-                sResRef = "golem_clay";
+                sResRef = "golem_clay_reg";
             }
         }
         string sWP = "WP_q4b_scavenger_";

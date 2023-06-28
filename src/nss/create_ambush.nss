@@ -74,34 +74,99 @@ void CreateAmbush(int nTarget, object oArea, object oPC, location lLocation, loc
     }
 }
 
+void SpawnSidekick(location lLocation, object oLeader, int nLeaderHD, object oPC)
+{
+    object oModule = GetModule();
+    object oSideKick = SpawnAdventurer(lLocation, SelectAdventurerPathAssassin(), nLeaderHD);
+    AddAdventurerToParty(oSideKick, oLeader);
+    ChangeToStandardFaction(oSideKick, STANDARD_FACTION_HOSTILE);
+    SetIsTemporaryEnemy(oPC, oSideKick);
+    AssignCommand(oSideKick, gsCBDetermineCombatRound(oPC));
+    DestroyObject(oSideKick, 300.0);
+    SetName(oSideKick, "Unknown Assailant");
+    SetAdventurerPartyType(oSideKick, ADVENTURER_PARTY_REST_ASSASSIN);
+    AssignCommand(oModule, DelayCommand(1.0, AssignCommand(oSideKick, FastBuff())));
+    AssignCommand(oModule, DelayCommand(1.5, AssignCommand(oSideKick, gsCBDetermineCombatRound(oPC))));
+}
+
 int CreateAdventurerAmbush(location lLocation, object oPC)
 {
     int nSenderType = GetAdventurerAssassinSender(oPC);
     if (nSenderType > ADVENTURER_ASSASSIN_SENDER_NONE && GetHitDice(oPC) >= 3)
     {
-        object oModule = GetModule();
-        int bTwoAssassins = 0;
-        int nLeaderHD = GetHitDice(oPC) - 2;
-        if (Random(100) < 50 && nLeaderHD > 2)
+        object oPartyMember = GetFirstFactionMember(oPC);
+        int nPCLevels = 0;
+        int nNPCLevels = 0;
+        
+        // For the sake of player enjoyment and being a reasonable difficulty this benefits from scaling
+        // to party level a bit
+        
+        // This makes some sweeping assumptions about how much HD of stuff they have with them, though.
+        
+        while (GetIsObjectValid(oPartyMember))
         {
-            nLeaderHD -= 2;
-            bTwoAssassins = 1;
+            int nHD = GetHitDice(oPartyMember) - 2;
+            if (nHD > 0)
+            {
+                nPCLevels += nHD;
+                int nNumFollows = GetFollowerCount(oPartyMember);
+                nNPCLevels += (nNumFollows * (nHD/2));
+                nNumFollows =  GetHenchmanCount(oPartyMember);
+                nNPCLevels += (nNumFollows * nHD);
+            }
+            oPartyMember = GetNextFactionMember(oPC);
         }
+        int nTotalLevels = nPCLevels + nNPCLevels;
+        SendDebugMessage("Adventure party ambush: total levels = " + IntToString(nTotalLevels));
+        
+        // Find what level to spawn our assassins.
+        // Consider dropping up to 4 more levels from (PC's HD)
+        // We try to match nTotalLevels as closely as possible and go for the one with the least remainder
+        
+        int i;
+        int nBestLevel = GetHitDice(oPC);
+        int nBestLevelRemainder = 99999;
+        for (i=0; i<5; i++)
+        {
+            int nThisLevel = GetHitDice(oPC) - i;
+            if (nThisLevel < 2) { break; }
+            int nThisRemainder = nTotalLevels % nThisLevel;
+            // Greatly discourage going over four
+            // by adding the excess back to the remainder for this level
+            int nNumToSpawn = nTotalLevels / nThisLevel;
+            if (nNumToSpawn <= 0)
+            {
+                continue;
+            }
+            if (nNumToSpawn > 4)
+            {
+                nThisRemainder += (nNumToSpawn-4)*nThisLevel;
+            }
+            // Slightly discourage dropping down levels by adding i
+            if ((nThisRemainder + i) < nBestLevelRemainder)
+            {
+                nBestLevel = nThisLevel;
+                nBestLevelRemainder = nThisRemainder;
+            }
+        }
+        
+        int nNumToSpawn = nTotalLevels / nBestLevel;
+        if (nNumToSpawn > 6) { nNumToSpawn = 6; }
+        
+        SendDebugMessage("Adventure party ambush: spawn " + IntToString(nNumToSpawn) + " attackers at level " + IntToString(nBestLevel));
+        
+        object oModule = GetModule();
+        int nLeaderHD = nBestLevel;
+        
         object oLeader = SpawnAdventurer(lLocation, SelectAdventurerPathAssassin(), nLeaderHD);
         DesignateAdventurerAsPartyLeader(oLeader);
         SetAdventurerPartyType(oLeader, ADVENTURER_PARTY_REST_ASSASSIN);
-        if (bTwoAssassins)
+        if (nNumToSpawn > 1)
         {
-            object oSideKick = SpawnAdventurer(lLocation, SelectAdventurerPathAssassin(), nLeaderHD);
-            AddAdventurerToParty(oSideKick, oLeader);
-            ChangeToStandardFaction(oSideKick, STANDARD_FACTION_HOSTILE);
-            SetIsTemporaryEnemy(oPC, oSideKick);
-            AssignCommand(oSideKick, gsCBDetermineCombatRound(oPC));
-            DestroyObject(oSideKick, 300.0);
-            SetName(oSideKick, "Unknown Assailant");
-            SetAdventurerPartyType(oSideKick, ADVENTURER_PARTY_REST_ASSASSIN);
-            AssignCommand(oModule, DelayCommand(1.0, AssignCommand(oSideKick, FastBuff())));
-            AssignCommand(oModule, DelayCommand(1.5, AssignCommand(oSideKick, gsCBDetermineCombatRound(oPC))));
+            for (i=1; i<nNumToSpawn; i++)
+            {
+                AssignCommand(oModule, DelayCommand(0.5, SpawnSidekick(lLocation, oLeader, nLeaderHD, oPC)));
+            }
         }
         ChangeToStandardFaction(oLeader, STANDARD_FACTION_HOSTILE);
         SetIsTemporaryEnemy(oPC, oLeader);
@@ -128,10 +193,10 @@ void main()
     object oArea = GetAreaFromLocation(lLocation);
     int bMakeRegularAmbush = 1;
 
-    // Tiny chance for adventurer assassins instead
-    if (Random(100) < 2)
-    // Testing 1%s at full odds is an exercise in insanity
-    //if (1)
+    // Small chance for adventurer assassins instead
+    // Testing this at full odds is an exercise in insanity
+    //if (Random(100) < 3)
+    if (1)
     {
         bMakeRegularAmbush = !CreateAdventurerAmbush(GetLocation(OBJECT_SELF), oPC);
     }

@@ -24,6 +24,7 @@ void SpawnFollower(object oLeader, int nHD, int nPartyType, object oWP)
         AssignCommand(oWP, SpawnFollower(oLeader, nHD, nPartyType, oWP));
         return;
     }
+    if (nHD > 12) { nHD = 12; }
     object oFollower = CreateEventCreature("adventurer");
     AdvanceCreatureAlongAdventurerPath(oFollower, SelectAdventurerPathForPartyType(nPartyType), nHD);
     EquipAdventurer(oFollower);
@@ -64,69 +65,100 @@ void main()
         nPartyType = ADVENTURER_PARTY_HOSTILE_ASSASSIN;
     }
     
+    // Reference: The Ranger random event spits out a 7HD Ranger and 3x 3HD Krenshars
+    // This thing spawns in ACR 4 areas where it is surprisingly manageable
+    // (at the time of writing it has killed 5 PCs over the history of the server)
+    
     // One of:
-    // 1 guy at HD + 1
-    // 2 guys: one HD, one HD-1
-    // 3 guys at HD-2
-    // 4 guys at HD-3
-    // 5 guys, 2x HD-3, 3x HD-4
-    int nRoll = d4();
+    // 1 guy at HD + 3
+    // 2 guys: one HD+2, one HD+1
+    // 3 guys at HD
+    // 4 guys at HD-1
+    // 5 guys, 2x HD-1, 3x HD-2
+    
+    // It is way easier to work out the possibilities like this than most other ways
+    json jPossibilities = JsonArray();
+    if (nAdventurerHD+3 <= 12)
+    {
+        jPossibilities = JsonArrayInsert(jPossibilities, JsonInt(1));
+    }
+    if (nAdventurerHD+2 <= 12)
+    {
+        jPossibilities = JsonArrayInsert(jPossibilities, JsonInt(2));
+    }
+    if (nAdventurerHD <= 12)
+    {
+        jPossibilities = JsonArrayInsert(jPossibilities, JsonInt(3));
+    }
+    if (nAdventurerHD-1 <= 12 && nAdventurerHD-1 >= 3)
+    {
+        jPossibilities = JsonArrayInsert(jPossibilities, JsonInt(4));
+    }
+    // If there is every a really really high level area with these, they will all end up capped to level 12
+    // so no reason to check the high end of the level range for this one (as we'll need lots to put up a fight anyway)
+    if (nAdventurerHD-2 >= 3)
+    {
+        jPossibilities = JsonArrayInsert(jPossibilities, JsonInt(5));
+    }
+    jPossibilities = JsonArrayTransform(jPossibilities, JSON_ARRAY_SHUFFLE);
+    
+    int nRoll = JsonGetInt(JsonArrayGet(jPossibilities, 0));
     int i;
     WriteTimestampedLogEntry("eve_advparty: roll = " + IntToString(nRoll));
-    object oLeader;
-    // Don't go below 3 hd
-    if (nRoll == 1 && nAdventurerHD >= 5)
+    object oLeader;  
+    
+    if (nRoll == 5)
     {
         oLeader = CreateEventCreature("adventurer");
-        AdvanceCreatureAlongAdventurerPath(oLeader, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD-3);
+        AdvanceCreatureAlongAdventurerPath(oLeader, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD-1);
         EquipAdventurer(oLeader);
         DesignateAdventurerAsPartyLeader(oLeader);
-        SpawnFollowerDelayed(oLeader, nAdventurerHD-3, nPartyType);
+        SpawnFollowerDelayed(oLeader, nAdventurerHD-1, nPartyType);
         for (i=0; i<3; i++)
-        {
-            SpawnFollowerDelayed(oLeader, nAdventurerHD-4, nPartyType);
-        }
-    }
-    // Below types require increasing HD over 12, which can't be done
-    // Do this if that is desired
-    else if (nRoll <= 2 && nAdventurerHD >= 4)
-    {
-        oLeader = CreateEventCreature("adventurer");
-        AdvanceCreatureAlongAdventurerPath(oLeader, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD-3);
-        EquipAdventurer(oLeader);
-        DesignateAdventurerAsPartyLeader(oLeader);
-        for (i=0; i<3; i++)
-        {
-            SpawnFollowerDelayed(oLeader, nAdventurerHD-3, nPartyType);
-        }
-    }
-    else if (nRoll <= 3 && nAdventurerHD >= 3)
-    {
-        oLeader = CreateEventCreature("adventurer");
-        AdvanceCreatureAlongAdventurerPath(oLeader, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD-2);
-        EquipAdventurer(oLeader);
-        DesignateAdventurerAsPartyLeader(oLeader);
-        for (i=0; i<2; i++)
         {
             SpawnFollowerDelayed(oLeader, nAdventurerHD-2, nPartyType);
         }
     }
-    // can't make HD+1 if HD already 12
-    else if (nRoll <= 4 || nAdventurerHD == 12)
+    // Below types require increasing HD over 12, which can't be done
+    // Do this if that is desired
+    else if (nRoll == 4)
+    {
+        oLeader = CreateEventCreature("adventurer");
+        AdvanceCreatureAlongAdventurerPath(oLeader, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD-1);
+        EquipAdventurer(oLeader);
+        DesignateAdventurerAsPartyLeader(oLeader);
+        for (i=0; i<3; i++)
+        {
+            SpawnFollowerDelayed(oLeader, nAdventurerHD-1, nPartyType);
+        }
+    }
+    else if (nRoll == 3)
     {
         oLeader = CreateEventCreature("adventurer");
         AdvanceCreatureAlongAdventurerPath(oLeader, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD);
         EquipAdventurer(oLeader);
         DesignateAdventurerAsPartyLeader(oLeader);
+        for (i=0; i<2; i++)
+        {
+            SpawnFollowerDelayed(oLeader, nAdventurerHD, nPartyType);
+        }
+    }
+    // can't make HD+1 if HD already 12
+    else if (nRoll == 2)
+    {
+        oLeader = CreateEventCreature("adventurer");
+        AdvanceCreatureAlongAdventurerPath(oLeader, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD+2);
+        EquipAdventurer(oLeader);
+        DesignateAdventurerAsPartyLeader(oLeader);
         object oFollower = CreateEventCreature("adventurer");
-        AdvanceCreatureAlongAdventurerPath(oFollower, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD-1);
+        AdvanceCreatureAlongAdventurerPath(oFollower, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD+1);
         EquipAdventurer(oFollower);
         AddAdventurerToParty(oFollower, oLeader);
     }
     else
     {
         oLeader = CreateEventCreature("adventurer");
-        AdvanceCreatureAlongAdventurerPath(oLeader, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD+1);
+        AdvanceCreatureAlongAdventurerPath(oLeader, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD+3);
         EquipAdventurer(oLeader);
         DesignateAdventurerAsPartyLeader(oLeader);
     }

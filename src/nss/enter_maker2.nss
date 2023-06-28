@@ -34,7 +34,7 @@ void main()
                 {
                     if (Random(100) < 15)
                     {
-                        DelayCommand(6.0, MakeGroundItem(oTest));
+                        //DelayCommand(6.0, MakeGroundItem(oTest));
                     }
                 }
             }

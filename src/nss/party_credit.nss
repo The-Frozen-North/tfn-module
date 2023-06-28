@@ -771,10 +771,6 @@ void main()
        fLootBagScale = 0.8;
    }
 
-   // only do this if its an actual loot bag
-   if (GetResRef(oContainer) == "_loot_container")
-        SetObjectVisualTransform(oContainer, OBJECT_VISUAL_TRANSFORM_SCALE, fLootBagScale);
-
     if (ShouldDebugLoot())
     {
         float fTreasureChance = IntToFloat(nTreasureChance)/100.0;
@@ -856,6 +852,8 @@ void main()
            jAssignments = _AddItemToPartyMemberAssignments(jAssignments, oMap, nAssignIndex);
        }
    }
+   
+   int bContainsQuestItem = 0;
 
 // =========================
 // START LOOP
@@ -892,6 +890,7 @@ void main()
         {
             object oQuest = CreateItemOnObject(sQuestItemResRef, oPersonalLoot, 1, "quest");
             SetName(oQuest, QUEST_ITEM_NAME_COLOR + GetName(oQuest) + "</c>");
+            bContainsQuestItem = 1;
         }
 
 
@@ -985,6 +984,17 @@ void main()
                DeleteLocalInt(oHenchman, "area_cr");
           }
        }
+   }
+   
+   // Scale the loot bag, but only if it's really a loot bag
+   if (GetResRef(oContainer) == "_loot_container")
+   {
+       // If it contains a quest item, override it
+       if (bContainsQuestItem)
+       {
+           fLootBagScale = 1.0;
+       }
+       SetObjectVisualTransform(oContainer, OBJECT_VISUAL_TRANSFORM_SCALE, fLootBagScale);
    }
 
    //DestroyObject(oKey);

@@ -1,5 +1,7 @@
 #include "inc_quest"
 
+// Ferdinand's Orb of Capturing
+
 void CaptureCreature(object oTarget)
 {
     effect eVis = EffectVisualEffect(VFX_IMP_POLYMORPH);

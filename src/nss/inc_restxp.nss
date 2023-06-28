@@ -4,6 +4,7 @@
 #include "inc_housing"
 #include "inc_debug"
 #include "inc_general"
+#include "inc_nui_config"
 
 // The cap of rested XP for a PC is (this variable * amount of xp to reach next level, not counting PC's current progress)
 const float RESTEDXP_CAP_BASE = 700.0;
@@ -67,6 +68,21 @@ int PlayerGetsRestedXPInArea(object oPC, object oArea=OBJECT_INVALID);
 
 // This function returns the level based on XP
 int GetLevelFromXP(int nXP);
+
+// Decide if oPC's rested xp UI should be hidden or visible.
+void ShowOrHideRestXPUI(object oPC, object oArea=OBJECT_INVALID);
+
+// Update oPC's Rested XP NUI.
+// If they don't have it open, does nothing.
+void UpdateRestXPUI(object oPC);
+
+// Update oPC's XP bar NUI.
+// If they don't have it open, does nothing.
+void UpdateXPBarUI(object oPC);
+
+// Returns the token of oPC's Rested XP UI.
+// This is 0 if they don't have it open.
+int GetRestXPUIToken(object oPC);
 
 const string RESTEDXP_AREA_VAR = "restxp";
 
@@ -152,6 +168,8 @@ void _AddRestedXPFlat(object oPC, float fAmountToAdd)
     float fFinal = fmin(fCurrent + fAmountToAdd, fRestXPCap);
     //SendDebugMessage("Add to rest xp: new = " + FloatToString(fFinal) + " cap = " + FloatToString(fRestXPCap));
     SQLocalsPlayer_SetFloat(oPC, RESTEDXP_PLAYER_VAR, fFinal);
+    UpdateRestXPUI(oPC);
+    UpdateXPBarUI(oPC);
 }
 
 void _AddRestedXP(object oPC, float fTimeDelta)
@@ -164,6 +182,9 @@ void _AddRestedXP(object oPC, float fTimeDelta)
 
 void SendRestedXPNotifierToPC(object oPC)
 {
+    // If they have the UI open, don't spam system messages as well
+    if (GetRestXPUIToken(oPC) != 0) { return; }
+    
     float fRestedXP = GetRestedXP(oPC);
     if (fRestedXP >= 0.01)
     {
@@ -225,11 +246,13 @@ float GetRestModifiedExperience(float fBaseXP, object oPC, float fIncrease)
         {
             SQLocalsPlayer_SetFloat(oPC, RESTEDXP_PLAYER_VAR, 0.0);
             FloatingTextStringOnCreature("You have run out of Rested XP.", oPC, FALSE);
+            UpdateRestXPUI(oPC);
             return (fBaseXP + fRestedXP);
         }
         else
         {
             SQLocalsPlayer_SetFloat(oPC, RESTEDXP_PLAYER_VAR, fRestedXP - fRestedXPAddition);
+            UpdateRestXPUI(oPC);
             return (fBaseXP + fRestedXPAddition);
         }
     }
@@ -290,5 +313,139 @@ void GiveHouseRestingXP(object oPC)
 
 void SendOnEnterRestedPopup(object oPC)
 {
+    if (GetRestXPUIToken(oPC) != 0) { return; }
     SendColorMessageToPC(oPC, "This area feels safe and comfortable enough that you are gaining Rested XP. This will increase experience gained from kills until depleted. Logging out here will continue to add Rested XP at a lower rate.", MESSAGE_COLOR_INFO);
+}
+
+void RestXPDisplay(object oPC)
+{
+    string sKey = GetPCPublicCDKey(oPC, TRUE);
+    int nSetting = GetCampaignInt(sKey, "option_restxp_ui");
+    // 0 = off, 1 = always on, 2 = resting areas only
+    if (nSetting == 0 || (nSetting == 2 && !PlayerGetsRestedXPInArea(oPC, GetArea(oPC))))
+    {
+        return;
+    }
+    
+    string sWindow = "restxp_nui";
+    // Config first.
+    AddInterfaceConfigOptionColorPick(sWindow, "textcolor", "Text Color", "The color of the text.", NuiColor(255, 255, 255, 255));
+    AddInterfaceConfigOptionColorPick(sWindow, "bgcolor", "Background Color", "The color of the background.", NuiColor(0, 0, 0, 255));
+    AddInterfaceConfigOptionSlider(sWindow, "bgopacity", "Background Opacity", "The opacity of the background.", 0, 100, 1, 40);
+    AddInterfaceConfigOptionCheckBox(sWindow, "hideifempty", "Hide if Empty", "Hide all UI display if empty.", 1);
+    
+    // NUI's colorpick does not support opacity, so we have to assemble it later
+    json jBackgroundColor = NuiBind("real_bg_color");
+    // Bind to hide everything when PC has no rest xp
+    json jVisibility = NuiBind("visibility");
+    // The configs will write to this bind directly!
+    json jTextColor = GetNuiConfigBind(sWindow, "textcolor");
+    
+    // This is just a label with a background and text drawlisted on top. Not very much to it
+    json jBackgroundDrawListCoords = NuiBind("background_coords");
+    json jBackgroundDrawList = NuiDrawListPolyLine(jVisibility, jBackgroundColor, JsonBool(1), JsonFloat(1.0), jBackgroundDrawListCoords);
+    
+    // We need 3 rows of text!
+    
+    json jTextPos1 = NuiBind("text_pos1");
+    json jTextContent1 = NuiBind("text_content1");
+    json jTextDrawList1 = NuiDrawListText(jVisibility, jTextColor, jTextPos1, jTextContent1);
+    
+    json jTextPos2 = NuiBind("text_pos2");
+    json jTextContent2 = NuiBind("text_content2");
+    json jTextDrawList2 = NuiDrawListText(jVisibility, jTextColor, jTextPos2, jTextContent2);
+    
+    json jTextPos3 = NuiBind("text_pos3");
+    json jTextContent3 = NuiBind("text_content3");
+    json jTextDrawList3 = NuiDrawListText(jVisibility, jTextColor, jTextPos3, jTextContent3);
+    
+    json jDrawListArray = JsonArray();
+    jDrawListArray = JsonArrayInsert(jDrawListArray, jBackgroundDrawList);
+    jDrawListArray = JsonArrayInsert(jDrawListArray, jTextDrawList1);
+    jDrawListArray = JsonArrayInsert(jDrawListArray, jTextDrawList2);
+    jDrawListArray = JsonArrayInsert(jDrawListArray, jTextDrawList3);
+    
+    json jLabel = NuiLabel(JsonString(""), JsonInt(NUI_HALIGN_CENTER), JsonInt(NUI_VALIGN_MIDDLE));
+    jLabel = NuiDrawList(jLabel, JsonBool(0), jDrawListArray);
+    
+    json jLayout = JsonArray();
+    jLayout = JsonArrayInsert(jLayout, jLabel);
+    json jRoot = NuiRow(jLayout);
+    
+    // Pick a default window size.
+    float fWinSizeX = 90.0;
+    float fWinSizeY = 68.0;
+    
+    SetInterfaceFixedSize(sWindow, fWinSizeX, fWinSizeY);
+    
+    float fMidX = IntToFloat(GetPlayerDeviceProperty(oPC, PLAYER_DEVICE_PROPERTY_GUI_WIDTH)/2)*0.8 - (fWinSizeX/2);
+    float fMidY = IntToFloat(GetPlayerDeviceProperty(oPC, PLAYER_DEVICE_PROPERTY_GUI_HEIGHT))*0.2 - (fWinSizeY/2);
+    
+    json jGeometry = GetPersistentWindowGeometryBind(oPC, sWindow, NuiRect(fMidX, fMidY, fWinSizeX, fWinSizeY));
+    WriteTimestampedLogEntry("Geometry: " + JsonDump(NuiRect(fMidX, fMidY, fWinSizeX, fWinSizeY)));
+    
+    // No title, not collapsable, not moveable: get rid of title bar
+    json jNui = EditableNuiWindow(sWindow, "Rested XP Display", jRoot, "", jGeometry, 0, 0, 0, JsonBool(1), JsonBool(0));     
+    int nToken = NuiCreate(oPC, jNui, sWindow);
+    // Allow edit mode movement, but not resizing
+    SetIsInterfaceConfigurable(oPC, nToken, 0, 1);
+    // Load PC's saved config binds immediately
+    LoadNuiConfigBinds(oPC, nToken);
+    
+    // Send some script params to the event script
+    // This can update the draw lists and everything
+    SetScriptParam("action", "init");
+    SetScriptParam("pc", ObjectToString(oPC));
+    SetScriptParam("token", IntToString(nToken));
+    SetScriptParam("updatebar", "1");
+    ExecuteScript("restxp_nui_evt", OBJECT_SELF);
+}
+
+
+void ShowOrHideRestXPUI(object oPC, object oArea=OBJECT_INVALID)
+{
+    string sKey = GetPCPublicCDKey(oPC, TRUE);
+    int nSetting = GetCampaignInt(sKey, "option_restxp_ui");
+    int nToken = GetRestXPUIToken(oPC);
+    int bClose = 0;
+    int bOpen = 0;
+    if (nSetting == 0)
+    {
+        if (nToken != 0)
+        {
+            bClose = 1;
+        }
+    }
+    else if (nSetting == 1)
+    {
+        if (nToken == 0)
+        {
+            bOpen = 1;
+        }
+    }
+    else if (nSetting == 2)
+    {
+        bOpen = PlayerGetsRestedXPInArea(oPC, oArea);
+        bClose = !bOpen;
+    }
+    if (bClose) { NuiDestroy(oPC, nToken); }
+    if (bOpen) { RestXPDisplay(oPC); }
+}
+
+
+void UpdateRestXPUI(object oPC)
+{
+    int nToken = GetRestXPUIToken(oPC);
+    if (nToken != 0)
+    {
+        SetScriptParam("action", "update");
+        SetScriptParam("pc", ObjectToString(oPC));
+        SetScriptParam("token", IntToString(nToken));
+        ExecuteScript("restxp_nui_evt", oPC);
+    }
+}
+
+int GetRestXPUIToken(object oPC)
+{
+    return NuiFindWindow(oPC, "restxp_nui");
 }

@@ -317,9 +317,7 @@ void _ClearSpellbook(object oCreature, int nClass)
                 //mem.ready = 0;
                 //mem.meta = METAMAGIC_NONE;
                 //mem.id = SPELL_RESISTANCE;
-
-                int nSpellId = GetMemorizedSpellId(oCreature, nClass, nLevel, i);
-                SetMemorizedSpell(oCreature, nClass, nLevel, i, nSpellId, FALSE);
+                SetMemorizedSpell(oCreature, nClass, nLevel, i, SPELL_RESISTANCE, FALSE);
             }
         }
     }
@@ -589,6 +587,16 @@ int _AddToRandomSpellTempArrays(object oCreature, int nSpell, int nClass, string
         if (nMetamagic != METAMAGIC_NONE) { return 0; }
         // Don't give spont casters multiple copies of the same thing
         if (GetHasSpell(nSpell, oCreature)) { return 0; }
+        int i;
+        int nLevel = _GetLevelForSpell(nSpell, sClass2da);
+        int nCount = GetKnownSpellCount(oCreature, nClass, nLevel);
+        for (i=0; i<nCount; i++)
+        {
+            if (GetKnownSpellId(oCreature, nClass, nLevel, i) == nSpell)
+            {
+                return 0;
+            }
+        }
     }
     int nFinalLevel = -1;
     int nDomain = -1;
@@ -824,7 +832,7 @@ void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nC
     nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_SHIELD, nClass, sClass2da, 6);
     nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_STONESKIN, nClass, sClass2da, 40);
     nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_GREATER_STONESKIN, nClass, sClass2da, 80);
-    nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_IMPROVED_INVISIBILITY, nClass, sClass2da, 40);
+    nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_IMPROVED_INVISIBILITY, nClass, sClass2da, 15);
     nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_PREMONITION, nClass, sClass2da, 160);
     _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
     int nCasterLevel = GetLevelByClass(nClass, oCreature);
@@ -2073,7 +2081,7 @@ void _RandomSpellbookPopulateArcane(int nSpellbookType, object oCreature, int nC
                 nWeightSum += _AddToRandomSpellTempArrays(oCreature, SPELL_RESISTANCE, nClass, sClass2da, 80 * cwThisAssignment.nWeightDefences);
             }
             jObj = _AddSpellFromTempArrays(oCreature, nClass, nWeightSum, jObj);
-            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));;
+            nAdded = JsonGetInt(JsonObjectGet(jObj, "LastAdded"));
             nAssigned++;
             nLeft--;
         }
@@ -4042,7 +4050,7 @@ void LoadSpellbook(int nClass, object oCreature=OBJECT_SELF, int nFixedIndex=-1,
             int nDomain = JsonGetInt(JsonObjectGet(jSpellData, "domain"));
             if (nClass == CLASS_TYPE_SORCERER || nClass == CLASS_TYPE_BARD)
             {
-                //WriteTimestampedLogEntry("Add spont known spell " + IntToString(nThisSpell) + " at lvl " + IntToString(nThisLevel));
+                //WriteTimestampedLogEntry("Add spont known spell " + IntToString(nSpell) + " at lvl " + IntToString(i));
                 NWNX_Creature_AddKnownSpell(oCreature, nClass, i, nSpell);
                 if (GetKnownSpellId(oCreature, nClass, i, nSpellIndex) != nSpell)
                 {

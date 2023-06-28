@@ -77,8 +77,10 @@ void main()
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_SPELLCASTAT, "on_pc_attacked");
     GiveHiPSFeatSafely(oPC);
 
-// this item is deprecated
+// these items are deprecated
     DestroyObject(GetItemPossessedBy(oPC, "_pc_handbook"));
+    DestroyObject(GetItemPossessedBy(oPC, "_stone_recall"));
+    DestroyObject(GetItemPossessedBy(oPC, "_unstucker"));
 
     DeleteLocalInt(oPC, "ambushed");
 
@@ -157,8 +159,7 @@ void main()
         DestroyObject(GetItemPossessedBy(oPC, "_dev_tool"));
     }
 
-    DelayCommand(4.0, CreateItemIfBlank(oPC, "_stone_recall"));
-    DelayCommand(4.0, CreateItemIfBlank(oPC, "_unstucker"));
+    
     DelayCommand(4.0, CreateItemIfBlank(oPC, "_pc_menu_toggler"));
     DelayCommand(5.0, FloatingTextStringOnCreature("Welcome to The Frozen North!", oPC, FALSE));
     DelayCommand(6.0, FloatingTextStringOnCreature("Please read the \"Information\" tab on the player menu for rules and information.", oPC, FALSE));
@@ -169,4 +170,6 @@ void main()
         sRespawn = GetRespawnLocationName(oPC);
         DelayCommand(9.0, FloatingTextStringOnCreature("You have chosen to respawn in " + sRespawn + ".", oPC, FALSE));
     }
+    
+    ShowOrHideXPBarUI(oPC);
 }

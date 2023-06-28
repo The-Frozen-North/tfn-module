@@ -619,6 +619,12 @@ int SelectTwoHandedMeleeWeaponType(object oCreature, int bDoubleSided=0)
     int nIndex = 0;
     int nMaxScore = 0;
     int nBaseItem;
+    int bFinesse = 0;
+    if (GetHasFeat(FEAT_WEAPON_FINESSE, oCreature) &&
+        GetAbilityModifier(ABILITY_DEXTERITY, oCreature) > GetAbilityModifier(ABILITY_STRENGTH, oCreature))
+    {
+        bFinesse = 1;
+    }
     for (nIndex = 0; nIndex < RAND_EQUIP_NUM_WEAPONTYPES; nIndex++)
     {
         nBaseItem = _GetWeaponTypeByIndex(nIndex);
@@ -626,16 +632,19 @@ int SelectTwoHandedMeleeWeaponType(object oCreature, int bDoubleSided=0)
         {
             if (!bDoubleSided ^ _IsWeaponTypeDoubleSided(nBaseItem))
             {
-                int nWeaponSize = _GetWeaponSize(nBaseItem);
-                // Twohanded: weapon must be exactly 1 bigger than creature
-                if (nCreatureSize - nWeaponSize == -1)
+                if (!bFinesse || _IsWeaponTypeFinessable(nBaseItem))
                 {
-                    nMaxScore = max(nMaxScore, _GetScoreForWeaponType(nBaseItem, oCreature));
-                    int i;
-                    int nWeight = _GetRandomEquipWeaponTypeWeight(oCreature, nBaseItem);
-                    for (i=0; i<nWeight; i++)
+                    int nWeaponSize = _GetWeaponSize(nBaseItem);
+                    // Twohanded: weapon must be exactly 1 bigger than creature
+                    if (nCreatureSize - nWeaponSize == -1)
                     {
-                        Array_PushBack_Int(RAND_EQUIP_TEMP_ARRAY, nBaseItem, GetModule());
+                        nMaxScore = max(nMaxScore, _GetScoreForWeaponType(nBaseItem, oCreature));
+                        int i;
+                        int nWeight = _GetRandomEquipWeaponTypeWeight(oCreature, nBaseItem);
+                        for (i=0; i<nWeight; i++)
+                        {
+                            Array_PushBack_Int(RAND_EQUIP_TEMP_ARRAY, nBaseItem, GetModule());
+                        }
                     }
                 }
             }
@@ -752,6 +761,13 @@ struct RandomWeaponResults RollRandomWeaponTypesForCreature(object oCreature)
     {
         bDualWield = 1;
     }
+    
+    int bFinesse = 0;
+    if (GetHasFeat(FEAT_WEAPON_FINESSE, oCreature) &&
+        GetAbilityModifier(ABILITY_DEXTERITY, oCreature) > GetAbilityModifier(ABILITY_STRENGTH, oCreature))
+    {
+        bFinesse = 1;
+    }
 
     if (GetLevelByClass(CLASS_TYPE_MONK, oCreature) > 0)
     {
@@ -766,19 +782,24 @@ struct RandomWeaponResults RollRandomWeaponTypesForCreature(object oCreature)
         {
             bNoFists = 0;
         }
-        if (bGiveRanged || Random(100) < 66 || bNoFists)
+        if (!bGiveRanged && !GetHasFeat(FEAT_CIRCLE_KICK, oCreature))
         {
-            if (bGiveRanged)
+            if (bGiveRanged || Random(100) < 66 || bNoFists)
             {
-                rwrOut.nMainHand = BASE_ITEM_SHURIKEN;
-                rwrOut.nBackupMeleeWeapon = d2() == 1 ? BASE_ITEM_QUARTERSTAFF : BASE_ITEM_KAMA;
-            }
-            else
-            {
-                rwrOut.nMainHand = d2() == 1 ? BASE_ITEM_QUARTERSTAFF : BASE_ITEM_KAMA;
-            }
+                if (bGiveRanged)
+                {
+                    rwrOut.nMainHand = BASE_ITEM_SHURIKEN;
+                    rwrOut.nBackupMeleeWeapon = d2() == 1 ? BASE_ITEM_QUARTERSTAFF : BASE_ITEM_KAMA;
+                    if (bFinesse) { rwrOut.nBackupMeleeWeapon = BASE_ITEM_KAMA; }
+                }
+                else
+                {
+                    rwrOut.nMainHand = d2() == 1 ? BASE_ITEM_QUARTERSTAFF : BASE_ITEM_KAMA;
+                    if (bFinesse) { rwrOut.nMainHand = BASE_ITEM_KAMA; }
+                }
 
-            return rwrOut;
+                return rwrOut;
+            }
         }
         // Otherwise, punchy punchy time
         return rwrOut;
@@ -1180,7 +1201,7 @@ object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance,
     }
     if (GetIsObjectValid(oAmmo))
     {
-        AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyBoomerang(), oAmmo);
+        AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyCustom(ITEM_PROPERTY_BOOMERANG), oAmmo);
     }
     return oNew;
 }
@@ -1220,7 +1241,7 @@ int GetACOfArmorToEquip(object oCreature, int nMaxAC=8)
     if (GetLevelByClass(CLASS_TYPE_WIZARD, oCreature)) { return 0; }
     if (GetLevelByClass(CLASS_TYPE_SORCERER, oCreature)) { return 0; }
     if (GetLevelByClass(CLASS_TYPE_RANGER, oCreature) && nMaxAC > 3) { nMaxAC = 3; }
-    if (GetLevelByClass(CLASS_TYPE_ROGUE, oCreature)  && nMaxAC > 3) { nMaxAC = 3; }
+    if (GetLevelByClass(CLASS_TYPE_ROGUE, oCreature) && _IsArmorCheckPenaltyAConcern(oCreature) && nMaxAC > 3) { nMaxAC = 3; }
     int nBestArmorAC = 0;
     int nDexMod = GetAbilityModifier(ABILITY_DEXTERITY, oCreature);
     int nBestAC = nDexMod;
@@ -1452,7 +1473,6 @@ int IsItemSuitableForCreature(object oCreature, object oItem)
                 // ITEM_PROPERTY_TRUE_SEEING
                 // ITEM_PROPERTY_TURN_RESISTANCE
 
-
                 else if (nItemPropertyType == ITEM_PROPERTY_ABILITY_BONUS)
                 {
                     int nAbility = GetItemPropertySubType(ipTest);
@@ -1462,7 +1482,15 @@ int IsItemSuitableForCreature(object oCreature, object oItem)
                         // It does help with just about everything else in TFN though
                         if (!GetLevelByClass(CLASS_TYPE_WIZARD, oCreature) && !GetLevelByClass(CLASS_TYPE_SORCERER, oCreature) && GetBaseItemType(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oCreature)) != BASE_ITEM_SHURIKEN)
                         {
-                            bSuitable = 1;
+                            // Would rather have +dex sometimes however
+                            if (GetAbilityModifier(ABILITY_DEXTERITY, oCreature) > GetAbilityModifier(ABILITY_STRENGTH, oCreature))
+                            {
+                                bSuitable = 0;
+                            }
+                            else
+                            {
+                                bSuitable = 1;
+                            }
                         }
                     }
                     else if (nAbility == ABILITY_DEXTERITY)

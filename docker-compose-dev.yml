@@ -13,6 +13,7 @@ services:
     - NWNX_SERVERLOGREDIRECTOR_LOG_LEVEL=6
     - NWNX_PROFILER_SKIP=y
     - NWNX_METRICS_INFLUXDB_SKIP=y
+    - NWN_DMPASSWORD=tfndev
     ports:
     - '5134:5134/udp'
     volumes:

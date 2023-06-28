@@ -77,7 +77,7 @@ void main()
                    "\n" +
                    "The caster gains a +1 bonus to attack and weapon damage rolls for every four caster levels (at least +1, to a maximum of +5).");
 // gmw
-   SetTlkOverride(3769,
+   SetTlkOverride(3770,
                   "Caster Level(s): Bard 3, Cleric 4, Paladin 3, Wizard / Sorcerer 3\n" +
                   "Innate Level: 3\n" +
                   "School: Transmutation\n" +
