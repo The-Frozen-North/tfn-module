@@ -20,7 +20,14 @@ void main()
         }
         string sNote = JsonGetString(NuiGetBind(oPC, nToken, "tmap_notes"));
         SetLocalString(oMap, "treasuremap_notes", sNote);
-        SetName(oMap, "Treasure Map - " + sNote);
+        if (sNote != "")
+        {
+            SetName(oMap, "Treasure Map - " + sNote);
+        }
+        else
+        {
+            SetName(oMap, "Treasure Map");
+        }
     }
     if (sElement == "digbutton" && sEvent == "click")
     {

@@ -204,7 +204,15 @@ int _EvaluateRandomFeat_Melee(object oCreature, int nFeat)
     if (nFeat == FEAT_BLIND_FIGHT) { return 60; }
     if (nFeat == FEAT_CALLED_SHOT) { return 30; }
     if (nFeat == FEAT_CLEAVE) {  return 60; }
-    if (nFeat == FEAT_CIRCLE_KICK) { return 150; }
+    if (nFeat == FEAT_CIRCLE_KICK)
+    {
+        // Things like Ranger 11 Monk 1 adventurers really want kamas and to not waste a feat on this
+        if (GetLevelByClass(CLASS_TYPE_MONK, oCreature) * 4 >= GetHitDice(oCreature))
+        {
+            return 150;
+        }
+        return 0;
+    }
     if (nFeat == FEAT_DISARM) { return 40; }
     if (nFeat == FEAT_DODGE) { return 30; }
     if (nFeat == FEAT_EXPERTISE) { return 40; }

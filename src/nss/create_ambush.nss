@@ -195,8 +195,8 @@ void main()
 
     // Small chance for adventurer assassins instead
     // Testing this at full odds is an exercise in insanity
-    //if (Random(100) < 3)
-    if (1)
+    if (Random(100) < 3)
+    //if (1)
     {
         bMakeRegularAmbush = !CreateAdventurerAmbush(GetLocation(OBJECT_SELF), oPC);
     }

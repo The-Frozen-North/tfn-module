@@ -9,5 +9,6 @@ void main()
     {
         SetXP(oPlayer, GetXPOnRespawn(oPlayer));
         TakeGoldFromCreature(GetGoldLossOnRespawn(oPlayer), oPlayer, TRUE);
+        UpdateXPBarUI(oPlayer);
     }
 }
