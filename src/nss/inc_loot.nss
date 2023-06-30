@@ -754,6 +754,41 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
             float fWeaponChance = IntToFloat(BASE_WEAPON_WEIGHT)/fCombinedWeight;
             float fArmorChance = IntToFloat(BASE_ARMOR_WEIGHT)/fCombinedWeight;
             float fApparelChance = IntToFloat(BASE_APPAREL_WEIGHT)/fCombinedWeight;
+            
+            string sVarPrefix = "";
+            // Track the different loot sources in the area separately
+            // This makes a LOT of variables. GetLootDebugVariablePrefixes returns an array of what is possible
+            // (and needs modifying if any of this is changed)
+            if (GetObjectType(oLootSource) == OBJECT_TYPE_PLACEABLE)
+            {
+                string sTreasure = GetLocalString(oLootSource, "treasure");
+                if (sTreasure != "high" && sTreasure != "medium" && sTreasure != "low")
+                {
+                    sTreasure = "other";
+                }
+                if (GetLocalInt(oLootSource, "boss"))
+                {
+                    sTreasure = "boss";
+                }
+                if (GetLocalInt(oLootSource, "semiboss"))
+                {
+                    sTreasure = "semiboss";
+                }
+                sVarPrefix = "_plc_" + sTreasure;
+            }
+            else if (GetObjectType(oLootSource) == OBJECT_TYPE_CREATURE)
+            {
+                string sTreasure = "normal";
+                if (GetLocalInt(oLootSource, "boss"))
+                {
+                    sTreasure = "boss";
+                }
+                if (GetLocalInt(oLootSource, "semiboss"))
+                {
+                    sTreasure = "semiboss";
+                }
+                sVarPrefix = "_cre_" + sTreasure;
+            }
 
 
             int nT1Weight = GetLocalInt(oModule, LOOT_DEBUG_T1_WEIGHT);
@@ -800,11 +835,12 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
                     float fGold = GetAverageLootValueOfItem(nTier, sType);
                     float fProb = fTierChance*fChance*fChanceForNoLootMultiplier;
                     float fContribution = fGold*fProb;
-                    string sVar = LOOT_DEBUG_OUTPUT + IntToString(nTier);
+                    //WriteTimestampedLogEntry(GetName(oLootSource) + ": Expected items = " + FloatToString(fChanceForNoLootMultiplier) + ", chance of tier " + IntToString(nTier) + " = " + FloatToString(fTierChance) + ", chance of item type " + sType + " = " + FloatToString(fChance));
+                    string sVar = LOOT_DEBUG_OUTPUT + sVarPrefix + IntToString(nTier);
                     SetLocalFloat(oModule, sVar, GetLocalFloat(oModule, sVar) + fContribution);
                     sVar = sVar + "_" + sType;
                     SetLocalFloat(oModule, sVar, GetLocalFloat(oModule, sVar) + fContribution);
-                    sVar = LOOT_DEBUG_OUTPUT + IntToString(nTier) + "_numitems";
+                    sVar = LOOT_DEBUG_OUTPUT + sVarPrefix + IntToString(nTier) + "_numitems";
                     SetLocalFloat(oModule, sVar, GetLocalFloat(oModule, sVar) + fProb);
                 }
             }
@@ -1149,36 +1185,109 @@ float GetAverageLootValueOfItem(int nTier, string sType)
     return fTotal;
 }
 
-void LootDebugOutput()
+
+
+json GetLootDebugVariablePrefixes()
 {
-    int nTier;
-    float fGoldTotal = 0.0;
-    for (nTier=1; nTier<=5; nTier++)
+    json jOut = GetLocalJson(GetModule(), "loot_debug_var_prefixes");
+    //if (jOut == JsonNull())
+    if (1)
     {
-        string sVar = LOOT_DEBUG_OUTPUT + IntToString(nTier);
-        fGoldTotal += GetLocalFloat(GetModule(), sVar);
-        SendDebugMessage("Expected value of tier " + IntToString(nTier) + " items: " + FloatToString(GetLocalFloat(GetModule(), sVar)), TRUE);
-        sVar = sVar + "_numitems";
-        SendDebugMessage("Expected number of tier " + IntToString(nTier) + " items: " + FloatToString(GetLocalFloat(GetModule(), sVar)), TRUE);
+        jOut = JsonArray();;
+        int nType;
+        int nSubtype;
+
+        // type 0: creature
+        // type 1: placeable
+        // type 2: undefined (should be unused but...)
+        for (nType=0; nType<=2; nType++)
+        {
+            string sTypePrefix;
+            
+            json jSubtypeLabels = JsonArray();
+            if (nType == 0)
+            {
+                sTypePrefix = "cre";
+                jSubtypeLabels = JsonArrayInsert(jSubtypeLabels, JsonString("normal"));
+                jSubtypeLabels = JsonArrayInsert(jSubtypeLabels, JsonString("boss"));
+                jSubtypeLabels = JsonArrayInsert(jSubtypeLabels, JsonString("semiboss"));
+            }
+            else if (nType == 1)
+            {
+                sTypePrefix = "plc";
+                jSubtypeLabels = JsonArrayInsert(jSubtypeLabels, JsonString("low"));
+                jSubtypeLabels = JsonArrayInsert(jSubtypeLabels, JsonString("medium"));
+                jSubtypeLabels = JsonArrayInsert(jSubtypeLabels, JsonString("high"));
+                jSubtypeLabels = JsonArrayInsert(jSubtypeLabels, JsonString("other"));
+                jSubtypeLabels = JsonArrayInsert(jSubtypeLabels, JsonString("boss"));
+                jSubtypeLabels = JsonArrayInsert(jSubtypeLabels, JsonString("semiboss"));
+            }
+            else
+            {
+                sTypePrefix = "";
+                jSubtypeLabels = JsonArrayInsert(jSubtypeLabels, JsonString(""));
+            }
+            int nNumSubtypes = JsonGetLength(jSubtypeLabels);
+            // Creatures: "normal", "boss", "semiboss"
+            // Placeable: "low", "medium", "high", "boss", "semiboss", "other"
+            for (nSubtype=0; nSubtype<nNumSubtypes; nSubtype++)
+            {
+                string sSubtype = JsonGetString(JsonArrayGet(jSubtypeLabels, nSubtype));
+                string sPrefix = "_" + sTypePrefix;
+                if (sTypePrefix == "") { sPrefix = ""; }
+                if (sSubtype != "") { sPrefix = sPrefix + "_" + sSubtype; }
+                jOut = JsonArrayInsert(jOut, JsonString(sPrefix));
+            }
+        }
+        SetLocalJson(GetModule(), "loot_debug_var_prefixes", jOut);
     }
-    float fRawGold = GetLocalFloat(GetModule(), LOOT_DEBUG_GOLD);
-    SendDebugMessage("Expected raw gold: " + FloatToString(fRawGold), TRUE);
-    SendDebugMessage("Total item value: " + FloatToString(fGoldTotal), TRUE);
+    return jOut;
 }
 
 // Reset the loot tracker.
 void ResetLootDebug()
 {
     int nTier;
+    json jTypePrefixes = GetLootDebugVariablePrefixes();
+    int nNumTypePrefixes = JsonGetLength(jTypePrefixes);
+    int nPrefixIndex;
     for (nTier=1; nTier<=5; nTier++)
     {
-        string sVar = LOOT_DEBUG_OUTPUT + IntToString(nTier);
-        SetLocalFloat(GetModule(), sVar, 0.0);
-        sVar = sVar + "_numitems";
-        SetLocalFloat(GetModule(), sVar, 0.0);
+        for (nPrefixIndex=0; nPrefixIndex<nNumTypePrefixes; nPrefixIndex++)
+        {
+            string sPrefix = JsonGetString(JsonArrayGet(jTypePrefixes, nPrefixIndex));
+            string sVar = LOOT_DEBUG_OUTPUT + sPrefix + IntToString(nTier);
+            SetLocalFloat(GetModule(), sVar, 0.0);
+            sVar = sVar + "_numitems";
+            SetLocalFloat(GetModule(), sVar, 0.0);
+        }
     }
     SetLocalFloat(GetModule(), LOOT_DEBUG_GOLD, 0.0);
     DeleteLocalObject(GetModule(), LOOT_DEBUG_AREA);
+}
+
+void LootDebugOutput()
+{
+    int nTier;
+    float fGoldTotal = 0.0;
+    json jTypePrefixes = GetLootDebugVariablePrefixes();
+    int nNumTypePrefixes = JsonGetLength(jTypePrefixes);
+    int nPrefixIndex;
+    for (nTier=1; nTier<=5; nTier++)
+    {
+        for (nPrefixIndex=0; nPrefixIndex<nNumTypePrefixes; nPrefixIndex++)
+        {
+            string sPrefix = JsonGetString(JsonArrayGet(jTypePrefixes, nPrefixIndex));
+            string sVar = LOOT_DEBUG_OUTPUT + sPrefix + IntToString(nTier);
+            fGoldTotal += GetLocalFloat(GetModule(), sVar);
+            SendDebugMessage("Expected value of prefix \"" + sPrefix + "\" tier " + IntToString(nTier) + " items: " + FloatToString(GetLocalFloat(GetModule(), sVar)), TRUE);
+            sVar = sVar + "_numitems";
+            SendDebugMessage("Expected number of prefix \"" + sPrefix + "\" tier " + IntToString(nTier) + " items: " + FloatToString(GetLocalFloat(GetModule(), sVar)), TRUE);
+        }
+    }
+    float fRawGold = GetLocalFloat(GetModule(), LOOT_DEBUG_GOLD);
+    SendDebugMessage("Expected raw gold: " + FloatToString(fRawGold), TRUE);
+    SendDebugMessage("Total item value: " + FloatToString(fGoldTotal), TRUE);
 }
 
 

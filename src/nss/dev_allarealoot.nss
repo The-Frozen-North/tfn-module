@@ -5,23 +5,84 @@
 // Takes a while to run, most likely enough time to go make a warm beverage of your choosing
 
 
-void RunOnArea(object oDev, object oArea)
+void RunOnArea(object oDev, json jAreas, int nState=0)
 {
-    object oTest = GetFirstObjectInArea(oArea);
-    while (GetIsObjectValid(oTest))
+    int nLength = JsonGetLength(jAreas);
+    if (nLength == 0)
     {
-        if (!GetIsDead(oTest) && GetIsObjectValid(oTest) && GetObjectType(oTest) == OBJECT_TYPE_CREATURE)
-        {
-            break;
-        }
-        oTest = GetNextObjectInArea(oArea);
+        SendMessageToPC(oDev, "DONE.");
+        DeleteLocalJson(GetModule(), "dev_allarealoot_areas");
+        return;
     }
-    
-    if (GetIsObjectValid(oTest))
+    object oArea = StringToObject(JsonGetString(JsonArrayGet(jAreas, 0)));
+    if (!GetIsObjectValid(oDev) && nState != 1)
     {
-        location lTarget = GetLocation(oTest);
-        JumpToLocation(lTarget);
-        DelayCommand(10.0f, ExecuteScript("dev_arealootval", oDev));
+        WriteTimestampedLogEntry("PC crashed. RIP.");
+        SetLocalJson(GetModule(), "dev_allarealoot_areas", jAreas);
+        if (nState >= 2)
+        {
+            ExecuteScript("area_refresh", oArea);
+        }
+        return;
+    }
+    // State 0: jump PC to area
+    // State 1: wait for PC to load in
+    // State 2: run dev_arealootval
+    // State 3: wait 12 seconds
+    // State 4: jump to next area
+    if (nState == 0)
+    {
+        object oTest = GetFirstObjectInArea(oArea);
+        while (GetIsObjectValid(oTest))
+        {
+            if (!GetIsDead(oTest) && GetIsObjectValid(oTest) && GetObjectType(oTest) == OBJECT_TYPE_CREATURE)
+            {
+                break;
+            }
+            oTest = GetNextObjectInArea(oArea);
+        }
+        if (GetIsObjectValid(oTest))
+        {
+            location lTarget = GetLocation(oTest);
+            JumpToLocation(lTarget);
+            WriteTimestampedLogEntry("Jumping to: " + GetName(oArea));
+            nState = 1;
+        }
+        else
+        {
+            nState = 4;
+        }
+    }
+    if (nState == 1)
+    {
+        if (GetArea(oDev) != oArea)
+        {
+            DelayCommand(2.0, RunOnArea(oDev, jAreas, nState));
+            return;
+        }
+        nState = 2;
+    }
+    if (nState == 2)
+    {
+        FloatingTextStringOnCreature("There are " + IntToString(nLength) + " areas left in the queue.", oDev);
+        SetLocalInt(oDev, "dev_allarealoot_wait", 1);
+        ExecuteScript("dev_arealootval", oDev);
+        DelayCommand(12.0, DeleteLocalInt(oDev, "dev_allarealoot_wait"));
+        nState = 3;
+    }
+    if (nState == 3)
+    {
+        if (GetLocalInt(oDev, "dev_allarealoot_wait"))
+        {
+            DelayCommand(1.0, RunOnArea(oDev, jAreas, nState));
+            return;
+        }
+        nState = 4;
+    }
+    if (nState == 4)
+    {
+        jAreas = JsonArrayDel(jAreas, 0);
+        RunOnArea(oDev, jAreas, 0);
     }
 }
 
@@ -41,21 +102,22 @@ void main()
     }
     SendMessageToAllDMs(GetName(oDev) + " is running dev_allarealoot");
 
-	int nAreaIndex = 0;
-	float fDelay = 24.0*nAreaIndex;
+    json jAreas = JsonArray();
 	object oArea = GetFirstArea();
 	while (GetIsObjectValid(oArea))
 	{
 		if (GetLocalInt(oArea, "cr") > 0)
 		{
-			fDelay = 24.0*nAreaIndex;
-			nAreaIndex++;
-			DelayCommand(fDelay, RunOnArea(oDev, oArea));
+			jAreas = JsonArrayInsert(jAreas, JsonString(ObjectToString(oArea)));
 		}
 		oArea = GetNextArea();
 	}
+    json jSaved = GetLocalJson(GetModule(), "dev_allarealoot_areas");
+    if (jSaved != JsonNull())
+    {
+        jAreas = jSaved;
+    }
+    RunOnArea(oDev, jAreas, 0);
 	
-	DelayCommand(11.0f, SendMessageToPC(oDev, "There are " + IntToString(nAreaIndex+1) + " areas to jump through, taking " + FloatToString(fDelay) + " seconds. Sit back and enjoy the ride."));
-	DelayCommand(18.0f, SendMessageToPC(oDev, "There are " + IntToString(nAreaIndex+1) + " areas to jump through, taking " + FloatToString(fDelay) + " seconds. Sit back and enjoy the ride."));
 }
 
