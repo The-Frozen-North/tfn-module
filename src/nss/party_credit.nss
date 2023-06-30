@@ -777,6 +777,9 @@ void main()
         float fChanceThree = IntToFloat(nChanceThree)/100.0;
         float fChanceTwo = IntToFloat(nChanceTwo - nChanceThree)/100.0;
         float fChanceOne = IntToFloat(nChanceOne - (nChanceTwo + nChanceThree))/100.0;
+        fChanceThree = fmin(1.0, fmax(0.0, fChanceThree));
+        fChanceTwo = fmin(1.0, fmax(0.0, fChanceTwo));
+        fChanceOne = fmin(1.0, fmax(0.0, fChanceOne));
 
         float fExpected = fTreasureChance * (fChanceOne + (2.0 * fChanceTwo) + (3.0 * fChanceThree));
         SendDebugMessage("Expected number of items from " + GetName(OBJECT_SELF) +": " + FloatToString(fExpected));

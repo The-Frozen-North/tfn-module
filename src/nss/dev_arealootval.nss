@@ -7,6 +7,9 @@
 // Kills everything in the area, as if you went and did it properly, and brings all the loot to you
 // And tells you how much gold value there was in it
 
+// Use /tools/areavaluestocsv.py to assemble this into something you can open in excel
+// It's still not pretty and there are a LOT of numbers, but...
+
 void KillCreature(object oCreature)
 {
     SendMessageToPC(OBJECT_SELF, "Kill: " + GetName(oCreature));
@@ -82,6 +85,8 @@ void main()
     object oArea = GetArea(oDev);
     object oTest = GetFirstObjectInArea(oArea);
 	SetLocalObject(GetModule(), LOOT_DEBUG_AREA, oArea);
+    int nCreatures = 0;
+    int nPlaceables = 0;
     while (GetIsObjectValid(oTest))
     {
         int nObjType = GetObjectType(oTest);
@@ -91,6 +96,7 @@ void main()
             {
                 DelayCommand(0.1, KillCreature(oTest));
                 //DelayCommand(0.2, ExecuteScript("party_credit", oTest));
+                nCreatures++;
             }
         }
         else if (nObjType == OBJECT_TYPE_PLACEABLE && DO_PLACEABLES)
@@ -98,10 +104,12 @@ void main()
             if (GetLocalInt(oTest, "cr") > 0 && GetResRef(oTest) != "_loot_container" && GetName(oTest) != "Personal Loot")
             {
                 DelayCommand(0.2, ExecuteScript("party_credit", oTest));
+                nPlaceables++;
             }
         }
         oTest = GetNextObjectInArea(oArea);
     }
+    SendDebugMessage(GetTag(oArea) + ": " + IntToString(nCreatures) + " creatures, " + IntToString(nPlaceables) + " placeables", TRUE);
     DelayCommand(10.0f, DelayedAction());
     NWNX_Util_SetInstructionLimit(nOldInstructionLimit);
 }
