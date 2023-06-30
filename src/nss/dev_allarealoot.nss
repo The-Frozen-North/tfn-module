@@ -5,6 +5,10 @@
 // Takes a while to run, most likely enough time to go make a warm beverage of your choosing
 
 
+// this script may take a while to run, spot check certain areas only
+// note, the global column won't be that accurate if this is the case
+const int LIMITED_SAMPLE_SIZE = TRUE;
+
 void RunOnArea(object oDev, json jAreas, int nState=0)
 {
     int nLength = JsonGetLength(jAreas);
@@ -103,21 +107,67 @@ void main()
     SendMessageToAllDMs(GetName(oDev) + " is running dev_allarealoot");
 
     json jAreas = JsonArray();
-	object oArea = GetFirstArea();
-	while (GetIsObjectValid(oArea))
-	{
-		if (GetLocalInt(oArea, "cr") > 0)
-		{
-			jAreas = JsonArrayInsert(jAreas, JsonString(ObjectToString(oArea)));
-		}
-		oArea = GetNextArea();
-	}
+    object oArea = GetFirstArea();
+    while (GetIsObjectValid(oArea))
+    {
+        // only count areas with a CR variable, as this determines loot
+        // loot is still possible even without that variable but should be considered a bug
+        if (GetLocalInt(oArea, "cr") > 0)
+        {
+            int bAddArea = FALSE;
+
+            if (LIMITED_SAMPLE_SIZE)
+            {
+                string sResRef = GetResRef(oArea);
+                if (sResRef == "ud_behold1" || // beholder dungeon
+                    sResRef == "ud_behold2" ||
+                    // sResRef == "ud_behold3" ||
+                    sResRef == "ud_east_form" || // formian dungeon
+                    sResRef == "ud_central" || // underdark exploration areas
+                    sResRef == "ud_east" ||
+                    sResRef == "beg_crypts" || // great graveyard and dungeons
+                    sResRef == "beg_grave" ||
+                    sResRef == "beg_warrens" ||
+                    sResRef == "charwood_jhareg" || // castle jhareg
+                    sResRef == "charwood_jharegk" ||
+                    sResRef == "charwood_jharegq" ||
+                    sResRef == "hr_north1" || // high roads
+                    // sResRef == "hr_north2" ||
+                    sResRef == "hr_south1" ||
+                    // sResRef == "hr_south2" ||
+                    sResRef == "mere_lizard0" || // lizardfolk lair
+                    sResRef == "mere_lizard1" ||
+                    sResRef == "mere_lizard2" ||
+                    sResRef == "helm1" || // helm's hold
+                    sResRef == "helm2" ||
+                    sResRef == "helm3" ||
+                    sResRef == "goblin0" || // goblin dungeon
+                    sResRef == "goblin1" ||
+                    sResRef == "goblin2" ||
+                    sResRef == "banditcamp")
+                    {
+                        bAddArea = TRUE;
+                    }
+
+            }
+            else
+            {
+                bAddArea = TRUE;
+            }
+
+            if (bAddArea)
+            {
+                jAreas = JsonArrayInsert(jAreas, JsonString(ObjectToString(oArea)));
+            }
+        }
+        oArea = GetNextArea();
+    }
     json jSaved = GetLocalJson(GetModule(), "dev_allarealoot_areas");
     if (jSaved != JsonNull())
     {
         jAreas = jSaved;
     }
     RunOnArea(oDev, jAreas, 0);
-	
+
 }
 

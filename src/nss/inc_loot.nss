@@ -46,9 +46,9 @@ const int CHANCE_THREE = 5;
 // Lower these to decrease the base chance of getting certain tiers.
 const int BASE_T1_WEIGHT = 2000;
 const int BASE_T2_WEIGHT = 200;
-const int BASE_T3_WEIGHT = 50;
-const int BASE_T4_WEIGHT = 15;
-const int BASE_T5_WEIGHT = 4;
+const int BASE_T3_WEIGHT = 100;
+const int BASE_T4_WEIGHT = 50;
+const int BASE_T5_WEIGHT = 25;
 
 // See the implementation for notes on what these are and how they work
 const int T1_SIGMOID_MIDPOINT = 1;
@@ -57,7 +57,7 @@ const int T3_SIGMOID_MIDPOINT = 7;
 const int T4_SIGMOID_MIDPOINT = 10;
 const int T5_SIGMOID_MIDPOINT = 13;
 
-// The string to play when there isn't loot available
+// The message to show when there isn't loot available
 const string NO_LOOT = "This container doesn't have any items.";
 
 // Constants for placeable loot
@@ -76,6 +76,15 @@ const float TREASURE_LOW_QUANTITY = 1.0;
 
 // CHANCE_X are multiplied by this for placeables that are destroyed (rather than opening the lock)
 const float PLACEABLE_DESTROY_LOOT_PENALTY = 0.6;
+
+// the CR variable on a boss is used for gold
+const float BOSS_CR_MULTIPLIER = 2.0;
+const float SEMIBOSS_CR_MULTIPLIER = 1.5;
+
+// Increased area CR means higher quality loot (and higher quality potential loot,
+//eventually this should be re-named as the name is confusing
+const float BOSS_AREA_CR_MULTIPLIER = 1.5;
+const float SEMIBOSS_AREA_CR_MULTIPLIER = 1.2;
 
 // Percentage chances for various categories
 // Needless to say, these sets should sum to 100
@@ -369,6 +378,7 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
     // https://docs.google.com/document/d/1t451EgutNToXGVbuQGHraBaefI8TsWlcWbqXDpU-HA0
     // As the person that spent a few hours coming up with them, I would strongly encourage
     // a detailed discussion of what about the design of these is wrong before messing with them!
+
     int nT1Weight = FloatToInt(BASE_T1_WEIGHT * fmax(0.0, ((68.0 + atan((iAreaCR - T1_SIGMOID_MIDPOINT) * 0.6))/158.0)));
     int nT2Weight = FloatToInt(BASE_T2_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T2_SIGMOID_MIDPOINT) * 0.6))/158.0)));
     int nT3Weight = FloatToInt(BASE_T3_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T3_SIGMOID_MIDPOINT) * 0.6))/158.0)));
@@ -672,6 +682,9 @@ object CopyTierItemToContainer(object oItem, object oContainer)
 
 object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALID)
 {
+   int iCR = GetLocalInt(oLootSource, "cr");
+   int iAreaCR = GetLocalInt(oLootSource, "area_cr");
+
 
    if (GetLocalInt(GetModule(), "treasure_ready") != 1)
    {
@@ -689,9 +702,6 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
    {
        oDestinationContainer = oLootSource;
    }
-
-   int iCR = GetLocalInt(oLootSource, "cr");
-   int iAreaCR = GetLocalInt(oLootSource, "area_cr");
 
 // Add all the weights
    int nCombinedWeight = 0;
@@ -754,7 +764,7 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
             float fWeaponChance = IntToFloat(BASE_WEAPON_WEIGHT)/fCombinedWeight;
             float fArmorChance = IntToFloat(BASE_ARMOR_WEIGHT)/fCombinedWeight;
             float fApparelChance = IntToFloat(BASE_APPAREL_WEIGHT)/fCombinedWeight;
-            
+
             string sVarPrefix = "";
             // Track the different loot sources in the area separately
             // This makes a LOT of variables. GetLootDebugVariablePrefixes returns an array of what is possible
@@ -924,7 +934,7 @@ void OpenPersonalLoot(object oContainer, object oPC)
 {
 // don't do anything if not a PC
     if (!GetIsPC(oPC)) return;
-    
+
     string sVar = "HighlightChange_" + GetPCPublicCDKey(oPC, TRUE) + "_" + ObjectToString(oPC);
     if (!GetLocalInt(oContainer, sVar))
     {
@@ -932,7 +942,7 @@ void OpenPersonalLoot(object oContainer, object oPC)
         NWNX_Player_SetPlaceableNameOverride(oPC, oContainer, OPENED_LOOT_HIGHLIGHT_STRING + GetName(oContainer) + "</c>");
         SetLocalInt(oContainer, sVar, 1);
     }
-    
+
 
 // Get the personal container
     object oPersonalLoot = GetObjectByUUID(GetLocalString(oContainer, "personal_loot_"+GetPCPublicCDKey(oPC, TRUE)));
@@ -1203,7 +1213,7 @@ json GetLootDebugVariablePrefixes()
         for (nType=0; nType<=2; nType++)
         {
             string sTypePrefix;
-            
+
             json jSubtypeLabels = JsonArray();
             if (nType == 0)
             {

@@ -126,14 +126,14 @@ void main()
 
     if (GetLocalInt(OBJECT_SELF, "boss"))
     {
-        fCR = fCR * 2.0; // double CR for bosses
-        // Increased area CR means higher quality loot
-        iAreaCR = FloatToInt(IntToFloat(iAreaCR) * 1.5);
+        fCR = fCR * BOSS_CR_MULTIPLIER;
+        // Increased area CR means higher quality loot allowed
+        iAreaCR = FloatToInt(IntToFloat(iAreaCR) * BOSS_AREA_CR_MULTIPLIER);
     }
     else if (GetLocalInt(OBJECT_SELF, "semiboss"))
     {
-        fCR = fCR * 1.5; // 50% increase for semibosses
-        iAreaCR = FloatToInt(IntToFloat(iAreaCR) * 1.2);
+        fCR = fCR * SEMIBOSS_CR_MULTIPLIER;
+        iAreaCR = FloatToInt(IntToFloat(iAreaCR) * SEMIBOSS_AREA_CR_MULTIPLIER);
     }
 
     // Create random weapons before scanning, it's sensible
