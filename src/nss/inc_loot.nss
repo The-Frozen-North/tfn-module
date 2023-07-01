@@ -49,7 +49,7 @@ const int BASE_T1_WEIGHT = 2000;
 const int BASE_T2_WEIGHT = 200;
 const int BASE_T3_WEIGHT = 100;
 const int BASE_T4_WEIGHT = 50;
-const int BASE_T5_WEIGHT = 25;
+const int BASE_T5_WEIGHT = 20;
 
 // See the implementation for notes on what these are and how they work
 const int T1_SIGMOID_MIDPOINT = 1;
@@ -77,8 +77,10 @@ const float TREASURE_LOW_QUALITY = 0.4;
 const float TREASURE_LOW_QUANTITY = 1.0;
 
 // These apply both to creatures and placeables
-const float SEMIBOSS_QUALITY_MODIFIER = -0.3;
-const float BOSS_QUALITY_MODIFIER = -0.6;
+// https://docs.google.com/spreadsheets/d/1OEeU2aANF8ERT8o1wSLb0Lo6W4xqu0QADGR0Vo-ynk4/edit#gid=1129304103 - Boss Weight Exponent
+// 0.3 on the sheet means -0.7 here. Subtract the exponent from -1.0
+const float SEMIBOSS_QUALITY_MODIFIER = -0.4;
+const float BOSS_QUALITY_MODIFIER = -0.7;
 
 // Low tier consumables tend to stack up at high levels.
 // Without this you probably get too many cure light wounds potions and cantrip scrolls
@@ -405,21 +407,21 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "", float fWeightExpon
     float fT3Weight = BASE_T3_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T3_SIGMOID_MIDPOINT) * 0.6))/158.0));
     float fT4Weight = BASE_T4_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T4_SIGMOID_MIDPOINT) * 0.6))/158.0));
     float fT5Weight = BASE_T5_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T5_SIGMOID_MIDPOINT) * 0.6))/158.0));
-    
+
     float fWeightExponent = 1.0 + fWeightExponentModifier;
     // Negative powers break this, badly. 0.0 final exponent makes all available tiers get 1 weight, at least...
     fWeightExponent = fmax(0.0, fWeightExponent);
-    
+
     if (sType == "MiscCons") { fWeightExponent += MISC_CONSUMABLE_QUALITY_MODIFIER; }
     else if (sType == "Potion") { fWeightExponent += POTION_QUALITY_MODIFIER; }
     else if (sType == "Scrolls") { fWeightExponent += SCROLL_CONSUMABLE_QUALITY_MODIFIER; }
-    
+
     fT1Weight = pow(fT1Weight, fWeightExponent);
     fT2Weight = pow(fT2Weight, fWeightExponent);
     fT3Weight = pow(fT3Weight, fWeightExponent);
     fT4Weight = pow(fT4Weight, fWeightExponent);
     fT5Weight = pow(fT5Weight, fWeightExponent);
-    
+
     int nT1Weight = FloatToInt(fT1Weight * 1000.0);
     int nT2Weight = FloatToInt(fT2Weight * 1000.0);
     int nT3Weight = FloatToInt(fT3Weight * 1000.0);
@@ -758,7 +760,7 @@ json _BuildListOfOwnDroppableLoot(object oLootOrigin, int nTier, int bForceSkipT
     {
         return jItems;
     }
-    
+
     int bSkipTierCheck = 0;
     if (GetLocalInt(oLootOrigin, "boss") && bForceSkipTierCheck == -1)
     {
@@ -768,7 +770,7 @@ json _BuildListOfOwnDroppableLoot(object oLootOrigin, int nTier, int bForceSkipT
     {
         bSkipTierCheck = bForceSkipTierCheck;
     }
-    
+
     jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_CHEST, oLootOrigin), nTier, bSkipTierCheck);
     jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_HEAD, oLootOrigin), nTier, bSkipTierCheck);
     jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oLootOrigin), nTier, bSkipTierCheck);
@@ -780,7 +782,7 @@ json _BuildListOfOwnDroppableLoot(object oLootOrigin, int nTier, int bForceSkipT
     jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_LEFTRING, oLootOrigin), nTier, bSkipTierCheck);
     jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_RIGHTRING, oLootOrigin), nTier, bSkipTierCheck);
     jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_NECK, oLootOrigin), nTier, bSkipTierCheck);
-   
+
     return jItems;
 }
 
@@ -819,7 +821,7 @@ float _GetExpectedValueOfOwnDroppableLoot(object oLootOrigin, int nTier, int nTi
     {
         fValue = fValue / IntToFloat(nNumItems);
     }
-    return fValue;    
+    return fValue;
 }
 
 
@@ -835,7 +837,7 @@ object SelectItemToDropAsLoot(int iCR, int iAreaCR, string sType, int nTier, obj
     {
         if (Random(100) < CHANCE_TO_DROP_EQUIPPED_ITEM)
         {
-            
+
             string sTier = DetermineTier(iCR, iAreaCR, sType, fQualityExponentModifier);
             // Once we're determining a tier, it needs to get passed on really
             // if we don't have an item of this tier the random item should be the same tier
@@ -865,7 +867,7 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
 {
    int iCR = GetLocalInt(oLootSource, "cr");
    int iAreaCR = GetLocalInt(oLootSource, "area_cr");
-   
+
    float fQualityExponentModifier = 0.0;
    if (GetLocalInt(oLootSource, "boss"))
    {
@@ -938,7 +940,7 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
    {
        nItemRoll = nItemRoll - nMiscWeight;
        if (nItemRoll <= 0) {oItem = SelectItemToDropAsLoot(iCR, iAreaCR, "Misc", 0, oDestinationContainer, FALSE, fQualityExponentModifier, oLootSource);break;}
-       
+
        nItemRoll = nItemRoll - nMiscConsWeight;
        if (nItemRoll <= 0) {oItem = SelectItemToDropAsLoot(iCR, iAreaCR, "MiscCons", 0, oDestinationContainer, FALSE, fQualityExponentModifier, oLootSource);break;}
 
@@ -1031,10 +1033,10 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
                     case 6: { sType="Misc";     fChance=fMiscChance;    break; }
                 }
                 int bIsConsumable = nItemTypeIndex <= 2;
-                
+
                 // This updates the module variables, because these now depend on the item type a bit
                 DetermineTier(iCR, iAreaCR, sType, fQualityExponentModifier);
-                
+
                 int nT1Weight = GetLocalInt(oModule, LOOT_DEBUG_T1_WEIGHT);
                 int nT2Weight = GetLocalInt(oModule, LOOT_DEBUG_T2_WEIGHT);
                 int nT3Weight = GetLocalInt(oModule, LOOT_DEBUG_T3_WEIGHT);
@@ -1048,9 +1050,9 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
                 float fT3Prob = IntToFloat(nT3Weight)/fWeightSum;
                 float fT4Prob = IntToFloat(nT4Weight)/fWeightSum;
                 float fT5Prob = IntToFloat(nT5Weight)/fWeightSum;
-                
-                
-                
+
+
+
                 for (nTier=1; nTier<=5; nTier++)
                 {
                     float fTierChance;
@@ -1063,7 +1065,7 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
                         case 5: { fTierChance=fT5Prob; break; }
                     }
                     float fGold = GetAverageLootValueOfItem(nTier, sType);
-                    
+
                     float fRandomLootChance = 1.0;
                     float fOwnLootChance = 0.0;
                     float fOwnLootValue = _GetExpectedValueOfOwnDroppableLoot(oLootSource, nTier);
@@ -1072,13 +1074,13 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
                         fOwnLootChance = IntToFloat(CHANCE_TO_DROP_EQUIPPED_ITEM)/100.0;
                         fRandomLootChance -= fOwnLootChance;
                     }
-                    
-                    
+
+
                     float fProb = fTierChance*fChance*fChanceForNoLootMultiplier*fRandomLootChance;
                     float fContribution = fGold*fProb;
-                    
+
                     fContribution += (fTierChance*fChance*fChanceForNoLootMultiplier*fOwnLootChance * fOwnLootValue);
-                                        
+
                     //WriteTimestampedLogEntry(GetName(oLootSource) + ": Expected items = " + FloatToString(fChanceForNoLootMultiplier) + ", chance of tier " + IntToString(nTier) + " = " + FloatToString(fTierChance) + ", chance of item type " + sType + " = " + FloatToString(fChance));
                     string sVar = LOOT_DEBUG_OUTPUT + sVarPrefix + IntToString(nTier);
                     SetLocalFloat(oModule, sVar, GetLocalFloat(oModule, sVar) + fContribution);
