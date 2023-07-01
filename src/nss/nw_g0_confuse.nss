@@ -33,22 +33,62 @@ void main()
     {
         ActionRandomWalk();
     }
-    else if(nRandom < 7) // 2-6 - do nothing
+    else if(nRandom <= 6) // 2-6 - do nothing
     {
         ClearAllActions(TRUE);
     }
-    else // 7-10 - attack nearest creature
+    else // 7-10 - attack nearest object
     {
+        object oCreatureTarget, oPlaceableTarget;
+
         int nTh = 2;
-        object oTarget = GetNearestCreature(CREATURE_TYPE_IS_ALIVE,TRUE);
-        while(oTarget != OBJECT_INVALID)
+        object oCreature = GetNearestCreature(CREATURE_TYPE_IS_ALIVE,TRUE);
+
+        while(oCreature != OBJECT_INVALID)
         {
-            if(GetObjectSeen(oTarget) || GetObjectHeard(oTarget))
+            if(GetObjectSeen(oCreature) || GetObjectHeard(oCreature))
             {
-                ActionAttack(GetNearestObject(OBJECT_TYPE_CREATURE));
+
+                oCreatureTarget = oCreature;
                 break;
             }
-        oTarget = GetNearestCreature(CREATURE_TYPE_IS_ALIVE,TRUE,OBJECT_SELF,nTh++);
+            oCreature = GetNearestCreature(CREATURE_TYPE_IS_ALIVE,TRUE,OBJECT_SELF,nTh++);
+        }
+
+        nTh = 2;
+        object oPlaceable = GetNearestObject(OBJECT_TYPE_PLACEABLE);
+
+        while(oPlaceable != OBJECT_INVALID)
+        {
+            if(GetUseableFlag(oPlaceable) && LineOfSightObject(OBJECT_SELF, oPlaceable))
+            {
+                oPlaceableTarget = oPlaceable;
+                break;
+            }
+            oPlaceable = GetNearestObject(OBJECT_TYPE_PLACEABLE, OBJECT_SELF, nTh++);
+        }
+
+        // creature but not placeable, just attack creature
+        if (GetIsObjectValid(oCreatureTarget) && !GetIsObjectValid(oPlaceableTarget))
+        {
+            ActionAttack(oCreatureTarget);
+        }
+        // vice versa
+        else if (GetIsObjectValid(oPlaceableTarget) && !GetIsObjectValid(oCreatureTarget))
+        {
+            ActionAttack(oPlaceableTarget);
+        }
+        // if both, choose one randomly to attack
+        else if (GetIsObjectValid(oPlaceableTarget) && GetIsObjectValid(oCreatureTarget))
+        {
+            if (d2() == 1)
+            {
+                ActionAttack(oCreatureTarget);
+            }
+            else
+            {
+                ActionAttack(oPlaceableTarget);
+            }
         }
     }
     SetCommandable(FALSE);

@@ -85,10 +85,10 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
                SetLocalObject(oArea, "random"+IntToString(nTarget)+"_creature"+IntToString(nTotalSpawnsOfThisTarget), oCreature);
                nTotalSpawnsOfThisTarget++;
           }
-          
-          
+
+
       }
-      
+
       // Do the rest randomly
       for (nSpawn = 1; nSpawn <= nTotalSpawns; nSpawn++)
       {
@@ -151,11 +151,11 @@ void main()
             // Clearing an area and having none of the big chests at the end spawn is sad
             float fQualityMult = GetLocalFloat(OBJECT_SELF, "treasure_quality_mult" + IntToString(i));
             float fQuantityMult = GetLocalFloat(OBJECT_SELF, "treasure_quantity_mult" + IntToString(i));
-            
+
             fThisTreasureChance = fThisTreasureChance * fQualityMult * fQuantityMult;
-            
+
             int nThisTreasureChance = min(85, FloatToInt(fThisTreasureChance));
-            
+
             if ((GetLocalInt(OBJECT_SELF, "treasure_keep"+IntToString(i)) == 1) || (d100() <= nThisTreasureChance))
             {
 
@@ -171,9 +171,9 @@ void main()
             }
         }
      }
-     
 
-     
+
+
 // ==============================
 // Events
 // ==============================
@@ -181,7 +181,7 @@ void main()
     int nOldEvent;
     for (nOldEvent = 0; nOldEvent < 20; nOldEvent++)
         DestroyObject(GetObjectByTag(sResRef+"_event", nOldEvent));
-    
+
     // Event stores: currently the only sources of stores in refreshing areas is from the
     // random event merchant
     // Might not always be the case, though...
@@ -204,7 +204,7 @@ void main()
     int nEventSpawns = GetLocalInt(OBJECT_SELF, "event_spawn_points");
     int nEventChance = GetLocalInt(OBJECT_SELF, "event_chance");
     if (nEventChance <= 0)
-    { 
+    {
         nEventChance = 50;
     }
     if (nEventSpawns > 0 && Random(100) < nEventChance)
@@ -306,9 +306,9 @@ void main()
             }
         }
     //}
-    
-    
-    
+
+
+
 
 // ==============================
 // Hand-placed creatures
@@ -351,7 +351,7 @@ void main()
 
                 // store the creature so it can deleted later on refresh
                 SetLocalObject(OBJECT_SELF, "creature"+IntToString(i), oCreature);
-                
+
                 // Add to quest npc list if required
                 int nFaction = NWNX_Creature_GetFaction(oCreature);
                 if (GetPlotFlag(oCreature) || GetImmortal(oCreature) || nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER || nFaction == STANDARD_FACTION_MERCHANT)
@@ -362,6 +362,45 @@ void main()
                         AddLocalListItem(OBJECT_SELF, "quest_npcs", ObjectToString(oCreature));
                     }
                 }
+            }
+         }
+     //}
+
+// ==============================
+// Hand-placed respawnable placeables
+// ==============================
+
+    //if (bInstance == 1)
+    //{
+// clean up old placeables
+        int nOldPlaceable;
+        object oOldPlaceable;
+        for (nOldPlaceable = 0; nOldPlaceable < 200; nOldPlaceable++)
+         {
+            oOldPlaceable = GetLocalObject(OBJECT_SELF, "placeable"+IntToString(nOldPlaceable));
+
+            if (GetIsObjectValid(oOldCreature) && GetLocalString(oOldCreature, "master") == "")
+            {
+                DestroyObject(oOldPlaceable);
+            }
+         }
+         int nPlaceables = GetLocalInt(OBJECT_SELF, "placeables");
+
+         if (nPlaceables > 0)
+         {
+            object oPlaceable;
+            vector vPlaceablePosition;
+            location lPlaceableLocation;
+
+            int i;
+            for (i = 1; i <= nPlaceables; i++)
+            {
+                vPlaceablePosition = Vector(GetLocalFloat(OBJECT_SELF, "placeable_x"+IntToString(i)), GetLocalFloat(OBJECT_SELF, "placeable_y"+IntToString(i)), GetLocalFloat(OBJECT_SELF, "placeable_z"+IntToString(i)));
+                lPlaceableLocation = Location(OBJECT_SELF, vPlaceablePosition, GetLocalFloat(OBJECT_SELF, "placeable_o"+IntToString(i)));
+                oPlaceable = CreateObject(OBJECT_TYPE_PLACEABLE, GetLocalString(OBJECT_SELF, "placeable_resref"+IntToString(i)), lPlaceableLocation);
+
+                // store the Placeable so it can deleted later on refresh
+                SetLocalObject(OBJECT_SELF, "placeable"+IntToString(i), oPlaceable);
             }
          }
      //}

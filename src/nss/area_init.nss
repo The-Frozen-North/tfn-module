@@ -215,12 +215,12 @@ void main()
        string sTag, sQuest, sQuestName, sSpawnTarget;
        int nTreasures = 0;
        int nEventSpawns = 0;
-       int nCreatures = 0;
+       int nCreatures, nPlaceables = 0;
        int nDoors = 0;
        object oObject = GetFirstObjectInArea(oArea);
        int nType, nQuestLoop, nSpawnCount;
        //int bInstance = GetLocalInt(oArea, "instance");
-       vector vTreasureVector, vCreatureVector;
+       vector vTreasureVector, vCreatureVector, vPlaceableVector;
        float fTreasureOrientation;
        object oModule = GetModule();
 
@@ -354,8 +354,23 @@ void main()
                      }
                  break;
                  case OBJECT_TYPE_PLACEABLE:
+// these are dynamic placeables that respawn when an area is refreshed
+                   if (GetStringLeft(GetResRef(oObject), 4) == "plx_")
+                   {
+                          nPlaceables = nPlaceables + 1;
+
+                          vPlaceableVector = GetPosition(oObject);
+
+                          SetLocalString(oArea, "placeable_resref"+IntToString(nPlaceables), GetResRef(oObject));
+                          SetLocalFloat(oArea, "placeable_x"+IntToString(nPlaceables), vPlaceableVector.x);
+                          SetLocalFloat(oArea, "placeable_y"+IntToString(nPlaceables), vPlaceableVector.y);
+                          SetLocalFloat(oArea, "placeable_z"+IntToString(nPlaceables), vPlaceableVector.z);
+                          SetLocalFloat(oArea, "placeable_o"+IntToString(nPlaceables), GetFacing(oObject));
+
+                          DestroyObject(oObject);
+                   }
 // any object has its items removed and converted to static
-                   if (GetHasInventory(oObject))
+                   else if (GetHasInventory(oObject))
                    {
                           object oItem = GetFirstItemInInventory(oObject);
                           while (GetIsObjectValid(oItem))
@@ -420,6 +435,7 @@ void main()
        SetLocalInt(oArea, "event_spawn_points", nEventSpawns);
        SetLocalInt(oArea, "treasures", nTreasures);
        SetLocalInt(oArea, "creatures", nCreatures);
+       SetLocalInt(oArea, "placeables", nPlaceables);
        SetLocalInt(oArea, "doors", nDoors);
 
 //==========================================
@@ -458,6 +474,7 @@ void main()
     if (nDoors > 0) SendDebugMessage(sResRef+" doors: "+IntToString(nDoors), TRUE);
     if (nTreasures > 0) SendDebugMessage(sResRef+" treasures found: "+IntToString(nTreasures), TRUE);
     if (nCreatures > 0) SendDebugMessage(sResRef+" creatures: "+IntToString(nCreatures), TRUE);
+    if (nPlaceables > 0) SendDebugMessage(sResRef+" dynamic placeables: "+IntToString(nPlaceables), TRUE);
 
     // we will refresh it once so there's spawns
     ExecuteScript("area_refresh", oArea);

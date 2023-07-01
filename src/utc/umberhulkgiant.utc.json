@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 8.0
+    "value": 10.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 8
+          "value": 10
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 16
+    "value": 18
   },
   "Conversation": {
     "type": "resref",
@@ -50,7 +50,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 64
+    "value": 80
   },
   "DecayTime": {
     "type": "dword",
@@ -80,14 +80,14 @@
         "__struct_id": 16384,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp010"
+          "value": "x2_it_crewpsp005"
         }
       },
       {
         "__struct_id": 32768,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp010"
+          "value": "x2_it_crewpsp005"
         }
       },
       {
@@ -131,6 +131,13 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 23
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 289
         }
       }
@@ -140,7 +147,7 @@
     "id": 12790,
     "type": "cexolocstring",
     "value": {
-      "0": "Umber Hulk"
+      "0": "Giant Umber Hulk"
     }
   },
   "fortbonus": {
@@ -157,7 +164,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 64
+    "value": 80
   },
   "Int": {
     "type": "byte",
@@ -189,11 +196,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 88
+    "value": 120
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 7
+    "value": 9
   },
   "NoPermDeath": {
     "type": "byte",
@@ -201,7 +208,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 48
+    "value": 1
   },
   "PerceptionRange": {
     "type": "byte",
@@ -328,7 +335,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 11
+          "value": 14
         }
       },
       {
@@ -516,6 +523,21 @@
           "type": "byte",
           "value": 1
         }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 251
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 8
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
       }
     ]
   },
@@ -525,7 +547,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 20
+    "value": 22
   },
   "Subrace": {
     "type": "cexostring",
@@ -545,7 +567,42 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "umberhulk"
+    "value": "umberhulkgiant"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "spawn_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "size_140"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "boss"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
