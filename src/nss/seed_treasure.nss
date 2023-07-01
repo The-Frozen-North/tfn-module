@@ -3,6 +3,36 @@
 #include "nwnx_item"
 #include "nwnx_util"
 
+
+int GetIsItemConsumableMisc(object oItem)
+{
+    int nBaseItem = GetBaseItemType(oItem);
+    if (nBaseItem == BASE_ITEM_HEALERSKIT || nBaseItem == BASE_ITEM_THIEVESTOOLS)
+    {
+        return 1;
+    }
+    itemproperty ipTest = GetFirstItemProperty(oItem);
+    while (GetIsItemPropertyValid(ipTest))
+    {
+        int nType = GetItemPropertyType(ipTest);
+        if (nType == ITEM_PROPERTY_CAST_SPELL)
+        {
+            int nNumUsesConst = GetItemPropertyCostTableValue(ipTest);
+            if (nNumUsesConst == IP_CONST_CASTSPELL_NUMUSES_SINGLE_USE ||
+                nNumUsesConst == IP_CONST_CASTSPELL_NUMUSES_1_CHARGE_PER_USE ||
+                nNumUsesConst == IP_CONST_CASTSPELL_NUMUSES_2_CHARGES_PER_USE ||
+                nNumUsesConst == IP_CONST_CASTSPELL_NUMUSES_3_CHARGES_PER_USE ||
+                nNumUsesConst == IP_CONST_CASTSPELL_NUMUSES_4_CHARGES_PER_USE ||
+                nNumUsesConst == IP_CONST_CASTSPELL_NUMUSES_5_CHARGES_PER_USE)
+            {
+                return 1;
+            }
+        }
+        ipTest = GetNextItemProperty(oItem);
+    }
+    return 0;
+}
+
 void CreateFabricator(object oAmmo, object oTargetChest)
 {
             if (!GetIsObjectValid(oAmmo))
@@ -486,48 +516,9 @@ void DistributeTreasureToStores(object oItem)
            DestroyObject(oItem);
            return;
        }
-
-// Sort by item value
-       if (nValue >= MIN_VALUE_T5) {sTier = "T5";}
-       else if (nValue >= MIN_VALUE_T4) {sTier = "T4";}
-       else if (nValue >= MIN_VALUE_T3) {sTier = "T3";}
-       else if (nValue >= MIN_VALUE_T2) {sTier = "T2";}
-       else {sTier = "T1";}
-
-// special rule to bump up unidentified items to the next tier, too much magic gear encountered at low level
-       if (sTier == "T1" && nIdentified == 0)
-       {
-           WriteTimestampedLogEntry("ID rule increased tier of " + GetName(oItem) + " to 2");
-           sTier = "T2";
-       }
-
-// High quality/composite range items are always T2
-       if (nEnchantValue == 0 && (GetStringLeft(sName, 12) == "High Quality" || GetStringLeft(sName, 9) == "Composite"))
-       {
-           sTier = "T2";
-       }
-
-       // Force +3 monk gloves to t5
-       if (nEnchantValue == 3 && (nBaseType == BASE_ITEM_GLOVES || nBaseType == BASE_ITEM_BRACER))
-       {
-           sTier = "T5";
-           WriteTimestampedLogEntry("Forced monk gloves to t5: " + GetName(oItem));
-       }
-
-// Boost some full plates and tower shields to next tier
-       if (sName == "Tower Shield +1") sTier = "T4";
-       if (sName == "Tower Shield +2") sTier = "T5";
-       if (sName == "Half Plate +1") sTier = "T4";
-       if (sName == "Full Plate +1") sTier = "T4";
-       if (sName == "Full Plate +2") sTier = "T5";
-
-// Bump up items to the right tier for non-uniques
-       if (sNonUnique == "NonUnique")
-       {
-           if (FindSubString(sName, "+1") > -1 && sTier == "T2") sTier = "T3";
-           if (FindSubString(sName, "+2") > -1 && sTier == "T3") sTier = "T4";
-           if (FindSubString(sName, "+3") > -1 && sTier == "T4") sTier = "T5";
-       }
+       
+       int nTier = GetItemTier(oItem);
+       sTier = "T" + IntToString(nTier);
 
 
        if (GetStringLeft(sResRef, 4) == "misc") {sType = "Misc";}
@@ -654,6 +645,12 @@ void DistributeTreasureToStores(object oItem)
                break;
              }
           }
+        
+        if (sType == "Misc" && GetIsItemConsumableMisc(oItem))
+        {
+            sType = "MiscCons";
+        }
+          
         SendDebugMessage(GetName(oItem) + "-> _"+sType+sRarity+sTier+sNonUnique);
 
         // Turn these into ammo makers.
@@ -864,6 +861,7 @@ void main()
       CreateTreasureContainer("_PotionsT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 18.0);
 
       CreateTreasureContainer("_MiscT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 20.0);
+      CreateTreasureContainer("_MiscConsT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 21.0);
 
       CreateTreasureContainer("_ArmorCommonT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 22.0);
       CreateTreasureContainer("_ArmorUncommonT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 23.0);
