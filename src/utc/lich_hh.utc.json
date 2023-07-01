@@ -256,6 +256,36 @@
                 "type": "byte",
                 "value": 0
               }
+            },
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
+                "value": 371
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 0
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 1
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
+                "value": 371
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 0
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 1
+              }
             }
           ]
         },
@@ -270,7 +300,7 @@
               },
               "SpellFlags": {
                 "type": "byte",
-                "value": 1
+                "value": 0
               },
               "SpellMetaMagic": {
                 "type": "byte",
@@ -285,7 +315,7 @@
               },
               "SpellFlags": {
                 "type": "byte",
-                "value": 1
+                "value": 0
               },
               "SpellMetaMagic": {
                 "type": "byte",
@@ -327,36 +357,6 @@
         "MemorizedList5": {
           "type": "list",
           "value": [
-            {
-              "__struct_id": 3,
-              "Spell": {
-                "type": "word",
-                "value": 371
-              },
-              "SpellFlags": {
-                "type": "byte",
-                "value": 1
-              },
-              "SpellMetaMagic": {
-                "type": "byte",
-                "value": 1
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Spell": {
-                "type": "word",
-                "value": 371
-              },
-              "SpellFlags": {
-                "type": "byte",
-                "value": 1
-              },
-              "SpellMetaMagic": {
-                "type": "byte",
-                "value": 1
-              }
-            },
             {
               "__struct_id": 3,
               "Spell": {
@@ -501,6 +501,13 @@
   "Equip_ItemList": {
     "type": "list",
     "value": [
+      {
+        "__struct_id": 2,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "armor59"
+        }
+      },
       {
         "__struct_id": 16,
         "EquippedRes": {
