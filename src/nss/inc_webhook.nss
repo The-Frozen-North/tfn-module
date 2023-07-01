@@ -206,6 +206,26 @@ struct NWNX_WebHook_Message BuildWebhookMessageTemplate(object oPC)
     return stMessage;
 }
 
+void SendDiscordMessage(string sMessage, string sDiscordKey)
+{
+// TODO: Refactor to include "inc_webhook" and use the same constant instead of a "magic number"
+    string sDiscordKey = Get2DAString("env", "Value", 2);
+
+    if (sDiscordKey == "") return;
+
+    if (GetLocalInt(GetModule(), "dev") == 0)
+    {
+        NWNX_WebHook_SendWebHookHTTPS("discordapp.com", sDiscordKey, sMessage);
+    }
+    else
+    {
+        // Try anyway
+        NWNX_WebHook_SendWebHookHTTPS("discordapp.com", sDiscordKey, sMessage);
+        // But the log is good
+        WriteTimestampedLogEntry("Webhook message: " + sMessage);
+    }
+}
+
 void LogWebhook(object oPC, int nLogMode)
 {
     if (!DiscordEnabled()) return;
@@ -239,7 +259,7 @@ void LogWebhook(object oPC, int nLogMode)
     //stMessage.sFooterText = GetName(GetModule());
 
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
-    SendDiscordLogMessage(sConstructedMsg);
+    SendDiscordMessage(sConstructedMsg, GetDiscordKey());
 }
 
 void LevelUpWebhook(object oPC)
@@ -306,7 +326,7 @@ void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
     //stMessage.sFooterText = GetName(GetModule());
     //stMessage.iTimestamp = SQLite_GetTimeStamp();
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", GetDiscordKey(), stMessage);
-    SendDiscordLogMessage(sConstructedMsg);
+    SendDiscordMessage(sConstructedMsg, GetDiscordKey());
 }
 
 // sends a web hook to discord if you killed a boss
@@ -350,7 +370,7 @@ void BossDefeatedWebhook(object oPC, object oDead)
     //stMessage.sFooterText = GetName(GetModule());
     //stMessage.iTimestamp = SQLite_GetTimeStamp();
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", GetDiscordKey(), stMessage);
-    SendDiscordLogMessage(sConstructedMsg);
+    SendDiscordMessage(sConstructedMsg, GetDiscordKey());
 
     // delete this so it doesn't trigger again
     DeleteLocalInt(oDead, "defeated_webhook");
@@ -374,7 +394,7 @@ void ServerWebhook(string sTitle, string sDescription)
   //stMessage.sFooterText = GetName(GetModule());
   //stMessage.iTimestamp = SQLite_GetTimeStamp();
   sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", GetDiscordKey(), stMessage);
-  SendDiscordLogMessage(sConstructedMsg);
+  SendDiscordMessage(sConstructedMsg, GetDiscordKey());
 }
 
 void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE);
@@ -433,7 +453,7 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
 
     //SendDebugMessage("ValuableItemWebhook: " + sDescription);
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
-    SendDiscordLogMessage(sConstructedMsg);
+    SendDiscordMessage(sConstructedMsg, GetDiscordKey());
 }
 
 
@@ -459,7 +479,7 @@ void HouseBuyWebhook(object oPC, int nGoldCost, object oArea)
 
     //SendDebugMessage("HouseBuyWebhook: " + sDescription);
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
-    SendDiscordLogMessage(sConstructedMsg);
+    SendDiscordMessage(sConstructedMsg, GetDiscordKey());
 }
 
 
@@ -485,7 +505,7 @@ void QuestCompleteWebhook(object oPC, string sQuestName)
 
     //SendDebugMessage("QuestCompleteWebhook: " + sDescription);
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
-    SendDiscordLogMessage(sConstructedMsg);
+    SendDiscordMessage(sConstructedMsg, GetDiscordKey());
 }
 
 void BugReportWebhook(object oPC, string sMessage);
@@ -509,6 +529,6 @@ void BugReportWebhook(object oPC, string sMessage)
     stMessage.sDescription = sMessage;
 
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", sDiscordKey, stMessage);
-    SendDiscordLogMessage(sConstructedMsg);
+    SendDiscordMessage(sConstructedMsg, sDiscordKey);
 }
 

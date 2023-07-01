@@ -36,9 +36,4 @@ void GiveHiPSFeatSafely(object oCreature)
     }
 }
 
-void SendDiscordMessage(string sPath, string sMessage)
-{
-    NWNX_WebHook_SendWebHookHTTPS("discordapp.com", sPath, sMessage);
-}
-
 //void main() {}
