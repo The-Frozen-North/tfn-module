@@ -4,7 +4,6 @@ const float PERSUADE_DISCOUNT_MODIFIER = 0.66;
 const float PERSUADE_BONUS_MODIFIER = 1.5;
 
 const int GOLD_MODIFIER_CAP = 30;
-const int MERCHANT_MODIFIER_CAP = 20;
 
 const int CHARISMA_MODIFIER = 2;
 

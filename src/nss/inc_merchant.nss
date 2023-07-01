@@ -1,7 +1,9 @@
 #include "inc_treasure"
-#include "inc_gold"
 #include "inc_sqlite_time"
 #include "inc_debug"
+
+const int MERCHANT_SELL_MODIFIER_CAP = 20;
+const int MERCHANT_BUY_MODIFIER_CAP = 10;
 
 // The time, in seconds, between reloading a store's contents
 const int MERCHANT_STORE_RESTOCK_TIME = 82800; // 23h, can shop at the same time each day for new stock if you want
@@ -105,29 +107,32 @@ void OpenMerchant(object oMerchant, object oStore, object oPC)
 
     object oPC = GetLastSpeaker();
 
-    int nCap = MERCHANT_MODIFIER_CAP;
-
     int nPCAppraise = GetSkillRank(SKILL_APPRAISE, oPC);
-    int nPCCharisma = GetAbilityScore(oPC, ABILITY_CHARISMA) - 10;
+    int nPCCharisma = GetAbilityModifier(ABILITY_CHARISMA, oPC);
 
     int nAdjust = 0;
-    nAdjust = nPCAppraise + nPCCharisma;
+    nAdjust = (nPCAppraise + nPCCharisma) / 2;
 
     string sCharm = "";
     if (GetLocalInt(oMerchant, "charmed") == 1)
     {
-        sCharm = ", Charmed: 5";
-        nAdjust = nAdjust + 5;
+        sCharm = ", Charmed: 2";
+        nAdjust = nAdjust + 2;
     }
 
-    if (nAdjust != 0) nAdjust = nAdjust/2;
+    int nBonusMarkUp = nAdjust;
+    int nBonusMarkDown = nAdjust / 2;
 
-    if (nAdjust > nCap) nAdjust = nCap;
-    if (nAdjust < -nCap) nAdjust = -nCap;
+    if (nBonusMarkUp > MERCHANT_SELL_MODIFIER_CAP) nBonusMarkUp = MERCHANT_SELL_MODIFIER_CAP;
+    if (nBonusMarkUp < -MERCHANT_SELL_MODIFIER_CAP) nBonusMarkUp = -MERCHANT_SELL_MODIFIER_CAP;
 
-    FloatingTextStringOnCreature("*Merchant Reaction: " + IntToString(nAdjust)+" (Appraise: "+IntToString(nPCAppraise)+", Charisma: "+IntToString(nPCCharisma)+sCharm+")*", oPC, FALSE);
+    if (nBonusMarkDown > MERCHANT_BUY_MODIFIER_CAP) nBonusMarkDown = MERCHANT_BUY_MODIFIER_CAP;
+    if (nBonusMarkDown < -MERCHANT_BUY_MODIFIER_CAP) nBonusMarkDown = -MERCHANT_BUY_MODIFIER_CAP;
 
-    OpenStore(oStore, oPC, -nAdjust, nAdjust);
+    FloatingTextStringOnCreature("*Merchant Reaction: " + IntToString(nAdjust) + " (Appraise: "+IntToString(nPCAppraise)+", Charisma: "+IntToString(nPCCharisma)+sCharm+")*", oPC, FALSE);
+    // FloatingTextStringOnCreature("*Merchant Reaction: " + IntToString(nBonusMarkUp) + "% discount, " + IntToString(nBonusMarkUp) + "% sell price (Appraise: "+IntToString(nPCAppraise)+", Charisma: "+IntToString(nPCCharisma)+sCharm+")*", oPC, FALSE);
+
+    OpenStore(oStore, oPC, -nBonusMarkUp, nBonusMarkDown);
 }
 
 int ShouldRestockMerchant(object oStore)

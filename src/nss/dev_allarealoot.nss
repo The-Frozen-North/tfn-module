@@ -7,7 +7,7 @@
 
 // this script may take a while to run, spot check certain areas only
 // note, the global column won't be that accurate if this is the case
-const int LIMITED_SAMPLE_SIZE = TRUE;
+const int LIMITED_SAMPLE_SIZE = FALSE;
 
 void RunOnArea(object oDev, json jAreas, int nState=0)
 {

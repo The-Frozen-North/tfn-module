@@ -416,6 +416,9 @@ int Gibs(object oCreature, int bForce = FALSE)
     if (!bForce && !(nHP <= -11 && nHP <= -(GetMaxHitPoints(oCreature)/2))) return FALSE;
     if (GetLocalInt(oCreature, "gibbed") == 1) return FALSE;
 
+    int nSize = GetCreatureSize(oCreature);
+    float fSize = IntToFloat(nSize) * 0.33;
+
     int nAppearanceType = GetAppearanceType(oCreature);
 
     string sBlood = Get2DAString("appearance", "BLOODCOLR", GetAppearanceType(oCreature));
@@ -441,8 +444,15 @@ int Gibs(object oCreature, int bForce = FALSE)
     }
     else if (sBlood == "W")
     {
-        nGib = VFX_COM_CHUNK_BONE_MEDIUM;
-        PlaySound("bf_med_bone");
+        if (GetRacialType(oCreature) == RACIAL_TYPE_UNDEAD)
+        {
+            nGib = VFX_COM_CHUNK_BONE_MEDIUM;
+            PlaySound("bf_med_bone");
+        }
+        else
+        {
+            nGib = VFX_COM_CHUNK_STONE_MEDIUM;
+        }
     }
     else
     {
@@ -455,7 +465,7 @@ int Gibs(object oCreature, int bForce = FALSE)
         SetObjectVisualTransform(oCreature, OBJECT_VISUAL_TRANSFORM_SCALE, 0.01);
     }
 
-    ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(nGib), lLocation);
+    ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(nGib, FALSE, fSize), lLocation);
 
     return TRUE;
 }
