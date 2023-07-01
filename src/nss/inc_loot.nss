@@ -33,7 +33,8 @@ const int BASE_ARMOR_WEIGHT = 2;
 const int BASE_APPAREL_WEIGHT = 4;
 const int BASE_SCROLL_WEIGHT = 6;
 const int BASE_POTION_WEIGHT = 12;
-const int BASE_MISC_WEIGHT = 10;
+const int BASE_MISC_WEIGHT = 8;
+const int BASE_MISC_CONSUMABLE_WEIGHT = 2;
 
 const int BASE_ADJUST_CHANCE = 25;
 
@@ -48,7 +49,7 @@ const int BASE_T1_WEIGHT = 2000;
 const int BASE_T2_WEIGHT = 200;
 const int BASE_T3_WEIGHT = 100;
 const int BASE_T4_WEIGHT = 50;
-const int BASE_T5_WEIGHT = 25;
+const int BASE_T5_WEIGHT = 20;
 
 // See the implementation for notes on what these are and how they work
 const int T1_SIGMOID_MIDPOINT = 1;
@@ -62,29 +63,45 @@ const string NO_LOOT = "This container doesn't have any items.";
 
 // Constants for placeable loot
 // To use this, placeables should have a local string "treasure" set on them with a value of "low" "medium" or "high"
-// The quality variables set quality_mult on containers, multiplying the effective Area CR of loot inside
+// The quality variables set quality_mult on containers, adding to the weight exponent
+// 0.0-1.0 will increase quality, >1.0 will reduce it.
 // The quantity variables set quantity_mult on containers, multiplying the effective CHANCE_* constants for loot in there
 // Manually setting these on the containers will override these values
 // Doing things this way is nice because the entire module's loot can be changed by messing with these script constants
 // Instead of going through blueprints to change variables like what was needed to implement this in the first place
-const float TREASURE_HIGH_QUALITY = 1.0;
+const float TREASURE_HIGH_QUALITY = -0.2;
 const float TREASURE_HIGH_QUANTITY = 3.0;
-const float TREASURE_MEDIUM_QUALITY = 1.0;
+const float TREASURE_MEDIUM_QUALITY = 0.0;
 const float TREASURE_MEDIUM_QUANTITY = 1.75;
-const float TREASURE_LOW_QUALITY = 0.6;
+const float TREASURE_LOW_QUALITY = 0.4;
 const float TREASURE_LOW_QUANTITY = 1.0;
+
+// These apply both to creatures and placeables
+// https://docs.google.com/spreadsheets/d/1OEeU2aANF8ERT8o1wSLb0Lo6W4xqu0QADGR0Vo-ynk4/edit#gid=1129304103 - Boss Weight Exponent
+// 0.3 on the sheet means -0.7 here. Subtract the exponent from -1.0
+const float SEMIBOSS_QUALITY_MODIFIER = -0.4;
+const float BOSS_QUALITY_MODIFIER = -0.7;
+
+// Low tier consumables tend to stack up at high levels.
+// Without this you probably get too many cure light wounds potions and cantrip scrolls
+// This is a quality modifier (stacking additively) that affects these item types
+const float POTION_QUALITY_MODIFIER = -0.3;
+const float MISC_CONSUMABLE_QUALITY_MODIFIER = -0.2;
+const float SCROLL_CONSUMABLE_QUALITY_MODIFIER = -0.2;
 
 // CHANCE_X are multiplied by this for placeables that are destroyed (rather than opening the lock)
 const float PLACEABLE_DESTROY_LOOT_PENALTY = 0.6;
 
-// the CR variable on a boss is used for gold
-const float BOSS_CR_MULTIPLIER = 2.0;
-const float SEMIBOSS_CR_MULTIPLIER = 1.5;
+// the CR variable on a boss was used for gold
+// but not any more
+const float BOSS_CR_MULTIPLIER = 1.0;
+const float SEMIBOSS_CR_MULTIPLIER = 1.0;
 
 // Increased area CR means higher quality loot (and higher quality potential loot,
 //eventually this should be re-named as the name is confusing
-const float BOSS_AREA_CR_MULTIPLIER = 1.5;
-const float SEMIBOSS_AREA_CR_MULTIPLIER = 1.2;
+// This was replaced with the quality modifiers above which affect the loot weights directly
+const float BOSS_AREA_CR_MULTIPLIER = 1.0;
+const float SEMIBOSS_AREA_CR_MULTIPLIER = 1.0;
 
 // Percentage chances for various categories
 // Needless to say, these sets should sum to 100
@@ -100,6 +117,12 @@ const int APPAREL_ARMOR_RARE_CHANCE = 25;
 const int UNIQUE_ITEM_CHANCE = 33;
 const int MISC_CHANCE_TO_BE_JEWEL = 67;
 const int RANDOM_WEAPON_IS_RANGED = 40;
+
+// Creatures that roll a random item of the same tier as something they have equipped
+// have this (percent) chance to drop that item type instead of a random one
+const int CHANCE_TO_DROP_EQUIPPED_ITEM = 70;
+// Bosses have this chance to ignore the tier matching restriction.
+const int BOSS_EQUIPPED_ITEM_DROPS_IGNORE_TIER_CHANCE = 0;
 
 // The real chance of a tiered pawnshop item to be unique is:
 // UNIQUE_ITEM_CHANCE/100 * PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE/100
@@ -125,13 +148,13 @@ const string OPENED_LOOT_HIGHLIGHT_STRING = "<c\x80\x80\x80>";
 // ===========================================================
 
 // Select a tier Item. Specific Tier granted if nTier is 1-5.
-// Valid types: "Armor", "Melee", "Range", "Misc, "Apparel"
+// Valid types: "Armor", "Melee", "Range", "Misc, "Apparel", "MiscCons"
 // "Potion", "ScrollsDivine", "ScrollsArcane"
 // The item returned by this function WILL BE IN A CONTAINER IN THE LOOT AREA.
 // This does NOT MOVE OR MAKE A COPY OF THE ITEM in oContainer. oContainer is used to make sure the item in question
 // is appropriate to generate in some situations (eg gems in stores are pointless)
 // Use CopyTierItemToContainer to copy the return from this function to its final destination.
-object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, object oContainer=OBJECT_INVALID, int bNonUnique = FALSE);
+object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, object oContainer=OBJECT_INVALID, int bNonUnique = FALSE, float fQualityExponentModifier=0.0);
 
 // Copy oItem (which should be from SelectTierItem) to oContainer and correctly initialise it
 object CopyTierItemToContainer(object oItem, object oContainer);
@@ -140,7 +163,7 @@ object CopyTierItemToContainer(object oItem, object oContainer);
 // Valid types: "Armor", "Melee", "Range", "Misc, "Apparel"
 // "Potion", "ScrollsDivine", "ScrollsArcane"
 // An amalgamation of SelectTierItem and CopyTierItemToContainer for convenience.
-object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = "", int nTier = 0, int bNonUnique = FALSE);
+object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = "", int nTier = 0, int bNonUnique = FALSE, float fQualityExponentModifier=0.0);
 
 // Open a personal loot. Called from a containing object.
 void OpenPersonalLoot(object oContainer, object oPC);
@@ -367,7 +390,7 @@ void AdjustOwedGoldValue(object oReceiver, object oDebtor, int nAmount)
 // ---------------------------------------------------------
 // This function is used to determine the tier of the drop.
 // ---------------------------------------------------------
-string DetermineTier(int iCR, int iAreaCR, string sType = "")
+string DetermineTier(int iCR, int iAreaCR, string sType = "", float fWeightExponentModifier=0.0)
 {
     float fCR = IntToFloat(iCR);
     string sTier;
@@ -379,11 +402,31 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
     // As the person that spent a few hours coming up with them, I would strongly encourage
     // a detailed discussion of what about the design of these is wrong before messing with them!
 
-    int nT1Weight = FloatToInt(BASE_T1_WEIGHT * fmax(0.0, ((68.0 + atan((iAreaCR - T1_SIGMOID_MIDPOINT) * 0.6))/158.0)));
-    int nT2Weight = FloatToInt(BASE_T2_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T2_SIGMOID_MIDPOINT) * 0.6))/158.0)));
-    int nT3Weight = FloatToInt(BASE_T3_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T3_SIGMOID_MIDPOINT) * 0.6))/158.0)));
-    int nT4Weight = FloatToInt(BASE_T4_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T4_SIGMOID_MIDPOINT) * 0.6))/158.0)));
-    int nT5Weight = FloatToInt(BASE_T5_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T5_SIGMOID_MIDPOINT) * 0.6))/158.0)));
+    float fT1Weight = BASE_T1_WEIGHT * fmax(0.0, ((68.0 + atan((iAreaCR - T1_SIGMOID_MIDPOINT) * 0.6))/158.0));
+    float fT2Weight = BASE_T2_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T2_SIGMOID_MIDPOINT) * 0.6))/158.0));
+    float fT3Weight = BASE_T3_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T3_SIGMOID_MIDPOINT) * 0.6))/158.0));
+    float fT4Weight = BASE_T4_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T4_SIGMOID_MIDPOINT) * 0.6))/158.0));
+    float fT5Weight = BASE_T5_WEIGHT * iAreaCR * fmax(0.0, ((68.0 + atan((iAreaCR - T5_SIGMOID_MIDPOINT) * 0.6))/158.0));
+
+    float fWeightExponent = 1.0 + fWeightExponentModifier;
+    // Negative powers break this, badly. 0.0 final exponent makes all available tiers get 1 weight, at least...
+    fWeightExponent = fmax(0.0, fWeightExponent);
+
+    if (sType == "MiscCons") { fWeightExponent += MISC_CONSUMABLE_QUALITY_MODIFIER; }
+    else if (sType == "Potion") { fWeightExponent += POTION_QUALITY_MODIFIER; }
+    else if (sType == "Scrolls") { fWeightExponent += SCROLL_CONSUMABLE_QUALITY_MODIFIER; }
+
+    fT1Weight = pow(fT1Weight, fWeightExponent);
+    fT2Weight = pow(fT2Weight, fWeightExponent);
+    fT3Weight = pow(fT3Weight, fWeightExponent);
+    fT4Weight = pow(fT4Weight, fWeightExponent);
+    fT5Weight = pow(fT5Weight, fWeightExponent);
+
+    int nT1Weight = FloatToInt(fT1Weight * 1000.0);
+    int nT2Weight = FloatToInt(fT2Weight * 1000.0);
+    int nT3Weight = FloatToInt(fT3Weight * 1000.0);
+    int nT4Weight = FloatToInt(fT4Weight * 1000.0);
+    int nT5Weight = FloatToInt(fT5Weight * 1000.0);
 
    int nCombinedWeight = 0;
 
@@ -402,12 +445,6 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
         SetLocalInt(GetModule(), LOOT_DEBUG_T3_WEIGHT, nT3Weight);
         SetLocalInt(GetModule(), LOOT_DEBUG_T4_WEIGHT, nT4Weight);
         SetLocalInt(GetModule(), LOOT_DEBUG_T5_WEIGHT, nT5Weight);
-
-        SendDebugMessage("Loot T1Weight: "+IntToString(nT1Weight));
-        SendDebugMessage("Loot T2Weight: "+IntToString(nT2Weight));
-        SendDebugMessage("Loot T3Weight: "+IntToString(nT3Weight));
-        SendDebugMessage("Loot T4Weight: "+IntToString(nT4Weight));
-        SendDebugMessage("Loot T5Weight: "+IntToString(nT5Weight));
     }
 
 
@@ -457,9 +494,9 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "")
     return sTier;
 }
 
-object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, object oContainer=OBJECT_INVALID, int bNonUnique = FALSE)
+object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, object oContainer=OBJECT_INVALID, int bNonUnique = FALSE, float fQualityExponentModifier=0.0)
 {
-    string sTier = DetermineTier(iCR, iAreaCR, sType);
+    string sTier = DetermineTier(iCR, iAreaCR, sType, fQualityExponentModifier);
     string sRarity = "";
     string sNonUnique = "";
 
@@ -468,7 +505,7 @@ object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, ob
 // Given no type, generate a random one.
     if (sType == "")
     {
-        switch(Random(6))
+        switch(Random(7))
         {
            case 0: sType = "Misc"; break;
            case 1: sType = "Scrolls"; break;
@@ -476,6 +513,7 @@ object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, ob
            case 3: sType = "Armor"; break;
            case 4: sType = "Apparel"; break;
            case 5: sType = "Potions"; break;
+           case 6: sType = "MiscCons"; break;
         }
     }
 
@@ -550,7 +588,7 @@ object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, ob
 
 
 // never NU
-    if (sType == "Misc" || sType == "Apparel" || sType == "Scrolls" || sType == "Jewels")
+    if (sType == "Misc" || sType == "Apparel" || sType == "Scrolls" || sType == "Jewels" || sType == "MiscCons")
         sNonUnique = "";
 
     if (sType == "Weapon")
@@ -605,13 +643,12 @@ object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, ob
     return oItem;
 }
 
-
 // ---------------------------------------------------------
 // This function is used to generate a tier item.
 // ---------------------------------------------------------
-object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = "", int nTier = 0, int bNonUnique = FALSE)
+object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = "", int nTier = 0, int bNonUnique = FALSE, float fQualityExponentModifier=0.0)
 {
-    object oItem = SelectTierItem(iCR, iAreaCR, sType, nTier, oContainer, bNonUnique);
+    object oItem = SelectTierItem(iCR, iAreaCR, sType, nTier, oContainer, bNonUnique, fQualityExponentModifier);
     object oNewItem = CopyTierItemToContainer(oItem, oContainer);
     return oNewItem;
 }
@@ -676,6 +713,152 @@ object CopyTierItemToContainer(object oItem, object oContainer)
     return oNewItem;
 }
 
+int GetIdentifiedItemCost(object oItem)
+{
+    int nState = GetIdentified(oItem);
+    if (!nState)
+    {
+        SetIdentified(oItem, TRUE);
+    }
+    int nVal = GetGoldPieceValue(oItem);
+    SetIdentified(oItem, nState);
+    return nVal;
+}
+
+string GetIdentifiedItemName(object oItem)
+{
+    int nState = GetIdentified(oItem);
+    if (!nState)
+    {
+        SetIdentified(oItem, TRUE);
+    }
+    string sVal = GetName(oItem);
+    SetIdentified(oItem, nState);
+    return sVal;
+}
+
+
+json _AddToDroppableLootArray(json jItems, object oItem, int nTier, int bSkipTierCheck)
+{
+    object oTFN = GetTFNEquipmentByName(oItem);
+    if (GetLocalInt(oItem, "creature_drop_only"))
+    {
+        oTFN = oItem;
+    }
+    if (GetIsObjectValid(oTFN) && (bSkipTierCheck || GetItemTier(oTFN) == nTier))
+    {
+        jItems = JsonArrayInsert(jItems, JsonString(ObjectToString(oTFN)));
+    }
+    return jItems;
+}
+
+
+json _BuildListOfOwnDroppableLoot(object oLootOrigin, int nTier, int bForceSkipTierCheck=-1)
+{
+    json jItems = JsonArray();
+    if (GetObjectType(oLootOrigin) != OBJECT_TYPE_CREATURE)
+    {
+        return jItems;
+    }
+
+    int bSkipTierCheck = 0;
+    if (GetLocalInt(oLootOrigin, "boss") && bForceSkipTierCheck == -1)
+    {
+        bSkipTierCheck = Random(100) < BOSS_EQUIPPED_ITEM_DROPS_IGNORE_TIER_CHANCE;
+    }
+    if (bForceSkipTierCheck != -1)
+    {
+        bSkipTierCheck = bForceSkipTierCheck;
+    }
+
+    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_CHEST, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_HEAD, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_ARMS, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_BELT, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_BOOTS, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_CLOAK, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_LEFTRING, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_RIGHTRING, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_NECK, oLootOrigin), nTier, bSkipTierCheck);
+
+    return jItems;
+}
+
+float _GetExpectedValueOfOwnDroppableLoot(object oLootOrigin, int nTier, int nTierCheckSkipOverride=-1)
+{
+    if (GetObjectType(oLootOrigin) != OBJECT_TYPE_CREATURE)
+    {
+        return 0.0;
+    }
+    if (nTierCheckSkipOverride == -1)
+    {
+        if (GetLocalInt(oLootOrigin, "boss"))
+        {
+            float fBossValue = _GetExpectedValueOfOwnDroppableLoot(oLootOrigin, nTier, 1);
+            float fNonBossValue = _GetExpectedValueOfOwnDroppableLoot(oLootOrigin, nTier, 0);
+            float fBossIgnoreTierChance = IntToFloat(BOSS_EQUIPPED_ITEM_DROPS_IGNORE_TIER_CHANCE)/100.0;
+            float fRet = (fBossValue * fBossIgnoreTierChance) + (fNonBossValue * (1.0-fBossIgnoreTierChance));
+            WriteTimestampedLogEntry(GetName(oLootOrigin) + ": boss value = " + FloatToString(fBossValue) + ", nonboss value = " + FloatToString(fNonBossValue));
+            return fRet;
+        }
+        else
+        {
+            nTierCheckSkipOverride = 0;
+        }
+    }
+    json jItems = _BuildListOfOwnDroppableLoot(oLootOrigin, nTier, nTierCheckSkipOverride);
+    int nNumItems = JsonGetLength(jItems);
+    int nOwnItemPos;
+    float fValue = 0.0;
+    for (nOwnItemPos=0; nOwnItemPos<nNumItems; nOwnItemPos++)
+    {
+        object oOwnItem = StringToObject(JsonGetString(JsonArrayGet(jItems, nOwnItemPos)));
+        fValue += IntToFloat(GetIdentifiedItemCost(oOwnItem));
+    }
+    if (nNumItems > 0)
+    {
+        fValue = fValue / IntToFloat(nNumItems);
+    }
+    return fValue;
+}
+
+
+object SelectItemToDropAsLoot(int iCR, int iAreaCR, string sType, int nTier, object oDestinationContainer, int bNonUnique, float fQualityExponentModifier, object oLootOrigin)
+{
+    // Have a chance to drop equipped items instead of random stuff
+    if (GetIsObjectValid(oLootOrigin) && GetObjectType(oLootOrigin) == OBJECT_TYPE_CREATURE &&
+    // Not the things that use different tier weights
+    (sType != "Potions" &&
+     sType != "Scrolls" &&
+     sType != "MiscCons")
+    )
+    {
+        if (Random(100) < CHANCE_TO_DROP_EQUIPPED_ITEM)
+        {
+
+            string sTier = DetermineTier(iCR, iAreaCR, sType, fQualityExponentModifier);
+            // Once we're determining a tier, it needs to get passed on really
+            // if we don't have an item of this tier the random item should be the same tier
+            nTier = StringToInt(GetSubString(sTier, 1, 1));
+            json jItems = _BuildListOfOwnDroppableLoot(oLootOrigin, nTier);
+            int nNumItems = JsonGetLength(jItems);
+            SendDebugMessage("SelectItemToDropAsLoot: " + GetName(oLootOrigin) + " has " + IntToString(nNumItems) + " own items that could drop at tier" + IntToString(nTier), TRUE);
+            if (nNumItems > 0)
+            {
+                int nIndex = Random(JsonGetLength(jItems));
+                object oReturn = StringToObject(JsonGetString(JsonArrayGet(jItems, nIndex)));
+                SendDebugMessage(GetName(oLootOrigin) + ": Drop equipped item: " + GetName(oReturn), TRUE);
+                return oReturn;
+            }
+        }
+    }
+    return SelectTierItem(iCR, iAreaCR, sType, nTier, oDestinationContainer, bNonUnique, fQualityExponentModifier);
+}
+
+
+
 // ---------------------------------------------------------
 // Generates loot. Typically used for creatures or containers.
 // ---------------------------------------------------------
@@ -684,6 +867,32 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
 {
    int iCR = GetLocalInt(oLootSource, "cr");
    int iAreaCR = GetLocalInt(oLootSource, "area_cr");
+
+   float fQualityExponentModifier = 0.0;
+   if (GetLocalInt(oLootSource, "boss"))
+   {
+       fQualityExponentModifier = BOSS_QUALITY_MODIFIER;
+   }
+   else if (GetLocalInt(oLootSource, "semiboss"))
+   {
+       fQualityExponentModifier = SEMIBOSS_QUALITY_MODIFIER;
+   }
+   else if (GetObjectType(oLootSource) == OBJECT_TYPE_PLACEABLE)
+   {
+       string sQuality = GetLocalString(oLootSource, "treasure");
+       if (sQuality == "low")
+       {
+           fQualityExponentModifier = TREASURE_LOW_QUALITY;
+       }
+       else if (sQuality == "medium")
+       {
+           fQualityExponentModifier = TREASURE_MEDIUM_QUALITY;
+       }
+       else if (sQuality == "high")
+       {
+           fQualityExponentModifier = TREASURE_HIGH_QUALITY;
+       }
+   }
 
 
    if (GetLocalInt(GetModule(), "treasure_ready") != 1)
@@ -712,38 +921,43 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
    int nWeaponWeight = BASE_WEAPON_WEIGHT;
    int nArmorWeight = BASE_ARMOR_WEIGHT;
    int nApparelWeight = BASE_APPAREL_WEIGHT;
+   int nMiscConsWeight = BASE_MISC_CONSUMABLE_WEIGHT;
 
 // If any of these happen to be less than 0, make it 0
    if (nMiscWeight < 0) nMiscWeight = 0;
+   if (nMiscConsWeight < 0) nMiscConsWeight = 0;
    if (nScrollsWeight < 0) nScrollsWeight = 0;
    if (nPotionsWeight < 0) nPotionsWeight = 0;
    if (nWeaponWeight < 0) nWeaponWeight = 0;
    if (nArmorWeight < 0) nArmorWeight = 0;
    if (nApparelWeight < 0) nApparelWeight = 0;
 
-   nCombinedWeight = nMiscWeight + nScrollsWeight + nPotionsWeight + nWeaponWeight + nArmorWeight + nApparelWeight;
+   nCombinedWeight = nMiscWeight + nMiscConsWeight + nScrollsWeight + nPotionsWeight + nWeaponWeight + nArmorWeight + nApparelWeight;
 
    int nItemRoll = Random(nCombinedWeight)+1;
    object oItem;
    while (TRUE)
    {
        nItemRoll = nItemRoll - nMiscWeight;
-       if (nItemRoll <= 0) {oItem = SelectTierItem(iCR, iAreaCR, "Misc", 0, oDestinationContainer);break;}
+       if (nItemRoll <= 0) {oItem = SelectItemToDropAsLoot(iCR, iAreaCR, "Misc", 0, oDestinationContainer, FALSE, fQualityExponentModifier, oLootSource);break;}
+
+       nItemRoll = nItemRoll - nMiscConsWeight;
+       if (nItemRoll <= 0) {oItem = SelectItemToDropAsLoot(iCR, iAreaCR, "MiscCons", 0, oDestinationContainer, FALSE, fQualityExponentModifier, oLootSource);break;}
 
        nItemRoll = nItemRoll - nScrollsWeight;
-       if (nItemRoll <= 0) {oItem = SelectTierItem(iCR, iAreaCR, "Scrolls", 0, oDestinationContainer);break;}
+       if (nItemRoll <= 0) {oItem = SelectItemToDropAsLoot(iCR, iAreaCR, "Scrolls", 0, oDestinationContainer, FALSE, fQualityExponentModifier, oLootSource);break;}
 
        nItemRoll = nItemRoll - nPotionsWeight;
-       if (nItemRoll <= 0) {oItem = SelectTierItem(iCR, iAreaCR, "Potions", 0, oDestinationContainer);break;}
+       if (nItemRoll <= 0) {oItem = SelectItemToDropAsLoot(iCR, iAreaCR, "Potions", 0, oDestinationContainer, FALSE, fQualityExponentModifier, oLootSource);break;}
 
        nItemRoll = nItemRoll - nWeaponWeight;
-       if (nItemRoll <= 0) {oItem = SelectTierItem(iCR, iAreaCR, "Weapon", 0, oDestinationContainer);break;}
+       if (nItemRoll <= 0) {oItem = SelectItemToDropAsLoot(iCR, iAreaCR, "Weapon", 0, oDestinationContainer, FALSE, fQualityExponentModifier, oLootSource);break;}
 
        nItemRoll = nItemRoll - nArmorWeight;
-       if (nItemRoll <= 0) {oItem = SelectTierItem(iCR, iAreaCR, "Armor", 0, oDestinationContainer);break;}
+       if (nItemRoll <= 0) {oItem = SelectItemToDropAsLoot(iCR, iAreaCR, "Armor", 0, oDestinationContainer, FALSE, fQualityExponentModifier, oLootSource);break;}
 
        nItemRoll = nItemRoll - nApparelWeight;
-       if (nItemRoll <= 0) {oItem = SelectTierItem(iCR, iAreaCR, "Apparel", 0, oDestinationContainer);break;}
+       if (nItemRoll <= 0) {oItem = SelectItemToDropAsLoot(iCR, iAreaCR, "Apparel", 0, oDestinationContainer, FALSE, fQualityExponentModifier, oLootSource);break;}
    }
 
     if (ShouldDebugLoot())
@@ -759,6 +973,7 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
             // outside of the default loot item type proportions
             // and so making the gold-fetch function on a per-itemtype basis seemed sensible
             float fMiscChance = IntToFloat(BASE_MISC_WEIGHT)/fCombinedWeight;
+            float fMiscConsChance = IntToFloat(BASE_MISC_CONSUMABLE_WEIGHT)/fCombinedWeight;
             float fScrollChance = IntToFloat(BASE_SCROLL_WEIGHT)/fCombinedWeight;
             float fPotionChance = IntToFloat(BASE_POTION_WEIGHT)/fCombinedWeight;
             float fWeaponChance = IntToFloat(BASE_WEAPON_WEIGHT)/fCombinedWeight;
@@ -800,37 +1015,44 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
                 sVarPrefix = "_cre_" + sTreasure;
             }
 
-
-            int nT1Weight = GetLocalInt(oModule, LOOT_DEBUG_T1_WEIGHT);
-            int nT2Weight = GetLocalInt(oModule, LOOT_DEBUG_T2_WEIGHT);
-            int nT3Weight = GetLocalInt(oModule, LOOT_DEBUG_T3_WEIGHT);
-            int nT4Weight = GetLocalInt(oModule, LOOT_DEBUG_T4_WEIGHT);
-            int nT5Weight = GetLocalInt(oModule, LOOT_DEBUG_T5_WEIGHT);
-
-            float fWeightSum = IntToFloat(nT1Weight + nT2Weight + nT3Weight + nT4Weight + nT5Weight);
-
-            float fT1Prob = IntToFloat(nT1Weight)/fWeightSum;
-            float fT2Prob = IntToFloat(nT2Weight)/fWeightSum;
-            float fT3Prob = IntToFloat(nT3Weight)/fWeightSum;
-            float fT4Prob = IntToFloat(nT4Weight)/fWeightSum;
-            float fT5Prob = IntToFloat(nT5Weight)/fWeightSum;
-
             int nItemTypeIndex;
             int nTier;
-            for (nItemTypeIndex=0; nItemTypeIndex <= 5; nItemTypeIndex++)
+            for (nItemTypeIndex=0; nItemTypeIndex <= 6; nItemTypeIndex++)
             {
                 string sType;
                 float fChance;
                 // Ugly, but probably better than using a SetLocalFloat based lookup system
                 switch (nItemTypeIndex)
                 {
-                    case 0: { sType="Misc";     fChance=fMiscChance;    break; }
+                    case 0: { sType="MiscCons";  fChance=fMiscConsChance; break; }
                     case 1: { sType="Scrolls";  fChance=fScrollChance;  break; }
                     case 2: { sType="Potions";  fChance=fPotionChance;  break; }
                     case 3: { sType="Weapon";   fChance=fWeaponChance;  break; }
                     case 4: { sType="Armor";    fChance=fArmorChance;   break; }
                     case 5: { sType="Apparel";  fChance=fApparelChance; break; }
+                    case 6: { sType="Misc";     fChance=fMiscChance;    break; }
                 }
+                int bIsConsumable = nItemTypeIndex <= 2;
+
+                // This updates the module variables, because these now depend on the item type a bit
+                DetermineTier(iCR, iAreaCR, sType, fQualityExponentModifier);
+
+                int nT1Weight = GetLocalInt(oModule, LOOT_DEBUG_T1_WEIGHT);
+                int nT2Weight = GetLocalInt(oModule, LOOT_DEBUG_T2_WEIGHT);
+                int nT3Weight = GetLocalInt(oModule, LOOT_DEBUG_T3_WEIGHT);
+                int nT4Weight = GetLocalInt(oModule, LOOT_DEBUG_T4_WEIGHT);
+                int nT5Weight = GetLocalInt(oModule, LOOT_DEBUG_T5_WEIGHT);
+
+                float fWeightSum = IntToFloat(nT1Weight + nT2Weight + nT3Weight + nT4Weight + nT5Weight);
+
+                float fT1Prob = IntToFloat(nT1Weight)/fWeightSum;
+                float fT2Prob = IntToFloat(nT2Weight)/fWeightSum;
+                float fT3Prob = IntToFloat(nT3Weight)/fWeightSum;
+                float fT4Prob = IntToFloat(nT4Weight)/fWeightSum;
+                float fT5Prob = IntToFloat(nT5Weight)/fWeightSum;
+
+
+
                 for (nTier=1; nTier<=5; nTier++)
                 {
                     float fTierChance;
@@ -843,15 +1065,34 @@ object SelectLoot(object oLootSource, object oDestinationContainer=OBJECT_INVALI
                         case 5: { fTierChance=fT5Prob; break; }
                     }
                     float fGold = GetAverageLootValueOfItem(nTier, sType);
-                    float fProb = fTierChance*fChance*fChanceForNoLootMultiplier;
+
+                    float fRandomLootChance = 1.0;
+                    float fOwnLootChance = 0.0;
+                    float fOwnLootValue = _GetExpectedValueOfOwnDroppableLoot(oLootSource, nTier);
+                    if (fOwnLootValue > 0.0)
+                    {
+                        fOwnLootChance = IntToFloat(CHANCE_TO_DROP_EQUIPPED_ITEM)/100.0;
+                        fRandomLootChance -= fOwnLootChance;
+                    }
+
+
+                    float fProb = fTierChance*fChance*fChanceForNoLootMultiplier*fRandomLootChance;
                     float fContribution = fGold*fProb;
+
+                    fContribution += (fTierChance*fChance*fChanceForNoLootMultiplier*fOwnLootChance * fOwnLootValue);
+
                     //WriteTimestampedLogEntry(GetName(oLootSource) + ": Expected items = " + FloatToString(fChanceForNoLootMultiplier) + ", chance of tier " + IntToString(nTier) + " = " + FloatToString(fTierChance) + ", chance of item type " + sType + " = " + FloatToString(fChance));
                     string sVar = LOOT_DEBUG_OUTPUT + sVarPrefix + IntToString(nTier);
                     SetLocalFloat(oModule, sVar, GetLocalFloat(oModule, sVar) + fContribution);
                     sVar = sVar + "_" + sType;
                     SetLocalFloat(oModule, sVar, GetLocalFloat(oModule, sVar) + fContribution);
-                    sVar = LOOT_DEBUG_OUTPUT + sVarPrefix + IntToString(nTier) + "_numitems";
-                    SetLocalFloat(oModule, sVar, GetLocalFloat(oModule, sVar) + fProb);
+                    if (!bIsConsumable)
+                    {
+                        // Here we don't care where the items came from (equipped or random)
+                        fProb = fTierChance*fChance*fChanceForNoLootMultiplier;
+                        sVar = LOOT_DEBUG_OUTPUT + sVarPrefix + IntToString(nTier) + "_numitems";
+                        SetLocalFloat(oModule, sVar, GetLocalFloat(oModule, sVar) + fProb);
+                    }
                 }
             }
         }
@@ -1022,17 +1263,7 @@ int ShouldDebugLoot()
     return FALSE;
 }
 
-int GetIdentifiedItemCost(object oItem)
-{
-    int nState = GetIdentified(oItem);
-    if (!nState)
-    {
-        SetIdentified(oItem, TRUE);
-    }
-    int nVal = GetGoldPieceValue(oItem);
-    SetIdentified(oItem, nState);
-    return nVal;
-}
+
 
 float GetAverageLootValueOfItem(int nTier, string sType)
 {
@@ -1074,7 +1305,7 @@ float GetAverageLootValueOfItem(int nTier, string sType)
         fRareChance = IntToFloat(APPAREL_ARMOR_RARE_CHANCE)/100.0;
     }
     float fUniqueChance = IntToFloat(UNIQUE_ITEM_CHANCE)/100.0;
-    if (sType == "Misc" || sType == "Apparel" || sType == "Scrolls" || sType == "Jewels")
+    if (sType == "Misc" || sType == "MiscCons" || sType == "Apparel" || sType == "Scrolls" || sType == "Jewels")
     {
         // These do not have nonuniques
         fUniqueChance = 1.0;
@@ -1206,6 +1437,7 @@ json GetLootDebugVariablePrefixes()
         jOut = JsonArray();;
         int nType;
         int nSubtype;
+        int nItemTypeIndex;
 
         // type 0: creature
         // type 1: placeable
@@ -1299,6 +1531,5 @@ void LootDebugOutput()
     SendDebugMessage("Expected raw gold: " + FloatToString(fRawGold), TRUE);
     SendDebugMessage("Total item value: " + FloatToString(fGoldTotal), TRUE);
 }
-
 
 //void main() {}

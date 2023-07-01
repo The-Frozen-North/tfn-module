@@ -38,6 +38,74 @@ int GetEnchantValue(object oItem)
     return nFound;
 }
 
+int GetItemTier(object oItem)
+{
+    int nIdentified = GetIdentified(oItem);
+    SetIdentified(oItem, 1);
+    int nValue = GetGoldPieceValue(oItem);
+    int nEnchantValue = GetEnchantValue(oItem);
+    int nBaseType = GetBaseItemType(oItem);
+    int nTier = -1;
+    string sName = GetName(oItem);
+    // Sort by item value
+    if (nValue >= MIN_VALUE_T5) {nTier = 5;}
+    else if (nValue >= MIN_VALUE_T4) {nTier = 4;}
+    else if (nValue >= MIN_VALUE_T3) {nTier = 3;}
+    else if (nValue >= MIN_VALUE_T2) {nTier = 2;}
+    else {nTier = 1;}
+    
+    string sNonUnique;
+    if (GetTag(oItem) == "non_unique") sNonUnique = "NonUnique";
+    if (GetLocalInt(oItem, "non_unique") == 1) sNonUnique = "NonUnique";
+    // All non-TFN items (this matters for creatures dropping their own stuff) should get this treatment
+    // they NEED to run through the +1/+2/+3 enhancement tier changes
+    string sResRef = GetResRef(oItem);
+    if (GetStringLeft(sResRef, 3) == "nw_" ||
+        (GetStringLeft(sResRef, 5) != "armor" &&
+        GetStringLeft(sResRef, 6) != "weapon" &&
+        GetStringLeft(sResRef, 7) != "apparel"))
+        {
+            sNonUnique = "NonUnique";
+        }
+
+    // special rule to bump up unidentified items to the next tier, too much magic gear encountered at low level
+    if (nTier == 1 && nIdentified == 0)
+    {
+       nTier = 2;
+    }
+
+    // High quality/composite range items are always T2
+    if (nEnchantValue == 0 && (GetStringLeft(sName, 12) == "High Quality" || GetStringLeft(sName, 9) == "Composite"))
+    {
+       nTier = 2;
+    }
+
+    // Force +3 monk gloves to t5
+    if (nEnchantValue == 3 && (nBaseType == BASE_ITEM_GLOVES || nBaseType == BASE_ITEM_BRACER))
+    {
+       nTier = 5;
+    }
+    
+    // Boost some full plates and tower shields to next tier
+   if (sName == "Tower Shield +1") nTier = 4;
+   if (sName == "Tower Shield +2") nTier = 5;
+   if (sName == "Half Plate +1") nTier = 4;
+   if (sName == "Full Plate +1") nTier = 4;
+   if (sName == "Full Plate +2") nTier = 5;
+
+// Bump up items to the right tier for non-uniques
+   if (sNonUnique == "NonUnique")
+   {
+       if (FindSubString(sName, "+1") > -1 && nTier == 2) nTier = 3;
+       if (FindSubString(sName, "+2") > -1 && nTier == 3) nTier = 4;
+       if (FindSubString(sName, "+3") > -1 && nTier == 4) nTier = 5;
+   }
+    
+    SetIdentified(oItem, nIdentified);
+    //WriteTimestampedLogEntry("GetItemTier: " + GetName(oItem) + " -> " + IntToString(nTier) + " (nonunique=" + sNonUnique);
+    return nTier;
+}
+
 // =======================================================
 // ITEM INITIALIZATION
 // =======================================================
@@ -173,5 +241,102 @@ void InitializeItem(object oItem)
 // ALWAYS USE AN AREA FOR STAGING!!!
 // IT WILL HANG IF WE USE A MERCHANT FOR STAGING
 location GetTreasureStagingLocation() {return Location(GetObjectByTag("_TREASURE_STAGING"), Vector(1.0, 1.0, 1.0), 0.0);}
+
+// Creatures "dropping items they have equipped" is actually way worse than it sounds
+// because TFN enchanted items etc don't really exist
+// and all the templates use the generic ones which don't have tfn resrefs
+// Also, some creatures add itemprops to them on spawn, which isn't ideal
+// To get around that we can map the generic names to the TFN object
+// ... which this DB can do for us happily
+void BuildItemNamesToObjectsDB()
+{
+    object oMod = GetModule();
+    sqlquery sql = SqlPrepareQueryObject(GetModule(),
+    "CREATE TABLE IF NOT EXISTS item_name_lookup (" +
+    "itemname TEXT PRIMARY KEY ON CONFLICT FAIL, " +
+    "oid TEXT);");
+    SqlStep(sql);
+    int nTier;
+    int nItemType;
+    int nUniqueness;
+    int nRarity;
+    string sRarity;
+    string sItemType;
+    for (nTier=1; nTier<=5; nTier++)
+    {
+        // Armor, Melee, Range, Apparel
+        for (nItemType=0;nItemType<4; nItemType++)
+        {
+            if (nItemType == 0) { sItemType = "Armor"; }
+            else if (nItemType == 1) { sItemType = "Melee"; }
+            else if (nItemType == 2) { sItemType = "Range"; }
+            else if (nItemType == 3) { sItemType = "Apparel"; }
+            
+            for (nUniqueness=0; nUniqueness<2; nUniqueness++)
+            {
+                string sUniqueness = nUniqueness ? "" : "NonUnique";
+                for (nRarity=0; nRarity<3; nRarity++)
+                {
+                    if (nRarity == 0) { sRarity = "Common"; }
+                    else if (nRarity == 1) { sRarity = "Uncommon"; }
+                    else if (nRarity == 2) { sRarity = "Rare"; }
+                    string sChest = "_" + sItemType + sRarity + "T" + IntToString(nTier) + sUniqueness;
+                    object oChest = GetObjectByTag(sChest);
+                    if (GetIsObjectValid(oChest))
+                    {
+                        WriteTimestampedLogEntry("Writing item name -> object db for: " + sChest);
+                        object oTest = GetFirstItemInInventory(oChest);
+                        while (GetIsObjectValid(oTest))
+                        {
+                            int bIdentified = GetIdentified(oTest);
+                            SetIdentified(oTest, 1);
+                            // As of right now there are about four items who conflict
+                            // including base item name resolves them all
+                            string sName = GetName(oTest) + IntToString(GetBaseItemType(oTest));
+                            SetIdentified(oTest, bIdentified);
+                            sql = SqlPrepareQueryObject(GetModule(),
+                                "INSERT INTO item_name_lookup " +
+                                "(itemname, oid) VALUES (@itemname, @oid);");// + 
+                                //" ON CONFLICT (itemname) DO UPDATE SET value = @oid;");
+                                //" ON CONFLICT FAIL;");
+                            SqlBindString(sql, "@itemname", sName);
+                            SqlBindString(sql, "@oid", ObjectToString(oTest));
+                            SqlStep(sql);
+                            string sError = SqlGetError(sql);
+                            if (sError != "")
+                            {
+                                WriteTimestampedLogEntry("Error while writing item name: " + sName);
+                            }
+                            oTest = GetNextItemInInventory(oChest);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+object GetTFNEquipmentByName(object oItem)
+{
+    if (GetIsObjectValid(oItem))
+    {
+        int bIdentified = GetIdentified(oItem);
+        SetIdentified(oItem, 1);
+        string sName = GetName(oItem) + IntToString(GetBaseItemType(oItem));
+        SetIdentified(oItem, bIdentified);
+        sqlquery sql = SqlPrepareQueryObject(GetModule(),
+            "SELECT oid FROM item_name_lookup " +
+            "WHERE itemname = @itemname;");
+        SqlBindString(sql, "@itemname", sName);
+        if (SqlStep(sql))
+        {
+            object oRet = StringToObject(SqlGetString(sql, 0));
+            //WriteTimestampedLogEntry("GetTFNEquipmentByName: " + GetName(oItem) + " -> " + GetName(oRet));
+            return oRet;
+        }
+        //WriteTimestampedLogEntry("GetTFNEquipmentByName: " + GetName(oItem) + " -> invalid");
+    }
+    return OBJECT_INVALID;
+}
 
 //void main() {}

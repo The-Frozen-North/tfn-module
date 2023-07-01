@@ -727,11 +727,11 @@ void main()
             float fTreasureChance = IntToFloat(nTreasureChance)/100.0;
             SetLocalFloat(GetModule(), LOOT_DEBUG_DROP_CHANCE_MULT, fTreasureChance);
         }
-        if (bBoss == 1) nGold = DetermineGoldFromCR(iCR, 3);
-        else if (bSemiBoss == 1) nGold = DetermineGoldFromCR(iCR, 2);
+        if (bBoss == 1) nGold = DetermineGoldFromCR(iAreaCR, 5);
+        else if (bSemiBoss == 1) nGold = DetermineGoldFromCR(iAreaCR, 3);
         else
         {
-            nGold = DetermineGoldFromCR(iCR);
+            nGold = DetermineGoldFromCR(iAreaCR);
         }
         nGoldToDistribute = nGold/max(1, nTotalSize);
 

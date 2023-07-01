@@ -195,24 +195,28 @@ def main(logfp="./../logs/nwserverLog1.txt"):
 			
 	# Work out what keys and what order
 	keys = []
+	
+	sortedobjtypes = sorted(globalArea.data._objecttypes)
+	sortedobjqualities = sorted(globalArea.data._objectqualities)
+	
 	# Just items by tier, like we used to have when this was simple
 	keys += [f"t{x}_numitems" for x in range(1, 6)]
 	keys += [f"t{x}_val" for x in range(1, 6)]
 	# Just object type
-	keys += [f"{objtype}_numitems" for objtype in globalArea.data._objecttypes]
-	keys += [f"{objtype}_val" for objtype in globalArea.data._objecttypes]
+	keys += [f"{objtype}_numitems" for objtype in sortedobjtypes]
+	keys += [f"{objtype}_val" for objtype in sortedobjtypes]
 	# By objecttype/tier
-	for objtype in globalArea.data._objecttypes:
+	for objtype in sortedobjtypes:
 		keys += [f"{objtype}_t{x}_numitems" for x in range(1, 6)]
 		keys += [f"{objtype}_t{x}_val" for x in range(1, 6)]
 	# By objecttype/objectquality
-	for objtype in globalArea.data._objecttypes:
-		for objquality in globalArea.data._objectqualities:
+	for objtype in sortedobjtypes:
+		for objquality in sortedobjqualities:
 			keys += [f"{objtype}_{objquality}_numitems"]
 			keys += [f"{objtype}_{objquality}_val"]
 	# Tier + objecttype + objectquality
-	for objtype in globalArea.data._objecttypes:
-		for objquality in globalArea.data._objectqualities:
+	for objtype in sortedobjtypes:
+		for objquality in sortedobjqualities:
 			keys += [f"{objtype}_{objquality}_t{x}_numitems" for x in range(1, 6)]
 			keys += [f"{objtype}_{objquality}_t{x}_val" for x in range(1, 6)]
 

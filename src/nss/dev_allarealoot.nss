@@ -4,10 +4,12 @@
 // which outputs a lot of stuff to the log about how many items you might find and their value
 // Takes a while to run, most likely enough time to go make a warm beverage of your choosing
 
+// tools/areavaluestocsv.py processes the garbled mess of log output into a csv which is a little more friendly
+
 
 // this script may take a while to run, spot check certain areas only
 // note, the global column won't be that accurate if this is the case
-const int LIMITED_SAMPLE_SIZE = FALSE;
+const int LIMITED_SAMPLE_SIZE = TRUE;
 
 void RunOnArea(object oDev, json jAreas, int nState=0)
 {
@@ -19,10 +21,10 @@ void RunOnArea(object oDev, json jAreas, int nState=0)
         return;
     }
     object oArea = StringToObject(JsonGetString(JsonArrayGet(jAreas, 0)));
+    SetLocalJson(GetModule(), "dev_allarealoot_areas", jAreas);
     if (!GetIsObjectValid(oDev) && nState != 1)
     {
         WriteTimestampedLogEntry("PC crashed. RIP.");
-        SetLocalJson(GetModule(), "dev_allarealoot_areas", jAreas);
         if (nState >= 2)
         {
             ExecuteScript("area_refresh", oArea);

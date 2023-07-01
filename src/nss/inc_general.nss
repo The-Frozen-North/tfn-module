@@ -430,12 +430,12 @@ int Gibs(object oCreature, int bForce = FALSE)
     {
         nGib = VFX_COM_CHUNK_RED_MEDIUM;
 
-        PlaySound("bf_med_insect");
+        PlaySound("cb_ht_chunk");
     }
     else if (sBlood == "Y")
     {
         nGib = VFX_COM_CHUNK_YELLOW_MEDIUM;
-        PlaySound("bf_med_insect");
+        PlaySound("cb_ht_chunk");
     }
     else if (sBlood == "G")
     {

@@ -626,6 +626,7 @@ void main()
       LoadTreasureContainer("_PotionsT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 18.0);
 
       LoadTreasureContainer("_MiscT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 20.0);
+      LoadTreasureContainer("_MiscConsT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 21.0);
 
       LoadTreasureContainer("_ArmorCommonT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 22.0);
       LoadTreasureContainer("_ArmorUncommonT"+IntToString(nIndex)+"NonUnique", IntToFloat(nIndex)*2.0, 23.0);
@@ -672,6 +673,8 @@ void main()
    string sAreaResRef;
    location lBaseLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
    object oAreaRefresher;
+   
+   BuildItemNamesToObjectsDB();
 
    LoadAllPrettifyPlaceables();
 
