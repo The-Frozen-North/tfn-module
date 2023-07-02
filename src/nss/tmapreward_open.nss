@@ -14,11 +14,23 @@ void main()
 	int nGenerated = GetLocalInt(OBJECT_SELF, "doneloot");
 	if (!nGenerated)
 	{
-		SetLocalInt(OBJECT_SELF, "boss", 1);
+		
+        int nACR = GetLocalInt(OBJECT_SELF, "area_cr");
+        int nNewMapACR = 1 + nACR + (nACR / 6);
+        if (nNewMapACR > TREASUREMAP_ACR_MAX) { nNewMapACR = TREASUREMAP_ACR_MAX; }
 		int i;
 		int nTries = d2(2);
 		for (i=0; i<nTries; i++)
 		{
+            if (i == 0)
+            {
+                SetLocalInt(OBJECT_SELF, "boss", 1);
+            }
+            else if (Random(100) < 85)
+            {
+                DeleteLocalInt(OBJECT_SELF, "boss");
+                SetLocalInt(OBJECT_SELF, "semiboss", 1);
+            }
 			SetScriptParam("exclusivelooter", ObjectToString(oUser));
 			ExecuteScript("party_credit");
 			DeleteLocalInt(OBJECT_SELF, "no_credit");
@@ -61,6 +73,12 @@ void main()
             {
                 // If this item isn't being gold-ified, copy it to the new personal loot
                 // For nice inventory grid placement!
+                
+                // It's kinda nice if map "chains" go up in difficulty a bit
+                if (GetTag(oTest) == "treasuremap")
+                {
+                    SetLocalInt(oTest, "acr", nNewMapACR);
+                }
                 CopyItem(oTest, oPersonalLootNew, TRUE);
             }
             DestroyObject(oTest);

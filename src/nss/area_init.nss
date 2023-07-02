@@ -223,6 +223,27 @@ void main()
        vector vTreasureVector, vCreatureVector, vPlaceableVector;
        float fTreasureOrientation;
        object oModule = GetModule();
+       
+       int nLowTreasure = 0;
+       int nMediumTreasure = 0;
+       int nHighTreasure = 0;
+       int nLowNonKeepTreasure = 0;
+       int nMediumNonKeepTreasure = 0;
+       int nHighNonKeepTreasure = 0;
+       json jNonKeepLowTreasure = JsonArray();
+       json jNonKeepMedTreasure = JsonArray();
+       json jNonKeepHighTreasure = JsonArray();
+       
+       int nACR = GetLocalInt(oArea, "cr");
+       string sACR = IntToString(nACR);
+       float fAreaSize = IntToFloat(GetAreaSize(AREA_HEIGHT, oArea)*GetAreaSize(AREA_WIDTH, oArea));
+       int nTargetPlaceableGold = GetAreaTargetPlaceableLootValue(oArea);
+       int nLowGold = GetLocalInt(oModule, "placeable_value_low_" + sACR);
+       int nMedGold = GetLocalInt(oModule, "placeable_value_medium_" + sACR);
+       int nHighGold = GetLocalInt(oModule, "placeable_value_high_" + sACR);
+       json jKeepTreasures = JsonArray();
+       
+       int nThisTreasureGold;
 
 // Loop through all objects in the area and do something special with them
        while (GetIsObjectValid(oObject))
@@ -398,6 +419,14 @@ void main()
                        SetLocalFloat(oArea, "treasure_o"+IntToString(nTreasures), GetFacing(oObject));
                        float fQualityMult = GetLocalFloat(oObject, "quality_mult");
                        string sTreasureTier = GetLocalString(oObject, "treasure");
+                       if (sTreasureTier == "")
+                       {
+                           // Get as close as we can to these
+                           if (GetLocalInt(oObject, "boss") + GetLocalInt(oObject, "semiboss"))
+                           {
+                               sTreasureTier = "high";
+                           }
+                       }
                        if (fQualityMult <= 0.0) {
                            if (sTreasureTier == "low") { fQualityMult = TREASURE_LOW_QUALITY; }
                            else if (sTreasureTier == "medium") { fQualityMult = TREASURE_MEDIUM_QUALITY; }
@@ -412,9 +441,52 @@ void main()
                            else if (sTreasureTier == "high") { fQuantityMult = TREASURE_HIGH_QUANTITY; }
                            else { fQuantityMult = 1.0; }
                        }
+                       if (sTreasureTier == "low")
+                       {
+                           nLowTreasure++;
+                           if (!GetLocalInt(oObject, "keep"))
+                           {
+                               nLowNonKeepTreasure++;
+                               jNonKeepLowTreasure = JsonArrayInsert(jNonKeepLowTreasure, JsonInt(nTreasures));
+                           }
+                           nThisTreasureGold = nLowGold;
+                       }
+                       else if (sTreasureTier == "medium")
+                       {
+                           nMediumTreasure++;
+                           if (!GetLocalInt(oObject, "keep"))
+                           {
+                               nMediumNonKeepTreasure++;
+                               jNonKeepMedTreasure = JsonArrayInsert(jNonKeepMedTreasure, JsonInt(nTreasures));
+                           }
+                           nThisTreasureGold = nMedGold;
+                       }
+                       else if (sTreasureTier == "high")
+                       {
+                           nHighTreasure++;
+                           if (!GetLocalInt(oObject, "keep"))
+                           {
+                               nHighNonKeepTreasure++;
+                               jNonKeepHighTreasure = JsonArrayInsert(jNonKeepHighTreasure, JsonInt(nTreasures));
+                           }
+                           nThisTreasureGold = nHighGold;
+                       }
+                       else
+                       {
+                           if (!GetLocalInt(oObject, "keep"))
+                           {
+                               WriteTimestampedLogEntry("Random placeable: " + GetName(oObject) + ", " + GetResRef(oObject) + " is missing \"treasure\" to denote its value and can't be spawned");
+                           }
+                           nThisTreasureGold = nMedGold;
+                       }
                        SetLocalFloat(oArea, "treasure_quantity_mult"+IntToString(nTreasures), fQuantityMult);
 // treasures tagged with keep is always guaranteed
-                       if (GetLocalInt(oObject, "keep") == 1) SetLocalInt(oArea, "treasure_keep"+IntToString(nTreasures), 1);
+                       if (GetLocalInt(oObject, "keep") == 1)
+                       {
+                           SetLocalInt(oArea, "treasure_keep"+IntToString(nTreasures), 1);
+                           nTargetPlaceableGold = nTargetPlaceableGold - nThisTreasureGold;
+                           jKeepTreasures = JsonArrayInsert(jKeepTreasures, JsonInt(nTreasures));
+                       }
 
                         DestroyObject(oObject);
                    }
@@ -431,6 +503,37 @@ void main()
                }
            oObject = GetNextObjectInArea(oArea);
        }
+       
+      
+       WriteTimestampedLogEntry("Area " + GetTag(oArea) + " has " + FloatToString(fAreaSize) + " total size");
+       if (nLowTreasure > 0)
+       {
+        WriteTimestampedLogEntry("Area " + GetTag(oArea) + " has " + IntToString(nLowTreasure) + " low treasures, gold per treasure=" + IntToString(nLowGold));
+       }
+       if (nMediumTreasure > 0)
+       {
+        WriteTimestampedLogEntry("Area " + GetTag(oArea) + " has " + IntToString(nMediumTreasure) + " med treasures, gold per treasure=" + IntToString(nMedGold));
+       }
+       if (nHighTreasure > 0)
+       {
+        WriteTimestampedLogEntry("Area " + GetTag(oArea) + " has " + IntToString(nHighTreasure) + " high treasures, gold per treasure=" + IntToString(nHighGold));
+       }
+       int nMaxPlaceableGold = (nLowNonKeepTreasure * nLowGold) + (nMediumNonKeepTreasure * nMedGold) + (nHighNonKeepTreasure * nHighGold);
+       if (nMaxPlaceableGold > 0)
+       {
+            float fPercent = 100.0 * IntToFloat(nMaxPlaceableGold)/IntToFloat(nTargetPlaceableGold);
+            WriteTimestampedLogEntry("Area " + GetTag(oArea) + " has non-keep placeables that provide " + FloatToString(fPercent) + " percent of its target gold amount of " + IntToString(nTargetPlaceableGold));
+            if (nHighTreasure > 0 && nHighGold > nTargetPlaceableGold)
+            {
+                WriteTimestampedLogEntry("Area " + GetTag(oArea) + " probably can't spawn its high placeables unless they are set to keep - high gold exceeds target (" + IntToString(nHighGold) + " vs " + IntToString(nTargetPlaceableGold));
+            }
+       }
+       
+       SetLocalInt(oArea, "target_placeable_gold", nTargetPlaceableGold);
+       SetLocalJson(oArea, "high_treasures", jNonKeepHighTreasure);
+       SetLocalJson(oArea, "med_treasures", jNonKeepMedTreasure);
+       SetLocalJson(oArea, "low_treasures", jNonKeepLowTreasure);
+       SetLocalJson(oArea, "keep_treasures", jKeepTreasures);
 
        SetLocalInt(oArea, "event_spawn_points", nEventSpawns);
        SetLocalInt(oArea, "treasures", nTreasures);

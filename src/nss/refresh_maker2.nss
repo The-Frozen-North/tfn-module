@@ -101,7 +101,7 @@ void main()
     {
         if (GetLocalString(oTest, "treasure") == "high")
         {
-            if (d100() < 35)
+            if (d100() < 5)
             {
                 SetLocalInt(oTest, "boss", 1);
             }

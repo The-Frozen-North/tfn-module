@@ -17,10 +17,22 @@ void KillCreature(object oCreature)
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(9999), oCreature);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(9999, DAMAGE_TYPE_DIVINE), oCreature);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(9999, DAMAGE_TYPE_PIERCING), oCreature);
+    SetLocalInt(OBJECT_SELF, "arealootactions", GetLocalInt(OBJECT_SELF, "arealootactions") - 1);
+}
+
+void LootPlaceable(object oPlaceable)
+{
+    ExecuteScript("party_credit", oPlaceable);
+    SetLocalInt(OBJECT_SELF, "arealootactions", GetLocalInt(OBJECT_SELF, "arealootactions") - 1);
 }
 
 void DelayedAction()
 {
+    if (GetLocalInt(OBJECT_SELF, "arealootactions"))
+    {
+        DelayCommand(1.0, DelayedAction());
+        return;
+    }
     int nOldInstructionLimit = NWNX_Util_GetInstructionLimit();
     NWNX_Util_SetInstructionLimit(52428888);
     object oArea = GetArea(OBJECT_SELF);
@@ -49,7 +61,7 @@ void DelayedAction()
         }
         oTest = GetNextObjectInArea(oArea);
     }
-    
+    SetLocalInt(oDev, "dev_arealoot_done", 1);
     NWNX_Util_SetInstructionLimit(nOldInstructionLimit);
 }
 
@@ -70,6 +82,7 @@ void main()
         SendMessageToAllDMs(GetName(oDev) + " tried to run dev_arealootval, but they are not a developer");
         return;
     }
+    DeleteLocalInt(oDev, "dev_arealoot_done");
     SendMessageToAllDMs(GetName(oDev) + " is running dev_arealootval in area: " + GetName(GetArea(oDev)));
     SendDiscordLogMessage(GetName(oDev) + " is running dev_arealootval in area: " + GetName(GetArea(oDev)));
 
@@ -94,6 +107,7 @@ void main()
         {
             if (!GetIsDead(oTest) && !GetIsPC(oTest))
             {
+                SetLocalInt(OBJECT_SELF, "arealootactions", GetLocalInt(OBJECT_SELF, "arealootactions") + 1);
                 DelayCommand(0.1, KillCreature(oTest));
                 //DelayCommand(0.2, ExecuteScript("party_credit", oTest));
                 nCreatures++;
@@ -103,14 +117,15 @@ void main()
         {
             if (GetLocalInt(oTest, "cr") > 0 && GetResRef(oTest) != "_loot_container" && GetName(oTest) != "Personal Loot")
             {
-                DelayCommand(0.2, ExecuteScript("party_credit", oTest));
+                SetLocalInt(OBJECT_SELF, "arealootactions", GetLocalInt(OBJECT_SELF, "arealootactions") + 1);
+                DelayCommand(0.2, LootPlaceable(oTest));
                 nPlaceables++;
             }
         }
         oTest = GetNextObjectInArea(oArea);
     }
     SendDebugMessage(GetTag(oArea) + ": " + IntToString(nCreatures) + " creatures, " + IntToString(nPlaceables) + " placeables", TRUE);
-    DelayCommand(10.0f, DelayedAction());
+    DelayCommand(2.0f, DelayedAction());
     NWNX_Util_SetInstructionLimit(nOldInstructionLimit);
 }
 

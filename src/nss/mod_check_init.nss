@@ -15,5 +15,6 @@ void main()
         NWNX_Administration_SetDMPassword(GetLocalString(GetModule(), "DMPassword"));
         SetEventScript(oModule, EVENT_SCRIPT_MODULE_ON_HEARTBEAT, "on_mod_heartb");
         ServerWebhook("The Frozen North is ready!", "The Frozen North server is ready for players to login.");
+        SetLocalInt(oModule, "init_complete", 1);
     }
 }

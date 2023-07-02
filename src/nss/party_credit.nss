@@ -319,19 +319,23 @@ void SetPartyData()
        // Used for loot debugging: if there were no "real" party members in range, add
        // the module developer as a party member
        // This forces the loot code to always be run
-       if (nTotalSize == 0 && GetIsDevServer())
+       if (nTotalSize == 0 && ShouldDebugLoot())
        {
           object oDev = GetLocalObject(GetModule(), "dev_lootvortex");
+          nPlayerSize++;
+          nTotalSize++;
+          nLevel = GetLevelFromXP(GetXP(oMbr));
+          nTotalLevels = nTotalLevels + nLevel;
+          nHighestLevel = nLevel;
+          nLow = nLevel;
+          nHigh = nLevel;
           if (GetIsObjectValid(oDev) && GetIsDeveloper(oDev))
           {
-              nPlayerSize++;
-              nTotalSize++;
-              nLevel = GetLevelFromXP(GetXP(oMbr));
-              nTotalLevels = nTotalLevels + nLevel;
-              nHighestLevel = nLevel;
-              nLow = nLevel;
-              nHigh = nLevel;
               SetLocalArrayObject(OBJECT_SELF, "Players", nPlayerSize, oDev);
+          }
+          else
+          {
+              SetLocalArrayObject(OBJECT_SELF, "Players", nPlayerSize, OBJECT_INVALID);
           }
        }
    }
@@ -865,6 +869,9 @@ void main()
    {
 // Credit players in previously set array "Players"
       object oPC = GetLocalArrayObject(OBJECT_SELF, "Players", nNth);
+      // This script runs to calc loot values without players present
+      // Don't try to do any of this if there isn't anyone.
+      if (!GetIsObjectValid(oPC)) { continue; }
 
       if (GetObjectType(OBJECT_SELF) == OBJECT_TYPE_CREATURE)
       {

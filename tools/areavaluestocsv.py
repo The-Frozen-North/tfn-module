@@ -1,21 +1,6 @@
 import re
 
-# Log sample
-"""
-[Sat Jul  9 16:39:09] ========= BEGIN FOR AREA: Neverwinter - Beggar's Nest - Great Graveyard - Tomb with tag beg_tomb =========
-[Sat Jul  9 16:39:09] Expected value of tier 1 items:       69.749069214
-[Sat Jul  9 16:39:09] Expected number of tier 1 items:        1.803833365
-[Sat Jul  9 16:39:09] Expected value of tier 2 items:      237.465255737
-[Sat Jul  9 16:39:09] Expected number of tier 2 items:        0.595264912
-[Sat Jul  9 16:39:09] Expected value of tier 3 items:        1.287710667
-[Sat Jul  9 16:39:09] Expected number of tier 3 items:        0.000901917
-[Sat Jul  9 16:39:09] Expected value of tier 4 items:        0.000000000
-[Sat Jul  9 16:39:09] Expected number of tier 4 items:        0.000000000
-[Sat Jul  9 16:39:09] Expected value of tier 5 items:        0.000000000
-[Sat Jul  9 16:39:09] Expected number of tier 5 items:        0.000000000
-[Sat Jul  9 16:39:09] Expected raw gold:       35.474998474
-[Sat Jul  9 16:39:09] Total item value:      308.502044678
-"""
+# Intended for use with: dev_arealootval, dev_allarealoot
 
 class LootCategoryManager(object):
 	"Splitting the output by object types made this complicated, having something to sort all of these is helpful"
@@ -144,6 +129,9 @@ def main(logfp="./../logs/nwserverLog1.txt"):
 					areatag = m.groups()[1]
 					currentArea = AreaLoot(areaname, areatag)
 					continue
+				# This can now spit out a lot of lines when calculating gold per placeables
+				# but this happens before any area headers are in the log
+				if currentArea is None: continue
 				m = re.search("Expected value of prefix \"(.*)\" tier (\\d) items: (.*)", line)
 				if m is not None:
 					prefix = m.groups()[0]

@@ -202,7 +202,8 @@ float GetAverageLootValueOfItem(int nTier, string sType);
 int ShouldDebugLoot();
 
 // Output the loot tracker's numbers
-void LootDebugOutput();
+// Returns total gold + expected gold value of items as an int
+int LootDebugOutput();
 
 // Reset the loot tracker.
 void ResetLootDebug();
@@ -1256,9 +1257,17 @@ int DetermineGoldFromCR(int iCR, int nMultiplier=1)
 
 int ShouldDebugLoot()
 {
-    if (GetIsDevServer() && GetLocalInt(GetModule(), LOOT_DEBUG_ENABLED))
+    if (GetLocalInt(GetModule(), LOOT_DEBUG_ENABLED))
     {
-        return TRUE;
+        if (GetIsDevServer())
+        {
+            return TRUE;
+        }
+        // The module now uses this on startup to calculate a few things
+        if (!GetLocalInt(GetModule(), "init_complete"))
+        {
+            return TRUE;
+        }        
     }
     return FALSE;
 }
@@ -1508,7 +1517,7 @@ void ResetLootDebug()
     DeleteLocalObject(GetModule(), LOOT_DEBUG_AREA);
 }
 
-void LootDebugOutput()
+int LootDebugOutput()
 {
     int nTier;
     float fGoldTotal = 0.0;
@@ -1530,6 +1539,65 @@ void LootDebugOutput()
     float fRawGold = GetLocalFloat(GetModule(), LOOT_DEBUG_GOLD);
     SendDebugMessage("Expected raw gold: " + FloatToString(fRawGold), TRUE);
     SendDebugMessage("Total item value: " + FloatToString(fGoldTotal), TRUE);
+    
+    return FloatToInt(fGoldTotal + fRawGold);
+}
+
+void CalculatePlaceableLootValues()
+{
+    object oModule = GetModule();
+    int nACR;
+    int nPlaceableTier;
+    string sPlaceable;
+    // This is in _BASE.
+    location lSpawn = GetLocation(GetWaypointByTag("_calc_plc_values"));
+    
+    SetLocalInt(oModule, LOOT_DEBUG_ENABLED, 1);
+    for (nPlaceableTier=0; nPlaceableTier<3; nPlaceableTier++)
+    {
+        if (nPlaceableTier == 0) { sPlaceable = "treas_bones_low"; }
+        if (nPlaceableTier == 1) { sPlaceable = "treas_bones_med"; }
+        if (nPlaceableTier == 2) { sPlaceable = "treas_bones_h"; }
+        object oPlaceable = CreateObject(OBJECT_TYPE_PLACEABLE, sPlaceable, lSpawn);
+        string sTreasureTier = GetLocalString(oPlaceable, "treasure");
+        WriteTimestampedLogEntry("Spawned placeable " + GetName(oPlaceable) + " with tier " + sTreasureTier);
+        ExecuteScript("treas_init", oPlaceable);
+        for (nACR=0; nACR<=20; nACR++)
+        {
+            SetLocalInt(oPlaceable, "cr", nACR);
+            SetLocalInt(oPlaceable, "area_cr", nACR);
+            ExecuteScript("party_credit", oPlaceable);
+			DeleteLocalInt(oPlaceable, "no_credit");
+            int nGold = LootDebugOutput();
+            WriteTimestampedLogEntry("Value of placeable loot " + sTreasureTier + " at ACR " + IntToString(nACR) + " = " + IntToString(nGold));
+            SetLocalInt(oModule, "placeable_value_" + sTreasureTier + "_" + IntToString(nACR), nGold);
+            ResetLootDebug();
+        }
+        DestroyObject(oPlaceable);
+    }
+    DeleteLocalInt(GetModule(), LOOT_DEBUG_ENABLED);
+}
+
+int GetAreaTargetPlaceableLootValue(object oArea)
+{
+    int nACR = GetLocalInt(oArea, "cr");
+    float fAreaSize = IntToFloat(GetAreaSize(AREA_HEIGHT, oArea)*GetAreaSize(AREA_WIDTH, oArea));
+    // Super tiny areas normally have a fight in them!
+    fAreaSize = fAreaSize + 60.0;
+    // Old: effectively just fAreaSize/10; but it didn't split on type
+    // so if you assumed low/med/high are equal that's fAreaSize/30
+    // buuuut they really aren't.
+    float fMult = fAreaSize/60.0;
+    // Because speed looting off a horse may become problematic.
+    // Okay expeditious retreat can do the same thing, but... the areas where you can use a horse are typically more sparsely populated anyway
+    if (GetLocalInt(oArea, "horse"))
+    {
+        fMult *= 0.3;
+    }
+    string sACR = IntToString(nACR);
+    object oModule = GetModule();
+    float fGold = IntToFloat(GetLocalInt(oModule, "placeable_value_low_" + sACR) + GetLocalInt(oModule, "placeable_value_medium_" + sACR) + GetLocalInt(oModule, "placeable_value_high_" + sACR));
+    return FloatToInt(fGold * fMult);
 }
 
 //void main() {}
