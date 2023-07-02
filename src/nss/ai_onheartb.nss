@@ -132,6 +132,10 @@ void main()
             return;
         }
     }
+
+    string sAreaScript = GetLocalString(oArea, "creature_heartbeat_script");
+    if (sAreaScript != "") ExecuteScript(sAreaScript);
+
     string sScript = GetLocalString(OBJECT_SELF, "heartbeat_script");
     if (sScript != "") ExecuteScript(sScript);
 }

@@ -85,29 +85,33 @@ int StartingConditional()
 // ====================================
 // COURTESAN
 // ====================================
-   if (sResRef == "courtesan")
+   else if (sResRef == "courtesan")
    {
-        if (GetItemInSlot(INVENTORY_SLOT_CHEST, oPC) == OBJECT_INVALID) // naked
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "You'll have to wait your turn, honey.");
+        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Hello love, I'm rather busy right now. Sorry.");
+
+        // these are lines are specific to the moonstone mask
+        if (GetStringLeft(sAreaResRef, 9) == "core_moon")
         {
-            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "You can't run around like *that*! Miss Ophala will have a fit!");
-        }
+            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I don't know how Ophala keeps us free of the sickness, but she does.");
 
-        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "You'll have to wait your turn.");
-        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Hello, I'm rather busy right now. Sorry.");
-        nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I don't know how Ophala keeps us free of the sickness, but she does.");
+            if (GetItemInSlot(INVENTORY_SLOT_CHEST, oPC) == OBJECT_INVALID) // naked
+            {
+                nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "You can't run around like *that*! Miss Ophala will have a fit!");
+            }
 
+            if (GetAbilityScore(oPC, ABILITY_CHARISMA) >= 13) // high charisma
+            {
+                nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "*Sigh* Business has been a little *too* busy since the plague hit, you know what I mean... ?");
+                nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "You're new to the Mask, aren't you? Well, I'm sure you'll like it... ");
+            }
 
-        if (GetAbilityScore(oPC, ABILITY_CHARISMA) >= 13) // high charisma
-        {
-            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "*Sigh* Business has been a little *too* busy since the plague hit, you know what I mean... ?");
-            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "You're new to the Mask, aren't you? Well, I'm sure you'll like it... ");
-        }
-
-        if (GetAbilityScore(oPC, ABILITY_CHARISMA) <= 9) // low charisma
-        {
-            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Go away, you plague-ridden filth!");
-            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I don't have time for your like. You'll wait your turn.");
-            nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Oh, by the gods! Must all the dregs of society come in here?");
+            if (GetAbilityScore(oPC, ABILITY_CHARISMA) <= 9) // low charisma
+            {
+                nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Go away, you plague-ridden filth!");
+                nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "I don't have time for your like. You'll wait your turn.");
+                nCount++; SetLocalString(OBJECT_SELF, "gossip"+IntToString(nCount), "Oh, by the gods! Must all the dregs of society come in here?");
+            }
         }
    }
 // ====================================
