@@ -40,7 +40,7 @@
     "id": 13257,
     "type": "cexolocstring",
     "value": {
-      "0": "Strong Ghast / Ghoul Bite"
+      "0": "Strong Ghast Bite"
     }
   },
   "ModelPart1": {
@@ -128,7 +128,7 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 0
+          "value": 24
         },
         "CostValue": {
           "type": "word",
@@ -136,19 +136,19 @@
         },
         "Param1": {
           "type": "byte",
-          "value": 255
+          "value": 1
         },
         "Param1Value": {
           "type": "byte",
-          "value": 255
+          "value": 3
         },
         "PropertyName": {
           "type": "word",
-          "value": 72
+          "value": 48
         },
         "Subtype": {
           "type": "word",
-          "value": 8
+          "value": 2
         }
       }
     ]
@@ -168,5 +168,9 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "cre_ghastbite"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 1
   }
 }
