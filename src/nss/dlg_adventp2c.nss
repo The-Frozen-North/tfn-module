@@ -13,11 +13,11 @@ int StartingConditional()
     string sMessage;
     int nPCPartySize = 0;
     int nAdventurerPartySize = GetAdventurerPartySize(OBJECT_SELF);
-    int bNeverwinterTavern = 0;
+    int bTavern = 0;
     object oArea = GetArea(OBJECT_SELF);
-    if (FindSubString(GetName(oArea), "Neverwinter - ") >= 0 && GetLocalInt(oArea, "restxp"))
+    if (!bOutside && GetLocalInt(oArea, "restxp"))
     {
-        bNeverwinterTavern = 1;
+        bTavern = 1;
     }
     object oTest = GetFirstFactionMember(oPC, FALSE);
     while (GetIsObjectValid(oTest))
@@ -33,7 +33,7 @@ int StartingConditional()
     {
         RevealTrueNameToPlayer(OBJECT_SELF, oPC);
         SetLocalInt(OBJECT_SELF, "talkedto" + ObjectToString(oPC), 1);
-        if (bNeverwinterTavern)
+        if (bTavern)
         {
             SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, "Greetings, friend! I'm " + GetAdventurerTrueName(OBJECT_SELF) + ", just stopping to enjoy a few drinks. Care to join " + (nAdventurerPartySize > 1 ? "us" : "me") + "?");
         }

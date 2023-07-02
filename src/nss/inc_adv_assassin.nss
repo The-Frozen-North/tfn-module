@@ -17,6 +17,7 @@ const int ADVENTURER_ASSASSIN_SENDER_RUMBOTTOM = 2;
 const int ADVENTURER_ASSASSIN_SENDER_ANDROD = 3;
 const int ADVENTURER_ASSASSIN_SENDER_DESTHER = 4;
 const int ADVENTURER_ASSASSIN_SENDER_MAUGRIM = 5;
+const int ADVENTURER_ASSASSIN_SENDER_UNDERDARK = 6;
 
 string GetAssassinNoteMessage(int nSender, object oPC, object oAssassin)
 {
@@ -94,6 +95,24 @@ string GetAssassinNoteMessage(int nSender, object oPC, object oAssassin)
     {
         sMes = sTrueName + ",\n\nI have another task for you: a " + sPCRace + " named " + sPCName + " has proven a great nuisance to me, and I would like " + sHimHer + " dealt with. Your reward for this simple deed will be 20000 gold. " + sPCName + " is an adventurer of great ability, and I happen to know that " + sHeShe + " has faced the depths of the Underdark and returned. Underestimate " + sHimHer + " at your peril.\nDo not fail me.\n\n~M";
     }
+    else if (nSender == ADVENTURER_ASSASSIN_SENDER_UNDERDARK)
+    {
+        int nPlansThwarted = 0;
+        if (GetQuestEntry(oPC, "q_golems") >= 50) { nPlansThwarted++; }
+        int nBounty = 60000;
+        string sThreatText;
+        if (nPlansThwarted == 0)
+        {
+            sThreatText = "While " + sHisHer + " capabilities are not fully known, " + sHeShe + " appears to be a credible threat to my plans. Additionally, " + sHeShe + " has been seen consorting with the rebels of the east, who may be trying to recruit " + sHimHer + " to their cause.";
+            nBounty = 20000;
+        }
+        else if (nPlansThwarted >= 1)
+        {
+            sThreatText = sHeSheCap + " has proven troublesome to my plans, and appears to be of considerable strength for a surfacer. They are working with the rebels of Lith My'athar and should not be underestimated.";
+            nBounty = 40000;
+        }
+        sMes = "BOUNTY NOTICE\n\nThis is an open offer of " + IntToString(nBounty) + " gold for the head of" + sPCName + ", a " + sPCRace + " surfacer. " + sThreatText;
+    }
     return sMes;
 }
 
@@ -146,6 +165,7 @@ int GetAdventurerAssassinSender(object oPC)
     int nAndrodChance = 0;
     int nDestherChance = 0;
     int nMaugrimChance = 0;
+    int nUnderdarkChance = 0;
     
     if (GetQuestEntry(oPC, "q_art_theft2") >= 2)
     {
@@ -171,6 +191,15 @@ int GetAdventurerAssassinSender(object oPC)
         nMaugrimChance = 100;
     }
     
+    if (GetQuestEntry(oPC, "q_underdark") > 0 && FindSubString(GetName(GetArea(oPC)), "Underdark") > 0)
+    {
+        nUnderdarkChance = 100;
+    }
+    
+    if (nUnderdarkChance > 0)
+    {
+        return ADVENTURER_ASSASSIN_SENDER_UNDERDARK;
+    }
     if (Random(100) < nMaugrimChance)
     {
         return ADVENTURER_ASSASSIN_SENDER_MAUGRIM;
