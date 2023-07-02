@@ -40,13 +40,18 @@ void main()
         gsC2ClearDamage();
     }
 
-    if (nMatrix & GS_AI_ACTION_TYPE_HEAL &&
-        gsCBTalentCureCondition() ||
-        gsCBTalentHealSelf() ||
-        gsCBTalentHealOthers())
+// only these classes should be able to heal
+// this probably means that spell like abilities might get missed, oh well
+    if (GetLevelByClass(CLASS_TYPE_MONK) || GetLevelByClass(CLASS_TYPE_CLERIC) || GetLevelByClass(CLASS_TYPE_DRUID) || GetLevelByClass(CLASS_TYPE_PALADIN) )
     {
- //       SetAILevel(OBJECT_SELF, AI_LEVEL_LOW);
-        return;
+        if (nMatrix & GS_AI_ACTION_TYPE_HEAL &&
+            gsCBTalentCureCondition() ||
+            gsCBTalentHealSelf() ||
+            gsCBTalentHealOthers())
+        {
+            //       SetAILevel(OBJECT_SELF, AI_LEVEL_LOW);
+            return;
+        }
     }
 
     if (nMatrix & GS_AI_ACTION_TYPE_REST &&

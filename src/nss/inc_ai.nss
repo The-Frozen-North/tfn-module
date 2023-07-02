@@ -177,8 +177,8 @@ int gsAIGetDefaultActionMatrix(object oCreature = OBJECT_SELF)
         nMatrix &= ~(GS_AI_ACTION_TYPE_CREATURE |
                      GS_AI_ACTION_TYPE_DOOR |
                      GS_AI_ACTION_TYPE_ITEM |
-                     GS_AI_ACTION_TYPE_PLACEABLE |
-                     GS_AI_ACTION_TYPE_HEAL);
+                     GS_AI_ACTION_TYPE_PLACEABLE);// |
+                     // GS_AI_ACTION_TYPE_HEAL);
         break;
     }
 
