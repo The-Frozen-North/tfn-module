@@ -40,6 +40,71 @@
           "type": "short",
           "value": 3
         },
+        "MemorizedList0": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
+                "value": 144
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 1
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
+                "value": 144
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 1
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
+                "value": 144
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 1
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Spell": {
+                "type": "word",
+                "value": 144
+              },
+              "SpellFlags": {
+                "type": "byte",
+                "value": 1
+              },
+              "SpellMetaMagic": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
         "MemorizedList1": {
           "type": "list",
           "value": [
@@ -47,7 +112,7 @@
               "__struct_id": 3,
               "Spell": {
                 "type": "word",
-                "value": 102
+                "value": 107
               },
               "SpellFlags": {
                 "type": "byte",
@@ -112,7 +177,7 @@
               "__struct_id": 3,
               "Spell": {
                 "type": "word",
-                "value": 120
+                "value": 115
               },
               "SpellFlags": {
                 "type": "byte",
@@ -138,7 +203,7 @@
   },
   "Conversation": {
     "type": "resref",
-    "value": ""
+    "value": "luskan_guard"
   },
   "CRAdjust": {
     "type": "int",
@@ -191,7 +256,7 @@
         "__struct_id": 32,
         "EquippedRes": {
           "type": "resref",
-          "value": "x3_it_moonstick"
+          "value": "nw_it_torch001"
         }
       }
     ]
@@ -627,7 +692,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "luskan_soldier"
+    "value": "warden"
   },
   "Tail_New": {
     "type": "dword",
@@ -657,6 +722,21 @@
         "Value": {
           "type": "cexostring",
           "value": "hb_warden"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "patrol"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
         }
       }
     ]

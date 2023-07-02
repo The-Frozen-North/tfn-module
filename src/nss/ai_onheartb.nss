@@ -1,6 +1,7 @@
 #include "inc_ai_event"
 #include "x0_i0_position"
 #include "inc_ai_combat"
+#include "x0_i0_walkway"
 
 void main()
 {
@@ -105,6 +106,10 @@ void main()
             }
         }
 
+    }
+    else if (GetLocalInt(OBJECT_SELF, "patrol") == 1)
+    {
+        WalkWayPoints();
     }
     else
     {

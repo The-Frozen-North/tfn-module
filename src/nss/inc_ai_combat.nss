@@ -43,7 +43,7 @@ void FastBuff(int bInstant = TRUE)
     BuffIfNotBuffed(SPELL_AID, bInstant);
     BuffIfNotBuffed(SPELL_DIVINE_FAVOR, bInstant);
     BuffIfNotBuffed(SPELL_DIVINE_POWER, bInstant);
-    
+
 
     // Ranger/Druid buffs
     BuffIfNotBuffed(SPELL_CAMOFLAGE, bInstant);
@@ -783,14 +783,30 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         ClearAllActions();
         return;
     }
-    
-    
+
+
 // Turn off Detect if there is a valid target
     SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, FALSE);
 
     DoCombatVoice();
 
-    if (! GetIsEnemy(oTarget)) SetIsTemporaryEnemy(oTarget, OBJECT_SELF, TRUE, 1800.00);
+    // always set them as an enemy. also, make everyone else aggro too
+    //if (! GetIsEnemy(oTarget)) SetIsTemporaryEnemy(oTarget, OBJECT_SELF, TRUE, 1800.00);
+
+    SetIsTemporaryEnemy(oTarget, OBJECT_SELF, TRUE);
+    float fRadius = 30.0;
+    location lLocation = GetLocation(OBJECT_SELF);
+    // make friends aggro on enemy, too
+    object oFriend = GetFirstObjectInShape(SHAPE_SPHERE, fRadius, lLocation, TRUE, OBJECT_TYPE_CREATURE);
+    while (GetIsObjectValid(oFriend))
+    {
+       if (!GetIsDead(oFriend) && GetObjectSeen(oTarget, oFriend) && GetFactionEqual(oFriend, OBJECT_SELF))
+       {
+           SetIsTemporaryEnemy(oTarget,oFriend, TRUE);
+           // AssignCommand(oTarget, gsCBDetermineCombatRound(oPC));
+       }
+       oFriend = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation, TRUE, OBJECT_TYPE_CREATURE);
+    }
 
     //analyze
     gsC2Analyze();
@@ -830,7 +846,7 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
     }
 
     if (GetCurrentAction() != ACTION_CASTSPELL) ClearAllActions();
-    
+
 
 //    //no magic area
 //    if (gsFLGetAreaFlag("OVERRIDE_MAGIC"))

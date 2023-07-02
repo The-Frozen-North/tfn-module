@@ -70,7 +70,9 @@ void main()
 //    SetLocalLocation(OBJECT_SELF, "GS_LOCATION", GetLocation(OBJECT_SELF));
 //    SetLocalInt(OBJECT_SELF, "GS_TIMEOUT", gsTIGetActualTimestamp() + GS_TIMEOUT);
 
-    int iAreaCR = GetLocalInt(GetArea(OBJECT_SELF), "cr");
+    object oArea = GetArea(OBJECT_SELF);
+
+    int iAreaCR = GetLocalInt(oArea, "cr");
 
     switch (GetRacialType(OBJECT_SELF))
     {
@@ -140,6 +142,9 @@ void main()
     string sScript = GetLocalString(OBJECT_SELF, "spawn_script");
     //WriteTimestampedLogEntry("ai_onspawn for " + GetName(OBJECT_SELF) + "-> spawn script = " + sScript);
     if (sScript != "") ExecuteScript(sScript);
+
+    string sAreaScript = GetLocalString(oArea, "creature_spawn_script");
+    if (sAreaScript != "") ExecuteScript(sAreaScript);
 
 // Scan and store weapons.
     object oItemInSlot = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);

@@ -63,6 +63,7 @@ void main()
     }
 
     if (GetLocalInt(OBJECT_SELF, "no_wander") == 1) return;
+    if (GetLocalInt(OBJECT_SELF, "patrol") == 1) return;
 
     if (GetLocalInt(OBJECT_SELF, "herbivore") == 1)
     {
@@ -154,7 +155,8 @@ void main()
 //                    ! GetIsObjectValid(gsTAGetLastTaskTrigger(oTarget)) &&
                     ! GetIsPC(oTarget) &&
                     ! GetIsDead(oTarget) &&
-                    GetAbilityScore(oTarget, ABILITY_INTELLIGENCE) >= 6)
+                    GetAbilityScore(oTarget, ABILITY_INTELLIGENCE) >= 6 &&
+                    GetLocalInt(oTarget, "patrol") != 1)
                 {
                     ActionMoveToLocation(GetLocation(oTarget));
                     ActionDoCommand(gsAIActionCreature(oTarget, TRUE));
