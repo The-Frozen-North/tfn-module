@@ -317,12 +317,16 @@ void SendOnEnterRestedPopup(object oPC)
     SendColorMessageToPC(oPC, "This area feels safe and comfortable enough that you are gaining Rested XP. This will increase experience gained from kills until depleted. Logging out here will continue to add Rested XP at a lower rate.", MESSAGE_COLOR_INFO);
 }
 
-void RestXPDisplay(object oPC)
+void RestXPDisplay(object oPC, object oArea=OBJECT_INVALID)
 {
+    if (!GetIsObjectValid(oArea))
+    {
+        oArea = GetArea(oPC);
+    }
     string sKey = GetPCPublicCDKey(oPC, TRUE);
     int nSetting = GetCampaignInt(sKey, "option_restxp_ui");
     // 0 = off, 1 = always on, 2 = resting areas only
-    if (nSetting == 0 || (nSetting == 2 && !PlayerGetsRestedXPInArea(oPC, GetArea(oPC))))
+    if (nSetting == 0 || (nSetting == 2 && !PlayerGetsRestedXPInArea(oPC, oArea)))
     {
         return;
     }
@@ -404,6 +408,8 @@ void RestXPDisplay(object oPC)
 
 void ShowOrHideRestXPUI(object oPC, object oArea=OBJECT_INVALID)
 {
+    // We need to pass the area, because GetArea(oPC) in an OnEnter script returns OBJECT_INVALID
+    // so the enter script can pass itself to check whether we get rest xp there or not
     string sKey = GetPCPublicCDKey(oPC, TRUE);
     int nSetting = GetCampaignInt(sKey, "option_restxp_ui");
     int nToken = GetRestXPUIToken(oPC);
@@ -429,7 +435,7 @@ void ShowOrHideRestXPUI(object oPC, object oArea=OBJECT_INVALID)
         bClose = !bOpen;
     }
     if (bClose) { NuiDestroy(oPC, nToken); }
-    if (bOpen) { RestXPDisplay(oPC); }
+    if (bOpen) { RestXPDisplay(oPC, oArea); }
 }
 
 

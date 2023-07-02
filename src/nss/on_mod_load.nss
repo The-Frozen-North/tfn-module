@@ -16,6 +16,7 @@
 #include "70_inc_switches"
 #include "util_i_csvlists"
 #include "inc_prettify"
+#include "inc_loot"
 
 const int SEED_SPAWNS = 1;
 const int SEED_TREASURES = 1;
@@ -668,13 +669,16 @@ void main()
    }
 
    LoadTreasureContainer("_FabricatorAmmo", IntToFloat(nIndex)*2.0, 35.0);
+   BuildItemNamesToObjectsDB();
+   SetLocalInt(GetModule(), "treasure_ready", 1);
+   CalculatePlaceableLootValues();
 
    object oArea = GetFirstArea();
    string sAreaResRef;
    location lBaseLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
    object oAreaRefresher;
    
-   BuildItemNamesToObjectsDB();
+   
 
    LoadAllPrettifyPlaceables();
 
@@ -723,7 +727,7 @@ void main()
         SetLocalInt(oStore, MERCHANT_STORE_LAST_RESTOCKED_AT, nNow);
         ExecuteScript(""+GetTag(oStore), oStore);
     }
-    SetLocalInt(GetModule(), "treasure_ready", 1);
+    
     SendDebugMessage("Merchants created", TRUE);
 
     InitializeHouses("begg");

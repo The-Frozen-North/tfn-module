@@ -19,7 +19,6 @@ void main()
     }
     
     
-    ExecuteScript("0e_window");
 
     if (GetResRef(GetArea(oPC)) == "blak_divine")
     {

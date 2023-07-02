@@ -9,7 +9,7 @@
 
 // this script may take a while to run, spot check certain areas only
 // note, the global column won't be that accurate if this is the case
-const int LIMITED_SAMPLE_SIZE = TRUE;
+const int LIMITED_SAMPLE_SIZE = 0;
 
 void RunOnArea(object oDev, json jAreas, int nState=0)
 {
@@ -71,14 +71,12 @@ void RunOnArea(object oDev, json jAreas, int nState=0)
     if (nState == 2)
     {
         FloatingTextStringOnCreature("There are " + IntToString(nLength) + " areas left in the queue.", oDev);
-        SetLocalInt(oDev, "dev_allarealoot_wait", 1);
         ExecuteScript("dev_arealootval", oDev);
-        DelayCommand(12.0, DeleteLocalInt(oDev, "dev_allarealoot_wait"));
         nState = 3;
     }
     if (nState == 3)
     {
-        if (GetLocalInt(oDev, "dev_allarealoot_wait"))
+        if (!GetLocalInt(oDev, "dev_arealoot_done"))
         {
             DelayCommand(1.0, RunOnArea(oDev, jAreas, nState));
             return;

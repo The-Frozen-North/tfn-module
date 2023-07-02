@@ -23,6 +23,31 @@ string ChooseSpawnRef(object oArea, int nTarget)
     }
 }
 
+void SpawnTreasureIndex(int nIndex)
+{
+    vector vTreasurePosition = Vector(GetLocalFloat(OBJECT_SELF, "treasure_x"+IntToString(nIndex)), GetLocalFloat(OBJECT_SELF, "treasure_y"+IntToString(nIndex)), GetLocalFloat(OBJECT_SELF, "treasure_z"+IntToString(nIndex)));
+    location lTreasureLocation = Location(OBJECT_SELF, vTreasurePosition, GetLocalFloat(OBJECT_SELF, "treasure_o"+IntToString(nIndex)));
+    object oTreasure = CreateObject(OBJECT_TYPE_PLACEABLE, GetLocalString(OBJECT_SELF, "treasure_resref"+IntToString(nIndex)), lTreasureLocation);
+    ExecuteScript("treas_init", oTreasure);
+    int nNum = GetLocalInt(OBJECT_SELF, "num_spawned_treasures");
+    SetLocalObject(OBJECT_SELF, "treasure"+IntToString(nNum), oTreasure);
+    SetLocalInt(OBJECT_SELF, "num_spawned_treasures", nNum+1);
+}
+
+int CanSpendGoldOnPlaceable(int nTargetGold, int nPlaceableCost)
+{
+    if (nTargetGold >= nPlaceableCost)
+    {
+        return 1;
+    }
+    float fRatio = 100.0*IntToFloat(nTargetGold)/IntToFloat(nPlaceableCost);
+    if (Random(100) < FloatToInt(fRatio))
+    {
+        return 1;
+    }
+    return 0;
+}
+
 void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
 {
       string sResRef = GetResRef(oArea);
@@ -122,55 +147,86 @@ void main()
 // ==============================
 // clean up old treasures
     int nOldTreasure;
-    for (nOldTreasure = 0; nOldTreasure < 100; nOldTreasure++)
+    int nNumOld = GetLocalInt(OBJECT_SELF, "num_spawned_treasures");
+    for (nOldTreasure = 0; nOldTreasure < nNumOld; nOldTreasure++)
         DestroyObject(GetLocalObject(OBJECT_SELF, "treasure"+IntToString(nOldTreasure)));
+     DeleteLocalInt(OBJECT_SELF, "num_spawned_treasures");
 
-     float fAreaSize = IntToFloat(GetAreaSize(AREA_HEIGHT, OBJECT_SELF)*GetAreaSize(AREA_WIDTH, OBJECT_SELF));
+     int nTargetGold = GetLocalInt(OBJECT_SELF, "target_placeable_gold");
+     int iCR = GetLocalInt(OBJECT_SELF, "cr");
+     string sACR = IntToString(iCR);
+    object oModule = GetModule();
+     int nLowGold = GetLocalInt(oModule, "placeable_value_low_" + sACR);
+     int nMedGold = GetLocalInt(oModule, "placeable_value_medium_" + sACR);
+     int nHighGold = GetLocalInt(oModule, "placeable_value_high_" + sACR);
+     
+     json jHigh = GetLocalJson(OBJECT_SELF, "high_treasures");
+     json jMed = GetLocalJson(OBJECT_SELF, "med_treasures");
+     json jLow =  GetLocalJson(OBJECT_SELF, "low_treasures");
 
      int nTreasures = GetLocalInt(OBJECT_SELF, "treasures");
-
+     int nTreasureIndex;
+     int nArrIndex;
+     SendDebugMessage(GetTag(OBJECT_SELF) + ": placeable value target = " + IntToString(nTargetGold), TRUE);
      if (nTreasures > 0)
      {
-        // The constant here is the 100x the target number of treasures per toolset square (IE: 5 = 0.05 treasures per toolset square)
-        // It will get further modified by the quality/quantity stuff, so better treasures are more likely to show up
-        int nTreasureChance = FloatToInt(((iRows*iColumns)/nTreasures)*10.0);
-
-        object oTreasure;
-        vector vTreasurePosition;
-        location lTreasureLocation;
-
-
-// cap the density of treasure
-        if (nTreasureChance >= 85) nTreasureChance = 85;
-
-        int i;
-        for (i = 1; i <= nTreasures; i++)
+        while (nTargetGold > 0)
         {
-            float fThisTreasureChance = IntToFloat(nTreasureChance);
-            // Much more likely to keep better quality treasures
-            // Clearing an area and having none of the big chests at the end spawn is sad
-            float fQualityMult = GetLocalFloat(OBJECT_SELF, "treasure_quality_mult" + IntToString(i));
-            float fQuantityMult = GetLocalFloat(OBJECT_SELF, "treasure_quantity_mult" + IntToString(i));
-
-            fThisTreasureChance = fThisTreasureChance * fQualityMult * fQuantityMult;
-
-            int nThisTreasureChance = min(85, FloatToInt(fThisTreasureChance));
-
-            if ((GetLocalInt(OBJECT_SELF, "treasure_keep"+IntToString(i)) == 1) || (d100() <= nThisTreasureChance))
+            json jTypes = JsonArray();
+            if (JsonGetLength(jHigh) > 0 && CanSpendGoldOnPlaceable(nTargetGold, nHighGold))
             {
-
-                vTreasurePosition = Vector(GetLocalFloat(OBJECT_SELF, "treasure_x"+IntToString(i)), GetLocalFloat(OBJECT_SELF, "treasure_y"+IntToString(i)), GetLocalFloat(OBJECT_SELF, "treasure_z"+IntToString(i)));
-                lTreasureLocation = Location(OBJECT_SELF, vTreasurePosition, GetLocalFloat(OBJECT_SELF, "treasure_o"+IntToString(i)));
-                oTreasure = CreateObject(OBJECT_TYPE_PLACEABLE, GetLocalString(OBJECT_SELF, "treasure_resref"+IntToString(i)), lTreasureLocation);
-                SetLocalFloat(oTreasure, "quality_mult", fQualityMult);
-                SetLocalFloat(oTreasure, "quantity_mult", fQuantityMult);
-                ExecuteScript("treas_init", oTreasure);
-
-// store the treasure so it can deleted later on refresh
-                SetLocalObject(OBJECT_SELF, "treasure"+IntToString(i), oTreasure);
+                jTypes = JsonArrayInsert(jTypes, JsonInt(2));
+            }
+            if (JsonGetLength(jMed) > 0 && CanSpendGoldOnPlaceable(nTargetGold, nMedGold))
+            {
+                jTypes = JsonArrayInsert(jTypes, JsonInt(1));
+            }
+            if (JsonGetLength(jLow) > 0 && CanSpendGoldOnPlaceable(nTargetGold, nLowGold))
+            {
+                jTypes = JsonArrayInsert(jTypes, JsonInt(0));
+            }
+            if (JsonGetLength(jTypes) == 0) { break; }
+            int nType = JsonGetInt(JsonArrayGet(jTypes, Random(JsonGetLength(jTypes))));
+            
+            if (nType == 0)
+            {
+                nArrIndex = Random(JsonGetLength(jLow));
+                nTreasureIndex = JsonGetInt(JsonArrayGet(jLow, nArrIndex));
+                SpawnTreasureIndex(nTreasureIndex);
+                jLow = JsonArrayDel(jLow, nArrIndex);
+                nTargetGold -= nLowGold;
+            }
+            else if (nType == 1)
+            {
+                nArrIndex = Random(JsonGetLength(jMed));
+                nTreasureIndex = JsonGetInt(JsonArrayGet(jMed, nArrIndex));
+                SpawnTreasureIndex(nTreasureIndex);
+                jMed = JsonArrayDel(jMed, nArrIndex);
+                nTargetGold -= nMedGold;
+            }
+            else if (nType == 2)
+            {
+                nArrIndex = Random(JsonGetLength(jHigh));
+                nTreasureIndex = JsonGetInt(JsonArrayGet(jHigh, nArrIndex));
+                SpawnTreasureIndex(nTreasureIndex);
+                jHigh = JsonArrayDel(jHigh, nArrIndex);
+                nTargetGold -= nHighGold;
             }
         }
      }
+     
+     SendDebugMessage(GetTag(OBJECT_SELF) + ": placeable gold left after spawning: " + IntToString(nTargetGold), TRUE);
+
+     json jKeepTreasures = GetLocalJson(OBJECT_SELF, "keep_treasures");
+     int nNumKeep = JsonGetLength(jKeepTreasures);
+     int i;
+     for (i=0; i<nNumKeep; i++)
+     {
+         nTreasureIndex = JsonGetInt(JsonArrayGet(jKeepTreasures, i));
+         SpawnTreasureIndex(nTreasureIndex);
+     }
+     
+
 
 
 
@@ -230,7 +286,7 @@ void main()
 // Traps
 // ==============================
 
-     int iCR = GetLocalInt(OBJECT_SELF, "cr");
+
      int nTrapChance = (iRows*iColumns)/12;
 // cap the density of traps
      if (nTrapChance >= 30) nTrapChance = 30;
@@ -278,7 +334,7 @@ void main()
         int nDoors = GetLocalInt(OBJECT_SELF, "doors");
         object oDoor, oTransitionDoor;
 
-        int i;
+
         for (i = 1; i <= nDoors; i++)
         {
             oDoor = GetLocalObject(OBJECT_SELF, "door"+IntToString(i));
