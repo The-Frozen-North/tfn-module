@@ -1,4 +1,5 @@
 #include "nw_o2_coninclude"
+#include "nw_i0_generic"
 
 void ScanTarget(object oTarget, object oScanner)
 {
@@ -50,8 +51,13 @@ void main()
     if (GetCurrentAction() == ACTION_CASTSPELL) return;
 
 // make sure we always have see invis on
-    ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectVisualEffect(VFX_DUR_MAGICAL_SIGHT), OBJECT_SELF);
-    ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectSeeInvisible(), OBJECT_SELF);
+    if (!GetHasEffect(EFFECT_TYPE_SEEINVISIBLE))
+    {
+        effect eEffect = EffectSeeInvisible();
+        eEffect = EffectLinkEffects(eEffect, EffectVisualEffect(VFX_DUR_MAGICAL_SIGHT));
+
+        ApplyEffectToObject(DURATION_TYPE_PERMANENT, eEffect, OBJECT_SELF);
+    }
 
     effect eImpact = EffectVisualEffect(VFX_FNF_HOWL_ODD, FALSE, 1.0, Vector(0.0, 0.0, 2.0));
     float fDelay;
