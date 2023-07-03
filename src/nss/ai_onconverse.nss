@@ -7,6 +7,12 @@ void main()
     if (GetIsDead(OBJECT_SELF))
         return;
 
+    if (gsC2GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF))
+        return;
+
+    if (gsC2GetHasEffect(EFFECT_TYPE_SLEEP, OBJECT_SELF))
+        return;
+
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_CONVERSATION));
 
     if (GetLocalInt(OBJECT_SELF, "herbivore") == 1)

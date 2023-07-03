@@ -300,6 +300,12 @@ void DoCombatVoice()
 {
     if (GetIsDead(OBJECT_SELF)) return;
 
+    if (gsC2GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF))
+        return;
+
+    if (gsC2GetHasEffect(EFFECT_TYPE_SLEEP, OBJECT_SELF))
+        return;
+
 // don't proceed if there is a cooldown
     if (GetLocalInt(OBJECT_SELF, "battlecry_cd") == 1)
         return;

@@ -2061,6 +2061,25 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
+                "value": "dlg_q_chk_eli9"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 35
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
                 "value": ""
               },
               "ConditionParams": {
@@ -2077,7 +2096,7 @@
               }
             },
             {
-              "__struct_id": 1,
+              "__struct_id": 2,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -2302,12 +2321,61 @@
             "0": "To that end, we must eliminate the powers that be in Luskan. The city itself is ruled by five pirate lords known as High Captains. Based on a reconaissance report, they are also in charge of the Luskan army. I will tell you about these High Captains."
           }
         }
+      },
+      {
+        "__struct_id": 32,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_q_adv9"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "This is most excellent news, my friend. His death has already hampered one of the Luskan advances, so my scouts report. Allow me to give you this tidy sum of gold to spend as you wish - may it help you in your mission."
+          }
+        }
       }
     ]
   },
   "NumWords": {
     "type": "dword",
-    "value": 925
+    "value": 975
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -4564,6 +4632,71 @@
           "type": "cexolocstring",
           "value": {
             "0": ""
+          }
+        }
+      },
+      {
+        "__struct_id": 35,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 32
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I have slain High Captain Kurth."
           }
         }
       }

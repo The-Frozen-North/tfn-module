@@ -108,11 +108,13 @@ void DoRevive(object oDead)
                     {
                         nFaction = NWNX_Creature_GetFaction(oCreature);
 
-                        if (nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER || nFaction == STANDARD_FACTION_MERCHANT)
+                        // if (nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER || nFaction == STANDARD_FACTION_MERCHANT)
+                        if (STANDARD_FACTION_DEFENDER)
                         {
                             bFriend = TRUE;
                             oLastFriend = oCreature;
-                            SendDebugMessage("Commoner/Defender/Merchant detected: "+GetName(oCreature));
+                            //SendDebugMessage("Commoner/Defender/Merchant detected: "+GetName(oCreature));
+                            SendDebugMessage("Defender detected: "+GetName(oCreature));
                         }
                     }
 

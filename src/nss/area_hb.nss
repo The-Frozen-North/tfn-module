@@ -106,7 +106,7 @@ void main()
         int nRefreshSpeedMult = GetLocalInt(OBJECT_SELF, "refresh_speed");
         if (nRefreshSpeedMult < 1)
         {
-            if (FindSubString(GetName(OBJECT_SELF), "Neverwinter") > -1 && FindSubString(GetName(OBJECT_SELF), "Neverwinter Wood") == -1)
+            if ((FindSubString(GetName(OBJECT_SELF), "Neverwinter") > -1 || FindSubString(GetName(OBJECT_SELF), "Luskan") > -1) && FindSubString(GetName(OBJECT_SELF), "Neverwinter Wood") == -1)
             {
                 nRefreshSpeedMult = 2;
             }
