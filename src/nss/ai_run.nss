@@ -30,6 +30,8 @@ void main()
         return;
     }
 
+    if (GetStealthMode(OBJECT_SELF)) return;
+
     //end of combat
     else if (GetLocalInt(OBJECT_SELF, "GS_AI_COMBAT"))
     {
@@ -155,6 +157,7 @@ void main()
 //                    ! GetIsObjectValid(gsTAGetLastTaskTrigger(oTarget)) &&
                     ! GetIsPC(oTarget) &&
                     ! GetIsDead(oTarget) &&
+                    ! GetStealthMode(oTarget) &&
                     GetAbilityScore(oTarget, ABILITY_INTELLIGENCE) >= 6 &&
                     GetLocalInt(oTarget, "patrol") != 1)
                 {

@@ -2069,7 +2069,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 36
+                "value": 37
               },
               "IsChild": {
                 "type": "byte",
@@ -2078,6 +2078,25 @@
             },
             {
               "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_q_chk_eli8"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 36
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 2,
               "Active": {
                 "type": "resref",
                 "value": "dlg_q_chk_eli9"
@@ -2096,7 +2115,7 @@
               }
             },
             {
-              "__struct_id": 2,
+              "__struct_id": 3,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -2115,7 +2134,7 @@
               }
             },
             {
-              "__struct_id": 3,
+              "__struct_id": 4,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -2422,6 +2441,55 @@
         },
         "Script": {
           "type": "resref",
+          "value": "dlg_q_adv8"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I have heard word of that, yes. The Luskan offensive wavers by the result of your actions. Allow me to give you this tidy sum of gold to spend as you wish - may it help you in your mission."
+          }
+        }
+      },
+      {
+        "__struct_id": 34,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
           "value": "dlg_q_adv7"
         },
         "Sound": {
@@ -2443,7 +2511,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 1021
+    "value": 1067
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -4806,6 +4874,71 @@
               "Index": {
                 "type": "dword",
                 "value": 33
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I have slain High Captain Baram."
+          }
+        }
+      },
+      {
+        "__struct_id": 37,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 34
               },
               "IsChild": {
                 "type": "byte",

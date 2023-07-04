@@ -215,7 +215,7 @@
   },
   "FactionID": {
     "type": "word",
-    "value": 1
+    "value": 32
   },
   "FeatList": {
     "type": "list",
@@ -749,7 +749,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_GYPSY001"
+    "value": "baram"
   },
   "Tail_New": {
     "type": "dword",
@@ -771,6 +771,51 @@
         "Name": {
           "type": "cexostring",
           "value": "boss"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "defeated_webhook"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest1"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "02_q_baram"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "quest_kill"
         },
         "Type": {
           "type": "dword",

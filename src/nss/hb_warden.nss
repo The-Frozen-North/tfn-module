@@ -11,6 +11,10 @@ void ScanTarget(object oTarget, object oScanner)
 // don't interrogate while in conversation
     if (IsInConversation(oScanner)) return;
 
+
+// don't interrupt invisibility purge
+    if (GetCurrentAction() == ACTION_CASTSPELL) return;
+
 // never saw the guy, do nothing
     if (!GetObjectSeen(oTarget, oScanner)) return;
 
@@ -36,6 +40,33 @@ void ScanTarget(object oTarget, object oScanner)
     AssignCommand(oScanner, ActionStartConversation(oTarget));
 }
 
+int DispelInvis() {
+    float fRadius = 20.0;
+    location lLocation = GetLocation(OBJECT_SELF);
+
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, fRadius, lLocation);
+    //Get first target in spell area
+    while(GetIsObjectValid(oTarget))
+    {
+        if(oTarget != OBJECT_SELF)
+        {
+            // Trigger if PC
+            if (GetIsPC(oTarget) && GetHasEffect(EFFECT_TYPE_INVISIBILITY, oTarget))
+            {
+                AssignCommand(OBJECT_SELF, ClearAllActions());
+                AssignCommand(OBJECT_SELF, SpeakString("An illusion? What are you hiding?!"));
+                AssignCommand(OBJECT_SELF, ActionCastSpellAtObject(SPELL_INVISIBILITY_PURGE, OBJECT_SELF, METAMAGIC_ANY, TRUE));
+
+                return TRUE;
+            }
+        }
+        //Get next target in area
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation);
+    }
+
+    return FALSE;
+}
+
 void main()
 {
 // don't scan in combat
@@ -58,6 +89,9 @@ void main()
 
         ApplyEffectToObject(DURATION_TYPE_PERMANENT, eEffect, OBJECT_SELF);
     }
+
+// if currently dispelling, return
+    if (DispelInvis()) return;
 
     effect eImpact = EffectVisualEffect(VFX_FNF_HOWL_ODD, FALSE, 1.0, Vector(0.0, 0.0, 2.0));
     float fDelay;

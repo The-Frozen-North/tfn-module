@@ -6,6 +6,9 @@ void main()
 // ignore animals
     if (GetRacialType(OBJECT_SELF) == RACIAL_TYPE_ANIMAL) return;
 
+// ignore animals
+    if (GetRacialType(OBJECT_SELF) == RACIAL_TYPE_VERMIN) return;
+
 // ignore associates
     if (GetIsObjectValid(GetMaster())) return;
 

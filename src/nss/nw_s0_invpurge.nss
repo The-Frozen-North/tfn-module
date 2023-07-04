@@ -21,6 +21,57 @@ Patch 1.71
 #include "x0_i0_spells"
 #include "x2_inc_spellhook"
 
+void DoLuskanWardenSpell()
+{
+    location lLocation = GetLocation(OBJECT_SELF);
+    float fRadius = 20.0;
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, fRadius, lLocation);
+    //Get first target in spell area
+    while(GetIsObjectValid(oTarget))
+    {
+        if(oTarget != OBJECT_SELF)
+        {
+            effect eInvis = GetFirstEffect(oTarget);
+            int bRemove;
+            while(GetIsEffectValid(eInvis))
+            {
+                switch(GetEffectSpellId(eInvis))
+                {
+                    case SPELL_INVISIBILITY:
+                    case SPELL_IMPROVED_INVISIBILITY:
+                    case SPELL_INVISIBILITY_SPHERE:
+                    case SPELLABILITY_AS_INVISIBILITY:
+                    case SPELLABILITY_AS_IMPROVED_INVISIBLITY:
+                    bRemove = TRUE;
+                    break;
+                    default:
+                    bRemove = GetEffectType(eInvis) == EFFECT_TYPE_INVISIBILITY || GetEffectType(eInvis) == EFFECT_TYPE_IMPROVEDINVISIBILITY;
+                    break;
+                }
+                if(bRemove)
+                {
+                    if(spellsIsTarget(oTarget, spell.TargetType, aoe.Creator))
+                    {
+                        //Fire cast spell at event for the specified target
+                        SignalEvent(oTarget, EventSpellCastAt(aoe.AOE, spell.Id));
+                    }
+                    else
+                    {
+                        //Fire cast spell at event for the specified target
+                        SignalEvent(oTarget, EventSpellCastAt(aoe.AOE, spell.Id, FALSE));
+                    }
+                    //remove invisibility
+                    RemoveEffect(oTarget, eInvis);
+                }
+                //Get Next Effect
+                eInvis = GetNextEffect(oTarget);
+            }
+        }
+        //Get next target in area
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation);
+    }
+}
+
 void main()
 {
     //1.72: pre-declare some of the spell informations to be able to process them
@@ -30,6 +81,13 @@ void main()
     if (!X2PreSpellCastCode())
     {
     // If code within the PreSpellCastHook (i.e. UMD) reports FALSE, do not run this spell
+        return;
+    }
+
+    // special case for luskan wardens, this is a one time effect
+    if (GetResRef(OBJECT_SELF) == "luskan_warden")
+    {
+        DoLuskanWardenSpell();
         return;
     }
 
