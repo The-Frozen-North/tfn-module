@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 351
+    "value": 80
   },
   "BodyBag": {
     "type": "byte",
@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 7.0
+    "value": 15.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 11
+          "value": 15
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 21
+    "value": 18
   },
   "Conversation": {
     "type": "resref",
@@ -46,11 +46,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": -2
+    "value": 1
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 67
+    "value": 150
   },
   "DecayTime": {
     "type": "dword",
@@ -63,7 +63,9 @@
   "Description": {
     "id": 40607,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Brutal and ruthless, Fire Giants resemble huge, dark-skinned dwarves. Well-organized and militaristic, they are typically encountered as well-armed phalanxes or twinned patrols."
+    }
   },
   "Dex": {
     "type": "byte",
@@ -71,7 +73,7 @@
   },
   "Disarmable": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "Equip_ItemList": {
     "type": "list",
@@ -80,7 +82,7 @@
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_aarcl004"
+          "value": "nw_maarcl052"
         }
       },
       {
@@ -101,11 +103,18 @@
   },
   "FactionID": {
     "type": "word",
-    "value": 1
+    "value": 12
   },
   "FeatList": {
     "type": "list",
     "value": [
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 2
+        }
+      },
       {
         "__struct_id": 1,
         "Feat": {
@@ -138,13 +147,6 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 28
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
           "value": 289
         }
       },
@@ -160,7 +162,9 @@
   "FirstName": {
     "id": 12558,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Fire Giant"
+    }
   },
   "fortbonus": {
     "type": "short",
@@ -168,7 +172,7 @@
   },
   "Gender": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "GoodEvil": {
     "type": "byte",
@@ -176,7 +180,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 67
+    "value": 150
   },
   "Int": {
     "type": "byte",
@@ -208,7 +212,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 122
+    "value": 210
   },
   "NaturalAC": {
     "type": "byte",
@@ -236,7 +240,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 607
+    "value": 215
   },
   "Race": {
     "type": "byte",
@@ -326,7 +330,28 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
+          "value": 17
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
           "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 9
         }
       },
       {
@@ -403,28 +428,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 7
+          "value": 9
         }
       },
       {
@@ -501,7 +505,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 307
+    "value": 43
   },
   "SpecAbilityList": {
     "type": "list",

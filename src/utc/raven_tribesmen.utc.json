@@ -2,11 +2,11 @@
   "__data_type": "UTC ",
   "Appearance_Head": {
     "type": "byte",
-    "value": 144
+    "value": 12
   },
   "Appearance_Type": {
     "type": "word",
-    "value": 495
+    "value": 6
   },
   "ArmorPart_RFoot": {
     "type": "byte",
@@ -22,11 +22,11 @@
   },
   "BodyPart_LBicep": {
     "type": "byte",
-    "value": 1
+    "value": 2
   },
   "BodyPart_LFArm": {
     "type": "byte",
-    "value": 1
+    "value": 2
   },
   "BodyPart_LFoot": {
     "type": "byte",
@@ -46,7 +46,7 @@
   },
   "BodyPart_LThigh": {
     "type": "byte",
-    "value": 1
+    "value": 2
   },
   "BodyPart_Neck": {
     "type": "byte",
@@ -58,11 +58,11 @@
   },
   "BodyPart_RBicep": {
     "type": "byte",
-    "value": 1
+    "value": 2
   },
   "BodyPart_RFArm": {
     "type": "byte",
-    "value": 1
+    "value": 2
   },
   "BodyPart_RHand": {
     "type": "byte",
@@ -78,19 +78,19 @@
   },
   "BodyPart_RThigh": {
     "type": "byte",
-    "value": 1
+    "value": 2
   },
   "BodyPart_Torso": {
     "type": "byte",
-    "value": 1
+    "value": 2
   },
   "Cha": {
     "type": "byte",
-    "value": 10
+    "value": 8
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 6.0
+    "value": 5.0
   },
   "ClassList": {
     "type": "list",
@@ -99,18 +99,18 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 4
+          "value": 0
         },
         "ClassLevel": {
           "type": "short",
-          "value": 6
+          "value": 5
         }
       }
     ]
   },
   "Color_Hair": {
     "type": "byte",
-    "value": 1
+    "value": 23
   },
   "Color_Skin": {
     "type": "byte",
@@ -118,11 +118,11 @@
   },
   "Color_Tattoo1": {
     "type": "byte",
-    "value": 1
+    "value": 23
   },
   "Color_Tattoo2": {
     "type": "byte",
-    "value": 1
+    "value": 25
   },
   "Comment": {
     "type": "cexostring",
@@ -134,7 +134,7 @@
   },
   "Conversation": {
     "type": "resref",
-    "value": "gossip"
+    "value": ""
   },
   "CRAdjust": {
     "type": "int",
@@ -146,7 +146,7 @@
   },
   "DecayTime": {
     "type": "dword",
-    "value": 300000
+    "value": 5000
   },
   "Deity": {
     "type": "cexostring",
@@ -155,12 +155,12 @@
   "Description": {
     "type": "cexolocstring",
     "value": {
-      "0": "This man is one of the many soldiers that protect Neverwinter."
+      "0": "The Black Raven tribe are a particularly conservative band of the Uthgardt barbarians. Considered among the most traditional and hostile of the Uthgardt tribes, they held on to their heritage of pillaging and violence."
     }
   },
   "Dex": {
     "type": "byte",
-    "value": 13
+    "value": 12
   },
   "Disarmable": {
     "type": "byte",
@@ -173,32 +173,25 @@
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_nwplate"
+          "value": "cre_brhidearmor"
         }
       },
       {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "cre_halbp1"
+          "value": "cre_infclbow0"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 4
+    "value": 40
   },
   "FeatList": {
     "type": "list",
     "value": [
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 2
-        }
-      },
       {
         "__struct_id": 1,
         "Feat": {
@@ -217,14 +210,28 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 23
+          "value": 194
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 1087
+          "value": 326
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 27
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 258
         }
       },
       {
@@ -238,7 +245,21 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 112
+          "value": 251
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 111
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 101
         }
       },
       {
@@ -258,10 +279,10 @@
     ]
   },
   "FirstName": {
-    "id": 12657,
+    "id": 12791,
     "type": "cexolocstring",
     "value": {
-      "0": "Neverwinter Knight"
+      "0": "Black Raven Warrior"
     }
   },
   "fortbonus": {
@@ -282,7 +303,7 @@
   },
   "Int": {
     "type": "byte",
-    "value": 10
+    "value": 8
   },
   "Interruptable": {
     "type": "byte",
@@ -303,7 +324,7 @@
         "__struct_id": 0,
         "InventoryRes": {
           "type": "resref",
-          "value": "nw_it_torch001"
+          "value": "cre_hqgaxe"
         },
         "Repos_PosX": {
           "type": "word",
@@ -322,7 +343,7 @@
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 100
+    "value": 0
   },
   "Lootable": {
     "type": "byte",
@@ -330,7 +351,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 72
+    "value": 70
   },
   "NaturalAC": {
     "type": "byte",
@@ -342,7 +363,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 46
+    "value": 44
   },
   "PerceptionRange": {
     "type": "byte",
@@ -350,7 +371,7 @@
   },
   "Phenotype": {
     "type": "int",
-    "value": 3
+    "value": 0
   },
   "Plot": {
     "type": "byte",
@@ -358,7 +379,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 1279
+    "value": 103
   },
   "Race": {
     "type": "byte",
@@ -448,7 +469,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 8
         }
       },
       {
@@ -469,84 +490,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 5
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 5
+          "value": 8
         }
       },
       {
@@ -616,22 +560,115 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 8
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
         }
       }
     ]
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 190
+    "value": 115
   },
   "SpecAbilityList": {
     "type": "list",
-    "value": []
+    "value": [
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 299
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 1
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      }
+    ]
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 4
+    "value": 0
   },
   "Str": {
     "type": "byte",
@@ -643,11 +680,11 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "nwguard"
+    "value": "NW_UTHGARD01"
   },
   "Tail_New": {
     "type": "dword",
-    "value": 19
+    "value": 205
   },
   "TemplateList": {
     "type": "list",
@@ -655,76 +692,11 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "nwknight"
-  },
-  "VarTable": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "no_credit"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "respawn"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "no_wander"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "heartbeat_script"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 3
-        },
-        "Value": {
-          "type": "cexostring",
-          "value": "hb_horse"
-        }
-      }
-    ]
+    "value": "raven_tribesmen"
   },
   "WalkRate": {
     "type": "int",
-    "value": 6
+    "value": 7
   },
   "willbonus": {
     "type": "short",
@@ -732,15 +704,15 @@
   },
   "Wings_New": {
     "type": "dword",
-    "value": 0
+    "value": 205
   },
   "Wis": {
     "type": "byte",
-    "value": 10
+    "value": 8
   },
   "xAppearance_Head": {
     "type": "word",
-    "value": 144
+    "value": 12
   },
   "xArmorPart_RFoot": {
     "type": "word",
@@ -752,11 +724,11 @@
   },
   "xBodyPart_LBicep": {
     "type": "word",
-    "value": 1
+    "value": 2
   },
   "xBodyPart_LFArm": {
     "type": "word",
-    "value": 1
+    "value": 2
   },
   "xBodyPart_LFoot": {
     "type": "word",
@@ -776,7 +748,7 @@
   },
   "xBodyPart_LThigh": {
     "type": "word",
-    "value": 1
+    "value": 2
   },
   "xBodyPart_Neck": {
     "type": "word",
@@ -788,11 +760,11 @@
   },
   "xBodyPart_RBicep": {
     "type": "word",
-    "value": 1
+    "value": 2
   },
   "xBodyPart_RFArm": {
     "type": "word",
-    "value": 1
+    "value": 2
   },
   "xBodyPart_RHand": {
     "type": "word",
@@ -808,10 +780,10 @@
   },
   "xBodyPart_RThigh": {
     "type": "word",
-    "value": 1
+    "value": 2
   },
   "xBodyPart_Torso": {
     "type": "word",
-    "value": 1
+    "value": 2
   }
 }
