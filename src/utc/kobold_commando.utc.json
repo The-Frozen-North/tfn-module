@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 303
+    "value": 300
   },
   "BodyBag": {
     "type": "byte",
@@ -23,7 +23,7 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 14
+          "value": 8
         },
         "ClassLevel": {
           "type": "short",
@@ -49,7 +49,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 8
+    "value": 9
   },
   "Conversation": {
     "type": "resref",
@@ -61,7 +61,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 28
+    "value": 26
   },
   "DecayTime": {
     "type": "dword",
@@ -80,7 +80,7 @@
   },
   "Dex": {
     "type": "byte",
-    "value": 10
+    "value": 14
   },
   "Disarmable": {
     "type": "byte",
@@ -93,14 +93,14 @@
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_aarcl011"
+          "value": "nw_aarcl004"
         }
       },
       {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wswsc001"
+          "value": "cre_infsbowfire"
         }
       },
       {
@@ -130,6 +130,27 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
+          "value": 4
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 221
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 102
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
           "value": 289
         }
       },
@@ -146,7 +167,7 @@
     "id": 2925,
     "type": "cexolocstring",
     "value": {
-      "0": "Kobold Thug"
+      "0": "Kobold Commando"
     }
   },
   "fortbonus": {
@@ -163,7 +184,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 28
+    "value": 26
   },
   "Int": {
     "type": "byte",
@@ -181,6 +202,26 @@
     "type": "byte",
     "value": 0
   },
+  "ItemList": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "InventoryRes": {
+          "type": "resref",
+          "value": "nw_wswsc001"
+        },
+        "Repos_PosX": {
+          "type": "word",
+          "value": 0
+        },
+        "Repos_Posy": {
+          "type": "word",
+          "value": 0
+        }
+      }
+    ]
+  },
   "LastName": {
     "type": "cexolocstring",
     "value": {}
@@ -195,7 +236,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 25
+    "value": 23
   },
   "NaturalAC": {
     "type": "byte",
@@ -223,7 +264,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 568
+    "value": 569
   },
   "Race": {
     "type": "byte",
@@ -439,7 +480,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 0
+          "value": 5
         }
       },
       {
@@ -512,11 +553,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 76
+    "value": 8
   },
   "Str": {
     "type": "byte",
-    "value": 14
+    "value": 10
   },
   "Subrace": {
     "type": "cexostring",
@@ -536,7 +577,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "koboldthug"
+    "value": "kobold_commando"
   },
   "WalkRate": {
     "type": "int",
