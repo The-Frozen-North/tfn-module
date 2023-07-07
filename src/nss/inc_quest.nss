@@ -265,7 +265,7 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FAL
     struct NWNX_Player_JournalEntry jeQuest = NWNX_Player_GetJournalEntry(oPC, sQuestName);
     if (GetStringLeft(sQuestName, 2) != "b_" && jeQuest.nQuestCompleted)
     {
-        QuestCompleteWebhook(oPC, jeQuest.sName);
+        QuestCompleteWebhook(oPC, jeQuest.sName, oQuestObject);
     }
 
     UpdateQuestgiverHighlights(GetArea(oQuestObject), oPC);

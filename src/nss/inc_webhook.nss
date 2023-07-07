@@ -449,6 +449,13 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
     stMessage.sColor = VALUABLE_ITEM_COLOR;
     stMessage.sDescription = sDescription;
 
+    // strongbox stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/po_plc_a09_m.png";
+    // chest transparent https://nwn.sfo2.digitaloceanspaces.com/portrait/po_plc_a08_m.png
+    // gold pile transparent https://nwn.sfo2.digitaloceanspaces.com/portrait/po_plc_c08_m.png
+    // gold chest transparent https://nwn.sfo2.digitaloceanspaces.com/portrait/po_plc_c09_m.png
+    // pirate gold chest black https://nwn.sfo2.digitaloceanspaces.com/portrait/po_pwc_ches01_m.png
+
+    stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/po_pwc_ches01_m.png";
 
 
     //SendDebugMessage("ValuableItemWebhook: " + sDescription);
@@ -477,14 +484,20 @@ void HouseBuyWebhook(object oPC, int nGoldCost, object oArea)
 
     stMessage.sDescription = sDescription;
 
+    // bed black https://nwn.sfo2.digitaloceanspaces.com/portrait/po_plc_x0_bdb_m.png
+    // balcony, not really a house but closest to uploaded https://nwn.sfo2.digitaloceanspaces.com/portrait/po_plc_balce02_m.png
+    // actual house, this is preferred but not uploaded https://nwn.sfo2.digitaloceanspaces.com/portrait/po_tm_tnohsa01_m.png
+
+    stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/po_plc_balce02_m.png";
+
     //SendDebugMessage("HouseBuyWebhook: " + sDescription);
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
     SendDiscordMessage(sConstructedMsg, GetDiscordKey());
 }
 
 
-void QuestCompleteWebhook(object oPC, string sQuestName);
-void QuestCompleteWebhook(object oPC, string sQuestName)
+void QuestCompleteWebhook(object oPC, string sQuestName, object oQuestObject);
+void QuestCompleteWebhook(object oPC, string sQuestName, object oQuestObject)
 {
     if (!DiscordEnabled()) return;
     if (HideDiscord(oPC)) return;
@@ -493,7 +506,6 @@ void QuestCompleteWebhook(object oPC, string sQuestName)
     string sName = GetName(oPC);
     struct NWNX_WebHook_Message stMessage = BuildWebhookMessageTemplate(oPC);
 
-    // PC has purchased a house in Area for Gold!
     string sTitle = "QUEST COMPLETED";
     string sDescription = "**" + sName + "** has completed **" + sQuestName + "**!";
 
@@ -501,6 +513,9 @@ void QuestCompleteWebhook(object oPC, string sQuestName)
     stMessage.sColor = QUEST_COMPLETE_COLOR;
 
     stMessage.sDescription = sDescription;
+
+    // use the quest giver's portrait
+    stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/" + GetStringLowerCase(GetPortraitResRef(oQuestObject)) + "m.png";
 
 
     //SendDebugMessage("QuestCompleteWebhook: " + sDescription);
