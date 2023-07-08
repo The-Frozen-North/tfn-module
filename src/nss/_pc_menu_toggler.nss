@@ -7,7 +7,7 @@ void main()
     object oPC = GetItemActivator();
     string sKey = GetPCPublicCDKey(oPC, TRUE);
 
-    if (GetCampaignInt(sKey, "pc_menu_disabled") == 1)
+    if (GetCampaignInt(sKey, "pc_menu_disabled", oPC) == 1)
     {
         SendColorMessageToPC(oPC, "Player menu enabled", MESSAGE_COLOR_INFO);
         DeleteCampaignVariable(sKey, "pc_menu_disabled");
@@ -16,7 +16,7 @@ void main()
     else
     {
         SendColorMessageToPC(oPC, "Player menu disabled", MESSAGE_COLOR_INFO);
-        SetCampaignInt(sKey, "pc_menu_disabled", 1);
+        SetCampaignInt(sKey, "pc_menu_disabled", 1, oPC);
         NuiDestroy(oPC, NuiFindWindow(oPC, "pcplayerwin"));
     }
 }
