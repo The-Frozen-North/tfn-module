@@ -123,6 +123,13 @@ void SeedMonitor()
                         continue;
                     }
 
+                    // Skip prefab areas
+                    if (GetStringLeft(GetName(oArea), 8) == "_PREFAB_")
+                    {
+                        oArea = GetNextArea();
+                        continue;
+                    }
+
                     ExecuteScript("seed_area_spawns", oArea);
 
                     oArea = GetNextArea();
@@ -171,6 +178,14 @@ void SeedMonitor()
                        oArea = GetNextArea();
                        continue;
                    }
+
+                    // Skip prefab areas
+                    if (GetStringLeft(GetName(oArea), 8) == "_PREFAB_")
+                    {
+                        oArea = GetNextArea();
+                        continue;
+                    }
+
                    string sScript = GetLocalString(oArea, "prettify_script");
                    if (sScript != "")
                    {
@@ -246,6 +261,14 @@ void main()
                 SetTag(oArea, sResRef);
 
             }
+
+            // Skip prefab areas
+            if (GetStringLeft(GetName(oArea), 8) == "_PREFAB_")
+            {
+                oArea = GetNextArea();
+                continue;
+            }
+
             oArea = GetNextArea();
             continue;
         }
@@ -692,6 +715,13 @@ void main()
            oArea = GetNextArea();
            continue;
        }
+
+        // Skip prefab areas
+        if (GetStringLeft(GetName(oArea), 8) == "_PREFAB_")
+        {
+            oArea = GetNextArea();
+            continue;
+        }
 
        ExecuteScript("area_init", oArea);
 
