@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 100
+    "value": 11
   },
   "BodyBag": {
     "type": "byte",
@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 9.0
+    "value": 11.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 9
+          "value": 11
         }
       }
     ]
@@ -46,11 +46,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": -2
+    "value": -4
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 90
+    "value": 110
   },
   "DecayTime": {
     "type": "dword",
@@ -63,7 +63,9 @@
   "Description": {
     "id": 12601,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Battle Horrors are magically animated suits of empty armor. They have a greater array of magic powers than do their lesser kin, Helmed Horrors."
+    }
   },
   "Dex": {
     "type": "byte",
@@ -80,14 +82,14 @@
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_maarcl053"
+          "value": "nw_maarcl068"
         }
       },
       {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wplmhb010"
+          "value": "nw_wswmgs012"
         }
       },
       {
@@ -124,7 +126,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 112
+          "value": 107
         }
       },
       {
@@ -145,7 +147,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 150
+          "value": 145
         }
       }
     ]
@@ -154,7 +156,7 @@
     "id": 12602,
     "type": "cexolocstring",
     "value": {
-      "0": "Helmed Horror"
+      "0": "Battle Horror"
     }
   },
   "fortbonus": {
@@ -171,7 +173,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 90
+    "value": 110
   },
   "Int": {
     "type": "byte",
@@ -203,11 +205,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 90
+    "value": 110
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 5
+    "value": 8
   },
   "NoPermDeath": {
     "type": "byte",
@@ -231,7 +233,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 235
+    "value": 146
   },
   "Race": {
     "type": "byte",
@@ -321,7 +323,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 11
+          "value": 13
         }
       },
       {
@@ -342,28 +344,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 11
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 13
         }
       },
       {
@@ -419,7 +400,28 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 11
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 13
         }
       },
       {
@@ -508,7 +510,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 16
+    "value": 18
   },
   "Subrace": {
     "type": "cexostring",
@@ -516,7 +518,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_HELMHORR"
+    "value": "NW_BATTHORR"
   },
   "Tail_New": {
     "type": "dword",
@@ -528,7 +530,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "helmed_horror"
+    "value": "battle_horror"
   },
   "WalkRate": {
     "type": "int",

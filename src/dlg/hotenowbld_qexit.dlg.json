@@ -10,11 +10,11 @@
   },
   "EndConverAbort": {
     "type": "resref",
-    "value": "nw_walk_wp"
+    "value": "dlg_plc_close"
   },
   "EndConversation": {
     "type": "resref",
-    "value": "nw_walk_wp"
+    "value": "dlg_plc_close"
   },
   "EntryList": {
     "type": "list",
@@ -103,7 +103,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>If you have concluded your business in the building, you should head back outside."
+            "0": "<StartAction>[This trapdoor has a retractable rope that will quickly lead you outside. Because it is retractable, you likely won't be able to use the rope to re-enter in this way. Do you want to exit the building now?]"
           }
         }
       },
@@ -159,7 +159,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "warden_tele"
         },
         "Sound": {
           "type": "resref",
@@ -172,7 +172,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>You head back the way you came and soon find yourself outside."
+            "0": "<StartAction>[You rappel down the rope and find yourself outside. The rope slinks back up as you let go of it.]"
           }
         }
       }
@@ -180,7 +180,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 33
+    "value": 65
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -230,7 +230,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>Stay here for now."
+            "0": "<StartAction>[Stay here for now.]"
           }
         }
       },
@@ -331,7 +331,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "warden_tele"
+          "value": ""
         },
         "Sound": {
           "type": "resref",

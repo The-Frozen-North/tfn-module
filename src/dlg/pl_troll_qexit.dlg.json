@@ -103,61 +103,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>If you have no interest in exploring the caverns further, you should return to the surface."
+            "0": "<StartAction>The rope leads upwards to a mineshaft on the first level. It looks far too treacherous to come back in this way, however.]"
           }
         }
       },
       {
         "__struct_id": 1,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": []
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "<StartAction>The passage to the surface isn't safe. You'll have to fight your way up."
-          }
-        }
-      },
-      {
-        "__struct_id": 2,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -208,7 +159,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "warden_tele"
         },
         "Sound": {
           "type": "resref",
@@ -221,7 +172,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>You head back through the caverns and find yourself outside."
+            "0": "<StartAction>[You climb the rope and find yourself near the exit to the cave.]"
           }
         }
       }
@@ -229,7 +180,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 47
+    "value": 52
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -279,7 +230,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>Stay here for now."
+            "0": "<StartAction>[Leave the rope alone for now to explore the area a bit more.]"
           }
         }
       },
@@ -310,25 +261,6 @@
           "value": [
             {
               "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": "pl_trollqexitchk"
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 2
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -363,7 +295,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>Leave the cave."
+            "0": "<StartAction>[Climb the rope.]"
           }
         }
       },
@@ -399,7 +331,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": "warden_tele"
+          "value": ""
         },
         "Sound": {
           "type": "resref",
