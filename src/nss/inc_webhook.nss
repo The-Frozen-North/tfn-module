@@ -13,7 +13,7 @@ const string PLAYER_COLOR = "#42bcf5";
 const string LEVEL_UP_COLOR = "#ddf542";
 const string DEATH_COLOR = "#ed5426";
 const string BOSS_DEFEATED_COLOR = "#ffd700";
-const string SERVER_COLOR = "#9fe4fc";
+const string SERVER_COLOR = "#b0b0b0";
 const string VALUABLE_ITEM_COLOR = "#96e6ff";
 const string HOUSE_BUY_COLOR = "#a000a0";
 const string QUEST_COMPLETE_COLOR = "#50ffa0";
@@ -26,6 +26,7 @@ const string BUG_REPORT_COLOR = "#ffa500";
 #include "inc_xp"
 #include "inc_follower"
 #include "inc_henchman"
+#include "inc_general"
 
 // -----------------------------------------------------------------------------
 //                              Function Prototypes
@@ -272,11 +273,13 @@ void LevelUpWebhook(object oPC)
   stMessage.sColor = LEVEL_UP_COLOR;
   stMessage.sTitle = "LEVEL UP";
   stMessage.sDescription = "**"+GetName(oPC)+"** has leveled up to "+IntToString(GetHitDice(oPC))+"!";
+  stMessage.sThumbnailURL = "https://raw.githubusercontent.com/nwn-rs/assets/build8193.36/png/po_levelup.png";
 
   //stMessage.sFooterText = GetName(GetModule());
   //stMessage.iTimestamp = SQLite_GetTimeStamp();
   sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", GetDiscordKey(), stMessage);
   SendDiscordLogMessage(sConstructedMsg);
+  SendMessageToAllPCs(GetName(oPC)+" has leveled up to "+IntToString(GetHitDice(oPC))+"!");
 }
 
 // sends a web hook to discord if you were petrified
@@ -327,6 +330,7 @@ void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
     //stMessage.iTimestamp = SQLite_GetTimeStamp();
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", GetDiscordKey(), stMessage);
     SendDiscordMessage(sConstructedMsg, GetDiscordKey());
+    SendMessageToAllPCs(GetName(oPC)+" was "+sAction+" by "+sName+".");
 }
 
 // sends a web hook to discord if you killed a boss
@@ -371,6 +375,7 @@ void BossDefeatedWebhook(object oPC, object oDead)
     //stMessage.iTimestamp = SQLite_GetTimeStamp();
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discordapp.com", GetDiscordKey(), stMessage);
     SendDiscordMessage(sConstructedMsg, GetDiscordKey());
+    SendMessageToAllPCs(GetName(oPC)+" has defeated "+GetName(oDead)+"!");
 
     // delete this so it doesn't trigger again
     DeleteLocalInt(oDead, "defeated_webhook");
@@ -426,6 +431,7 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
 
     string sTitle;
     string sDescription = "**" + sName + "** has " + sAcquisitionMethod;
+    string sNonDiscordDescription = sName + " has " + sAcquisitionMethod;
     int nPlayers = GetPlayerCount();
 
     stMessage = SetWebhookCustomField(stMessage, 1, "ITEM TYPE", GetStringByStrRef(StringToInt(Get2DAString("baseitems", "Name", GetBaseItemType(oItem)))));
@@ -437,10 +443,12 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
         sFirstLetter == "o" || sFirstLetter == "u")
     {
         sDescription += " an **" + sItemName + "**!";
+        sNonDiscordDescription += " an " + sItemName + "!";
     }
     else
     {
         sDescription += " a **" + sItemName + "**!";
+        sNonDiscordDescription += " a " + sItemName + "!";
     }
 
     sTitle = "VALUABLE ITEM";
@@ -461,6 +469,7 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
     //SendDebugMessage("ValuableItemWebhook: " + sDescription);
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
     SendDiscordMessage(sConstructedMsg, GetDiscordKey());
+    SendMessageToAllPCs(sNonDiscordDescription);
 }
 
 
@@ -493,6 +502,7 @@ void HouseBuyWebhook(object oPC, int nGoldCost, object oArea)
     //SendDebugMessage("HouseBuyWebhook: " + sDescription);
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
     SendDiscordMessage(sConstructedMsg, GetDiscordKey());
+    SendMessageToAllPCs(sName + " has purchased a house in " + GetName(oArea) + " for " + IntToString(nGoldCost) + " gold!");
 }
 
 
@@ -501,6 +511,19 @@ void QuestCompleteWebhook(object oPC, string sQuestName, object oQuestObject)
 {
     if (!DiscordEnabled()) return;
     if (HideDiscord(oPC)) return;
+
+    // do not send a message for minor or progression quests
+    if (FindSubString(sQuestName, "Curing") >= 0 ||
+        FindSubString(sQuestName, "Oath") >= 0 ||
+        FindSubString(sQuestName, "Missing Druid") >= 0 ||
+        FindSubString(sQuestName, "Supplies for Neverwinter") >= 0 ||
+        FindSubString(sQuestName, "Escaped Convict") >= 0 ||
+        FindSubString(sQuestName, "Art Theft") >= 0 ||
+        FindSubString(sQuestName, "Artifact Recovery") >= 0 ||
+        FindSubString(sQuestName, "The Serpent's Gems") >= 0)
+    {
+        return;
+    }
 
     string sConstructedMsg;
     string sName = GetName(oPC);
@@ -521,6 +544,7 @@ void QuestCompleteWebhook(object oPC, string sQuestName, object oQuestObject)
     //SendDebugMessage("QuestCompleteWebhook: " + sDescription);
     sConstructedMsg = NWNX_WebHook_BuildMessageForWebHook("discord.com", GetDiscordKey(), stMessage);
     SendDiscordMessage(sConstructedMsg, GetDiscordKey());
+    SendMessageToAllPCs(sName + " has completed " + sQuestName + "!");
 }
 
 void BugReportWebhook(object oPC, string sMessage);

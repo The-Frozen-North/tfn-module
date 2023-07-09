@@ -535,7 +535,7 @@ void PopUpOptionsGUIPanel (object oPC, string sWinID)
     // Create row 1 (label).
     jRow = JsonArray ();
     json jCheckBox = NuiWidth(NuiHeight(NuiCheck(NuiBind("hide_discord_label"), NuiBind("hide_discord_value2")), 40.0), 300.0);
-    jCheckBox = NuiTooltip(jCheckBox, JsonString("Prevents non-login related game activities being posted to Discord's activty channel."));
+    jCheckBox = NuiTooltip(jCheckBox, JsonString("Prevents non-login related game activities being shown to Discord or in-game."));
     jRow = JsonArrayInsert(jRow, jCheckBox);
     // Add row to the column.
     jCol = JsonArrayInsert(jCol, NuiRow(jRow));
