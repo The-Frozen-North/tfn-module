@@ -137,8 +137,8 @@ float Truncate(float fFloat)
 
 void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
 {
-// Dead PCs do not get any XP
-   if (GetIsDead(oPC)) return;
+// Dead PCs do not get any XP, unless it came from a quest
+   if (!bQuest && GetIsDead(oPC)) return;
 
    string sFavoredBonus = "";
 
