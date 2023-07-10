@@ -921,7 +921,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 13
+                "value": 14
               },
               "IsChild": {
                 "type": "byte",
@@ -940,7 +940,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 10
+                "value": 13
               },
               "IsChild": {
                 "type": "byte",
@@ -949,6 +949,25 @@
             },
             {
               "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 10
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 3,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -1266,7 +1285,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 14
+                "value": 15
               },
               "IsChild": {
                 "type": "byte",
@@ -1275,6 +1294,29 @@
             },
             {
               "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 13
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 2,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -1371,7 +1413,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 428
+    "value": 435
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -2308,12 +2350,57 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I'd like to buy off some of the loot that you picked up."
+            "0": "Can you identify an item for me?"
           }
         }
       },
       {
         "__struct_id": 14,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "merchant_local"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "I'd like to buy off some of the loot that you picked up."
+          }
+        }
+      },
+      {
+        "__struct_id": 15,
         "ActionParams": {
           "type": "list",
           "value": []

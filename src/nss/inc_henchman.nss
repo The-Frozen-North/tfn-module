@@ -405,6 +405,12 @@ void SetMaster(object oHench, object oPlayer)
     if (!GetIsObjectValid(GetLocalObject(oHench, "merchant")))
     {
         object oMerchant = CreateObject(OBJECT_TYPE_STORE, "mer_henchman", GetLocation(oHench));
+
+        if (GetResRef(OBJECT_SELF) == "hen_sharwyn")
+        {
+            SetStoreIdentifyCost(oMerchant, 90);
+        }
+
         SetLocalObject(oHench, "merchant", oMerchant);
     }
 
