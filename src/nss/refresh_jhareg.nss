@@ -1,7 +1,6 @@
 void OpenAndUnlock(object oDoor)
 {
-    //AssignCommand(oDoor, ActionOpenDoor(oDoor));
-    AssignCommand(oDoor, ActionCloseDoor(oDoor));
+    AssignCommand(oDoor, ActionOpenDoor(oDoor));
     SetLocked(oDoor, FALSE);
 }
 
