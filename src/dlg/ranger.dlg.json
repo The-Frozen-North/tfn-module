@@ -767,7 +767,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>[This elven man is gravely wounded and needs more healing. If you have a healing potion, you can administer it to him. Otherwise, you can attempt to heal him through spells or a healing kit.]</Start>"
+            "0": "<StartAction>[This elven man is gravely wounded. If you have a healing potion, you can administer it to him. Otherwise, you can attempt to heal him through spells or a healing kit.]</Start>"
           }
         }
       },
@@ -1135,6 +1135,184 @@
         },
         "RepliesList": {
           "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_chk_potion"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "tag"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "NW_IT_MPOTION004"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 10
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_chk_potion"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "tag"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "NW_IT_MPOTION003"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 9
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_chk_potion"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "tag"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "NW_IT_MPOTION002"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 8
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 3,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 6
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartAction>[This elven man is still needs more healing. If you have another healing potion, you can administer it to him. Otherwise, you can attempt to heal him through spells or a healing kit.]</Start>"
+          }
+        }
+      },
+      {
+        "__struct_id": 15,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
           "value": []
         },
         "Script": {
@@ -1160,7 +1338,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 310
+    "value": 339
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -1947,15 +2125,11 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 9
+                "value": 14
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+                "value": 0
               }
             },
             {
@@ -2019,7 +2193,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 14
+          "value": 15
         }
       },
       {

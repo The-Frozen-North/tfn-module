@@ -18,6 +18,8 @@ void main()
     if (d2() == 1)
     {
         SetLocalInt(oEventCreature, "semiboss", 1);
+        SetLocalString(oEventCreature, "attack_script", "ranger_aggro");
+        SetLocalString(oEventCreature, "damage_script", "ranger_aggro");
     }
     else
     {

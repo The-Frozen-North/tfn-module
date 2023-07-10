@@ -1,6 +1,3 @@
-#include "nwnx_creature"
-#include "inc_event"
-#include "inc_ai_combat"
 void main()
 {
 
@@ -21,6 +18,7 @@ void main()
 
         DeleteLocalString(OBJECT_SELF, "heartbeat_script");
         DeleteLocalString(OBJECT_SELF, "attack_script");
+        DeleteLocalString(OBJECT_SELF, "damage_script");
 
         return;
     }
@@ -32,24 +30,11 @@ void main()
 
         if (GetIsObjectValid(oPC) && fDistance > 0.0 && fDistance < 10.0)
         {
-             ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(100), OBJECT_SELF);
+            SpeakOneLinerConversation("ranger_aggro");
+             
+            ExecuteScript("ranger_aggro");
 
-             SpeakOneLinerConversation("ranger_aggro");
-
-             ChangeToStandardFaction(OBJECT_SELF, STANDARD_FACTION_HOSTILE);
-
-             AssignCommand(CreateEventCreature("krenshar"), ActionAttack(oPC));
-             AssignCommand(CreateEventCreature("krenshar"), ActionAttack(oPC));
-             AssignCommand(CreateEventCreature("krenshar"), ActionAttack(oPC));
-
-             DeleteLocalString(OBJECT_SELF, "heartbeat_script");
-             DeleteLocalString(OBJECT_SELF, "attack_script");
-
-             ActionAttack(oPC);
-
-             gsCBDetermineCombatRound();
-
-             return;
+            return;
         }
 
     }
