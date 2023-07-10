@@ -356,6 +356,8 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_USE_ITEM_AFTER", "on_use_itema");
 
+    NWNX_Events_SubscribeEvent("NWNX_ON_MATERIALCHANGE_AFTER", "on_matchangea");
+
 // Whitelist DMs.
     NWNX_Events_SubscribeEvent("NWNX_ON_CLIENT_CONNECT_BEFORE", "on_pc_connectb");
 
