@@ -777,6 +777,8 @@ object oNew, oAOE = sTag != "" ? GetObjectByTag(sTag) : GetNearestObjectToLocati
   SetLocalInt(oAOE,"AOE_SR",spell.SR);
   SetLocalInt(oAOE,"AOE_DURATION",numRounds+1);
   SetLocalObject(spell.Target == OBJECT_INVALID ? spell.Caster : spell.Target,"OWNER_"+IntToString(spell.Id),oAOE);
+  // may fail when there's more than one aoe, oh well should solve most cases
+  SetLocalObject(spell.Target == OBJECT_INVALID ? spell.Caster : spell.Target,"aoe_to_cleanup",oAOE);
    if(scriptHeartbeat != "" && GetModuleSwitchValue("70_AOE_HEARTBEAT_WORKAROUND"))
    {
    AssignCommand(oAOE,DelayCommand(6.0,AOEHeartbeat(scriptHeartbeat)));

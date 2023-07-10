@@ -70,6 +70,12 @@ void main()
     TakeGoldFromCreature(1000, OBJECT_SELF, TRUE);
 
     DestroyPet(OBJECT_SELF);
+    object eAOE = GetLocalObject(OBJECT_SELF, "aoe_to_cleanup");
+    if (GetIsObjectValid(eAOE))
+    {
+        AssignCommand(eAOE, SetIsDestroyable(TRUE));
+        AssignCommand(eAOE, DestroyObject(eAOE, 0.5));
+    }
 
     if (GetLocalInt(OBJECT_SELF, "defeated_webhook") == 1)
     {

@@ -1678,6 +1678,25 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
+                "value": "dlg_q_chk_atp2"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 38
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
                 "value": "dlg_q_chk_eli2"
               },
               "ConditionParams": {
@@ -1694,7 +1713,7 @@
               }
             },
             {
-              "__struct_id": 1,
+              "__struct_id": 2,
               "Active": {
                 "type": "resref",
                 "value": "dlg_q_chk_atc1"
@@ -1713,7 +1732,7 @@
               }
             },
             {
-              "__struct_id": 2,
+              "__struct_id": 3,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -1732,7 +1751,7 @@
               }
             },
             {
-              "__struct_id": 3,
+              "__struct_id": 4,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -2255,7 +2274,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 937
+    "value": 945
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -4702,7 +4721,64 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Farewell. <StartAction>[Follow Aawill's directions to the dryad.]</Start>"
+            "0": "Can you take me to the dryad?"
+          }
+        }
+      },
+      {
+        "__struct_id": 38,
+        "ActionParams": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "waypoint"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "nwood_dryad_tele_wp"
+              }
+            }
+          ]
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": []
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": "dlg_warpwaypoint"
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "Can you take me to the dryad again?"
           }
         }
       }

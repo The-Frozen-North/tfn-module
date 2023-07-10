@@ -7,6 +7,13 @@ void main()
     object oEventCreature = CreateEventCreature("ranger");
 
     SetCurrentHitPoints(oEventCreature, 25);
+    SetLocalInt(oEventCreature, "no_rest", 1);
+
+    if (!GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION, oEventCreature)))
+    {
+        DecrementRemainingFeatUses(oEventCreature, FEAT_ANIMAL_COMPANION);
+        SummonAnimalCompanion(oEventCreature);
+    }
 
     if (d2() == 1)
     {
