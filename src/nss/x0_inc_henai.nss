@@ -49,6 +49,7 @@
 #include "70_inc_main"
 #include "x0_i0_henchman"
 #include "nwnx_player"
+#include "inc_general"
 
 // ****************************
 // CONSTANTS
@@ -652,7 +653,7 @@ void bkRespondToHenchmenShout(object oShouter, int nShoutIndex, object oIntruder
 {
 
     // * if petrified, jump out
-    if (GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF))
+    if (!GetIsControllable(OBJECT_SELF))
     {
         return;
     }
@@ -902,7 +903,8 @@ void bkRespondToHenchmenShout(object oShouter, int nShoutIndex, object oIntruder
         // * July 15, 2003: Make this only happen if not
         // * in combat, otherwise the henchman will
         // * ping pong between targets
-        if (!GetIsInCombat(OBJECT_SELF))
+        // if (!GetIsInCombat(OBJECT_SELF))
+        if (GetCurrentAction() != ACTION_ATTACKOBJECT && GetCurrentAction() != ACTION_CASTSPELL)
             HenchmenCombatRound();
         break;
 
@@ -912,7 +914,8 @@ void bkRespondToHenchmenShout(object oShouter, int nShoutIndex, object oIntruder
         {
             if(!GetAssociateState(NW_ASC_MODE_DEFEND_MASTER))
             {
-                if(!GetIsInCombat(OBJECT_SELF))
+                // if(!GetIsInCombat(OBJECT_SELF))
+                if (GetCurrentAction() != ACTION_ATTACKOBJECT && GetCurrentAction() != ACTION_CASTSPELL)
                 {
                     //SpeakString("here 737");
                     object oAttack = GetAttackTarget(GetMaster());
@@ -930,7 +933,8 @@ void bkRespondToHenchmenShout(object oShouter, int nShoutIndex, object oIntruder
     case ASSOCIATE_COMMAND_MASTERGOINGTOBEATTACKED:
         if(!GetAssociateState(NW_ASC_MODE_STAND_GROUND))
         {
-            if(!GetIsInCombat(OBJECT_SELF))
+            // if(!GetIsInCombat(OBJECT_SELF))
+            if (GetCurrentAction() != ACTION_ATTACKOBJECT && GetCurrentAction() != ACTION_CASTSPELL)
             {   // SpeakString("here 753");
                 object oAttacker = GetGoingToBeAttackedBy(GetMaster());
                 // April 2003: If my master can see the enemy, then I can too.

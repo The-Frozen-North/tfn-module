@@ -725,4 +725,49 @@ void DestroyPet(object oCreature)
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_UNSUMMON), GetLocation(oPet));
     DestroyObject(oPet);
 }
+
+int GetIsMute(object oCreature);
+int GetIsMute(object oCreature)
+{
+    if (GetIsDead(oCreature) ||
+        GetHasEffect(EFFECT_TYPE_CHARMED, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_CONFUSED, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_CUTSCENE_PARALYZE, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_CUTSCENEIMMOBILIZE, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_DAZED, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_DOMINATED, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_FRIGHTENED, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_SILENCE, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_PARALYZE, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_SLEEP, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_TURNED, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_PETRIFY, oCreature))
+    {
+        return TRUE;    
+    }
+
+    return FALSE;
+}
+
+int GetIsControllable(object oCreature);
+int GetIsControllable(object oCreature)
+{
+    if (GetIsDead(oCreature) ||
+        GetHasEffect(EFFECT_TYPE_CHARMED, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_CONFUSED, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_CUTSCENE_PARALYZE, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_CUTSCENEIMMOBILIZE, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_DOMINATED, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_FRIGHTENED, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_DEAF, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_PARALYZE, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_SLEEP, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_TURNED, oCreature) ||
+        GetHasEffect(EFFECT_TYPE_PETRIFY, oCreature))
+    {
+        return FALSE;    
+    }
+
+    return TRUE;
+}
 //void main(){}

@@ -78,7 +78,7 @@ void main()
         SendMessageToPC(oMaster, "Henchmen cannot be dismissed from the radial menu");
     }
 
-    if (nMatch == 200 && GetIsFriend(oShouter) && !GetIsFighting(OBJECT_SELF)) // PARTY_I_WAS_ATTACKED
+    if (GetIsControllable(OBJECT_SELF) && nMatch == 200 && GetIsFriend(oShouter) && !GetIsFighting(OBJECT_SELF)) // PARTY_I_WAS_ATTACKED
     {
         HenchmenCombatRound(GetLastHostileActor(oShouter));
     }
@@ -96,7 +96,7 @@ void main()
             }
             BeginConversation(sDialog);
         }
-    } else {
+    } else if (GetIsControllable(OBJECT_SELF)) {
         // listening pattern matched
         if (GetIsObjectValid(oShouter) && oMaster == oShouter)
         {
