@@ -22,6 +22,27 @@ void ReallyJumpToLocation(location lTarget, int nTries);
 // As ReallyJumpToLocation, for use when OBJECT_SELf and lTarget were always in the same area.
 void ReallyJumpToLocationInSameArea(location lTarget, float fDist=-1.0, int nTries=20);
 
+void JumpAllAssociatesByType(int nAssociateType, location lLocation)
+{
+    int nCount = 1;
+    object oAssociate = GetAssociate(nAssociateType, OBJECT_SELF, nCount);
+
+    while (GetIsObjectValid(oAssociate))
+    {
+        JumpToLocation(lLocation);
+        nCount++;
+        oAssociate = GetAssociate(nAssociateType, OBJECT_SELF, nCount);
+    }
+}
+
+void JumpAllAssociates(location lLocation)
+{
+    JumpAllAssociatesByType(ASSOCIATE_TYPE_ANIMALCOMPANION, lLocation);
+    JumpAllAssociatesByType(ASSOCIATE_TYPE_DOMINATED, lLocation);
+    JumpAllAssociatesByType(ASSOCIATE_TYPE_FAMILIAR, lLocation);
+    JumpAllAssociatesByType(ASSOCIATE_TYPE_HENCHMAN, lLocation);
+    JumpAllAssociatesByType(ASSOCIATE_TYPE_SUMMONED, lLocation);
+}
 
 void ReallyJumpToLocation(location lTarget, int nTries)
 {
@@ -35,7 +56,7 @@ void ReallyJumpToLocation(location lTarget, int nTries)
     {
         return;
     }
-    
+
     // See if there's something alive near the target area to use compute safe location for
     object oNearby = GetFirstObjectInShape(SHAPE_SPHERE, 5.0, lTarget);
     while (GetIsObjectValid(oNearby))
@@ -46,17 +67,18 @@ void ReallyJumpToLocation(location lTarget, int nTries)
         }
         oNearby = GetNextObjectInShape(SHAPE_SPHERE, 5.0, lTarget);
     }
-    
+
     location lJumpTarget = lTarget;
-    
+
     if (GetIsObjectValid(oNearby))
     {
         vector vSafe = NWNX_Creature_ComputeSafeLocation(oNearby, GetPosition(oNearby));
         lJumpTarget = Location(GetArea(oNearby), vSafe, 0.0);
     }
-    
+
     nTries--;
     JumpToLocation(lJumpTarget);
+    JumpAllAssociates(lJumpTarget);
     if (nTries > 0)
     {
         DelayCommand(1.0, ReallyJumpToLocation(lTarget, nTries));
@@ -84,22 +106,23 @@ void ReallyJumpToLocationInSameArea(location lTarget, float fDist=-1.0, int nTri
         }
         oNearby = GetNextObjectInShape(SHAPE_SPHERE, 5.0, lTarget);
     }
-    
+
     location lJumpTarget = lTarget;
-    
+
     if (GetIsObjectValid(oNearby))
     {
         vector vSafe = NWNX_Creature_ComputeSafeLocation(oNearby, GetPosition(oNearby));
         lJumpTarget = Location(GetArea(oNearby), vSafe, 0.0);
     }
-    
-    
+
+
     float fThisDist = GetDistanceBetweenLocations(lMe, lTarget);
     if (fThisDist * 2.0 < fDist || fThisDist < 8.0)
     {
         return;
     }
     JumpToLocation(lJumpTarget);
+    JumpAllAssociates(lJumpTarget);
     nTries--;
     if (nTries > 0)
     {
@@ -170,7 +193,7 @@ void PayShipAndTravel(object oSpeaker, object oPlayer, int nTarget, int bPersuad
     {
         DelayCommand(2.5, AssignCommand(oPlayer, ReallyJumpToLocation(lTarget, 20)));
     }
-    
+
     DelayCommand(5.0, FadeFromBlack(oPlayer));
 }
 

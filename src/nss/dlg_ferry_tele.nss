@@ -14,7 +14,7 @@ void main()
         FadeToBlack(oPC);
         if (GetAreaFromLocation(lLocation) == GetArea(OBJECT_SELF))
         {
-           DelayCommand(2.5, AssignCommand(oPC, ReallyJumpToLocationInSameArea(lLocation))); 
+           DelayCommand(2.5, AssignCommand(oPC, ReallyJumpToLocationInSameArea(lLocation)));
         }
         else
         {
