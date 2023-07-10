@@ -233,7 +233,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 123
+          "value": 90
         }
       },
       {
@@ -261,7 +261,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 161
+          "value": 128
         }
       }
     ]
@@ -645,6 +645,26 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "duergar_captain"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "spawn_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "rand_duergar"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",

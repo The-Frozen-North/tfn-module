@@ -44,6 +44,9 @@ void AddRandomFeats(object oCreature, int nFeatList, int nCount);
 // Using a weight of 0 will forbid a feat.
 void SetRandomFeatWeight(object oCreature, int nFeat, int nWeight);
 
+// Changes specific weapon feats from (dagger) to the weapon type oCreature is wielding.
+void FixWeaponSpecificFeats(object oCreature);
+
 /////////
 
 const string RAND_FEAT_TEMP_ARRAY = "rand_feat_temp";
@@ -728,6 +731,7 @@ int _PickFromChoiceArray(int nTotalWeight, object oCreature)
 
 void _DelayedAddCasterListFeats(object oCreature)
 {
+    if (!GetIsObjectValid(oCreature)) { return; }
     int nCount = GetLocalInt(oCreature, "rand_feat_caster");
     if (nCount <= 0) { return; }
     int i;
@@ -751,8 +755,9 @@ void _DelayedAddCasterListFeats(object oCreature)
     }
 }
 
-void _DelayedFixWeaponSpecificFeats(object oCreature)
+void FixWeaponSpecificFeats(object oCreature)
 {
+    if (!GetIsObjectValid(oCreature)) { return; }
     object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oCreature);
     if (!GetIsObjectValid(oWeapon))
     {
@@ -880,7 +885,7 @@ void AddRandomFeats(object oCreature, int nFeatList, int nCount)
             ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectHeal(GetHitDice(oCreature)), oCreature);
         }
     }
-    AssignCommand(GetModule(), DelayCommand(10.0, _DelayedFixWeaponSpecificFeats(oCreature)));
+    AssignCommand(GetModule(), DelayCommand(10.0, FixWeaponSpecificFeats(oCreature)));
 }
 
 //void main(){}

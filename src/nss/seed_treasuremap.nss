@@ -1,5 +1,27 @@
 #include "inc_treasuremap"
 
+// The way this all fits together is...
+
+// All existing PC maps have a puzzle ID and ACR set on them
+// the DB maps the puzzle ID to a location and NUI drawlist visuals
+// So, when doing stuff to the system or changing areas which impacts the maps
+// ideally existing PC maps change only when they have to.
+
+// For this reason, the TMAPSOLUTIONS SQLITE FILE SHOULD NOT BE DELETED
+// or every single PC's existing treasure maps will change
+
+// This will check for updated tiles in areas, and then update the json for all maps in the area
+// so tile changes get reflected in existing maps without changing the solution location
+
+// If the solution location is made invalid, a PC with this map gets another one in the same area.
+// If the area is invalid, it rolls again like a fresh map would.
+
+// If (eg after changing the map json components) it's necessary to redo the whole lot, open the sqlite file
+// externally and run:
+// update treasuremaps set tilehash=0
+
+// This will then see tile hash mismatches on every map and redo all the json as though someone messed with tiles in every area
+
 void main()
 {
     int nAreaCount = 0;
@@ -55,6 +77,16 @@ void main()
                                 SqlStep(sql);
                                 // Move onto the next puzzle id, don't increment number of existing
                                 continue;
+                            }
+                            else
+                            {
+                                sql = SqlPrepareQueryCampaign("tmapsolutions",
+                                    "UPDATE treasuremaps " +
+                                    "SET position = @pos " +
+                                    "WHERE puzzleid = @puzzleid;");
+                                SqlBindInt(sql, "@puzzleid", nPuzzleID);
+                                SqlBindVector(sql, "@pos", GetPositionFromLocation(lPos));
+                                SqlStep(sql);
                             }
                         }
                         else if (nPuzzleMinACR != nACR)

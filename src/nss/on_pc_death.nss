@@ -27,6 +27,14 @@
 
 const int MAX_NUMBER_BLOODSTAINS = 100;
 
+void PopUpDeathGUIPanelIfStillDead(object oPlayer, int bRespawn, int bWaitForHelp, int nHelpStrref, string sHelp)
+{
+    if (GetIsDead(oPlayer))
+    {
+        PopUpDeathGUIPanel(oPlayer, bRespawn, bWaitForHelp, nHelpStrref, sHelp);
+    }
+}
+
 void main()
 {
     object oPlayer = GetLastPlayerDied();
@@ -47,7 +55,7 @@ void main()
 
     string sPenalty = GetRespawnLossText(oPlayer);
 
-    string sDeathMessage = "You will be automatically revived if there is an ally nearby, there are no enemies, and you are out of combat, or you can respawn at your chosen temple for " + sPenalty + ".";
+    string sDeathMessage = "You will be automatically revived if there is an ally nearby, there are no enemies, and you are out of combat, or you can respawn in " + GetRespawnLocationName(oPlayer) + " for " + sPenalty + ".";
 
     RemoveMount(oPlayer);
 
@@ -95,7 +103,7 @@ void main()
 
      KillTaunt(oKiller, oPlayer);
 
-     DelayCommand(4.5, PopUpDeathGUIPanel(oPlayer, TRUE, TRUE, 0, sDeathMessage));
+     DelayCommand(4.5, PopUpDeathGUIPanelIfStillDead(oPlayer, TRUE, TRUE, 0, sDeathMessage));
 
 }
 

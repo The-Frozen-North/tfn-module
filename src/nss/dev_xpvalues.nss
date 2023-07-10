@@ -20,11 +20,21 @@ void RunOnArea(object oArea)
     object oTest = GetFirstObjectInArea(oArea);
     while (GetIsObjectValid(oTest))
     {
+        NWNX_Util_SetInstructionsExecuted(0);
         if (!GetIsDead(oTest) && GetIsObjectValid(oTest) && GetObjectType(oTest) == OBJECT_TYPE_CREATURE)
         {
             for (nLevel = 2; nLevel <= 12; nLevel++)
             {
-                float fThis = GetPartyXPValue(oTest, 0, IntToFloat(nLevel), 1, 1.0);
+                float fMultiplier = 1.0;
+                if (GetLocalInt(oTest, "boss") == 1)
+                {
+                    fMultiplier = 3.0;
+                }
+                else if (GetLocalInt(oTest, "semiboss") == 1)
+                {
+                    fMultiplier = 2.0;
+                }
+                float fThis = GetPartyXPValue(oTest, 0, IntToFloat(nLevel), 1, fMultiplier);
                 string sVar = "dev_xpvalues" + IntToString(nLevel);
                 SetLocalFloat(oArea, sVar, GetLocalFloat(oArea, sVar) + fThis);
             }

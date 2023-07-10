@@ -12,10 +12,14 @@ void main()
     object oMap = GetLocalObject(oPC, "opened_treasuremap");
     if (sEvent == "close")
     {
-        if (!GetIsObjectValid(oMap) || GetItemPossessor(oMap) != oPC)
+        if (GetItemPossessor(oMap) != oPC)
         {
             SendMessageToPC(oPC, "You no longer own this map.");
             NuiDestroy(oPC, nToken);
+            return;
+        }
+        if (!GetIsObjectValid(oMap))
+        {
             return;
         }
         string sNote = JsonGetString(NuiGetBind(oPC, nToken, "tmap_notes"));

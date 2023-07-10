@@ -522,7 +522,7 @@ void main()
        if (nMaxPlaceableGold > 0)
        {
             float fPercent = 100.0 * IntToFloat(nMaxPlaceableGold)/IntToFloat(nTargetPlaceableGold);
-            WriteTimestampedLogEntry("Area " + GetTag(oArea) + " has non-keep placeables that provide " + FloatToString(fPercent) + " percent of its target gold amount of " + IntToString(nTargetPlaceableGold));
+            WriteTimestampedLogEntry("Area " + GetTag(oArea) + " has non-keep placeables that provide " + FloatToString(fPercent) + " percent of its target gold amount of " + IntToString(nTargetPlaceableGold) + ", horse=" + IntToString(GetLocalInt(oArea, "horse")));
             if (nHighTreasure > 0 && nHighGold > nTargetPlaceableGold)
             {
                 WriteTimestampedLogEntry("Area " + GetTag(oArea) + " probably can't spawn its high placeables unless they are set to keep - high gold exceeds target (" + IntToString(nHighGold) + " vs " + IntToString(nTargetPlaceableGold));

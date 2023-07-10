@@ -5,7 +5,7 @@
 
 void MakeKeyWindow(object oPC)
 {   
-
+    oPC = GetMasterFromPossessedFamiliar(oPC);
     SQLocalsPlayer_CreateTable(oPC);
     
     sqlquery sql = SqlPrepareQueryObject(oPC,
@@ -72,6 +72,9 @@ void MakeKeyWindow(object oPC)
 
 void main()
 {
-	MakeKeyWindow(OBJECT_SELF);
+    if (GetIsPC(OBJECT_SELF))
+    {
+        MakeKeyWindow(OBJECT_SELF);
+    }
     //MakeWindowInspector(OBJECT_SELF);
 }

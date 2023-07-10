@@ -42,15 +42,19 @@ void main()
         break;
 
     case 10000: //GS_AI_ATTACK_TARGET
-        if (bCanRespond && ! (GetLevelByClass(CLASS_TYPE_COMMONER) ||
+        if (bCanRespond && !(GetLevelByClass(CLASS_TYPE_COMMONER) ||
                gsCBGetHasAttackTarget()) &&
             gsCBGetIsPerceived(oSpeaker))
         {
             // Don't react if you can hear but not see
-            // While it might be realistic, it can cause masses of enemies rush out of all nearby rooms
+            // While it might be realistic, it can cause masses of enemies to rush out of all nearby rooms
             // to try to kill players
             if (!(GetObjectHeard(oSpeaker, OBJECT_SELF) && !GetObjectSeen(oSpeaker, OBJECT_SELF)))
             {
+                if (!gsCBGetIsInCombat())
+                {
+                    FastBuff();
+                }
                 gsCBDetermineAttackTarget(oSpeaker);
             }
             else

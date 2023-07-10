@@ -7,46 +7,39 @@ void main()
     object oItem = StringToObject(NWNX_Events_GetEventData("ITEM"));
     string sTag = GetTag(OBJECT_SELF);
 
+    object oIdentifier = OBJECT_INVALID;
     if (sTag == "mer_eltoora")
     {
-        object oIdentifier = GetObjectByTag("eltoora");
-        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_MAGICAL_VISION), oIdentifier);
-        TurnToFaceObject(GetItemPossessor(oItem), oIdentifier);
+        oIdentifier = GetObjectByTag("eltoora");
     }
     else if (sTag == "mer_camilla")
     {
-        object oIdentifier = GetObjectByTag("camilla");
-        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_MAGICAL_VISION), oIdentifier);
-        TurnToFaceObject(GetItemPossessor(oItem), oIdentifier);
+        oIdentifier = GetObjectByTag("camilla");
     }
     else if (sTag == "mer_arto")
     {
-        object oIdentifier = GetObjectByTag("arto");
-        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_MAGICAL_VISION), oIdentifier);
-        TurnToFaceObject(GetItemPossessor(oItem), oIdentifier);
+        oIdentifier = GetObjectByTag("arto");
     }
     else if (sTag == "mer_gulhrys")
     {
-        object oIdentifier = GetObjectByTag("gulhrys");
-        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_MAGICAL_VISION), oIdentifier);
-        TurnToFaceObject(GetItemPossessor(oItem), oIdentifier);
+        oIdentifier = GetObjectByTag("gulhrys");
     }
     else if (sTag == "mer_elaith")
     {
-        object oIdentifier = GetObjectByTag("elaith");
-        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_MAGICAL_VISION), oIdentifier);
-        TurnToFaceObject(GetItemPossessor(oItem), oIdentifier);
+        oIdentifier = GetObjectByTag("elaith");
     }
     else if (sTag == "mer_haljal")
     {
-        object oIdentifier = GetObjectByTag("haljal");
-        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_MAGICAL_VISION), oIdentifier);
-        TurnToFaceObject(GetItemPossessor(oItem), oIdentifier);
+        oIdentifier = GetObjectByTag("haljal");
     }
     else if (sTag == "mer_henchman")
     {
-        object oIdentifier = GetObjectByTag("hen_sharwyn");
+        oIdentifier = GetObjectByTag("hen_sharwyn");
+    }
+    if (GetIsObjectValid(oIdentifier))
+    {
         ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_MAGICAL_VISION), oIdentifier);
         TurnToFaceObject(GetItemPossessor(oItem), oIdentifier);
     }
+    ValuableItemWebhook(OBJECT_SELF, oItem, FALSE);
 }

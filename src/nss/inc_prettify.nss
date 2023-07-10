@@ -4,7 +4,6 @@
 #include "x0_i0_position"
 #include "nwnx_object"
 #include "nwnx_util"
-#include "inc_treasuremap"
 
 
 struct PrettifyPlaceableSettings
@@ -134,6 +133,10 @@ int DoesAreaNeedPrettifySeeding(object oArea);
 
 void UpdatePrettifySavedHashForArea(object oArea);
 
+// Return a hash of an area's tiles.
+// This should change only when someone messes with tiles or tilelights in the toolset.
+int GetAreaTileHash(object oArea);
+
 /////////////////////////////
 // INTERNAL STUFF
 
@@ -179,6 +182,20 @@ struct PrettifyPlaceableSettings GetDefaultPrettifySettings()
     pps.nBorder2Surface1 = -1;
     pps.nBorder2Surface2 = -1;
     return pps;
+}
+
+int GetAreaTileHash(object oArea)
+{
+    int nRet = GetLocalInt(oArea, "tilehash");
+    if (nRet == 0)
+    {
+        json jArea = ObjectToJson(oArea);
+        json jTiles = JsonPointer(jArea, "/ARE/value/Tile_List");
+        //WriteTimestampedLogEntry(JsonDump(jTiles));
+        nRet = NWNX_Util_Hash(JsonDump(jTiles));
+        SetLocalInt(oArea, "tilehash", nRet);
+    }
+    return nRet;
 }
 
 int SurfacematMatchesCriteria(int nSurfacemat, int nCriteria)

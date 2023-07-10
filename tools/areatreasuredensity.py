@@ -1,28 +1,17 @@
 import re
 
-# area_init spits out some treasure/tier density values
+# area_init spits out some treasure/tier target gold value info
 # This just pulls them into a csv for easy viewing
 
 
 class AreaTreasureData(object):
 	def __init__(self, tag):
 		self.areatag = tag
-		self.size = ""
-		self.treasure_counts = {}
+		self.targetgold = ""
+		self.percentreached = ""
+		self.horse = ""
 	def output(self):
-		out = {"tag":self.areatag, "size":self.size}
-		try:
-			sizeflt = float(self.size)
-		except ValueError:
-			sizeflt = 0.0
-		for treasuretier, treasurecount in self.treasure_counts.items():
-			if int(treasurecount) > 0:
-				areaper = sizeflt/float(treasurecount)
-			else:
-				areaper = "0"
-			out[treasuretier + "_count"] = str(treasurecount)
-			out[treasuretier + "_areapertreasure"] = str(areaper)
-		return out
+		return {"areatag":self.areatag, "targetgold":str(self.targetgold), "percentreached":str(self.percentreached), "horse":self.horse}
 		
 		
 
@@ -30,24 +19,19 @@ def main(logfp="./../logs/nwserverLog1.txt"):
 	data = {}
 	with open(logfp, "r") as f:
 		for line in f:
-			# We don't really care about grabbing its calculated density, it's trivial to just do it in python instead!
-			m = re.search("Area (.*) has (\\d*) ([a-z]*) treasures", line)
+			m = re.search("Area (.*) has non-keep placeables that provide (.*) percent of its target gold amount of (.*), horse=(.*)", line)
 			if m is not None:
 				areatag = m.groups()[0]
-				treasurecount = m.groups()[1]
-				treasuretier = m.groups()[2]
+				percent = m.groups()[1]
+				target = m.groups()[2]
+				horse = m.groups()[3]
 				if areatag not in data:
 					data[areatag] = AreaTreasureData(areatag)
-				data[areatag].treasure_counts[treasuretier] = treasurecount
-			m = re.search("Area (.*) has (.*) total size", line)
-			if m is not None:
-				areatag = m.groups()[0]
-				size = m.groups()[1]
-				if areatag not in data:
-					data[areatag] = AreaTreasureData(areatag)
-				data[areatag].size = size
+				data[areatag].percentreached = percent
+				data[areatag].targetgold = target
+				data[areatag].horse = horse
 				
-	keys = ["tag", "size", "low_count", "med_count", "high_count", "low_areapertreasure", "med_areapertreasure", "high_areapertreasure"]
+	keys = ["areatag", "targetgold", "percentreached", "horse"]
 	
 	with open("treasuredensity.csv", "w") as f:
 		f.write(",".join(keys) + "\n")

@@ -100,6 +100,7 @@ void TryEquippingRandomApparelOfTier(int nTier, int nUniqueChance, object oCreat
 // And so will be much more likely to be selected
 // The relative increase depends on the size of the weapon pool, which depends on the creature
 // Weapons can be excluded entirely by setting a weight of zero.
+// Pass -1 to forbid this weapon type.
 void SetRandomEquipWeaponTypeWeight(object oCreature, int nBaseItem, int nWeight);
 
 int IsItemSuitableForCreature(object oCreature, object oItem);
@@ -120,8 +121,11 @@ struct RandomWeaponResults RollRandomWeaponTypesForCreature(object oCreature);
 const string RAND_EQUIP_GIVE_RANGED = "rand_equip_give_ranged";
 
 const string RAND_EQUIP_PREFER_BOW = "rand_equip_prefer_bow";
+const string RAND_EQUIP_NO_SHIELD = "rand_equip_no_shield";
+const string RAND_EQUIP_FORCE_SHIELD = "rand_equip_force_shield";
 
 const string RAND_EQUIP_TEMP_ARRAY = "rand_equip_temp";
+const string RAND_EQUIP_TEMP_WEIGHT_ARRAY = "rand_equip_weight_temp";
 
 struct CreatureProficiencies
 {
@@ -275,7 +279,7 @@ int _GetScoreForWeaponType(int nBaseItem, object oCreature)
         case BASE_ITEM_DAGGER:
         case BASE_ITEM_DART:
         {
-            nScore += 1;
+            nScore += 10;
             break;
         }
         case BASE_ITEM_LIGHTCROSSBOW:
@@ -283,7 +287,7 @@ int _GetScoreForWeaponType(int nBaseItem, object oCreature)
         case BASE_ITEM_SICKLE:
         case BASE_ITEM_SLING:
         {
-            nScore += 2;
+            nScore += 30;
             break;
         }
         case BASE_ITEM_KUKRI:
@@ -296,7 +300,7 @@ int _GetScoreForWeaponType(int nBaseItem, object oCreature)
         case BASE_ITEM_HEAVYCROSSBOW:
         case BASE_ITEM_MORNINGSTAR:
         {
-            nScore += 3;
+            nScore += 90;
             break;
         }
         case BASE_ITEM_KAMA:
@@ -311,7 +315,7 @@ int _GetScoreForWeaponType(int nBaseItem, object oCreature)
         case BASE_ITEM_SHORTSPEAR:
         case BASE_ITEM_QUARTERSTAFF:
         {
-            nScore += 4;
+            nScore += 270;
             break;
         }
         case BASE_ITEM_BASTARDSWORD:
@@ -324,7 +328,7 @@ int _GetScoreForWeaponType(int nBaseItem, object oCreature)
         case BASE_ITEM_LONGBOW:
         case BASE_ITEM_TRIDENT:
         {
-            nScore += 5;
+            nScore += 800;
             break;
         }
         case BASE_ITEM_DIREMACE:
@@ -332,7 +336,7 @@ int _GetScoreForWeaponType(int nBaseItem, object oCreature)
         case BASE_ITEM_SCYTHE:
         case BASE_ITEM_TWOBLADEDSWORD:
         {
-            nScore += 6;
+            nScore += 2400;
             break;
         }
     }
@@ -479,35 +483,19 @@ int _IsWeaponTypeDoubleSided(int nBaseItem)
     return 0;
 }
 
-int _SelectFromRandEquipTempArray(int nMaxScore, object oCreature)
+int _SelectFromRandEquipTempArray(int nWeightSum, object oCreature)
 {
-    Array_Shuffle(RAND_EQUIP_TEMP_ARRAY, GetModule());
+    int nTargetWeight = Random(nWeightSum);
     int nLength = Array_Size(RAND_EQUIP_TEMP_ARRAY, GetModule());
     int i;
-    int j;
-    int bAllowed;
-    int nBaseItem;
     for (i=0; i<nLength; i++)
     {
-        bAllowed = 1;
-        nBaseItem = Array_At_Int(RAND_EQUIP_TEMP_ARRAY, i, GetModule());
-        int nScoreDiff = nMaxScore - _GetScoreForWeaponType(nBaseItem, oCreature);
-        if (nScoreDiff > 0)
+        int nThisWeight = Array_At_Int(RAND_EQUIP_TEMP_WEIGHT_ARRAY, i, GetModule());
+        nTargetWeight -= nThisWeight;
+        if (nTargetWeight < 0)
         {
-            for (j=0; j<nScoreDiff; j++)
-            {
-                if (Random(100) < 80)
-                {
-                    bAllowed = 0;
-                    break;
-                }
-            }
+            return Array_At_Int(RAND_EQUIP_TEMP_ARRAY, i, GetModule());
         }
-        if (!bAllowed)
-        {
-          continue;
-        }
-        return nBaseItem;
     }
     if (nLength == 0)
     {
@@ -532,8 +520,9 @@ int SelectLightMeleeWeaponType(object oCreature)
         bFinesse = 1;
     }
     Array_Clear(RAND_EQUIP_TEMP_ARRAY, GetModule());
+    Array_Clear(RAND_EQUIP_TEMP_WEIGHT_ARRAY, GetModule());
     int nIndex = 0;
-    int nMaxScore = 0;
+    int nWeightSum = 0;
     int nBaseItem;
     for (nIndex = 0; nIndex < RAND_EQUIP_NUM_WEAPONTYPES; nIndex++)
     {
@@ -549,19 +538,17 @@ int SelectLightMeleeWeaponType(object oCreature)
                     // Whips, morningstars, light flails cannot be offhand weapons
                     if (nBaseItem != BASE_ITEM_WHIP && nBaseItem != BASE_ITEM_MORNINGSTAR && nBaseItem != BASE_ITEM_LIGHTFLAIL)
                     {
-                        nMaxScore = max(nMaxScore, _GetScoreForWeaponType(nBaseItem, oCreature));
-                        int i;
-                        int nWeight = _GetRandomEquipWeaponTypeWeight(oCreature, nBaseItem);
-                        for (i=0; i<nWeight; i++)
-                        {
-                            Array_PushBack_Int(RAND_EQUIP_TEMP_ARRAY, nBaseItem, GetModule());
-                        }
+                        int nThisScore = _GetScoreForWeaponType(nBaseItem, oCreature);
+                        int nWeight = _GetRandomEquipWeaponTypeWeight(oCreature, nBaseItem) * nThisScore * 30;
+                        Array_PushBack_Int(RAND_EQUIP_TEMP_ARRAY, nBaseItem, GetModule());
+                        Array_PushBack_Int(RAND_EQUIP_TEMP_WEIGHT_ARRAY, nWeight, GetModule());
+                        nWeightSum += nWeight;
                     }
                 }
             }
         }
     }
-    return _SelectFromRandEquipTempArray(nMaxScore, oCreature);
+    return _SelectFromRandEquipTempArray(nWeightSum, oCreature);
 }
 
 int SelectMainHandMeleeWeaponType(object oCreature)
@@ -579,8 +566,9 @@ int SelectMainHandMeleeWeaponType(object oCreature)
         bFinesse = 1;
     }
     Array_Clear(RAND_EQUIP_TEMP_ARRAY, GetModule());
+    Array_Clear(RAND_EQUIP_TEMP_WEIGHT_ARRAY, GetModule());
     int nIndex = 0;
-    int nMaxScore = 0;
+    int nWeightSum = 0;
     int nBaseItem;
     for (nIndex = 0; nIndex < RAND_EQUIP_NUM_WEAPONTYPES; nIndex++)
     {
@@ -593,18 +581,16 @@ int SelectMainHandMeleeWeaponType(object oCreature)
                 // Onehanded: weapon can't be bigger than creature
                 if (nCreatureSize - nWeaponSize >= 0)
                 {
-                    nMaxScore = max(nMaxScore, _GetScoreForWeaponType(nBaseItem, oCreature));
-                    int i;
-                    int nWeight = _GetRandomEquipWeaponTypeWeight(oCreature, nBaseItem);
-                    for (i=0; i<nWeight; i++)
-                    {
-                        Array_PushBack_Int(RAND_EQUIP_TEMP_ARRAY, nBaseItem, GetModule());
-                    }
+                    int nThisScore = _GetScoreForWeaponType(nBaseItem, oCreature);
+                    int nWeight = _GetRandomEquipWeaponTypeWeight(oCreature, nBaseItem) * nThisScore * 30;
+                    Array_PushBack_Int(RAND_EQUIP_TEMP_ARRAY, nBaseItem, GetModule());
+                    Array_PushBack_Int(RAND_EQUIP_TEMP_WEIGHT_ARRAY, nWeight, GetModule());
+                    nWeightSum += nWeight;
                 }
             }
         }
     }
-    return _SelectFromRandEquipTempArray(nMaxScore, oCreature);
+    return _SelectFromRandEquipTempArray(nWeightSum, oCreature);
 }
 
 int SelectTwoHandedMeleeWeaponType(object oCreature, int bDoubleSided=0)
@@ -616,8 +602,9 @@ int SelectTwoHandedMeleeWeaponType(object oCreature, int bDoubleSided=0)
     int nCreatureSize = GetCreatureSize(oCreature);
     struct CreatureProficiencies cpProfs = GetCreatureWeaponProficiencies(oCreature);
     Array_Clear(RAND_EQUIP_TEMP_ARRAY, GetModule());
+    Array_Clear(RAND_EQUIP_TEMP_WEIGHT_ARRAY, GetModule());
     int nIndex = 0;
-    int nMaxScore = 0;
+    int nWeightSum = 0;
     int nBaseItem;
     int bFinesse = 0;
     if (GetHasFeat(FEAT_WEAPON_FINESSE, oCreature) &&
@@ -638,19 +625,17 @@ int SelectTwoHandedMeleeWeaponType(object oCreature, int bDoubleSided=0)
                     // Twohanded: weapon must be exactly 1 bigger than creature
                     if (nCreatureSize - nWeaponSize == -1)
                     {
-                        nMaxScore = max(nMaxScore, _GetScoreForWeaponType(nBaseItem, oCreature));
-                        int i;
-                        int nWeight = _GetRandomEquipWeaponTypeWeight(oCreature, nBaseItem);
-                        for (i=0; i<nWeight; i++)
-                        {
-                            Array_PushBack_Int(RAND_EQUIP_TEMP_ARRAY, nBaseItem, GetModule());
-                        }
+                        int nThisScore = _GetScoreForWeaponType(nBaseItem, oCreature);
+                        int nWeight = _GetRandomEquipWeaponTypeWeight(oCreature, nBaseItem) * nThisScore * 30;
+                        Array_PushBack_Int(RAND_EQUIP_TEMP_ARRAY, nBaseItem, GetModule());
+                        Array_PushBack_Int(RAND_EQUIP_TEMP_WEIGHT_ARRAY, nWeight, GetModule());
+                        nWeightSum += nWeight;
                     }
                 }
             }
         }
     }
-    return _SelectFromRandEquipTempArray(nMaxScore, oCreature);
+    return _SelectFromRandEquipTempArray(nWeightSum, oCreature);
 }
 
 int SelectRangedWeaponType(object oCreature)
@@ -664,8 +649,9 @@ int SelectRangedWeaponType(object oCreature)
     int nCreatureSize = GetCreatureSize(oCreature);
     struct CreatureProficiencies cpProfs = GetCreatureWeaponProficiencies(oCreature);
     Array_Clear(RAND_EQUIP_TEMP_ARRAY, GetModule());
+    Array_Clear(RAND_EQUIP_TEMP_WEIGHT_ARRAY, GetModule());
     int nIndex = 0;
-    int nMaxScore = 0;
+    int nWeightSum = 0;
     int nBaseItem;
 
     // Arcane Archer only works with bows
@@ -703,17 +689,15 @@ int SelectRangedWeaponType(object oCreature)
                         continue;
                     }
                 }
-                nMaxScore = max(nMaxScore, _GetScoreForWeaponType(nBaseItem, oCreature));
-                int i;
-                int nWeight = _GetRandomEquipWeaponTypeWeight(oCreature, nBaseItem);
-                for (i=0; i<nWeight; i++)
-                {
-                    Array_PushBack_Int(RAND_EQUIP_TEMP_ARRAY, nBaseItem, GetModule());
-                }
+                int nThisScore = _GetScoreForWeaponType(nBaseItem, oCreature);
+                int nWeight = _GetRandomEquipWeaponTypeWeight(oCreature, nBaseItem) * nThisScore * 30;
+                Array_PushBack_Int(RAND_EQUIP_TEMP_ARRAY, nBaseItem, GetModule());
+                Array_PushBack_Int(RAND_EQUIP_TEMP_WEIGHT_ARRAY, nWeight, GetModule());
+                nWeightSum += nWeight;
             }
         }
     }
-    return _SelectFromRandEquipTempArray(nMaxScore, oCreature);
+    return _SelectFromRandEquipTempArray(nWeightSum, oCreature);
 }
 
 //struct RandomWeaponResults
@@ -806,12 +790,16 @@ struct RandomWeaponResults RollRandomWeaponTypesForCreature(object oCreature)
     }
 
     // If the creature has creatureweapons, don't give it normal stuff
+    // (unless it has something in its main hand already)
     int nSlot;
-    for (nSlot = INVENTORY_SLOT_CWEAPON_L; nSlot <= INVENTORY_SLOT_CWEAPON_B; nSlot++)
+    if (!GetIsObjectValid(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oCreature)))
     {
-        if (GetIsObjectValid(GetItemInSlot(nSlot, oCreature)))
+        for (nSlot = INVENTORY_SLOT_CWEAPON_L; nSlot <= INVENTORY_SLOT_CWEAPON_B; nSlot++)
         {
-            return rwrOut;
+            if (GetIsObjectValid(GetItemInSlot(nSlot, oCreature)))
+            {
+                return rwrOut;
+            }
         }
     }
 
@@ -831,7 +819,7 @@ struct RandomWeaponResults RollRandomWeaponTypesForCreature(object oCreature)
     }
     else if (!bDualWield)
     {
-        if (bShieldProficiency && Random(100) < 50)
+        if ((bShieldProficiency && Random(100) < 50 && !GetLocalInt(oCreature, RAND_EQUIP_NO_SHIELD)) || GetLocalInt(oCreature, RAND_EQUIP_FORCE_SHIELD))
         {
             bShield = 1;
         }

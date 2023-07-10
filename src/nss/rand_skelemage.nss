@@ -6,9 +6,10 @@ void main()
 {
     AddRandomFeats(OBJECT_SELF, RAND_FEAT_LIST_CASTER, 2);
     struct RandomWeaponResults rwr = RollRandomWeaponTypesForCreature(OBJECT_SELF);
-    object oMain = TryEquippingRandomItemOfTier(rwr.nMainHand, 2, 1, OBJECT_SELF, INVENTORY_SLOT_RIGHTHAND);
-    TryEquippingRandomItemOfTier(rwr.nOffHand, 2, 1, OBJECT_SELF, INVENTORY_SLOT_LEFTHAND);
-    TryEquippingRandomApparelOfTier(2, 2, OBJECT_SELF);
+    object oMain = TryEquippingRandomItemOfTier(rwr.nMainHand, 3, 2, OBJECT_SELF, INVENTORY_SLOT_RIGHTHAND);
+    TryEquippingRandomItemOfTier(rwr.nOffHand, 3, 2, OBJECT_SELF, INVENTORY_SLOT_LEFTHAND);
+    TryEquippingRandomArmorOfTier(0, 3, 100, OBJECT_SELF);
+    TryEquippingRandomApparelOfTier(3, 2, OBJECT_SELF);
     if (SeedingSpellbooks(CLASS_TYPE_WIZARD, OBJECT_SELF))
     {
         SetRandomSpellWeight(OBJECT_SELF, SPELL_NEGATIVE_ENERGY_RAY, 10);

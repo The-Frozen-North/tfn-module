@@ -15218,7 +15218,9 @@
         "Description": {
           "id": 66888,
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "A sad pile of humanoid bones lay on the ground."
+          }
         },
         "DisarmDC": {
           "type": "byte",
@@ -15347,7 +15349,7 @@
         },
         "Static": {
           "type": "byte",
-          "value": 0
+          "value": 1
         },
         "Tag": {
           "type": "cexostring",
@@ -15387,7 +15389,7 @@
         },
         "Useable": {
           "type": "byte",
-          "value": 1
+          "value": 0
         },
         "Will": {
           "type": "byte",
@@ -18627,6 +18629,26 @@
   "TriggerList": {
     "type": "list",
     "value": []
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "cr"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 7
+        }
+      }
+    ]
   },
   "WaypointList": {
     "type": "list",

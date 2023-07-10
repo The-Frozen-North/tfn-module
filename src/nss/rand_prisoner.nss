@@ -1,6 +1,7 @@
 #include "inc_rand_equip"
 #include "inc_rand_feat"
 #include "inc_rand_appear"
+#include "inc_rand_spell"
 
 // Users: Brute (prisonerbrut), Convict (prisonermele), Prisoner (prisonerrang), Sorceress (prisonermage)
 
@@ -33,6 +34,19 @@ void main()
         if (GetGender(OBJECT_SELF) != GENDER_FEMALE)
         {
             SetName(OBJECT_SELF, "Escaped Sorcerer");
+        }
+        if (SeedingSpellbooks(CLASS_TYPE_WIZARD, OBJECT_SELF))
+        {
+            int i;
+            for (i=0; i<RAND_SPELL_NUM_SPELLBOOKS; i++)
+            {
+                RandomSpellbookPopulate(RAND_SPELL_ARCANE_EVOKER_SINGLE_TARGET, OBJECT_SELF, CLASS_TYPE_SORCERER);
+            }
+            SeedingSpellbooksComplete(OBJECT_SELF);
+        }
+        else
+        {
+            LoadSpellbook(CLASS_TYPE_SORCERER, OBJECT_SELF);
         }
     }
     
