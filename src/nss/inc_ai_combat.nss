@@ -69,6 +69,34 @@ void FastBuff(int bInstant = TRUE)
     BuffIfNotBuffed(SPELL_SHIELD_OF_FAITH, bInstant);
     BuffIfNotBuffed(SPELL_ENTROPIC_SHIELD, bInstant);
     BuffIfNotBuffed(SPELL_BARKSKIN, bInstant);
+    
+    // The stat buffs that stack with the spell versions
+    // (but don't overwrite them)
+    if (GetLevelByClass(CLASS_TYPE_BLACKGUARD) >= 2 && GetHasFeat(FEAT_BULLS_STRENGTH))
+    {
+        // 614 - blackguard bulls
+        NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 614, GetLevelByClass(CLASS_TYPE_BLACKGUARD), 0.0);
+        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_BULLS_STRENGTH);
+    } 
+    if (GetLevelByClass(CLASS_TYPE_HARPER) >= 3 && GetHasFeat(FEAT_HARPER_CATS_GRACE))
+    {
+        // 481 - harper cats
+        NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 481, GetLevelByClass(CLASS_TYPE_HARPER), 0.0);
+        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_HARPER_CATS_GRACE);
+    } 
+    if (GetLevelByClass(CLASS_TYPE_HARPER) >= 4 && GetHasFeat(FEAT_HARPER_EAGLES_SPLENDOR))
+    {
+        // 482 - harper eagles
+        NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 482, GetLevelByClass(CLASS_TYPE_HARPER), 0.0);
+        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_HARPER_EAGLES_SPLENDOR);
+    }
+    
+    if (GetLevelByClass(CLASS_TYPE_DIVINECHAMPION) >= 5 && GetHasFeat(FEAT_DIVINE_WRATH))
+    {
+        // 622 - divine wrath
+        NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 622, GetLevelByClass(CLASS_TYPE_DIVINECHAMPION), 0.0);
+        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_DIVINE_WRATH);
+    }
 
     // Stat buffs
     BuffIfNotBuffed(SPELL_AURA_OF_VITALITY, bInstant);
@@ -154,7 +182,13 @@ void FastBuff(int bInstant = TRUE)
         ActionCastSpellAtObject(SPELL_STONESKIN, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
     //Visage Protections
-    if(GetHasSpell(SPELL_SHADOW_SHIELD)&& !GetHasSpellEffect(SPELL_SHADOW_SHIELD))
+    if (GetLevelByClass(CLASS_TYPE_ASSASSIN) >= 5 && GetHasFeat(FEAT_PRESTIGE_SPELL_GHOSTLY_VISAGE))
+    {
+        // 605 - the spell for assassin visage (nwscript constant has a wrong name for it)
+        NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 605, GetLevelByClass(CLASS_TYPE_ASSASSIN), 0.0);
+        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_PRESTIGE_SPELL_GHOSTLY_VISAGE);
+    } 
+    else if(GetHasSpell(SPELL_SHADOW_SHIELD)&& !GetHasSpellEffect(SPELL_SHADOW_SHIELD))
     {
         ActionCastSpellAtObject(SPELL_SHADOW_SHIELD, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
@@ -175,9 +209,9 @@ void FastBuff(int bInstant = TRUE)
     {
         ActionCastSpellAtObject(SPELL_SPELL_MANTLE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
-    else if(GetHasSpell(SPELL_LESSER_SPELL_BREACH)&& !GetHasSpellEffect(SPELL_LESSER_SPELL_BREACH))
+    else if(GetHasSpell(SPELL_LESSER_SPELL_MANTLE)&& !GetHasSpellEffect(SPELL_LESSER_SPELL_MANTLE))
     {
-        ActionCastSpellAtObject(SPELL_LESSER_SPELL_BREACH, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
+        ActionCastSpellAtObject(SPELL_LESSER_SPELL_MANTLE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
     // Globes
     if(GetHasSpell(SPELL_GLOBE_OF_INVULNERABILITY)&& !GetHasSpellEffect(SPELL_GLOBE_OF_INVULNERABILITY))
@@ -236,7 +270,39 @@ void FastBuff(int bInstant = TRUE)
     }
 
     //Summon Ally
-    if(GetHasSpell(SPELL_BLACK_BLADE_OF_DISASTER))
+    if (GetLevelByClass(CLASS_TYPE_BLACKGUARD) >= 5 && GetHasFeat(475))
+    {
+        // 475 - fiendish servant (nwscript constant has a wrong name for it)
+        NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 610, GetLevelByClass(CLASS_TYPE_BLACKGUARD), 0.0);
+        DecrementRemainingFeatUses(OBJECT_SELF, 475);
+    } 
+    else if (GetLevelByClass(CLASS_TYPE_BLACKGUARD) >= 3 && GetHasFeat(474))
+    {
+        // 474 - BG create undead (nwscript constant has a wrong name for it)
+        NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 609, GetLevelByClass(CLASS_TYPE_BLACKGUARD), 0.0);
+        DecrementRemainingFeatUses(OBJECT_SELF, 474);
+    }
+    else if (GetLevelByClass(CLASS_TYPE_SHADOWDANCER) >= 3 && GetHasFeat(FEAT_SUMMON_SHADOW))
+    {
+        NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), SPELL_SUMMON_SHADOW, GetLevelByClass(CLASS_TYPE_SHADOWDANCER), 0.0);
+        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_SUMMON_SHADOW);
+    }
+    else if (GetLevelByClass(CLASS_TYPE_PALEMASTER) >= 9 && GetHasFeat(FEAT_SUMMON_GREATER_UNDEAD))
+    {
+        NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 627, GetLevelByClass(CLASS_TYPE_PALEMASTER), 0.0);
+        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_SUMMON_GREATER_UNDEAD);
+    }
+    else if (GetLevelByClass(CLASS_TYPE_PALEMASTER) >= 4 && GetHasFeat(FEAT_SUMMON_UNDEAD))
+    {
+        NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 624, GetLevelByClass(CLASS_TYPE_PALEMASTER), 0.0);
+        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_SUMMON_UNDEAD);
+    }
+    else if (GetLevelByClass(CLASS_TYPE_PALEMASTER) >= 2 && GetHasFeat(FEAT_ANIMATE_DEAD))
+    {
+        NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 623, GetLevelByClass(CLASS_TYPE_PALEMASTER), 0.0);
+        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_ANIMATE_DEAD);
+    }
+    else if(GetHasSpell(SPELL_BLACK_BLADE_OF_DISASTER))
     {
         ActionCastSpellAtLocation(SPELL_BLACK_BLADE_OF_DISASTER, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
@@ -291,6 +357,18 @@ void FastBuff(int bInstant = TRUE)
     else if(GetHasSpell(SPELL_SUMMON_CREATURE_I))
     {
         ActionCastSpellAtLocation(SPELL_SUMMON_CREATURE_I, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
+    }
+    else if(GetHasSpell(SPELL_GREATER_PLANAR_BINDING))
+    {
+        ActionCastSpellAtLocation(SPELL_GREATER_PLANAR_BINDING, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
+    }
+    else if(GetHasSpell(SPELL_PLANAR_BINDING))
+    {
+        ActionCastSpellAtLocation(SPELL_PLANAR_BINDING, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
+    }
+    else if(GetHasSpell(SPELL_LESSER_PLANAR_BINDING))
+    {
+        ActionCastSpellAtLocation(SPELL_LESSER_PLANAR_BINDING, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
 
 

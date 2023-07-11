@@ -124,6 +124,13 @@ const int CHANCE_TO_DROP_EQUIPPED_ITEM = 70;
 // Bosses have this chance to ignore the tier matching restriction.
 const int BOSS_EQUIPPED_ITEM_DROPS_IGNORE_TIER_CHANCE = 0;
 
+// Variables can set on items to alter this: set string "tfn_item_name" on the item to a name of an item to drop instead of this one.
+// The base item type has to be the same, though.
+// Eg many creatures have "Infinite Longbow", setting this to just "Longbow" (case sensitive) will let them drop that instead
+// "creature_drop_only" (int) to any nonzero value will allow creatures to drop their items
+// even if they don't exist within the TFN loot pool. This means that creatures can have "unique" equipment
+// that can't be obtained anywhere else.
+
 // The real chance of a tiered pawnshop item to be unique is:
 // UNIQUE_ITEM_CHANCE/100 * PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE/100
 // With both set at 33 that brings it to about 10.9%

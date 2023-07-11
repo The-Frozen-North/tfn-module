@@ -322,7 +322,12 @@ object GetTFNEquipmentByName(object oItem)
     {
         int bIdentified = GetIdentified(oItem);
         SetIdentified(oItem, 1);
-        string sName = GetName(oItem) + IntToString(GetBaseItemType(oItem));
+        string sName = GetName(oItem);
+        if (GetLocalString(oItem, "tfn_item_name") != "")
+        {
+            sName = GetLocalString(oItem, "tfn_item_name");
+        }
+        sName = sName + IntToString(GetBaseItemType(oItem));
         SetIdentified(oItem, bIdentified);
         sqlquery sql = SqlPrepareQueryObject(GetModule(),
             "SELECT oid FROM item_name_lookup " +

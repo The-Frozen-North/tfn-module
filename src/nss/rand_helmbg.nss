@@ -11,13 +11,13 @@ void main()
     AddRandomFeats(OBJECT_SELF, RAND_FEAT_LIST_FIGHTER_BONUS, 2);
     AddRandomFeats(OBJECT_SELF, RAND_FEAT_LIST_RANDOM, 2);
     // We do like swords.
-    SetRandomEquipWeaponTypeWeight(OBJECT_SELF, BASE_ITEM_GREATSWORD, 5);
-    SetRandomEquipWeaponTypeWeight(OBJECT_SELF, BASE_ITEM_BASTARDSWORD, 5);
-    SetRandomEquipWeaponTypeWeight(OBJECT_SELF, BASE_ITEM_LONGSWORD, 5);
+    SetRandomEquipWeaponTypeWeight(OBJECT_SELF, BASE_ITEM_GREATSWORD, 10);
+    SetRandomEquipWeaponTypeWeight(OBJECT_SELF, BASE_ITEM_BASTARDSWORD, 10);
+    SetRandomEquipWeaponTypeWeight(OBJECT_SELF, BASE_ITEM_LONGSWORD, 10);
     struct RandomWeaponResults rwr = RollRandomWeaponTypesForCreature(OBJECT_SELF);
     object oMain = TryEquippingRandomItemOfTier(rwr.nMainHand, 3, 1, OBJECT_SELF, INVENTORY_SLOT_RIGHTHAND);
     TryEquippingRandomItemOfTier(rwr.nOffHand, 3, 1, OBJECT_SELF, INVENTORY_SLOT_LEFTHAND);
-    TryEquippingRandomApparelOfTier(3, 2, OBJECT_SELF);
+    TryEquippingRandomApparelOfTier(3, 4, OBJECT_SELF);
     if (!GetLocalInt(oMain, "unique"))
     {
         IPSafeAddItemProperty(oMain, ItemPropertyOnHitProps(IP_CONST_ONHIT_ITEMPOISON, IP_CONST_ONHIT_SAVEDC_14, IP_CONST_POISON_1D2_STRDAMAGE));

@@ -319,6 +319,11 @@ void SendOnEnterRestedPopup(object oPC)
 
 void RestXPDisplay(object oPC, object oArea=OBJECT_INVALID)
 {
+    if (!GetIsObjectValid(GetArea(oPC)))
+    {
+        DelayCommand(2.0, RestXPDisplay(oPC, oArea));
+        return;
+    }
     if (!GetIsObjectValid(oArea))
     {
         oArea = GetArea(oPC);

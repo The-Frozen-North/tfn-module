@@ -146,6 +146,12 @@ int SQLocalsPlayer_GetLastUpdated_UnixEpoch(object oPlayer, string sVarName, int
 // * nType - The SQLOCALSPLAYER_TYPE_* you wish to check
 string SQLocalsPlayer_GetLastUpdated_UTC(object oPlayer, string sVarName, int nType);
 
+// Side note: possessed familiars return TRUE from GetIsPC but trying to access their sqlite database
+// BREAKS THINGS.
+// If oPC is actually a possessed familiar, this returns the creature doing the possessing
+// otherwise it just returns oPC
+object GetPCFromPossessedFamiliar(object oPC);
+
 
 /* INTERNAL */
 void SQLocalsPlayer_CreateTable(object oPlayer)
@@ -258,6 +264,15 @@ location SQLocalsPlayer_StringToLocation(string sLocation)
 }
 /* **** */
 
+object GetMasterFromPossessedFamiliar(object oPC)
+{
+    if (GetIsPossessedFamiliar(oPC))
+    {
+        return GetMaster(oPC);
+    }
+    return oPC;
+}
+
 /* INT */
 
 // Returns an integer stored on oPlayer, or 0 on error
@@ -265,6 +280,7 @@ location SQLocalsPlayer_StringToLocation(string sLocation)
 // * sVarName - name of the variable to retrieve
 int SQLocalsPlayer_GetInt(object oPlayer, string sVarName)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return 0;
 
     sqlquery sql = SQLocalsPlayer_PrepareSelect(oPlayer, SQLOCALSPLAYER_TYPE_INT, sVarName);
@@ -281,6 +297,7 @@ int SQLocalsPlayer_GetInt(object oPlayer, string sVarName)
 // * nValue - Value to store
 void SQLocalsPlayer_SetInt(object oPlayer, string sVarName, int nValue)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return;
 
     sqlquery sql = SQLocalsPlayer_PrepareInsert(oPlayer, SQLOCALSPLAYER_TYPE_INT, sVarName);
@@ -293,6 +310,7 @@ void SQLocalsPlayer_SetInt(object oPlayer, string sVarName, int nValue)
 // * sVarName - name of the variable to delete
 void SQLocalsPlayer_DeleteInt(object oPlayer, string sVarName)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return;
 
     sqlquery sql = SQLocalsPlayer_PrepareDelete(oPlayer, SQLOCALSPLAYER_TYPE_INT, sVarName);
@@ -307,6 +325,7 @@ void SQLocalsPlayer_DeleteInt(object oPlayer, string sVarName)
 // * sVarName - name of the variable to retrieve
 float SQLocalsPlayer_GetFloat(object oPlayer, string sVarName)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return 0.0f;
 
     sqlquery sql = SQLocalsPlayer_PrepareSelect(oPlayer, SQLOCALSPLAYER_TYPE_FLOAT, sVarName);
@@ -323,6 +342,7 @@ float SQLocalsPlayer_GetFloat(object oPlayer, string sVarName)
 // * fValue - Value to store
 void SQLocalsPlayer_SetFloat(object oPlayer, string sVarName, float fValue)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return;
 
     sqlquery sql = SQLocalsPlayer_PrepareInsert(oPlayer, SQLOCALSPLAYER_TYPE_FLOAT, sVarName);
@@ -335,6 +355,7 @@ void SQLocalsPlayer_SetFloat(object oPlayer, string sVarName, float fValue)
 // * sVarName - name of the variable to delete
 void SQLocalsPlayer_DeleteFloat(object oPlayer, string sVarName)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return;
 
     sqlquery sql = SQLocalsPlayer_PrepareDelete(oPlayer, SQLOCALSPLAYER_TYPE_FLOAT, sVarName);
@@ -349,6 +370,7 @@ void SQLocalsPlayer_DeleteFloat(object oPlayer, string sVarName)
 // * sVarName - name of the variable to retrieve
 string SQLocalsPlayer_GetString(object oPlayer, string sVarName)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return "";
 
     sqlquery sql = SQLocalsPlayer_PrepareSelect(oPlayer, SQLOCALSPLAYER_TYPE_STRING, sVarName);
@@ -365,6 +387,7 @@ string SQLocalsPlayer_GetString(object oPlayer, string sVarName)
 // * sValue - Value to store
 void SQLocalsPlayer_SetString(object oPlayer, string sVarName, string sValue)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return;
 
     sqlquery sql = SQLocalsPlayer_PrepareInsert(oPlayer, SQLOCALSPLAYER_TYPE_STRING, sVarName);
@@ -377,6 +400,7 @@ void SQLocalsPlayer_SetString(object oPlayer, string sVarName, string sValue)
 // * sVarName - name of the variable to delete
 void SQLocalsPlayer_DeleteString(object oPlayer, string sVarName)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return;
 
     sqlquery sql = SQLocalsPlayer_PrepareDelete(oPlayer, SQLOCALSPLAYER_TYPE_STRING, sVarName);
@@ -394,6 +418,7 @@ void SQLocalsPlayer_DeleteString(object oPlayer, string sVarName)
 // * sVarName - name of the variable to retrieve
 object SQLocalsPlayer_GetObject(object oPlayer, string sVarName)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return OBJECT_INVALID;
 
     sqlquery sql = SQLocalsPlayer_PrepareSelect(oPlayer, SQLOCALSPLAYER_TYPE_OBJECT, sVarName);
@@ -410,6 +435,7 @@ object SQLocalsPlayer_GetObject(object oPlayer, string sVarName)
 // * oValue - Value to store
 void SQLocalsPlayer_SetObject(object oPlayer, string sVarName, object oValue)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return;
 
     sqlquery sql = SQLocalsPlayer_PrepareInsert(oPlayer, SQLOCALSPLAYER_TYPE_OBJECT, sVarName);
@@ -422,6 +448,7 @@ void SQLocalsPlayer_SetObject(object oPlayer, string sVarName, object oValue)
 // * sVarName - name of the variable to delete
 void SQLocalsPlayer_DeleteObject(object oPlayer, string sVarName)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return;
 
     sqlquery sql = SQLocalsPlayer_PrepareDelete(oPlayer, SQLOCALSPLAYER_TYPE_OBJECT, sVarName);
@@ -436,6 +463,7 @@ void SQLocalsPlayer_DeleteObject(object oPlayer, string sVarName)
 // * sVarName - name of the variable to retrieve
 vector SQLocalsPlayer_GetVector(object oPlayer, string sVarName)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return [0.0f, 0.0f, 0.0f];
 
     sqlquery sql = SQLocalsPlayer_PrepareSelect(oPlayer, SQLOCALSPLAYER_TYPE_VECTOR, sVarName);
@@ -452,6 +480,7 @@ vector SQLocalsPlayer_GetVector(object oPlayer, string sVarName)
 // * vValue - Value to store
 void SQLocalsPlayer_SetVector(object oPlayer, string sVarName, vector vValue)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return;
 
     sqlquery sql = SQLocalsPlayer_PrepareInsert(oPlayer, SQLOCALSPLAYER_TYPE_VECTOR, sVarName);
@@ -464,6 +493,7 @@ void SQLocalsPlayer_SetVector(object oPlayer, string sVarName, vector vValue)
 // * sVarName - name of the variable to delete
 void SQLocalsPlayer_DeleteVector(object oPlayer, string sVarName)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return;
 
     sqlquery sql = SQLocalsPlayer_PrepareDelete(oPlayer, SQLOCALSPLAYER_TYPE_VECTOR, sVarName);
@@ -478,6 +508,7 @@ void SQLocalsPlayer_DeleteVector(object oPlayer, string sVarName)
 // * sVarName - name of the variable to retrieve
 location SQLocalsPlayer_GetLocation(object oPlayer, string sVarName)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return GetStartingLocation();
 
     sqlquery sql = SQLocalsPlayer_PrepareSelect(oPlayer, SQLOCALSPLAYER_TYPE_LOCATION, sVarName);
@@ -494,6 +525,7 @@ location SQLocalsPlayer_GetLocation(object oPlayer, string sVarName)
 // * lValue - Value to store
 void SQLocalsPlayer_SetLocation(object oPlayer, string sVarName, location lValue)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return;
 
     sqlquery sql = SQLocalsPlayer_PrepareInsert(oPlayer, SQLOCALSPLAYER_TYPE_LOCATION, sVarName);
@@ -506,6 +538,7 @@ void SQLocalsPlayer_SetLocation(object oPlayer, string sVarName, location lValue
 // * sVarName - name of the variable to delete
 void SQLocalsPlayer_DeleteLocation(object oPlayer, string sVarName)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || sVarName == "") return;
 
     sqlquery sql = SQLocalsPlayer_PrepareDelete(oPlayer, SQLOCALSPLAYER_TYPE_LOCATION, sVarName);
@@ -522,6 +555,7 @@ void SQLocalsPlayer_DeleteLocation(object oPlayer, string sVarName)
 // * sEscape - The escape character to use with the SQL "escape" keyword
 void SQLocalsPlayer_Delete(object oPlayer, int nType = SQLOCALSPLAYER_TYPE_ALL, string sLike = "", string sEscape = "")
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || nType < 0) return;
 
     SQLocalsPlayer_CreateTable(oPlayer);
@@ -553,6 +587,7 @@ void SQLocalsPlayer_Delete(object oPlayer, int nType = SQLOCALSPLAYER_TYPE_ALL, 
 // * sEscape - The escape character to use with the SQL "escape" keyword
 int SQLocalsPlayer_Count(object oPlayer, int nType = SQLOCALSPLAYER_TYPE_ALL, string sLike = "", string sEscape = "")
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || nType < 0) return 0;
 
     SQLocalsPlayer_CreateTable(oPlayer);
@@ -586,6 +621,7 @@ int SQLocalsPlayer_Count(object oPlayer, int nType = SQLOCALSPLAYER_TYPE_ALL, st
 // * nType - The SQLOCALSPLAYER_TYPE_* you wish to check (default: SQLOCALSPLAYER_TYPE_ALL)
 int SQLocalsPlayer_IsSet(object oPlayer, string sVarName, int nType)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || nType < 0) return 0;
 
     SQLocalsPlayer_CreateTable(oPlayer);
@@ -609,6 +645,7 @@ int SQLocalsPlayer_IsSet(object oPlayer, string sVarName, int nType)
 // * nType - The SQLOCALSPLAYER_TYPE_* you wish to check (default: SQLOCALSPLAYER_TYPE_ALL)
 int SQLocalsPlayer_GetLastUpdated_UnixEpoch(object oPlayer, string sVarName, int nType)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || nType <= 0) return 0;
 
     SQLocalsPlayer_CreateTable(oPlayer);
@@ -633,6 +670,7 @@ int SQLocalsPlayer_GetLastUpdated_UnixEpoch(object oPlayer, string sVarName, int
 // * nType - The SQLOCALSPLAYER_TYPE_* you wish to check (default: SQLOCALSPLAYER_TYPE_ALL)
 string SQLocalsPlayer_GetLastUpdated_UTC(object oPlayer, string sVarName, int nType)
 {
+    oPlayer = GetMasterFromPossessedFamiliar(oPlayer);
     if (!GetIsPC(oPlayer) || nType <= 0) return "";
 
     SQLocalsPlayer_CreateTable(oPlayer);

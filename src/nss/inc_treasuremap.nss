@@ -3,6 +3,7 @@
 #include "nwnx_item"
 #include "nw_inc_nui"
 #include "inc_persist"
+#include "inc_prettify"
 
 // Include for treasure maps and various functions for interacting with them.
 
@@ -69,14 +70,15 @@ const int TREASURE_MAP_SEMIBOSS_MULTIPLIER = 10; // 4%
 // Float variable set on area: Probability of a treasure map is multiplied by this value
 const string AREA_TREASURE_MAP_MULTIPLIER = "treasuremap_multiplier";
 
+// Surfaces steeper than this amount become walls even if they weren't before
+const float TREASUREMAP_GRADIENT_BECOMES_WALL = 2.0;
+
 
 /////////////////////
 // External functions
 /////////////////////
 
-// Return a hash of an area's tiles.
-// This should change only when someone messes with tiles or tilelights in the toolset.
-int GetAreaTileHash(object oArea);
+
 
 // Opens a treasure map display for oPC.
 // Displays the given map ID at the given ACR.
@@ -218,7 +220,7 @@ void TreasureMapScanLocation(location lLoc, int nWidth, int nHeight, float fDist
     object oArea = GetAreaFromLocation(lLoc);
     object oModule = GetModule();
     vector vStart = Vector(vPos.x - (fDistPerPoint * IntToFloat(nWidth)/2.0), vPos.y - (fDistPerPoint * IntToFloat(nHeight)/2.0), 0.0);
-    int x, y;
+    int x, y, i;
     for (x=0; x<nWidth; x++)
     {
         for (y=0; y<nHeight; y++)
@@ -232,6 +234,29 @@ void TreasureMapScanLocation(location lLoc, int nWidth, int nHeight, float fDist
             // This method requires mirroring along the y axis to reflect what you see (north facing) ingame
             // This is probably the easiest place to get this done before getting into polygon algorithms
             int y2 = (nHeight-1)-y;
+            
+            float fGradientStep = fDistPerPoint*0.9;
+            
+            // Check for excessive gradient around the point, or it needs to become a wall if it was walkable
+            if (SurfacematMatchesCriteria(nSurfacemat, SURFACEMAT_ABSTRACT_WALKABLE))
+            {
+                float fThisHeight = GetGroundHeight(lScan);
+                for (i=0; i<4; i++)
+                {
+                    float fXOffset = i == 0 ? -fGradientStep : (i == 1 ? fGradientStep : 0.0);
+                    float fYOffset = i == 2 ? -fGradientStep : (i == 3 ? fGradientStep : 0.0);
+                    vector vCheckHeight = vScan + Vector(fXOffset, fYOffset, 0.0);
+                    location lCheck = Location(oArea, vCheckHeight, 0.0);
+                    vCheckHeight = vScan + Vector(fXOffset, fYOffset, GetGroundHeight(lCheck));
+                    lCheck = Location(oArea, vCheckHeight, 0.0);
+                    if (fabs(GetGroundHeight(lCheck) - fThisHeight)/fGradientStep >= TREASUREMAP_GRADIENT_BECOMES_WALL)
+                    {
+                        nSurfacemat = SURFACEMAT_UNDEFINED;
+                        break;
+                    }
+                }
+            }
+            
             SetLocalInt(oModule, "map_" + IntToString(x) + "_" + IntToString(y2), nSurfacemat);
             //WriteTimestampedLogEntry("Scan " + IntToString(x) + ", " +  IntToString(y2) + " = " + IntToString(nSurfacemat));;
         }
@@ -1588,20 +1613,6 @@ void UseTreasureMap(object oMap)
     DisplayTreasureMapUI(GetItemPossessor(oMap), nPuzzleID, nACR, oMap);
 }
 
-int GetAreaTileHash(object oArea)
-{
-    int nRet = GetLocalInt(oArea, "tilehash");
-    if (nRet == 0)
-    {
-        json jArea = ObjectToJson(oArea);
-        json jTiles = JsonPointer(jArea, "/ARE/value/Tile_List");
-        //WriteTimestampedLogEntry(JsonDump(jTiles));
-        nRet = NWNX_Util_Hash(JsonDump(jTiles));
-        SetLocalInt(oArea, "tilehash", nRet);
-    }
-    return nRet;
-}
-
 location GetPuzzleSolutionLocation(int nPuzzleID)
 {
     if (nPuzzleID > 0)
@@ -1659,11 +1670,8 @@ int RollForTreasureMap(object oSource=OBJECT_SELF)
     }
     else
     {
-        // Don't make maps for objects whose CR is less than the area's set CR
-        // this is usually going to be low level containers like barrels
-        int nAreaCR = GetLocalInt(oArea, "area_cr");
-        int nThisCR = GetLocalInt(oSource, "area_cr");
-        if (nThisCR < nAreaCR && nAreaCR > 0)
+        // Not from low treasures
+        if (GetLocalString(oSource, "treasure") == "low")
         {
             return 0;
         }
