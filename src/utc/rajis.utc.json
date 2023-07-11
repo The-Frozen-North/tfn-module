@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 130
+    "value": 286
   },
   "BodyBag": {
     "type": "byte",
@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 6.0
+    "value": 7.0
   },
   "ClassList": {
     "type": "list",
@@ -23,11 +23,11 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 0
+          "value": 4
         },
         "ClassLevel": {
           "type": "short",
-          "value": 6
+          "value": 7
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 15
+    "value": 16
   },
   "Conversation": {
     "type": "resref",
@@ -50,7 +50,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 72
+    "value": 70
   },
   "DecayTime": {
     "type": "dword",
@@ -63,11 +63,13 @@
   "Description": {
     "id": 12667,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Devout worshipers of evil, pureblooded Yuan-ti often appear human at first glance. It is only when they draw close that their snake-like features can be seen."
+    }
   },
   "Dex": {
     "type": "byte",
-    "value": 15
+    "value": 16
   },
   "Disarmable": {
     "type": "byte",
@@ -80,14 +82,14 @@
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_aarcl006"
+          "value": "nw_maarcl035"
         }
       },
       {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wdbmax002"
+          "value": "nw_wdbmsw002"
         }
       },
       {
@@ -102,6 +104,13 @@
         "EquippedRes": {
           "type": "resref",
           "value": "nw_it_crewpsp026"
+        }
+      },
+      {
+        "__struct_id": 131072,
+        "EquippedRes": {
+          "type": "resref",
+          "value": "nw_it_creitem044"
         }
       }
     ]
@@ -138,27 +147,6 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 194
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 293
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 326
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
           "value": 32
         }
       },
@@ -173,14 +161,7 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 195
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 251
+          "value": 127
         }
       },
       {
@@ -217,7 +198,7 @@
     "id": 12671,
     "type": "cexolocstring",
     "value": {
-      "0": "Lizardfolk Warrior"
+      "0": "Rajis"
     }
   },
   "fortbonus": {
@@ -230,11 +211,11 @@
   },
   "GoodEvil": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "HitPoints": {
     "type": "short",
-    "value": 72
+    "value": 70
   },
   "Int": {
     "type": "byte",
@@ -266,11 +247,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 84
+    "value": 91
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 3
+    "value": 2
   },
   "NoPermDeath": {
     "type": "byte",
@@ -278,7 +259,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 17
+    "value": 1
   },
   "PerceptionRange": {
     "type": "byte",
@@ -294,7 +275,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 265
+    "value": 349
   },
   "Race": {
     "type": "byte",
@@ -384,7 +365,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 11
         }
       },
       {
@@ -405,28 +386,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
+          "value": 11
         }
       },
       {
@@ -482,7 +442,28 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 9
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 11
         }
       },
       {
@@ -559,7 +540,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 60
+    "value": 108
   },
   "SpecAbilityList": {
     "type": "list",
@@ -567,11 +548,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 0
+    "value": 4
   },
   "Str": {
     "type": "byte",
-    "value": 15
+    "value": 16
   },
   "Subrace": {
     "type": "cexostring",
@@ -591,7 +572,42 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "lizard_warrior"
+    "value": "rajis"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "boss"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "defeated_webhook"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
