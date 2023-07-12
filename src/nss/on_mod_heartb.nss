@@ -238,12 +238,6 @@ void main()
 
     string sBounties = GetLocalString(oModule, "bounties");
 
-    if (GetIsObjectValid(oPC))
-    {
-        int nTickCount = GetTickRate();
-        if (nTickCount <= 50) SendDebugMessage("Low tick count detected: "+IntToString(nTickCount), TRUE);
-    }
-
     int nTime = SQLite_GetTimeStamp();
 
     while(GetIsObjectValid(oPC))
@@ -251,6 +245,12 @@ void main()
         DoRevive(oPC);
         DetermineHorseEffects(oPC);
         RefreshCompletedBounties(oPC, nTime, sBounties);
+
+        int nTickCount = GetTickRate();
+        if (nTickCount <= 50) SendDebugMessage("Low tick count detected: "+IntToString(nTickCount), TRUE);
+
+        if (!GetIsInCombat(oPC))
+            DeleteLocalString(oPC, "trap_triggered");
 
         AddRestedXPHeartbeat(oPC);
 

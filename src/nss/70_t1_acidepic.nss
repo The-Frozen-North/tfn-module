@@ -12,6 +12,7 @@
 //:://////////////////////////////////////////////
 
 #include "nw_i0_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -32,5 +33,6 @@ void main()
         ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, RoundsToSeconds(5));
     }
 
-    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_ACID_S), oTarget);
+    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_ACID_L, FALSE, TRAP_VFX_SIZE_EPIC), oTarget);
+    SetTrapTriggeredOnCreature(oTarget, "epic acid blob trap");
 }

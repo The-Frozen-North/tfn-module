@@ -304,13 +304,19 @@ void DeathWebhook(object oPC, object oKiller, int bPetrified = FALSE)
 
     string sName = GetName(oKiller);
 
-    if (GetObjectType(oKiller) == OBJECT_TYPE_TRIGGER)
+    if (sName == "")
     {
-       sName = "a trap";
-    }
-    else if (sName == "")
-    {
-       sName = "an unknown object";
+       string sTrap = GetLocalString(oPC, "trap_triggered");
+       if (sTrap != "")
+       {
+          sName = "a "+sTrap;
+          //stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/po_plc_t07_m.png";
+          stMessage.sThumbnailURL = "https://nwn.sfo2.digitaloceanspaces.com/portrait/po_plc_piratex_m.png";
+       }
+       else
+       {
+          sName = "an unknown object";
+       }
     }
     else
     {

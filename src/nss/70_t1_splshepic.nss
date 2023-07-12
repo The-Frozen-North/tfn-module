@@ -12,6 +12,7 @@
 //:://////////////////////////////////////////////
 
 #include "70_inc_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -29,5 +30,6 @@ void main()
         ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(nDamage, DAMAGE_TYPE_ACID), oTarget);
     }
 
-    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_ACID_S), oTarget);
+    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_ACID_S, FALSE, TRAP_VFX_SIZE_EPIC), oTarget);
+    SetTrapTriggeredOnCreature(oTarget, "epic acid splash trap");
 }

@@ -12,6 +12,7 @@
 //:://////////////////////////////////////////////
 
 #include "70_inc_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -29,5 +30,6 @@ void main()
          ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(nDamage, DAMAGE_TYPE_PIERCING), oTarget);
     }
 
-    ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_SPIKE_TRAP), GetLocation(oTarget));
+    ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_SPIKE_TRAP, FALSE, TRAP_VFX_SIZE_EPIC), GetLocation(oTarget));
+    SetTrapTriggeredOnCreature(oTarget, "epic spike trap");
 }

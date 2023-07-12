@@ -12,6 +12,7 @@
 //:://////////////////////////////////////////////
 
 #include "70_inc_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -34,5 +35,6 @@ void main()
         ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(d4(20), DAMAGE_TYPE_DIVINE), oTarget);
     }
     //Apply VFX Impact
-    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_SUNSTRIKE), oTarget);
+    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_SUNSTRIKE, FALSE, TRAP_VFX_SIZE_EPIC), oTarget);
+    SetTrapTriggeredOnCreature(oTarget, "epic holy trap");
 }

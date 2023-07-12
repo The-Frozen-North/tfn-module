@@ -14,6 +14,7 @@
 
 #include "70_inc_spells"
 #include "nw_i0_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -27,7 +28,7 @@ void main()
     effect eNeg = EffectNegativeLevel(1);
     effect eDam = EffectDamage(d6(8), DAMAGE_TYPE_NEGATIVE);
     eNeg = SupernaturalEffect(eNeg);
-    effect eVis = EffectVisualEffect(VFX_IMP_REDUCE_ABILITY_SCORE);
+    effect eVis = EffectVisualEffect(VFX_IMP_REDUCE_ABILITY_SCORE, FALSE, TRAP_VFX_SIZE_DEADLY);
 
     // Undead are healed by Negative Energy.
     if(spellsIsRacialType(oTarget, RACIAL_TYPE_UNDEAD))
@@ -47,5 +48,6 @@ void main()
         //Apply the VFX impact and effects
         ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam, oTarget);
         ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
+        SetTrapTriggeredOnCreature(oTarget, "deadly negative energy trap");
     }
 }

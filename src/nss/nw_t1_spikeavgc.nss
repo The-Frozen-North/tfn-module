@@ -18,6 +18,7 @@ Patch 1.70
 */
 
 #include "70_inc_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -34,7 +35,8 @@ void main()
     {
         effect eDam = EffectDamage(nRealDamage, DAMAGE_TYPE_PIERCING);
         ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam, oTarget);
+        SetTrapTriggeredOnCreature(oTarget, "average spike trap");
     }
-    effect eVis = EffectVisualEffect(VFX_IMP_SPIKE_TRAP);
+    effect eVis = EffectVisualEffect(VFX_IMP_SPIKE_TRAP, FALSE, TRAP_VFX_SIZE_AVERAGE);
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eVis, GetLocation(oTarget));
 }

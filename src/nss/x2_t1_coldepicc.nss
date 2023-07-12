@@ -14,6 +14,7 @@
 //:://////////////////////////////////////////////
 
 #include "nw_i0_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -26,7 +27,7 @@ void main()
     object oTarget = GetEnteringObject();
     effect eDam = EffectDamage(d4(40), DAMAGE_TYPE_COLD);
     effect eParal = EffectParalyze();
-    effect eVis = EffectVisualEffect(VFX_IMP_FROST_S);
+    effect eVis = EffectVisualEffect(VFX_IMP_FROST_S, FALSE, TRAP_VFX_SIZE_EPIC);
     effect eFreeze = EffectVisualEffect(VFX_DUR_BLUR);
     effect eLink = EffectLinkEffects(eParal, eFreeze);
     if(!MySavingThrow(SAVING_THROW_FORT,oTarget, 30, SAVING_THROW_TYPE_COLD))
@@ -35,4 +36,5 @@ void main()
     }
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam, oTarget);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
+    SetTrapTriggeredOnCreature(oTarget, "epic frost trap");
 }

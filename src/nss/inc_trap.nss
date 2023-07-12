@@ -15,6 +15,12 @@ const int TRAP_SONIC_WEIGHT = 8;
 const int TRAP_SPIKE_WEIGHT = 30;
 const int TRAP_TANGLE_WEIGHT = 6;
 
+const float TRAP_VFX_SIZE_MINOR = 0.8;
+const float TRAP_VFX_SIZE_AVERAGE = 1.0;
+const float TRAP_VFX_SIZE_STRONG = 1.2;
+const float TRAP_VFX_SIZE_DEADLY = 1.4;
+const float TRAP_VFX_SIZE_EPIC = 1.6;
+
 // Determine a random trap based on CR.
 int DetermineTrap(int iCR = 0);
 
@@ -219,6 +225,15 @@ void GenerateTrapOnObject(object oObject = OBJECT_SELF)
        CreateTrapOnObject(DetermineTrap(iCR), oObject, STANDARD_FACTION_HOSTILE, "on_trap_disarm");
        TrapLogic(oObject);
    }
+}
+
+// Tag a player that has triggered a trap. There is a bug where we cannot detect the last damager/killer for players, so check for a local
+void SetTrapTriggeredOnCreature(object oCreature, string sTrapName = "trap");
+void SetTrapTriggeredOnCreature(object oCreature, string sTrapName = "trap")
+{
+     SetLocalString(oCreature, "trap_triggered", sTrapName); 
+
+     AssignCommand(oCreature, DelayCommand(0.2, DeleteLocalString(oCreature, "trap_triggered")));
 }
 
 //void main(){}

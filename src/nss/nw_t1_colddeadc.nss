@@ -13,6 +13,7 @@
 //:: Created On: Nov 16th , 2001
 //:://////////////////////////////////////////////
 #include "nw_i0_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -25,7 +26,7 @@ void main()
     object oTarget = GetEnteringObject();
     effect eDam = EffectDamage(d4(8), DAMAGE_TYPE_COLD);
     effect eParal = EffectParalyze();
-    effect eVis = EffectVisualEffect(VFX_IMP_FROST_S);
+    effect eVis = EffectVisualEffect(VFX_IMP_FROST_S, FALSE, TRAP_VFX_SIZE_DEADLY);
     effect eFreeze = EffectVisualEffect(VFX_DUR_BLUR);
     effect eLink = EffectLinkEffects(eParal, eFreeze);
 
@@ -36,5 +37,6 @@ void main()
 
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam, oTarget);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
+    SetTrapTriggeredOnCreature(oTarget, "deadly frost trap");
 }
 

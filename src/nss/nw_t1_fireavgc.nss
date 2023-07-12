@@ -17,6 +17,7 @@ Patch 1.70
 */
 
 #include "70_inc_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -30,7 +31,7 @@ void main()
     object oTarget = GetEnteringObject();
     location lTarget = GetLocation(oTarget);
     int nDamage;
-    effect eVis = EffectVisualEffect(VFX_IMP_FLAME_M);
+    effect eVis = EffectVisualEffect(VFX_IMP_FLAME_M, FALSE, TRAP_VFX_SIZE_AVERAGE);
     effect eDam;
     int nSaveDC = 20;
 
@@ -52,6 +53,7 @@ void main()
                 eDam = EffectDamage(nDamage, DAMAGE_TYPE_FIRE);
                 ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
                 DelayCommand(0.0, ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam, oTarget));
+                SetTrapTriggeredOnCreature(oTarget, "average fire trap");
             }
             //Get next target in shape
         }

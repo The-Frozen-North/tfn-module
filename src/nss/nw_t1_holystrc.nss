@@ -13,6 +13,7 @@
 //:://////////////////////////////////////////////
 
 #include "70_inc_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -27,7 +28,7 @@ void main()
     //Make attack roll
     int nRoll = d20() + 10 + 6;
     effect eDam = EffectDamage(d10(8), DAMAGE_TYPE_DIVINE);
-    effect eVis = EffectVisualEffect(VFX_IMP_SUNSTRIKE);
+    effect eVis = EffectVisualEffect(VFX_IMP_SUNSTRIKE, FALSE, TRAP_VFX_SIZE_STRONG);
     if (nRoll > 0)
     {
         if (spellsIsRacialType(oTarget, RACIAL_TYPE_UNDEAD))
@@ -42,6 +43,7 @@ void main()
             //Apply Holy Damage
             ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam, oTarget);
             ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
+            SetTrapTriggeredOnCreature(oTarget, "strong holy trap");
         }
     }
 }

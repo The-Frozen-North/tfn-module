@@ -13,6 +13,7 @@
 //:: Created On: Nov 16th , 2001
 //:://////////////////////////////////////////////
 #include "nw_i0_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -25,12 +26,13 @@ void main()
     object oTarget = GetEnteringObject();
     int nDamage = d8(8);
     effect eDam;
-    effect eVis = EffectVisualEffect(VFX_IMP_ACID_S);
+    effect eVis = EffectVisualEffect(VFX_IMP_ACID_S, FALSE, TRAP_VFX_SIZE_DEADLY);
 
     nDamage = GetReflexAdjustedDamage(nDamage, oTarget, 20, SAVING_THROW_TYPE_TRAP);
 
     eDam = EffectDamage(nDamage, DAMAGE_TYPE_ACID);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam, oTarget);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
+    SetTrapTriggeredOnCreature(oTarget, "deadly acid splash trap");
 }
 

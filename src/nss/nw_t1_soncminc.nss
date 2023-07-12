@@ -16,6 +16,7 @@ Patch 1.70
 */
 
 #include "nw_i0_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -28,7 +29,7 @@ void main()
     object oTarget = GetEnteringObject();
     location lTarget = GetLocation(oTarget);
     effect eStun = EffectStunned();
-    effect eFNF = EffectVisualEffect(VFX_FNF_SOUND_BURST);
+    effect eFNF = EffectVisualEffect(VFX_FNF_SOUND_BURST, FALSE, TRAP_VFX_SIZE_MINOR);
     effect eMind = EffectVisualEffect(VFX_DUR_MIND_AFFECTING_DISABLED);
     effect eLink = EffectLinkEffects(eStun, eMind);
     effect eDam;
@@ -48,6 +49,7 @@ void main()
             {
                 ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, RoundsToSeconds(2));
             }
+            SetTrapTriggeredOnCreature(oTarget, "minor sonic trap");
         }
         oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM, lTarget);
     }

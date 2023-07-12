@@ -28,6 +28,7 @@ the first target
 */
 
 #include "70_inc_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -40,9 +41,9 @@ void main()
     int nSaveDC = 22;
     int nSecondary = 4;
     object oTarget = GetEnteringObject();
-    effect eLightning = EffectBeam(VFX_BEAM_LIGHTNING, oTarget, BODY_NODE_CHEST);
+    effect eLightning = EffectBeam(VFX_BEAM_LIGHTNING, oTarget, BODY_NODE_CHEST, FALSE, TRAP_VFX_SIZE_AVERAGE);
     effect eDam;
-    effect eVis = EffectVisualEffect(VFX_IMP_LIGHTNING_S);
+    effect eVis = EffectVisualEffect(VFX_IMP_LIGHTNING_S, FALSE, TRAP_VFX_SIZE_AVERAGE);
     location lTarget = GetLocation(oTarget);
     int nCount = 0;
     //Adjust the trap damage based on the feats of the target
@@ -53,6 +54,7 @@ void main()
         eDam = EffectDamage(nDamage, DAMAGE_TYPE_ELECTRICAL);
         DelayCommand(0.0, ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam, oTarget));
         ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
+        SetTrapTriggeredOnCreature(oTarget, "average electrical trap");
     }
 
     object o2ndTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_LARGE, lTarget);
@@ -71,6 +73,7 @@ void main()
                 //Apply the VFX impact and damage effect
                 DelayCommand(0.0, ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam, o2ndTarget));
                 ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, o2ndTarget);
+                SetTrapTriggeredOnCreature(o2ndTarget, "average electrical trap");
             }
 
             //Connect the lightning stream from one target to another.

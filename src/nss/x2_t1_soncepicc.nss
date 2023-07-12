@@ -11,6 +11,7 @@
 //:://////////////////////////////////////////////
 
 #include "nw_i0_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -25,7 +26,7 @@ void main()
     int nDamage;
     effect eDam;
     effect eStun = EffectStunned();
-    effect eFNF = EffectVisualEffect(VFX_FNF_SOUND_BURST);
+    effect eFNF = EffectVisualEffect(VFX_FNF_SOUND_BURST, FALSE, TRAP_VFX_SIZE_EPIC);
     effect eMind = EffectVisualEffect(VFX_DUR_MIND_AFFECTING_DISABLED);
     effect eLink = EffectLinkEffects(eStun, eMind);
     //effect eDam;
@@ -49,6 +50,7 @@ void main()
             //Apply the VFX impact and damage effect
             DelayCommand(0.0, ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam,oTarget));
             //Get the next target in the spell area
+            SetTrapTriggeredOnCreature(oTarget, "epic sonic trap");
         }
         oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_MEDIUM,lTarget);
     }

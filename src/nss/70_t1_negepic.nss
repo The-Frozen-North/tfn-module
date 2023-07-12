@@ -14,6 +14,7 @@ undeads are healed for 20d6 hitpoints
 
 #include "70_inc_spells"
 #include "nw_i0_spells"
+#include "inc_trap"
 
 void main()
 {
@@ -42,6 +43,7 @@ void main()
         }
         //Apply the VFX impact and effects
         ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDamage(d6(35), DAMAGE_TYPE_NEGATIVE), oTarget);
-        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_REDUCE_ABILITY_SCORE), oTarget);
+        ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_REDUCE_ABILITY_SCORE, FALSE, TRAP_VFX_SIZE_EPIC), oTarget);
+        SetTrapTriggeredOnCreature(oTarget, "epic negative energy trap");
     }
 }
