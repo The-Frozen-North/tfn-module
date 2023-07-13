@@ -79,6 +79,7 @@ void main()
     {
         if (spellsIsTarget(oTarget, spell.TargetType, spell.Caster))
         {
+            spell.SavingThrow = SAVING_THROW_REFLEX;
             SignalEvent(oTarget, EventSpellCastAt(spell.Caster, spell.Id));
 
             //------------------------------------------------------------------
@@ -118,6 +119,7 @@ void main()
                 //--------------------------------------------------------------
                 if (nDamage > 0 && (nDamage == nPotential || GetHasFeat(FEAT_IMPROVED_EVASION,oTarget)))
                 {
+                    spell.SavingThrow = SAVING_THROW_WILL;
                     if(!MySavingThrow(spell.SavingThrow, oTarget, spell.DC, SAVING_THROW_TYPE_MIND_SPELLS, spell.Caster, fDelay))
                     {
                         DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_TEMPORARY,eStun,oTarget, RoundsToSeconds(1)));

@@ -425,10 +425,13 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "", float fWeightExpon
     else if (sType == "Scrolls") { fWeightExponent += SCROLL_CONSUMABLE_QUALITY_MODIFIER; }
 
     fT1Weight = pow(fT1Weight, fWeightExponent);
-    fT2Weight = pow(fT2Weight, fWeightExponent);
-    fT3Weight = pow(fT3Weight, fWeightExponent);
-    fT4Weight = pow(fT4Weight, fWeightExponent);
-    fT5Weight = pow(fT5Weight, fWeightExponent);
+    // Don't raise these to a power if they were zero to start with
+    // If the exponent is also zero, then 0.0^0.0 = 1
+    // and items that aren't supposed to be possible at low ACR suddenly become possible!
+    if (fT2Weight > 0.0) { fT2Weight = pow(fT2Weight, fWeightExponent); }
+    if (fT3Weight > 0.0) { fT3Weight = pow(fT3Weight, fWeightExponent); }
+    if (fT4Weight > 0.0) { fT4Weight = pow(fT4Weight, fWeightExponent); }
+    if (fT5Weight > 0.0) { fT5Weight = pow(fT5Weight, fWeightExponent); }
 
     int nT1Weight = FloatToInt(fT1Weight * 1000.0);
     int nT2Weight = FloatToInt(fT2Weight * 1000.0);

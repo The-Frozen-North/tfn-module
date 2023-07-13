@@ -20,10 +20,14 @@ void main()
 
     SetLocalInt(OBJECT_SELF, "times_died", GetLocalInt(OBJECT_SELF, "times_died")+1);
 
-    string sText = "*Your henchman has died*";
+    string sText = "*" + GetName(OBJECT_SELF) + " has died*";
 
     if (!IsCreatureRevivable(OBJECT_SELF))
-        sText = "*Your henchman has died, and can only be revived by Raise Dead*";
+    {
+        sText = "*" + GetName(OBJECT_SELF) + " has died, and can only be revived by Raise Dead*";
+        // Allow selecting henchmen to cast raise dead on them
+        SetIsDestroyable(TRUE, TRUE, TRUE);
+    }
 
 
     FloatingTextStringOnCreature(sText, GetMaster(OBJECT_SELF), FALSE);
