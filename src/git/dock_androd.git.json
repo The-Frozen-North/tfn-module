@@ -55743,7 +55743,7 @@
         },
         "Bearing": {
           "type": "float",
-          "value": -0.8099
+          "value": 2.4544
         },
         "BodyBag": {
           "type": "byte",
@@ -55755,7 +55755,7 @@
         },
         "Conversation": {
           "type": "resref",
-          "value": ""
+          "value": "document"
         },
         "CurrentHP": {
           "type": "short",
@@ -55763,7 +55763,9 @@
         },
         "Description": {
           "type": "cexolocstring",
-          "value": {}
+          "value": {
+            "0": "This is a sealed document."
+          }
         },
         "DisarmDC": {
           "type": "byte",
@@ -55812,7 +55814,7 @@
         "LocName": {
           "type": "cexolocstring",
           "value": {
-            "0": "Scroll"
+            "0": "Document"
           }
         },
         "OnClick": {
@@ -55869,7 +55871,7 @@
         },
         "OnUsed": {
           "type": "resref",
-          "value": ""
+          "value": "converse"
         },
         "OnUserDefined": {
           "type": "resref",
@@ -55893,7 +55895,7 @@
         },
         "Static": {
           "type": "byte",
-          "value": 1
+          "value": 0
         },
         "Tag": {
           "type": "cexostring",
@@ -55933,7 +55935,72 @@
         },
         "Useable": {
           "type": "byte",
-          "value": 0
+          "value": 1
+        },
+        "VarTable": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest1"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "02_q_tomi"
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest1_reward_xp_level"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 3
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest1_reward_xp_tier"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 1
+              },
+              "Value": {
+                "type": "int",
+                "value": 2
+              }
+            },
+            {
+              "__struct_id": 0,
+              "Name": {
+                "type": "cexostring",
+                "value": "quest1_reward_item"
+              },
+              "Type": {
+                "type": "dword",
+                "value": 3
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "tomi_reward1"
+              }
+            }
+          ]
         },
         "Will": {
           "type": "byte",

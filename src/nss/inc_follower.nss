@@ -103,7 +103,7 @@ int CheckFollowerMaster(object oFollower, object oPlayer)
 void SetFollowerMaster(object oFollower, object oPlayer);
 void SetFollowerMaster(object oFollower, object oPlayer)
 {
-    if (GetLocalInt(oFollower, "follower") != 1) return;
+    // if (GetLocalInt(oFollower, "follower") != 1) return;
 
     SetTag(oFollower, "follower");
 
@@ -113,6 +113,7 @@ void SetFollowerMaster(object oFollower, object oPlayer)
     if (!GetIsPC(oPlayer)) return;
 
     SetLocalString(oFollower, "master", GetObjectUUID(oPlayer));
+    SetLocalString(oFollower, "heartbeat_script", "fol_heartb");
 
     AddHenchman(oPlayer, oFollower);
     AssignHenchmanScripts(oFollower);
@@ -128,6 +129,7 @@ void DismissFollower(object oFollower)
     SetCombatCondition(X0_COMBAT_FLAG_RANGED, FALSE, oFollower);
     SetAssociateState(NW_ASC_USE_RANGED_WEAPON, FALSE, oFollower);
     SetAssociateState(NW_ASC_DISTANCE_2_METERS, FALSE, oFollower);
+    DeleteLocalString(oFollower, "heartbeat_script");
 
     RemoveHenchman(GetMaster(oFollower), oFollower);
 

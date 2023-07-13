@@ -734,6 +734,10 @@ void main()
    // and without being put in the quests list they aren't loaded into PC journals on join
    SetLocalString(OBJECT_SELF, "quests", AddListItem(GetLocalString(OBJECT_SELF, "quests"), "q_cockatrice_fbasilisk", TRUE));
    SetLocalString(OBJECT_SELF, "quests", AddListItem(GetLocalString(OBJECT_SELF, "quests"), "q_cockatrice_fgorgon", TRUE));
+   SetLocalString(OBJECT_SELF, "quests", AddListItem(GetLocalString(OBJECT_SELF, "quests"), "q_daelan", TRUE));
+   SetLocalString(OBJECT_SELF, "quests", AddListItem(GetLocalString(OBJECT_SELF, "quests"), "q_linu", TRUE));
+   SetLocalString(OBJECT_SELF, "quests", AddListItem(GetLocalString(OBJECT_SELF, "quests"), "q_sharwyn", TRUE));
+   SetLocalString(OBJECT_SELF, "quests", AddListItem(GetLocalString(OBJECT_SELF, "quests"), "q_tomi", TRUE));
 
    string sQuests = GetLocalString(OBJECT_SELF, "quests");
    string sBounties = GetLocalString(OBJECT_SELF, "bounties");
