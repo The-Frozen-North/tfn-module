@@ -29,6 +29,11 @@ void main()
 
     effect eLink = CreateDoomEffectsLink();
     eLink = SupernaturalEffect(eLink);
+    
+    if (GetLocalInt(OBJECT_SELF, "doomaura" + ObjectToString(oTarget)))
+    {
+        return;
+    }
 
     if(spellsIsTarget(oTarget, SPELL_TARGET_SELECTIVEHOSTILE, oCreator))
     {
@@ -40,5 +45,6 @@ void main()
             ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
             ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, TurnsToSeconds(nDuration));
         }
+        SetLocalInt(OBJECT_SELF, "doomaura" + ObjectToString(oTarget), 1);
     }
 }

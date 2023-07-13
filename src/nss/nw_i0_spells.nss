@@ -233,15 +233,15 @@ void DoSpellBreach(object oTarget, int nTotal, int nSR, int nSpellId = -1)
         }
         if(nIdx > 0)//1.72: breach spells now prints feedback which spells were breached
         {
-            sFeedback = "<c?w?>"+GetStringByStrRef(StringToInt(Get2DAString("spells","Name",nSpellId)))+"</c> : ";
+            sFeedback = "<c\xccw\xfe>"+GetStringByStrRef(StringToInt(Get2DAString("spells","Name",nSpellId)))+"</c> : ";
             sSpellsRemoved = GetStringLeft(sSpellsRemoved,GetStringLength(sSpellsRemoved)-2)+"</c>";
             if(OBJECT_SELF != oTarget && GetIsPC(OBJECT_SELF))
             {
-                SendMessageToPC(OBJECT_SELF,sFeedback+"<c??>"+GetName(oTarget)+"</c> : <c?w?>"+sSpellsRemoved);
+                SendMessageToPC(OBJECT_SELF,sFeedback+"<\xcc\x99\xcc>"+GetName(oTarget)+"</c> : <c\x63w\x77>"+sSpellsRemoved);
             }
             if(GetIsPC(oTarget))
             {
-                SendMessageToPC(oTarget,sFeedback+"<c???>"+GetName(oTarget)+"</c> : <c?w?>"+sSpellsRemoved);
+                SendMessageToPC(oTarget,sFeedback+"<c\x9b\xfe\xfe>"+GetName(oTarget)+"</c> : <c\xccw\xfe>"+sSpellsRemoved);
             }
         }
         effect eLink = EffectLinkEffects(eDur, eSR);
@@ -546,7 +546,7 @@ int bDFBorGlyph = spell.Id == SPELL_DELAYED_BLAST_FIREBALL || spell.Id == SPELL_
  string sFeedback = GetStringByStrRef(8342);//this will work pretty well for singleplayer
  sFeedback = GetStringLeft(sFeedback,GetStringLength(sFeedback)-10);//but if would someone with non-english language
  sFeedback = GetStringRight(sFeedback,GetStringLength(sFeedback)-10);//played english server, then this immunity
- sFeedback = "<c???>"+GetName(oTarget)+"</c> <c??>"+sFeedback+" "+GetStringByStrRef(8344)+"</c>";//feedback will be
+ sFeedback = "<c\x9b\xfe\xfe>"+GetName(oTarget)+"</c> <c\xcd\x7f\xfe>"+sFeedback+" "+GetStringByStrRef(8344)+"</c>";//feedback will be
  SendMessageToPC(oTarget,sFeedback);//in english, while normally it would be in his language...
  SendMessageToPC(oCaster,sFeedback);
  DelayCommand(fDelay,ApplyEffectToObject(DURATION_TYPE_INSTANT,EffectVisualEffect(VFX_IMP_GLOBE_USE),oTarget));
@@ -601,7 +601,7 @@ effect eWorkaround;
   string sFeedback = GetStringByStrRef(8342);
   sFeedback = GetStringLeft(sFeedback,GetStringLength(sFeedback)-10);
   sFeedback = GetStringRight(sFeedback,GetStringLength(sFeedback)-10);
-  sFeedback = "<c???>"+GetName(oTarget)+"</c> <c??>"+sFeedback+" "+GetStringByStrRef(nResisted == 1 ? 8343 : 5353)+"</c>";
+  sFeedback = "<c\x9b\xfe\xfe>"+GetName(oTarget)+"</c> <c\xcd\x7f\xfe>"+sFeedback+" "+GetStringByStrRef(nResisted == 1 ? 8343 : 5353)+"</c>";
   SendMessageToPC(oTarget,sFeedback);
   SendMessageToPC(oCaster,sFeedback);
   }
