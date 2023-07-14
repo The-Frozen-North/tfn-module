@@ -1,14 +1,8 @@
 // #include "inc_ai_combat"
+#include "x0_i0_position"
 
 void main()
 {
-    if (GetLocalInt(OBJECT_SELF, "reload") == 1)
-    {
-        ActionPlayAnimation(ANIMATION_PLACEABLE_ACTIVATE);
-        DeleteLocalInt(OBJECT_SELF, "reload");
-        return;
-    }
-
     float fRadius = 40.0;
 
     location lLocation = GetLocation(OBJECT_SELF);
@@ -40,6 +34,17 @@ void main()
         oCreature = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation);
     }
 
+    SetFacingPoint(GetPosition(oTarget));
+// Ballistas face the wrong way, so turn them
+    SetFacing(GetNormalizedDirection(GetFacing(OBJECT_SELF) - 90.0));
+
+    if (GetLocalInt(OBJECT_SELF, "reload") == 1)
+    {
+        ActionPlayAnimation(ANIMATION_PLACEABLE_ACTIVATE);
+        DeleteLocalInt(OBJECT_SELF, "reload");
+        return;
+    }    
+
 // if they don't have a target, do nothing
     if (!GetIsObjectValid(oTarget)) return;
 
@@ -48,10 +53,8 @@ void main()
 
     SetLocalInt(OBJECT_SELF, "reload", 1);
 
-    //TurnToFaceObject(OBJECT_SELF, oTarget);
-
 // x2_p1_ballista2
     ActionCastSpellAtObject(794, oTarget, METAMAGIC_ANY, TRUE, 0, PROJECTILE_PATH_TYPE_BALLISTIC);
     PlaySound("cb_sh_catapult");
-    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_SMOKE_PUFF), OBJECT_SELF);
+    //ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_FNF_SMOKE_PUFF), OBJECT_SELF);
 }
