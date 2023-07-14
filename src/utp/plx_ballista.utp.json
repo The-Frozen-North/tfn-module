@@ -2,11 +2,11 @@
   "__data_type": "UTP ",
   "AnimationState": {
     "type": "byte",
-    "value": 0
+    "value": 4
   },
   "Appearance": {
     "type": "dword",
-    "value": 463
+    "value": 819
   },
   "AutoRemoveKey": {
     "type": "byte",
@@ -22,7 +22,7 @@
   },
   "Comment": {
     "type": "cexostring",
-    "value": "Sphinx Statue"
+    "value": ""
   },
   "Conversation": {
     "type": "resref",
@@ -30,13 +30,13 @@
   },
   "CurrentHP": {
     "type": "short",
-    "value": 5
+    "value": 20
   },
   "Description": {
-    "id": 84582,
+    "id": 14552,
     "type": "cexolocstring",
     "value": {
-      "0": "These fragile, small wooden barrels appears to be filled with highly volatile gun powder.\n\nDamage would likely cause these barrels to instantly combust, wreaking devastation in the immediate area."
+      "0": "A heavy javelin sits in its groove, notched against the ballista's taut-drawn wire. You can imagine how a well-aimed shot might have the power to fell a dragon from the sky."
     }
   },
   "DisarmDC": {
@@ -45,7 +45,7 @@
   },
   "Faction": {
     "type": "dword",
-    "value": 1
+    "value": 39
   },
   "Fort": {
     "type": "byte",
@@ -53,7 +53,7 @@
   },
   "Hardness": {
     "type": "byte",
-    "value": 1
+    "value": 5
   },
   "HasInventory": {
     "type": "byte",
@@ -61,7 +61,7 @@
   },
   "HP": {
     "type": "short",
-    "value": 5
+    "value": 20
   },
   "Interruptable": {
     "type": "byte",
@@ -84,10 +84,10 @@
     "value": 0
   },
   "LocName": {
-    "id": 84567,
+    "id": 111342,
     "type": "cexolocstring",
     "value": {
-      "0": "Gunpowder Keg"
+      "0": "Animated Ballista"
     }
   },
   "OnClick": {
@@ -100,11 +100,11 @@
   },
   "OnDamaged": {
     "type": "resref",
-    "value": "plx_powder_ondmg"
+    "value": ""
   },
   "OnDeath": {
     "type": "resref",
-    "value": "plx_powder_ondth"
+    "value": ""
   },
   "OnDisarm": {
     "type": "resref",
@@ -112,7 +112,7 @@
   },
   "OnHeartbeat": {
     "type": "resref",
-    "value": ""
+    "value": "ballista_hb"
   },
   "OnInvDisturbed": {
     "type": "resref",
@@ -156,7 +156,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 6
+    "value": 8
   },
   "Plot": {
     "type": "byte",
@@ -164,7 +164,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 999
+    "value": 0
   },
   "Ref": {
     "type": "byte",
@@ -176,11 +176,11 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "gunpowder_keg"
+    "value": "tm_pl_ballista1"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "plx_gunpowderkeg"
+    "value": "plx_ballista"
   },
   "TrapDetectable": {
     "type": "byte",
