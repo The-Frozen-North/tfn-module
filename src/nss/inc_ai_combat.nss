@@ -106,6 +106,40 @@ void FastBuff(int bInstant = TRUE)
     BuffIfNotBuffed(SPELL_FOXS_CUNNING, bInstant);
     BuffIfNotBuffed(SPELL_ENDURANCE, bInstant);
     BuffIfNotBuffed(SPELL_CATS_GRACE, bInstant);
+    
+    if (GetLevelByClass(CLASS_TYPE_CLERIC))
+    {
+        if (GetHasFeat(FEAT_TRICKERY_DOMAIN_POWER))
+        {
+            // 384 - trickery domain power
+            NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 384, GetLevelByClass(CLASS_TYPE_CLERIC), 0.0);
+            DecrementRemainingFeatUses(OBJECT_SELF, FEAT_TRICKERY_DOMAIN_POWER);
+        }
+        if (GetHasFeat(FEAT_DEATH_DOMAIN_POWER))
+        {
+            // 383 - death domain power
+            NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 383, GetLevelByClass(CLASS_TYPE_CLERIC), 0.0);
+            DecrementRemainingFeatUses(OBJECT_SELF, FEAT_TRICKERY_DOMAIN_POWER);
+        }
+        if (GetHasFeat(FEAT_STRENGTH_DOMAIN_POWER))
+        {
+            // 381 - strength domain power
+            NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 381, GetLevelByClass(CLASS_TYPE_CLERIC), 0.0);
+            DecrementRemainingFeatUses(OBJECT_SELF, FEAT_STRENGTH_DOMAIN_POWER);
+        }
+        if (GetHasFeat(FEAT_PROTECTION_DOMAIN_POWER))
+        {
+            // 382 - protection domain power
+            NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 382, GetLevelByClass(CLASS_TYPE_CLERIC), 0.0);
+            DecrementRemainingFeatUses(OBJECT_SELF, FEAT_PROTECTION_DOMAIN_POWER);
+        }
+        if (GetHasFeat(FEAT_WAR_DOMAIN_POWER))
+        {
+            // 380 - war domain power
+            NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 380, GetLevelByClass(CLASS_TYPE_CLERIC), 0.0);
+            DecrementRemainingFeatUses(OBJECT_SELF, FEAT_WAR_DOMAIN_POWER);
+        }
+    } 
 
 
     // Aura buffs

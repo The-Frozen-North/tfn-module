@@ -12,14 +12,14 @@ void main()
     object oMap = GetLocalObject(oPC, "opened_treasuremap");
     if (sEvent == "close")
     {
+        if (!GetIsObjectValid(oMap))
+        {
+            return;
+        }
         if (GetItemPossessor(oMap) != oPC)
         {
             SendMessageToPC(oPC, "You no longer own this map.");
             NuiDestroy(oPC, nToken);
-            return;
-        }
-        if (!GetIsObjectValid(oMap))
-        {
             return;
         }
         string sNote = JsonGetString(NuiGetBind(oPC, nToken, "tmap_notes"));
@@ -38,11 +38,11 @@ void main()
         int nNow = SQLite_GetTimeStamp();
         int nLast = GetLocalInt(oPC, "treasuremap_last_search");
         int nDiff = nNow - nLast;
-        if (nNow - nLast < 6)
+        if (nNow < nLast)
         {
             return;
         }
-        SetLocalInt(oPC, "treasuremap_last_search", nNow);
+        SetLocalInt(oPC, "treasuremap_last_search", nNow+6);
         
         if (!GetIsObjectValid(oMap) || GetItemPossessor(oMap) != oPC)
         {
@@ -54,12 +54,14 @@ void main()
         if (GetIsInCombat(oPC))
         {
             SendMessageToPC(oPC, "You cannot search for treasure while in combat.");
+            SetLocalInt(oPC, "treasuremap_last_search", nNow+2);
             return;
         }
         
         if (GetIsMounted(oPC))
         {
             SendMessageToPC(oPC, "You cannot search the ground beneath your feet while on horseback.");
+            SetLocalInt(oPC, "treasuremap_last_search", nNow+2);
             return;
         }
         
