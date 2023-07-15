@@ -40,8 +40,8 @@ const float XP_MAX_BOSS = 50.0;
 const float XP_NOPC = 1.00;
 
 // XP percentage bonus/penalty based on wisdom score
-// 12 wisdom - 2 wis score = 4% xp bonus
-const float WISDOM_BONUS = 0.02;
+// 12 wisdom = 2 "wis score" = 2% xp bonus
+const float WISDOM_BONUS = 0.01;
 
 // Races with at least one level in their favored class OR humans/half-elves who are triple class
 // get a bonus to XP. 1.2 is equal to a 20% bonus.
@@ -184,6 +184,7 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
 // Calculate wisdom bonus
    int nWisdomMod = GetAbilityScore(oPC, ABILITY_WISDOM) - 10;
    float fWisdom = IntToFloat(nWisdomMod) * WISDOM_BONUS;
+   string sWisdomFeedback = NeatFloatToString(100.0*fWisdom);
 
 // calculate total bonus
    float fModifier = fFavoredModifier + fWisdom;
@@ -210,7 +211,7 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
       string sBonus = "Bonus";
       if (nTotal < 0) sBonus = "Penalty";
 
-      FloatingTextStringOnCreature("*XP "+sBonus+": "+IntToString(nTotal)+" (Wisdom: "+IntToString(nWisdomMod)+"%"+sFavoredBonus+")*", oPC, FALSE);
+      FloatingTextStringOnCreature("*XP "+sBonus+": "+IntToString(nTotal)+" (Wisdom: "+sWisdomFeedback+"%"+sFavoredBonus+")*", oPC, FALSE);
    }
 
    SendDebugMessage("fAdjustedXP without truncation: "+FloatToString(fAdjustedXpAmount));
