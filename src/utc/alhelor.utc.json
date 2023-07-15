@@ -14,7 +14,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 10.0
+    "value": 11.0
   },
   "ClassList": {
     "type": "list",
@@ -27,7 +27,7 @@
         },
         "ClassLevel": {
           "type": "short",
-          "value": 10
+          "value": 11
         }
       }
     ]
@@ -38,7 +38,7 @@
   },
   "Con": {
     "type": "byte",
-    "value": 18
+    "value": 16
   },
   "Conversation": {
     "type": "resref",
@@ -46,11 +46,11 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 1
+    "value": 0
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 80
+    "value": 99
   },
   "DecayTime": {
     "type": "dword",
@@ -67,7 +67,7 @@
   },
   "Dex": {
     "type": "byte",
-    "value": 18
+    "value": 14
   },
   "Disarmable": {
     "type": "byte",
@@ -80,21 +80,21 @@
         "__struct_id": 16384,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp010"
+          "value": "x2_it_crewpsp005"
         }
       },
       {
         "__struct_id": 32768,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewpsp010"
+          "value": "x2_it_crewpsp005"
         }
       },
       {
         "__struct_id": 65536,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_crewps003"
+          "value": "nw_it_crewps017"
         }
       },
       {
@@ -132,6 +132,20 @@
         "Feat": {
           "type": "word",
           "value": 206
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 17
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 240
         }
       },
       {
@@ -198,15 +212,15 @@
   },
   "Gender": {
     "type": "byte",
-    "value": 3
+    "value": 0
   },
   "GoodEvil": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "HitPoints": {
     "type": "short",
-    "value": 80
+    "value": 99
   },
   "Int": {
     "type": "byte",
@@ -238,11 +252,11 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 130
+    "value": 143
   },
   "NaturalAC": {
     "type": "byte",
-    "value": 4
+    "value": 6
   },
   "NoPermDeath": {
     "type": "byte",
@@ -356,7 +370,7 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 14
+          "value": 13
         }
       },
       {
@@ -531,7 +545,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 100
+    "value": 352
   },
   "SpecAbilityList": {
     "type": "list",
@@ -543,7 +557,7 @@
   },
   "Str": {
     "type": "byte",
-    "value": 18
+    "value": 20
   },
   "Subrace": {
     "type": "cexostring",
@@ -597,12 +611,42 @@
           "type": "int",
           "value": 1
         }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "defeated_webhook"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 1
+        },
+        "Value": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "spawn_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "size_140l"
+        }
       }
     ]
   },
   "WalkRate": {
     "type": "int",
-    "value": 7
+    "value": 5
   },
   "willbonus": {
     "type": "short",

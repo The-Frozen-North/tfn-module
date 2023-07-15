@@ -46,7 +46,7 @@
   },
   "CRAdjust": {
     "type": "int",
-    "value": 0
+    "value": -1
   },
   "CurrentHitPoints": {
     "type": "short",
@@ -470,7 +470,7 @@
         "__struct_id": 4,
         "Spell": {
           "type": "word",
-          "value": 797
+          "value": 239
         },
         "SpellCasterLevel": {
           "type": "byte",
@@ -485,7 +485,22 @@
         "__struct_id": 4,
         "Spell": {
           "type": "word",
-          "value": 797
+          "value": 239
+        },
+        "SpellCasterLevel": {
+          "type": "byte",
+          "value": 0
+        },
+        "SpellFlags": {
+          "type": "byte",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 4,
+        "Spell": {
+          "type": "word",
+          "value": 239
         },
         "SpellCasterLevel": {
           "type": "byte",
