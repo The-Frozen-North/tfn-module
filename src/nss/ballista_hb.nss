@@ -3,7 +3,7 @@
 
 void main()
 {
-    float fRadius = 40.0;
+    float fRadius = 25.0;
 
     location lLocation = GetLocation(OBJECT_SELF);
     

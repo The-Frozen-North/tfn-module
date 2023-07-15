@@ -611,14 +611,14 @@ void SetGlobalWeather()
         // Polar
         nPolarClear = nClearChance + 5;
         nPolarRain = nRainChance + 5;
-        nPolarSnow = nSnowChance + 30;
+        nPolarSnow = nSnowChance + 40;
         nPolarLightning = nLightningChance + 1;
         // Desert - no base needed. Add in if rain/snow possible in desert.
         // Highland
         nHighlandClear = nClearChance + 5;
-        nHighlandRain = nRainChance + 30;
-        nHighlandSnow = nSnowChance + 5;
-        nHighlandLightning = nLightningChance + 10;
+        nHighlandRain = nRainChance + 10;
+        nHighlandSnow = nSnowChance + 20;
+        nHighlandLightning = nLightningChance + 5;
 
     // Calculate Climate Base percents
         // Moderate
@@ -684,7 +684,7 @@ void SetGlobalWeather()
         nDesertSky = SKYBOX_DESERT_CLEAR;
         // Highland
         nHighlandWeather = WEATHER_CLEAR;
-        nHighlandSky = SKYBOX_GRASS_CLEAR;
+        nHighlandSky = SKYBOX_WINTER_CLEAR;
         if (nRandom < nHighlandClear) {}
         if (nRandom < nHighlandRain) {
             nHighlandWeather = WEATHER_RAIN;
