@@ -10,6 +10,8 @@
 
 const float AOE_QUEST_SIZE = 75.0;
 
+const int BLUFF_CHAOS_SHIFT = 4;
+
 const int BOUNTY_RESET_TIME =  21600; // 6 hours
 
 // 0xffdc14 - a slightly darkened yellow

@@ -10,10 +10,14 @@ int StartingConditional()
     int nDC = GetLocalInt(OBJECT_SELF, "bluff_dc");
     int nScriptParam = StringToInt(GetScriptParam("dc"));
 
+    AdjustAlignment(oPC, ALIGNMENT_CHAOTIC, 1, FALSE);
+
     if (nScriptParam != 0)
     {
         nDC = nScriptParam;
     }
+
+    if (nDC == 0) nDC = 13; // fallback in case we derped and forgot to set any value
 
     if(!(GetIsSkillSuccessful(oPC, nSkill, nDC)))
     {
