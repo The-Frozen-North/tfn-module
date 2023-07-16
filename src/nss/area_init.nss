@@ -322,6 +322,7 @@ void main()
                        }
                  break;
                  case OBJECT_TYPE_DOOR:
+                    SetTrapDisabled(oObject); // in case the door has a trap, we init with a custom one anyways
                     SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_OPEN, "door_open");
                     SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLOSE, "door_close");
                     if (GetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_FAIL_TO_OPEN) != "")
@@ -389,6 +390,20 @@ void main()
                           SetLocalFloat(oArea, "placeable_o"+IntToString(nPlaceables), GetFacing(oObject));
 
                           DestroyObject(oObject);
+                   }
+                   else if (GetIsTrapped(oObject)) // imported placeables may be trapped, remove the trap and make them static. nothing should be trapped, we set traps ourselves
+                   {
+                        SetTrapDisabled(oObject);
+                        SetUseableFlag(oObject, FALSE);
+                        NWNX_Object_SetPlaceableIsStatic(oObject, TRUE);
+                        SetPlotFlag(oObject, TRUE); 
+                   }
+                   // if the placeable has a script on it but the script doesn't exist, assume it is an imported placeable and clean it up
+                   else if (GetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_USED) != "" && ResManGetFileContents(GetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_USED), RESTYPE_NSS) == "")
+                   {
+                        SetUseableFlag(oObject, FALSE);
+                        NWNX_Object_SetPlaceableIsStatic(oObject, TRUE);
+                        SetPlotFlag(oObject, TRUE); 
                    }
 // any object has its items removed and converted to static
                    else if (GetHasInventory(oObject))
