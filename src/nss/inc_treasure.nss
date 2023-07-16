@@ -10,6 +10,8 @@ const int MIN_VALUE_T3 = 2000;
 const int MIN_VALUE_T4 = 7000;
 const int MIN_VALUE_T5 = 16000;
 
+const int MIN_VALUE_SCROLL_T2 = 500;
+
 const string TREASURE_MELEE_SEED_CHEST = "_MeleeSeed";
 const string TREASURE_RANGE_SEED_CHEST = "_RangeSeed";
 const string TREASURE_ARMOR_SEED_CHEST = "_ArmorSeed";
@@ -17,6 +19,9 @@ const string TREASURE_ARMOR_SEED_CHEST = "_ArmorSeed";
 const string TREASURE_DISTRIBUTION = "_TreasureDistribution";
 
 const float TREASURE_CREATION_DELAY = 0.0;
+
+const int SCROLL_VALUE_MULTIPLIER = 6;
+const int MISC_VALUE_MULTIPLIER = 5;
 
 
 // =======================================================
@@ -47,19 +52,41 @@ int GetItemTier(object oItem)
     int nBaseType = GetBaseItemType(oItem);
     int nTier = -1;
     string sName = GetName(oItem);
+
+    int nMinValueT2 = MIN_VALUE_T2;
+
+   // scrolls have a low innate value, bump them up to the correct tiers
+   switch (nBaseType)
+   {
+       case BASE_ITEM_SPELLSCROLL:
+          nValue *= SCROLL_VALUE_MULTIPLIER;
+          nMinValueT2 = MIN_VALUE_SCROLL_T2;
+       break;
+   }
+
+    string sResRef = GetResRef(oItem);
+    // Apply a multiplier for misc items (junk and art)
+    // magic bags have their prices set elsewhere anyway
+    if (TestStringAgainstPattern("**misc**", sResRef))
+    {
+        if (nBaseType != BASE_ITEM_LARGEBOX)
+        {
+            nValue *= MISC_VALUE_MULTIPLIER;
+        }
+    }
+
     // Sort by item value
     if (nValue >= MIN_VALUE_T5) {nTier = 5;}
     else if (nValue >= MIN_VALUE_T4) {nTier = 4;}
     else if (nValue >= MIN_VALUE_T3) {nTier = 3;}
-    else if (nValue >= MIN_VALUE_T2) {nTier = 2;}
+    else if (nValue >= nMinValueT2) {nTier = 2;}
     else {nTier = 1;}
-    
+
     string sNonUnique;
     if (GetTag(oItem) == "non_unique") sNonUnique = "NonUnique";
     if (GetLocalInt(oItem, "non_unique") == 1) sNonUnique = "NonUnique";
     // All non-TFN items (this matters for creatures dropping their own stuff) should get this treatment
     // they NEED to run through the +1/+2/+3 enhancement tier changes
-    string sResRef = GetResRef(oItem);
     if (GetStringLeft(sResRef, 3) == "nw_" ||
         (GetStringLeft(sResRef, 5) != "armor" &&
         GetStringLeft(sResRef, 6) != "weapon" &&
@@ -85,7 +112,7 @@ int GetItemTier(object oItem)
     {
        nTier = 5;
     }
-    
+
     // Boost some full plates and tower shields to next tier
    if (sName == "Tower Shield +1") nTier = 4;
    if (sName == "Tower Shield +2") nTier = 5;
@@ -100,7 +127,7 @@ int GetItemTier(object oItem)
        if (FindSubString(sName, "+2") > -1 && nTier == 3) nTier = 4;
        if (FindSubString(sName, "+3") > -1 && nTier == 4) nTier = 5;
    }
-    
+
     SetIdentified(oItem, nIdentified);
     //WriteTimestampedLogEntry("GetItemTier: " + GetName(oItem) + " -> " + IntToString(nTier) + " (nonunique=" + sNonUnique);
     return nTier;
@@ -182,14 +209,14 @@ void InitializeItem(object oItem)
     {
         SetObjectVisualTransform(oItem, OBJECT_VISUAL_TRANSFORM_SCALE, fScale);
     }
-    
-    
+
+
 // never do this again for items
     if (GetLocalInt(oItem, "initialized") == 1)
     {
         return;
     }
-    
+
     int nWasIdentified = GetIdentified(oItem);
     SetIdentified(oItem, 1);
 
@@ -216,9 +243,9 @@ void InitializeItem(object oItem)
             NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + FloatToInt( IntToFloat(GetGoldPieceValue(oItem)) * (IntToFloat(6) * 0.1) ) );
         }
     }
-    
+
      NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) - GetLocalInt(oItem, "reduce_cost"));
-     
+
     // Boomerang item values: additional item value is added once for each item in the stack
     // which means that additional item value needs to map stack size 1 -> max stack size
     if (GetItemHasItemProperty(oItem, ITEM_PROPERTY_BOOMERANG))
@@ -229,9 +256,9 @@ void InitializeItem(object oItem)
         nGold *= (nMaxStackSize - 1);
         NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + nGold);
     }
-    
-    
-    
+
+
+
 
     SetIdentified(oItem, nWasIdentified);
     SetLocalInt(oItem, "initialized", 1);
@@ -271,7 +298,7 @@ void BuildItemNamesToObjectsDB()
             else if (nItemType == 1) { sItemType = "Melee"; }
             else if (nItemType == 2) { sItemType = "Range"; }
             else if (nItemType == 3) { sItemType = "Apparel"; }
-            
+
             for (nUniqueness=0; nUniqueness<2; nUniqueness++)
             {
                 string sUniqueness = nUniqueness ? "" : "NonUnique";
@@ -296,7 +323,7 @@ void BuildItemNamesToObjectsDB()
                             SetIdentified(oTest, bIdentified);
                             sql = SqlPrepareQueryObject(GetModule(),
                                 "INSERT INTO item_name_lookup " +
-                                "(itemname, oid) VALUES (@itemname, @oid);");// + 
+                                "(itemname, oid) VALUES (@itemname, @oid);");// +
                                 //" ON CONFLICT (itemname) DO UPDATE SET value = @oid;");
                                 //" ON CONFLICT FAIL;");
                             SqlBindString(sql, "@itemname", sName);

@@ -49,15 +49,16 @@ void CreateFabricator(object oAmmo, object oTargetChest)
             int nAppearance, nStack;
             switch (GetBaseItemType(oAmmo))
             {
-                case BASE_ITEM_THROWINGAXE: sAmmoName = "Throwing Axe"; nAppearance = 20; nStack = 50; break;
-                case BASE_ITEM_DART: sAmmoName = "Dart"; nAppearance = 7; nStack = 50; break;
-                case BASE_ITEM_SHURIKEN: sAmmoName = "Shuriken"; nAppearance = 9; nStack = 50; break;
-                case BASE_ITEM_ARROW: sAmmoName = "Arrow"; nAppearance = 19; nStack = 99; break;
-                case BASE_ITEM_BULLET: sAmmoName = "Bullet"; nAppearance = 18; nStack = 99; break;
-                case BASE_ITEM_BOLT: sAmmoName = "Bolt"; nAppearance = 8; nStack = 99; break;
+                case BASE_ITEM_THROWINGAXE: sAmmoName = "Throwing Axe"; nAppearance = 20; break;
+                case BASE_ITEM_DART: sAmmoName = "Dart"; nAppearance = 7; break;
+                case BASE_ITEM_SHURIKEN: sAmmoName = "Shuriken"; nAppearance = 9;; break;
+                case BASE_ITEM_ARROW: sAmmoName = "Arrow"; nAppearance = 19; break;
+                case BASE_ITEM_BULLET: sAmmoName = "Bullet"; nAppearance = 18; break;
+                case BASE_ITEM_BOLT: sAmmoName = "Bolt"; nAppearance = 8; break;
             }
 
-            SetItemStackSize(oAmmo, nStack);
+            // set the stack size to 50 for similar cost eval to throwing weapons
+            SetItemStackSize(oAmmo, 50);
 
             SetTag(oAmmo, "fabricator_"+GetTag(oAmmo));
             object oNewAmmo = CopyItemToExistingTarget(oAmmo, GetObjectByTag("_FabricatorAmmo"));
@@ -478,12 +479,6 @@ void DistributeTreasureToStores(object oItem)
 
 // only get gold value after the weight reduction
    nValue = GetGoldPieceValue(oItem);
-   switch (nBaseType)
-   {
-       case BASE_ITEM_SPELLSCROLL:
-          nValue = nValue * 6;
-       break;
-   }
 
    switch (nBaseType)
    {
@@ -493,17 +488,6 @@ void DistributeTreasureToStores(object oItem)
           nIdentified = 1;
        break;
    }
-
-
-// Apply a multiplier for misc items (junk and art)
-    // magic bags have their prices set elsewhere anyway
-    if (TestStringAgainstPattern("**misc**", sResRef))
-    {
-        if (nBaseType != BASE_ITEM_LARGEBOX)
-        {
-            nValue = nValue * 5;
-        }
-    }
 
 // Enchanted full plate mail is considered 1 tier higher.
        if (nEnchantValue > 0 && nBaseArmorAC == 8) nEnchantValue++;
@@ -909,15 +893,15 @@ void main()
             }
 
             oArrow = CreateObject(OBJECT_TYPE_ITEM, "arrow"+IntToString(i), lStaging);
-            SetItemStackSize(oArrow, 99);
+            //SetItemStackSize(oArrow, 50);
             CreateFabricator(oArrow, GetObjectByTag("_RangeCommonT"+IntToString(i+1)+"NonUnique"));
 
             oBolt = CreateObject(OBJECT_TYPE_ITEM, "bolt"+IntToString(i), lStaging);
-            SetItemStackSize(oBolt, 99);
+            //SetItemStackSize(oBolt, 50);
             CreateFabricator(oBolt, GetObjectByTag("_RangeUncommonT"+IntToString(i+1)+"NonUnique"));
 
             oBullet = CreateObject(OBJECT_TYPE_ITEM, "bullet"+IntToString(i), lStaging);
-            SetItemStackSize(oBullet, 99);
+            //SetItemStackSize(oBullet, 50);
             CreateFabricator(oBullet, GetObjectByTag("_RangeRareT"+IntToString(i+1)+"NonUnique"));
         }
    }
