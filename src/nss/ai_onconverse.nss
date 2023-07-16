@@ -33,7 +33,7 @@ void main()
     {
     case -1:
         if (! gsCBGetHasAttackTarget() &&
-            gsCBGetIsPerceived(oSpeaker))
+            gsCBGetIsPerceived(oSpeaker) && !GetIsInCombat(oSpeaker))
         {
             ClearAllActions(TRUE);
             WriteTimestampedLogEntry(GetName(oSpeaker) + " (" + ObjectToString(oSpeaker) + ") talked to " + GetName(OBJECT_SELF));

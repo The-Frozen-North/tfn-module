@@ -75,14 +75,34 @@ void main()
         case 11: // Puddles
         case 12: // Swamp
         case 13: // Mud
-            eEffect = EffectMovementSpeedDecrease(20);
+            eEffect = EffectMovementSpeedDecrease(10);
             break;
         case 6: // Water
-            eEffect = EffectMovementSpeedDecrease(30);
+            eEffect = EffectMovementSpeedDecrease(20);
             break;
     }
 
     RemoveEffectsWithTag(oPlayer, TRAVEL_EFFECT_TAG);
+
+    int nFootstepType = GetFootstepType(oPlayer);
+    int nAppearance = GetAppearanceType(oPlayer);
+
+    if (GetRacialType(oPlayer) != RACIAL_TYPE_OOZE) // oozes have an invalid footstep type, but should be affected by travel effects
+    {
+        if (nFootstepType == FOOTSTEP_TYPE_FEATHER_WING || // flying creatures do not benefit from travel effects
+        nFootstepType == FOOTSTEP_TYPE_SEAGULL ||
+        nFootstepType == FOOTSTEP_TYPE_LEATHER_WING ||
+        nFootstepType == -1 || // lantern archons, wraiths, etc. invalid footsteps. means shadows are unaffected as well
+        nAppearance == APPEARANCE_TYPE_HELMED_HORROR ||
+        nAppearance == APPEARANCE_TYPE_BAT_HORROR||
+        nAppearance == APPEARANCE_TYPE_BEHOLDER || // these have a footstep type of 3, odd. soft footsteps
+        nAppearance == APPEARANCE_TYPE_BEHOLDER_EYEBALL ||
+        nAppearance == APPEARANCE_TYPE_BEHOLDER_MAGE ||
+        nAppearance == APPEARANCE_TYPE_BEHOLDER_MOTHER)
+        {
+            return;
+        }
+    }
 
     if (GetEffectType(eEffect))
     {
