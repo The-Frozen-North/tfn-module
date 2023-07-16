@@ -1864,8 +1864,9 @@ int gsCBTalentSpellAttack(object oTarget)
         }
     }
 
-    if (! nFriend)
-    {
+    // do not check if there are any friends, fire away anyways
+    //if (! nFriend)
+    //{
         tTalent = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_AREAEFFECT_INDISCRIMINANT, 100);
         if (GetIsTalentValid(tTalent))
         {
@@ -1881,7 +1882,7 @@ int gsCBTalentSpellAttack(object oTarget)
                 }
             }
         }
-    }
+    //}
 
     tTalent = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_RANGED, 100);
     if (GetIsTalentValid(tTalent))
