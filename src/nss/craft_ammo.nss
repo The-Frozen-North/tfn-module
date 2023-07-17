@@ -3,7 +3,7 @@
 void main()
 {
     object oPC = GetPCSpeaker();
-    object oAmmo = GetObjectByTag("fabricator_"+GetLocalString(oPC, "ammo_tag"));
+    object oAmmo = GetAmmo(GetLocalString(oPC, "ammo_tag"));
 
     if (!GetIsObjectValid(oAmmo))
         return;
@@ -21,15 +21,24 @@ void main()
     if (GetIsSkillSuccessful(oPC, SKILL_CRAFT_WEAPON, DetermineAmmoCraftingDC(oAmmo)))
     {
         object oItem = CopyItem(oAmmo, oPC, TRUE);
+
+        int nBaseItem = GetBaseItemType(oItem);
+
+        if (BASE_ITEM_TYPE == BASE_ITEM_TYPE_ARROW || BASE_ITEM_TYPE == BASE_ITEM_TYPE_BOLT || BASE_ITEM_TYPE == BASE_ITEM_TYPE_BULLET)
+        {
+            SetItemStackSize(oItem, 99);
+        }
+
         SetTag(oItem, "crafted_ammo");
         SetPlotFlag(oItem, TRUE);
-        nVFX = VFX_COM_HIT_ELECTRICAL;
+        nVFX = VFX_COM_BLOOD_SPARK_LARGE;
     }
     else
     {
         nVFX = VFX_COM_HIT_NEGATIVE;
-        AssignCommand(oPC, PlaySound("as_cv_glasbreak1"));
     }
+    
+    AssignCommand(oPC, PlaySound("as_cv_smithbelo1"));
 
     ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(nVFX), GetLocation(oPC));
 }

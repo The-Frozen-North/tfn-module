@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 722
+    "value": 2266
   },
   "Cursed": {
     "type": "byte",
@@ -28,7 +28,7 @@
     "id": 56605,
     "type": "cexolocstring",
     "value": {
-      "0": "Trimmed in the fur of a polar bear, this sturdy belt is tooled with images of blue moons and white ice floes. The wearer is immune to all cold-based effects but suffers double any fire damage. \t"
+      "0": "Trimmed in the fur of a polar bear, this sturdy belt is tooled with images of blue moons and white ice floes. The wearer is resistant to all cold-based effects but suffers additional fire damage. \t"
     }
   },
   "Description": {
@@ -75,7 +75,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 2
+          "value": 3
         },
         "Param1": {
           "type": "byte",
@@ -106,7 +106,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 4
+          "value": 3
         },
         "Param1": {
           "type": "byte",
@@ -123,6 +123,37 @@
         "Subtype": {
           "type": "word",
           "value": 10
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 2
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 4
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 40
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 3
         }
       }
     ]
@@ -142,5 +173,9 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "apparel170"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 7
   }
 }

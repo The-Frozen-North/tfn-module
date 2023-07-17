@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 1946
+    "value": 1080
   },
   "Cursed": {
     "type": "byte",
@@ -27,7 +27,9 @@
   "DescIdentified": {
     "id": 90493,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "This ring is warm to the touch. When worn it will accelerate the body's natural  warming process. This increase in shivering makes the character a little more clumsy. However, the ring keeps out all but the coldest cold, so the side-effects of wearing it may sometimes be worthwhile."
+    }
   },
   "Description": {
     "type": "cexolocstring",
@@ -118,37 +120,6 @@
         },
         "Subtype": {
           "type": "word",
-          "value": 2
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 21
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 1
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 27
-        },
-        "Subtype": {
-          "type": "word",
           "value": 1
         }
       }
@@ -169,5 +140,9 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "apparel124"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 22
   }
 }

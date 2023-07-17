@@ -27,7 +27,7 @@ void main()
     {
         if (GetResRef(oObject) == "ammo_maker")
         {
-            object oAmmo = GetObjectByTag("fabricator_"+GetLocalString(oObject, "ammo_tag"));
+            object oAmmo = GetAmmo(GetLocalString(oObject, "ammo_tag"));
             SetDescription(oObject, "This appears to be some sort of contraption that can create ammunition.\n\nThe difficulty class and gold required is dependent on the type of ammunition that this device outputs.\n\nDC: "+IntToString(DetermineAmmoCraftingDC(oAmmo))+"\nGold: "+IntToString(DetermineAmmoCraftingCost(oAmmo)));
         }
         // Add ILR text

@@ -6,7 +6,7 @@ void main()
 {
     object oItem = GetItemActivated();
     string sTag = GetLocalString(oItem, "ammo_tag");
-    object oAmmo = GetObjectByTag("fabricator_"+sTag);
+    object oAmmo = GetAmmo(sTag);
     object oPC = GetItemActivator();
 
     if (GetIsObjectValid(oAmmo))

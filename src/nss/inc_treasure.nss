@@ -220,6 +220,15 @@ void InitializeItem(object oItem)
     int nWasIdentified = GetIdentified(oItem);
     SetIdentified(oItem, 1);
 
+    // if this item was not identified (probably magic) and it has a near zero gold cost, this item is probably screwed up from the negative 2da cost changes
+    // destroy the item if so!
+    if (!nWasIdentified && GetGoldPieceValue(oItem) <= 5)
+    {
+        WriteTimestampedLogEntry("Zero cost item: " + GetName(oItem));
+        DestroyObject(oItem);
+        return;
+    }
+
     AddEWR(oItem);
 
     if (GetBaseItemType(oItem) == BASE_ITEM_ARMOR)

@@ -2,6 +2,7 @@
 #include "nwnx_admin"
 #include "nwnx_item"
 #include "nwnx_util"
+#include "inc_craft"
 
 
 int GetIsItemConsumableMisc(object oItem)
@@ -60,7 +61,7 @@ void CreateFabricator(object oAmmo, object oTargetChest)
             // set the stack size to 50 for similar cost eval to throwing weapons
             SetItemStackSize(oAmmo, 50);
 
-            SetTag(oAmmo, "fabricator_"+GetTag(oAmmo));
+            SetTag(oAmmo, GetTag(oAmmo));
             object oNewAmmo = CopyItemToExistingTarget(oAmmo, GetObjectByTag("_FabricatorAmmo"));
 
             NWNX_Item_SetAddGoldPieceValue(oFabricator, nValue);
@@ -477,6 +478,12 @@ void DistributeTreasureToStores(object oItem)
 // Apply the enchanted weight reduction and value modifier based on AC.
    InitializeItem(oItem);
 
+    // it's possible that the item was destroyed because it was zero cost. Do nothing in that case
+   if (!GetIsObjectValid(oItem))
+   {
+       return;
+   }
+
 // only get gold value after the weight reduction
    nValue = GetGoldPieceValue(oItem);
 
@@ -745,7 +752,7 @@ void CreateContainersForItemTypesByTier()
                             // Follow fabricator ammo, or for some reason this doesn't get put into the chests
                             if (GetStringLength(GetLocalString(oTest, "ammo_tag")) > 0)
                             {
-                                object oAmmo = GetObjectByTag("fabricator_"+GetLocalString(oTest, "ammo_tag"));
+                                object oAmmo = GetAmmo(GetLocalString(oTest, "ammo_tag"));
                                 if (GetIsObjectValid(oAmmo))
                                 {
                                     oTest = oAmmo;

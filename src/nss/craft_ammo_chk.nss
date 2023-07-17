@@ -3,7 +3,7 @@
 int StartingConditional()
 {
     object oPC = GetPCSpeaker();
-    object oAmmo = GetObjectByTag("fabricator_"+GetLocalString(oPC, "ammo_tag"));
+    object oAmmo = GetAmmo(GetLocalString(oPC, "ammo_tag"));
 
     if (!GetIsObjectValid(oAmmo))
         return FALSE;

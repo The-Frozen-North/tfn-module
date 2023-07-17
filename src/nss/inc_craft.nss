@@ -5,6 +5,13 @@ const int BASE_CRAFT_COST = 5;
 
 const int CRAFT_GOLD_STEP_DC = 5;
 
+object GetAmmo(string sTag)
+{
+    object oContainer = GetObjectByTag("_FabricatorAmmo");
+
+    return GetItemPossessedBy(oContainer, sTag);
+}
+
 int GetCraftDCFromAmmo(object oAmmo)
 {
     int nValue = GetGoldPieceValue(oAmmo);

@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 13044
+    "value": 19938
   },
   "Cursed": {
     "type": "byte",
@@ -141,7 +141,7 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 10
+          "value": 4
         },
         "CostValue": {
           "type": "word",
@@ -157,11 +157,42 @@
         },
         "PropertyName": {
           "type": "word",
-          "value": 11
+          "value": 16
         },
         "Subtype": {
           "type": "word",
+          "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 4
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 1
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
           "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 16
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 2
         }
       },
       {
@@ -243,5 +274,17 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "weapon329"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 22
+  },
+  "xModelPart2": {
+    "type": "word",
+    "value": 11
+  },
+  "xModelPart3": {
+    "type": "word",
+    "value": 11
   }
 }
