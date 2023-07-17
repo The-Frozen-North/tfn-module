@@ -24,7 +24,7 @@ void main()
 
         int nBaseItem = GetBaseItemType(oItem);
 
-        if (BASE_ITEM_TYPE == BASE_ITEM_TYPE_ARROW || BASE_ITEM_TYPE == BASE_ITEM_TYPE_BOLT || BASE_ITEM_TYPE == BASE_ITEM_TYPE_BULLET)
+        if (nBaseItem == BASE_ITEM_TYPE_ARROW || BASE_ITEM_TYPE == BASE_ITEM_TYPE_BOLT || BASE_ITEM_TYPE == BASE_ITEM_TYPE_BULLET)
         {
             SetItemStackSize(oItem, 99);
         }
