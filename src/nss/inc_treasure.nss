@@ -45,7 +45,7 @@ int GetEnchantValue(object oItem)
 
 int GetItemTier(object oItem)
 {
-    int nIdentified = GetIdentified(oItem);
+    int nIdentified = GetLocalInt(oItem, "identified");
     SetIdentified(oItem, 1);
     int nValue = GetGoldPieceValue(oItem);
     int nEnchantValue = GetEnchantValue(oItem);
@@ -96,7 +96,8 @@ int GetItemTier(object oItem)
         }
 
     // special rule to bump up unidentified items to the next tier, too much magic gear encountered at low level
-    if (nTier == 1 && nIdentified == 0)
+    // basically, 
+    if (nBaseType != BASE_ITEM_SPELLSCROLL && nTier == 1 && nIdentified == 0)
     {
        nTier = 2;
     }
@@ -128,7 +129,14 @@ int GetItemTier(object oItem)
        if (FindSubString(sName, "+3") > -1 && nTier == 4) nTier = 5;
    }
 
-    SetIdentified(oItem, nIdentified);
+    if (nBaseType == BASE_ITEM_SPELLSCROLL)
+    {
+        SetIdentified(oItem, TRUE);
+    }
+    else
+    {
+        SetIdentified(oItem, nIdentified);
+    }
     //WriteTimestampedLogEntry("GetItemTier: " + GetName(oItem) + " -> " + IntToString(nTier) + " (nonunique=" + sNonUnique);
     return nTier;
 }
