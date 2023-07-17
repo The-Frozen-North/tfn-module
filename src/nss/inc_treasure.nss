@@ -2,6 +2,7 @@
 #include "inc_debug"
 #include "inc_general"
 #include "nwnx_item"
+#include "nwnx_util"
 #include "70_inc_itemprop"
 
 // Based on item value, they will be sorted on these constants
@@ -315,6 +316,7 @@ void BuildItemNamesToObjectsDB()
             else if (nItemType == 1) { sItemType = "Melee"; }
             else if (nItemType == 2) { sItemType = "Range"; }
             else if (nItemType == 3) { sItemType = "Apparel"; }
+            else if (nItemType == 4) { sItemType = "Misc"; }
 
             for (nUniqueness=0; nUniqueness<2; nUniqueness++)
             {

@@ -1,4 +1,5 @@
 #include "inc_housing"
+#include "inc_itemupdate"
 
 void main()
 {
@@ -18,6 +19,9 @@ void main()
             string sResRef, sStorageTag;
             object oStorage;
             location lObject;
+            
+            json jItemQueue = JsonArray();
+            int bUpdateStorage = DoesPCsHouseItemsNeedAnUpdateCheck(oPC);
 
             while (GetIsObjectValid(oObject))
             {
@@ -42,6 +46,12 @@ void main()
 // still doesn't exist? then let's create one
                         if (!GetIsObjectValid(oStorage))
                             oStorage = CreateObject(OBJECT_TYPE_PLACEABLE, "_pc_storage", lObject, FALSE, sStorageTag);
+                        
+                        if (bUpdateStorage)
+                        {
+                            WriteTimestampedLogEntry("Queue container for item update: " + GetName(oStorage));
+                            jItemQueue = AddInventoryItemsToItemUpdateQueue(oStorage, jItemQueue);
+                        }
 
                         AssignCommand(oStorage, ActionJumpToLocation(lObject));
 
@@ -52,6 +62,12 @@ void main()
                 }
 
                 oObject = GetNextObjectInArea(OBJECT_SELF);
+            }
+            //if (DoesPCsHouseItemsNeedAnUpdateCheck(oPC))
+            if (bUpdateStorage)
+            {
+                json jUpdateData = JsonObject();
+                ProcessItemUpdateQueue(jItemQueue, jUpdateData, oPC, 1, ITEM_UPDATE_QUEUE_REPORT_CDKEY_DB);
             }
         }
     }

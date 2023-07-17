@@ -3,6 +3,7 @@
 #include "nwnx_item"
 #include "nwnx_util"
 #include "inc_craft"
+#include "inc_sqlite_time"
 
 
 int GetIsItemConsumableMisc(object oItem)
@@ -1421,7 +1422,10 @@ void SeedTreasurePart2()
 
 
     SetCampaignInt("treasures", "finished", 1);
-
+    
+    // Save a timestamp to the db so we can tell when this has been rerun
+    // and PC items might need updating
+    SetCampaignInt("treasures", "fingerprint_time", SQLite_GetTimeStamp());
     SendDebugMessage("Distribution finished and treasures stored to DB", TRUE);
     SetLocalInt(GetModule(), "seed_complete", 1);
 }

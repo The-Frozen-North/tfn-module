@@ -11,6 +11,7 @@
 #include "inc_housing"
 #include "inc_horse"
 #include "inc_restxp"
+#include "inc_itemupdate"
 
 void CreateItemIfBlank(object oPC, string sItem)
 {
@@ -172,4 +173,5 @@ void main()
     }
     
     ShowOrHideXPBarUI(oPC);
+    UpdatePCOwnedItemProperties(oPC);
 }
