@@ -20,6 +20,7 @@ const string TREASURE_DISTRIBUTION = "_TreasureDistribution";
 
 const float TREASURE_CREATION_DELAY = 0.0;
 
+const int WAND_VALUE_MULTIPLIER = 2;
 const int SCROLL_VALUE_MULTIPLIER = 6;
 const int MISC_VALUE_MULTIPLIER = 5;
 
@@ -55,13 +56,16 @@ int GetItemTier(object oItem)
 
     int nMinValueT2 = MIN_VALUE_T2;
 
-   // scrolls have a low innate value, bump them up to the correct tiers
    switch (nBaseType)
    {
-       case BASE_ITEM_SPELLSCROLL:
+       case BASE_ITEM_SPELLSCROLL:    // scrolls have a low innate value, bump them up to the correct tiers
           nValue *= SCROLL_VALUE_MULTIPLIER;
           nMinValueT2 = MIN_VALUE_SCROLL_T2;
-       break;
+        break;
+        case BASE_ITEM_MAGICWAND:
+        case BASE_ITEM_MAGICROD:
+          nValue *= WAND_VALUE_MULTIPLIER;
+        break;
    }
 
     string sResRef = GetResRef(oItem);

@@ -634,14 +634,17 @@ void DistributeTreasureToStores(object oItem)
                case BASE_ITEM_TRIDENT:
                case BASE_ITEM_KUKRI:
                case BASE_ITEM_SICKLE:
-               case BASE_ITEM_MAGICROD:
                case BASE_ITEM_MAGICSTAFF:
-               case BASE_ITEM_MAGICWAND:
                case BASE_ITEM_SLING:
                case BASE_ITEM_SHURIKEN:
                case BASE_ITEM_BULLET:
                   sRarity = "Rare";
                break;
+               case BASE_ITEM_MAGICROD:
+               case BASE_ITEM_MAGICWAND:
+                    sType = "MiscCons"; // force these to the misc consumables chest
+                    sRarity = "";
+                break;
              }
           }
         
