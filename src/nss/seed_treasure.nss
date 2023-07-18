@@ -458,6 +458,14 @@ void DistributeTreasureToStores(object oItem)
    nEnchantValue = GetEnchantValue(oItem);
    sName = GetName(oItem);
 
+    // set the item's charges to 50 for gold evaluation purposes, store the charges so we can change it back later
+    int nCharges = 0;
+    if (nBaseType == BASE_ITEM_MAGICWAND || nBaseType == BASE_ITEM_MAGICROD)
+    {
+        nCharges = GetItemCharges(oItem);
+        SetItemCharges(oItem, 50);
+    }
+
    int nCount = GetLocalInt(oContainer, "count");
    nCount = nCount + 1;
    SetLocalInt(oContainer, "count", nCount);
@@ -640,6 +648,11 @@ void DistributeTreasureToStores(object oItem)
         if (sType == "Misc" && GetIsItemConsumableMisc(oItem))
         {
             sType = "MiscCons";
+        }
+
+        if (nCharges > 0)
+        {
+            SetItemCharges(oItem, nCharges);
         }
           
         SendDebugMessage(GetName(oItem) + "-> _"+sType+sRarity+sTier+sNonUnique);

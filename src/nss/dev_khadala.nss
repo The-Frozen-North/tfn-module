@@ -94,7 +94,7 @@ int GetMultiplierForBaseItemType(int nBaseItem)
     else if (nBaseItem == BASE_ITEM_HELMET) { nMultiplier = 3; }
     else if (nBaseItem == BASE_ITEM_LARGESHIELD) { nMultiplier = 3; }
     else if (nBaseItem == BASE_ITEM_TOWERSHIELD) { nMultiplier = 4; }
-    else if (nBaseItem == BASE_ITEM_MAGICWAND) { nMultiplier = 4; }
+    else if (nBaseItem == BASE_ITEM_MAGICWAND) { nMultiplier = 8; }
     return nMultiplier;
 }
 

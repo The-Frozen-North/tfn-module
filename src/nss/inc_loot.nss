@@ -680,6 +680,10 @@ object CopyTierItemToLocation(object oItem, location lTarget)
     int nBaseType = GetBaseItemType(oNewItem);
     if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT) SetItemStackSize(oNewItem, Random(45)+1);
 
+// for magic wands and rods, set a random number of charges based on the initial (max) amount of charges
+    int nCharges = GetItemCharges(oNewItem);
+    if (nCharges > 0 && (nBaseType == BASE_ITEM_MAGICWAND || nBaseType == BASE_ITEM_MAGICROD)) SetItemCharges(oNewItem, Random(nCharges)+1);
+
     // Boomerang items should always generate as stack size 1
     if (GetItemHasItemProperty(oNewItem, ITEM_PROPERTY_BOOMERANG))
     {
