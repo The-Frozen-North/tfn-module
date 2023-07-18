@@ -11,6 +11,8 @@ const int MIN_VALUE_T3 = 2000;
 const int MIN_VALUE_T4 = 7000;
 const int MIN_VALUE_T5 = 16000;
 
+const int MAX_VALUE = 22000;
+
 const int MIN_VALUE_SCROLL_T2 = 500;
 
 const string TREASURE_MELEE_SEED_CHEST = "_MeleeSeed";

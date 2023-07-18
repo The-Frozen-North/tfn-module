@@ -329,7 +329,7 @@ int GetLootWeightingTransferBasedOnOwings(object oReceiver, object oDebtor, int 
         nItemGoldValue = max(0, nDebt - (nItemGoldValue - nDebt));
     }
     float fItemGoldValue = IntToFloat(nItemGoldValue);
-    float fDebt = IntToFloat(min(nDebt, 22000));
+    float fDebt = IntToFloat(min(nDebt, MAX_VALUE));
     float fTransfer = 100 + (pow(fItemGoldValue/fDebt, 1.5) * 850);
     return FloatToInt(fTransfer);
 }

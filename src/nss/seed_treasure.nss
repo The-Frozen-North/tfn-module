@@ -501,7 +501,7 @@ void DistributeTreasureToStores(object oItem)
        if (nEnchantValue > 0 && nBaseArmorAC == 8) nEnchantValue++;
 
 // Raise an error if there is an item that exceeded the maximum value.
-       if (nValue > 22000)
+       if (nValue > MAX_VALUE)
        {
            CopyItemToExistingTarget(oItem, GetObjectByTag("_overvalue"));
            WriteTimestampedLogEntry("Overvalued Item (" + IntToString(nValue) + "): " + GetName(oItem) + ", resref=" + GetResRef(oItem));
