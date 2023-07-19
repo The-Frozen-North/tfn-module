@@ -2,7 +2,8 @@
 #include "util_i_csvlists"
 #include "nwnx_object"
 #include "inc_ctoken"
-
+#include "nwnx_area"
+#include "x0_i0_position"
 
 /* Declarations */
 // Return iPinID of the first deleted map pin within the personal map pin array
@@ -323,6 +324,56 @@ int GetHouseSellPrice(object oPC)
     return nGold;
 }
 
+// we only have a template for houses facing north, this inits houses in the other directions
+// sType can be rich, norm, and slum
+void CreateHouseTemplatesInCardinalDirections(string sType);
+void CreateHouseTemplatesInCardinalDirections(string sType)
+{
+    object oEastHouse = CreateArea("_home"+sType, "_home"+sType+"_east", "z_Home"+sType+"East");
+    NWNX_Area_RotateArea(oEastHouse, 1);
+    //OrientPlaceables(oEastHouse);
+    // you MUST set a delay when rotating areas, or the doors will be screwed up!
+    DelayCommand(1.0, NWNX_Area_RotateArea(oEastHouse, 1));
+    //DelayCommand(2.0, OrientPlaceables(oEastHouse));
+
+    object oSouthHouse = CreateArea("_home"+sType, "_home"+sType+"_south", "z_Home"+sType+"South");
+    NWNX_Area_RotateArea(oSouthHouse, 2);
+    //OrientPlaceables(oSouthHouse);
+    DelayCommand(1.0, NWNX_Area_RotateArea(oSouthHouse, 2));
+    //DelayCommand(2.0, OrientPlaceables(oSouthHouse));
+
+    object oWestHouse = CreateArea("_home"+sType, "_home"+sType+"_west", "z_Home"+sType+"West");
+    NWNX_Area_RotateArea(oWestHouse, 3);
+    //OrientPlaceables(oWestHouse);
+    DelayCommand(1.0, NWNX_Area_RotateArea(oWestHouse, 3));
+    //DelayCommand(2.0, OrientPlaceables(oWestHouse));
+}
+
+/*
+void RotateTemplateHouse(string sType)
+{
+    NWNX_Area_RotateArea(GetObjectByTag("_home"+sType+"_east"), 1);
+    NWNX_Area_RotateArea(GetObjectByTag("_home"+sType+"_south"), 1);
+    NWNX_Area_RotateArea(GetObjectByTag("_home"+sType+"_west"), 1);    
+}
+
+void RotateTemplateHouses()
+{
+    RotateTemplateHouse("rich");
+    RotateTemplateHouse("norm");
+    RotateTemplateHouse("slum");
+}
+*/
+
+// creates houses in all cardinal directions, this is required and should be called when the module is loaded BEFORE houses are seeded
+void CreateHouseTemplatesInAllCardinalDirections();
+void CreateHouseTemplatesInAllCardinalDirections()
+{
+    CreateHouseTemplatesInCardinalDirections("rich");
+    CreateHouseTemplatesInCardinalDirections("norm");
+    CreateHouseTemplatesInCardinalDirections("slum");
+}
+
 object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation);
 object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
 {
@@ -386,7 +437,8 @@ object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
         return OBJECT_INVALID; // stop here, cannot find area
     }
 
-    object oNewArea = CreateArea("_home"+sDoorTag+"_"+sFacing, sTag);
+    object oTemplateArea = GetObjectByTag("_home"+sDoorTag+"_"+sFacing);
+    object oNewArea = CopyArea(oTemplateArea, sTag);
 
     //SendDebugMessage("_home"+sDoorTag+"_"+sFacing+" created: "+IntToString(GetIsObjectValid(oNewArea)), TRUE);
     SetLocalString(oNewArea, "coordinates", sCoordinates);
@@ -463,5 +515,53 @@ object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
     return oNewArea;
 }
 
+void InitializeHouses(string sArea)
+{
+    object oArea = GetObjectByTag(sArea);
+
+    object oDoor = GetFirstObjectInArea(oArea);
+    string sResRef, sCoordinates, sTag;
+    vector vVector;
+
+    string sList;
+
+    while (GetIsObjectValid(oDoor))
+    {
+        sResRef = GetResRef(oDoor);
+
+        if (GetObjectType(oDoor) == OBJECT_TYPE_DOOR && GetStringLeft(sResRef, 5) == "_home")
+        {
+            vVector = GetPosition(oDoor);
+            sCoordinates = IntToString(FloatToInt(vVector.x))+IntToString(FloatToInt(vVector.y));
+            // use the x and y coordinates to determine the unique location of a door
+            // it's okay to convert it from a float to int as we don't need/want the decimals
+
+            sTag = GetTag(oArea)+"_"+GetTag(oDoor)+sCoordinates;
+
+            sList = AddListItem(sList, sTag, TRUE);
+
+            SetTag(oDoor, sTag+"_exterior_door");
+
+            SetLocalString(oDoor, "coordinates", sCoordinates);
+            SetLocalString(oDoor, "area", sTag);
+
+            InstanceHouseArea(sCoordinates, sTag, GetFacing(oDoor));
+        }
+
+        oDoor = GetNextObjectInArea(oArea);
+    }
+
+    SetCampaignString("housing", sArea, sList);
+}
+
+void InitializeAllHouses()
+{
+    InitializeHouses("begg");
+    InitializeHouses("dock");
+    InitializeHouses("blak");
+    InitializeHouses("core");
+
+    SetLocalInt(GetModule(), "houses_initialized", TRUE);
+}
 
 //void main() {}

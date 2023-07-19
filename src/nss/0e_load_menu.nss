@@ -23,7 +23,7 @@ void main ()
         // Load up the GUIPanel.
         // if (nData) PopUpPlayerVerGUIPanel (OBJECT_SELF);
         // else PopUpPlayerHorGUIPanel (OBJECT_SELF);
-        
+
         PopUpPlayerHorGUIPanel (OBJECT_SELF);
     }
 }

@@ -1,8 +1,33 @@
 #include "inc_housing"
 
+// for some reason all placeables are backwards, this is a hack to fix that
+void OrientPlaceables(object oArea)
+{
+    object oObject = GetFirstObjectInArea(oArea);
+    object oFixFacing;
+    string sResRef;
+
+    while (GetIsObjectValid(oObject))
+    {
+        sResRef = GetResRef(oObject);
+        
+        //AssignCommand(oObject, SetFacing(GetNormalizedDirection(GetFacing(oObject) + fDegrees)));
+        if (GetObjectType(oObject) == OBJECT_TYPE_PLACEABLE && (GetStringLeft(sResRef, 7) == "storage" || GetStringLeft(sResRef, 12) == "gold_storage"))  
+        {  
+            oFixFacing = GetNearestObjectByTag("fix_facing", oObject);
+            TurnToFaceObject(oFixFacing, oObject);    
+            AssignCommand(oObject, SetFacing(GetNormalizedDirection(GetFacing(oObject) + 180.0)));
+        }
+
+        oObject = GetNextObjectInArea(oArea);
+    }
+}
+
 void main()
 {
     object oPC = GetEnteringObject();
+
+    OrientPlaceables(OBJECT_SELF);
 
     if (GetIsPC(oPC))
     {

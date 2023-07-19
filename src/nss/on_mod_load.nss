@@ -52,45 +52,6 @@ void SpawnPCBloodstains()
     }
 }
 
-void InitializeHouses(string sArea)
-{
-    object oArea = GetObjectByTag(sArea);
-
-    object oDoor = GetFirstObjectInArea(oArea);
-    string sResRef, sCoordinates, sTag;
-    vector vVector;
-
-    string sList;
-
-    while (GetIsObjectValid(oDoor))
-    {
-        sResRef = GetResRef(oDoor);
-
-        if (GetObjectType(oDoor) == OBJECT_TYPE_DOOR && GetStringLeft(sResRef, 5) == "_home")
-        {
-            vVector = GetPosition(oDoor);
-            sCoordinates = IntToString(FloatToInt(vVector.x))+IntToString(FloatToInt(vVector.y));
-            // use the x and y coordinates to determine the unique location of a door
-            // it's okay to convert it from a float to int as we don't need/want the decimals
-
-            sTag = GetTag(oArea)+"_"+GetTag(oDoor)+sCoordinates;
-
-            sList = AddListItem(sList, sTag, TRUE);
-
-            SetTag(oDoor, sTag+"_exterior_door");
-
-            SetLocalString(oDoor, "coordinates", sCoordinates);
-            SetLocalString(oDoor, "area", sTag);
-
-            InstanceHouseArea(sCoordinates, sTag, GetFacing(oDoor));
-        }
-
-        oDoor = GetNextObjectInArea(oArea);
-    }
-
-    SetCampaignString("housing", sArea, sList);
-}
-
 void SeedMonitor()
 {
     int nStage = GetLocalInt(GetModule(), "seed_stage");
@@ -766,13 +727,12 @@ void main()
     
     SendDebugMessage("Merchants created", TRUE);
 
-    InitializeHouses("begg");
-    InitializeHouses("dock");
-    InitializeHouses("blak");
-    InitializeHouses("core");
-
     SpawnPCBloodstains();
 
+    CreateHouseTemplatesInAllCardinalDirections();
+
+    // as we do assign commands and other things when creating the templates, we should delay house seeding in case things screw up
+    DelayCommand(5.0, InitializeAllHouses());  
 
 // set Yesgar to spawn 1 minute after module starts
     SetLocalInt(OBJECT_SELF, "yesgar_count", 190);
@@ -790,5 +750,5 @@ void main()
         SetLocalInt(GetModule(), "treasure_ready", 1);
    }
 
-   ExecuteScript("tlk_overrides");
+   ExecuteScript("tlk_overrides");   
 }

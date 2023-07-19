@@ -9,7 +9,7 @@ void main()
     object oModule = GetModule();
 
     if (GetLocalInt(oModule, "treasure_ready") == 1)
-    {
+    {          
         NWNX_Util_SetInstructionLimit(-1);
         NWNX_Administration_SetPlayerPassword(GetLocalString(GetModule(), "PlayerPassword"));
         NWNX_Administration_SetDMPassword(GetLocalString(GetModule(), "DMPassword"));
