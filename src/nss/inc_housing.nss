@@ -4,6 +4,7 @@
 #include "inc_ctoken"
 #include "nwnx_area"
 #include "x0_i0_position"
+#include "nwnx_item"
 
 /* Declarations */
 // Return iPinID of the first deleted map pin within the personal map pin array
@@ -354,7 +355,7 @@ void RotateTemplateHouse(string sType)
 {
     NWNX_Area_RotateArea(GetObjectByTag("_home"+sType+"_east"), 1);
     NWNX_Area_RotateArea(GetObjectByTag("_home"+sType+"_south"), 1);
-    NWNX_Area_RotateArea(GetObjectByTag("_home"+sType+"_west"), 1);    
+    NWNX_Area_RotateArea(GetObjectByTag("_home"+sType+"_west"), 1);
 }
 
 void RotateTemplateHouses()
@@ -562,6 +563,82 @@ void InitializeAllHouses()
     InitializeHouses("core");
 
     SetLocalInt(GetModule(), "houses_initialized", TRUE);
+}
+
+void CleanupPlaceable(object oObject);
+void CleanupPlaceable(object oObject)
+{
+    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_USED, "");
+    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_CLOSED, "");
+    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_DAMAGED, "");
+    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_DEATH, "");
+    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_DISARM, "");
+    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_HEARTBEAT, "");
+    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_LEFT_CLICK, "");
+    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_MELEEATTACKED, "");
+    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_SPELLCASTAT, "");
+    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_OPEN, "");
+    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_TRAPTRIGGERED, "");
+    SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_DIALOGUE, "");
+
+    SetPlotFlag(oObject, TRUE);
+    NWNX_Object_SetPlaceableIsStatic(oObject, FALSE);
+    NWNX_Object_SetHasInventory(oObject, FALSE);
+
+    NWNX_Object_SetDialogResref(oObject, "");
+
+    SetTag(oObject, "null_tag");
+}
+
+void BuyPlaceable(object oPlaceable, object oPC);
+void BuyPlaceable(object oPlaceable, object oPC)
+{
+    int nCost = GetMaxHitPoints(oPlaceable); // we store the cost of the placeable in the max hit points field, don't ask
+
+//  only allow the player to buy the placeable if they have enough gold
+    if (GetGold(oPC) < nCost) return;
+
+    object oItem = CreateItemOnObject("placeable", oPC);
+
+    PlaySound("it_coins");
+
+    TakeGoldFromCreature(nCost, oPC, TRUE);
+
+    NWNX_Item_SetAddGoldPieceValue(oItem, nCost);
+
+    string sName = GetName(oPlaceable);
+    SetName(oItem, "Placeable: "+sName);
+
+    SetLocalInt(oItem, "appearance_type", GetAppearanceType(oPlaceable));
+    SetLocalString(oItem, "description", GetDescription(oPlaceable));
+    SetLocalString(oItem, "name", sName);
+}
+
+object CopyPlaceable(string sName, string sDescription, string sType, location lLocation, int nAppearanceType);
+object CopyPlaceable(string sName, string sDescription, string sType, location lLocation, int nAppearanceType)
+{
+    object oPlaceableToCopy = GetObjectByTag("_Placeable"+IntToString(nAppearanceType));
+
+    object oPlaceable = CopyObject(oPlaceableToCopy, lLocation, OBJECT_INVALID, "null_tag");
+
+    SetLocalInt(oPlaceable, "appearance_type", nAppearanceType);
+    SetLocalString(oPlaceable, "description", sDescription);
+    SetLocalString(oPlaceable, "name", sName);
+    SetLocalString(oPlaceable, "type", sType);
+
+    AssignCommand(oPlaceable, ActionPlayAnimation(ANIMATION_PLACEABLE_CLOSE));
+    AssignCommand(oPlaceable, ActionPlayAnimation(ANIMATION_PLACEABLE_ACTIVATE));
+
+    SetName(oPlaceable, sName);
+    SetDescription(oPlaceable, sDescription);
+
+    return oPlaceable;
+}
+
+int IsInOwnHome(object oPC);
+int IsInOwnHome(object oPC)
+{
+    return GetHomeTag(oPC) == GetTag(GetArea(oPC));
 }
 
 //void main() {}
