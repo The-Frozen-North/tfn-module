@@ -69,6 +69,48 @@ int GetItemPropertiesHash(object oItem, int bForce=0)
         json jProperties = JsonPointer(jItem, "/PropertiesList");
         // Manually add keys for everything else that needs to go into the hash
         jProperties = JsonObjectSet(jProperties, "_AdditionalGold", JsonInt(NWNX_Item_GetAddGoldPieceValue(oItem)));
+        
+        // Remove UsesPerDay from the structure
+        // This is actually the remaining number of uses per day
+        // so if a PC logs out having used an item it will change its hash
+        
+        /*
+        "value":[
+            {
+                "ChanceAppear":{"type":"byte","value":100},
+                "CostTable":{"type":"byte","value":3},
+                "CostValue":{"type":"word","value":9},
+                "CustomTag":{"type":"cexostring","value":""},
+                "Param1":{"type":"byte","value":255},
+                "Param1Value":{"type":"byte","value":0},
+                "PropertyName":{"type":"word","value":15},
+                "Subtype":{"type":"word","value":33},
+                "Useable":{"type":"byte","value":1},
+                "UsesPerDay":{"type":"byte","value":2},
+                "__struct_id":0
+            }
+            ,
+            <another object like the above that represents the next property>
+            ]        
+        
+        */
+        
+        json jValue = JsonObjectGet(jProperties, "value");
+        int nNumItems = JsonGetLength(jValue);
+        int i;
+        //WriteTimestampedLogEntry("Item " + GetName(oItem) + " has " + JsonDump(jValue));
+        json jNewValues = JsonArray();
+        for (i=0; i<nNumItems; i++)
+        {
+            json jItemPropObj = JsonArrayGet(jValue, i);
+            //WriteTimestampedLogEntry("Object " + IntToString(i) + " = " + JsonDump(jItemPropObj));
+            json jItemPropModified = JsonObjectDel(jItemPropObj, "UsesPerDay");
+            //WriteTimestampedLogEntry("Deleted usesperday " + JsonDump(jItemPropModified));
+            jNewValues = JsonArrayInsert(jNewValues, jItemPropModified);
+        }
+        //WriteTimestampedLogEntry("New values " + JsonDump(jNewValues));
+        jProperties = JsonObjectSet(jProperties, "value", jNewValues);
+        //WriteTimestampedLogEntry("Item property dump: " + JsonDump(jProperties));
         nRet = NWNX_Util_Hash(JsonDump(jProperties));
     }
     return nRet;
