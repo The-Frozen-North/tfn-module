@@ -173,6 +173,31 @@ string GetHomeTag(object oPC)
     }
 }
 
+string GetHomeTagByCDKey(string sPlayerCDKey);
+string GetHomeTagByCDKey(string sPlayerCDKey)
+{
+    if (GetHomeTagInDistrict(sPlayerCDKey, "begg") != "")
+    {
+        return GetHomeTagInDistrict(sPlayerCDKey, "begg");
+    }
+    else if (GetHomeTagInDistrict(sPlayerCDKey, "core") != "")
+    {
+        return GetHomeTagInDistrict(sPlayerCDKey, "core");
+    }
+    else if (GetHomeTagInDistrict(sPlayerCDKey, "dock") != "")
+    {
+        return GetHomeTagInDistrict(sPlayerCDKey, "dock");
+    }
+    else if (GetHomeTagInDistrict(sPlayerCDKey, "blak") != "")
+    {
+        return GetHomeTagInDistrict(sPlayerCDKey, "blak");
+    }
+    else
+    {
+        return "";
+    }
+}
+
 // returns true if the PC is a homeless bum :P
 // i.e he doesn't have a house in the beggar's nest, city core, docks, or blacklake
 int GetIsPlayerHomeless(object oPC);
@@ -670,6 +695,7 @@ void InitPlaceablesTable()
         "name TEXT, " +
         "description TEXT, " +
         "type INTEGER " +
+        "animation_state INTEGER " +
         ");");
     SqlStep(sql);
     SqlResetQuery(sql);
@@ -688,9 +714,9 @@ void UpdatePlaceable(object oPlaceable, vector vPosition, float fFacing, string 
 {
         sqlquery sql = SqlPrepareQueryCampaign("house_placeables",
             "UPDATE placeables " +
-            "SET uuid = @uuid, appearance_type = @appearance_type, position = @position, facing = @facing, name = @name, description = @description, type = @type " +
+            "appearance_type = @appearance_type, position = @position, facing = @facing, name = @name, description = @description " +
             "WHERE uuid = @uuid");
-        BindPlaceableForSQL(oPlaceable, GetPosition(oPlaceable), GetFacing(oPlaceable), sql);
+        BindPlaceableForSQL(oPlaceable, vPosition, fFacing, sql);
         SqlBindString(sql, "@uuid", sUUID);
         SqlStep(sql);
 }
@@ -746,7 +772,7 @@ void LoadAllHousePlaceables()
     {
         string sUUID = SqlGetString(sql, 0);
         int nAppearanceType = SqlGetInt(sql, 1);
-        string sAreaTag = SqlGetString(sql, 2);
+        string sAreaTag = GetHomeTagByCDKey(SqlGetString(sql, 2));
         vector vPosition = SqlGetVector(sql, 3);
         float fFacing = IntToFloat(SqlGetInt(sql, 4));
         string sName = SqlGetString(sql, 5);

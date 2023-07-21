@@ -144,12 +144,12 @@ void main ()
                 AssignCommand (oTarget, SetFacing(fFacing));
                 NWNX_Object_SetPosition(oTarget, vPosition, FALSE);
 
+                UpdatePlaceable(oTarget, GetPosition(oTarget), GetFacing(oTarget), GetLocalString(oTarget, "uuid"));
+
                 // when using set facing with very little degrees, it tends to not turn the object clientside at all even though the facing actually changed
                 // this is a hack to reload the model and force that to happen
                 NWNX_Visibility_SetVisibilityOverride(OBJECT_INVALID, oTarget, NWNX_VISIBILITY_HIDDEN);
                 DelayCommand(0.1, NWNX_Visibility_SetVisibilityOverride(OBJECT_INVALID, oTarget, NWNX_VISIBILITY_DEFAULT));
-
-                UpdatePlaceable(oTarget, GetPosition(oTarget), GetFacing(oTarget), GetLocalString(oTarget, "uuid"));
 
                 FloatingTextStringOnCreature("Placeable location saved.", oPC, FALSE);
             }
