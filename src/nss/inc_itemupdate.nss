@@ -97,14 +97,6 @@ struct ItemPropertyUpdateInfo UpdateItemProperties(object oItem)
         return sRet;
     }
 
-    int nGoldValue = GetIdentifiedGoldCost(oItem);
-
-    // do nothing if we made an oopsie and there happens to be a an item that is greater than 22000 gold. theoretically, this should never happen as we filter out items that are greater than 22000 gold when seeding.
-    if (nGoldValue > MAX_VALUE)
-    {
-        return sRet;
-    }
-
     int nThisHash = GetItemPropertiesHash(oItem);
     int nTreasureHash = GetItemPropertiesHash(oTreasureStorage);
     if (nThisHash != nTreasureHash)
@@ -118,7 +110,7 @@ struct ItemPropertyUpdateInfo UpdateItemProperties(object oItem)
             // something itemproperty related has been changed
             // Or we can force it to hash again, so now it should only have the itemprop list to compare.
             nThisHash = GetItemPropertiesHash(oItem, 1);
-            if (nGoldValue != GetIdentifiedGoldCost(oTreasureStorage) || nThisHash != nTreasureHash)
+            if (GetIdentifiedGoldCost(oItem) != GetIdentifiedGoldCost(oTreasureStorage) || nThisHash != nTreasureHash)
             {
                 sRet.nUpdateFlags |= ITEM_UPDATE_ITEMPROPERTIES;
             }
@@ -163,12 +155,6 @@ json _UpdateItemPropertiesToJson(json jData, object oItem)
     // If no update flags, there's no need to report anything as changed
     // or it's just adding stuff to the json object for no good reason
     if (sUpdate.nUpdateFlags == 0)
-    {
-        return jData;
-    }
-
-    // do not report anything as changed if the item properties are the same. Sort the array because we don't care about order
-    if (JsonArrayTransform(sUpdate.jOldProps, JSON_ARRAY_SORT_ASCENDING) == JsonArrayTransform(sUpdate.jNewProps, JSON_ARRAY_SORT_ASCENDING))
     {
         return jData;
     }
