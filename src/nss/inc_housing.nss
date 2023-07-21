@@ -555,16 +555,6 @@ void InitializeHouses(string sArea)
     SetCampaignString("housing", sArea, sList);
 }
 
-void InitializeAllHouses()
-{
-    InitializeHouses("begg");
-    InitializeHouses("dock");
-    InitializeHouses("blak");
-    InitializeHouses("core");
-
-    SetLocalInt(GetModule(), "houses_initialized", TRUE);
-}
-
 void CleanupPlaceable(object oObject);
 void CleanupPlaceable(object oObject)
 {
@@ -590,8 +580,8 @@ void CleanupPlaceable(object oObject)
     SetTag(oObject, "null_tag");
 }
 
-void BuyPlaceable(object oPlaceable, object oPC);
-void BuyPlaceable(object oPlaceable, object oPC)
+void BuyPlaceable(object oPlaceable, object oPC, int bCost = TRUE);
+void BuyPlaceable(object oPlaceable, object oPC, int bCost = TRUE)
 {
     int nCost = GetMaxHitPoints(oPlaceable); // we store the cost of the placeable in the max hit points field, don't ask
 
@@ -610,9 +600,9 @@ void BuyPlaceable(object oPlaceable, object oPC)
         sSound == "16" || // drawer
         sSound == "17" || // generic_wood_small, combat dummy
         sSound == "18" || // generic_wood_large
-        sSound == "20" || // generic_stone_large 
+        sSound == "20" || // generic_stone_large
         sSound == "22" || // generic_metal_large
-        sSound == "32" || // stone_water 
+        sSound == "32" || // stone_water
         sSound == "26") // stone_object_large
     {
         sResRef = "placeable_large";
@@ -626,7 +616,7 @@ void BuyPlaceable(object oPlaceable, object oPC)
 
     PlaySound("it_genericsmall");
 
-    TakeGoldFromCreature(nCost, oPC, TRUE);
+    if (bCost) TakeGoldFromCreature(nCost, oPC, TRUE);
 
     NWNX_Item_SetAddGoldPieceValue(oItem, nCost);
 
@@ -636,13 +626,14 @@ void BuyPlaceable(object oPlaceable, object oPC)
     SetLocalInt(oItem, "appearance_type", nAppearance);
     SetLocalString(oItem, "description", GetDescription(oPlaceable));
     SetLocalString(oItem, "name", sName);
+    SetLocalString(oItem, "uuid", GetLocalString(oPlaceable, "uuid"));
 }
 
 void PlaceableMovingSound(object oPlaceable);
 void PlaceableMovingSound(object oPlaceable)
 {
     int nAppearance = GetAppearanceType(oPlaceable);
-    
+
     string sSound = "cb_ht_fleshleth";
 
     int nSound = StringToInt(Get2DAString("placeables", "SoundAppType", nAppearance));
@@ -666,19 +657,63 @@ void PlaceableMovingSound(object oPlaceable)
     PlaySound(sSound+IntToString(d2()));
 }
 
-object CopyPlaceable(string sName, string sDescription, string sType, location lLocation, int nAppearanceType);
-object CopyPlaceable(string sName, string sDescription, string sType, location lLocation, int nAppearanceType)
+void InitPlaceablesTable();
+void InitPlaceablesTable()
+{
+    sqlquery sql = SqlPrepareQueryCampaign("house_placeables",
+        "CREATE TABLE IF NOT EXISTS placeables (" +
+        "uuid TEXT NOT NULL UNIQUE, " +
+        "appearance_type INTEGER NOT NULL, " +
+        "cd_key TEXT NOT NULL, " +
+        "position TEXT NOT NULL, " +
+        "facing INTEGER NOT NULL, " +
+        "name TEXT, " +
+        "description TEXT, " +
+        "type INTEGER " +
+        ");");
+    SqlStep(sql);
+    SqlResetQuery(sql);
+}
+
+void BindPlaceableForSQL(object oPlaceable, vector vPosition, float fFacing, sqlquery sql)
+{
+    SqlBindInt(sql, "@appearance_type", GetAppearanceType(oPlaceable));
+    SqlBindVector(sql, "@position", vPosition);
+    SqlBindInt(sql, "@facing", FloatToInt(fFacing));
+    SqlBindString(sql, "@name", GetName(oPlaceable));
+    SqlBindString(sql, "@description", GetDescription(oPlaceable));
+}
+
+void UpdatePlaceable(object oPlaceable, vector vPosition, float fFacing, string sUUID)
+{
+        sqlquery sql = SqlPrepareQueryCampaign("house_placeables",
+            "UPDATE placeables " +
+            "SET uuid = @uuid, appearance_type = @appearance_type, position = @position, facing = @facing, name = @name, description = @description, type = @type " +
+            "WHERE uuid = @uuid");
+        BindPlaceableForSQL(oPlaceable, GetPosition(oPlaceable), GetFacing(oPlaceable), sql);
+        SqlBindString(sql, "@uuid", sUUID);
+        SqlStep(sql);
+}
+
+object CopyPlaceable(string sName, string sDescription, string sType, location lLocation, int nAppearanceType, string sUUID);
+object CopyPlaceable(string sName, string sDescription, string sType, location lLocation, int nAppearanceType, string sUUID)
 {
     object oPlaceableToCopy = GetObjectByTag("_Placeable"+IntToString(nAppearanceType));
 
-    object oPlaceable = CopyObject(oPlaceableToCopy, lLocation, OBJECT_INVALID, "null_tag");
+    object oPlaceable = CopyObject(oPlaceableToCopy, lLocation, OBJECT_INVALID, "_HomePlaceable");
+
+    if (!GetIsObjectValid(oPlaceable)) return OBJECT_INVALID;
 
     CleanupPlaceable(oPlaceable);
+
+    SetTag(oPlaceable, "_HomePlaceable");
+    SetUseableFlag(oPlaceable, FALSE);
 
     SetLocalInt(oPlaceable, "appearance_type", nAppearanceType);
     SetLocalString(oPlaceable, "description", sDescription);
     SetLocalString(oPlaceable, "name", sName);
     SetLocalString(oPlaceable, "type", sType);
+    SetLocalString(oPlaceable, "uuid", sUUID);
 
     AssignCommand(oPlaceable, ActionPlayAnimation(ANIMATION_PLACEABLE_CLOSE));
     AssignCommand(oPlaceable, ActionPlayAnimation(ANIMATION_PLACEABLE_ACTIVATE));
@@ -691,10 +726,57 @@ object CopyPlaceable(string sName, string sDescription, string sType, location l
     return oPlaceable;
 }
 
+void RemovePlaceable(object oPC, object oPlaceable);
+void RemovePlaceable(object oPC, object oPlaceable)
+{
+    BuyPlaceable(oPlaceable, oPC, FALSE);
+
+    sqlquery sql = SqlPrepareQueryCampaign("house_placeables", "DELETE FROM placeables WHERE uuid = @uuid");
+    SqlBindString(sql, "@uuid", GetLocalString(oPlaceable, "uuid"));
+    SqlStep(sql);
+
+    DestroyObject(oPlaceable);
+}
+
+void LoadAllHousePlaceables()
+{
+    sqlquery sql = SqlPrepareQueryCampaign("house_placeables", "SELECT " +
+    "uuid, appearance_type, cd_key, position, facing, name, description, type FROM placeables;");
+    while (SqlStep(sql))
+    {
+        string sUUID = SqlGetString(sql, 0);
+        int nAppearanceType = SqlGetInt(sql, 1);
+        string sAreaTag = SqlGetString(sql, 2);
+        vector vPosition = SqlGetVector(sql, 3);
+        float fFacing = IntToFloat(SqlGetInt(sql, 4));
+        string sName = SqlGetString(sql, 5);
+        string sDescription = SqlGetString(sql, 6);
+
+        object oArea = GetObjectByTag(sAreaTag);
+
+        location lLoc = Location(oArea, vPosition, fFacing);
+
+        CopyPlaceable(sName, sDescription, "", lLoc, nAppearanceType, sUUID);
+    }
+}
+
+
 int IsInOwnHome(object oPC);
 int IsInOwnHome(object oPC)
 {
     return GetHomeTag(oPC) == GetTag(GetArea(oPC));
+}
+
+void InitializeAllHouses()
+{
+    InitializeHouses("begg");
+    InitializeHouses("dock");
+    InitializeHouses("blak");
+    InitializeHouses("core");
+
+    LoadAllHousePlaceables();
+
+    SetLocalInt(GetModule(), "houses_initialized", TRUE);
 }
 
 //void main() {}

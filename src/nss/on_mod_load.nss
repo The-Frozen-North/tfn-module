@@ -729,6 +729,8 @@ void main()
 
     SpawnPCBloodstains();
 
+    InitPlaceablesTable();
+
     CreateHouseTemplatesInAllCardinalDirections();
 
     // as we do assign commands and other things when creating the templates, we should delay house seeding in case things screw up

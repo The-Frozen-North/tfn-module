@@ -1,4 +1,5 @@
 #include "nw_inc_nui"
+#include "inc_housing"
 
 void main()
 {
@@ -17,11 +18,15 @@ void main()
     {
         ExecuteScript(sWindow + "_evt");
     }
-    
-    
+
+
 
     if (GetResRef(GetArea(oPC)) == "blak_divine")
     {
         ExecuteScript("tmog_nui_event");
+    }
+    else if (GetHomeTag(oPC) == GetTag(GetArea(oPC)))
+    {
+        ExecuteScript("placeable_nui");
     }
 }
