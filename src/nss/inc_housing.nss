@@ -598,9 +598,33 @@ void BuyPlaceable(object oPlaceable, object oPC)
 //  only allow the player to buy the placeable if they have enough gold
     if (GetGold(oPC) < nCost) return;
 
-    object oItem = CreateItemOnObject("placeable", oPC);
+    /*
+    string sResRef = "placeable_small";
+    int nAppearance = GetAppearanceType(oPlaceable);
 
-    PlaySound("it_coins");
+    string sSound = Get2DAString("placeables", "SoundAppType", nAppearance);
+
+    // these placeables are categorized as having large sounds like generic_wood_large, we can consider these placeables to be large
+    if (sSound == "13" || // crate_large
+        sSound == "15" || // chest_large
+        sSound == "16" || // drawer
+        sSound == "17" || // generic_wood_small, combat dummy
+        sSound == "18" || // generic_wood_large
+        sSound == "20" || // generic_stone_large 
+        sSound == "22" || // generic_metal_large
+        sSound == "32" || // stone_water 
+        sSound == "26") // stone_object_large
+    {
+        sResRef = "placeable_large";
+    }
+    */
+
+    int nAppearance = GetAppearanceType(oPlaceable);
+    string sResRef = "placeable";
+
+    object oItem = CreateItemOnObject(sResRef, oPC);
+
+    PlaySound("it_genericsmall");
 
     TakeGoldFromCreature(nCost, oPC, TRUE);
 
@@ -609,9 +633,37 @@ void BuyPlaceable(object oPlaceable, object oPC)
     string sName = GetName(oPlaceable);
     SetName(oItem, "Placeable: "+sName);
 
-    SetLocalInt(oItem, "appearance_type", GetAppearanceType(oPlaceable));
+    SetLocalInt(oItem, "appearance_type", nAppearance);
     SetLocalString(oItem, "description", GetDescription(oPlaceable));
     SetLocalString(oItem, "name", sName);
+}
+
+void PlaceableMovingSound(object oPlaceable);
+void PlaceableMovingSound(object oPlaceable)
+{
+    int nAppearance = GetAppearanceType(oPlaceable);
+    
+    string sSound = "cb_ht_fleshleth";
+
+    int nSound = StringToInt(Get2DAString("placeables", "SoundAppType", nAppearance));
+
+    string sSoundType = Get2DAString("placeableobjsnds", "ArmorType", nSound);
+
+    if (sSoundType == "wood")
+    {
+        sSound = "cb_ht_fleshwood";
+    }
+    else if (sSoundType == "stone")
+    {
+        sSound = "cb_ht_fleshston";
+    }
+    else if (sSoundType == "plate")
+    {
+        sSound = "cb_ht_fleshplat";
+    }
+
+    //AssignCommand(oPlaceable, PlaySound(sSound+IntToString(d2())));
+    PlaySound(sSound+IntToString(d2()));
 }
 
 object CopyPlaceable(string sName, string sDescription, string sType, location lLocation, int nAppearanceType);
@@ -621,6 +673,8 @@ object CopyPlaceable(string sName, string sDescription, string sType, location l
 
     object oPlaceable = CopyObject(oPlaceableToCopy, lLocation, OBJECT_INVALID, "null_tag");
 
+    CleanupPlaceable(oPlaceable);
+
     SetLocalInt(oPlaceable, "appearance_type", nAppearanceType);
     SetLocalString(oPlaceable, "description", sDescription);
     SetLocalString(oPlaceable, "name", sName);
@@ -628,6 +682,8 @@ object CopyPlaceable(string sName, string sDescription, string sType, location l
 
     AssignCommand(oPlaceable, ActionPlayAnimation(ANIMATION_PLACEABLE_CLOSE));
     AssignCommand(oPlaceable, ActionPlayAnimation(ANIMATION_PLACEABLE_ACTIVATE));
+
+    PlaceableMovingSound(oPlaceable);
 
     SetName(oPlaceable, sName);
     SetDescription(oPlaceable, sDescription);

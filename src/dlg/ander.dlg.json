@@ -5838,7 +5838,19 @@
         "__struct_id": 64,
         "ActionParams": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "target"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "10"
+              }
+            }
+          ]
         },
         "Animation": {
           "type": "dword",
@@ -5866,7 +5878,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_q_adv"
         },
         "Sound": {
           "type": "resref",
