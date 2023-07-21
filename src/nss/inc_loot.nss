@@ -329,7 +329,7 @@ int GetLootWeightingTransferBasedOnOwings(object oReceiver, object oDebtor, int 
         nItemGoldValue = max(0, nDebt - (nItemGoldValue - nDebt));
     }
     float fItemGoldValue = IntToFloat(nItemGoldValue);
-    float fDebt = IntToFloat(min(nDebt, 22000));
+    float fDebt = IntToFloat(min(nDebt, MAX_VALUE));
     float fTransfer = 100 + (pow(fItemGoldValue/fDebt, 1.5) * 850);
     return FloatToInt(fTransfer);
 }
@@ -458,12 +458,13 @@ string DetermineTier(int iCR, int iAreaCR, string sType = "", float fWeightExpon
         SetLocalInt(GetModule(), LOOT_DEBUG_T5_WEIGHT, nT5Weight);
     }
 
-
+    /*
    SendDebugMessage("Loot T1Weight: "+IntToString(nT1Weight));
    SendDebugMessage("Loot T2Weight: "+IntToString(nT2Weight));
    SendDebugMessage("Loot T3Weight: "+IntToString(nT3Weight));
    SendDebugMessage("Loot T4Weight: "+IntToString(nT4Weight));
    SendDebugMessage("Loot T5Weight: "+IntToString(nT5Weight));
+   */
 
    nCombinedWeight = nT1Weight + nT2Weight + nT3Weight + nT4Weight + nT5Weight;
    //SendDebugMessage("Combined: "+IntToString(nCombinedWeight));
