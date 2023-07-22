@@ -21,12 +21,6 @@ void main()
 
     int bCreateRecord = FALSE;
 
-    if (sUUID == "")
-    {
-        sUUID = GetRandomUUID();
-        bCreateRecord = TRUE;
-    }
-
     object oPlaceable = CopyPlaceable(sName, sDescription, sType, GetItemActivatedTargetLocation(), nAppearanceType, sUUID);
 
     if (GetLocalInt(GetArea(oPC), "edit") == 1)
@@ -42,10 +36,6 @@ void main()
         return;
     }
 
-    // new UUID, assume it is a new placeable
-    if (bCreateRecord)
-    {
-        sUUID = GetRandomUUID();
 
         sqlquery sql = SqlPrepareQueryCampaign("house_placeables",
             "INSERT INTO placeables " +
@@ -55,11 +45,7 @@ void main()
         SqlBindString(sql, "@cd_key", GetPCPublicCDKey(oPC));
         SqlBindString(sql, "@uuid", sUUID);
         SqlStep(sql);
-    }
-    else
-    {
-        UpdatePlaceable(oPlaceable, GetPosition(oPlaceable), GetFacing(oPlaceable), sUUID);
-    }
+
 
     DestroyObject(oItem);
 }

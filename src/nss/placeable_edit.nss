@@ -43,7 +43,7 @@ int PopUpPlaceableGUIPanel(object oPC, object oTarget)
     // Row 5 (Destroy)********************************************************** 177
     // jRow = CreateButton (JsonArray (), "Get Placeable", "btn_get_placeable", 167.0, 25.0);
     jRow = JsonArrayInsert (JsonArray (), NuiSpacer());
-    jRow = CreateButton (jRow, "Remove", "btn_destroy", 100.0, 25.0);
+    jRow = CreateButton (jRow, "Retrieve", "btn_destroy", 100.0, 25.0);
     jRow = JsonArrayInsert (jRow, NuiSpacer());
     jRow = JsonArrayInsert (jRow, NuiSpacer());
     jRow = JsonArrayInsert (jRow, NuiSpacer());

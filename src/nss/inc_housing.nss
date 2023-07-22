@@ -641,7 +641,16 @@ void BuyPlaceable(object oPlaceable, object oPC, int bCost = TRUE)
 
     PlaySound("it_genericsmall");
 
-    if (bCost) TakeGoldFromCreature(nCost, oPC, TRUE);
+    // if you are buying it for the first time, set a UUID for the database
+    if (bCost)
+    {
+        SetLocalString(oItem, "uuid", GetRandomUUID());
+        TakeGoldFromCreature(nCost, oPC, TRUE);
+    }
+    else
+    { // otherwise, assume you are retrieving a placeable and use the stored UUID
+        SetLocalString(oItem, "uuid", GetLocalString(oPlaceable, "uuid"));
+    }
 
     NWNX_Item_SetAddGoldPieceValue(oItem, nCost);
 
@@ -651,7 +660,6 @@ void BuyPlaceable(object oPlaceable, object oPC, int bCost = TRUE)
     SetLocalInt(oItem, "appearance_type", nAppearance);
     SetLocalString(oItem, "description", GetDescription(oPlaceable));
     SetLocalString(oItem, "name", sName);
-    SetLocalString(oItem, "uuid", GetLocalString(oPlaceable, "uuid"));
 }
 
 void PlaceableMovingSound(object oPlaceable);
@@ -694,7 +702,7 @@ void InitPlaceablesTable()
         "facing INTEGER NOT NULL, " +
         "name TEXT, " +
         "description TEXT, " +
-        "type INTEGER " +
+        "type INTEGER, " +
         "animation_state INTEGER " +
         ");");
     SqlStep(sql);
@@ -710,15 +718,27 @@ void BindPlaceableForSQL(object oPlaceable, vector vPosition, float fFacing, sql
     SqlBindString(sql, "@description", GetDescription(oPlaceable));
 }
 
-void UpdatePlaceable(object oPlaceable, vector vPosition, float fFacing, string sUUID)
+void UpdatePlaceable(object oPlaceable, object oPC, vector vPosition, float fFacing, string sUUID)
 {
-        sqlquery sql = SqlPrepareQueryCampaign("house_placeables",
-            "UPDATE placeables " +
-            "appearance_type = @appearance_type, position = @position, facing = @facing, name = @name, description = @description " +
-            "WHERE uuid = @uuid");
-        BindPlaceableForSQL(oPlaceable, vPosition, fFacing, sql);
-        SqlBindString(sql, "@uuid", sUUID);
-        SqlStep(sql);
+    /* REEEEEEEEEEEE THIS DOESNT WORK
+    sqlquery sql = SqlPrepareQueryCampaign("house_placeables",
+        "UPDATE placeables " +
+        "SET appearance_type = @appearance_type, position = @position, facing = @facing, name = @name, description = @description " +
+        "WHERE uuid = @uuid;");
+    */
+    sqlquery delete_sql = SqlPrepareQueryCampaign("house_placeables", "DELETE FROM placeables WHERE uuid = @uuid");
+    SqlBindString(delete_sql, "@uuid", sUUID);
+    SqlStep(delete_sql);
+
+    sqlquery sql = SqlPrepareQueryCampaign("house_placeables",
+    "INSERT INTO placeables " +
+    "(uuid, appearance_type, cd_key, position, facing, name, description, type) " +
+    "VALUES (@uuid, @appearance_type, @cd_key, @position, @facing, @name, @description, @type);" +
+    "DELETE FROM placeables WHERE uuid = @uuid");
+    BindPlaceableForSQL(oPlaceable, vPosition, fFacing, sql);
+    SqlBindString(sql, "@cd_key", GetPCPublicCDKey(oPC)); 
+    SqlBindString(sql, "@uuid", sUUID);
+    SqlStep(sql);
 }
 
 object CopyPlaceable(string sName, string sDescription, string sType, location lLocation, int nAppearanceType, string sUUID);
