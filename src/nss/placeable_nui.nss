@@ -12,13 +12,17 @@ Learnings:
 
 const float STEP = 0.1;
 const float ROTATE_STEP = 10.0;
+const int YELLOW = 0xFFFF00;
 
-void MovePlaceableByCopying(object oTarget, object oPC, vector vPosition, float fFacing)
+object MovePlaceableByCopying(object oTarget, object oPC, vector vPosition, float fFacing)
 {
     location lLocation = Location(GetArea(oTarget), vPosition, fFacing);
     object oCopy = CopyObject(oTarget, lLocation, OBJECT_INVALID, "_HomePlaceable", TRUE);
     SetLocalObject(oPC, "0_Placeable_Target", oCopy);
+    SetObjectHiliteColor(oCopy, YELLOW);
     DestroyObject(oTarget);
+
+    return oCopy;
 }
 
 void main ()
@@ -100,7 +104,10 @@ void main ()
                 float fFacing = GetFacingFromLocation (lReset);
                 //NWNX_Object_SetPosition (oTarget, vPosition, FALSE);
                 //AssignCommand (oTarget, SetFacing (fFacing));
-                MovePlaceableByCopying(oTarget, oPC, vPosition, fFacing);
+                object oCopy = MovePlaceableByCopying(oTarget, oPC, vPosition, fFacing);
+
+                // reset highlight color
+                SetObjectHiliteColor(oCopy, -1);
 
                 //SetObjectVisualTransform(oTarget, OBJECT_VISUAL_TRANSFORM_TRANSLATE_X, 0.0);
                 //SetObjectVisualTransform(oTarget, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Y, 0.0);
@@ -173,6 +180,9 @@ void main ()
                 */
 
                 SetLocalLocation(oTarget, "0_Reset_Location", GetLocation(oTarget));
+
+                // reset highlight color
+                SetObjectHiliteColor(oTarget, -1);
 
                 // AssignCommand (oTarget, SetFacing(fFacing));
                 // NWNX_Object_SetPosition(oTarget, vPosition, FALSE);

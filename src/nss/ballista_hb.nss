@@ -1,5 +1,5 @@
 // #include "inc_ai_combat"
-#include "x0_i0_position"
+//#include "x0_i0_position"
 
 void main()
 {
@@ -34,9 +34,10 @@ void main()
         oCreature = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation);
     }
 
-    SetFacingPoint(GetPosition(oTarget));
+    // currently this makes them backwards, so disable it for now
+    //SetFacingPoint(GetPosition(oTarget));
 // Ballistas face the wrong way, so turn them
-    SetFacing(GetNormalizedDirection(GetFacing(OBJECT_SELF) - 90.0));
+    //SetFacing(GetNormalizedDirection(GetFacing(OBJECT_SELF) - 90.0));
 
     if (GetLocalInt(OBJECT_SELF, "reload") == 1)
     {

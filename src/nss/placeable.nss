@@ -36,16 +36,14 @@ void main()
         return;
     }
 
-
-        sqlquery sql = SqlPrepareQueryCampaign("house_placeables",
-            "INSERT INTO placeables " +
-            "(uuid, appearance_type, cd_key, position, facing, name, description, type) " +
-            "VALUES (@uuid, @appearance_type, @cd_key, @position, @facing, @name, @description, @type)");
-        BindPlaceableForSQL(oPlaceable, GetPosition(oPlaceable), GetFacing(oPlaceable), sql);
-        SqlBindString(sql, "@cd_key", GetPCPublicCDKey(oPC));
-        SqlBindString(sql, "@uuid", sUUID);
-        SqlStep(sql);
-
+    sqlquery sql = SqlPrepareQueryCampaign("house_placeables",
+        "INSERT INTO placeables " +
+        "(uuid, appearance_type, cd_key, position, facing, name, description, type) " +
+        "VALUES (@uuid, @appearance_type, @cd_key, @position, @facing, @name, @description, @type)");
+    BindPlaceableForSQL(oPlaceable, GetPosition(oPlaceable), GetFacing(oPlaceable), sql);
+    SqlBindString(sql, "@cd_key", GetPCPublicCDKey(oPC));
+    SqlBindString(sql, "@uuid", sUUID);
+    SqlStep(sql);
 
     DestroyObject(oItem);
 }
