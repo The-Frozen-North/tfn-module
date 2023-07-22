@@ -330,8 +330,12 @@ void main()
                         SetLocalString(oObject, "onfailtoopen_script", GetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_FAIL_TO_OPEN));
                     }
                     SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_FAIL_TO_OPEN, "door_failopen");
-// nullify this, doors with an on click script do not function
-                    SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLICKED, "");
+                   
+                   // if the door has a click script on it but the script doesn't exist, assume it is an imported door and nullify this, otherwise door breaks
+                   if (GetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLICKED) != "" && ResManGetFileContents(GetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLICKED), RESTYPE_NSS) == "")
+                   {
+                        SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_CLICKED, "");
+                   }
 
 // all doors are plot
                     SetPlotFlag(oObject, TRUE);

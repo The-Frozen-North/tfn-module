@@ -20,6 +20,18 @@ void main()
       SetAreaTransitionBMP(AREA_TRANSITION_RANDOM);
 
       AssignCommand(oClicker,JumpToObject(oTarget));
+
+          // Get all the possible associates of this PC via loop
+    object oMember = GetFirstFactionMember(oClicker, FALSE);
+    while (GetIsObjectValid(oMember))
+    {
+        if(!GetIsPC(oMember) && GetMaster(oMember)==oClicker)
+        {//If oMember's Master is the PC initiating the trans.. jump oMember.
+            AssignCommand(oMember, ClearAllActions());
+            AssignCommand(oMember, JumpToObject(oTarget));
+        }//Now.. we want next faction member.
+        oMember = GetNextFactionMember(oClicker, FALSE);
+    }
   }
  /* else
   This turned out to be unnecessary since GetIsPC returns true
