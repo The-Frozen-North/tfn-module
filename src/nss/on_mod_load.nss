@@ -41,10 +41,12 @@ void LoadTreasureContainerByBaseItem(string sTag, float x = 1.0, float y = 1.0, 
 
 void SpawnPCBloodstains()
 {
+    // get ALL the bloodstains, let players leave their "mark" :)
     int i;
-    for (i=0; i <= 100; i++)
+    for (i=0; i <= 2000; i++)
     {
         location lLoc = GetCampaignLocation("pcbloodstains", "Pos" + IntToString(i));
+
         if (GetIsObjectValid(GetAreaFromLocation(lLoc)))
         {
             CreateObject(OBJECT_TYPE_PLACEABLE, "_pc_bloodstain", lLoc);

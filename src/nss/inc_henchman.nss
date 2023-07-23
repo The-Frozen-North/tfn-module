@@ -121,25 +121,6 @@ object GetMasterByUUID(object oHench)
     return GetObjectByUUID(GetLocalString(GetModule(), GetResRef(oHench)+"_master"));
 }
 
-void RehireHenchman(object oPlayer)
-{
-    string sUUID = GetObjectUUID(oPlayer);
-    object oModule = GetModule();
-
-    if (GetLocalString(oModule, "hen_daelan_master") == sUUID) SetMaster(GetObjectByTag("hen_daelan"), oPlayer);
-    if (GetLocalString(oModule, "hen_linu_master") == sUUID) SetMaster(GetObjectByTag("hen_linu"), oPlayer);
-    if (GetLocalString(oModule, "hen_tomi_master") == sUUID) SetMaster(GetObjectByTag("hen_tomi"), oPlayer);
-    if (GetLocalString(oModule, "hen_sharwyn_master") == sUUID) SetMaster(GetObjectByTag("hen_sharwyn"), oPlayer);
-    if (GetLocalString(oModule, "hen_boddyknock_master") == sUUID) SetMaster(GetObjectByTag("hen_boddyknock"), oPlayer);
-    if (GetLocalString(oModule, "hen_grimgnaw_master") == sUUID) SetMaster(GetObjectByTag("hen_grimgnaw"), oPlayer);
-    if (GetLocalString(oModule, "hen_valen_master") == sUUID) SetMaster(GetObjectByTag("hen_valen"), oPlayer);
-    if (GetLocalString(oModule, "hen_nathyrra_master") == sUUID) SetMaster(GetObjectByTag("hen_nathyrra"), oPlayer);
-    if (GetLocalString(oModule, "hen_bim_master") == sUUID) SetMaster(GetObjectByTag("hen_bim"), oPlayer);
-    if (GetLocalString(oModule, "hen_dorna_master") == sUUID) SetMaster(GetObjectByTag("hen_dorna"), oPlayer);
-    if (GetLocalString(oModule, "hen_mischa_master") == sUUID) SetMaster(GetObjectByTag("hen_mischa"), oPlayer);
-    if (GetLocalString(oModule, "hen_xanos_master") == sUUID) SetMaster(GetObjectByTag("hen_xanos"), oPlayer);
-}
-
 object GetPawnshopForHenchman(object oHench)
 {
     string sTag = GetTag(oHench);
@@ -398,6 +379,12 @@ void ClearMaster(object oHench, int bTagDestroy=1)
         NWNX_Visibility_SetVisibilityOverride(oPlayer, oHench, NWNX_VISIBILITY_DEFAULT);
         oParty = GetNextFactionMember(oPlayer);
     }
+
+// destroy immediately if dead
+    if (GetIsDead(oHench))
+    {
+        DestroyObject(oHench);
+    }
 }
 
 void SetMaster(object oHench, object oPlayer)
@@ -448,6 +435,53 @@ void TFNRespawnHenchman(string sResRef)
         ClearMaster(oHench, 0);
         NWNX_Creature_SetFaction(oHench, STANDARD_FACTION_MERCHANT);
     }
+}
+
+void RehireHenchman(object oPlayer)
+{
+    string sUUID = GetObjectUUID(oPlayer);
+    object oModule = GetModule();
+
+    if (GetLocalString(oModule, "hen_daelan_master") == sUUID) SetMaster(GetObjectByTag("hen_daelan"), oPlayer);
+    if (GetLocalString(oModule, "hen_linu_master") == sUUID) SetMaster(GetObjectByTag("hen_linu"), oPlayer);
+    if (GetLocalString(oModule, "hen_tomi_master") == sUUID) SetMaster(GetObjectByTag("hen_tomi"), oPlayer);
+    if (GetLocalString(oModule, "hen_sharwyn_master") == sUUID) SetMaster(GetObjectByTag("hen_sharwyn"), oPlayer);
+    if (GetLocalString(oModule, "hen_boddyknock_master") == sUUID) SetMaster(GetObjectByTag("hen_boddyknock"), oPlayer);
+    if (GetLocalString(oModule, "hen_grimgnaw_master") == sUUID) SetMaster(GetObjectByTag("hen_grimgnaw"), oPlayer);
+    if (GetLocalString(oModule, "hen_valen_master") == sUUID) SetMaster(GetObjectByTag("hen_valen"), oPlayer);
+    if (GetLocalString(oModule, "hen_nathyrra_master") == sUUID) SetMaster(GetObjectByTag("hen_nathyrra"), oPlayer);
+    if (GetLocalString(oModule, "hen_bim_master") == sUUID) SetMaster(GetObjectByTag("hen_bim"), oPlayer);
+    if (GetLocalString(oModule, "hen_dorna_master") == sUUID) SetMaster(GetObjectByTag("hen_dorna"), oPlayer);
+    if (GetLocalString(oModule, "hen_mischa_master") == sUUID) SetMaster(GetObjectByTag("hen_mischa"), oPlayer);
+    if (GetLocalString(oModule, "hen_xanos_master") == sUUID) SetMaster(GetObjectByTag("hen_xanos"), oPlayer);
+}
+
+void ClearMasterIfDead(object oObject)
+{
+    if (GetIsDead(oObject))
+    {
+        ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_RESTORATION), GetLocation(oObject));
+        ClearMaster(oObject);
+    }
+}
+
+void ClearDeadHenchman(object oPlayer)
+{
+    string sUUID = GetObjectUUID(oPlayer);
+    object oModule = GetModule();
+
+    if (GetLocalString(oModule, "hen_daelan_master") == sUUID) ClearMasterIfDead(GetObjectByTag("hen_daelan"));
+    if (GetLocalString(oModule, "hen_linu_master") == sUUID) ClearMasterIfDead(GetObjectByTag("hen_linu"));
+    if (GetLocalString(oModule, "hen_tomi_master") == sUUID) ClearMasterIfDead(GetObjectByTag("hen_tomi"));
+    if (GetLocalString(oModule, "hen_sharwyn_master") == sUUID) ClearMasterIfDead(GetObjectByTag("hen_sharwyn"));
+    if (GetLocalString(oModule, "hen_boddyknock_master") == sUUID) ClearMasterIfDead(GetObjectByTag("hen_boddyknock"));
+    if (GetLocalString(oModule, "hen_grimgnaw_master") == sUUID) ClearMasterIfDead(GetObjectByTag("hen_grimgnaw"));
+    if (GetLocalString(oModule, "hen_valen_master") == sUUID) ClearMasterIfDead(GetObjectByTag("hen_valen"));
+    if (GetLocalString(oModule, "hen_nathyrra_master") == sUUID) ClearMasterIfDead(GetObjectByTag("hen_nathyrra"));
+    if (GetLocalString(oModule, "hen_bim_master") == sUUID) ClearMasterIfDead(GetObjectByTag("hen_bim"));
+    if (GetLocalString(oModule, "hen_dorna_master") == sUUID) ClearMasterIfDead(GetObjectByTag("hen_dorna"));
+    if (GetLocalString(oModule, "hen_mischa_master") == sUUID) ClearMasterIfDead(GetObjectByTag("hen_mischa"));
+    if (GetLocalString(oModule, "hen_xanos_master") == sUUID) ClearMasterIfDead(GetObjectByTag("hen_xanos"));
 }
 
 //void main(){}
