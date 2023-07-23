@@ -122,6 +122,9 @@ void CreatePlaceholderItem(object oItem)
 
 void main()
 {
+    // Khadala is taking a break and going on vacation!
+    return;
+    
     object oStorage = GetObjectByTag("khadala_storage");
     // When restocking, the real storage object needs emptying
     // But khadala is currently flagged to not restock
