@@ -23,7 +23,6 @@ $PWD/tools/linux/nasher/nasher install --erfUtil:"$PWD/tools/linux/neverwinter/n
 
 # rm server/config/common.env
 rm server/modules/TFN.mod
-rm server/settings.tml
 rm -d -R  server/override
 rm server/database/randspellbooks.sqlite3
 rm server/database/treasures.sqlite3
@@ -37,7 +36,6 @@ mkdir server/modules
 
 cp modules/TFN.mod server/modules/TFN.mod
 cp config/common.env server/config/common.env
-cp settings.tml server/settings.tml
 cp -r override/. server/override
 
 cp seeded_database/spawns.sqlite3 server/database/spawns.sqlite3
