@@ -1,6 +1,7 @@
 #include "inc_gold"
 #include "inc_horse"
 #include "nwnx_object"
+#include "inc_general"
 
 // Get the cost of the ship, modified by charisma.
 // Requires ship#_cost, where # is the nTarget variable.
@@ -169,6 +170,9 @@ void PayShipAndTravel(object oSpeaker, object oPlayer, int nTarget, int bPersuad
 
 // do not proceed if the player does not have enough gold
     if (GetGold(oPlayer) < nCost) return;
+
+    IncrementStat(oPC, "gold_spent_on_long_travel", nCost);
+    IncrementStat(oPC, "long_travel_used");
 
     object oArea = GetArea(oDestination);
 

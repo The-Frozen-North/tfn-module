@@ -875,6 +875,8 @@ void main()
 
       if (GetObjectType(OBJECT_SELF) == OBJECT_TYPE_CREATURE)
       {
+          // do
+          IncrementStat(oPC, "enemies_killed_by_party");
           GiveXPToPC(oPC, fXP);
           AdvanceQuest(OBJECT_SELF, oPC, GetLocalInt(OBJECT_SELF, "quest_kill"));
       }

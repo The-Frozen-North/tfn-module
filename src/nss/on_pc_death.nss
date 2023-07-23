@@ -62,7 +62,8 @@ void main()
 // Apply penalty only at first death
     if (SQLocalsPlayer_GetInt(oPlayer, "DEAD") == 0)
     {
-        SQLocalsPlayer_SetInt(oPlayer, "times_died", SQLocalsPlayer_GetInt(oPlayer, "times_died")+1);
+        //SQLocalsPlayer_SetInt(oPlayer, "times_died", SQLocalsPlayer_GetInt(oPlayer, "times_died")+1);
+        IncrementStat(oPlayer, "deaths");
 
         location lDeathSpot = GetLocation(oPlayer);
         float fFacing = GetFacing(oPlayer);

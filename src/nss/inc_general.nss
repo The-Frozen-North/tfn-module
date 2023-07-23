@@ -21,6 +21,8 @@ const int MESSAGE_COLOR_SUCCESS = COLOR_GREEN;
 const int MESSAGE_COLOR_DANGER = COLOR_RED_LIGHT;
 const int MESSAGE_COLOR_SERVER = 0x666666;
 
+const string STAT_PREFIX = "stat_";
+
 // Makes the killer play a voice sometimes. Won't work if the killer is a PC or if the killer was not hostile.
 void KillTaunt(object oKiller, object oKilled);
 
@@ -769,5 +771,25 @@ int GetIsControllable(object oCreature)
     }
 
     return TRUE;
+}
+
+int IncrementStat(object oPC, string sStat, int nIncrement = 1);
+int IncrementStat(object oPC, string sStat, int nIncrement = 1)
+{
+    if (!GetIsPC(oPC)) return 0;
+    
+    string sVarName = STAT_PREFIX+sStat;
+
+    int nNewTotal = SQLocalsPlayer_GetInt(oPC, sVarName) + nIncrement;
+    
+    SQLocalsPlayer_SetInt(oPC, sVarName, nNewTotal);
+
+    return nNewTotal;
+}
+
+// for delays
+void VoidIncrementStat(object oPC, string sStat, int nIncrement = 1)
+{
+    IncrementStat(oPC, sStat, nIncrement);
 }
 //void main(){}

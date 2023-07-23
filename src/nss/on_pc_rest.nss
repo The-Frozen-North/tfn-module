@@ -320,6 +320,7 @@ void main()
                         DelayCommand(fAmbushTime, FloatingTextStringOnCreature(sSpotted, oPC, FALSE));
 
                         DelayCommand(fAmbushTime, InterruptRest(GetLocation(oCampfire)));
+                        DelayCommand(fAmbushTime, VoidIncrementStat(oPC, "rest_ambushes"));
                     }
                  }
                  sHideClass = GetLocalString(oCampfire, "hide_class");
@@ -369,6 +370,7 @@ void main()
             if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_FAMILIAR, oPC))) DecrementRemainingFeatUses(oPC, FEAT_SUMMON_FAMILIAR);
             if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION, oPC)))  DecrementRemainingFeatUses(oPC, FEAT_ANIMAL_COMPANION);
 
+            IncrementStat(oPC, "rests_completed");
             AnnounceRemainingRevives(oPC);
             GiveHouseRestingXP(oPC);
             SendRestedXPNotifierToPC(oPC);

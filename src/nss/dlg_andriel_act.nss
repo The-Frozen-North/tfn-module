@@ -29,9 +29,12 @@ void main()
 
     TakeGoldFromCreature(nRealCost, oPC, TRUE);
 
+    IncrementStat(oPC, "gold_spent_from_buying", nRealCost);
+    IncrementStat(oPC, "items_bought");
+
     int nACR = GetHitDice(oPC);
     int nVariability = GetHitDice(oPC) / 4;
-    // ACR of map = HD ± HD/4 rounded down
+    // ACR of map = HD ï¿½ HD/4 rounded down
     nACR = nACR + 1 + Random(nVariability*2) - nVariability;
 
     object oMap = SetupProgenitorTreasureMap(nACR, "Highcliff. It was purchased from " + GetName(OBJECT_SELF));

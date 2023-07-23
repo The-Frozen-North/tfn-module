@@ -1,5 +1,6 @@
 #include "inc_debug"
 #include "nw_i0_generic"
+#include "inc_general"
 
 // assigns normal creature scripts to this follower and deletes some local master related variables
 void AssignNormalScripts(object oCreature);
@@ -114,6 +115,8 @@ void SetFollowerMaster(object oFollower, object oPlayer)
 
     SetLocalString(oFollower, "master", GetObjectUUID(oPlayer));
     SetLocalString(oFollower, "heartbeat_script", "fol_heartb");
+
+    IncrementStat(oPlayer, "followers_recruited");
 
     AddHenchman(oPlayer, oFollower);
     AssignHenchmanScripts(oFollower);

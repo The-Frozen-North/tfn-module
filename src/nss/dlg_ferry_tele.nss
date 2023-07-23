@@ -1,5 +1,6 @@
 #include "inc_gold"
 #include "inc_ship"
+#include "inc_general"
 
 void main()
 {
@@ -10,6 +11,10 @@ void main()
     if (GetGold(oPC) >= nCost)
     {
         TakeGoldFromCreature(nCost, oPC, TRUE);
+
+        IncrementStat(oPC, "gold_spent_on_ferries", nCost);
+        IncrementStat(oPC, "ferries_used");
+
         location lLocation = GetLocation(GetObjectByTag(GetScriptParam("target")));
         FadeToBlack(oPC);
         if (GetAreaFromLocation(lLocation) == GetArea(OBJECT_SELF))

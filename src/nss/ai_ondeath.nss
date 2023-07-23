@@ -7,6 +7,15 @@
 #include "inc_webhook"
 #include "nwnx_area"
 
+void IncrementInnocentKilled(object oPC, object oKilled)
+{
+    int nFaction = NWNX_Creature_GetFaction(oKilled);
+    if (nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER)
+    {
+        IncrementStat(oPC, "innocents_killed");    
+    }
+}
+
 void main()
 {
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_DEATH));
@@ -23,9 +32,40 @@ void main()
     //StartRespawn();
 
 // only give credit if a PC or their associate killed it or if it was already tagged
+// TODO: Handle traps
     if (GetIsPC(GetMaster(oKiller)) || GetIsPC(oKiller) || (GetLocalInt(OBJECT_SELF, "player_tagged") == 1))
     {
         ExecuteScript("party_credit", OBJECT_SELF);
+    }
+
+    // not counting associates. we should count summons though
+
+    if (GetIsPC(oKiller))
+    {
+        IncrementStat(oKiller, "enemies_killed");
+        IncrementInnocentKilled(oKiller, OBJECT_SELF);
+
+        if (GetLocalInt(OBJECT_SELF, "boss") == 1)
+        {
+            IncrementStat(oKiller, "bosses_killed");
+        }
+    }
+    else if (GetIsPC(GetMaster(oKiller)))
+    {
+        int nAssociateType = GetAssociateType(oKiller);
+
+        if (nAssociateType == ASSOCIATE_TYPE_FAMILIAR || nAssociateType == ASSOCIATE_TYPE_ANIMALCOMPANION || nAssociateType == ASSOCIATE_TYPE_DOMINATED || nAssociateType == ASSOCIATE_TYPE_SUMMONED)
+        {
+            object oPC = GetMaster(oKiller);
+            
+            IncrementStat(oPC, "enemies_killed");
+            IncrementInnocentKilled(oPC, OBJECT_SELF);
+
+            if (GetLocalInt(OBJECT_SELF, "boss") == 1)
+            {
+                IncrementStat(oPC, "bosses_killed");
+            }
+        }
     }
 
 // Set for no credit after first death so no multiple credit is rewarded (cases of rez or resurrection)

@@ -1208,6 +1208,10 @@ void OpenPersonalLoot(object oContainer, object oPC)
     if (nGold > 0)
     {
         AssignCommand(oContainer, ActionPlayAnimation(ANIMATION_PLACEABLE_OPEN));
+
+        IncrementStat(oPC, "gold_looted", nGold);
+        IncrementStat(oPC, "treasures_looted");
+
         GiveGoldToCreature(oPC, nGold);
         DeleteLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT);
         NWNX_Player_PlaySound(oPC, "it_coins", oPC);

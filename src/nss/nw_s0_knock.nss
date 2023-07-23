@@ -16,6 +16,7 @@
 #include "70_inc_spells"
 #include "nw_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_general"
 
 void main()
 {
@@ -57,6 +58,8 @@ void main()
                     AssignCommand(oTarget, ActionUnlockObject(oTarget));
                     DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
                     DelayCommand(fDelay, AssignCommand(oTarget, PlaySound("gui_picklockopen")));
+
+                    IncrementStat(spell.Caster, "locks_unlocked");
                 }
             }
             else if  (nResist == 1)

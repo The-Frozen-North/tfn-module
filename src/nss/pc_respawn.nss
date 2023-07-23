@@ -20,6 +20,8 @@ void main()
 
     RemoveMount(oRespawner);
 
+    IncrementStat(oRespawner, "respawned");
+
     location lRespawnLocation = GetLocation(GetObjectByTag("RESPAWN_NEVERWINTER"));
 
     object oChosenRespawn = GetObjectByTag("RESPAWN_"+SQLocalsPlayer_GetString(oRespawner, "respawn"));

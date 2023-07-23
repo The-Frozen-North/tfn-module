@@ -5,6 +5,7 @@
 #include "nwnx_area"
 #include "x0_i0_position"
 #include "nwnx_item"
+#include "inc_general"
 
 /* Declarations */
 // Return iPinID of the first deleted map pin within the personal map pin array
@@ -81,15 +82,6 @@ void DeleteMapPin(object oPC, int iPinID)
        SetLocalObject(oPC, "NW_MAP_PIN_AREA_" + sPinID, OBJECT_INVALID);
    }
 }
-
-
-
-
-
-
-
-
-
 
 // 1/SELL_HOUSE_LOSS_FACTOR = how much gold is lost from the buy price when selling a house
 int SELL_HOUSE_LOSS_FACTOR = 5;
@@ -646,6 +638,7 @@ void BuyPlaceable(object oPlaceable, object oPC, int bCost = TRUE)
     {
         SetLocalString(oItem, "uuid", GetRandomUUID());
         TakeGoldFromCreature(nCost, oPC, TRUE);
+        IncrementStat(oPC, "gold_spent_from_buying", nCost);
     }
     else
     { // otherwise, assume you are retrieving a placeable and use the stored UUID

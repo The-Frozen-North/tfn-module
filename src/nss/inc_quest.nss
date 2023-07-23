@@ -270,6 +270,12 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FAL
         QuestCompleteWebhook(oPC, jeQuest.sName, oQuestObject);
     }
 
+    // record stat for bounties
+    if (GetStringLeft(sQuestName, 2) == "b_" && jeQuest.nQuestCompleted)
+    {
+        IncrementStat(oPC, "bounties_completed");
+    }
+
     UpdateQuestgiverHighlights(GetArea(oQuestObject), oPC);
 }
 

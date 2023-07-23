@@ -1,3 +1,5 @@
+#include "inc_general"
+
 const int BASE_AREA_TRAP_CHANCE = 10;
 const int BASE_DOOR_TRAP_CHANCE = 20;
 const int BASE_TREASURE_TRAP_CHANCE = 40;
@@ -231,7 +233,9 @@ void GenerateTrapOnObject(object oObject = OBJECT_SELF)
 void SetTrapTriggeredOnCreature(object oCreature, string sTrapName = "trap");
 void SetTrapTriggeredOnCreature(object oCreature, string sTrapName = "trap")
 {
-     SetLocalString(oCreature, "trap_triggered", sTrapName); 
+     SetLocalString(oCreature, "trap_triggered", sTrapName);
+
+     IncrementStat(oCreature, "traps_triggered");
 
      AssignCommand(oCreature, DelayCommand(0.2, DeleteLocalString(oCreature, "trap_triggered")));
 }

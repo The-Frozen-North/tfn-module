@@ -354,6 +354,9 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_EFFECT_APPLIED_AFTER", "on_effect_applya");
 
+    NWNX_Events_SubscribeEvent("NWNX_ON_EFFECT_APPLIED_AFTER", "on_request_buya");
+    NWNX_Events_SubscribeEvent("NWNX_ON_EFFECT_APPLIED_AFTER", "on_request_sella");
+
 // seems to happen a little too early, like 0.5 second too early?
     //NWNX_Events_SubscribeEvent("NWNX_ON_BROADCAST_CAST_SPELL_AFTER", "remove_invis");
     NWNX_Events_SubscribeEvent("NWNX_ON_CAST_SPELL_AFTER", "remove_invis");

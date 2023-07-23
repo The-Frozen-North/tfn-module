@@ -1,4 +1,5 @@
 #include "nwnx_player"
+#include "inc_general"
 
 void BashLock(object oAttacker)
 {
@@ -76,6 +77,8 @@ void BashLock(object oAttacker)
         SetLocked(OBJECT_SELF, FALSE);
         nEffect = VFX_COM_BLOOD_SPARK_LARGE;
         AssignCommand(oAttacker, ClearAllActions(TRUE));
+
+        IncrementStat(oAttacker, "locks_bashed");
 
         PlaySound("cb_bu_metallrg");
 

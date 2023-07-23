@@ -21,6 +21,8 @@ int StartingConditional()
     {
         TakeGoldFromCreature(nCost, oPC, TRUE);
 
+        IncrementStat(oPC, "")
+
         location lLocation = GetLocation(GetObjectByTag(GetScriptParam("target")));
         FadeToBlack(oPC);
         DelayCommand(2.5, AssignCommand(oPC, JumpToLocation(lLocation)));

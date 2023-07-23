@@ -16,6 +16,7 @@ int StartingConditional()
     }
     else
     {
+        IncrementStat(oPC, "henchman_recruited");
         SetMaster(OBJECT_SELF, oPC);
         ForceRest(OBJECT_SELF);
         return TRUE;

@@ -25,6 +25,8 @@ void main()
     AssignCommand(GetModule(), DelayCommand(280.0, SetPlotFlag(oReward, 0)));
     DestroyObject(oReward, 300.0);
     DestroyObject(OBJECT_SELF);
+
+    IncrementStat(oOwner, "treasure_maps_completed");
     
     // Force a PC save. That way there is no way they can keep their map
     // and still be able to loot the chest too

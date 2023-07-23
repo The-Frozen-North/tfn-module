@@ -1,5 +1,6 @@
 #include "nwnx_events"
 #include "inc_webhook"
+#include "inc_general"
 
 void main()
 {
@@ -9,6 +10,10 @@ void main()
         if (GetIsPC(OBJECT_SELF))
         {
             object oItem = StringToObject(NWNX_Events_GetEventData("ITEM"));
+
+            IncrementStat(OBJECT_SELF, "gold_spent_from_buying", StringToInt(NWNX_Events_GetEventData("PRICE")));
+            IncrementStat(OBJECT_SELF, "items_bought");
+
             ValuableItemWebhook(OBJECT_SELF, oItem, TRUE);
         }
     }
