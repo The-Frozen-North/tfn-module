@@ -69,7 +69,7 @@ void main()
     SignalEvent(OBJECT_SELF, EventSpellCastAt(OBJECT_SELF, SPELLABILITY_BARBARIAN_RAGE, FALSE));
     //Make effect extraordinary
     eLink = ExtraordinaryEffect(eLink);
-    effect eVis = EffectVisualEffect(VFX_IMP_IMPROVE_ABILITY_SCORE); //Change to the Rage VFX
+    effect eVis = EffectVisualEffect(VFX_IMP_PULSE_FIRE); //Change to the Rage VFX
 
     //does not stack with mighty rage and neither with itself
     RemoveEffectsFromSpell(OBJECT_SELF, SPELLABILITY_EPIC_MIGHTY_RAGE);
