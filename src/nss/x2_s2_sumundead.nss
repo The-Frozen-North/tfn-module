@@ -13,6 +13,8 @@
 //:: Updated By: Georg Zoeller, Oct 2003
 //:://////////////////////////////////////////////
 
+#include "inc_general"
+
 void PMUpgradeSummon(object oSelf, string sScript)
 {
     object oSummon = GetAssociate(ASSOCIATE_TYPE_SUMMONED,oSelf);
@@ -66,6 +68,10 @@ void main()
     {
         object oSelf = OBJECT_SELF;
         DelayCommand(1.0,PMUpgradeSummon(oSelf,sScript));
+    }
+    if (GetIsPC(OBJECT_SELF))
+    {
+        IncrementPlayerStatistic(OBJECT_SELF, "creatures_summoned");
     }
 }
 

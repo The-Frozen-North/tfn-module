@@ -184,7 +184,7 @@ void DoRevive(object oDead)
                     SetObjectVisualTransform(oDead, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, 0.0);
 
                     DetermineDeathEffectPenalty(oDead, 1);
-                    IncrementStat(oDead, "revived");
+                    IncrementPlayerStatistic(oDead, "revived");
 
                     if (GetStringLeft(GetResRef(oDead), 3) == "hen" && bMasterFound) SetMaster(oDead, oMaster);
 
@@ -246,7 +246,7 @@ void main()
         DoRevive(oPC);
         DetermineHorseEffects(oPC);
         RefreshCompletedBounties(oPC, nTime, sBounties);
-        IncrementStat(oPC, "time_played", 6);
+        IncrementPlayerStatistic(oPC, "time_played", 6);
 
         int nTickCount = GetTickRate();
         if (nTickCount <= 50) 

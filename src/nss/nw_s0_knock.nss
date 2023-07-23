@@ -59,7 +59,7 @@ void main()
                     DelayCommand(fDelay, ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget));
                     DelayCommand(fDelay, AssignCommand(oTarget, PlaySound("gui_picklockopen")));
 
-                    IncrementStat(spell.Caster, "locks_unlocked");
+                    IncrementPlayerStatistic(spell.Caster, "locks_unlocked");
                 }
             }
             else if  (nResist == 1)

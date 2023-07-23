@@ -1,5 +1,6 @@
 #include "inc_gold"
 #include "inc_persist"
+#include "inc_general"
 
 int StartingConditional()
 {
@@ -13,11 +14,13 @@ int StartingConditional()
 
     if(!(GetIsSkillSuccessful(oPC, nSkill, nDC)))
     {
+        IncrementPlayerStatistic(oPC, "persuade_failed");
         SetTemporaryInt(GetPCPublicCDKey(oPC, TRUE)+GetName(oPC)+GetTag(OBJECT_SELF), 1, 900.0);
         return FALSE;
     }
     else
     {
+        IncrementPlayerStatistic(oPC, "persuade_succeeded");
         TakeGoldFromCreature(nCost, oPC, TRUE);
         return TRUE;
     }

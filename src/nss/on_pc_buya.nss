@@ -11,8 +11,8 @@ void main()
         {
             object oItem = StringToObject(NWNX_Events_GetEventData("ITEM"));
 
-            IncrementStat(OBJECT_SELF, "gold_spent_from_buying", StringToInt(NWNX_Events_GetEventData("PRICE")));
-            IncrementStat(OBJECT_SELF, "items_bought");
+            IncrementPlayerStatistic(OBJECT_SELF, "gold_spent_from_buying", StringToInt(NWNX_Events_GetEventData("PRICE")));
+            IncrementPlayerStatistic(OBJECT_SELF, "items_bought");
 
             ValuableItemWebhook(OBJECT_SELF, oItem, TRUE);
         }

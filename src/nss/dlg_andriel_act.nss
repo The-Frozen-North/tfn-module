@@ -29,8 +29,8 @@ void main()
 
     TakeGoldFromCreature(nRealCost, oPC, TRUE);
 
-    IncrementStat(oPC, "gold_spent_from_buying", nRealCost);
-    IncrementStat(oPC, "items_bought");
+    IncrementPlayerStatistic(oPC, "gold_spent_from_buying", nRealCost);
+    IncrementPlayerStatistic(oPC, "items_bought");
 
     int nACR = GetHitDice(oPC);
     int nVariability = GetHitDice(oPC) / 4;

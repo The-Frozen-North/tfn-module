@@ -154,7 +154,7 @@ object MakeAssassinNote(object oAssassin, object oPC)
         SetDescription(oNote, "This note was carried by an assassin in " +GetName(GetArea(oAssassin)) + ". It is too bloodstained to make out what it might have once said.");
     }
 
-    IncrementStat(oPC, "assassination_attempts_thwarted");
+    IncrementPlayerStatistic(oPC, "assassination_attempts_thwarted");
 
     return oNote;
 }

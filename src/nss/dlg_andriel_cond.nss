@@ -1,6 +1,7 @@
 #include "inc_gold"
 #include "inc_treasuremap"
 #include "inc_persist"
+#include "inc_general"
 #include "inc_sqlite_time"
 
 // See also: dlg_andriel_act
@@ -45,9 +46,11 @@ int StartingConditional()
 
         if(!(GetIsSkillSuccessful(oPC, nSkill, nDC)))
         {
+            IncrementPlayerStatistic(oPC, "persuade_failed");
             SetTemporaryInt(GetPCPublicCDKey(oPC, TRUE)+GetName(oPC)+"_"+GetTag(OBJECT_SELF)+"_pers", 1, 900.0);
             return FALSE;
         }
+        IncrementPlayerStatistic(oPC, "persuade_succeeded");
     }
 
     string sHasMap = GetScriptParam("hasmap");

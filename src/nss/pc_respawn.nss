@@ -20,7 +20,7 @@ void main()
 
     RemoveMount(oRespawner);
 
-    IncrementStat(oRespawner, "respawned");
+    IncrementPlayerStatistic(oRespawner, "respawned");
 
     location lRespawnLocation = GetLocation(GetObjectByTag("RESPAWN_NEVERWINTER"));
 

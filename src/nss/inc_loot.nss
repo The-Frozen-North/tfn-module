@@ -1209,8 +1209,8 @@ void OpenPersonalLoot(object oContainer, object oPC)
     {
         AssignCommand(oContainer, ActionPlayAnimation(ANIMATION_PLACEABLE_OPEN));
 
-        IncrementStat(oPC, "gold_looted", nGold);
-        IncrementStat(oPC, "treasures_looted");
+        IncrementPlayerStatistic(oPC, "gold_looted", nGold);
+        IncrementPlayerStatistic(oPC, "treasures_looted");
 
         GiveGoldToCreature(oPC, nGold);
         DeleteLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT);

@@ -19,7 +19,7 @@ void main()
 
         // TODO: Handle placeable decorations
 
-        IncrementStat(oPC, "gold_earned_from_selling", nGold);
+        IncrementPlayerStatistic(oPC, "gold_earned_from_selling", nGold);
         
         // So if we blow up the database timestamp, that can't happen any more.
         string sKey = GetPCPublicCDKey(oPC, TRUE);

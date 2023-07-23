@@ -273,7 +273,11 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FAL
     // record stat for bounties
     if (GetStringLeft(sQuestName, 2) == "b_" && jeQuest.nQuestCompleted)
     {
-        IncrementStat(oPC, "bounties_completed");
+        IncrementPlayerStatistic(oPC, "bounties_completed");
+    }
+    else if (jeQuest.nQuestCompleted)
+    {
+        IncrementPlayerStatistic(oPC, "quests_completed");
     }
 
     UpdateQuestgiverHighlights(GetArea(oQuestObject), oPC);

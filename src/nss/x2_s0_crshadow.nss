@@ -14,6 +14,7 @@
 
 #include "70_inc_spells"
 #include "x2_inc_spellhook"
+#include "inc_general"
 
 void main()
 {
@@ -44,6 +45,10 @@ void main()
     else
     {
         eSummon = EffectSummonCreature("x2shfiendfoe",VFX_FNF_SUMMON_UNDEAD);
+    }
+    if (GetIsPC(spell.Caster))
+    {
+        IncrementPlayerStatistic(spell.Caster, "creatures_summoned");
     }
 
     //Apply VFX impact and summon effect

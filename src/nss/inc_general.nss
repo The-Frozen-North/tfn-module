@@ -762,24 +762,83 @@ int GetIsControllable(object oCreature)
     return TRUE;
 }
 
-int IncrementStat(object oPC, string sStat, int nIncrement = 1);
-int IncrementStat(object oPC, string sStat, int nIncrement = 1)
+int IncrementPlayerStatistic(object oPC, string sStat, int nIncrement = 1);
+int IncrementPlayerStatistic(object oPC, string sStat, int nIncrement = 1)
 {
     if (!GetIsPC(oPC)) return 0;
     
     string sVarName = STAT_PREFIX+sStat;
 
     int nNewTotal = SQLocalsPlayer_GetInt(oPC, sVarName) + nIncrement;
-    
     SQLocalsPlayer_SetInt(oPC, sVarName, nNewTotal);
+    
+    string sKey = GetPCPublicCDKey(oPC, TRUE);
+    int nOldPlayerValue = GetCampaignInt(sKey, STAT_PREFIX+sStat);
+    SetCampaignInt(sKey, STAT_PREFIX+sStat, nOldPlayerValue+nIncrement);
 
     return nNewTotal;
 }
 
-// for delays
-void VoidIncrementStat(object oPC, string sStat, int nIncrement = 1)
+void SetPlayerStatisticString(object oPC, string sStat, string sValue, int bCDKeyDB=0);
+void SetPlayerStatisticString(object oPC, string sStat, string sValue, int bCDKeyDB=0)
 {
-    IncrementStat(oPC, sStat, nIncrement);
+    if (!GetIsPC(oPC)) return;
+    string sVarName = STAT_PREFIX+sStat;
+    if (!bCDKeyDB)
+    {
+        SQLocalsPlayer_SetString(oPC, sVarName, sValue);
+        return;
+    }
+    string sKey = GetPCPublicCDKey(oPC, TRUE);
+    SetCampaignString(sKey, STAT_PREFIX+sStat, sValue);
+}
+
+void SetPlayerStatistic(object oPC, string sStat, int nValue, int bCDKeyDB=0);
+void SetPlayerStatistic(object oPC, string sStat, int nValue, int bCDKeyDB=0)
+{
+    if (!GetIsPC(oPC)) return;
+    string sVarName = STAT_PREFIX+sStat;
+    if (!bCDKeyDB)
+    {
+        SQLocalsPlayer_SetInt(oPC, sVarName, nValue);
+        return;
+    }
+    string sKey = GetPCPublicCDKey(oPC, TRUE);
+    SetCampaignInt(sKey, STAT_PREFIX+sStat, nValue);
+}
+
+string GetPlayerStatisticString(object oPC, string sStat, int bCDKeyDB=0);
+string GetPlayerStatisticString(object oPC, string sStat, int bCDKeyDB=0)
+{
+    if (!GetIsPC(oPC)) return "";
+    
+    string sVarName = STAT_PREFIX+sStat;
+    if (!bCDKeyDB)
+    {
+        return SQLocalsPlayer_GetString(oPC, sVarName);
+    }
+    string sKey = GetPCPublicCDKey(oPC, TRUE);
+    return GetCampaignString(sKey, STAT_PREFIX+sStat);
+}
+
+int GetPlayerStatistic(object oPC, string sStat, int bCDKeyDB=0);
+int GetPlayerStatistic(object oPC, string sStat, int bCDKeyDB=0)
+{
+    if (!GetIsPC(oPC)) return 0;
+    
+    string sVarName = STAT_PREFIX+sStat;
+    if (!bCDKeyDB)
+    {
+        return SQLocalsPlayer_GetInt(oPC, sVarName);
+    }
+    string sKey = GetPCPublicCDKey(oPC, TRUE);
+    return GetCampaignInt(sKey, STAT_PREFIX+sStat);
+}
+
+// for delays
+void VoidIncrementPlayerStatistic(object oPC, string sStat, int nIncrement = 1)
+{
+    IncrementPlayerStatistic(oPC, sStat, nIncrement);
 }
 
 void SendMessageToAllPCs(string sMessage, int nColor = MESSAGE_COLOR_SERVER);

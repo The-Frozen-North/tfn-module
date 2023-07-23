@@ -17,6 +17,7 @@ Will remain for one hour per level of blackguard
 //:: Created By: Brent
 //:: Created On: April 2003
 //:://////////////////////////////////////////////
+#include "inc_general"
 void main()
 {
     int nLevel = GetLevelByClass(CLASS_TYPE_BLACKGUARD, OBJECT_SELF);
@@ -43,7 +44,10 @@ void main()
         eSummon = EffectSummonCreature("NW_S_VROCK", VFX_FNF_SUMMON_GATE, fDelay);
        }
     }
-
+    if (GetIsPC(OBJECT_SELF))
+    {
+        IncrementPlayerStatistic(OBJECT_SELF, "creatures_summoned");
+    }
     ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, eSummon, GetSpellTargetLocation(), HoursToSeconds(nDuration));
 
 }

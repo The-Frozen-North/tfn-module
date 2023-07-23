@@ -638,7 +638,7 @@ void BuyPlaceable(object oPlaceable, object oPC, int bCost = TRUE)
     {
         SetLocalString(oItem, "uuid", GetRandomUUID());
         TakeGoldFromCreature(nCost, oPC, TRUE);
-        IncrementStat(oPC, "gold_spent_from_buying", nCost);
+        IncrementPlayerStatistic(oPC, "gold_spent_from_buying", nCost);
     }
     else
     { // otherwise, assume you are retrieving a placeable and use the stored UUID

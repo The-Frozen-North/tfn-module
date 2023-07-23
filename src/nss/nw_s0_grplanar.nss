@@ -21,6 +21,7 @@ Patch 1.71
 #include "70_inc_spells"
 #include "x0_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_general"
 
 void main()
 {
@@ -98,6 +99,10 @@ void main()
                 //eGate = EffectVisualEffect(VFX_FNF_SUMMON_MONSTER_3);
                 fDelay = 1.0;
             break;
+        }
+        if (GetIsPC(spell.Caster))
+        {
+            IncrementPlayerStatistic(spell.Caster, "creatures_summoned");
         }
         //Apply the VFX impact and summon effect
         ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, eSummon, spell.Loc, RoundsToSeconds(nDuration));

@@ -31,34 +31,38 @@ void main()
 
     if (GetLocalString(OBJECT_SELF, "heartbeat_script") == "fol_heartb")
     {
-        IncrementStat(GetMaster(OBJECT_SELF), "followers_died");
+        IncrementPlayerStatistic(GetMaster(OBJECT_SELF), "followers_died");
     }
 
     // not counting associates. we should count summons though
-
-    if (GetIsPC(oKiller))
-    {
-        IncrementStat(oKiller, "enemies_killed");
-
-        if (GetLocalInt(OBJECT_SELF, "boss") == 1)
-        {
-            IncrementStat(oKiller, "bosses_killed");
-        }
-    }
-    else if (GetIsPC(GetMaster(oKiller)))
+    object oPCToIncrementOn = oKiller;
+    
+    if (GetIsPC(GetMaster(oKiller)))
     {
         int nAssociateType = GetAssociateType(oKiller);
 
         if (nAssociateType == ASSOCIATE_TYPE_FAMILIAR || nAssociateType == ASSOCIATE_TYPE_ANIMALCOMPANION || nAssociateType == ASSOCIATE_TYPE_DOMINATED || nAssociateType == ASSOCIATE_TYPE_SUMMONED)
         {
-            object oPC = GetMaster(oKiller);
+            oPCToIncrementOn = GetMaster(oKiller);
+        }
+    }
+    
+    if (GetIsPC(oPCToIncrementOn))
+    {
+        int nCR = GetLocalInt(OBJECT_SELF, "cr");
+        IncrementPlayerStatistic(oPCToIncrementOn, "enemies_killed");
 
-            IncrementStat(oPC, "enemies_killed");
-
-            if (GetLocalInt(OBJECT_SELF, "boss") == 1)
-            {
-                IncrementStat(oPC, "bosses_killed");
-            }
+        if (GetLocalInt(OBJECT_SELF, "boss") == 1)
+        {
+            nCR++;
+            IncrementPlayerStatistic(oPCToIncrementOn, "bosses_killed");
+        }
+        
+        int nOldMaxCR = GetPlayerStatistic(oPCToIncrementOn, "most_powerful_cr");
+        if (nCR > nOldMaxCR)
+        {
+            SetPlayerStatistic(oPCToIncrementOn, "most_powerful_cr", nCR);
+            SetPlayerStatisticString(oPCToIncrementOn, "most_powerful_killed", GetName(OBJECT_SELF));
         }
     }
 
@@ -79,7 +83,7 @@ void main()
             oMurderer = oKiller;
         }
 
-        IncrementStat(oMurderer, "innocents_killed");
+        IncrementPlayerStatistic(oMurderer, "innocents_killed");
 
         if (GetIsPC(oMurderer))
             AdjustAlignment(oMurderer, ALIGNMENT_EVIL, 5, FALSE);

@@ -235,7 +235,7 @@ void SetTrapTriggeredOnCreature(object oCreature, string sTrapName = "trap")
 {
      SetLocalString(oCreature, "trap_triggered", sTrapName);
 
-     IncrementStat(oCreature, "traps_triggered");
+     IncrementPlayerStatistic(oCreature, "traps_triggered");
 
      AssignCommand(oCreature, DelayCommand(0.2, DeleteLocalString(oCreature, "trap_triggered")));
 }
