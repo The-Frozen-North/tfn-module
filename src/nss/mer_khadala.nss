@@ -153,7 +153,7 @@ void main()
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Range", GetRandomTier());
         CreatePlaceholderItem(oItemInStorage);
     }
-    nMax = d10(60);
+    nMax = d10(50);
     for (i = 0; i < nMax; i++)
     {
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Armor", GetRandomTier());
@@ -168,8 +168,8 @@ void main()
         CreatePlaceholderItem(oItemInStorage);
     }
     */
-    
-    nMax = d10(80);
+
+    nMax = d10(60);
     for (i = 0; i < nMax; i++)
     {
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Apparel", GetRandomTier());
