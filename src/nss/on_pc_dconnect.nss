@@ -8,7 +8,7 @@ void main()
 // Only care about people from login, because we already have a webhook for characters (client leave)
     if (sName != "") return;
 
-    string sMessage = "A player from login has disconnected ..";
+    string sMessage = "A player from login has disconnected..";
 
     SendDiscordLogMessage(sMessage);
 

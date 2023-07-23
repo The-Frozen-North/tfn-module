@@ -10,7 +10,7 @@ void main()
     if (!GetIsPC(oPC)) return;
 
 // if we have detect mode active, do nothing because detect mode still has a movement penalty here
-    if (GetDetectMode(oPC) == DETECT_MODE_ACTIVE) return;
+    if (!GetHasFeat(FEAT_KEEN_SENSE, oPC) && GetDetectMode(oPC) == DETECT_MODE_ACTIVE) return;
 
 // not in stealth mode, no fix needed
     if (GetStealthMode(oPC) != STEALTH_MODE_ACTIVATED) return;

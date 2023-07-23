@@ -19,7 +19,7 @@ const int MORALE_PANIC_GROUP_FACTOR_CAP = 5;
 const int MESSAGE_COLOR_INFO = COLOR_CYAN;
 const int MESSAGE_COLOR_SUCCESS = COLOR_GREEN;
 const int MESSAGE_COLOR_DANGER = COLOR_RED_LIGHT;
-const int MESSAGE_COLOR_SERVER = 0x666666;
+const int MESSAGE_COLOR_SERVER = 0xaaaaaa;
 
 const string STAT_PREFIX = "stat_";
 
@@ -200,17 +200,6 @@ int IsCreatureRevivable(object oCreature)
     else
     {
         return TRUE;
-    }
-}
-
-void SendMessageToAllPCs(string sMessage)
-{
-    object oPC = GetFirstPC();
-
-    while (GetIsObjectValid(oPC))
-    {
-        SendMessageToPC(oPC, sMessage);
-        oPC = GetNextPC();
     }
 }
 
@@ -791,5 +780,17 @@ int IncrementStat(object oPC, string sStat, int nIncrement = 1)
 void VoidIncrementStat(object oPC, string sStat, int nIncrement = 1)
 {
     IncrementStat(oPC, sStat, nIncrement);
+}
+
+void SendMessageToAllPCs(string sMessage, int nColor = MESSAGE_COLOR_SERVER);
+void SendMessageToAllPCs(string sMessage, int nColor = MESSAGE_COLOR_SERVER)
+{
+    object oPC = GetFirstPC();
+
+    while (GetIsObjectValid(oPC))
+    {
+        SendColorMessageToPC(oPC, sMessage, nColor);
+        oPC = GetNextPC();
+    }
 }
 //void main(){}

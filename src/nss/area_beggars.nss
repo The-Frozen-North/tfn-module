@@ -1,3 +1,4 @@
+#include "nwnx_creature"
 
 void main()
 {
@@ -77,6 +78,9 @@ void main()
             break;
         }
 
-        CreateObject(OBJECT_TYPE_CREATURE, sResRef, lSpawn, FALSE, "BeggarsZombie");
+        object oCreature = CreateObject(OBJECT_TYPE_CREATURE, sResRef, lSpawn, FALSE, "BeggarsZombie");
+
+// do this on a delay because the spawn script might set a decay time
+        DelayCommand(3.0, NWNX_Creature_SetCorpseDecayTime(oCreature, 180000));
     }
 }

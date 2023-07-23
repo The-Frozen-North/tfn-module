@@ -81,7 +81,7 @@ object spellsSetupNewAOE(string sTag="", string scriptHeartbeat="", int numRound
 //special workaround for special ability AOEs like aura of fear in order to make
 //them immune to the dispell centered at location, should be used in conjunction with spellsSetupNewAOE
 //like this: object oAOE = spellsSetupNewAOE(spell); SetAreaOfEffectUndispellable(oAOE);
-void SetAreaOfEffectUndispellable(object oAOE);
+void feffecSetAreaOfEffectUndispellable(object oAOE);
 
 //special workaround for destroying/dispelling AOE in order to remove AOE owner's effects
 void aoesCheckStillValid(object oAOE, object oOwner, object oCreator, int nSpellId);
@@ -778,7 +778,7 @@ object oNew, oAOE = sTag != "" ? GetObjectByTag(sTag) : GetNearestObjectToLocati
   SetLocalInt(oAOE,"AOE_DURATION",numRounds+1);
   SetLocalObject(spell.Target == OBJECT_INVALID ? spell.Caster : spell.Target,"OWNER_"+IntToString(spell.Id),oAOE);
   // may fail when there's more than one aoe, oh well should solve most cases
-  SetLocalObject(spell.Target == OBJECT_INVALID ? spell.Caster : spell.Target,"aoe_to_cleanup",oAOE);
+  //SetLocalObject(spell.Target == OBJECT_INVALID ? spell.Caster : spell.Target,"aoe_to_cleanup",oAOE);
    if(scriptHeartbeat != "" && GetModuleSwitchValue("70_AOE_HEARTBEAT_WORKAROUND"))
    {
    AssignCommand(oAOE,DelayCommand(6.0,AOEHeartbeat(scriptHeartbeat)));
@@ -810,7 +810,7 @@ return oNew;
 void SetAreaOfEffectUndispellable(object oAOE)
 {
 SetLocalInt(oAOE,"X1_L_IMMUNE_TO_DISPEL",10);
-AssignCommand(oAOE,SetIsDestroyable(FALSE));
+//AssignCommand(oAOE,SetIsDestroyable(FALSE));
 }
 
 void aoesCheckStillValid_continue(object oAOE, object oOwner, object oCreator, int nSpellId)//private
