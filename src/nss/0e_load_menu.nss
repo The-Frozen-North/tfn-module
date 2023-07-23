@@ -9,7 +9,7 @@
 
 void main ()
 {
-    if (GetCampaignInt(GetPCPublicCDKey(OBJECT_SELF, TRUE), "pc_menu_disabled", OBJECT_SELF) != 1)
+    if (SQLocalsPlayer_GetInt(OBJECT_SELF, "pc_menu_disabled") != 1)
     {
         // Sets up the player target event.
         // If you have a target event then you will have to adjust it for you NUI.

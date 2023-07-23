@@ -7,15 +7,6 @@
 #include "inc_webhook"
 #include "nwnx_area"
 
-void IncrementInnocentKilled(object oPC, object oKilled)
-{
-    int nFaction = NWNX_Creature_GetFaction(oKilled);
-    if (nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER)
-    {
-        IncrementStat(oPC, "innocents_killed");    
-    }
-}
-
 void main()
 {
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_DEATH));
@@ -38,12 +29,16 @@ void main()
         ExecuteScript("party_credit", OBJECT_SELF);
     }
 
+    if (GetLocalString(OBJECT_SELF, "heartbeat_script") == "fol_heartb")
+    {
+        IncrementStat(GetMaster(OBJECT_SELF), "followers_died");
+    }
+
     // not counting associates. we should count summons though
 
     if (GetIsPC(oKiller))
     {
         IncrementStat(oKiller, "enemies_killed");
-        IncrementInnocentKilled(oKiller, OBJECT_SELF);
 
         if (GetLocalInt(OBJECT_SELF, "boss") == 1)
         {
@@ -57,9 +52,8 @@ void main()
         if (nAssociateType == ASSOCIATE_TYPE_FAMILIAR || nAssociateType == ASSOCIATE_TYPE_ANIMALCOMPANION || nAssociateType == ASSOCIATE_TYPE_DOMINATED || nAssociateType == ASSOCIATE_TYPE_SUMMONED)
         {
             object oPC = GetMaster(oKiller);
-            
+
             IncrementStat(oPC, "enemies_killed");
-            IncrementInnocentKilled(oPC, OBJECT_SELF);
 
             if (GetLocalInt(OBJECT_SELF, "boss") == 1)
             {
@@ -84,6 +78,8 @@ void main()
         {
             oMurderer = oKiller;
         }
+
+        IncrementStat(oMurderer, "innocents_killed");
 
         if (GetIsPC(oMurderer))
             AdjustAlignment(oMurderer, ALIGNMENT_EVIL, 5, FALSE);

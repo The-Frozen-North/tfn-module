@@ -1,5 +1,6 @@
 #include "inc_gold"
 #include "inc_persist"
+#include "inc_general"
 
 int StartingConditional()
 {
@@ -21,7 +22,8 @@ int StartingConditional()
     {
         TakeGoldFromCreature(nCost, oPC, TRUE);
 
-        IncrementStat(oPC, "")
+        IncrementStat(oPC, "gold_spent_on_ferries", nCost);
+        IncrementStat(oPC, "ferries_used");
 
         location lLocation = GetLocation(GetObjectByTag(GetScriptParam("target")));
         FadeToBlack(oPC);

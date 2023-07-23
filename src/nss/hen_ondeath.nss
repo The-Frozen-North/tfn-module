@@ -3,7 +3,14 @@
 
 void main()
 {
-     if (GetLocalInt(OBJECT_SELF, "PETRIFIED") == 1)
+    object oKiller = GetLastHostileActor();
+    if (GetFactionEqual(oKiller, OBJECT_SELF))
+    {
+        IncrementStat(oKiller, "allies_killed");
+        IncrementStat(GetMaster(OBJECT_SELF), "henchman_died");
+    }
+    
+    if (GetLocalInt(OBJECT_SELF, "PETRIFIED") == 1)
     {
         location lLocation = GetLocation(OBJECT_SELF);
         ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_COM_CHUNK_STONE_MEDIUM), lLocation);
@@ -32,7 +39,7 @@ void main()
 
     FloatingTextStringOnCreature(sText, GetMaster(OBJECT_SELF), FALSE);
 
-    KillTaunt(GetLastHostileActor(OBJECT_SELF), OBJECT_SELF);
+    KillTaunt(oKiller, OBJECT_SELF);
 
     DestroyPet(OBJECT_SELF);
 

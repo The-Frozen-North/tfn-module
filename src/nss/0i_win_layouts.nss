@@ -103,8 +103,7 @@ void SetupPlayerGUIPanel (object oPC, json jCol, float fWinWidth, float fWinHeig
 
 void PopUpPlayerHorGUIPanel (object oPC)
 {
-    string sKey = GetPCPublicCDKey(oPC, TRUE);
-    if (GetCampaignInt(sKey, "pc_menu_disabled") == 1)
+    if (SQLocalsPlayer_GetInt(oPC, "pc_menu_disabled") == 1)
         return;
 
     // ********** Create new Column *******
@@ -170,8 +169,7 @@ void PopUpPlayerVerGUIPanel (object oPC)
 // Setup the Player Info layout GUIPanel.
 void PopUpPlayerInfoGUIPanel (object oPC)
 {
-    string sKey = GetPCPublicCDKey(oPC, TRUE);
-    if (GetCampaignInt(sKey, "pc_menu_disabled") == 1)
+    if (SQLocalsPlayer_GetInt(oPC, "pc_menu_disabled") == 1)
         return;
 
     // ********** Create new Column *******
