@@ -603,7 +603,7 @@ void BuyPlaceable(object oPlaceable, object oPC, int bCost = TRUE)
     int nCost = GetMaxHitPoints(oPlaceable); // we store the cost of the placeable in the max hit points field, don't ask
 
 //  only allow the player to buy the placeable if they have enough gold
-    if (GetGold(oPC) < nCost) return;
+    if (bCost && GetGold(oPC) < nCost) return;
 
     /*
     string sResRef = "placeable_small";

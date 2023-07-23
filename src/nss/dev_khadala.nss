@@ -1,6 +1,9 @@
 #include "inc_debug"
 #include "inc_loot"
 
+// Olgerd: 21% plus 20% from merch reaction
+const float REALISTIC_MAX_RESALE_VALUE = 0.41;
+
 // This calculates stuff relating to Khadala.
 
 string GetFakeItemResref(int nBaseItem)
@@ -16,7 +19,7 @@ string GetFakeItemResref(int nBaseItem)
        case BASE_ITEM_CLOAK: sPlaceholderResRef = "gamble_cloak"; break;
        case BASE_ITEM_BELT: sPlaceholderResRef = "gamble_belt";  break;
        case BASE_ITEM_SMALLSHIELD: sPlaceholderResRef = "nw_ashsw001";  break;
-       case BASE_ITEM_HELMET: sPlaceholderResRef = "nw_arhe006";break;
+       case BASE_ITEM_HELMET: sPlaceholderResRef = "nw_arhe001";break;
        case BASE_ITEM_LARGESHIELD: sPlaceholderResRef = "nw_ashlw001";  break;
        case BASE_ITEM_TOWERSHIELD: sPlaceholderResRef = "nw_ashto001";  break;
        case BASE_ITEM_BASTARDSWORD: sPlaceholderResRef = "nw_wswbs001"; break;
@@ -177,7 +180,17 @@ float GetAverageValueOfArmorOfType(int nAC, int nTier, int nUnique)
     return -1.0;
 }
 
-float GetAverageCostForBaseItem(int nBaseItem)
+float _GetExpectedCostForItemOfTier(float fChance, float fExpectedItemValue, int nKhadalaCost)
+{
+    if (fChance == 0.0) { return 0.0; }
+    float fRollsForT = 1.0/fChance;
+    float fGoldSpent = nKhadalaCost * fRollsForT;
+    float fGoldValueReturned = fExpectedItemValue * fRollsForT;
+    float fGoldValueAfterSelling = fGoldValueReturned*REALISTIC_MAX_RESALE_VALUE;
+    return fGoldSpent - fGoldValueAfterSelling;
+}
+
+float GetAverageCostForBaseItem(int nBaseItem, int nCost)
 {
     int nMultiplier = GetMultiplierForBaseItemType(nBaseItem);
     
@@ -191,6 +204,10 @@ float GetAverageCostForBaseItem(int nBaseItem)
     
     float fT2Chance = 1.0 - (fT3Chance + fT4Chance + fT5Chance);
     
+    WriteTimestampedLogEntry("Base item " + IntToString(nBaseItem) + " t5 chance: " + FloatToString(fT5Chance));
+    WriteTimestampedLogEntry("Base item " + IntToString(nBaseItem) + " t4 chance: " + FloatToString(fT4Chance));
+    WriteTimestampedLogEntry("Base item " + IntToString(nBaseItem) + " t3 chance: " + FloatToString(fT3Chance));
+    WriteTimestampedLogEntry("Base item " + IntToString(nBaseItem) + " t2 chance: " + FloatToString(fT2Chance));
     
     
     
@@ -202,10 +219,17 @@ float GetAverageCostForBaseItem(int nBaseItem)
     float fT4 = fT4Chance * ((fUnique * GetAverageValueOfItemsOfType(nBaseItem, 4, 1)) + (fNonUnique * GetAverageValueOfItemsOfType(nBaseItem, 4, 0)));
     float fT5 = fT5Chance * ((fUnique * GetAverageValueOfItemsOfType(nBaseItem, 5, 1)) + (fNonUnique * GetAverageValueOfItemsOfType(nBaseItem, 5, 0)));
     
-    return fT2 + fT3 + fT4 + fT5;
+    float fVal = fT2 + fT3 + fT4 + fT5;
+    
+    WriteTimestampedLogEntry("Expected cost for t5: " + FloatToString(_GetExpectedCostForItemOfTier(fT5Chance, fVal, nCost))); 
+    WriteTimestampedLogEntry("Expected cost for t4: " + FloatToString(_GetExpectedCostForItemOfTier(fT4Chance, fVal, nCost))); 
+    WriteTimestampedLogEntry("Expected cost for t3: " + FloatToString(_GetExpectedCostForItemOfTier(fT3Chance, fVal, nCost))); 
+    
+    
+    return fVal;
 }
 
-float GetAverageCostForBaseAC(int nAC)
+float GetAverageCostForBaseAC(int nAC, int nCost)
 {
     int nMultiplier = GetMultiplierForBaseAC(nAC);
     int nRandom = d100();
@@ -214,8 +238,14 @@ float GetAverageCostForBaseAC(int nAC)
     float fT5Chance = IntToFloat(1*nMultiplier)/100.0;
     float fT4Chance = IntToFloat(3*nMultiplier)/100.0;
     float fT3Chance = IntToFloat(7*nMultiplier)/100.0;
+   
     
     float fT2Chance = 1.0 - (fT3Chance + fT4Chance + fT5Chance);
+    
+    WriteTimestampedLogEntry("Base AC " + IntToString(nAC) + " t5 chance: " + FloatToString(fT5Chance));
+    WriteTimestampedLogEntry("Base AC " + IntToString(nAC) + " t4 chance: " + FloatToString(fT4Chance));
+    WriteTimestampedLogEntry("Base AC " + IntToString(nAC) + " t3 chance: " + FloatToString(fT3Chance));
+    WriteTimestampedLogEntry("Base AC " + IntToString(nAC) + " t2 chance: " + FloatToString(fT2Chance));
     
     float fUnique = IntToFloat(UNIQUE_ITEM_CHANCE)/100.0;
     float fNonUnique = 1.0 - fUnique;
@@ -225,7 +255,13 @@ float GetAverageCostForBaseAC(int nAC)
     float fT4 = fT4Chance * ((fUnique * GetAverageValueOfArmorOfType(nAC, 4, 1)) + (fNonUnique * GetAverageValueOfArmorOfType(nAC, 4, 0)));
     float fT5 = fT5Chance * ((fUnique * GetAverageValueOfArmorOfType(nAC, 5, 1)) + (fNonUnique * GetAverageValueOfArmorOfType(nAC, 5, 0)));
     
-    return fT2 + fT3 + fT4 + fT5;
+    float fVal = fT2 + fT3 + fT4 + fT5;
+    
+    WriteTimestampedLogEntry("Expected cost for t5: " + FloatToString(_GetExpectedCostForItemOfTier(fT5Chance, fVal, nCost))); 
+    WriteTimestampedLogEntry("Expected cost for t4: " + FloatToString(_GetExpectedCostForItemOfTier(fT4Chance, fVal, nCost))); 
+    WriteTimestampedLogEntry("Expected cost for t3: " + FloatToString(_GetExpectedCostForItemOfTier(fT3Chance, fVal, nCost))); 
+    
+    return fVal;
 }
 
 int GetKhadalaCostForBaseItem(int nBaseItem)
@@ -311,7 +347,7 @@ int GetBaseItemByIndex(int nIndex)
 void HowBadlyDoesKhadalaScamForItem(int nBaseItem)
 {
     int nCost = GetKhadalaCostForBaseItem(nBaseItem);
-    float fRealValue = GetAverageCostForBaseItem(nBaseItem);
+    float fRealValue = GetAverageCostForBaseItem(nBaseItem, nCost);
     string sBaseItemName =  GetStringByStrRef(StringToInt(Get2DAString("baseitems", "Name", nBaseItem)));
     
     float fTimesOvercharged = IntToFloat(nCost)/fRealValue;
@@ -322,7 +358,7 @@ void HowBadlyDoesKhadalaScamForItem(int nBaseItem)
 void HowBadlyDoesKhadalaScamForArmor(int nAC)
 {
     int nCost = GetKhadalaCostForBaseAC(nAC);
-    float fRealValue = GetAverageCostForBaseAC(nAC);
+    float fRealValue = GetAverageCostForBaseAC(nAC, nCost);
     string sBaseItemName = "AC " + IntToString(nAC);
     
     float fTimesOvercharged = IntToFloat(nCost)/fRealValue;

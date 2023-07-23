@@ -2,19 +2,19 @@
 #include "inc_loot"
 #include "nwnx_item"
 
-int GetRandomTier(int nMultiplier = 1)
+int GetRandomTier()
 {
     int nRandom = d100();
 
-    if (nRandom == 1*nMultiplier)
+    if (nRandom <= 3)
     {
         return 5;
     }
-    else if (nRandom <= 3*nMultiplier)
+    else if (nRandom <= 10)
     {
         return 4;
     }
-    else if (nRandom <= 7*nMultiplier)
+    else if (nRandom <= 30)
     {
         return 3;
     }
@@ -32,6 +32,7 @@ void CreatePlaceholderItem(object oItem)
 
     string sPlaceholderResRef;
 
+    // used to multiply cost of an item. for example, amulets should cost more to gamble...
     int nMultiplier = 1;
 
     switch (GetBaseItemType(oItem))
@@ -39,12 +40,12 @@ void CreatePlaceholderItem(object oItem)
        case BASE_ITEM_SPELLSCROLL: sPlaceholderResRef = "gamble_scroll"; nMultiplier = 0; break;
        case BASE_ITEM_GLOVES: sPlaceholderResRef = "gamble_gloves"; nMultiplier = 3; break;
        case BASE_ITEM_BRACER: sPlaceholderResRef = "gamble_bracers"; nMultiplier = 3; break;
-       case BASE_ITEM_RING: sPlaceholderResRef = "gamble_ring"; nMultiplier = 5; break;
-       case BASE_ITEM_AMULET: sPlaceholderResRef = "gamble_amulet"; nMultiplier = 6; break;
-       case BASE_ITEM_CLOAK: sPlaceholderResRef = "gamble_cloak"; nMultiplier = 3; break;
+       case BASE_ITEM_RING: if (d3() == 1) { sPlaceholderResRef = "gamble_ring"; nMultiplier = 3; } break;
+       case BASE_ITEM_AMULET: if (d3() == 1) { sPlaceholderResRef = "gamble_amulet"; nMultiplier = 3; } break;
+       case BASE_ITEM_CLOAK: if (d2() == 1) { sPlaceholderResRef = "gamble_cloak"; nMultiplier = 3; } break;
        case BASE_ITEM_BELT: sPlaceholderResRef = "gamble_belt"; nMultiplier = 3; break;
        case BASE_ITEM_SMALLSHIELD: if (d3() == 1) { sPlaceholderResRef = "nw_ashsw001"; nMultiplier = 2; } break;
-       case BASE_ITEM_HELMET: sPlaceholderResRef = "nw_arhe006"; nMultiplier = 3; break;
+       case BASE_ITEM_HELMET: sPlaceholderResRef = "gamble_helm"; nMultiplier = 3; break;
        case BASE_ITEM_LARGESHIELD: sPlaceholderResRef = "nw_ashlw001"; nMultiplier = 3; break;
        case BASE_ITEM_TOWERSHIELD: sPlaceholderResRef = "nw_ashto001"; nMultiplier = 4; break;
        case BASE_ITEM_BASTARDSWORD: sPlaceholderResRef = "nw_wswbs001"; break;
@@ -83,7 +84,7 @@ void CreatePlaceholderItem(object oItem)
        case BASE_ITEM_KUKRI: sPlaceholderResRef = "nw_wspku001"; break;
        case BASE_ITEM_SICKLE: sPlaceholderResRef = "nw_wspsc001"; break;
        case BASE_ITEM_SLING: sPlaceholderResRef = "nw_wbwsl001"; break;
-       case BASE_ITEM_MAGICWAND: sPlaceholderResRef = "gamble_wand"; nMultiplier = 8; break;
+       case BASE_ITEM_MAGICWAND: sPlaceholderResRef = "gamble_wand"; nMultiplier = 3; break;
        case BASE_ITEM_ARMOR:
           switch (NWNX_Item_GetBaseArmorClass(oItem))
           {
@@ -139,34 +140,36 @@ void main()
     object oItemInStorage, oItemPlaceholder;
 
     int i;
-    int nMax = d4(40);
+    int nMax = d12(50);
     for (i = 0; i < nMax; i++)
     {
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Melee", GetRandomTier());
         CreatePlaceholderItem(oItemInStorage);
     }
 
-    nMax = d4(40);
+    nMax = d8(50);
     for (i = 0; i < nMax; i++)
     {
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Range", GetRandomTier());
         CreatePlaceholderItem(oItemInStorage);
     }
-    nMax = d4(40);
+    nMax = d10(60);
     for (i = 0; i < nMax; i++)
     {
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Armor", GetRandomTier());
         CreatePlaceholderItem(oItemInStorage);
     }
 
-    nMax = d4(40);
+    /*
+    nMax = d6(50);
     for (i = 0; i < nMax; i++)
     {
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Scrolls", GetRandomTier(3));
         CreatePlaceholderItem(oItemInStorage);
     }
-
-    nMax = d4(60);
+    */
+    
+    nMax = d10(80);
     for (i = 0; i < nMax; i++)
     {
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Apparel", GetRandomTier());
