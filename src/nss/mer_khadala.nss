@@ -122,6 +122,9 @@ void CreatePlaceholderItem(object oItem)
 
 void main()
 {
+    // Khadala is taking a break and going on vacation!
+    return;
+    
     object oStorage = GetObjectByTag("khadala_storage");
     // When restocking, the real storage object needs emptying
     // But khadala is currently flagged to not restock
@@ -153,7 +156,7 @@ void main()
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Range", GetRandomTier());
         CreatePlaceholderItem(oItemInStorage);
     }
-    nMax = d10(60);
+    nMax = d10(50);
     for (i = 0; i < nMax; i++)
     {
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Armor", GetRandomTier());
@@ -168,8 +171,8 @@ void main()
         CreatePlaceholderItem(oItemInStorage);
     }
     */
-    
-    nMax = d10(80);
+
+    nMax = d10(60);
     for (i = 0; i < nMax; i++)
     {
         oItemInStorage = GenerateTierItem(0, 0, oStorage, "Apparel", GetRandomTier());
