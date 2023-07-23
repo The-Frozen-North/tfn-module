@@ -48,7 +48,7 @@ void main()
     {
         case 4: // Stone
         case 5: // Wood
-        // case 9: // Carpet
+        case 9: // Carpet
         case 10: // Metal
             eEffect = EffectMovementSpeedIncrease(15);
             break;
