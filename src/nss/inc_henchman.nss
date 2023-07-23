@@ -229,6 +229,14 @@ void _ScaleHenchmanWeaponry(object oHench, int nBonus)
     else
     {
         IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench), ItemPropertyAttackBonus(nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+        IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench), ItemPropertyMaxRangeStrengthMod(2+nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+
+        // bishop has fire arrows, so don't give him custom unlimited ammo
+        if (GetResRef(oHench) != "hen_bishop")
+        {
+            // unlimited +1 starts at 11, start at 10 and just add 1 to the bonus
+            IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench), ItemPropertyUnlimitedAmmo(10+nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);    
+        }
     }
 
     // Don't put deflection bonus on offhand melees
@@ -237,6 +245,7 @@ void _ScaleHenchmanWeaponry(object oHench, int nBonus)
         IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench), ItemPropertyACBonus(nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
     }
 
+    // Grimgnaw case, add it to gloves
     IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_ARMS, oHench), ItemPropertyAttackBonus(nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
     IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_ARMS, oHench), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
 }

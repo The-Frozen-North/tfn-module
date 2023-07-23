@@ -12,5 +12,3 @@ copy database\spawns.sqlite3 seeded_database\spawns.sqlite3
 copy database\treasures.sqlite3 seeded_database\treasures.sqlite3
 copy database\randspellbooks.sqlite3 seeded_database\randspellbooks.sqlite3
 copy database\prettify.sqlite3 seeded_database\prettify.sqlite3
-
-pause

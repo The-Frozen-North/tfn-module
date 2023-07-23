@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Head": {
     "type": "byte",
-    "value": 2
+    "value": 9
   },
   "Appearance_Type": {
     "type": "word",
@@ -90,7 +90,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 11.0
+    "value": 0.5
   },
   "ClassList": {
     "type": "list",
@@ -99,22 +99,22 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 4
+          "value": 7
         },
         "ClassLevel": {
           "type": "short",
-          "value": 11
+          "value": 1
         }
       }
     ]
   },
   "Color_Hair": {
     "type": "byte",
-    "value": 23
+    "value": 15
   },
   "Color_Skin": {
     "type": "byte",
-    "value": 0
+    "value": 1
   },
   "Color_Tattoo1": {
     "type": "byte",
@@ -130,19 +130,19 @@
   },
   "Con": {
     "type": "byte",
-    "value": 16
+    "value": 10
   },
   "Conversation": {
     "type": "resref",
-    "value": ""
+    "value": "hen_bishop"
   },
   "CRAdjust": {
     "type": "int",
-    "value": 1
+    "value": 0
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 110
+    "value": 10
   },
   "DecayTime": {
     "type": "dword",
@@ -154,13 +154,11 @@
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {
-      "0": "This weasel-faced man seems to command a great deal of power, though it is not clear how."
-    }
+    "value": {}
   },
   "Dex": {
     "type": "byte",
-    "value": 16
+    "value": 17
   },
   "Disarmable": {
     "type": "byte",
@@ -173,67 +171,39 @@
         "__struct_id": 2,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_maarcl064"
-        }
-      },
-      {
-        "__struct_id": 8,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_it_mbracer013"
+          "value": "cre_bishoparmor"
         }
       },
       {
         "__struct_id": 16,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_wblmms003"
-        }
-      },
-      {
-        "__struct_id": 32,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_wspmku008"
+          "value": "cre_bishopbow"
         }
       },
       {
         "__struct_id": 64,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_maarcl088"
+          "value": "x0_maarcl025"
         }
       },
       {
         "__struct_id": 512,
         "EquippedRes": {
           "type": "resref",
-          "value": "nw_it_mneck012"
+          "value": "hen_amulet"
         }
       }
     ]
   },
   "FactionID": {
     "type": "word",
-    "value": 32
+    "value": 4
   },
   "FeatList": {
     "type": "list",
     "value": [
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 2
-        }
-      },
       {
         "__struct_id": 1,
         "Feat": {
@@ -252,14 +222,28 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 80
+          "value": 374
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 20
+          "value": 267
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 1089
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 27
         }
       },
       {
@@ -280,35 +264,14 @@
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 40
+          "value": 201
         }
       },
       {
         "__struct_id": 1,
         "Feat": {
           "type": "word",
-          "value": 41
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 118
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 95
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 44
+          "value": 101
         }
       },
       {
@@ -324,35 +287,13 @@
           "type": "word",
           "value": 46
         }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 156
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 133
-        }
-      },
-      {
-        "__struct_id": 1,
-        "Feat": {
-          "type": "word",
-          "value": 141
-        }
       }
     ]
   },
   "FirstName": {
-    "id": 12585,
     "type": "cexolocstring",
     "value": {
-      "0": "High Captain Baram"
+      "0": "Bishop"
     }
   },
   "fortbonus": {
@@ -369,11 +310,11 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 110
+    "value": 10
   },
   "Int": {
     "type": "byte",
-    "value": 10
+    "value": 8
   },
   "Interruptable": {
     "type": "byte",
@@ -387,48 +328,15 @@
     "type": "byte",
     "value": 0
   },
-  "ItemList": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "InventoryRes": {
-          "type": "resref",
-          "value": "nw_it_mpotion002"
-        },
-        "Repos_PosX": {
-          "type": "word",
-          "value": 0
-        },
-        "Repos_Posy": {
-          "type": "word",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 1,
-        "InventoryRes": {
-          "type": "resref",
-          "value": "nw_it_mpotion020"
-        },
-        "Repos_PosX": {
-          "type": "word",
-          "value": 1
-        },
-        "Repos_Posy": {
-          "type": "word",
-          "value": 0
-        }
-      }
-    ]
-  },
   "LastName": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": ""
+    }
   },
   "LawfulChaotic": {
     "type": "byte",
-    "value": 50
+    "value": 0
   },
   "Lootable": {
     "type": "byte",
@@ -436,7 +344,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 154
+    "value": 10
   },
   "NaturalAC": {
     "type": "byte",
@@ -448,7 +356,7 @@
   },
   "PaletteID": {
     "type": "byte",
-    "value": 1
+    "value": 3
   },
   "PerceptionRange": {
     "type": "byte",
@@ -464,7 +372,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 119
+    "value": 105
   },
   "Race": {
     "type": "byte",
@@ -476,55 +384,55 @@
   },
   "ScriptAttacked": {
     "type": "resref",
-    "value": "ai_onattacked"
+    "value": "hen_onattacked"
   },
   "ScriptDamaged": {
     "type": "resref",
-    "value": "ai_ondamaged"
+    "value": "hen_ondamaged"
   },
   "ScriptDeath": {
     "type": "resref",
-    "value": "ai_ondeath"
+    "value": "hen_ondeath"
   },
   "ScriptDialogue": {
     "type": "resref",
-    "value": "ai_onconverse"
+    "value": "hen_onconvers"
   },
   "ScriptDisturbed": {
     "type": "resref",
-    "value": "ai_ondisturb"
+    "value": "hen_ondisturb"
   },
   "ScriptEndRound": {
     "type": "resref",
-    "value": "ai_oncombrnd"
+    "value": "hen_oncombrnd"
   },
   "ScriptHeartbeat": {
     "type": "resref",
-    "value": "ai_onheartb"
+    "value": "hen_onheartb"
   },
   "ScriptOnBlocked": {
     "type": "resref",
-    "value": "ai_onblocked"
+    "value": "hen_onblocked"
   },
   "ScriptOnNotice": {
     "type": "resref",
-    "value": "ai_onpercep"
+    "value": "hen_onpercep"
   },
   "ScriptRested": {
     "type": "resref",
-    "value": "ai_onrest"
+    "value": "hen_onrest"
   },
   "ScriptSpawn": {
     "type": "resref",
-    "value": "ai_onspawn"
+    "value": "hen_onspawn"
   },
   "ScriptSpellAt": {
     "type": "resref",
-    "value": "ai_onspellcast"
+    "value": "hen_onspellcas"
   },
   "ScriptUserDefine": {
     "type": "resref",
-    "value": "ai_onuserdef"
+    "value": "hen_onuserdef"
   },
   "SkillList": {
     "type": "list",
@@ -554,7 +462,28 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
-          "value": 15
+          "value": 4
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 4
         }
       },
       {
@@ -610,7 +539,28 @@
         "__struct_id": 0,
         "Rank": {
           "type": "byte",
+          "value": 4
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
           "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Rank": {
+          "type": "byte",
+          "value": 4
         }
       },
       {
@@ -639,48 +589,6 @@
         "Rank": {
           "type": "byte",
           "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Rank": {
-          "type": "byte",
-          "value": 5
         }
       },
       {
@@ -729,7 +637,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 218
+    "value": 367
   },
   "SpecAbilityList": {
     "type": "list",
@@ -737,11 +645,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 4
+    "value": 7
   },
   "Str": {
     "type": "byte",
-    "value": 18
+    "value": 16
   },
   "Subrace": {
     "type": "cexostring",
@@ -749,7 +657,7 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "baram"
+    "value": "hen_bishop"
   },
   "Tail_New": {
     "type": "dword",
@@ -761,7 +669,7 @@
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "baram"
+    "value": "hen_bishop"
   },
   "VarTable": {
     "type": "list",
@@ -770,7 +678,7 @@
         "__struct_id": 0,
         "Name": {
           "type": "cexostring",
-          "value": "boss"
+          "value": "companion"
         },
         "Type": {
           "type": "dword",
@@ -785,22 +693,7 @@
         "__struct_id": 0,
         "Name": {
           "type": "cexostring",
-          "value": "defeated_webhook"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "quest1"
+          "value": "heartbeat_script"
         },
         "Type": {
           "type": "dword",
@@ -808,29 +701,14 @@
         },
         "Value": {
           "type": "cexostring",
-          "value": "02_q_captain_baram"
-        }
-      },
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "quest_kill"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
+          "value": "hen_scale"
         }
       }
     ]
   },
   "WalkRate": {
     "type": "int",
-    "value": 7
+    "value": 4
   },
   "willbonus": {
     "type": "short",
@@ -842,11 +720,11 @@
   },
   "Wis": {
     "type": "byte",
-    "value": 10
+    "value": 13
   },
   "xAppearance_Head": {
     "type": "word",
-    "value": 2
+    "value": 9
   },
   "xArmorPart_RFoot": {
     "type": "word",

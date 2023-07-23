@@ -14,5 +14,3 @@ rmdir "%CD%/_tmp"
 goto start
 
 :end
-
-pause
