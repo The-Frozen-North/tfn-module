@@ -9,7 +9,7 @@
             Is Intelligence Normal
 */
 //:://////////////////////////////////////////////
-#include "NW_I0_PLOT"
+#include "nw_i0_plot"
 int StartingConditional()
 {
     return GetRacialType(OBJECT_SELF) == GetRacialType(GetPCSpeaker());// && CheckIntelligenceNormal();
