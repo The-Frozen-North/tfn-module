@@ -1,8 +1,6 @@
-#include "inc_nui_config"
+#include "nui_playerstats"
 
 void main()
 {
-    AssignCommand(GetFirstPC(), SpeakString("dev_test"));
-    ExecuteScript("pc_xpbar", GetFirstPC());
-    DisplayUIMasterConfigurationInterface(GetFirstPC());
+    ShowPlayerStatsUI(GetFirstPC());
 }

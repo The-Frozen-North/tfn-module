@@ -30,6 +30,7 @@ void main()
             if (nFire > 0) { IncrementPlayerStatistic(oVictim, "fire_damage_taken", nFire); } 
             if (nNegative > 0) { IncrementPlayerStatistic(oVictim, "negative_damage_taken", nNegative); }
             if (nPositive > 0) { IncrementPlayerStatistic(oVictim, "positive_damage_taken", nPositive); }
+            if (nMagic > 0) { IncrementPlayerStatistic(oVictim, "magic_damage_taken", nMagic); }
             if (nSonic > 0) { IncrementPlayerStatistic(oVictim, "sonic_damage_taken", nSonic); }
         }
         if (GetIsPC(sDamage.oDamager))
@@ -43,6 +44,7 @@ void main()
             if (nFire > 0) { IncrementPlayerStatistic(sDamage.oDamager, "fire_damage_dealt", nFire); }
             if (nNegative > 0) { IncrementPlayerStatistic(sDamage.oDamager, "negative_damage_dealt", nNegative); }
             if (nPositive > 0) { IncrementPlayerStatistic(sDamage.oDamager, "positive_damage_dealt", nPositive); }
+            if (nMagic > 0) { IncrementPlayerStatistic(sDamage.oDamager, "magic_damage_dealt", nMagic); }
             if (nSonic > 0) { IncrementPlayerStatistic(sDamage.oDamager, "sonic_damage_dealt", nSonic); }
         }
     }

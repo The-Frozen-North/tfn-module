@@ -5,6 +5,7 @@
 #include "nwnx_effect"
 #include "x0_i0_match"
 #include "util_i_color"
+#include "nui_playerstats"
 
 const float MORALE_RADIUS = 30.0;
 const float REMAINS_DECAY = 120.0;
@@ -775,6 +776,7 @@ int IncrementPlayerStatistic(object oPC, string sStat, int nIncrement = 1)
     string sKey = GetPCPublicCDKey(oPC, TRUE);
     int nOldPlayerValue = GetCampaignInt(sKey, STAT_PREFIX+sStat);
     SetCampaignInt(sKey, STAT_PREFIX+sStat, nOldPlayerValue+nIncrement);
+    UpdatePlayerStatsUIBindIfOpen(oPC, sStat);
 
     return nNewTotal;
 }
@@ -784,6 +786,7 @@ void SetPlayerStatisticString(object oPC, string sStat, string sValue, int bCDKe
 {
     if (!GetIsPC(oPC)) return;
     string sVarName = STAT_PREFIX+sStat;
+    UpdatePlayerStatsUIBindIfOpen(oPC, sStat);
     if (!bCDKeyDB)
     {
         SQLocalsPlayer_SetString(oPC, sVarName, sValue);
@@ -798,6 +801,7 @@ void SetPlayerStatistic(object oPC, string sStat, int nValue, int bCDKeyDB=0)
 {
     if (!GetIsPC(oPC)) return;
     string sVarName = STAT_PREFIX+sStat;
+    UpdatePlayerStatsUIBindIfOpen(oPC, sStat);
     if (!bCDKeyDB)
     {
         SQLocalsPlayer_SetInt(oPC, sVarName, nValue);

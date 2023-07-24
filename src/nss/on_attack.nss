@@ -13,18 +13,24 @@ void main()
         {
             if (GetIsPC(oAttacker))
             {
-                IncrementPlayerStatistic(oAttacker, "attacks_of_opportunity_made");
                 if (bHit)
                 {
                     IncrementPlayerStatistic(oAttacker, "attacks_of_opportunity_hit");
                 }
+                else
+                {
+                    IncrementPlayerStatistic(oAttacker, "attacks_of_opportunity_missed");
+                }
             }
             if (GetIsPC(sAttack.oTarget))
             {
-                IncrementPlayerStatistic(sAttack.oTarget, "attacks_of_opportunity_targeted_by");
                 if (bHit)
                 {
                     IncrementPlayerStatistic(sAttack.oTarget, "attacks_of_opportunity_hit_by");
+                }
+                else
+                {
+                    IncrementPlayerStatistic(sAttack.oTarget, "attacks_of_opportunity_missed_by");
                 }
             }
         }
@@ -32,18 +38,24 @@ void main()
         {
             if (GetIsPC(oAttacker))
             {
-                IncrementPlayerStatistic(oAttacker, "sneak_attacks_made");
                 if (bHit)
                 {
                     IncrementPlayerStatistic(oAttacker, "sneak_attacks_hit");
                 }
+                else
+                {
+                    IncrementPlayerStatistic(oAttacker, "sneak_attacks_missed");
+                }
             }
             if (GetIsPC(sAttack.oTarget))
             {
-                IncrementPlayerStatistic(sAttack.oTarget, "sneak_attacks_targeted_by");
                 if (bHit)
                 {
                     IncrementPlayerStatistic(sAttack.oTarget, "sneak_attacks_hit_by");
+                }
+                else
+                {
+                    IncrementPlayerStatistic(sAttack.oTarget, "sneak_attacks_missed_by");
                 }
             }
         }
@@ -61,6 +73,28 @@ void main()
         if (sAttack.iToHitRoll == 1 && GetIsPC(oAttacker))
         {
             IncrementPlayerStatistic(oAttacker, "natural_one_attack_rolls");
+        }
+        if (bHit)
+        {
+            if (GetIsPC(oAttacker))
+            {
+                IncrementPlayerStatistic(oAttacker, "attacks_hit");
+            }
+            if (GetIsPC(sAttack.oTarget))
+            {
+                IncrementPlayerStatistic(sAttack.oTarget, "attacks_hit_by");
+            }
+        }
+        else
+        {
+            if (GetIsPC(oAttacker))
+            {
+                IncrementPlayerStatistic(oAttacker, "attacks_missed");
+            }
+            if (GetIsPC(sAttack.oTarget))
+            {
+                IncrementPlayerStatistic(sAttack.oTarget, "attacks_missed_by");
+            }
         }
     }
 }
