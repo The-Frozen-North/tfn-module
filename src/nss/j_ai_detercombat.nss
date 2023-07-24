@@ -42,7 +42,7 @@ void main()
     object oTarget = GetLocalObject(OBJECT_SELF, AI_TEMP_SET_TARGET);
 
     // Speak combat round speakstring
-    SpeakArrayString(AI_TALK_ON_COMBAT_ROUND, TRUE);
+    //SpeakArrayString(AI_TALK_ON_COMBAT_ROUND, TRUE);
 
     // Call combat round using include
     AI_DetermineCombatRound(oTarget);

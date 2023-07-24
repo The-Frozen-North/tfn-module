@@ -69,8 +69,111 @@
     have no effect on: Targeting, Counterspelling, Shouting, Seeing/Percieving.
 
     -
+Modified on 19, Nov, 2009
+Modified by Undercover69/BePower
 
 
+v0.4
+Fixes:
+    Targetting issue that provoked random walking after killing a target,
+        even with more targets present, if OnSpawn target type was set
+    Nearest heard enemy calls corrected
+    Instead of comparing just discipline, added AC to feats that require
+        both a hit and a discipline check. My mistake, J only compared to
+        AC and I had changed to only discipline, now it's both.
+    Enemies with greater sanctuary needed many more checks, hopefully all
+        done now
+    Creature that vanished is treated correctly
+    Added has spell or item check to all calls to AI_GetBestAreaSpellTarget,
+        a few were missing, specially those I had removed...
+    Polymorphed forms abilities
+    Shifting choice decision (polymorph/shape choice) incongruencies left
+    Polymorphed creatures previous change only stopped major spells like heal &
+        mass heal, now should be stopping all of them but potions and feats
+
+Improvements:
+    Even more accurate decision tree on feats
+    Added HiPS use to Kobold Assassin shifter form
+    Default targetting to most damaged in %
+    Added timer on target for bigby spells, AI should avoid casting multiple
+        bigby spells on the same target at the same time
+    Polymorphed forms' abilities' decision much smarter
+
+OBS: since now creatures that vanish from sight/hearing are treated correctly
+(I think) the special code for buffing when an ethereal (greater sanc) enemy
+is present will probably not fire as the default for invis/stealth creatures
+will take over
+
+TODO:
+    Add polymorph/shape stuff decision tree based on target/globals/situation
+        priority on this is very low
+
+v0.3 in 24, Nov, 2009
+Fixes:
+    Shifter shifting
+    wrong spell call (mindblank instead of mindfog)
+    spells: some area/single target corrections
+    Horrid_Wilting friendly fire
+    Checking spell capabilities & items
+        (both were not working, seems you can't set it onspawn)
+    spell ball of lightning was being cast without a target
+    AI was not casting some spells for unknown reason, if we are sorceror or wizard
+        it gets a global check before casting cantrips
+
+Improvements:
+    Shifting choice decision
+    Greater sanc use
+    Greater sanc on enemy check when casting
+    if enemy is using greater sanc and we can see or hear then we buff
+    Black blade of disaster check (changed AI_SetUpUsEffects so it exits at dazed level)
+    Buffs, if we are invis, comes before any hostile action
+        (should lighten the invis/offense/invis/offense/invis/offense behaviour)
+    Added check on healing to stop polymorphed cre's casting spells, adaptation of
+        Jasperre v1.4beta3
+    Added true check for items that cast spells, potions don't count
+    Added GlobalAttemptAll (spells) for a chance of not going into AttemptAllSpells
+        Pure melee classes without items that casts spells will benefit immensely
+    Added Timer in AttemptAllSpells if we hit bottom and cast nothing it'll check again
+        only in 2 rounds
+    Melee targetting: lowered random chance to change targets so they actually finish off
+        the enemy instead of fooling around with them (unless set OnSpawn)
+
+Alterations:
+    AI_SetUpUsEffects sets nearest enemy heard and if it's valid globals
+        Will have to rework it, tests show that getting heard enemies doesn't work
+    Divine Shield use from AttemptAllSpells to AttemptFeatCombat
+    If chance to change targets is not set OnSpawn default is now 1% (was 20%)
+
+TODO:
+    Targetting override by custom OnSpawn seems to be broken, needs more testing
+    Rework heard enemies
+    Don't cast the same spell on the same target an ally is casting! For things like bigby
+
+v0.2 in 22,Nov,2009
+Fixes:
+    turning undead on ally's summoned undead
+    ultravision/darkness issue
+    Blackguard's, Palemaster's & ShadowDancer's summonning
+    Red Dragon Disciple's breath
+    All summons set summoned_level
+
+Improvements:
+    Arcane Archer feat use
+    (improved)Whirlwind vs (improved)Knockdown use
+    Feats that require a Discipline check now actually take Discipline into account
+
+Alterations:
+    From EnemiesIn4M to 3M
+
+v0.1:
+    Several code optimizations, including:
+        data sharing among close allies
+        GetBestAOETarget(sp?) target reuse,
+            " function used was changed for performance when many creatures are present
+                old one was good for few creatures
+        combined 2 loops in SetUpAllObjects
+        Spellcasting checks divided in blocks, some checks optimized
+        commented out some speakstring function calls
 
 
 
@@ -80,6 +183,7 @@
 #include "j_inc_constants"
 // Sets effects. This doesn't have to be seperate, but I like it seperate.
 #include "j_inc_seteffects"
+#include "x2_inc_itemprop"
 
 /******************************************************************************/
 // Combat include, spell effect/immune constants
@@ -141,7 +245,8 @@ int GlobalIntelligence, GlobalOurHitDice, GlobalOurSize, GlobalOurAC,
     GlobalTimeStopArraySize,
     GlobalLastSpellValid, // Random spells, if this is set to > 0, it casts it after random chances of others
     GlobalRandomCastModifier,// Random casting, the extra % added - 2xIntelligence
-    GlobalWeAreBuffer; // Are we a spell buffer? AI_FLAG_COMBAT_MORE_ALLY_BUFFING_SPELLS
+    GlobalWeAreBuffer, // Are we a spell buffer? AI_FLAG_COMBAT_MORE_ALLY_BUFFING_SPELLS
+    GlobalAttemptAll;
 
 
 // OUR GLOBAL TARGETS
@@ -169,7 +274,7 @@ object GlobalMeleeTarget,  // Set from either a ranged or melee target :-)
     // Must be TRUE else we think there is no enemies to attack.
 int GlobalAnyValidTargetObject,
     // Counts of 0 or more - specifically in our line of sight.
-    GlobalEnemiesIn4Meters, GlobalTotalSeenHeardEnemies,
+    GlobalEnemiesIn3Meters, GlobalTotalSeenHeardEnemies,
     // Ranged/Melee Attackers. Ranged attackers = Attackers with bows.
     GlobalMeleeAttackers, GlobalRangedAttackers,
     // Total allies + People. We don't count ourselves.
@@ -253,7 +358,7 @@ int
     ValidFeats,
 // Do we have items (wands) avalible? Or potions? To check spells, we
 // make sure that
-    GobalOtherItemsValid, GobalPotionsValid;
+    GlobalOtherItemsValid, GlobalPotionsValid;
 
 talent tPotionCon, tPotionPro, tPotionEnh; // These are general talents, Always set
                                            // because we can use these parrallel to spells.
@@ -585,7 +690,7 @@ int AI_AttemptGrenadeThrowing(object oTarget);
 // - We always attack with a bow at ranged, but may attack normally after the spell.
 // - If nTalent is 0, we do not cast it unless iRequirement is also 0.
 // - If iRequirement is 0, it is considered innate.
-// - Imput iItemTalentValue and iPotionTalentValue to check item talents. -1 == No item.
+// - Input iItemTalentValue and iPotionTalentValue to check item talents. -1 == No item.
 int AI_ActionCastSpell(int iSpellID, int nTalent = 0, object oTarget = OBJECT_SELF, int iRequirement = 0, int iLocation = FALSE, int iItemTalentValue = -1, int iPotionTalentValue = -1);
 // This is used for INFLICT/CURE spells, as GetHasSpell also can return 1+ for
 // any extra castings - like if we had 2 light wounds and 2 blesses, it'd return
@@ -599,7 +704,7 @@ int AI_ActionCastSpontaeousSpell(int iSpellID, int nTalent, object oTarget);
 // - We always attack with a bow at ranged, but may attack normally after the spell.
 // - If nTalent is 0, we do not cast it unless iRequirement is also 0.
 // - If iRequirement is 0, it is considered innate.
-// - Imput iItemTalentValue to check item talents.
+// - Input iItemTalentValue to check item talents.
 int AI_ActionCastSubSpell(int iSubSpell, int nTalent = 0, object oTarget = OBJECT_SELF, int iRequirement = 0, int iLocation = FALSE, int iItemTalentValue = -1, int iPotionTalentValue = -1);
 // This will cast the spell of ID in this order [Note: Always adds to time stop, as it will be on self, and benifical):
 // 0. If d100() is <= iRandom.
@@ -614,6 +719,7 @@ int AI_ActionCastSpellRandom(int iSpellID, int nTalent, int iRandom, object oTar
 // at the summon location chosen before. Works similar to normal spells but
 // at a special location.
 // * If iRequirement is -1, it is a feat. If 0, it is innate (as spells)
+//... OBS: if feat is selected it's necessary to add the spellid in the function code
 int AI_ActionCastSummonSpell(int iThingID, int iRequirement = 0, int iSummonLevel = 0);
 // This willcast iFirst -> iFirst + iAmount polymorph spell. It will check
 // if we have iMaster (Either by feat or spell, depending on iFeat).
@@ -658,6 +764,9 @@ int AI_ActionFlee(string sArray);
 //@@@@@@@@@@@@@@@@@ ALL INFO FUNCTIONS @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+//... New function that returns if OBJECT_SELF has an item that casts spells
+// and it's not a potion
+int CheckSpellItems();
 // Gets a item talent value, applies EffectCutsceneImmobilize then removes it.
 // - iTalent, 1-21.
 void AI_SetItemTalentValue(int iTalent);
@@ -672,12 +781,18 @@ void AI_SetMeleeMode(int iMode = -1);
 
 // GETTING ENEMY INFO
 
+// This is an attempt to speed up some things.
+// We use talents to set general valid categories.
+// Levels are also accounted for, checking the spell given and using a switch
+// statement to get the level.
+//... copied from j_inc_spawnin
+void AI_SetUpSpellsB();
 // We set up targets to Global* variables, GlobalSpellTarget, GlobalRangeTarget,
 // and GlobalMeleeTarget. Counts enemies, and so on.
 // - Uses oIntruder (to attack or move near) if anything.
 // - We return TRUE if it ActionAttack's, or moves to an enemy - basically
 //   that we cannot do an action, but shouldn't search. False if normal.
-int AI_SetUpAllObjects(object oImputBackup);
+int AI_SetUpAllObjects(object oInputBackup);
 // This sets up US, the user! :-)
 // - Determines class to use, dragon or not.
 // - And some other things that don't need to check allies/enemies for.
@@ -732,7 +847,7 @@ int AI_GetPercentOf(int iNumber, int iTotal);
 // This returns a number, 1-4. This number is the levels
 // of spell they will be totally immune to.
 int AI_GetSpellLevelEffect(object oTarget);
-// Imput oTarget and iLevel and it will check if they are automatically
+// Input oTarget and iLevel and it will check if they are automatically
 // immune to the spell being cast.
 int AI_GetSpellLevelEffectAOE(object oTarget, int iLevel = 9);
 // Returns TRUE if any of the checks the oGroupTarget is immune to.
@@ -793,15 +908,15 @@ void AI_TargetingArrayIntegerStore(int iType, string sOriginalArrayName);
 // This sets ARRAY_TEMP_ARRAY of integer values to sNewArrayName.
 // - iTypeOfTarget, used TARGET_LOWER, TARGET_HIGHER.
 // - We work until iMinimum is filled, or we get to iMinimum and we get to
-//   a target with value > iImputMinimum. (20 - 25 > X?)
+//   a target with value > iInputMinimum. (20 - 25 > X?)
 // Returns the amount of targets set in sNewArrayName.
-int AI_TargetingArrayLimitTargets(string sNewArrayName, int iTypeOfTarget, int iImputMinLimit, int iMinLoop, int iMaxLoop);
+int AI_TargetingArrayLimitTargets(string sNewArrayName, int iTypeOfTarget, int iInputMinLimit, int iMinLoop, int iMaxLoop);
 // This sets ARRAY_TEMP_ARRAY of float values to sNewArrayName.
 // - iTypeOfTarget, used TARGET_LOWER, TARGET_HIGHER.
 // - We work until iMinimum is filled, or we get to iMinimum and we get to
-//   a target with value > iImputMinimum. (20.0 - 25.0 > X?)
+//   a target with value > iInputMinimum. (20.0 - 25.0 > X?)
 // Returns the amount of targets set in sNewArrayName.
-int AI_TargetingArrayLimitTargetsFloat(string sNewArrayName, int iTypeOfTarget, float fImputMinLimit, int iMinLoop, int iMaxLoop);
+int AI_TargetingArrayLimitTargetsFloat(string sNewArrayName, int iTypeOfTarget, float fInputMinLimit, int iMinLoop, int iMaxLoop);
 // Deletes all FLoats, Integers and Objects set to sArray for valid
 // objects got by GetLocalObject to sArray.
 void AI_TargetingArrayDelete(string sArray);
@@ -812,14 +927,18 @@ void AI_TargetingArrayDelete(string sArray);
 // - DM
 // Must be: Seen or heard
 // Returns: TRUE if any of these are true.
-int AI_GetTargetSanityCheck(object oTarget);
+int AI_IsInsaneTarget(object oTarget);
+
+void _db(string s)
+{
+    SendMessageToPC(GetFirstPC(), s);
+}
 
 /*::///////////////////////////////////////////////
 //:: Name: AI_SetSpellTargetImmunity, AI_GetSpellTargetImmunity
 //::///////////////////////////////////////////////
     Immunity settings for spells.
 //:://///////////////////////////////////////////*/
-
 // Simple return TRUE if it matches hex.
 // - Uses GlobalSpellTarget for target object
 int AI_GetSpellTargetImmunity(int iImmunityHex)
@@ -845,6 +964,27 @@ void AI_SetUpUsEffects()
     AI_SetEffectsOnTarget();
     // Set global time stop
     GlobalInTimeStop = AI_GetAIHaveEffect(GlobalEffectTimestop);
+
+    //... new stuff
+    GlobalNearestEnemyHeard = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, i1, CREATURE_TYPE_IS_ALIVE, TRUE);
+    GlobalValidNearestHeardEnemy = GetIsObjectValid(GlobalNearestEnemyHeard) && GetObjectHeard(GlobalNearestEnemyHeard);
+//    _db(GetName(GlobalNearestEnemyHeard) + IntToString(GlobalValidNearestHeardEnemy));
+    if (GlobalValidNearestHeardEnemy &&
+        GetDistanceToObject(GlobalNearestEnemyHeard) < 40.0f)
+    {
+        int i = 1;
+        object oSummon = GetAssociate(ASSOCIATE_TYPE_SUMMONED);
+        while (GetIsObjectValid(oSummon))
+        {
+            if (GetLocalInt(oSummon,"X2_L_CREATURE_NEEDS_CONCENTRATION"))
+            {
+                AI_SetWeHaveEffect(GlobalEffectDazed);//... perfect behaviour since we just get away from the battle
+                return; //... we already got what we wanted so exit
+            }
+            i++;
+            oSummon = GetAssociate(ASSOCIATE_TYPE_SUMMONED, OBJECT_SELF, i);
+        }
+    }
 }
 // Gets the percent, of X vs Y,  iNumber/iTotal * 100 = %.
 int AI_GetPercentOf(int iNumber, int iTotal)
@@ -1738,6 +1878,7 @@ int AI_EquipAndAttack()
     // Parry the enemy, if we have only 1 target attacking us, and have
     // decent skill.
     else if(!iRanged && !GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_PARRYING, AI_OTHER_COMBAT_MASTER) &&
+            GlobalOurAC < GlobalMeleeTargetBAB+15 && //... checking if it's worth the trouble
             // 1 attacker, and the melee target is attacking us.
             GlobalMeleeAttackers <= i1 && GetAttackTarget(GlobalMeleeTarget) == OBJECT_SELF &&
             // Not got a ranged weapon - enemy target that is
@@ -1868,32 +2009,39 @@ int AI_EquipAndAttack()
         // If we don't have 5 or more, we use some of the better single target
         // feats before. This requires no BAB check - it is done at max BAB
         if(// 90% chance of using it with 6+ melee attackers, and 8+ enemies in 4M
-           (d10() <= i9 && (GlobalEnemiesIn4Meters >= i8 ||
-            GlobalMeleeAttackers >= i6)) ||
+           (d10() <= i9 && (GlobalEnemiesIn3Meters >= i6 || //... switched i6/i8
+            GlobalMeleeAttackers >= i8)) ||
            // OR, 70% chance of using if we'll get more attacks if we used
-           // whirlwind then if we used
-           (d10() <= i7 && (GlobalOurBaseAttackBonus/i5 < (GlobalEnemiesIn4Meters - i1))) ||
+           // whirlwind then if we used                                     //... from -i1 to -i2 to nothing
+           (d10() <= i7 && (GlobalOurBaseAttackBonus/i5 < (GlobalEnemiesIn3Meters))) ||
            // Lastly 40% chance if we have 4+ melee, or 5+ in range
-           (d10() <= i4 && (GlobalEnemiesIn4Meters >= i5 ||
-            GlobalMeleeAttackers >= i4)))
-        {
-            // - Free attack to all in 10'! This should be anyone in 6.6M or so.
-            if(GetHasFeat(FEAT_IMPROVED_WHIRLWIND))
+           (d10() <= i4 && (GlobalEnemiesIn3Meters >= i4))) //... was i5||
+//...            GlobalMeleeAttackers >= i4)))
+        {    //... checks if it's not better to use defensive stuff
+            if ((GlobalMeleeTargetBAB <= GlobalOurAC +10) ||
+                (!GetHasFeat(FEAT_DWARVEN_DEFENDER_DEFENSIVE_STANCE) &&
+                GetSkillRank(SKILL_PARRY) < GlobalMeleeTargetBAB) )
             {
-                AI_SetMeleeMode();
-                ActionUseFeat(FEAT_IMPROVED_WHIRLWIND, OBJECT_SELF);
-                // And attack after (as it doesn't seem to take a round to use)
-                ActionAttack(GlobalMeleeTarget);
-                return FEAT_IMPROVED_WHIRLWIND;
-            }
-            // All in 5' is still alright. 5 Feet = 3.3M or so.
-            else if(GetHasFeat(FEAT_WHIRLWIND_ATTACK))
-            {
-                AI_SetMeleeMode();
-                ActionUseFeat(FEAT_WHIRLWIND_ATTACK, OBJECT_SELF);
-                // And attack after (as it doesn't seem to take a round to use)
-                ActionAttack(GlobalMeleeTarget);
-                return FEAT_WHIRLWIND_ATTACK;
+                // - Free attack to all in 10'! This should be anyone in 6.6M or so.
+                 //... wrong, 10' is 3m. calc is (ft/10)*3
+                if(GetHasFeat(FEAT_IMPROVED_WHIRLWIND))
+                {
+                    AI_SetMeleeMode();
+                    ActionUseFeat(FEAT_IMPROVED_WHIRLWIND, GlobalMeleeTarget); //... was obj_self, supposedly it also makes a full atk
+                    ActionAttack(GlobalMeleeTarget);
+                    // And attack after (as it doesn't seem to take a round to use)
+                    return FEAT_IMPROVED_WHIRLWIND;
+                }
+                // All in 5' is still alright. 5 Feet = 3.3M or so. //... wrong, 5' is 1,5m. calc is (ft/10)*3
+                else if(GetHasFeat(FEAT_WHIRLWIND_ATTACK) &&
+                    ((GlobalEnemiesIn3Meters-1) >= (GlobalOurBaseAttackBonus/5)))
+                {
+                    AI_SetMeleeMode();
+                    ActionUseFeat(FEAT_WHIRLWIND_ATTACK, OBJECT_SELF);
+                    // And attack after (as it doesn't seem to take a round to use)
+                    ActionAttack(GlobalMeleeTarget);
+                    return FEAT_WHIRLWIND_ATTACK;
+                }
             }
         }
         // Sap can be used by anyone, any weapon, I think...
@@ -1908,9 +2056,11 @@ int AI_EquipAndAttack()
     DC equal to the attacker's attack roll. If the defender fails, he or she is
     dazed for 12 seconds.
     Use: Selected.  */
+        int iEnemyDiscipline = GetSkillRank(SKILL_DISCIPLINE, GlobalMeleeTarget);
+
         if(!GetHasFeatEffect(FEAT_SAP, GlobalMeleeTarget) &&
             GetHasFeat(FEAT_SAP) &&
-            iOurHit - i4 >= GlobalMeleeTargetAC)
+            iOurHit - i4 >= iEnemyDiscipline && iOurHit -i4 >= GlobalMeleeTargetAC)
         {
             AI_SetMeleeMode();
             ActionUseFeat(FEAT_SAP, GlobalMeleeTarget);
@@ -1930,9 +2080,9 @@ int AI_EquipAndAttack()
                 {
                     // Modifier, adds anything from -4 to 0 to 4.
                     // Test: Us, size 3, them size 1. 3 - 1 = 2. 2 * 4 = +8 to hit.
-                    iAddingModifier = (GlobalOurSize - iTargetCreatureSize) * i4;
+                    iAddingModifier = ((GlobalOurSize - iTargetCreatureSize) * i4) + iOurHit;
                     // We are 1 size bigger, so its evens (we add 4 onto -4)
-                    if(iAddingModifier + iOurHit >= GlobalMeleeTargetAC)
+                    if(iAddingModifier >= iEnemyDiscipline && iAddingModifier >= GlobalMeleeTargetAC)
                     {
                         AI_SetMeleeMode();
                         ActionUseFeat(FEAT_IMPROVED_KNOCKDOWN, GlobalMeleeTarget);
@@ -1947,9 +2097,9 @@ int AI_EquipAndAttack()
                 if((GlobalOurSize + i1) >= iTargetCreatureSize)
                 {
                     // Same as above, but we always take 4 more.
-                    iAddingModifier = ((GlobalOurSize - iTargetCreatureSize) * i4) - (i4);
+                    iAddingModifier = ((GlobalOurSize - iTargetCreatureSize) * i4) - (i4) + iOurHit;
                     // Calculate
-                    if(iAddingModifier + iOurHit >= GlobalMeleeTargetAC)
+                    if(iAddingModifier >= iEnemyDiscipline && iAddingModifier >= GlobalMeleeTargetAC)
                     {
                         AI_SetMeleeMode();
                         ActionUseFeat(FEAT_KNOCKDOWN, GlobalMeleeTarget);
@@ -1961,6 +2111,7 @@ int AI_EquipAndAttack()
         // Define sizes of weapons, ETC.
         // Check if they are disarmable.
         if(GetIsCreatureDisarmable(GlobalMeleeTarget))
+
         {
             iOurWeaponSize = AI_GetWeaponSize(oEquipped);
             iTargetWeaponSize = AI_GetWeaponSize(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, GlobalMeleeTarget));
@@ -1973,8 +2124,8 @@ int AI_EquipAndAttack()
                     // Apply weapon size penalites/bonuses to check - Use right weapons.
                     // We times it by 4.
                     // Test: Us, size 3, them size 1. (3 - 1 = 2) then (2 * 4 = 8) So +8 to hit.
-                    iAddingModifier = (iOurWeaponSize - iTargetWeaponSize) * i4;
-                    if((iAddingModifier + iOurHit - i4) >= GlobalMeleeTargetAC)
+                    iAddingModifier = ((iOurWeaponSize - iTargetWeaponSize) * i4) -i4 +iOurHit;
+                    if(iAddingModifier >= iEnemyDiscipline && iAddingModifier >= GlobalMeleeTargetAC)
                     {
                         AI_SetMeleeMode();
                         ActionUseFeat(FEAT_IMPROVED_DISARM, GlobalMeleeTarget);
@@ -1984,15 +2135,18 @@ int AI_EquipAndAttack()
             }
             // Provokes an AOO. Improved does not, but this is -6,
             // and bonuses depend on weapons used (sizes)
-            else if(GetHasFeat(FEAT_DISARM))
+            else if(GetHasFeat(FEAT_DISARM) &&
+                //... let's make sure we don't kill ourselves
+                (GlobalEnemiesIn3Meters < 4 || GlobalMeleeTargetBAB+15 < GlobalOurAC))
             {
                 // We need to have valid sizes, so no odd weapons or shields to attack with...
                 if(iOurWeaponSize && iTargetWeaponSize)// Are both != 0?
                 {
                     // Apply weapon size penalites/bonuses to check - Use left weapons.
-                    iAddingModifier = (iOurWeaponSize - iTargetWeaponSize) * i4;
+                    iAddingModifier = ((iOurWeaponSize - iTargetWeaponSize) * i4) -i6 +
+                        iOurHit - GlobalEnemiesIn3Meters;
                     // We take 6 and then 1 per melee attacker (AOOs)
-                    if((iAddingModifier + iOurHit - i6 - GlobalMeleeAttackers) >= GlobalMeleeTargetAC)
+                    if(iAddingModifier >= iEnemyDiscipline && iAddingModifier >= GlobalMeleeTargetAC)
                     {
                         AI_SetMeleeMode();
                         ActionUseFeat(FEAT_DISARM, GlobalMeleeTarget);
@@ -2029,17 +2183,18 @@ int AI_EquipAndAttack()
         // - We may use it later at 2 or more. :-)
         // If we don't have 5 or more, we use some of the better single target
         // feats before. This requires no BAB check - it is done at max BAB
-        if(GlobalEnemiesIn4Meters >= i2)
+        if(GlobalEnemiesIn3Meters >= i2)
         {
             // - Free attack to all in 10'! This should be anyone in 6.6M or so.
             if(GetHasFeat(FEAT_IMPROVED_WHIRLWIND))
             {
                 AI_SetMeleeMode();
-                ActionUseFeat(FEAT_IMPROVED_WHIRLWIND, OBJECT_SELF);
+                ActionUseFeat(FEAT_IMPROVED_WHIRLWIND, GlobalMeleeTarget);
                 return FEAT_IMPROVED_WHIRLWIND;
             }
             // All in 5' is still alright. 5 Feet = 3.3M or so.
-            else if(GetHasFeat(FEAT_WHIRLWIND_ATTACK))
+            else if(GetHasFeat(FEAT_WHIRLWIND_ATTACK) &&
+                ((GlobalEnemiesIn3Meters-1) >= (GlobalOurBaseAttackBonus/5)))
             {
                 AI_SetMeleeMode();
                 ActionUseFeat(FEAT_WHIRLWIND_ATTACK, OBJECT_SELF);
@@ -2085,7 +2240,7 @@ int AI_EquipAndAttack()
             }
         }
         // At a -2 to hit, this can disarm the arms or legs...speed or attack bonus
-        if((iOurHit - i4) >= GlobalMeleeTargetAC &&
+        if((iOurHit - i4) >= iEnemyDiscipline &&
             GetHasFeat(FEAT_CALLED_SHOT) &&
            !GetHasFeatEffect(FEAT_CALLED_SHOT, GlobalMeleeTarget))
         {
@@ -2131,16 +2286,21 @@ int AI_EquipAndAttack()
 // Includes debug string
 int AI_AttemptMeleeAttackWrapper()
 {
-    // Errors
+/*        _db("AtkWrapper: " + ObjectToString(GlobalMeleeTarget) +
+            IntToString(GetIsObjectValid(GlobalMeleeTarget)) +
+            IntToString(GetIsDead(GlobalMeleeTarget)));
+  */  // Errors
     // We will exit if no valid melee target/dead
     if(!GetIsObjectValid(GlobalMeleeTarget) || GetIsDead(GlobalMeleeTarget))
     {
         // 3: "[DCR:Melee] Melee Code. No valid melee target/Dead. Exiting"
         DebugActionSpeakByInt(3);
+//        SendMessageToPC(GetFirstPC(), "[DCR:Melee] Melee Code. No valid melee target/Dead. Exiting");
         return FALSE;
     }
     int iFeat = AI_EquipAndAttack();
     // 4: "[DCR:Melee] Melee attack. [Target] " + GetName(GlobalMeleeTarget) + " [Feat/Attack] " + IntToString(iFeat)
+//    _db("AtkWrapper [Target] " + GetName(GlobalMeleeTarget) + ObjectToString(GlobalMeleeTarget) + " [Feat/Attack] " + IntToString(iFeat));
     DebugActionSpeakByInt(4, GlobalMeleeTarget, iFeat);
     return iFeat;
 }
@@ -2195,14 +2355,15 @@ void AI_SetBackupCastingSpellValues(int iSpellID, int nTalent, object oTarget, i
 
 int AI_AttemptConcentrationCheck(object oTarget)
 {
-    // Total off check
-    if(GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_CONCENTRATION, AI_OTHER_MASTER) ||
+    // Total off check //... ??????????????????????????????
+    if(//...GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_CONCENTRATION, AI_OTHER_MASTER) ||
     // Or has no moving back needed.
-       GetHasFeat(FEAT_EPIC_IMPROVED_COMBAT_CASTING) ||
+       (GetHasFeat(FEAT_EPIC_IMPROVED_COMBAT_CASTING) ||
     // Or has all spells quickened!
        GetHasFeat(FEAT_EPIC_AUTOMATIC_QUICKEN_3) ||
        // - Ignore 1, but not 3 or 2.
-       GetHasFeat(FEAT_EPIC_AUTOMATIC_QUICKEN_2))
+       GetHasFeat(FEAT_EPIC_AUTOMATIC_QUICKEN_2))) //&&  //... was going to put this in but I dunno what he does about the black blade
+//       (FindSubString(GetName(GetAssociate(ASSOCIATE_TYPE_SUMMONED)), "DISASTER") < 0))
     {
         return FALSE;
     }
@@ -2361,7 +2522,7 @@ int AI_ActionCastItemEqualTo(object oTarget, int iSpellID, int iLocation)
 // This is used for INFLICT spells, as GetHasSpell also can return 1+ for
 // any extra castings - like if we had 2 light wounds and 2 blesses, it'd return
 // 4.
-// Imput the iSpellID, oTarget in to cast the spell. TRUE if casted. No items checked.
+// Input the iSpellID, oTarget in to cast the spell. TRUE if casted. No items checked.
 int AI_ActionCastSpontaeousSpell(int iSpellID, int nTalent, object oTarget)
 {
     if(nTalent > i0 && GetHasSpell(iSpellID) && GetObjectSeen(oTarget))
@@ -2386,10 +2547,21 @@ int AI_ActionCastSpontaeousSpell(int iSpellID, int nTalent, object oTarget)
 // - We always attack with a bow at ranged, but may attack normally after the spell.
 // - If nTalent is 0, we do not check items.
 // - If iRequirement is 0, it is considered innate.
-// - Imput iItemTalentValue and iPotionTalentValue to check item talents.
+// - Input iItemTalentValue and iPotionTalentValue to check item talents.
 // - iSummonLevel can be 0, but if 1+, it is set to AI_LAST_SUMMONED_LEVEL
 int AI_ActionCastSpell(int iSpellID, int nTalent = 0, object oTarget = OBJECT_SELF, int iRequirement = 0, int iLocation = FALSE, int iItemTalentValue = -1, int iPotionTalentValue = -1)
 {
+     //   SendMessageToPC(GetFirstPC(), "Cast Spell: " + IntToString(iSpellID));//...
+     //... adding etherealness check
+     //... if it's by target and not location we must be able to see
+     //... but if it's an enemy it cannot have etherealness
+     int bEtherealEnemy = (GetIsEnemy(oTarget) && GetHasSpellEffect(SPELL_ETHEREALNESS, oTarget) &&
+        GetIsObjectValid(oTarget));
+    if (!iLocation && (bEtherealEnemy || !GetObjectSeen(oTarget)))
+        return FALSE;
+
+//... this is from v1.4beta3    if(bLocation == FALSE && (GetIsEthereal(oTarget) || !GetObjectSeen(oTarget))) return FALSE;
+
     // 1. We need nTalent to be over 0. -1 means an invalid spell for that talent,
     // IE no spell for that talent
     // - If iRequirement is 0, we consider it innate and no talent category for some
@@ -2400,9 +2572,10 @@ int AI_ActionCastSpell(int iSpellID, int nTalent = 0, object oTarget = OBJECT_SE
         // the object is seen (this is a backup for it!)
         if(!GlobalSilenceSoItems &&
           (!iRequirement || GlobalSpellAbilityModifier >= iRequirement) &&
-           GetHasSpell(iSpellID) &&
-          (iLocation || GetObjectSeen(oTarget)))
+           GetHasSpell(iSpellID)) //...&&
+//          (iLocation || GetObjectSeen(oTarget)))
         {
+
             // Make sure it is a spell, not an ability
             if(iRequirement > FALSE)
             {
@@ -2422,9 +2595,13 @@ int AI_ActionCastSpell(int iSpellID, int nTalent = 0, object oTarget = OBJECT_SE
             AI_ActionTurnOffHiding();
             // Equip the best shield we have
             AI_EquipBestShield();
+            //... had to have some way of detecting if the spell is a touch one...
+            if (GetIsEnemy(oTarget) && GetDistanceToObject(oTarget) < 3.0f)
+                AssignCommand(OBJECT_SELF, ActionMoveAwayFromObject(oTarget, TRUE, 5.0f));
             // Note: 1.3 fix. Action Cast At Object will be used if we can see
             // the target, even if it is a location spell
-            if(GetObjectSeen(oTarget))
+            //... since the new greater sanc/etherealness check location must come first
+            if(GetObjectSeen(oTarget) && !bEtherealEnemy)
             {
                 // aim at the object directly!
                 // - See 1.3 fix below. Basically, this should use Meta Magic normally
@@ -2472,9 +2649,14 @@ int AI_ActionCastSpell(int iSpellID, int nTalent = 0, object oTarget = OBJECT_SE
 // - We always attack with a bow at ranged, but may attack normally after the spell.
 // - If nTalent is 0, we do not check items.
 // - If iRequirement is 0, it is considered innate.
-// - Imput iItemTalentValue to check item talents.
+// - Input iItemTalentValue to check item talents.
 int AI_ActionCastSubSpell(int iSubSpell, int nTalent = 0, object oTarget = OBJECT_SELF, int iRequirement = 0, int iLocation = FALSE, int iItemTalentValue = -1, int iPotionTalentValue = -1)
 {
+      //  SendMessageToPC(GetFirstPC(), "SubSpell: " + IntToString(iSubSpell));//...
+     int bEtherealEnemy = (GetIsObjectValid(oTarget) && GetIsEnemy(oTarget) &&
+        GetHasSpellEffect(SPELL_ETHEREALNESS, oTarget));
+    if (!iLocation && (bEtherealEnemy || !GetObjectSeen(oTarget)))
+        return FALSE;
     // 1. We need nTalent to be over 0. -1 means an invalid spell for that talent,
     // IE no spell for that talent
     // - If iRequirement is 0, we consider it innate and no talent category for some
@@ -2509,7 +2691,7 @@ int AI_ActionCastSubSpell(int iSubSpell, int nTalent = 0, object oTarget = OBJEC
             AI_EquipBestShield();
             // See 1.3 fix notes about metamagic not being used correctly with
             // cast spell at location.
-            if(GetObjectSeen(oTarget))
+            if(GetObjectSeen(oTarget) && !bEtherealEnemy)
             {
                 // Aim at the object directly!
                 ActionCastSpellAtObject(iSubSpell, oTarget, METAMAGIC_ANY, TRUE);
@@ -2560,6 +2742,11 @@ int AI_ActionCastSubSpell(int iSubSpell, int nTalent = 0, object oTarget = OBJEC
 //     Then you can use AI_ActionCastBackupRandomSpell to see if we can cast it later.
 int AI_ActionCastSpellRandom(int iSpellID, int nTalent, int iRandom, object oTarget = OBJECT_SELF, int iRequirement = 0, int iLocation = FALSE, int iItemTalentValue = -1, int iPotionTalentValue = -1)
 {
+      //  SendMessageToPC(GetFirstPC(), "Random Spell: " + IntToString(iSpellID));//...
+     int bEtherealEnemy = (GetIsObjectValid(oTarget) && GetIsEnemy(oTarget) &&
+        GetHasSpellEffect(SPELL_ETHEREALNESS, oTarget));
+    if (!iLocation && (bEtherealEnemy || !GetObjectSeen(oTarget)))
+        return FALSE;
     // 1. We need nTalent to be over 0. -1 means an invalid spell for that talent,
     // IE no spell for that talent
     // - If iRequirement is 0, we consider it innate and no talent category for some
@@ -2568,7 +2755,7 @@ int AI_ActionCastSpellRandom(int iSpellID, int nTalent, int iRandom, object oTar
     {
         // Check GetHasSpell as long as we are not silenced, and have right modifier, and
         // the object is seen (this is a backup for it!)
-        if(!GlobalSilenceSoItems &&
+        if(!GlobalSilenceSoItems && GetIsObjectValid(oTarget) && //... added Getisvalid
           (!iRequirement || GlobalSpellAbilityModifier >= iRequirement) &&
            GetHasSpell(iSpellID) &&
           (iLocation || GetObjectSeen(oTarget)))
@@ -2596,7 +2783,7 @@ int AI_ActionCastSpellRandom(int iSpellID, int nTalent, int iRandom, object oTar
                 AI_EquipBestShield();
                 // Note: 1.3 fix. Action Cast At Object will be used if we can see
                 // the target, even if it is a location spell
-                if(GetObjectSeen(oTarget))
+                if(GetObjectSeen(oTarget) && !bEtherealEnemy)
                 {
                     // aim at the object directly!
                     // - See 1.3 fix below. Basically, this should use Meta Magic normally
@@ -2671,10 +2858,16 @@ int AI_ActionCastBackupRandomSpell()
         object oTarget;
         int iSpell, iTalent, iLocation, iItem, iPotion, iRequirement;
         iSpell = GlobalLastSpellValid;
+
         // Delete again for other castings
         GlobalLastSpellValid = FALSE;
         // 13: "[DCR:Casting] Backup spell caught: " + IntToString(iSpell)
         DebugActionSpeakByInt(13, OBJECT_INVALID, iSpell);
+
+        if ((iSpell == SPELL_BIGBYS_CLENCHED_FIST || iSpell == SPELL_BIGBYS_CRUSHING_HAND ||
+            iSpell == SPELL_BIGBYS_FORCEFUL_HAND || iSpell == SPELL_BIGBYS_GRASPING_HAND ||
+            iSpell == SPELL_BIGBYS_INTERPOSING_HAND) && GetLocalInt(GlobalSpellTarget, "AI_Bigby"))
+            return FALSE;
 
         // Get things from GLOBAL_LAST_SPELL_INFORMATION1 to GLOBAL...ATION5
         int iCnt = i1;
@@ -2699,6 +2892,7 @@ int AI_ActionCastBackupRandomSpell()
 
         // Cast spell at 100% chance, and innate (already checked iRequirement)
         // - Should cast.
+        //SendMessageToPC(GetFirstPC(), "Backup Spell: " + IntToString(iSpell));//...
         if(AI_ActionCastSpell(iSpell, iTalent, oTarget, iRequirement, iLocation, iItem, iPotion)) return TRUE;
     }
     return FALSE;
@@ -2713,10 +2907,31 @@ int AI_ActionCastSummonSpell(int iThingID, int iRequirement = 0, int iSummonLeve
         {
             // 14: "[DCR:Feat] [ID] " + IntToString(iFeat) + " [Enemy] " + GetName(oObject)
             DebugActionSpeakByInt(14, OBJECT_SELF, iThingID);
+            //... old way was not working
+            int iSpellID = (iThingID == AI_FEAT_PM_CREATE_GREATER_UNDEAD) ? SPELLABILITY_PM_SUMMON_GREATER_UNDEAD :
+                (iThingID == AI_FEAT_PM_CREATE_UNDEAD) ? SPELLABILITY_PM_SUMMON_UNDEAD :
+                (iThingID == FEAT_SUMMON_SHADOW) ? SPELL_SUMMON_SHADOW :
+                (iThingID == AI_FEAT_BG_CREATE_UNDEAD) ? SPELLABILITY_BG_CREATEDEAD :
+                (iThingID == AI_FEAT_BG_FIENDISH_SERVANT) ? SPELLABILITY_BG_FIENDISH_SERVANT :
+                (iThingID == AI_FEAT_PM_ANIMATE_DEAD) ? SPELLABILITY_PM_ANIMATE_DEAD : FALSE;
+
+            if (iSpellID)//...
+            {
+//                SendMessageToPC(GetFirstPC(), "PM undead: " + IntToString(iThingID));//...
+                ActionCastSpellAtLocation(iSpellID, GlobalSummonLocation, METAMAGIC_ANY, TRUE);
+                DecrementRemainingFeatUses(OBJECT_SELF, iThingID);
+
+                int iBonus = (GetHasFeat(FEAT_EPIC_BLACKGUARD)) ? (GetLevelByClass(CLASS_TYPE_BLACKGUARD) - 10) :
+                    (GetHasFeat(FEAT_EPIC_PALE_MASTER)) ? (GetLevelByClass(CLASS_TYPE_PALEMASTER) - 10) :
+                    (GetHasFeat(FEAT_EPIC_SHADOWDANCER)) ? (GetLevelByClass(CLASS_TYPE_SHADOWDANCER) - 10) : 0;
+                SetAIInteger(AI_LAST_SUMMONED_LEVEL, iSummonLevel +iBonus);//... these abilities are usually powerful
+                return TRUE;
+            }
             // talent tFeat doesn't work.
-            ActionUseFeat(iThingID, OBJECT_SELF);
+/*            ActionUseFeat(iThingID, OBJECT_SELF);
             SetAIInteger(AI_LAST_SUMMONED_LEVEL, iSummonLevel);
-            return TRUE;
+*/            SendMessageToPC(GetFirstPC(), "Summon 0, error");
+            return FALSE;
         }
     }
     else if(SpellAllies)
@@ -2730,11 +2945,13 @@ int AI_ActionCastSummonSpell(int iThingID, int iRequirement = 0, int iSummonLeve
             // Make sure it is a spell, not an ability
             if(iRequirement > FALSE)
             {
+//                SendMessageToPC(GetFirstPC(), "Summon 1");
                 // Attempt Concentration Check (Casting a spell, not an item)
                 if(AI_AttemptConcentrationCheck(GlobalSpellTarget)) return TRUE;
             }
             else
             {
+//                SendMessageToPC(GetFirstPC(), "Summon 2");
                 // Turn off all modes - remember, we can't use expertise with spellcasting!
                 AI_SetMeleeMode();
             }
@@ -2751,6 +2968,7 @@ int AI_ActionCastSummonSpell(int iThingID, int iRequirement = 0, int iSummonLeve
             //           it will cheat-cast, and decrement the spell by one, with no metamagic.
             ActionCastSpellAtLocation(iThingID, GlobalSummonLocation, METAMAGIC_NONE, TRUE);
             DecrementRemainingSpellUses(OBJECT_SELF, iThingID);
+            SetAIInteger(AI_LAST_SUMMONED_LEVEL, iSummonLevel);
             // Lasts...recheck items
             if(AI_GetSpellCategoryHasItem(SpellAllies))
             {
@@ -2790,6 +3008,7 @@ int AI_ActionCastSummonSpell(int iThingID, int iRequirement = 0, int iSummonLeve
                 AI_EquipBestShield();
                 // Use this only for items, so we should not have the spell.
                 ActionUseTalentAtLocation(tBestOfIt, GlobalSummonLocation);
+                SetAIInteger(AI_LAST_SUMMONED_LEVEL, iSummonLevel);
                 iReturn = TRUE;
             }
             // remove the EffectCutsceneImmobilize, if so.
@@ -2818,6 +3037,7 @@ int AI_ActionUseFeatOnObject(int iFeat, object oObject = OBJECT_SELF)
         if(!GetHasFeatEffect(iFeat, oObject))
         {
             // 14: "[DCR:Feat] [ID] " + IntToString(iFeat) + " [Enemy] " + GetName(oObject)
+//            SendMessageToPC(GetFirstPC(), "[DCR:Feat] [ID] " + IntToString(iFeat) + " [Enemy] " + GetName(oObject)); //...
             DebugActionSpeakByInt(14, oObject, iFeat);
             // We turn off hiding/searching
             AI_ActionTurnOffHiding();
@@ -2825,6 +3045,7 @@ int AI_ActionUseFeatOnObject(int iFeat, object oObject = OBJECT_SELF)
             if(oObject == OBJECT_SELF)
             {
                 if(GetIsObjectValid(GlobalMeleeTarget)) ActionAttack(GlobalMeleeTarget);
+//                SendMessageToPC(GetFirstPC(), "[DCR:Feat/os/aa] [Enemy] " + GetName(GlobalMeleeTarget));
             }
             return TRUE;
         }
@@ -2840,13 +3061,23 @@ int AI_ActionUseEpicSpell(int nFeat, int nSpell, object oTarget = OBJECT_SELF)
     {
         // 14: "[DCR:Feat] [ID] " + IntToString(nFeat) + " [Enemy] " + GetName(oTarget)
         DebugActionSpeakByInt(14, oTarget, nFeat);
-        // We turn off hiding/searching
-        AI_ActionTurnOffHiding();
-        // Cheat cast the spell
-        ActionCastSpellAtObject(nSpell, oTarget, METAMAGIC_NONE, TRUE);
-        // Decrement casting of it.
-        DecrementRemainingFeatUses(OBJECT_SELF, nFeat);
-        return TRUE;
+        if (nSpell == SPELL_EPIC_HELLBALL)
+        {
+            AI_ActionTurnOffHiding();
+            ActionCastSpellAtLocation(nSpell, GetLocation(oTarget), METAMAGIC_NONE, TRUE);
+            DecrementRemainingFeatUses(OBJECT_SELF, nFeat);
+            return TRUE;
+        }
+        else if (GetIsEnemy(oTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oTarget))
+        {
+            // We turn off hiding/searching
+            AI_ActionTurnOffHiding();
+            // Cheat cast the spell
+            ActionCastSpellAtObject(nSpell, oTarget, METAMAGIC_NONE, TRUE);
+            // Decrement casting of it.
+            DecrementRemainingFeatUses(OBJECT_SELF, nFeat);
+            return TRUE;
+        }
     }
     return FALSE;
 }
@@ -2955,6 +3186,455 @@ int AI_GetBestSpontaeousHealingSpell()
         return SPELL_CURE_MINOR_WOUNDS;
     }
     // False = no spell
+    return FALSE;
+}
+
+// This is an attempt to speed up some things.
+// We use talents to set general valid categories.
+// Levels are also accounted for, checking the spell given and using a switch
+// statement to get the level.
+void AI_SetUpSpellsB()
+{
+    /***************************************************************************
+    We use talents, and Get2daString to check levels, and so on...
+
+    We set:
+    - If the talent is a valid one at all
+    - If we know it (GetHasSpell) we check the level of the spell. Set if highest.
+    - We set the actual talent number as a spell.
+
+    // These must match the list in nwscreaturestats.cpp
+    int TALENT_CATEGORY_HARMFUL_AREAEFFECT_DISCRIMINANT   = 1;
+    int TALENT_CATEGORY_HARMFUL_RANGED                    = 2;
+    int TALENT_CATEGORY_HARMFUL_TOUCH                     = 3;
+    int TALENT_CATEGORY_BENEFICIAL_HEALING_AREAEFFECT     = 4;
+    int TALENT_CATEGORY_BENEFICIAL_HEALING_TOUCH          = 5;
+    int TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_AREAEFFECT = 6;
+    int TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_SINGLE     = 7;
+    int TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_AREAEFFECT = 8;
+    int TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SINGLE     = 9;
+    int TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SELF       = 10;
+    int TALENT_CATEGORY_HARMFUL_AREAEFFECT_INDISCRIMINANT = 11;
+    int TALENT_CATEGORY_BENEFICIAL_PROTECTION_SELF        = 12;
+    int TALENT_CATEGORY_BENEFICIAL_PROTECTION_SINGLE      = 13;
+    int TALENT_CATEGORY_BENEFICIAL_PROTECTION_AREAEFFECT  = 14;
+    int TALENT_CATEGORY_BENEFICIAL_OBTAIN_ALLIES          = 15;
+    int TALENT_CATEGORY_PERSISTENT_AREA_OF_EFFECT         = 16;
+    int TALENT_CATEGORY_BENEFICIAL_HEALING_POTION         = 17;
+    int TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_POTION     = 18;
+    int TALENT_CATEGORY_DRAGONS_BREATH                    = 19;
+    int TALENT_CATEGORY_BENEFICIAL_PROTECTION_POTION      = 20;
+    int TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_POTION     = 21;
+    int TALENT_CATEGORY_HARMFUL_MELEE                     = 22;
+    ***************************************************************************/
+    talent tCheck;
+    // This is set to TRUE if any are valid. :-D
+    int SpellAnySpell;
+
+    /** TALENT_CATEGORY_HARMFUL_AREAEFFECT_DISCRIMINANT   = 1; *****************
+    These are *generally* spells which are Harmful, affect many targets in an
+    area, and don't hit allies. Spells such as Wierd (An illusion fear spell, so
+    allies would know it wasn't real, but enemies wouldn't) and so on.
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_AREAEFFECT_DISCRIMINANT, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_HARMFUL_AREAEFFECT_DISCRIMINANT, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_HARMFUL_AREAEFFECT_DISCRIMINANT), GetIdFromTalent(tCheck));
+    }
+    else //... don't need to delete items bc they'll be checked when casting
+        DeleteSpawnInCondition(AI_VALID_TALENT_HARMFUL_AREAEFFECT_DISCRIMINANT, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_HARMFUL_RANGED                    = 2; *****************
+    These are classed as single target, short or longer ranged spells. Anything
+    that affects one target, and isn't a touch spell, is this category. Examples
+    like Acid Arrow or Finger of Death.
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_RANGED, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_HARMFUL_RANGED, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_HARMFUL_RANGED), GetIdFromTalent(tCheck));
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_HARMFUL_RANGED, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_HARMFUL_TOUCH                     = 3; *****************
+    A limited selection. All touch spells, like Harm. Not much to add but they
+    only affect one target. Note: Inflict range are also in here (but remember
+    that GetHasSpell returns TRUE if they can spontaeously cast it as well!)
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_TOUCH, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_HARMFUL_TOUCH, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_HARMFUL_TOUCH), GetIdFromTalent(tCheck));
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_HARMFUL_TOUCH, AI_VALID_SPELLS);
+    /** TALENT_CATEGORY_BENEFICIAL_HEALING_AREAEFFECT     = 4; *****************
+    Healing area effects. Basically, only Mass Heal and Healing Circle :0P
+
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_HEALING_AREAEFFECT, MAXCR);
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_HEALING_AREAEFFECT, AI_VALID_SPELLS);
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_HEALING_AREAEFFECT, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_BENEFICIAL_HEALING_TOUCH          = 5; *****************
+    These are all the healing spells that touch - Cure X wounds and heal really.
+    Also, feat Wholeness of Body and Lay on Hands as well.
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_HEALING_TOUCH, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_HEALING_TOUCH, AI_VALID_SPELLS);
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_HEALING_TOUCH, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_AREAEFFECT = 6; *****************
+    These are spells which help people in an area to rid effects, normally. IE
+    normally, a condition must be met to cast it, like them being stunned.
+    ***************************************************************************/
+    //... obs: I created a gem of seeing in the target's inventory and this went from false to true
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_AREAEFFECT, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_CONDITIONAL_AREAEFFECT, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_AREAEFFECT), GetIdFromTalent(tCheck));
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_CONDITIONAL_AREAEFFECT, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_SINGLE     = 7; *****************
+    This is the same as the AOE version, but things like Clarity, single target
+    ones.
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_SINGLE, MAXCR);
+    // Valid?
+    //... removing those feats since attemptheal checks the feats directly
+    if(GetIsTalentValid(tCheck) && !(GetTypeFromTalent(tCheck) == TALENT_TYPE_FEAT &&
+        (GetIdFromTalent(tCheck) == FEAT_LAY_ON_HANDS ||
+        GetIdFromTalent(tCheck) == FEAT_WHOLENESS_OF_BODY)))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_CONDITIONAL_SINGLE, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_SINGLE), GetIdFromTalent(tCheck));
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_CONDITIONAL_SINGLE, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_AREAEFFECT = 8; *****************
+    Enhancing stats, or self or others. Friendly, and usually stat-changing. They
+    contain all ones that, basically, don't protect and stop damage, but help
+    defeat enemies. In the AOE ones are things like Invisiblity Sphere.
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_AREAEFFECT, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_ENHANCEMENT_AREAEFFECT, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_AREAEFFECT), GetIdFromTalent(tCheck));
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_ENHANCEMENT_AREAEFFECT, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SINGLE     = 9; *****************
+    Enchancing, these are the more single ones, like Bulls Strength. See above as well.
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SINGLE, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_ENHANCEMENT_SINGLE, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SINGLE), GetIdFromTalent(tCheck));
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_ENHANCEMENT_SINGLE, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SELF       = 10; ****************
+    Self-encancing spells, that can't be cast on allies, like Divine Power :-)
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SELF, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_ENHANCEMENT_SELF, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SELF), GetIdFromTalent(tCheck));
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_ENHANCEMENT_SELF, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_HARMFUL_AREAEFFECT_INDISCRIMINANT = 11; ****************
+    This is the AOE spells which never discriminate between allies, and enemies,
+    such as the well known spell Fireball.
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_AREAEFFECT_INDISCRIMINANT, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_HARMFUL_AREAEFFECT_INDISCRIMINANT, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_HARMFUL_AREAEFFECT_INDISCRIMINANT), GetIdFromTalent(tCheck));
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_HARMFUL_AREAEFFECT_INDISCRIMINANT, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_BENEFICIAL_PROTECTION_SELF        = 12; ****************
+    Protection spells are usually a Mage's only way to stop instant death. Self
+    only spells include the likes of Premonition :-)
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_PROTECTION_SELF, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_PROTECTION_SELF, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_PROTECTION_SELF), GetIdFromTalent(tCheck));
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_PROTECTION_SELF, AI_VALID_SPELLS);
+
+    //... my add
+    /** TALENT_CATEGORY_BENEFICIAL_PROTECTION_AREAEFFECT  = 13; ****************
+    ... He didn't check 13???
+    ***************************************************************************/
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_PROTECTION_SINGLE, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+
+        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_PROTECTION_SINGLE, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_PROTECTION_SINGLE), GetIdFromTalent(tCheck));
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_PROTECTION_SINGLE, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_BENEFICIAL_PROTECTION_AREAEFFECT  = 14; ****************
+    Protection spells are usually a Mage's only way to stop instant death.
+    Area effect ones are the likes of Protection From Spells. Limited ones here.
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_PROTECTION_AREAEFFECT, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_PROTECTION_AREAEFFECT, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_PROTECTION_AREAEFFECT), GetIdFromTalent(tCheck));
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_PROTECTION_AREAEFFECT, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_BENEFICIAL_OBTAIN_ALLIES          = 15; ****************
+    Allies, or obtaining them, is anything they can summon. Basically, all
+    Summon Monster 1-9, Innate ones like Summon Tanarri and ones like Gate.
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_OBTAIN_ALLIES, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_OBTAIN_ALLIES, AI_VALID_SPELLS);
+        SetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_OBTAIN_ALLIES), GetIdFromTalent(tCheck));
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_OBTAIN_ALLIES, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_PERSISTENT_AREA_OF_EFFECT         = 16; ****************
+    These are NOT AOE spells like acid fog, but rather the Aura's that a monster
+    can use. Also, oddly, Rage's, Monk's Wholeness of Body and so on are here...
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_PERSISTENT_AREA_OF_EFFECT, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        SpellAnySpell = TRUE;
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_PERSISTENT_AREA_OF_EFFECT, AI_VALID_SPELLS);
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_PERSISTENT_AREA_OF_EFFECT, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_DRAGONS_BREATH                    = 19; ****************
+    Dragon Breaths. These are all the breaths avalible to Dragons. :-D Nothing else.
+
+    All counted as level 9 innate caster level. Monster ability only :0)
+
+    Contains (By level, innate):
+    9. Dragon Breath Acid, Cold, Fear, Fire, Gas, Lightning, Paralyze, Sleep, Slow, Weaken.
+    ***************************************************************************/
+
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_DRAGONS_BREATH, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck))
+    {
+        // Then set we have it
+        SetSpawnInCondition(AI_VALID_TALENT_DRAGONS_BREATH, AI_VALID_SPELLS);
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_DRAGONS_BREATH, AI_VALID_SPELLS);
+
+    /** TALENT_CATEGORY_HARMFUL_MELEE                     = 22; ****************
+    We might as well check if we have any valid feats :-P
+
+    Contains:
+        Called Shot, Disarm, Imp. Power Attack, Knockdown, Power Attack, Rapid Shot,
+        Sap, Stunning Fist, Flurry of blows, Quivering Palm, Smite Evil,
+        Expertise (and Imp), Smite Good
+    Note:
+        Whirlwind attack (Improved), Dirty Fighting.
+    ***************************************************************************/
+    tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_MELEE, MAXCR);
+    // Valid?
+    if(GetIsTalentValid(tCheck) ||
+       GetHasFeat(FEAT_IMPROVED_WHIRLWIND) ||
+       GetHasFeat(FEAT_WHIRLWIND_ATTACK) ||
+       GetHasFeat(FEAT_DIRTY_FIGHTING) ||
+       GetHasFeat(FEAT_KI_DAMAGE))
+    {
+        // Then set we have it. If we don't have any, we never check Knockdown ETC.
+        SetSpawnInCondition(AI_VALID_TALENT_HARMFUL_MELEE, AI_VALID_SPELLS);
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_TALENT_HARMFUL_MELEE, AI_VALID_SPELLS);
+
+    // All spells in no category.
+    if(
+//            GetHasSpell(SPELL_CLAIRAUDIENCE_AND_CLAIRVOYANCE) ||
+       GetHasSpell(SPELL_DARKNESS) ||
+//       GetHasSpell(71) || // Greater shadow conjuration
+//       GetHasSpell(SPELL_IDENTIFY) ||
+//       GetHasSpell(SPELL_KNOCK) ||
+       GetHasSpell(SPELL_LIGHT) ||
+       GetHasSpell(SPELL_POLYMORPH_SELF) ||
+//       GetHasSpell(158) || // Shades
+//       GetHasSpell(159) || // Shadow conjuration
+       GetHasSpell(SPELL_SHAPECHANGE) ||
+       GetHasSpell(321) || // Protection...
+       GetHasSpell(322) || // Magic circle...
+       GetHasSpell(323) || // Aura...
+//       GetHasSpell(SPELL_LEGEND_LORE) ||
+//       GetHasSpell(SPELL_FIND_TRAPS) ||
+       GetHasSpell(SPELL_CONTINUAL_FLAME) ||
+//       GetHasSpell(SPELL_ONE_WITH_THE_LAND) ||
+//       GetHasSpell(SPELL_CAMOFLAGE) ||
+       GetHasSpell(SPELL_BLOOD_FRENZY) ||
+//       GetHasSpell(SPELL_AMPLIFY) ||
+       GetHasSpell(SPELL_ETHEREALNESS) ||
+       GetHasSpell(SPELL_DIVINE_SHIELD) ||
+       GetHasSpell(SPELL_DIVINE_MIGHT) ||
+       // Added in again 18th nov
+       GetHasSpell(SPELL_INFLICT_SERIOUS_WOUNDS) ||
+       GetHasSpell(SPELL_INFLICT_MODERATE_WOUNDS) ||
+       GetHasSpell(SPELL_INFLICT_MINOR_WOUNDS) ||
+       GetHasSpell(SPELL_INFLICT_LIGHT_WOUNDS) ||
+       // Feats that will be cast in the spell list.
+       // MOST are under talents anyway, these are ones which are not
+       GetHasFeat(FEAT_PRESTIGE_DARKNESS))
+    {
+        SetSpawnInCondition(AI_VALID_OTHER_SPELL, AI_VALID_SPELLS);
+        SpellAnySpell = TRUE;
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_OTHER_SPELL, AI_VALID_SPELLS);
+    // SPELL_GREATER_RESTORATION - Ability Decrease, AC decrease, Attack decrease,
+    //  Damage Decrease, Damage Immunity Decrease, Saving Throw Decrease, Spell
+    //  resistance Decrease, Skill decrease, Blindness, Deaf, Curse, Disease, Poison,
+    //  Charmed, Dominated, Dazed, Confused, Frightened, Negative level, Paralyze,
+    //  Slow, Stunned.
+    // SPELL_FREEDOM - Paralyze, Entangle, Slow, Movement speed decrease. (+Immunity!)
+    // SPELL_RESTORATION - Ability Decrease, AC decrease, Attack Decrease,
+    //  Damage Decrease, Damage Immunity Decrease, Saving Throw Decrease,
+    //  Spell Resistance Decrease, Skill Decrease, Blindess, Deaf, Paralyze, Negative level
+    // SPELL_REMOVE_BLINDNESS_AND_DEAFNESS - Blindess, Deaf.
+    // SPELL_NEUTRALIZE_POISON - Poison
+    // SPELL_REMOVE_DISEASE - Disease
+    // SPELL_REMOVE_CURSE - Curse
+    // SPELL_LESSER_RESTORATION - Ability Decrease, AC decrease, Attack Decrease,
+    // Cure condition spells! :-)
+    if(GetHasSpell(SPELL_GREATER_RESTORATION) || GetHasSpell(SPELL_FREEDOM_OF_MOVEMENT) ||
+       GetHasSpell(SPELL_RESTORATION) || GetHasSpell(SPELL_REMOVE_BLINDNESS_AND_DEAFNESS) ||
+       GetHasSpell(SPELL_NEUTRALIZE_POISON) || GetHasSpell(SPELL_REMOVE_DISEASE) ||
+       GetHasSpell(SPELL_REMOVE_CURSE) || GetHasSpell(SPELL_LESSER_RESTORATION) ||
+       GetHasSpell(SPELL_STONE_TO_FLESH))
+    {
+        SpellAnySpell = TRUE;
+        SetSpawnInCondition(AI_VALID_CURE_CONDITION_SPELLS, AI_VALID_SPELLS);
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_CURE_CONDITION_SPELLS, AI_VALID_SPELLS);
+
+    if(SpellAnySpell == TRUE)
+    {
+        SetSpawnInCondition(AI_VALID_ANY_SPELL, AI_VALID_SPELLS);
+    }
+    else
+        DeleteSpawnInCondition(AI_VALID_ANY_SPELL, AI_VALID_SPELLS);
+}
+
+
+int CheckSpellItems()
+{
+    object oItem = GetFirstItemInInventory();
+    while (GetIsObjectValid(oItem))
+    {
+        if (GetBaseItemType(oItem) != BASE_ITEM_POTIONS)
+        {
+            if (IPGetHasItemPropertyByConst(ITEM_PROPERTY_CAST_SPELL, oItem))
+            {
+                return TRUE;
+            }
+        }
+        oItem = GetNextItemInInventory();
+    }
     return FALSE;
 }
 
@@ -3156,6 +3836,11 @@ void AI_SetUpUs()
     // - If we have valid category, we will set it to the talent value.
     // - We then use this in the spells, tightens up some things :-)
     // - Use 16 as another "any other" category. This isn't checked for items/
+    if (!GetLocalTimer("AI_TSETUP"))
+    {
+        AI_SetUpSpellsB();
+        SetLocalTimer("AI_TSETUP", 120.0f);
+    }
 
     // Sets each one to TRUE if we have any of that category (and a spell)
     int iLocalSpellInteger = GetLocalInt(OBJECT_SELF, AI_VALID_SPELLS);
@@ -3190,59 +3875,73 @@ void AI_SetUpUs()
     // Hostile feats
     if(iLocalSpellInteger & AI_VALID_TALENT_HARMFUL_MELEE) ValidFeats = TRUE;
 
+    //... new function to make sure we have items that cast something, and are not potions
+    GlobalOtherItemsValid = CheckSpellItems();
+
+//    SendMessageToPC(GetFirstPC(), "S: " + IntToString(SpellAnySpellValid) + " G: " + IntToString(GlobalOtherItemsValid));
     // Now, what about, say, ITEMS?!?!
     // Items/Spells to reduce lag.
 
     // If no items, then we will set iLastSpellType to 0 so that none are reset
     if(!GetSpawnInCondition(AI_FLAG_OTHER_LAG_NO_ITEMS, AI_OTHER_MASTER))
     {
-//*1*/   SpellHostAreaDis,   ItemHostAreaDis,
-        ItemHostAreaDis = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_HARMFUL_AREAEFFECT_DISCRIMINANT));
-//*2*/   SpellHostRanged,    ItemHostRanged,
-        ItemHostRanged = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_HARMFUL_RANGED));
-//*3*/   SpellHostTouch,     ItemHostTouch,
-        ItemHostTouch = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_HARMFUL_TOUCH));
-//*6*/   SpellConAre,        ItemConAre,
-        ItemConAre = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_AREAEFFECT));
-//*7*/   SpellConSinTar,     ItemConSinTar,
-        ItemConSinTar = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_SINGLE));
-//*8*/   SpellEnhAre,        ItemEnhAre,
-        ItemEnhAre = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_AREAEFFECT));
-//*9*/   SpellEnhSinTar,     ItemEnhSinTar,
-        ItemEnhSinTar = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SINGLE));
-//*10*/  SpellEnhSelf,       ItemEnhSelf,
-        ItemEnhSelf = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SELF));
-//*11*/  SpellHostAreaInd,   ItemHostAreaInd,
-        ItemHostAreaInd = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_HARMFUL_AREAEFFECT_INDISCRIMINANT));
-//*12*/  SpellProSelf,       ItemProSelf,
-        ItemProSelf = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_PROTECTION_SELF));
-//*13*/  SpellProSinTar,     ItemProSinTar,
-        ItemProSinTar = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_PROTECTION_SINGLE));
-//*14*/  SpellProAre,        ItemProAre,
-        ItemProAre = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_PROTECTION_AREAEFFECT));
-//*15*/  SpellAllies,        ItemAllies,
-        ItemAllies = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_OBTAIN_ALLIES));
-//*18*/  PotionCon,
-//*20*/  PotionPro,
-//*21*/  PotionEnh,
-        // These are general talents, Always set because we can use these parrallel to spells.
-        tPotionCon = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_POTION, i20);
-        tPotionPro = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_PROTECTION_POTION, i20);
-        tPotionEnh = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_POTION, i20);
-        // Potions. We do use talents for these to be safe!
-        // No worries if it is 0 or nothing, we compare them not to acid fog ever.
-        PotionCon = GetIdFromTalent(tPotionCon);
-        PotionPro = GetIdFromTalent(tPotionPro);
-        PotionEnh = GetIdFromTalent(tPotionEnh);
+        if (GlobalOtherItemsValid)
+        {
+    //1     SpellHostAreaDis,   ItemHostAreaDis,
+            ItemHostAreaDis = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_HARMFUL_AREAEFFECT_DISCRIMINANT));
+    //2     SpellHostRanged,    ItemHostRanged,
+            ItemHostRanged = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_HARMFUL_RANGED));
+    //3     SpellHostTouch,     ItemHostTouch,
+            ItemHostTouch = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_HARMFUL_TOUCH));
+    //6     SpellConAre,        ItemConAre,
+            ItemConAre = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_AREAEFFECT));
+    //7     SpellConSinTar,     ItemConSinTar,
+            ItemConSinTar = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_SINGLE));
+    //8     SpellEnhAre,        ItemEnhAre,
+            ItemEnhAre = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_AREAEFFECT));
+    //9     SpellEnhSinTar,     ItemEnhSinTar,
+            ItemEnhSinTar = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SINGLE));
+    //10    SpellEnhSelf,       ItemEnhSelf,
+            ItemEnhSelf = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SELF));
+    //11    SpellHostAreaInd,   ItemHostAreaInd,
+            ItemHostAreaInd = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_HARMFUL_AREAEFFECT_INDISCRIMINANT));
+    //12    SpellProSelf,       ItemProSelf,
+            ItemProSelf = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_PROTECTION_SELF));
+    //13    SpellProSinTar,     ItemProSinTar,
+            ItemProSinTar = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_PROTECTION_SINGLE));
+    //14    SpellProAre,        ItemProAre,
+            ItemProAre = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_PROTECTION_AREAEFFECT));
+    //15    SpellAllies,        ItemAllies,
+            ItemAllies = GetAIConstant(ITEM_TALENT_VALUE + IntToString(TALENT_CATEGORY_BENEFICIAL_OBTAIN_ALLIES));
+        }
+/*
+        SendMessageToPC(GetFirstPC(), IntToString(ItemHostAreaDis));
+        SendMessageToPC(GetFirstPC(), IntToString(ItemHostRanged));
+        SendMessageToPC(GetFirstPC(), IntToString(ItemHostTouch));
+        SendMessageToPC(GetFirstPC(), IntToString(ItemConAre));
+        SendMessageToPC(GetFirstPC(), IntToString(ItemConSinTar));
+        SendMessageToPC(GetFirstPC(), IntToString(ItemEnhAre));
+        SendMessageToPC(GetFirstPC(), IntToString(ItemEnhSinTar));
+        SendMessageToPC(GetFirstPC(), IntToString(ItemEnhSelf));
+        SendMessageToPC(GetFirstPC(), IntToString(ItemHostAreaInd));
+        SendMessageToPC(GetFirstPC(), IntToString(ItemProSelf));
+        SendMessageToPC(GetFirstPC(), IntToString(ItemProSinTar));
+        SendMessageToPC(GetFirstPC(), IntToString(ItemProAre));
+*/
+
     }
-
-    // We got any potions?
-    if(PotionCon || PotionPro || PotionEnh) GobalPotionsValid = TRUE;
-
-    // We got any items?
-    if(ItemAllies || ItemConSinTar || ItemConAre || ItemProSelf || ItemProSinTar ||
-       ItemProAre || ItemEnhSelf || ItemEnhSinTar || ItemEnhAre || ItemHostAreaDis ||
-       ItemHostAreaInd || ItemHostRanged || ItemHostTouch) GobalOtherItemsValid = TRUE;
+    //... got it out of the check 'cause it's used outside AttemptAllSpells
+    // These are general talents, Always set because we can use these parrallel to spells.
+    tPotionCon = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_CONDITIONAL_POTION, i20);
+    tPotionPro = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_PROTECTION_POTION, i20);
+    tPotionEnh = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_POTION, i20);
+    // Potions. We do use talents for these to be safe!
+    // No worries if it is 0 or nothing, we compare them not to acid fog ever.
+    PotionCon = GetIdFromTalent(tPotionCon);
+    PotionPro = GetIdFromTalent(tPotionPro);
+    PotionEnh = GetIdFromTalent(tPotionEnh);
+    // We got any potions?  //... it's returning -1 on error
+    if(PotionCon > 0 || PotionPro > 0 || PotionEnh > 0) GlobalPotionsValid = TRUE;
 
     // Healing Kits
     int iHealLeft = GetAIInteger(AI_VALID_HEALING_KITS);
@@ -3257,6 +3956,81 @@ void AI_SetUpUs()
             ExecuteScript(FILE_RE_SET_WEAPONS, OBJECT_SELF);
         }
     }
+
+    //... new stuff: Chance to attempt or not all spells
+    GlobalAttemptAll = TRUE;
+    if (GlobalOurChosenClass == CLASS_TYPE_ANIMAL ||
+        GlobalOurChosenClass == CLASS_TYPE_BARBARIAN ||
+        GlobalOurChosenClass == CLASS_TYPE_BEAST ||
+        GlobalOurChosenClass == CLASS_TYPE_COMMONER ||
+        GlobalOurChosenClass == CLASS_TYPE_DWARVENDEFENDER ||
+        GlobalOurChosenClass == CLASS_TYPE_FIGHTER ||
+        GlobalOurChosenClass == CLASS_TYPE_MONK ||
+        GlobalOurChosenClass == CLASS_TYPE_WEAPON_MASTER)
+    {
+        int iChanceNoSpells, iTurnsInMelee = GetAIInteger(AI_MELEE_TURNS_ATTACKING);
+        int iBeenFighting = (iTurnsInMelee >= 2);
+        int iLevels;
+
+        switch(nClass1)
+        {
+            case CLASS_TYPE_ANIMAL:
+            case CLASS_TYPE_BARBARIAN:
+            case CLASS_TYPE_BEAST:
+            case CLASS_TYPE_COMMONER:
+            case CLASS_TYPE_DWARVENDEFENDER:
+            case CLASS_TYPE_FIGHTER:
+            case CLASS_TYPE_MONK:
+            case CLASS_TYPE_WEAPON_MASTER:
+            {
+                iLevels = nLevel1;
+            }
+        }
+        switch(nClass2)
+        {
+            case CLASS_TYPE_ANIMAL:
+            case CLASS_TYPE_BARBARIAN:
+            case CLASS_TYPE_BEAST:
+            case CLASS_TYPE_COMMONER:
+            case CLASS_TYPE_DWARVENDEFENDER:
+            case CLASS_TYPE_FIGHTER:
+            case CLASS_TYPE_MONK:
+            case CLASS_TYPE_WEAPON_MASTER:
+            {
+                iLevels += nLevel2;
+            }
+        }
+        switch(nClass3)
+        {
+            case CLASS_TYPE_ANIMAL:
+            case CLASS_TYPE_BARBARIAN:
+            case CLASS_TYPE_BEAST:
+            case CLASS_TYPE_COMMONER:
+            case CLASS_TYPE_DWARVENDEFENDER:
+            case CLASS_TYPE_FIGHTER:
+            case CLASS_TYPE_MONK:
+            case CLASS_TYPE_WEAPON_MASTER:
+            {
+                iLevels += nLevel3;
+            }
+        }
+
+        if (iBeenFighting) iChanceNoSpells = 50;
+        else if (!iTurnsInMelee) iChanceNoSpells -= 25; //... penality if not in close combat
+
+        if (iLevels == GlobalOurHitDice) iChanceNoSpells += 50;
+        else if (iLevels > ((GlobalOurHitDice*4)/5)) iChanceNoSpells += 35;
+        else if (iLevels > ((GlobalOurHitDice*3)/5)) iChanceNoSpells += 20;
+        else if (iLevels < (GlobalOurHitDice/4)) iChanceNoSpells -= 20;
+
+        //SendMessageToPC(GetFirstPC(), "iChanceNoSpells Fight: " + IntToString(iChanceNoSpells));
+
+        if (SpellAnySpellValid) iChanceNoSpells -= 35;
+
+        //SendMessageToPC(GetFirstPC(), "iChanceNoSpells: " + IntToString(iChanceNoSpells));
+        GlobalAttemptAll = (d100() >= iChanceNoSpells);
+    }
+
 }
 /*::///////////////////////////////////////////////
 //:: Name: AI_GetNearbyFleeObject
@@ -3273,7 +4047,7 @@ object AI_GetNearbyFleeObject()
     {
         oReturn = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND,
                                      OBJECT_SELF, i1,
-                                     CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN_AND_NOT_HEARD,
+                                     CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN, //..._AND_NOT_HEARD,
                                      CREATURE_TYPE_IS_ALIVE, TRUE);
         if(GetIsObjectValid(oReturn)) // Need LOS check
         {
@@ -3325,7 +4099,7 @@ object AI_GetNearbyFleeObject()
         // Don't care if not valid!
         oReturn = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND,
                                      OBJECT_SELF, i1,
-                                     CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN_AND_NOT_HEARD,
+                                     CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN, //..._AND_NOT_HEARD,
                                      CREATURE_TYPE_IS_ALIVE, TRUE);
         return oReturn;
     }
@@ -3352,7 +4126,7 @@ object AI_GetNearbyFleeObject()
     oReturn = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND,
                                  OBJECT_SELF, nCnt,
                                  CREATURE_TYPE_IS_ALIVE, TRUE,
-                                 CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN_AND_NOT_HEARD);
+                                 CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN); //..._AND_NOT_HEARD);
     // Need to be valid, the things we get, and not in X float meters.
     while(GetIsObjectValid(oReturn) &&  GetDistanceToObject(oReturn) <= fMaxCheckForGroup)
     {
@@ -3362,7 +4136,7 @@ object AI_GetNearbyFleeObject()
         oGroup = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND,
                                     oReturn, iGroupCnt,
                                     CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_NOT_PC,
-                                    CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN_AND_NOT_HEARD);
+                                    CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN); //..._AND_NOT_HEARD);
         // Remeber 15M range limit.
         while(GetIsObjectValid(oGroup) &&
               GetDistanceBetween(oReturn, oGroup) <= fMaxGroupRange)
@@ -3373,7 +4147,7 @@ object AI_GetNearbyFleeObject()
             oGroup = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND,
                                         oReturn, iGroupCnt,
                                         CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_NOT_PC,
-                                        CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN_AND_NOT_HEARD);
+                                        CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN); //..._AND_NOT_HEARD);
         }
         // Sets the ally, if got lots of allies. (Or a mass of HD)
         if(iCurrentGroupHD > iBestAllyGroupTotal)
@@ -3392,7 +4166,7 @@ object AI_GetNearbyFleeObject()
         oReturn = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_FRIEND,
                                      OBJECT_SELF, nCnt,
                                      CREATURE_TYPE_IS_ALIVE, TRUE,
-                                     CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN_AND_NOT_HEARD);
+                                     CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN); //..._AND_NOT_HEARD);
     }
     // By default, return nothing (oEndReturn = OBJECT_INVALID unless set in loop)
     return oEndReturn;
@@ -3669,6 +4443,16 @@ int AI_AOEDeathNecroCheck(object oGroupTarget, int iNecromanticSpell, int iDeath
     }
     return FALSE;
 }
+
+//...
+void AI_SetLastBestAOE(string sVar, object oTarget)
+{
+    SetLocalObject(OBJECT_SELF, sVar, oTarget);
+    SetLocalInt(OBJECT_SELF, sVar, TRUE);
+    DelayCommand(5.0f, DeleteLocalObject(OBJECT_SELF, sVar));
+    DelayCommand(5.0f, DeleteLocalInt(OBJECT_SELF, sVar));
+}
+
 /*:://////////////////////////////////////////////
 //:: Name Get the best HOSTILE spell target
 //:: Function Name  AI_GetBestAreaSpellTarget
@@ -3690,22 +4474,33 @@ int AI_AOEDeathNecroCheck(object oGroupTarget, int iNecromanticSpell, int iDeath
 //::////////////////////////////////////////////*/
 object AI_GetBestAreaSpellTarget(float fRange, float fSpread, int nLevel, int iSaveType = FALSE, int nShape = SHAPE_SPHERE, int nFriendlyFire = FALSE, int iDeathImmune = FALSE, int iNecromanticSpell = FALSE)
 {
+    //SendMessageToPC(GetFirstPC(), "AOE nFriendlyFire: " + IntToString(nFriendlyFire));
     // Before we start, if it can harm us, we don't fire it if there are no
     // enemies out of the blast, if it was centered on us
     if(nFriendlyFire)
     {
         if(GlobalRangeToFuthestEnemy <= fSpread) return OBJECT_INVALID;
     }
+    //... disregards level
+    string sVar = FloatToString(fRange, 4, 0) + FloatToString(fSpread, 4, 0) + IntToString(iSaveType) +
+        IntToString(nShape) + IntToString(nFriendlyFire) + IntToString(iDeathImmune) +
+        IntToString(iNecromanticSpell);
+
+    //... multiple checks eliminated
+    if (GetLocalInt(OBJECT_SELF, sVar))
+        return GetLocalObject(OBJECT_SELF, sVar);
+
     // Delcare objects
     // (Target = Loop of nearest creatures. oResturnTarget = Who to return,
     //  and oGroupTarget is GetFirst/Next in nShape around oTarget)
     object oTarget, oReturnTarget, oGroupTarget;
+
     // Delcare Integers
     int iCnt, iCntEnemiesOnTarget, iCntAlliesOnTarget, iNoHittingAllies,
         iMostOnPerson, iMaxAlliesToHit, iOurToughness;
     // Declare Booleans
     int bWillHitAlly, bNoHittingAllies, bCheckAlliesHP;
-    location lTarget;
+    location lTarget, lLoc = GetLocation(OBJECT_SELF);//...lLoc
     // Float values
     float fDistance, fTargetMustBeFrom;
 
@@ -3744,9 +4539,12 @@ object AI_GetBestAreaSpellTarget(float fRange, float fSpread, int nLevel, int iS
     // The target to return - set to invalid to start
     oReturnTarget = OBJECT_INVALID;
 
+    //SendMessageToPC(GetFirstPC(), "AOE bNoHittingAllies: " + IntToString(bNoHittingAllies));
+
     iCnt = i1;
     // - 1.3 Change - made to target only creatures (trying to better performance)
-    oTarget = GetNearestObject(OBJECT_TYPE_CREATURE, OBJECT_SELF, iCnt);
+//...    oTarget = GetNearestObject(OBJECT_TYPE_CREATURE, OBJECT_SELF, iCnt);// any reason not to use InShape?
+    oTarget = GetFirstObjectInShape(SHAPE_SPHERE, fRange, lLoc, TRUE);
     // Need distance a lot.
     fDistance = GetDistanceToObject(oTarget);
     // Need to see the target, within nRange around self.
@@ -3825,9 +4623,13 @@ object AI_GetBestAreaSpellTarget(float fRange, float fSpread, int nLevel, int iS
         }
         // Gets the next nearest.
         iCnt++;
-        oTarget = GetNearestObject(OBJECT_TYPE_CREATURE, OBJECT_SELF, iCnt);
+//...        oTarget = GetNearestObject(OBJECT_TYPE_CREATURE, OBJECT_SELF, iCnt);
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, fRange, lLoc, TRUE);
         fDistance = GetDistanceToObject(oTarget);
     }
+    //...
+    AI_SetLastBestAOE(sVar, oReturnTarget);
+
     // Will OBJECT_INVALID, or the best target in range.
     return oReturnTarget;
 }
@@ -4113,6 +4915,7 @@ void AI_SortSpellImmunities()
 //:://///////////////////////////////////////////*/
 int AI_ActionDispelAOE(int iSpell, int iDamageOnly, float fRange, int iDamage, int iMax, int iPercent)
 {
+//    _db("in dispel aoe");
     object oAOE = GetAIObject(AI_TIMER_AOE_SPELL_EVENT + IntToString(iSpell));
     // Get damage done
     int iLastDamage = GetAIInteger(ObjectToString(oAOE));
@@ -4123,6 +4926,7 @@ int AI_ActionDispelAOE(int iSpell, int iDamageOnly, float fRange, int iDamage, i
        // + Damaged from that AOE, or affected by that AOE.
       (iLastDamage >= TRUE || (GetHasSpellEffect(iSpell) && !iDamageOnly)))
     {
+//        _db("dispel aoe valid");
         // Either Under iMax AND under
         if((GlobalOurMaxHP >= iMax && GlobalOurCurrentHP <= iDamage) ||
             GlobalOurPercentHP <= iPercent || !GlobalAnyValidTargetObject)
@@ -4168,11 +4972,11 @@ int AI_AttemptSpecialChecks()
     // - Fleeing is performed in ClearAllAction()'s wrapper
 
     // Darkness! the ENEMY OF THE ARTIFICAL INTELlIGENCE!!! MUAHAHAH! WE COMBAT IT WELL! (sorta)
-    if((AI_GetAIHaveSpellsEffect(GlobalEffectDarkness) &&
-       !AI_GetAIHaveEffect(GlobalEffectUltravision) &&
+    if(AI_GetAIHaveSpellsEffect(GlobalEffectDarkness) &&
+       (!AI_GetAIHaveEffect(GlobalEffectUltravision) ||//... was wrong
        !AI_GetAIHaveEffect(GlobalEffectTrueSeeing))
       // Check nearest enemy with darkness effect. Use heard only (they won't be seen!)
-       || GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_HAS_SPELL_EFFECT, SPELL_DARKVISION, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD)))
+       || GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_HAS_SPELL_EFFECT, SPELL_DARKVISION, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_PERCEPTION, PERCEPTION_NOT_SEEN)))//...HEARD)))
     {
         // Ultravision - Talent category 10 (Benificial enchancement Self).
         if(AI_ActionCastSpell(SPELL_DARKVISION, SpellEnhSelf, OBJECT_SELF, i13, FALSE, ItemEnhSelf, PotionEnh)) return TRUE;
@@ -4227,17 +5031,33 @@ int AI_AttemptSpecialChecks()
         if(GetIsObjectValid(GetAreaFromLocation(lTarget)))
         {
             // We will cast at thier previous location, using a temp object we actually
-            // create there for a few seconds.
-            oInvisible = CreateObject(OBJECT_TYPE_PLACEABLE, "", GetLocalLocation(OBJECT_SELF, AI_LAST_TO_GO_INVISIBLE));
+            // create there for a few seconds.               //... added plc_invisobj
+            oInvisible = CreateObject(OBJECT_TYPE_PLACEABLE, "plc_invisobj", lTarget);//...GetLocalLocation(OBJECT_SELF, AI_LAST_TO_GO_INVISIBLE));
             // Check range
             if(GetIsObjectValid(oInvisible) &&
                GetDistanceToObject(oInvisible) < f40)
             {
-                // Best to worst
-                if(AI_ActionCastSpell(SPELL_MORDENKAINENS_DISJUNCTION, SpellHostAreaInd, oInvisible, i19, TRUE, ItemHostAreaInd)) return TRUE;
-                if(AI_ActionCastSpell(SPELL_GREATER_DISPELLING, SpellHostRanged, oInvisible, i16, TRUE, ItemHostRanged)) return TRUE;
-                if(AI_ActionCastSpell(SPELL_DISPEL_MAGIC, SpellHostRanged, oInvisible, i13, TRUE, ItemHostRanged)) return TRUE;
-                if(AI_ActionCastSpell(SPELL_LESSER_DISPEL, SpellHostAreaInd, oInvisible, i12, TRUE, ItemHostAreaInd)) return TRUE;
+                // Best to worst //... added separate destroyobject before returning
+                if(AI_ActionCastSpell(SPELL_MORDENKAINENS_DISJUNCTION, SpellHostAreaInd, oInvisible, i19, TRUE, ItemHostAreaInd))
+                {
+                    DestroyObject(oInvisible);
+                    return TRUE;
+                }
+                if(AI_ActionCastSpell(SPELL_GREATER_DISPELLING, SpellHostRanged, oInvisible, i16, TRUE, ItemHostRanged))
+                {
+                    DestroyObject(oInvisible);
+                    return TRUE;
+                }
+                if(AI_ActionCastSpell(SPELL_DISPEL_MAGIC, SpellHostRanged, oInvisible, i13, TRUE, ItemHostRanged))
+                {
+                    DestroyObject(oInvisible);
+                    return TRUE;
+                }
+                if(AI_ActionCastSpell(SPELL_LESSER_DISPEL, SpellHostAreaInd, oInvisible, i12, TRUE, ItemHostAreaInd))
+                {
+                    DestroyObject(oInvisible);
+                    return TRUE;
+                }
                 // Destroy the placeable after we have got the location ETC.
                 DestroyObject(oInvisible);
             }
@@ -4489,18 +5309,24 @@ void AI_ActionUseTalentDebug(talent tChosenTalent, object oTarget)
 //::////////////////////////////////////////////*/
 int AI_ActionHealObject(object oTarget)
 {
+    //... adaptation from v1.4beta3, comments below by Jasperre
+    // If we are polymorphed, cannot heal anyone - thats cheating. Using our
+    // class feats we shouldn't have access to also isn't a nice idea.
+    //... I'm allowing it but only for feats and potions, no spellcasting!
+    int bPoly = AI_GetAIHaveEffect(GlobalEffectPolymorph);
+
     // Set healing talents
     talent tAOEHealing, tTouchHealing, tPotionHealing;
     // These are left at 0 if we have no SpawnInCondition setting them.
     int iAOEHealingValue, iTouchHealingValue, iPotionValue;
 
     // We set up OnSpawn if any of the 3 talents are valid
-    if(GetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_HEALING_AREAEFFECT, AI_VALID_SPELLS))
+    if(!bPoly && GetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_HEALING_AREAEFFECT, AI_VALID_SPELLS))
     {
         tAOEHealing = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_HEALING_AREAEFFECT, i20);
         iAOEHealingValue = GetIdFromTalent(tAOEHealing);
     }
-    if(GetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_HEALING_TOUCH, AI_VALID_SPELLS))
+    if(!bPoly && GetSpawnInCondition(AI_VALID_TALENT_BENEFICIAL_HEALING_TOUCH, AI_VALID_SPELLS))
     {
         tTouchHealing = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_HEALING_TOUCH, i20);
         iTouchHealingValue = GetIdFromTalent(tTouchHealing);
@@ -4542,14 +5368,14 @@ int AI_ActionHealObject(object oTarget)
             AI_ActionUseTalentDebug(tPotionHealing, OBJECT_SELF);
             return TRUE;
         }
-        else if(iTouchHealingValue == SPELL_HEAL)
+        else if(iTouchHealingValue == SPELL_HEAL && !bPoly)
         {
             AI_EquipBestShield();
             // Touch heal spell
             AI_ActionUseTalentDebug(tTouchHealing, oTarget);
             return TRUE;
         }
-        else if(iAOEHealingValue == SPELL_MASS_HEAL)
+        else if(iAOEHealingValue == SPELL_MASS_HEAL && !bPoly)
         {
             AI_EquipBestShield();
             // Mass heal spell
@@ -4561,7 +5387,8 @@ int AI_ActionHealObject(object oTarget)
 
     // Are any of them valid?
     if(GlobalBestSpontaeousHealingSpell >= i1 ||
-       iAOEHealingValue >= i1 || iTouchHealingValue >= i1 || iPotionValue >= i1)
+       ((iAOEHealingValue >= i1 || iTouchHealingValue >= i1) && !bPoly) ||
+       iPotionValue >= i1)
     {
         // We must work out the rank of each thing we can use, IE 10 best,
         // 1 worst or whatever :-D
@@ -4572,9 +5399,18 @@ int AI_ActionHealObject(object oTarget)
         // What talent should we use?
         talent tToUse;
         // We check if we have a spon. spell, and set its rank. Same with others.
-        iSpontaeousRank = AI_ReturnHealingInfo(GlobalBestSpontaeousHealingSpell, iTargetSelf);
-        iAOERank = AI_ReturnHealingInfo(iAOEHealingValue, iTargetSelf);
-        iTouchRank = AI_ReturnHealingInfo(iTouchHealingValue, iTargetSelf);
+        if (!bPoly)
+        {
+            iSpontaeousRank = AI_ReturnHealingInfo(GlobalBestSpontaeousHealingSpell, iTargetSelf);
+            iAOERank = AI_ReturnHealingInfo(iAOEHealingValue, iTargetSelf);
+            iTouchRank = AI_ReturnHealingInfo(iTouchHealingValue, iTargetSelf);
+        }
+        else
+        {
+            iSpontaeousRank = 0;
+            iAOERank = 0;
+            iTouchRank = 0;
+        }
         iPotionRank = AI_ReturnHealingInfo(iPotionValue, iTargetSelf);
 
         // Need a valid rank - we COULD get healing feats with these talents
@@ -4582,7 +5418,7 @@ int AI_ActionHealObject(object oTarget)
         {
             // Determine what to use...
             // Potion VS area.
-            if(iPotionRank >= iAOERank && iPotionRank >= i1)// Make sure we have a potion rank
+            if(iPotionRank >= i1 && iPotionRank >= iAOERank)// Make sure we have a potion rank
             {
                 // Potion VS touch and so on.
                 if(iPotionRank >= iTouchRank)
@@ -4677,6 +5513,12 @@ int AI_ActionHealObject(object oTarget)
                         {
                             if(GetIsTalentValid(tToUse))
                             {
+                                if (bPoly)//... double checking
+                                {
+                                    if (tToUse != tPotionHealing && iPotionRank >= 1)
+                                        tToUse = tPotionHealing;
+                                    else return FALSE;
+                                }
                                 AI_EquipBestShield();
                                 // No AI_ActionUseTalentDebug, just normal. Debug string above.
                                 DeleteLocalInt(OBJECT_SELF, AI_SPONTAEUOUSLY_CAST_HEALING);
@@ -4722,6 +5564,12 @@ int AI_ActionHealObject(object oTarget)
 //:://///////////////////////////////////////////*/
 int AI_ActionHealUndeadObject(object oTarget)
 {
+    //... adaptation from v1.4beta3, comments below by Jasperre
+    // If we are polymorphed, cannot heal anyone - thats cheating. Using our
+    // class feats we shouldn't have access to also isn't a nice idea.
+    //... I'm allowing it but only for innate abilities, feats and potion, no spellcasting!
+    int bPoly = AI_GetAIHaveEffect(GlobalEffectPolymorph);
+
     // First, we check for heal spells in the talents we have. They are special cases!
     // We set this to the right value if the target is us.
     int iTargetCurrentHP = GlobalOurCurrentHP;
@@ -4749,27 +5597,32 @@ int AI_ActionHealUndeadObject(object oTarget)
             // Innate ability. Under healing self, so leave as innate.
             if(AI_ActionCastSpell(AI_SPELLABILITY_UNDEAD_HARM_SELF, FALSE, oTarget)) return TRUE;
         }
-        // Use it...if we have it...and attack with a bow.
-        if(AI_ActionCastSpell(SPELL_HARM, SpellHostTouch, oTarget, i16, FALSE, ItemHostTouch)) return TRUE;
+        if (!bPoly)//...
+            // Use it...if we have it...and attack with a bow.
+            if(AI_ActionCastSpell(SPELL_HARM, SpellHostTouch, oTarget, i16, FALSE, ItemHostTouch)) return TRUE;
     }
-    // Other Under things!
-    // Inflict range...always use top 2.
-    if(AI_ActionCastSpontaeousSpell(SPELL_INFLICT_CRITICAL_WOUNDS, SpellHostTouch, oTarget)) return TRUE;
-    if(AI_ActionCastSpontaeousSpell(SPELL_INFLICT_SERIOUS_WOUNDS, SpellOtherSpell, oTarget)) return TRUE;
-    // Circle of doom: d8 + Caster level heal. Category 1.
-    if(AI_ActionCastSpell(SPELL_CIRCLE_OF_DEATH, SpellHostRanged, oTarget, i15, TRUE, ItemHostRanged)) return TRUE;
-    // Negative Energy Burst...this is good enough to always use normally...same as Circle of doom! (d8 + caster)
-    if(AI_ActionCastSpell(SPELL_NEGATIVE_ENERGY_BURST, SpellHostRanged, oTarget, i13, TRUE, ItemHostRanged)) return TRUE;
-    // Lower ones ain't too good for some HD (ours!)
-    if(!GlobalAnyValidTargetObject || GlobalOurHitDice <= i12)
+
+    if (!bPoly)//...
     {
-        if(AI_ActionCastSpontaeousSpell(SPELL_INFLICT_MODERATE_WOUNDS, SpellOtherSpell, oTarget)) return TRUE;
-        if(!GlobalAnyValidTargetObject || GlobalOurHitDice <= i6)
+        // Other Under things!
+        // Inflict range...always use top 2.
+        if(AI_ActionCastSpontaeousSpell(SPELL_INFLICT_CRITICAL_WOUNDS, SpellHostTouch, oTarget)) return TRUE;
+        if(AI_ActionCastSpontaeousSpell(SPELL_INFLICT_SERIOUS_WOUNDS, SpellOtherSpell, oTarget)) return TRUE;
+        // Circle of doom: d8 + Caster level heal. Category 1.
+        if(AI_ActionCastSpell(SPELL_CIRCLE_OF_DEATH, SpellHostRanged, oTarget, i15, TRUE, ItemHostRanged)) return TRUE;
+        // Negative Energy Burst...this is good enough to always use normally...same as Circle of doom! (d8 + caster)
+        if(AI_ActionCastSpell(SPELL_NEGATIVE_ENERGY_BURST, SpellHostRanged, oTarget, i13, TRUE, ItemHostRanged)) return TRUE;
+        // Lower ones ain't too good for some HD (ours!)
+        if(!GlobalAnyValidTargetObject || GlobalOurHitDice <= i12)
         {
-            if(AI_ActionCastSpontaeousSpell(SPELL_INFLICT_LIGHT_WOUNDS, SpellOtherSpell, oTarget)) return TRUE;
-            if(!GlobalAnyValidTargetObject || GlobalOurHitDice <= i2)
+            if(AI_ActionCastSpontaeousSpell(SPELL_INFLICT_MODERATE_WOUNDS, SpellOtherSpell, oTarget)) return TRUE;
+            if(!GlobalAnyValidTargetObject || GlobalOurHitDice <= i6)
             {
-                if(AI_ActionCastSpontaeousSpell(SPELL_INFLICT_MINOR_WOUNDS, SpellOtherSpell, oTarget)) return TRUE;
+                if(AI_ActionCastSpontaeousSpell(SPELL_INFLICT_LIGHT_WOUNDS, SpellOtherSpell, oTarget)) return TRUE;
+                if(!GlobalAnyValidTargetObject || GlobalOurHitDice <= i2)
+                {
+                    if(AI_ActionCastSpontaeousSpell(SPELL_INFLICT_MINOR_WOUNDS, SpellOtherSpell, oTarget)) return TRUE;
+                }
             }
         }
     }
@@ -5865,7 +6718,7 @@ int AI_AttemptArcherRetreat()
     {
         // Enemy range must be close (HTH distance, roughly) and we must have
         // a close ally. ELSE we'll just get lots of AOO and die running (pointless)
-        if((GlobalEnemiesIn4Meters > i1 && GlobalValidAlly && GlobalRangeToAlly < f4) ||
+        if((GlobalEnemiesIn3Meters > i1 && GlobalValidAlly && GlobalRangeToAlly < f4) ||
             GetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER))
         {
             // We may, if at the right range (and got a ranged weapon) equip it.
@@ -5942,10 +6795,10 @@ int AI_AttemptFeatTurning()
         //   already turned.
         // - We stop if we get to something we can turn!
         int nCnt = i1;
-        object oTarget = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_NOT_PC , OBJECT_SELF, nCnt);
+        object oTarget = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_NOT_PC , OBJECT_SELF, nCnt, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY);
         while(GetIsObjectValid(oTarget) && iValid == FALSE && GetDistanceToObject(oTarget) <= f20)
-        {
-            if(!GetIsFriend(oTarget) && (GetObjectSeen(oTarget) || GetObjectHeard(oTarget)))
+        {   //... from !GetIsFriend below to rep_enemy on nearest, was turning allies' summoned/created undead
+            if((GetObjectSeen(oTarget) || GetObjectHeard(oTarget)))
             {
                 nHD = GetHitDice(oTarget) + GetTurnResistanceHD(oTarget);
                 nRacial = GetRacialType(oTarget);
@@ -5984,7 +6837,7 @@ int AI_AttemptFeatTurning()
                 }
             }
             nCnt++;
-            oTarget = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_NOT_PC, OBJECT_SELF, nCnt);
+            oTarget = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_NOT_PC , OBJECT_SELF, nCnt, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY);
         }
         // If valid, use it
         if(iValid == TRUE)
@@ -6529,7 +7382,41 @@ int AI_ActionCastWhenInvisible()
 
         // Bless, Aid
         if(AI_ActionCastAllyBuffSpell(f6, i100, SPELL_AID, SPELL_BLESS)) return TRUE;
+
     }
+
+     //... added !Valid: only case should be a (greater)sanctuaried enemy nearby
+    if (!GlobalAnyValidTargetObject) //... big spellcasting battle coming!
+    {
+        if(!AI_GetAIHaveSpellsEffect(GlobalHasSpellResistanceSpell))
+            if(AI_ActionCastSpell(SPELL_SPELL_RESISTANCE, SpellProSinTar, OBJECT_SELF, i15, FALSE, ItemProSinTar)) return TRUE;
+
+        if(!GetIsImmune(OBJECT_SELF, IMMUNITY_TYPE_DEATH))
+            if(AI_ActionCastSpell(SPELL_DEATH_WARD, SpellProSinTar, OBJECT_SELF,
+                i15, FALSE, ItemProSinTar, PotionPro)) return TRUE;
+
+        if (GetLevelByClass(CLASS_TYPE_CLERIC, GlobalNearestEnemyHeard) +
+            GetLevelByClass(CLASS_TYPE_DRUID, GlobalNearestEnemyHeard) >= 13 &&
+            !GetHasSpellEffect(SPELL_NEGATIVE_ENERGY_PROTECTION))
+            if(AI_ActionCastSpell(SPELL_NEGATIVE_ENERGY_PROTECTION, SpellProSinTar, OBJECT_SELF,
+                i15, FALSE, ItemProSinTar, PotionPro)) return TRUE;
+
+/*        if(!AI_GetAIHaveEffect(GlobalEffectUltravision) ||
+           !AI_GetAIHaveEffect(GlobalEffectTrueSeeing))
+        {
+            // Ultravision - Talent category 10 (Benificial enchancement Self).
+            if(AI_ActionCastSpell(SPELL_DARKVISION, SpellEnhSelf, OBJECT_SELF, i13, FALSE, ItemEnhSelf, PotionEnh)) return TRUE;
+            // 1.30/SoU trueeing should Dispel it. (Benificial conditional AOE)
+            if(AI_ActionCastSpell(SPELL_TRUE_SEEING, SpellConAre, OBJECT_SELF, i16, FALSE, ItemConAre, PotionCon)) return TRUE;
+
+            if(!AI_GetAIHaveEffect(GlobalEffectTrueSeeing) && !GetHasSpellEffect(SPELL_SEE_INVISIBILITY))
+                if(AI_ActionCastSpell(SPELL_SEE_INVISIBILITY, SpellEnhSelf, OBJECT_SELF, i13, FALSE, ItemEnhSelf, PotionEnh)) return TRUE;
+        }
+
+        if(AI_ActionCastAllyBuffSpell(f4, i100, SPELL_SPELL_RESISTANCE)) return TRUE;
+        if(AI_ActionCastAllyBuffSpell(f6, i100, SPELL_DEATH_WARD)) return TRUE;
+        if(AI_ActionCastAllyBuffSpell(f10, i100, SPELL_DARKVISION)) return TRUE;
+*/    }
     // Return FALSE - nothing cast
     return FALSE;
 }
@@ -6614,6 +7501,16 @@ object AI_GetDismissalTarget()
     }
     return oReturn;
 }
+//... Checks if we have the spell or an item that can cast it
+int AI_CheckPreCast(int iSpellID, int iItemTalent)
+{
+    if (!GetHasSpell(iSpellID))
+    {
+        if (iItemTalent != iSpellID) return FALSE;
+    }
+    return TRUE;
+}
+
 /*::///////////////////////////////////////////////
 //:: Name ImportAllSpells
 //::///////////////////////////////////////////////
@@ -6676,16 +7573,22 @@ object AI_GetDismissalTarget()
 //::////////////////////////////////////////////*/
 int AI_AttemptAllSpells(int iLowestSpellLevel = 0, int iBABCheckHighestLevel = 3, int iLastCheckedRange = 1, int InputRangeLongValid = FALSE, int InputRangeMediumValid = FALSE, int InputRangeShortValid = FALSE, int InputRangeTouchValid = FALSE)
 {
+    //... Timer on 12 secs if we hit bottom without casting
+    if (GetLocalTimer("AI_IHaveNoSpells")) return FALSE;
+
     // Checks for valid numbers, ETC.
     if(AI_GetAIHaveEffect(GlobalEffectPolymorph) ||
-      (GlobalSpellAbilityModifier < i10 && !GobalOtherItemsValid && !GobalPotionsValid) ||
+      (GlobalSpellAbilityModifier < i10 && !GlobalOtherItemsValid && !GlobalPotionsValid) ||
        GetSpawnInCondition(AI_FLAG_OTHER_LAG_NO_SPELLS, AI_OTHER_MASTER) ||
     // Do we have any spells to cast?
-      (GlobalSilenceSoItems && !GobalOtherItemsValid && !GobalPotionsValid) ||
-      (!SpellAnySpellValid && !GobalOtherItemsValid && !GobalPotionsValid) ||
-       !GetIsObjectValid(GlobalSpellTarget) || GetIsDead(GlobalSpellTarget))
+      (GlobalSilenceSoItems && !GlobalOtherItemsValid && !GlobalPotionsValid) ||
+      (!SpellAnySpellValid && !GlobalOtherItemsValid && !GlobalPotionsValid) ||
+       !GetIsObjectValid(GlobalSpellTarget) || GetIsDead(GlobalSpellTarget))// ||
+//       (GetIsEnemy(GlobalSpellTarget) && GetHasSpellEffect(SPELL_ETHEREALNESS, GlobalSpellTarget))
+
     {
         // 31: "[DCR: All Spells] Error! No casting (No spells, items, target Etc)."
+//        SendMessageToPC(GetFirstPC(), "[DCR: All Spells] Error! No casting");//...
         DebugActionSpeakByInt(31);
         return FALSE;
     }
@@ -6708,6 +7611,23 @@ int AI_AttemptAllSpells(int iLowestSpellLevel = 0, int iBABCheckHighestLevel = 3
         iCnt, iBreak, /* Counter things */
         iPercentWhoSeeInvis, iNeedToBeBelow, SingleSpellsFirst,
         SingleSpellOverride, MultiSpellOverride, IsFirstRunThrough;
+
+    //... let's NOT run through all of them all the time, yes?
+    int iLevel9aChecked, iLevel9bChecked, iLevel9cChecked, iLevel9dChecked,
+        iLevel9eChecked, iLevel8Checked, iLevel7Checked;
+    int bNoPulse = GetLocalInt(OBJECT_SELF, "iAASPulse");
+    if (GlobalTotalPeople > 20)
+    {                                                              // Frequency Low, Medium or High
+        iLevel9aChecked = GetLocalInt(OBJECT_SELF, "iAASLevel9a"); //LF
+        iLevel9bChecked = GetLocalInt(OBJECT_SELF, "iAASLevel9b"); //LF
+        iLevel9cChecked = GetLocalInt(OBJECT_SELF, "iAASLevel9c"); //HF
+        iLevel9dChecked = GetLocalInt(OBJECT_SELF, "iAASLevel9d"); //MF
+        iLevel9eChecked = GetLocalInt(OBJECT_SELF, "iAASLevel9e"); //HF
+        iLevel8Checked = GetLocalInt(OBJECT_SELF, "iAASLevel8");
+        iLevel7Checked = GetLocalInt(OBJECT_SELF, "iAASLevel7");
+    }
+//    int iLevel3Checked = GetLocalInt(OBJECT_SELF, "iAASLevel3");
+
     // Range LONG should ALWAYS be used, IE we can't get a longer ranged spell than that!
     // SRA!
 
@@ -6786,7 +7706,7 @@ int AI_AttemptAllSpells(int iLowestSpellLevel = 0, int iBABCheckHighestLevel = 3
     MultiSpellOverride = GetSpawnInCondition(AI_FLAG_COMBAT_MANY_TARGETING, AI_COMBAT_MASTER);
 
     // Saves. Stops them firing spells they would ALWAYs save against.
-    // GlobalSpellTargetWill, GobalSpellTargetFort, GlobalSpellTargetReflex.
+    // GlobalSpellTargetWill, GlobalSpellTargetFort, GlobalSpellTargetReflex.
 
     // SingleSpellsFirst = if TRUE, we try our single spells before the
     // AOE spells. If false, don't bother. Not set if not seen target.
@@ -6899,880 +7819,946 @@ H   [Crumble] - Constructs only.
     Do Prismatic AC bonus adding here
 //::99999999999999999999999999999999999999999999999999999999999999999999999999*/
 
-    // No BAB check.
-
-    // Not in time stop
-    if(IsFirstRunThrough && !GlobalInTimeStop && GlobalIntelligence >= (i6 - d4()))
+    if (!iLevel9aChecked)
     {
-        // We do this once, mind you, when we start at iLastCheckedRange == 4.
-        // Get a nearby enemy summon - 10M range.
-        oAOE = AI_GetDismissalTarget();
-        // Is it valid?
-        if(GetIsObjectValid(oAOE))
-        {
-            // Banishment. Level 6 (Cleric/Innate) 7 (Mage). Destroys outsiders as well as all summons in area around caster (10M)
-            if(AI_ActionCastSpell(SPELL_BANISHMENT, SpellHostAreaInd, OBJECT_SELF, i17, TRUE, ItemHostAreaInd)) return TRUE;
+        SetLocalInt(OBJECT_SELF, "iAASLevel7", FALSE);
+        // No BAB check.
 
-            // Dismissal is short range anyway. Enemy must be within 5M to be targeted.
-            // Dismissal. Level 4 (Bard/Cleric/Innate) 5 (Mage). At a will save (VS DC + 6) destroy summons/familiars/companions in area.
-            if(AI_ActionCastSpell(SPELL_DISMISSAL, SpellHostAreaDis, oAOE, i15, TRUE, ItemHostAreaDis)) return TRUE;
+//        SendMessageToPC(GetFirstPC(), "Level9a");//...
+        // Time Stop - Never casts again in a timestop
+        // This will cast it very first if we have 2 or more (Sorceror)
+        if(IsFirstRunThrough && !GlobalInTimeStop && GlobalIntelligence >= i10)
+
+        {
+            // 1. Etherealness.//... copying it here 'cause it's too good!
+            // This is easily the best one there is! always works 100%%%!
+            // Etherealness. Total invisibility! Level 6 (Cleric) 8 (Mage) 7 (Innate).
+            if (GetHasSpell(SPELL_ETHEREALNESS)&& !GetHasSpellEffect(SPELL_ETHEREALNESS) &&
+                !GetLocalTimer(AI_TIMER_JUST_CAST_INVISIBILITY))
+            {
+                if(AI_ActionCastSpell(SPELL_ETHEREALNESS, SpellOtherSpell, OBJECT_SELF, i17))
+                {
+                    SetLocalTimer(AI_TIMER_JUST_CAST_INVISIBILITY, 36.0f);
+                    return TRUE;
+                }
+            }
+            // Time Stop. Level 9 (Mage). 9 Seconds (by default. Meant to be 1d4 + 1) of frozen time for caster. Meant to be a rare spell.
+            if (GetHasSpell(SPELL_TIME_STOP) >= i2)
+                if(AI_ActionCastSpell(SPELL_TIME_STOP, SpellHostAreaDis, OBJECT_SELF, i19, FALSE, ItemHostAreaDis)) return TRUE;
         }
-    }
 
-    // Time Stop - Never casts again in a timestop
-    // This will cast it very first if we have 2 or more (Sorceror)
-    if(IsFirstRunThrough && !GlobalInTimeStop && GlobalIntelligence >= i10 &&
-       GetHasSpell(SPELL_TIME_STOP) >= i2)
-    {
-        // Time Stop. Level 9 (Mage). 9 Seconds (by default. Meant to be 1d4 + 1) of frozen time for caster. Meant to be a rare spell.
-        if(AI_ActionCastSpell(SPELL_TIME_STOP, SpellHostAreaDis, OBJECT_SELF, i19, FALSE, ItemHostAreaDis)) return TRUE;
-    }
-
-    // Special case - Lots of phisical damage requires maximum protectoin.
-    // For this, we may even consider visage's to be worth something over stoneskin
-    // if we have no stoneskins :-D
-    // - We cast this if we have many melee attackers or total attackers.
-    // - To save time stop checking, we don't do this in time stop.
-    if(GlobalIntelligence >= i7 && !GlobalInTimeStop && IsFirstRunThrough &&
-       !AI_GetAIHaveSpellsEffect(GlobalHasStoneSkinProtections) &&
-       !AI_GetAIHaveSpellsEffect(GlobalHasVisageProtections) &&
-       // Formula - IE They do 40 damage, we must be level 10 or less. :-)
-       // - As this is mainly for mages, we don't bother about how much HP left.
-      (GetAIInteger(AI_HIGHEST_PHISICAL_DAMAGE_AMOUNT) >= GlobalOurHitDice * i4 ||
-      // - Do we have anyone in 20M?
-      (GlobalRangeToNearestEnemy <= f20 &&
-      // BAB check as well
-       GlobalAverageEnemyBAB >= GlobalOurHitDice / i2)))
-    {
-        // Stoneskins and so forth first, then visages.
-
-        // We think that Stoneskin (which has /+5) is better then 15/+3
-        if(AI_SpellWrapperPhisicalProtections(iLowestSpellLevel)) return TRUE;
-
-        // Visage - lowest of Ethereal (6) however. Ghostly? Don't bother
-        if(iLowestSpellLevel <= i6)
+        // Special case - Lots of phisical damage requires maximum protection.
+        // For this, we may even consider visage's to be worth something over stoneskin
+        // if we have no stoneskins :-D
+        // - We cast this if we have many melee attackers or total attackers.
+        // - To save time stop checking, we don't do this in time stop.
+        if(GlobalIntelligence >= i7 && !GlobalInTimeStop && IsFirstRunThrough &&
+           !AI_GetAIHaveSpellsEffect(GlobalHasStoneSkinProtections) &&
+            !AI_GetAIHaveSpellsEffect(GlobalHasVisageProtections) &&
+           // Formula - IE They do 40 damage, we must be level 10 or less. :-)
+           // - As this is mainly for mages, we don't bother about how much HP left.
+          (GetAIInteger(AI_HIGHEST_PHISICAL_DAMAGE_AMOUNT) >= GlobalOurMaxHP /10 ||  //... GlobalOurHitDice * i4 ||
+          // - Do we have anyone in 20M?
+          (GlobalRangeToNearestEnemy <= f20 &&
+          // BAB check as well
+           GlobalAverageEnemyBAB >= GlobalOurHitDice / i2)))
         {
-            if(AI_SpellWrapperVisageProtections(i6)) return TRUE;
+            // Stoneskins and so forth first, then visages.
+
+            // We think that Stoneskin (which has /+5) is better then 15/+3
+            if(AI_SpellWrapperPhisicalProtections(iLowestSpellLevel)) return TRUE;
+
+            // Visage - lowest of Ethereal (6) however. Ghostly? Don't bother
+            if(iLowestSpellLevel <= i6)
+            {
+                if(AI_SpellWrapperVisageProtections(i6)) return TRUE;
+            }
         }
-    }
-    // END phisical protections override check
+        // END phisical protections override check
 
-    // Haste - First. Good one, I suppose. Should check for close (non-hasted)
-    // allies, to choose between them.
-    if(IsFirstRunThrough && !AI_GetAIHaveEffect(GlobalEffectHaste) &&
-       !AI_CompareTimeStopStored(SPELL_HASTE, SPELL_MASS_HASTE))
-    {
-        // I don't want to bother checking for allies for MASS_HASTE because
-        // mass haste is a good duration/harder to Dispel compared to haste
-        // anyway.
-        // - Should this be moved down?
-        if(AI_SpellWrapperHasteEnchantments(iLowestSpellLevel)) return TRUE;
-    }
-
-    // Now the normal time stop. Power to the lords of time! (sorry, a bit over the top!)
-    // - Top prioritory. If you don't want it to cast it first, don't give it to them!
-    if(IsFirstRunThrough && !GlobalInTimeStop)
-    {
-        // Time Stop. Level 9 (Mage). 9 Seconds (by default. Meant to be 1d4 + 1) of frozen time for caster. Meant to be a rare spell.
-        if(AI_ActionCastSpell(SPELL_TIME_STOP, SpellHostAreaDis, OBJECT_SELF, i19, FALSE, ItemHostAreaDis)) return TRUE;
-    }
-
-    // Special case - if lots of damage has been done elemetally wise, we will
-    // cast elemental protections (if not cast already).
-    // - To save time stop checking, we don't do this in time stop.
-    // - Only done if 4 or more intelligence.
-    if(SpellProSinTar /*Extra check here.*/ &&
-      !AI_GetAIHaveSpellsEffect(GlobalHasElementalProtections) &&
-      !GlobalInTimeStop && IsFirstRunThrough && GlobalIntelligence >= i4 &&
-       // Formula - IE They do 40 damage, we must be level 10 or less. :-)
-       // - As this is mainly for mages, we don't bother about how much HP left.
-      (GetAIInteger(MAX_ELEMENTAL_DAMAGE) >= GlobalOurHitDice * i4 ||
-       // OR last hit was major compared to total HP
-       GetAIInteger(LAST_ELEMENTAL_DAMAGE) >= GlobalOurMaxHP/i4))
-    {
-        if(AI_SpellWrapperElementalProtections(iLowestSpellLevel))
+        // Now the normal time stop. Power to the lords of time! (sorry, a bit over the top!)
+        // - Top prioritory. If you don't want it to cast it first, don't give it to them!
+        if(IsFirstRunThrough && !GlobalInTimeStop)
         {
-            // Reset and return, if we cast something!
-            DeleteAIInteger(MAX_ELEMENTAL_DAMAGE);
-            return TRUE;
+            // Time Stop. Level 9 (Mage). 9 Seconds (by default. Meant to be 1d4 + 1) of frozen time for caster. Meant to be a rare spell.
+            if(AI_ActionCastSpell(SPELL_TIME_STOP, SpellHostAreaDis, OBJECT_SELF, i19, FALSE, ItemHostAreaDis)) return TRUE;
         }
-    }
-    // END special elemental override check
 
-    // Epic mage armor after specials. Not the best place...
-    // +20 AC is good, normally.
-    if(IsFirstRunThrough && !AI_GetAIHaveSpellsEffect(GlobalHasOtherACSpell))
-    {
-        // Epic Mage Armor. (Mage only) +5 of the 4 different AC types. Just +5 dodge is a great asset.
-        if(AI_ActionUseEpicSpell(AI_FEAT_EPIC_SPELL_EPIC_MAGE_ARMOR, SPELL_EPIC_MAGE_ARMOR)) return TRUE;
-    }
-
-    // Visibility Protections - going invisible!
-    // - We only do this not in time stop
-    // - We must be invisible
-    // - We must be of a decnt intelligence (5+)
-    // - We must make sure we don't already have all the protections listed
-    // - We MUST have not run through this once already.
-    if(!GlobalInTimeStop && GlobalIntelligence >= i5 && IsFirstRunThrough)
-    {
-        // First, check if we already have any effects.
-        // - If we have GlobalEffectEthereal, then we cast all (non-see through)
-        if(AI_GetAIHaveEffect(GlobalEffectEthereal) ||
-        // - If we have darkness, we'll protect ourselves. (Ultravision or not!)
-        //  * We can ultra vision in the override special actions part of the AI.
-           AI_GetAIHaveEffect(GlobalEffectDarkness))
+        // Special case - if lots of damage has been done elemetally wise, we will
+        // cast elemental protections (if not cast already).
+        // - To save time stop checking, we don't do this in time stop.
+        // - Only done if 4 or more intelligence.
+        if(SpellProSinTar /*Extra check here.*/ &&
+          !AI_GetAIHaveSpellsEffect(GlobalHasElementalProtections) &&
+          !GlobalInTimeStop && IsFirstRunThrough && GlobalIntelligence >= i4 &&
+           // Formula - IE They do 40 damage, we must be level 10 or less. :-)
+           // - As this is mainly for mages, we don't bother about how much HP left.
+          (GetAIInteger(MAX_ELEMENTAL_DAMAGE) >= GlobalOurHitDice * i2 || //... from i4 to i2
+           // OR last hit was major compared to total HP
+           GetAIInteger(LAST_ELEMENTAL_DAMAGE) >= GlobalOurMaxHP/i5)) //... from i4 to i5
         {
-            // Do some protection spells. :-)
-            // - And on allies!
-            if(AI_ActionCastWhenInvisible()) return TRUE;
+            if(AI_SpellWrapperElementalProtections(iLowestSpellLevel))
+            {
+                // Reset and return, if we cast something!
+                DeleteAIInteger(MAX_ELEMENTAL_DAMAGE);
+                return TRUE;
+            }
         }
-        // - If we have GlobalEffectInvisible, then we check who can see us.
-        //  * If we have the timer Do not hide, and we didn't hide last
-        //    turn, then we don't do it.
-        else if(AI_GetAIHaveEffect(GlobalEffectInvisible))
+        // END special elemental override check
+
+        // Epic mage armor after specials. Not the best place...
+        // +20 AC is good, normally.
+        if(IsFirstRunThrough && !AI_GetAIHaveSpellsEffect(GlobalHasOtherACSpell))
         {
-            if(!GetObjectSeen(OBJECT_SELF, GlobalMeleeTarget) ||
-                GetLocalTimer(AI_TIMER_JUST_CAST_INVISIBILITY))
+            // Epic Mage Armor. (Mage only) +5 of the 4 different AC types. Just +5 dodge is a great asset.
+            if(AI_ActionUseEpicSpell(AI_FEAT_EPIC_SPELL_EPIC_MAGE_ARMOR, SPELL_EPIC_MAGE_ARMOR)) return TRUE;
+        }
+
+        // Haste - First. Good one, I suppose. Should check for close (non-hasted)
+        // allies, to choose between them.
+        if(IsFirstRunThrough && !AI_GetAIHaveEffect(GlobalEffectHaste) &&
+           !AI_CompareTimeStopStored(SPELL_HASTE, SPELL_MASS_HASTE))
+        {
+            // I don't want to bother checking for allies for MASS_HASTE because
+            // mass haste is a good duration/harder to Dispel compared to haste
+            // anyway.
+            // - Should this be moved down?
+            if(AI_SpellWrapperHasteEnchantments(iLowestSpellLevel)) return TRUE;
+        }
+
+        SetLocalInt(OBJECT_SELF, "iAASLevel9a", TRUE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9b", FALSE);
+    }// 9a protections/dismissal/timestop: less checks!
+
+    if (!iLevel9bChecked)
+    {
+//        SendMessageToPC(GetFirstPC(), "Level9b");//...
+        // Visibility Protections - going invisible!
+        // - We only do this not in time stop
+        // - We must be invisible
+        // - We must be of a decnt intelligence (5+)
+        // - We must make sure we don't already have all the protections listed
+        // - We MUST have not run through this once already.
+        if(!GlobalInTimeStop && GlobalIntelligence >= i5 && IsFirstRunThrough)
+        {
+            // First, check if we already have any effects.
+            // - If we have GlobalEffectEthereal, then we cast all (non-see through)
+            if(AI_GetAIHaveEffect(GlobalEffectEthereal) ||
+            // - If we have darkness, we'll protect ourselves. (Ultravision or not!)
+            //  * We can ultra vision in the override special actions part of the AI.
+               AI_GetAIHaveEffect(GlobalEffectDarkness))
             {
                 // Do some protection spells. :-)
                 // - And on allies!
                 if(AI_ActionCastWhenInvisible()) return TRUE;
             }
-        }
-        // Else, no invisibility, so we may well cast it >:-D
-        // - Only cast it if we are not a sorceror or bard, or we have not got
-        //   cirtain protections (important ones!)
-        // - Cast if any class other then bard/sorceror because we get advantages
-        //   to use other spells and attacks.
-        else if(!GlobalWeAreSorcerorBard ||
-                !AI_GetAIHaveSpellsEffect(GlobalHasElementalProtections) ||
-                !AI_GetAIHaveSpellsEffect(GlobalHasStoneSkinProtections) ||
-                !AI_GetAIHaveSpellsEffect(GlobalHasMantalProtections) ||
-                 GlobalOurPercentHP >= i100)
-        {
-            // Is it a good time? (EG we want to flee, or want more protections :-) ).
-            // - Do we HAVE THE SPELLS?!
-            // - Are we overwhelmed?
-            // - Is the enemy a lot stronger?
-            //  * Fleeing that uses this does it in the flee section (not in yet)
-            //  * More protections for concentation is done in that section (not in yet)
-
-            // 1. Etherealness.
-            // This is easily the best one there is! always works 100%%%!
-            // Etherealness. Total invisibility! Level 6 (Cleric) 8 (Mage) 7 (Innate).
-            if(AI_ActionCastSpell(SPELL_ETHEREALNESS, SpellOtherSpell, OBJECT_SELF, i17)) return TRUE;
-
-            // 2. Darkness
-            // We cast this hopefully most of the time. We will cast it a lot if we have
-            // many melee attackers, else we'll cast it if we have ultravision/trueseeing
-            if(GlobalMeleeAttackers >= GlobalOurHitDice / i3 ||
-               AI_GetAIHaveEffect(GlobalEffectUltravision) ||
-               AI_GetAIHaveEffect(GlobalEffectTrueSeeing) ||
-               GetHasSpell(SPELL_DARKVISION) || GetHasSpell(SPELL_TRUE_SEEING))
+            // - If we have GlobalEffectInvisible, then we check who can see us.
+            //  * If we have the timer Do not hide, and we didn't hide last
+            //    turn, then we don't do it.
+            else if(AI_GetAIHaveEffect(GlobalEffectInvisible))
             {
-                // Darkness's
-                AI_SpellWrapperDarknessSpells(OBJECT_SELF);
-            }
-            // 3. Normal invisiblity.
-            // We need to make sure it won't be Dispeled by invis purge.
-            oPurge = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY,
-                                        OBJECT_SELF, i1,
-                                        CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN,
-                                        CREATURE_TYPE_HAS_SPELL_EFFECT, SPELL_INVISIBILITY_PURGE);
-            if(!GetIsObjectValid(oPurge) || GetDistanceToObject(oPurge) > f10)
-            {
-                // Also, we can't go invisible if any enemies who are attacking us,
-                // can see us. We also won't if over 50 (or whatever)% of the enemy have got
-                // seeing spells.
-                // What % though? MORE if we have limited, selected spell (non-sorceror/bard)
-                // LESS if we do have other spells to take its place.
-                iPercentWhoSeeInvis = AI_GetSpellWhoCanSeeInvis(i4);
-
-                // Here, we make sure it is less then 80% for mages, and less then
-                // 30% for sorcerors or bards.
-                iNeedToBeBelow = i80;
-                // Use global
-                if(GlobalWeAreSorcerorBard) iNeedToBeBelow = i30;
-
-                if(iPercentWhoSeeInvis <= iNeedToBeBelow + d20())
+                if(!GetObjectSeen(OBJECT_SELF, GlobalMeleeTarget) ||
+                    GetLocalTimer(AI_TIMER_JUST_CAST_INVISIBILITY))
                 {
-                    // If within d20 of the needed amount, we do cast improved
-                    // invisibility.
-                    // Special Assassin Version
-                    if(AI_ActionUseFeatOnObject(FEAT_PRESTIGE_INVISIBILITY_2))
+                    // Do some protection spells. :-)
+                    // - And on allies!
+                    if(AI_ActionCastWhenInvisible()) return TRUE;
+                }
+            }
+            // Else, no invisibility, so we may well cast it >:-D
+            // - Only cast it if we are not a sorceror or bard, or we have not got
+            //   cirtain protections (important ones!)
+            // - Cast if any class other then bard/sorceror because we get advantages
+            //   to use other spells and attacks.
+            else if(!GlobalWeAreSorcerorBard ||
+                    !AI_GetAIHaveSpellsEffect(GlobalHasElementalProtections) ||
+                    !AI_GetAIHaveSpellsEffect(GlobalHasStoneSkinProtections) ||
+                    !AI_GetAIHaveSpellsEffect(GlobalHasMantalProtections) ||
+                     GlobalOurPercentHP >= i100)
+            {
+                // Is it a good time? (EG we want to flee, or want more protections :-) ).
+                // - Do we HAVE THE SPELLS?!
+                // - Are we overwhelmed?
+                // - Is the enemy a lot stronger?
+                //  * Fleeing that uses this does it in the flee section (not in yet)
+                //  * More protections for concentation is done in that section (not in yet)
+
+                // 1. Etherealness.
+                // This is easily the best one there is! always works 100%%%!
+                // Etherealness. Total invisibility! Level 6 (Cleric) 8 (Mage) 7 (Innate).
+                //....if(AI_ActionCastSpell(SPELL_ETHEREALNESS, SpellOtherSpell, OBJECT_SELF, i17)) return TRUE;
+
+                // 2. Darkness
+                // We cast this hopefully most of the time. We will cast it a lot if we have
+                // many melee attackers, else we'll cast it if we have ultravision/trueseeing
+                if(GlobalMeleeAttackers >= GlobalOurHitDice / i3 ||
+                   AI_GetAIHaveEffect(GlobalEffectUltravision) ||
+                   AI_GetAIHaveEffect(GlobalEffectTrueSeeing) ||
+                   GetHasSpell(SPELL_DARKVISION) || GetHasSpell(SPELL_TRUE_SEEING))
+                {
+                    // Darkness's
+                    AI_SpellWrapperDarknessSpells(OBJECT_SELF);
+                }
+                // 3. Normal invisiblity.
+                // We need to make sure it won't be Dispeled by invis purge.
+                oPurge = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY,
+                                            OBJECT_SELF, i1,
+                                            CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN,
+                                            CREATURE_TYPE_HAS_SPELL_EFFECT, SPELL_INVISIBILITY_PURGE);
+                if(!GetIsObjectValid(oPurge) || GetDistanceToObject(oPurge) > f10)
+                {
+                    // Also, we can't go invisible if any enemies who are attacking us,
+                    // can see us. We also won't if over 50 (or whatever)% of the enemy have got
+                    // seeing spells.
+                    // What % though? MORE if we have limited, selected spell (non-sorceror/bard)
+                    // LESS if we do have other spells to take its place.
+                    iPercentWhoSeeInvis = AI_GetSpellWhoCanSeeInvis(i4);
+
+                    // Here, we make sure it is less then 80% for mages, and less then
+                    // 30% for sorcerors or bards.
+                    iNeedToBeBelow = i80;
+                    // Use global
+                    if(GlobalWeAreSorcerorBard) iNeedToBeBelow = i30;
+
+                    if(iPercentWhoSeeInvis <= iNeedToBeBelow + d20())
                     {
-                        SetLocalTimer(AI_TIMER_JUST_CAST_INVISIBILITY, f12);
-                        return TRUE;
-                    }
-                    // Improved Invis. Level 4 (Bard, Mage). 50% consealment + invisibility.
-                    if(AI_ActionCastSpell(SPELL_IMPROVED_INVISIBILITY, SpellEnhSinTar, OBJECT_SELF, i14, FALSE, ItemEnhSinTar, PotionEnh))
-                    {
-                        SetLocalTimer(AI_TIMER_JUST_CAST_INVISIBILITY, f12);
-                        return TRUE;
-                    }
-                    // Other invisibilities.
-                    if(iPercentWhoSeeInvis <= iNeedToBeBelow)
-                    {
-                        // Invisibility
-                        if(AI_SpellWrapperNormalInvisibilitySpells())
+                        // If within d20 of the needed amount, we do cast improved
+                        // invisibility.
+                        // Special Assassin Version
+                        if(AI_ActionUseFeatOnObject(FEAT_PRESTIGE_INVISIBILITY_2))
                         {
                             SetLocalTimer(AI_TIMER_JUST_CAST_INVISIBILITY, f12);
                             return TRUE;
                         }
+                        // Improved Invis. Level 4 (Bard, Mage). 50% consealment + invisibility.
+                        if(AI_ActionCastSpell(SPELL_IMPROVED_INVISIBILITY, SpellEnhSinTar, OBJECT_SELF, i14, FALSE, ItemEnhSinTar, PotionEnh))
+                        {
+                            SetLocalTimer(AI_TIMER_JUST_CAST_INVISIBILITY, f12);
+                            return TRUE;
+                        }
+                        // Other invisibilities.
+                        if(iPercentWhoSeeInvis <= iNeedToBeBelow)
+                        {
+                            // Invisibility
+                            if(AI_SpellWrapperNormalInvisibilitySpells())
+                            {
+                                SetLocalTimer(AI_TIMER_JUST_CAST_INVISIBILITY, f12);
+                                return TRUE;
+                            }
+                        }
+                    }
+                }
+            }
+        }// if(!GlobalInTimeStop && GlobalIntelligence >= i5 && IsFirstRunThrough)
+        // it was basically what do we do when invis
+
+        SetLocalInt(OBJECT_SELF, "iAASLevel9b", TRUE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9c", FALSE);
+    }
+    if (!iLevel9cChecked)
+    {
+//        SendMessageToPC(GetFirstPC(), "Level9c");//...
+        // Not in time stop //... moved from top to here so top only has invis/timestop & what to do in that case
+        if(IsFirstRunThrough && !GlobalInTimeStop && GlobalIntelligence >= (i6 - d4()))
+        {
+            // We do this once, mind you, when we start at iLastCheckedRange == 4.
+            // Get a nearby enemy summon - 10M range.
+            oAOE = AI_GetDismissalTarget();
+            // Is it valid?
+            if(GetIsObjectValid(oAOE))
+            {
+                // Banishment. Level 6 (Cleric/Innate) 7 (Mage). Destroys outsiders as well as all summons in area around caster (10M)
+                if(AI_ActionCastSpell(SPELL_BANISHMENT, SpellHostAreaInd, OBJECT_SELF, i17, TRUE, ItemHostAreaInd)) return TRUE;
+
+                // Dismissal is short range anyway. Enemy must be within 5M to be targeted.
+                // Dismissal. Level 4 (Bard/Cleric/Innate) 5 (Mage). At a will save (VS DC + 6) destroy summons/familiars/companions in area.
+                if(AI_ActionCastSpell(SPELL_DISMISSAL, SpellHostAreaDis, oAOE, i15, TRUE, ItemHostAreaDis)) return TRUE;
+            }
+
+        }
+
+        // Massive summoning spells
+        // Normally, no...always, these are only owned by intelligent creatures, no
+        // need to random cast or anything.
+        if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i12)
+        {
+            // Dragon Knight - Powerful dragon summon that cannot be dispelled. 20 rounds.
+            if(AI_ActionUseEpicSpell(AI_FEAT_EPIC_SPELL_DRAGON_KNIGHT, SPELL_EPIC_DRAGON_KNIGHT))
+            {
+                // Set level to 12
+                SetAIInteger(AI_LAST_SUMMONED_LEVEL, i12);
+                return TRUE;
+            }
+        }
+        if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i11)
+        {
+            // Mummy Dust - Powerful summon that cannot be dispelled. 24 Hours.
+            if(AI_ActionUseEpicSpell(AI_FEAT_EPIC_SPELL_MUMMY_DUST, SPELL_EPIC_MUMMY_DUST))
+            {
+                // Set level to 11
+                SetAIInteger(AI_LAST_SUMMONED_LEVEL, i11);
+                return TRUE;
+            }
+        }
+        // This is POWERFUL!
+        if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i10)
+        {
+            // Black Blade of Disaster. Level 9 (Mage) A powerful greatsword fights. Please note: AI abuses the "concentration" rules for it!
+            if(AI_ActionCastSummonSpell(SPELL_BLACK_BLADE_OF_DISASTER, i19, i10)) return TRUE;
+        }
+
+        // If we are in time stop, or no enemy in 4 m, we will buff our appropriate stat.
+        // Level 2 spells. GLOBALINTELLIGENCE >= 6
+        // NOte: CHANGE TO RANDOM ROLL, MORE CHANCE AT INT 10
+        // Put just above first hostile spells.
+        // - Always cast if we have stoneskin effects.
+        if((GlobalInTimeStop || GlobalRangeToNearestEnemy > f4 ||
+            AI_GetAIHaveSpellsEffect(GlobalHasStoneSkinProtections)) &&
+           !GlobalIntelligence >= i6 && IsFirstRunThrough &&
+           !AI_CompareTimeStopStored(SPELL_FOXS_CUNNING, SPELL_OWLS_WISDOM,
+                                     SPELL_EAGLE_SPLEDOR))
+        {
+            if(GlobalOurChosenClass == CLASS_TYPE_WIZARD)
+            {
+                if(!AI_GetAIHaveSpellsEffect(GlobalHasFoxesCunningSpell) &&
+                   !AI_CompareTimeStopStored(SPELL_FOXS_CUNNING, SPELL_GREATER_FOXS_CUNNING))
+                {
+                    // Greater first. This provides +2d4 + 1.
+                    // foxes cunning :-) - No items, innate.
+                    if(AI_ActionCastSpell(SPELL_GREATER_FOXS_CUNNING, SpellEnhSinTar)) return TRUE;
+                    // Lesser one - but we have items for it.
+                    if(AI_ActionCastSpell(SPELL_FOXS_CUNNING, SpellEnhSinTar, OBJECT_SELF, i12, ItemEnhSinTar, PotionEnh)) return TRUE;
+                }
+            }
+            else if(GlobalOurChosenClass == CLASS_TYPE_DRUID || GlobalOurChosenClass == CLASS_TYPE_CLERIC)
+            {
+                if(!AI_GetAIHaveSpellsEffect(GlobalHasOwlsWisdomSpell) &&
+                   !AI_CompareTimeStopStored(AI_SPELL_OWLS_INSIGHT, SPELL_GREATER_OWLS_WISDOM, SPELL_OWLS_WISDOM))
+                {
+                    // Owls insight is cool - 2x caster level in wisdom = +plenty of DC.
+                    // Owls Insight. Level 5 (Druid).
+                    if(AI_ActionCastSpell(AI_SPELL_OWLS_INSIGHT, SpellEnhSinTar, OBJECT_SELF, i15, ItemEnhSinTar, PotionEnh)) return TRUE;
+                    // Greater first. This provides +2d4 + 1.
+                    // owls wisdom :-)
+                    if(AI_ActionCastSpell(SPELL_GREATER_OWLS_WISDOM, SpellEnhSinTar)) return TRUE;
+                    // Lesser one - but we have items for it.
+                    if(AI_ActionCastSpell(SPELL_OWLS_WISDOM, SpellEnhSinTar, OBJECT_SELF, i12, ItemEnhSinTar, PotionEnh)) return TRUE;
+                }
+            }
+            else // Monsters probably benifit from this as well.
+            {
+                if(!AI_GetAIHaveSpellsEffect(GlobalHasEaglesSpledorSpell) &&
+                   !AI_CompareTimeStopStored(SPELL_GREATER_EAGLE_SPLENDOR, SPELL_EAGLE_SPLEDOR))
+                {
+                    // Greater first. This provides +2d4 + 1.
+                    // eagles splendor :-)
+                    if(AI_ActionCastSpell(SPELL_GREATER_EAGLE_SPLENDOR, SpellEnhSinTar)) return TRUE;
+                    // Lesser one - but we have items for it.
+                    if(AI_ActionCastSpell(SPELL_EAGLE_SPLEDOR, SpellEnhSinTar, OBJECT_SELF, i12, ItemEnhSinTar, PotionEnh)) return TRUE;
+                }
+            }
+        }
+
+        // Special behaviour: Constructs...
+        // - These are bastards, and have either total immunity to spells or massive
+        //   SR.
+        // - GlobalNormalSpellNoEffectLevel will already be set.
+        if(IsFirstRunThrough && GlobalIntelligence >= i5 &&
+           GlobalSpellTargetRace == CLASS_TYPE_CONSTRUCT)
+        {
+            // These spells go through any ristances (I mean, "Spell Immunity: Level 9 or lower")
+
+            // Ruin - (Epic) - 35d6 divine damage, fort save for half.
+            if(AI_ActionUseFeatOnObject(AI_FEAT_EPIC_SPELL_RUIN, GlobalSpellTarget)) return TRUE;
+
+            // Crumble. Level 6 (Druid) - Up to 15d6 damage to a construct.
+            if(AI_ActionCastSpell(SPELL_CRUMBLE, SpellHostRanged, GlobalSpellTarget, i16, FALSE, ItemHostRanged)) return TRUE;
+        }
+
+        // Cast prismatic AC bonus spell - defective force
+        if(!GetHasSpellEffect(AI_SPELLABILITY_PRISMATIC_DEFLECTING_FORCE))
+        {
+            // Deflecting Force - adds charisma bonus to defeltection AC.
+            if(AI_ActionCastSpell(AI_SPELLABILITY_PRISMATIC_DEFLECTING_FORCE, SpellProSinTar)) return TRUE;
+        }
+
+        // Try a finger/destruction spell, if their fortitude save is really, really low.
+        // Will not use these 2 twice in time stop, as they *should* die instantly
+        if(GlobalNormalSpellsNoEffectLevel < i7 && IsFirstRunThrough &&
+           GetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_INSTANT_DEATH_SPELLS, AI_COMBAT_MASTER) &&
+           GlobalSeenSpell && RangeShortValid &&
+          !AI_CompareTimeStopStored(SPELL_DESTRUCTION, SPELL_FINGER_OF_DEATH))
+        {
+            // Check low saves, IE always fails, no immunities and no mantals.
+            if((GlobalSpellTargetFort + i20) <= (GlobalSpellBaseSaveDC + i7) &&
+               !AI_GetSpellTargetImmunity(GlobalImmunityNecromancy) &&
+               !AI_GetSpellTargetImmunity(GlobalImmunityDeath) &&
+               !AI_GetSpellTargetImmunity(GlobalImmunityMantalProtection))
+            {
+                // Note: No items, because it will be a much lower save.
+
+                // Destruction, level 7 (Cleric). Fort (Death) for Death if fail, or 10d6 damage if pass.
+                if(AI_ActionCastSpell(SPELL_DESTRUCTION, SpellHostRanged, GlobalSpellTarget, i17)) return TRUE;
+                // Finger of Death. Leve 7 (Mage). Fort (Death) for death if fail, or d6(3) + nCasterLvl damage if pass.
+                if(AI_ActionCastSpell(SPELL_FINGER_OF_DEATH, SpellHostRanged, GlobalSpellTarget, i17)) return TRUE;
+            }
+        }
+
+        // Now will cast mantal if not got one and nearest enemy is a spellcaster...
+        if(GlobalMeleeAttackers <= i1 /*We won't cast it with melee attackers - cast phisicals first*/ &&
+          !GlobalInTimeStop && GlobalIntelligence >= i7 && IsFirstRunThrough &&
+          !AI_GetAIHaveSpellsEffect(GlobalHasMantalProtections) &&
+          /* Check for mage classes...spell target only */
+          (GetLevelByClass(CLASS_TYPE_WIZARD, GlobalSpellTarget) >= GlobalSpellTargetHitDice/i3) &&
+          (GetLevelByClass(CLASS_TYPE_SORCERER, GlobalSpellTarget) >= GlobalSpellTargetHitDice/i3))
+        {
+            // Cast mantals, or spell resistance...or Protection from spells.
+            if(AI_SpellWrapperMantalProtections()) return TRUE;
+
+            // Protection from spells. Level 7 (Mage), for +8 on all saves (Area effect too!)
+            if(AI_ActionCastSpell(SPELL_PROTECTION_FROM_SPELLS, SpellProAre, OBJECT_SELF, i17, FALSE, ItemProAre)) return TRUE;
+
+            // Spell resistance. Level 5 (Cleric/Druid) 12 + Caster level (no limit) in spell resistance.
+            if(AI_ActionCastSpell(SPELL_SPELL_RESISTANCE, SpellProSinTar, OBJECT_SELF, i15, FALSE, ItemProSinTar, PotionPro)) return TRUE;
+        }
+
+        if(IsFirstRunThrough)
+        {
+            // Haste for allies
+            // - 60% chance of casting. More below somewhere (near stoneskin
+            if(AI_ActionCastAllyBuffSpell(f6, i60, SPELL_MASS_HASTE, SPELL_HASTE)) return TRUE;
+            // Ultravision for allies
+            // - 90% chance of casting.
+            // - Only cast if a valid enemy in darkness is near
+//            if(GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_HAS_SPELL_EFFECT, SPELL_DARKVISION, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD)))
+            if (GlobalValidNearestHeardEnemy && GetHasSpellEffect(SPELL_DARKVISION, GlobalNearestEnemyHeard))
+            {
+                // Darkvision (Ultravision) but not trueseeing, is cast.
+                if(AI_ActionCastAllyBuffSpell(f8, i90, SPELL_DARKVISION, iM1, iM1, iM1, SPELL_TRUE_SEEING)) return TRUE;
+            }
+        }
+        // Epic killing spells. Hellball is very important to fire off!
+        // - We fire this off at the futhest target in 40M
+
+        // Futhest one away.
+        if(IsFirstRunThrough && GlobalSeenSpell)
+        {
+            // Hellball. (Epic) Long range AOE - 10d6 sonic, acid, fire and lightning damage to all in area. Reflex only halves.
+            // We just use spell target. Tough luck, we probably will be in the AOE
+            // whatever target we want!
+            if(AI_ActionUseEpicSpell(AI_FEAT_EPIC_SPELL_HELLBALL, SPELL_EPIC_HELLBALL, GlobalSpellTarget)) return TRUE;
+
+            // Ruin - a lot of damage, no SR, and only a half save thing for damage
+            if(AI_ActionUseEpicSpell(AI_FEAT_EPIC_SPELL_RUIN, SPELL_EPIC_RUIN, GlobalSpellTarget)) return TRUE;
+        }
+
+        // These 3 will not be wasted on mantals.
+        if(IsFirstRunThrough && GlobalNormalSpellsNoEffectLevel < i9 &&// PW kill is level 9
+           !AI_GetSpellTargetImmunity(GlobalImmunityMantalProtection) &&
+           !AI_CompareTimeStopStored(SPELL_CLOUDKILL, SPELL_POWER_WORD_KILL, SPELL_CIRCLE_OF_DEATH))
+        {
+            // INSTANT DEATH SPELLS...if conditions are met.
+            // - These will instantly kill a target. It does cheat to do it. Only
+            //   does this if set (Not AI intelligence related)
+            // Most useful for high-levels not getting killed by much lower levels
+            // (EG: Lich getting defeated by a enemy with only knockdown or something)
+            if(GetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_INSTANT_DEATH_SPELLS, AI_COMBAT_MASTER))
+            {
+                // Cloudkill here - if average HD is < 7
+                // Random is < 7, always if under 4
+                // Damage, slow, long range. Also, AOE :-)
+                if(RangeLongValid && (GlobalAverageEnemyHD < i4) ||
+                  ((GlobalAverageEnemyHD < i7) && (d10() < i4)) &&
+                    GlobalNormalSpellsNoEffectLevel < i5)
+                {
+                    // Cloud Kill. Level 5 (Mage). Kills if under level 7, else acid damage.
+                    if(AI_ActionCastSpell(SPELL_CLOUDKILL, SpellHostAreaInd, GlobalSpellTarget, i15, TRUE, ItemHostAreaInd)) return TRUE;
+                }
+                // Power Word: Kill
+                // If improved, will check HP, else just casts it.
+                if(RangeShortValid && GlobalSpellTargetCurrentHitPoints < i100)
+                {
+                    // Power Word Kill. Level 9 (Mage). If target has less then 100HP, dies.               //... changed to false
+                    if(AI_ActionCastSpell(SPELL_POWER_WORD_KILL, SpellHostAreaInd, GlobalSpellTarget, i19, FALSE, ItemHostAreaInd)) return TRUE;
+                }
+            }
+            // Circle of Death
+            // CONDITION: Average enemy party hd less than 10
+            // This spell only effects level 1-9 people. Good cleaner for lower monsters!
+            // Meduim ranged spell.
+            if(RangeMediumValid && GlobalAverageEnemyHD <= i9 &&
+               GlobalNormalSpellsNoEffectLevel < i6)
+            {
+                // Circle of death. Level 6 (Mage). Medium ranged, Large AOE, kills 10HD or less people (to d4(casterlevel)).
+                if(AI_ActionCastSpell(SPELL_CIRCLE_OF_DEATH, SpellHostAreaDis, GlobalSpellTarget, i16, TRUE, ItemHostAreaDis)) return TRUE;
+            }
+        }
+
+        if(IsFirstRunThrough)
+        {
+            // Physical Damage Protections (Self)
+            // Stoneskins, (Greater, normal) + Premonition provide instant damage reduction.
+            if(AI_SpellWrapperPhisicalProtections(iLowestSpellLevel)) return TRUE;
+        }
+
+
+        SetLocalInt(OBJECT_SELF, "iAASLevel9c", TRUE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9e", FALSE);
+    }// was some buffs, summon and a lot of damage. Run this often
+    if (!iLevel9dChecked)
+    {
+//        SendMessageToPC(GetFirstPC(), "Level9d");//...
+        // Do not check spell resistance (GlobalNormalSpellsNoEffectLevel) here.
+        // We only use pulses 80% of the time.
+        if(!bNoPulse && RangeTouchValid && !GlobalInTimeStop &&
+           GlobalSpellTargetRange < fTouchRange && d10() <= i8)
+        {
+    /* These are the pulses. Not much I can be bothered to check for. All good stuff!
+     281 | Pulse_Drown - None Constructs, Undeads, Elementals DIE if fail a fort check, DC: 20.
+     282 | Pulse_Spores - Soldier Shakes (Disease) is applied to those in the area.
+     283 | Pulse_Whirlwind - Large. Reflex DC 14 check, or Knockdown (2 rounds) and d3(HD) Damage.
+     284 | Pulse_Fire - Huge. d6(HD) in fire damage. Reflex Save, DC: 10 + HD
+     285 | Pulse_Lightning - Huge. d6(HD) in electrical damage. Reflex Save, DC: 10 + HD
+     286 | Pulse_Cold - Huge. d6(HD) in cold damage. Reflex Save, DC: 10 + HD
+     287 | Pulse_Negative - Large. Heals (Undead) allies. Harms all non-undead. Damage/Heal: d4(HD). Reflex Save, DC: 10 + HD.
+     288 | Pulse_Holy - Large. Heals (Non-undead) allies. Harms all undead. Damage/Heal: d4(HD). Reflex Save, DC: 10 + HD.
+     289 | Pulse_Death - Large. Death if fail Fort Save, DC: 10 + HD
+     290 | Pulse_Level_Drain - 1 Negative Level, if fail Fort Save, DC: 10 + HD.
+     291 | Pulse_Ability_Drain_Intelligence - Large. -(HD/5) INT, if fail fort save VS: 10 + HD.
+     292 | Pulse_Ability_Drain_Charisma - Large. -(HD/5) CHA, if fail fort save VS: 10 + HD.
+     293 | Pulse_Ability_Drain_Constitution - Large. -(HD/5) CON, if fail fort save VS: 10 + HD.
+     294 | Pulse_Ability_Drain_Dexterity - Large. -(HD/5) DEX, if fail fort save VS: 10 + HD.
+     295 | Pulse_Ability_Drain_Strength - Large. -(HD/5) STR, if fail fort save VS: 10 + HD.
+     296 | Pulse_Ability_Drain_Wisdom - Large. -(HD/5) WIS, if fail fort save VS: 10 + HD.
+     297 | Pulse_Poison - Varying Poison instantly applied. Check nw_s1_pulspois.nss, and poison.2da files.
+     298 | Pulse_Disease - Varying Save. See diseases.2da, and it is based on the
+                  race of the caster, below are the diseases applied:
+            Vermin = Vermin Madness. Undead = Filth Fever. Outsider = Demon Fever.
+            Magical Beast = Soldier Shakes. Aberration = Blinding Sickness.
+            ANYTHING ELSE = Mindfire.  */
+            for(iCnt = SPELLABILITY_PULSE_DROWN/*281*/; iCnt <= SPELLABILITY_PULSE_DISEASE/*289*/; iCnt++)
+            {
+                // All innate, so no matter about talents really.
+                if(AI_ActionCastSpell(iCnt)) return TRUE;
+            }
+            SetLocalInt(OBJECT_SELF, "iAASPulse", TRUE);// SetTimer on bNoPulse
+            DelayCommand(60.0f, DeleteLocalInt(OBJECT_SELF, "iAASPulse"));
+        }
+
+        // Then harm/heal. (Needs 20 HP, and be challenging to us).
+        if((GlobalAverageEnemyHD >= (GlobalOurHitDice - i5)) &&
+            GlobalSpellTargetCurrentHitPoints > i20 && RangeTouchValid &&
+           !AI_CompareTimeStopStored(SPELL_HARM, SPELL_MASS_HEAL, SPELL_HEAL) &&
+            GlobalNormalSpellsNoEffectLevel < i8)// Mass heal = 8.
+        {
+            if(GlobalSeenSpell && GlobalSpellTargetRace != RACIAL_TYPE_UNDEAD &&
+               GlobalSpellTargetRace != RACIAL_TYPE_CONSTRUCT &&
+               GlobalSpellTargetRace != RACIAL_TYPE_INVALID)
+            {
+                // If we are undead, we make sure we leave at least 1 for our own healing.
+                if(GlobalNormalSpellsNoEffectLevel < i6 &&
+                  (GlobalOurRace != RACIAL_TYPE_UNDEAD || GetHasSpell(SPELL_HARM) >= i2))
+                {
+                    // Harm
+                    // CONDITION: 6+ hit dice and NOT undead! :) Also checks HP
+                    // Harm Level 6 (Cleric) 7 (Druid) Makes the target go down to 1d4HP (or heals undead as heal)
+                    if(AI_ActionCastSpell(SPELL_HARM, SpellHostTouch, GlobalSpellTarget, i16, FALSE, ItemHostTouch)) return TRUE;
+                }
+            }
+            // (Mass) Heal (used as Harm for undead)
+            // CONDITION: Undead at 4+ hd. Never casts twice in time stop, and not over 20 HP.
+            else if(GlobalSpellTargetRace == RACIAL_TYPE_UNDEAD &&
+                    GlobalIntelligence >= i7)
+            {
+                // Really, talent 4, heal area effect, no items are set in this though.
+                // Mass Heal. Level 8 (Cleric) 9 (Druid) mass "heal" damage/healing.
+                if(AI_ActionCastSpell(SPELL_MASS_HEAL, FALSE, GlobalSpellTarget, i18, TRUE)) return TRUE;
+
+                // Never use last 2 heals for harming. Level 6 (Cleric) 7 (Druid)
+                // - 1.3, changed to 3+ only, because, basically, healing self will
+                //   probably be better. Undead + Constructs ignore this and use all of them.
+                if(GlobalSeenSpell && GlobalNormalSpellsNoEffectLevel < i6 &&
+                  (GetHasSpell(SPELL_HEAL) >= i3 || GlobalOurRace == RACIAL_TYPE_UNDEAD ||
+                   GlobalOurRace != RACIAL_TYPE_CONSTRUCT))
+                {
+                    // Heal. Level 6 (Cleric) 7 (Druid). For undead: As harm, else full healing.
+                    if(AI_ActionCastSpell(SPELL_HEAL, FALSE, GlobalSpellTarget, i16)) return TRUE;
+                }
+            }
+        }
+
+        // Power Word: Stun
+        // Is not immune to mind spell (I think this is a valid check) and not already stunned.
+        // Really, if under < 151 HP to be affected
+        // Wierdly, this is considered a "Area effect" spell. Nope - jsut a VERY nice normal one. (I like it!)
+        // - We can cast this later. Here, we only cast if low amount of enemies :-D
+        if(GlobalSpellTargetCurrentHitPoints <= i150 &&
+           GlobalNormalSpellsNoEffectLevel < i7 &&
+           GlobalTotalSeenHeardEnemies < i3 && GlobalAverageEnemyHD > i10 &&
+           GlobalSeenSpell && RangeTouchValid &&
+          !AI_GetSpellTargetImmunity(GlobalImmunityStun) &&
+          !AI_GetSpellTargetImmunity(GlobalImmunityMind) &&
+          !AI_CompareTimeStopStored(SPELL_POWER_WORD_STUN))
+        {
+            // Power Word Stun. Level 7 (Wizard). Stun duration based on HP.
+            if(AI_ActionCastSpell(SPELL_POWER_WORD_STUN, SpellHostAreaInd, GlobalSpellTarget, i17, FALSE, ItemHostAreaInd)) return TRUE;
+        }
+
+        // Elemental shield here, if over 0 melee attackers (and 30% chace) or
+        // over 1-4 attackers (level based). Doesn't double cast, and not more then 1 at once.
+        if(IsFirstRunThrough &&
+        // - Checks if we have the effects or not in a second
+          ((GlobalMeleeAttackers > (GlobalOurHitDice / i4) ||
+           (GlobalMeleeAttackers > i0 && d10() > i6))) &&
+           !AI_CompareTimeStopStored(SPELL_ELEMENTAL_SHIELD, SPELL_WOUNDING_WHISPERS,
+                                     SPELL_DEATH_ARMOR, SPELL_MESTILS_ACID_SHEATH))
+        {
+            if(AI_SpellWrapperShieldProtections(iLowestSpellLevel)) return TRUE;
+        }
+
+        // Dispel Good spells on the enemy.
+        // - Dispel Level 5 here.
+        // Basically, level 5 spells are mantals and spell-stoppers, or an alful
+        // lot of lower level spells.
+        if(RangeMediumValid && !GlobalInTimeStop)// All medium spells.
+        {
+            // Dispel number need to be 5 for breach
+            if(GlobalDispelTargetHighestBreach >= i5)
+            {
+                // Wrapers Greater and Lesser Breach.
+                if(AI_ActionCastBreach()) return TRUE;
+            }
+            // Dispel >= 5
+            if(GlobalDispelTargetHighestDispel >= i5)
+            {
+                // Wrappers the dispel spells
+                if(AI_ActionCastDispel()) return TRUE;
+            }
+        }
+
+        // Consealment Protections
+        // We do displacement then blindness/deafness. We only attempt blindness/deafness
+        // if we are not a sorceror/bard mind you.
+        if(IsFirstRunThrough && !GlobalInTimeStop && // No Consealment in time stop.
+           GetObjectSeen(OBJECT_SELF, GlobalSpellTarget) &&
+          !AI_GetAIHaveEffect(GlobalEffectInvisible) &&
+          !AI_GetAIHaveSpellsEffect(GlobalHasConsealmentSpells))
+        {
+            // Imp. Invis and displacement...
+            if(AI_SpellWrapperConsealmentEnhancements(OBJECT_SELF, iLowestSpellLevel)) return TRUE;
+
+            // Cast darkness on any enemy in range, if we have ultravision (or its
+            // effects)
+            // Need range check, with SRA, of course
+            if(RangeLongValid && (AI_GetAIHaveEffect(GlobalEffectUltravision) ||
+               AI_GetAIHaveEffect(GlobalEffectTrueSeeing) ||
+               GetHasSpell(SPELL_DARKVISION) || GetHasSpell(SPELL_TRUE_SEEING)))
+            {
+                // Cast at nearest without darkness!
+                oAOE = GetNearestCreature(CREATURE_TYPE_DOES_NOT_HAVE_SPELL_EFFECT, SPELL_DARKVISION, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
+                if(GetIsObjectValid(oAOE) && !GetHasSpellEffect(SPELL_TRUE_SEEING, oAOE)
+                   && !GetHasSpellEffect(SPELL_DARKVISION, oAOE))
+                {
+                    // Darkness
+                    if(AI_SpellWrapperDarknessSpells(oAOE)) return TRUE;
+                }
+            }
+
+            // Blindness/deafness. No casting in time stop is simpler.
+            if(RangeMediumValid && GlobalNormalSpellsNoEffectLevel < i8 &&
+              !AI_GetSpellTargetImmunity(GlobalImmunityBlindDeaf) &&
+              !GlobalWeAreSorcerorBard &&
+              !AI_SaveImmuneSpellTarget(SAVING_THROW_FORT, i8))
+            {
+                // Mass Blindness and Deafness. Level 8 (Mage) AOE fort save, enemies only, who save or are blinded and deafened.
+                if(AI_ActionCastSpell(SPELL_MASS_BLINDNESS_AND_DEAFNESS, SpellHostAreaDis, GlobalSpellTarget, i18, TRUE, ItemHostAreaDis)) return TRUE;
+            }
+        }
+
+        // Ally spells. A great variety that we cast above.
+        if(IsFirstRunThrough)
+        {
+            // Haste again - 90% chance
+            if(AI_ActionCastAllyBuffSpell(f6, i90, SPELL_MASS_HASTE, SPELL_HASTE)) return TRUE;
+            // Cast phisical stoneskins on allies - 80% chance, as it is quite good.
+            if(AI_ActionCastAllyBuffSpell(f6, i80, SPELL_GREATER_STONESKIN, SPELL_STONESKIN)) return TRUE;
+            // Consealment spells
+            if(AI_ActionCastAllyBuffSpell(f6, i60, SPELL_IMPROVED_INVISIBILITY, SPELL_DISPLACEMENT)) return TRUE;
+        }
+
+        //Gate
+        //CONDITION: Protection from Evil active on self
+        // Balors rock, literally! If not, I kill dem all!! >:-D
+        if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i10 &&
+           SpellAllies && AI_GetAIHaveSpellsEffect(GlobalHasProtectionEvilSpell))
+        {
+            // Gate. Level 9 (Mage/Innate). Summons a balor, who would normally attack caster if not protected from evil, else powerful summon
+            if(AI_ActionCastSummonSpell(SPELL_GATE, i19, i10)) return TRUE;
+        }
+
+        //Protection from Evil / Magic Circle Against Evil
+        // ... in preparation for Gate!
+        if(IsFirstRunThrough &&GetHasSpell(SPELL_GATE) &&
+           !AI_GetAIHaveSpellsEffect(GlobalHasProtectionEvilSpell))
+        {
+            // Magic Circle against Alignment. Level 3 (Mage/Cleric/Bard/Paladin/Innate). +2 AC, mind spell immunity VS them.
+            if(AI_ActionCastSubSpell(SPELL_MAGIC_CIRCLE_AGAINST_EVIL, SpellEnhAre, OBJECT_SELF, i13, FALSE, ItemEnhAre)) return TRUE;
+            // Protection From Evil. Level 1(Mage/Cleric/Bard/Paladin/Innate). +4 AC, mind spell immunity VS them.
+            if(AI_ActionCastSubSpell(SPELL_PROTECTION_FROM_EVIL, SpellProSinTar, OBJECT_SELF, i11, FALSE, ItemProSelf, PotionPro)) return TRUE;
+        }
+        // None for allies. Won't bother (unless it is a problem!).
+        // - If adding, we will get the nearest without the spells effects.
+
+        // GlobalCanSummonSimilarLevel can be 1-12. (10 is elemental swarm, balor) (11, 12 epic)
+        if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i9)
+        {
+            // Elemental swarm. Level 9 (Druid) Never replaced until no summon left - summons consecutive 4 huge elementals
+            if(AI_ActionCastSummonSpell(SPELL_ELEMENTAL_SWARM, i19, i10)) return TRUE;
+            // Summon an eldar elemental.
+            if(AI_ActionCastSummonSpell(SPELL_SUMMON_CREATURE_IX, i19, i9)) return TRUE;
+            // No-concentration summoned creatures.
+            if(AI_ActionCastSummonSpell(AI_SPELLABILITY_SUMMON_BAATEZU, FALSE, i9)) return TRUE;
+            if(AI_ActionCastSummonSpell(SPELLABILITY_SUMMON_TANARRI, FALSE, i9)) return TRUE;
+            if(AI_ActionCastSummonSpell(SPELLABILITY_SUMMON_SLAAD, FALSE, i9)) return TRUE;
+            if(AI_ActionCastSummonSpell(SPELLABILITY_SUMMON_CELESTIAL, FALSE, i9)) return TRUE;
+            if(AI_ActionCastSummonSpell(SPELLABILITY_SUMMON_MEPHIT, FALSE, i9)) return TRUE;
+            if(AI_ActionCastSummonSpell(SPELLABILITY_NEGATIVE_PLANE_AVATAR, FALSE, i9)) return TRUE;
+        }
+
+        SetLocalInt(OBJECT_SELF, "iAASLevel9d", TRUE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9e", FALSE);
+    }// great spells less pulse, very varied mix w/ summon, buffs, attacks. Medium freq
+    if (!iLevel9eChecked)
+    {
+//        SendMessageToPC(GetFirstPC(), "Level9e");//...
+        // Dominate spells
+        // - Dominate monster is level 9. Others are worth casting if valid.
+        // Needs to not be immune, and be of right race for DOM PERSON
+        // No time stop, and a valid will save to even attempt.
+        if(!GlobalInTimeStop && GlobalSeenSpell && RangeMediumValid &&
+           !AI_GetSpellTargetImmunity(GlobalImmunityMind) &&
+           !AI_GetSpellTargetImmunity(GlobalImmunityDomination) &&
+           (GlobalOurHitDice - GlobalAverageEnemyHD) <= i8)
+        {
+            // Will save VS mind spells.
+            if(GlobalNormalSpellsNoEffectLevel < i9 &&
+              !AI_SaveImmuneSpellTarget(SAVING_THROW_WILL, i9))
+            {
+                // Dominate Monster. Level 9 (Mage) Dominates (VS. Mind will save) ANYTHING!
+                if(AI_ActionCastSpell(SPELL_DOMINATE_MONSTER, SpellHostRanged, GlobalSpellTarget, i19, FALSE, ItemHostRanged)) return TRUE;
+
+                if(GlobalNormalSpellsNoEffectLevel < i5 &&
+                   !AI_SaveImmuneSpellTarget(SAVING_THROW_WILL, i5))
+                {
+                    // Dominate person
+                    if(!GetIsPlayableRacialType(GlobalSpellTarget))
+                    {
+                        // Dominate Person. Level 5 (Mage). Only affects PC races. Dominate on failed will.
+                        if(AI_ActionCastSpell(SPELL_DOMINATE_PERSON, SpellHostRanged, GlobalSpellTarget, i15, FALSE, ItemHostRanged)) return TRUE;
+                    }
+                    // Mass charm. sorcerors/bards have better things (20% casting chance)
+                    if(!GlobalWeAreSorcerorBard || d10() <= i2)
+                    {
+                        // For mass charm, we don't bother if they don't have a decent chance to fail (ues as level 5 spell for save DC)
+                        // Mass Charm. Level 8 (Mage) 1 Round/2caster levels of charm. Affects PC races only + humanoids.
+                        if(AI_ActionCastSpell(SPELL_MASS_CHARM, SpellHostAreaDis, GlobalSpellTarget, i18, TRUE, ItemHostAreaDis)) return TRUE;
                     }
                 }
             }
         }
-    }
 
-    // Massive summoning spells
-    // Normally, no...always, these are only owned by intelligent creatures, no
-    // need to random cast or anything.
-    if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i12)
-    {
-        // Dragon Knight - Powerful dragon summon that cannot be dispelled. 20 rounds.
-        if(AI_ActionUseEpicSpell(AI_FEAT_EPIC_SPELL_DRAGON_KNIGHT, SPELL_EPIC_DRAGON_KNIGHT))
+        // Protection from Spells
+        // - CONDITION: Enemies less than 5 levels below me (powerful enemies)
+        // - CONDITION 2: At least 1 ally
+        // - We cast this lower down if we don't cast it here.
+        if(IsFirstRunThrough &&
+          (((GlobalOurHitDice - GlobalAverageEnemyHD) <= i5 &&
+             GlobalValidSeenAlly && GlobalRangeToAlly < f5) ||
+            ((GlobalOurHitDice - GlobalAverageEnemyHD) <= i10)))
         {
-            // Set level to 12
-            SetAIInteger(AI_LAST_SUMMONED_LEVEL, i12);
-            return TRUE;
+            if(AI_ActionCastSpell(SPELL_PROTECTION_FROM_SPELLS, SpellProAre, OBJECT_SELF, i17, FALSE, ItemProAre)) return TRUE;
         }
-    }
-    if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i11)
-    {
-        // Mummy Dust - Powerful summon that cannot be dispelled. 24 Hours.
-        if(AI_ActionUseEpicSpell(AI_FEAT_EPIC_SPELL_MUMMY_DUST, SPELL_EPIC_MUMMY_DUST))
-        {
-            // Set level to 11
-            SetAIInteger(AI_LAST_SUMMONED_LEVEL, i11);
-            return TRUE;
-        }
-    }
-    // This is POWERFUL!
-    if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i10)
-    {
-        // Black Blade of Disaster. Level 9 (Mage) A powerful greatsword fights. Please note: AI abuses the "concentration" rules for it!
-        if(AI_ActionCastSummonSpell(SPELL_BLACK_BLADE_OF_DISASTER, i19, i10)) return TRUE;
-    }
 
-    // If we are in time stop, or no enemy in 4 m, we will buff our appropriate stat.
-    // Level 2 spells. GLOBALINTELLIGENCE >= 6
-    // NOte: CHANGE TO RANDOM ROLL, MORE CHANCE AT INT 10
-    // Put just above first hostile spells.
-    // - Always cast if we have stoneskin effects.
-    if((GlobalInTimeStop || GlobalRangeToNearestEnemy > f4 ||
-        AI_GetAIHaveSpellsEffect(GlobalHasStoneSkinProtections)) &&
-       !GlobalIntelligence >= i6 && IsFirstRunThrough &&
-       !AI_CompareTimeStopStored(SPELL_FOXS_CUNNING, SPELL_OWLS_WISDOM,
-                                 SPELL_EAGLE_SPLEDOR))
-    {
-        if(GlobalOurChosenClass == CLASS_TYPE_WIZARD)
+        //Mantle Protections
+        //CONDITION: Enemies less than 5 levels below me (powerful enemies)
+        // Will chance casting these anyway, if no melee attackers, and the enemy has a valid talent.
+        // Yes, talents include items...ahh well.
+        if(IsFirstRunThrough && ((GlobalOurHitDice - GlobalAverageEnemyHD) <= i5))
         {
-            if(!AI_GetAIHaveSpellsEffect(GlobalHasFoxesCunningSpell) &&
-               !AI_CompareTimeStopStored(SPELL_FOXS_CUNNING, SPELL_GREATER_FOXS_CUNNING))
+            if(AI_SpellWrapperMantalProtections(iLowestSpellLevel)) return TRUE;
+        }
+
+        // All these are short-ranged death!
+        // - What do we want to cast? Eh? Well, we might as well randomly choose
+        //   one of the level 9 main hostile spells. This includes single target spells,
+        //   BUT we may use sigle target spells first if not many enemies.
+
+        // - Energy Drain (powerful, lowers statistics)
+        // - Bigby's Crushing Hand (2d6 + 12 damage/round)
+
+        // - Storm of vengance is a massive electrical/acid storm. Cast, we may move out later.
+        // - Implosion has a +3 fort Save DC (great!) (only medium radius)
+        // - Wail of the banshee has a collosal area and 1 save.
+        // - Wierd doesn't affect allies, 2 saves, collosal area.
+        // - Meteor Storm is like a huge fireball based on the caster, 20d6 damage.
+
+        // Single target spells first check
+        if(SingleSpellsFirst && GlobalNormalSpellsNoEffectLevel < i9)
+        {
+            // Crushing hand is indefinatly better, but depends...I think energy drain
+            // has its merits of being permament! :-D
+
+    // Explanation on bigby's spells - hitting, grappling.
+    // HIT: Beat GetAC(oTarget) with Primary Stat + Caster Level + d20 + 9-11 (7, 8, 9 level spells)
+    // GRAPPLE: Beat BAB + Size Mod of opposing. d20 + nCasterModifier + Caster Level + 14-16.
+    // Basically, we won't check this, as the caster level + the 9-11 + primary stat can beat AC.
+    // Ok, I can't be bothered to check it :-P
+
+            // 70% chance of Crushing Hand.
+            // We try and not cast it twice on the same target (for a starter, wasting spells)
+            if(RangeLongValid && !GetHasSpellEffect(SPELL_BIGBYS_CRUSHING_HAND, GlobalSpellTarget) &&
+                !GetLocalInt(GlobalSpellTarget, "AI_Bigby"))
             {
-                // Greater first. This provides +2d4 + 1.
-                // foxes cunning :-) - No items, innate.
-                if(AI_ActionCastSpell(SPELL_GREATER_FOXS_CUNNING, SpellEnhSinTar)) return TRUE;
-                // Lesser one - but we have items for it.
-                if(AI_ActionCastSpell(SPELL_FOXS_CUNNING, SpellEnhSinTar, OBJECT_SELF, i12, ItemEnhSinTar, PotionEnh)) return TRUE;
-            }
-        }
-        else if(GlobalOurChosenClass == CLASS_TYPE_DRUID || GlobalOurChosenClass == CLASS_TYPE_CLERIC)
-        {
-            if(!AI_GetAIHaveSpellsEffect(GlobalHasOwlsWisdomSpell) &&
-               !AI_CompareTimeStopStored(AI_SPELL_OWLS_INSIGHT, SPELL_GREATER_OWLS_WISDOM, SPELL_OWLS_WISDOM))
-            {
-                // Owls insight is cool - 2x caster level in wisdom = +plenty of DC.
-                // Owls Insight. Level 5 (Druid).
-                if(AI_ActionCastSpell(AI_SPELL_OWLS_INSIGHT, SpellEnhSinTar, OBJECT_SELF, i15, ItemEnhSinTar, PotionEnh)) return TRUE;
-                // Greater first. This provides +2d4 + 1.
-                // owls wisdom :-)
-                if(AI_ActionCastSpell(SPELL_GREATER_OWLS_WISDOM, SpellEnhSinTar)) return TRUE;
-                // Lesser one - but we have items for it.
-                if(AI_ActionCastSpell(SPELL_OWLS_WISDOM, SpellEnhSinTar, OBJECT_SELF, i12, ItemEnhSinTar, PotionEnh)) return TRUE;
-            }
-        }
-        else // Monsters probably benifit from this as well.
-        {
-            if(!AI_GetAIHaveSpellsEffect(GlobalHasEaglesSpledorSpell) &&
-               !AI_CompareTimeStopStored(SPELL_GREATER_EAGLE_SPLENDOR, SPELL_EAGLE_SPLEDOR))
-            {
-                // Greater first. This provides +2d4 + 1.
-                // eagles splendor :-)
-                if(AI_ActionCastSpell(SPELL_GREATER_EAGLE_SPLENDOR, SpellEnhSinTar)) return TRUE;
-                // Lesser one - but we have items for it.
-                if(AI_ActionCastSpell(SPELL_EAGLE_SPLEDOR, SpellEnhSinTar, OBJECT_SELF, i12, ItemEnhSinTar, PotionEnh)) return TRUE;
-            }
-        }
-    }
-
-    // Special behaviour: Constructs...
-    // - These are bastards, and have either total immunity to spells or massive
-    //   SR.
-    // - GlobalNormalSpellNoEffectLevel will already be set.
-    if(IsFirstRunThrough && GlobalIntelligence >= i5 &&
-       GlobalSpellTargetRace == CLASS_TYPE_CONSTRUCT)
-    {
-        // These spells go through any ristances (I mean, "Spell Immunity: Level 9 or lower")
-
-        // Ruin - (Epic) - 35d6 divine damage, fort save for half.
-        if(AI_ActionUseFeatOnObject(AI_FEAT_EPIC_SPELL_RUIN, GlobalSpellTarget)) return TRUE;
-
-        // Crumble. Level 6 (Druid) - Up to 15d6 damage to a construct.
-        if(AI_ActionCastSpell(SPELL_CRUMBLE, SpellHostRanged, GlobalSpellTarget, i16, FALSE, ItemHostRanged)) return TRUE;
-    }
-
-    // Cast prismatic AC bonus spell - defective force
-    if(!GetHasSpellEffect(AI_SPELLABILITY_PRISMATIC_DEFLECTING_FORCE))
-    {
-        // Deflecting Force - adds charisma bonus to defeltection AC.
-        if(AI_ActionCastSpell(AI_SPELLABILITY_PRISMATIC_DEFLECTING_FORCE, SpellProSinTar)) return TRUE;
-    }
-
-    // Try a finger/destruction spell, if their fortitude save is really, really low.
-    // Will not use these 2 twice in time stop, as they *should* die instantly
-    if(GlobalNormalSpellsNoEffectLevel < i7 && IsFirstRunThrough &&
-       GetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_INSTANT_DEATH_SPELLS, AI_COMBAT_MASTER) &&
-       GlobalSeenSpell && RangeShortValid &&
-      !AI_CompareTimeStopStored(SPELL_DESTRUCTION, SPELL_FINGER_OF_DEATH))
-    {
-        // Check low saves, IE always fails, no immunities and no mantals.
-        if((GlobalSpellTargetFort + i20) <= (GlobalSpellBaseSaveDC + i7) &&
-           !AI_GetSpellTargetImmunity(GlobalImmunityNecromancy) &&
-           !AI_GetSpellTargetImmunity(GlobalImmunityDeath) &&
-           !AI_GetSpellTargetImmunity(GlobalImmunityMantalProtection))
-        {
-            // Note: No items, because it will be a much lower save.
-
-            // Destruction, level 7 (Cleric). Fort (Death) for Death if fail, or 10d6 damage if pass.
-            if(AI_ActionCastSpell(SPELL_DESTRUCTION, SpellHostRanged, GlobalSpellTarget, i17)) return TRUE;
-            // Finger of Death. Leve 7 (Mage). Fort (Death) for death if fail, or d6(3) + nCasterLvl damage if pass.
-            if(AI_ActionCastSpell(SPELL_FINGER_OF_DEATH, SpellHostRanged, GlobalSpellTarget, i17)) return TRUE;
-        }
-    }
-
-    // Now will cast mantal if not got one and nearest enemy is a spellcaster...
-    if(GlobalMeleeAttackers <= i1 /*We won't cast it with melee attackers - cast phisicals first*/ &&
-      !GlobalInTimeStop && GlobalIntelligence >= i7 && IsFirstRunThrough &&
-      !AI_GetAIHaveSpellsEffect(GlobalHasMantalProtections) &&
-      /* Check for mage classes...spell target only */
-      (GetLevelByClass(CLASS_TYPE_WIZARD, GlobalSpellTarget) >= GlobalSpellTargetHitDice/i3) &&
-      (GetLevelByClass(CLASS_TYPE_SORCERER, GlobalSpellTarget) >= GlobalSpellTargetHitDice/i3))
-    {
-        // Cast mantals, or spell resistance...or Protection from spells.
-        if(AI_SpellWrapperMantalProtections()) return TRUE;
-
-        // Protection from spells. Level 7 (Mage), for +8 on all saves (Area effect too!)
-        if(AI_ActionCastSpell(SPELL_PROTECTION_FROM_SPELLS, SpellProAre, OBJECT_SELF, i17, FALSE, ItemProAre)) return TRUE;
-
-        // Spell resistance. Level 5 (Cleric/Druid) 12 + Caster level (no limit) in spell resistance.
-        if(AI_ActionCastSpell(SPELL_SPELL_RESISTANCE, SpellProSinTar, OBJECT_SELF, i15, FALSE, ItemProSinTar, PotionPro)) return TRUE;
-    }
-
-    if(IsFirstRunThrough)
-    {
-        // Haste for allies
-        // - 60% chance of casting. More below somewhere (near stoneskin
-        if(AI_ActionCastAllyBuffSpell(f6, i60, SPELL_MASS_HASTE, SPELL_HASTE)) return TRUE;
-        // Ultravision for allies
-        // - 90% chance of casting.
-        // - Only cast if a valid enemy in darkness is near
-        if(GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_HAS_SPELL_EFFECT, SPELL_DARKVISION, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD)))
-        {
-            // Darkvision (Ultravision) but not trueseeing, is cast.
-            if(AI_ActionCastAllyBuffSpell(f8, i90, SPELL_DARKVISION, iM1, iM1, iM1, SPELL_TRUE_SEEING)) return TRUE;
-        }
-    }
-    // Epic killing spells. Hellball is very important to fire off!
-    // - We fire this off at the futhest target in 40M
-
-    // Futhest one away.
-    if(IsFirstRunThrough && GlobalSeenSpell)
-    {
-        // Hellball. (Epic) Long range AOE - 10d6 sonic, acid, fire and lightning damage to all in area. Reflex only halves.
-        // We just use spell target. Tough luck, we probably will be in the AOE
-        // whatever target we want!
-        if(AI_ActionUseEpicSpell(AI_FEAT_EPIC_SPELL_HELLBALL, SPELL_EPIC_HELLBALL, GlobalSpellTarget)) return TRUE;
-
-        // Ruin - a lot of damage, no SR, and only a half save thing for damage
-        if(AI_ActionUseEpicSpell(AI_FEAT_EPIC_SPELL_RUIN, SPELL_EPIC_RUIN, GlobalSpellTarget)) return TRUE;
-    }
-
-    // These 3 will not be wasted on mantals.
-    if(IsFirstRunThrough && GlobalNormalSpellsNoEffectLevel < i9 &&// PW kill is level 9
-       !AI_GetSpellTargetImmunity(GlobalImmunityMantalProtection) &&
-       !AI_CompareTimeStopStored(SPELL_CLOUDKILL, SPELL_POWER_WORD_KILL, SPELL_CIRCLE_OF_DEATH))
-    {
-        // INSTANT DEATH SPELLS...if conditions are met.
-        // - These will instantly kill a target. It does cheat to do it. Only
-        //   does this if set (Not AI intelligence related)
-        // Most useful for high-levels not getting killed by much lower levels
-        // (EG: Lich getting defeated by a enemy with only knockdown or something)
-        if(GetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_INSTANT_DEATH_SPELLS, AI_COMBAT_MASTER))
-        {
-            // Cloudkill here - if average HD is < 7
-            // Random is < 7, always if under 4
-            // Damage, slow, long range. Also, AOE :-)
-            if(RangeLongValid && (GlobalAverageEnemyHD < i4) ||
-              ((GlobalAverageEnemyHD < i7) && (d10() < i4)) &&
-                GlobalNormalSpellsNoEffectLevel < i5)
-            {
-                // Cloud Kill. Level 5 (Mage). Kills if under level 7, else acid damage.
-                if(AI_ActionCastSpell(SPELL_CLOUDKILL, SpellHostAreaInd, GlobalSpellTarget, i15, TRUE, ItemHostAreaInd)) return TRUE;
-            }
-            // Power Word: Kill
-            // If improved, will check HP, else just casts it.
-            if(RangeShortValid && GlobalSpellTargetCurrentHitPoints < i100)
-            {
-                // Power Word Kill. Level 9 (Mage). If target has less then 100HP, dies.
-                if(AI_ActionCastSpell(SPELL_POWER_WORD_KILL, SpellHostAreaInd, GlobalSpellTarget, i19, TRUE, ItemHostAreaInd)) return TRUE;
-            }
-        }
-        // Circle of Death
-        // CONDITION: Average enemy party hd less than 10
-        // This spell only effects level 1-9 people. Good cleaner for lower monsters!
-        // Meduim ranged spell.
-        if(RangeMediumValid && GlobalAverageEnemyHD <= i9 &&
-           GlobalNormalSpellsNoEffectLevel < i6)
-        {
-            // Circle of death. Level 6 (Mage). Medium ranged, Large AOE, kills 10HD or less people (to d4(casterlevel)).
-            if(AI_ActionCastSpell(SPELL_CIRCLE_OF_DEATH, SpellHostAreaDis, GlobalSpellTarget, i16, TRUE, ItemHostAreaDis)) return TRUE;
-        }
-    }
-
-    if(IsFirstRunThrough)
-    {
-        // Physical Damage Protections (Self)
-        // Stoneskins, (Greater, normal) + Premonition provide instant damage reduction.
-        if(AI_SpellWrapperPhisicalProtections(iLowestSpellLevel)) return TRUE;
-    }
-
-
-    // Do not check spell resistance (GlobalNormalSpellsNoEffectLevel) here.
-    // We only use pulses 80% of the time.
-    if(RangeTouchValid && !GlobalInTimeStop &&
-       GlobalSpellTargetRange < fTouchRange && d10() <= i8)
-    {
-/* These are the pulses. Not much I can be bothered to check for. All good stuff!
- 281 | Pulse_Drown - None Constructs, Undeads, Elementals DIE if fail a fort check, DC: 20.
- 282 | Pulse_Spores - Soldier Shakes (Disease) is applied to those in the area.
- 283 | Pulse_Whirlwind - Large. Reflex DC 14 check, or Knockdown (2 rounds) and d3(HD) Damage.
- 284 | Pulse_Fire - Huge. d6(HD) in fire damage. Reflex Save, DC: 10 + HD
- 285 | Pulse_Lightning - Huge. d6(HD) in electrical damage. Reflex Save, DC: 10 + HD
- 286 | Pulse_Cold - Huge. d6(HD) in cold damage. Reflex Save, DC: 10 + HD
- 287 | Pulse_Negative - Large. Heals (Undead) allies. Harms all non-undead. Damage/Heal: d4(HD). Reflex Save, DC: 10 + HD.
- 288 | Pulse_Holy - Large. Heals (Non-undead) allies. Harms all undead. Damage/Heal: d4(HD). Reflex Save, DC: 10 + HD.
- 289 | Pulse_Death - Large. Death if fail Fort Save, DC: 10 + HD
- 290 | Pulse_Level_Drain - 1 Negative Level, if fail Fort Save, DC: 10 + HD.
- 291 | Pulse_Ability_Drain_Intelligence - Large. -(HD/5) INT, if fail fort save VS: 10 + HD.
- 292 | Pulse_Ability_Drain_Charisma - Large. -(HD/5) CHA, if fail fort save VS: 10 + HD.
- 293 | Pulse_Ability_Drain_Constitution - Large. -(HD/5) CON, if fail fort save VS: 10 + HD.
- 294 | Pulse_Ability_Drain_Dexterity - Large. -(HD/5) DEX, if fail fort save VS: 10 + HD.
- 295 | Pulse_Ability_Drain_Strength - Large. -(HD/5) STR, if fail fort save VS: 10 + HD.
- 296 | Pulse_Ability_Drain_Wisdom - Large. -(HD/5) WIS, if fail fort save VS: 10 + HD.
- 297 | Pulse_Poison - Varying Poison instantly applied. Check nw_s1_pulspois.nss, and poison.2da files.
- 298 | Pulse_Disease - Varying Save. See diseases.2da, and it is based on the
-              race of the caster, below are the diseases applied:
-        Vermin = Vermin Madness. Undead = Filth Fever. Outsider = Demon Fever.
-        Magical Beast = Soldier Shakes. Aberration = Blinding Sickness.
-        ANYTHING ELSE = Mindfire.  */
-        for(iCnt = SPELLABILITY_PULSE_DROWN/*281*/; iCnt <= SPELLABILITY_PULSE_DISEASE/*289*/; iCnt++)
-        {
-            // All innate, so no matter about talents really.
-            if(AI_ActionCastSpell(iCnt)) return TRUE;
-        }
-    }
-
-    // Then harm/heal. (Needs 20 HP, and be challenging to us).
-    if((GlobalAverageEnemyHD >= (GlobalOurHitDice - i5)) &&
-        GlobalSpellTargetCurrentHitPoints > i20 && RangeTouchValid &&
-       !AI_CompareTimeStopStored(SPELL_HARM, SPELL_MASS_HEAL, SPELL_HEAL) &&
-        GlobalNormalSpellsNoEffectLevel < i8)// Mass heal = 8.
-    {
-        if(GlobalSeenSpell && GlobalSpellTargetRace != RACIAL_TYPE_UNDEAD &&
-           GlobalSpellTargetRace != RACIAL_TYPE_CONSTRUCT &&
-           GlobalSpellTargetRace != RACIAL_TYPE_INVALID)
-        {
-            // If we are undead, we make sure we leave at least 1 for our own healing.
-            if(GlobalNormalSpellsNoEffectLevel < i6 &&
-              (GlobalOurRace != RACIAL_TYPE_UNDEAD || GetHasSpell(SPELL_HARM) >= i2))
-            {
-                // Harm
-                // CONDITION: 6+ hit dice and NOT undead! :) Also checks HP
-                // Harm Level 6 (Cleric) 7 (Druid) Makes the target go down to 1d4HP (or heals undead as heal)
-                if(AI_ActionCastSpell(SPELL_HARM, SpellHostTouch, GlobalSpellTarget, i16, FALSE, ItemHostTouch)) return TRUE;
-            }
-        }
-        // (Mass) Heal (used as Harm for undead)
-        // CONDITION: Undead at 4+ hd. Never casts twice in time stop, and not over 20 HP.
-        else if(GlobalSpellTargetRace == RACIAL_TYPE_UNDEAD &&
-                GlobalIntelligence >= i7)
-        {
-            // Really, talent 4, heal area effect, no items are set in this though.
-            // Mass Heal. Level 8 (Cleric) 9 (Druid) mass "heal" damage/healing.
-            if(AI_ActionCastSpell(SPELL_MASS_HEAL, FALSE, GlobalSpellTarget, i18, TRUE)) return TRUE;
-
-            // Never use last 2 heals for harming. Level 6 (Cleric) 7 (Druid)
-            // - 1.3, changed to 3+ only, because, basically, healing self will
-            //   probably be better. Undead + Constructs ignore this and use all of them.
-            if(GlobalSeenSpell && GlobalNormalSpellsNoEffectLevel < i6 &&
-              (GetHasSpell(SPELL_HEAL) >= i3 || GlobalOurRace == RACIAL_TYPE_UNDEAD ||
-               GlobalOurRace != RACIAL_TYPE_CONSTRUCT))
-            {
-                // Heal. Level 6 (Cleric) 7 (Druid). For undead: As harm, else full healing.
-                if(AI_ActionCastSpell(SPELL_HEAL, FALSE, GlobalSpellTarget, i16)) return TRUE;
-            }
-        }
-    }
-
-    // Power Word: Stun
-    // Is not immune to mind spell (I think this is a valid check) and not already stunned.
-    // Really, if under < 151 HP to be affected
-    // Wierdly, this is considered a "Area effect" spell. Nope - jsut a VERY nice normal one. (I like it!)
-    // - We can cast this later. Here, we only cast if low amount of enemies :-D
-    if(GlobalSpellTargetCurrentHitPoints <= i150 &&
-       GlobalNormalSpellsNoEffectLevel < i7 &&
-       GlobalTotalSeenHeardEnemies < i3 && GlobalAverageEnemyHD > i10 &&
-       GlobalSeenSpell && RangeTouchValid &&
-      !AI_GetSpellTargetImmunity(GlobalImmunityStun) &&
-      !AI_GetSpellTargetImmunity(GlobalImmunityMind) &&
-      !AI_CompareTimeStopStored(SPELL_POWER_WORD_STUN))
-    {
-        // Power Word Stun. Level 7 (Wizard). Stun duration based on HP.
-        if(AI_ActionCastSpell(SPELL_POWER_WORD_STUN, SpellHostAreaInd, GlobalSpellTarget, i17, FALSE, ItemHostAreaInd)) return TRUE;
-    }
-
-    // Elemental shield here, if over 0 melee attackers (and 30% chace) or
-    // over 1-4 attackers (level based). Doesn't double cast, and not more then 1 at once.
-    if(IsFirstRunThrough &&
-    // - Checks if we have the effects or not in a second
-      ((GlobalMeleeAttackers > (GlobalOurHitDice / i4) ||
-       (GlobalMeleeAttackers > i0 && d10() > i6))) &&
-       !AI_CompareTimeStopStored(SPELL_ELEMENTAL_SHIELD, SPELL_WOUNDING_WHISPERS,
-                                 SPELL_DEATH_ARMOR, SPELL_MESTILS_ACID_SHEATH))
-    {
-        if(AI_SpellWrapperShieldProtections(iLowestSpellLevel)) return TRUE;
-    }
-
-    // Dispel Good spells on the enemy.
-    // - Dispel Level 5 here.
-    // Basically, level 5 spells are mantals and spell-stoppers, or an alful
-    // lot of lower level spells.
-    if(RangeMediumValid && !GlobalInTimeStop)// All medium spells.
-    {
-        // Dispel number need to be 5 for breach
-        if(GlobalDispelTargetHighestBreach >= i5)
-        {
-            // Wrapers Greater and Lesser Breach.
-            if(AI_ActionCastBreach()) return TRUE;
-        }
-        // Dispel >= 5
-        if(GlobalDispelTargetHighestDispel >= i5)
-        {
-            // Wrappers the dispel spells
-            if(AI_ActionCastDispel()) return TRUE;
-        }
-    }
-
-    // Consealment Protections
-    // We do displacement then blindness/deafness. We only attempt blindness/deafness
-    // if we are not a sorceror/bard mind you.
-    if(IsFirstRunThrough && !GlobalInTimeStop && // No Consealment in time stop.
-       GetObjectSeen(OBJECT_SELF, GlobalSpellTarget) &&
-      !AI_GetAIHaveEffect(GlobalEffectInvisible) &&
-      !AI_GetAIHaveSpellsEffect(GlobalHasConsealmentSpells))
-    {
-        // Imp. Invis and displacement...
-        if(AI_SpellWrapperConsealmentEnhancements(OBJECT_SELF, iLowestSpellLevel)) return TRUE;
-
-        // Cast darkness on any enemy in range, if we have ultravision (or its
-        // effects)
-        // Need range check, with SRA, of course
-        if(RangeLongValid && (AI_GetAIHaveEffect(GlobalEffectUltravision) ||
-           AI_GetAIHaveEffect(GlobalEffectTrueSeeing) ||
-           GetHasSpell(SPELL_DARKVISION) || GetHasSpell(SPELL_TRUE_SEEING)))
-        {
-            // Cast at nearest without darkness!
-            oAOE = GetNearestCreature(CREATURE_TYPE_DOES_NOT_HAVE_SPELL_EFFECT, SPELL_DARKVISION, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
-            if(GetIsObjectValid(oAOE) && !GetHasSpellEffect(SPELL_TRUE_SEEING, oAOE)
-               && !GetHasSpellEffect(SPELL_DARKVISION, oAOE))
-            {
-                // Darkness
-                if(AI_SpellWrapperDarknessSpells(oAOE)) return TRUE;
-            }
-        }
-
-        // Blindness/deafness. No casting in time stop is simpler.
-        if(RangeMediumValid && GlobalNormalSpellsNoEffectLevel < i8 &&
-          !AI_GetSpellTargetImmunity(GlobalImmunityBlindDeaf) &&
-          !GlobalWeAreSorcerorBard &&
-          !AI_SaveImmuneSpellTarget(SAVING_THROW_FORT, i8))
-        {
-            // Mass Blindness and Deafness. Level 8 (Mage) AOE fort save, enemies only, who save or are blinded and deafened.
-            if(AI_ActionCastSpell(SPELL_MASS_BLINDNESS_AND_DEAFNESS, SpellHostAreaDis, GlobalSpellTarget, i18, TRUE, ItemHostAreaDis)) return TRUE;
-        }
-    }
-
-    // Ally spells. A great variety that we cast above.
-    if(IsFirstRunThrough)
-    {
-        // Haste again - 90% chance
-        if(AI_ActionCastAllyBuffSpell(f6, i90, SPELL_MASS_HASTE, SPELL_HASTE)) return TRUE;
-        // Cast phisical stoneskins on allies - 80% chance, as it is quite good.
-        if(AI_ActionCastAllyBuffSpell(f6, i80, SPELL_GREATER_STONESKIN, SPELL_STONESKIN)) return TRUE;
-        // Consealment spells
-        if(AI_ActionCastAllyBuffSpell(f6, i60, SPELL_IMPROVED_INVISIBILITY, SPELL_DISPLACEMENT)) return TRUE;
-    }
-
-    //Gate
-    //CONDITION: Protection from Evil active on self
-    // Balors rock, literally! If not, I kill dem all!! >:-D
-    if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i10 &&
-       SpellAllies && AI_GetAIHaveSpellsEffect(GlobalHasProtectionEvilSpell))
-    {
-        // Gate. Level 9 (Mage/Innate). Summons a balor, who would normally attack caster if not protected from evil, else powerful summon
-        if(AI_ActionCastSummonSpell(SPELL_GATE, i19, i10)) return TRUE;
-    }
-
-    //Protection from Evil / Magic Circle Against Evil
-    // ... in preparation for Gate!
-    if(IsFirstRunThrough &&GetHasSpell(SPELL_GATE) &&
-       !AI_GetAIHaveSpellsEffect(GlobalHasProtectionEvilSpell))
-    {
-        // Magic Circle against Alignment. Level 3 (Mage/Cleric/Bard/Paladin/Innate). +2 AC, mind spell immunity VS them.
-        if(AI_ActionCastSubSpell(SPELL_MAGIC_CIRCLE_AGAINST_EVIL, SpellEnhAre, OBJECT_SELF, i13, FALSE, ItemEnhAre)) return TRUE;
-        // Protection From Evil. Level 1(Mage/Cleric/Bard/Paladin/Innate). +4 AC, mind spell immunity VS them.
-        if(AI_ActionCastSubSpell(SPELL_PROTECTION_FROM_EVIL, SpellProSinTar, OBJECT_SELF, i11, FALSE, ItemProSelf, PotionPro)) return TRUE;
-    }
-    // None for allies. Won't bother (unless it is a problem!).
-    // - If adding, we will get the nearest without the spells effects.
-
-    // GlobalCanSummonSimilarLevel can be 1-12. (10 is elemental swarm, balor) (11, 12 epic)
-    if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i9)
-    {
-        // Elemental swarm. Level 9 (Druid) Never replaced until no summon left - summons consecutive 4 huge elementals
-        if(AI_ActionCastSummonSpell(SPELL_ELEMENTAL_SWARM, i19, i10)) return TRUE;
-        // Summon an eldar elemental.
-        if(AI_ActionCastSummonSpell(SPELL_SUMMON_CREATURE_IX, i19, i9)) return TRUE;
-        // No-concentration summoned creatures.
-        if(AI_ActionCastSummonSpell(AI_SPELLABILITY_SUMMON_BAATEZU, FALSE, i9)) return TRUE;
-        if(AI_ActionCastSummonSpell(SPELLABILITY_SUMMON_TANARRI, FALSE, i9)) return TRUE;
-        if(AI_ActionCastSummonSpell(SPELLABILITY_SUMMON_SLAAD, FALSE, i9)) return TRUE;
-        if(AI_ActionCastSummonSpell(SPELLABILITY_SUMMON_CELESTIAL, FALSE, i9)) return TRUE;
-        if(AI_ActionCastSummonSpell(SPELLABILITY_SUMMON_MEPHIT, FALSE, i9)) return TRUE;
-        if(AI_ActionCastSummonSpell(SPELLABILITY_NEGATIVE_PLANE_AVATAR, FALSE, i9)) return TRUE;
-    }
-
-    // Dominate spells
-    // - Dominate monster is level 9. Others are worth casting if valid.
-    // Needs to not be immune, and be of right race for DOM PERSON
-    // No time stop, and a valid will save to even attempt.
-    if(!GlobalInTimeStop && GlobalSeenSpell && RangeMediumValid &&
-       !AI_GetSpellTargetImmunity(GlobalImmunityMind) &&
-       !AI_GetSpellTargetImmunity(GlobalImmunityDomination) &&
-       (GlobalOurHitDice - GlobalAverageEnemyHD) <= i8)
-    {
-        // Will save VS mind spells.
-        if(GlobalNormalSpellsNoEffectLevel < i9 &&
-          !AI_SaveImmuneSpellTarget(SAVING_THROW_WILL, i9))
-        {
-            // Dominate Monster. Level 9 (Mage) Dominates (VS. Mind will save) ANYTHING!
-            if(AI_ActionCastSpell(SPELL_DOMINATE_MONSTER, SpellHostRanged, GlobalSpellTarget, i19, FALSE, ItemHostRanged)) return TRUE;
-
-            if(GlobalNormalSpellsNoEffectLevel < i5 &&
-               !AI_SaveImmuneSpellTarget(SAVING_THROW_WILL, i5))
-            {
-                // Dominate person
-                if(!GetIsPlayableRacialType(GlobalSpellTarget))
+                // Bigby's Crushing Hand. Level 9 (Mage). 2d6 + 12 damage/round.
+                if(AI_ActionCastSpellRandom(SPELL_BIGBYS_CRUSHING_HAND, SpellHostRanged, i60, GlobalSpellTarget, i19, FALSE, ItemHostRanged))
                 {
-                    // Dominate Person. Level 5 (Mage). Only affects PC races. Dominate on failed will.
-                    if(AI_ActionCastSpell(SPELL_DOMINATE_PERSON, SpellHostRanged, GlobalSpellTarget, i15, FALSE, ItemHostRanged)) return TRUE;
-                }
-                // Mass charm. sorcerors/bards have better things (20% casting chance)
-                if(!GlobalWeAreSorcerorBard || d10() <= i2)
-                {
-                    // For mass charm, we don't bother if they don't have a decent chance to fail (ues as level 5 spell for save DC)
-                    // Mass Charm. Level 8 (Mage) 1 Round/2caster levels of charm. Affects PC races only + humanoids.
-                    if(AI_ActionCastSpell(SPELL_MASS_CHARM, SpellHostAreaDis, GlobalSpellTarget, i18, TRUE, ItemHostAreaDis)) return TRUE;
+                    SetLocalInt(GlobalSpellTarget, "AI_Bigby", TRUE);
+                    DelayCommand(3.0f, DeleteLocalInt(GlobalSpellTarget, "AI_Bigby"));
+                    return TRUE;
                 }
             }
-        }
-    }
 
-    // Protection from Spells
-    // - CONDITION: Enemies less than 5 levels below me (powerful enemies)
-    // - CONDITION 2: At least 1 ally
-    // - We cast this lower down if we don't cast it here.
-    if(IsFirstRunThrough &&
-      (((GlobalOurHitDice - GlobalAverageEnemyHD) <= i5 &&
-         GlobalValidSeenAlly && GlobalRangeToAlly < f5) ||
-        ((GlobalOurHitDice - GlobalAverageEnemyHD) <= i10)))
-    {
-        if(AI_ActionCastSpell(SPELL_PROTECTION_FROM_SPELLS, SpellProAre, OBJECT_SELF, i17, FALSE, ItemProAre)) return TRUE;
-    }
-
-    //Mantle Protections
-    //CONDITION: Enemies less than 5 levels below me (powerful enemies)
-    // Will chance casting these anyway, if no melee attackers, and the enemy has a valid talent.
-    // Yes, talents include items...ahh well.
-    if(IsFirstRunThrough && ((GlobalOurHitDice - GlobalAverageEnemyHD) <= i5))
-    {
-        if(AI_SpellWrapperMantalProtections(iLowestSpellLevel)) return TRUE;
-    }
-
-    // All these are short-ranged death!
-    // - What do we want to cast? Eh? Well, we might as well randomly choose
-    //   one of the level 9 main hostile spells. This includes single target spells,
-    //   BUT we may use sigle target spells first if not many enemies.
-
-    // - Energy Drain (powerful, lowers statistics)
-    // - Bigby's Crushing Hand (2d6 + 12 damage/round)
-
-    // - Storm of vengance is a massive electrical/acid storm. Cast, we may move out later.
-    // - Implosion has a +3 fort Save DC (great!) (only medium radius)
-    // - Wail of the banshee has a collosal area and 1 save.
-    // - Wierd doesn't affect allies, 2 saves, collosal area.
-    // - Meteor Storm is like a huge fireball based on the caster, 20d6 damage.
-
-    // Single target spells first check
-    if(SingleSpellsFirst && GlobalNormalSpellsNoEffectLevel < i9)
-    {
-        // Crushing hand is indefinatly better, but depends...I think energy drain
-        // has its merits of being permament! :-D
-
-// Explanation on bigby's spells - hitting, grappling.
-// HIT: Beat GetAC(oTarget) with Primary Stat + Caster Level + d20 + 9-11 (7, 8, 9 level spells)
-// GRAPPLE: Beat BAB + Size Mod of opposing. d20 + nCasterModifier + Caster Level + 14-16.
-// Basically, we won't check this, as the caster level + the 9-11 + primary stat can beat AC.
-// Ok, I can't be bothered to check it :-P
-
-        // 70% chance of Crushing Hand.
-        // We try and not cast it twice on the same target (for a starter, wasting spells)
-        if(RangeLongValid && !GetHasSpellEffect(SPELL_BIGBYS_CRUSHING_HAND, GlobalSpellTarget))
-        {
-            // Bigby's Crushing Hand. Level 9 (Mage). 2d6 + 12 damage/round.
-            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_CRUSHING_HAND, SpellHostRanged, i60, GlobalSpellTarget, i19, FALSE, ItemHostRanged)) return TRUE;
-        }
-
-        if(RangeShortValid && GlobalSpellTargetRace != RACIAL_TYPE_UNDEAD &&
-          !AI_GetSpellTargetImmunity(GlobalImmunityNecromancy) &&
-          !AI_SaveImmuneSpellTarget(SAVING_THROW_FORT, i9))
-        {
-            // 40% chance of energy drain, as we think single target spells are better.
-            // Energy Drain. Level 9 (Mage). 2d4 negative levels! -BAB, Saves, Stats! :-)
-            if(AI_ActionCastSpellRandom(SPELL_ENERGY_DRAIN, SpellHostRanged, i40, GlobalSpellTarget, i19, FALSE, ItemHostRanged)) return TRUE;
-        }
-
-        // Single spell override backup casting
-        if(SingleSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
-    }
-
-    // AOE targets. Most...but not all...are short-range spells.
-    if(RangeShortValid) // No GlobalNormalSpellsNoEffectLevel for this. AOE spells may affect someone who is not immune!
-    {
-        // Storm - a very good AOE spell. May as well use here!
-        // AOE is 10M across.
-        // - May add in elemental protections check.
-        // 40% chance (especially as it is only a clerical spell)
-        if(!GlobalInTimeStop && GlobalSpellTargetRange < f6)
-        {
-            if(AI_ActionCastSpellRandom(SPELL_STORM_OF_VENGEANCE, SpellHostAreaDis, i40, OBJECT_SELF, i19, TRUE, ItemHostAreaDis)) return TRUE;
-        }
-        // Implosion - great spell! Instant death on a +3 save (!). Short range.
-        if(SpellHostAreaInd && (GetHasSpell(SPELL_IMPLOSION) ||
-                                ItemHostAreaInd == SPELL_IMPLOSION))
-        {
-            // Its save is at 9 + 3 = 12 DC. Death save, and can kill allies not in PvP
-            // - Note that because we check natural "globes" in this, the level is set to 9.
-            oAOE = AI_GetBestAreaSpellTarget(fShortRange, RADIUS_SIZE_MEDIUM, i9, SAVING_THROW_FORT, SHAPE_SPHERE, GlobalFriendlyFireFriendly, TRUE);
-            // If valid, 40% chance of casting this one before others.
-            if(GetIsObjectValid(oAOE))
+            if(RangeShortValid && GlobalSpellTargetRace != RACIAL_TYPE_UNDEAD &&
+              !AI_GetSpellTargetImmunity(GlobalImmunityNecromancy) &&
+              !AI_SaveImmuneSpellTarget(SAVING_THROW_FORT, i9))
             {
-                // Implosion. Level 9 (Cleric). Instant death at +3 save. Note: Medium radius (others are collosal)
-                if(AI_ActionCastSpellRandom(SPELL_IMPLOSION, SpellHostAreaInd, i30, oAOE, i19, TRUE, ItemHostAreaInd)) return TRUE;
+                // 40% chance of energy drain, as we think single target spells are better.
+                // Energy Drain. Level 9 (Mage). 2d4 negative levels! -BAB, Saves, Stats! :-)
+                if(AI_ActionCastSpellRandom(SPELL_ENERGY_DRAIN, SpellHostRanged, i40, GlobalSpellTarget, i19, FALSE, ItemHostRanged)) return TRUE;
+            }
+
+            // Single spell override backup casting
+            if(SingleSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
+        }
+
+        // AOE targets. Most...but not all...are short-range spells.
+        if(RangeShortValid) // No GlobalNormalSpellsNoEffectLevel for this. AOE spells may affect someone who is not immune!
+        {
+            // Storm - a very good AOE spell. May as well use here!
+            // AOE is 10M across.
+            // - May add in elemental protections check.
+            // 40% chance (especially as it is only a clerical spell)
+            if(!GlobalInTimeStop && GlobalSpellTargetRange < f6)
+            {
+                if(AI_ActionCastSpellRandom(SPELL_STORM_OF_VENGEANCE, SpellHostAreaDis, i40, OBJECT_SELF, i19, TRUE, ItemHostAreaDis)) return TRUE;
+            }
+            // Implosion - great spell! Instant death on a +3 save (!). Short range.
+            if(SpellHostAreaInd && (GetHasSpell(SPELL_IMPLOSION) ||
+                                    ItemHostAreaInd == SPELL_IMPLOSION))
+            {
+                // Its save is at 9 + 3 = 12 DC. Death save, and can kill allies not in PvP
+                // - Note that because we check natural "globes" in this, the level is set to 9.
+                oAOE = AI_GetBestAreaSpellTarget(fShortRange, RADIUS_SIZE_MEDIUM, i9, SAVING_THROW_FORT, SHAPE_SPHERE, GlobalFriendlyFireFriendly, TRUE);
+                // If valid, 40% chance of casting this one before others.
+                if(GetIsObjectValid(oAOE))
+                {
+                    // Implosion. Level 9 (Cleric). Instant death at +3 save. Note: Medium radius (others are collosal)
+                    if(AI_ActionCastSpellRandom(SPELL_IMPLOSION, SpellHostAreaInd, i30, oAOE, i19, TRUE, ItemHostAreaInd)) return TRUE;
+                }
+            }
+            // Wail of the Banshee
+            // Fort save, else death, and it never affects us, but can kill allies.
+            if(SpellHostAreaDis && (GetHasSpell(SPELL_WAIL_OF_THE_BANSHEE) ||
+                                    ItemHostAreaDis == SPELL_WAIL_OF_THE_BANSHEE))
+            {
+                // Collosal range, fortitude, necromancy and death saves.
+                oAOE = AI_GetBestAreaSpellTarget(fShortRange, RADIUS_SIZE_COLOSSAL, i9, SAVING_THROW_FORT, SHAPE_SPHERE, GlobalFriendlyFireFriendly, TRUE, TRUE);
+                // If valid, 40% of firing.
+                if(GetIsObjectValid(oAOE))
+                {
+                    // Wail of the Banshee. Level 9 (Mage/Innate). Caster cries out, kills everything that cannot save in area affected.
+                    if(AI_ActionCastSpellRandom(SPELL_WAIL_OF_THE_BANSHEE, SpellHostAreaDis, i30, oAOE, i19, TRUE, ItemHostAreaDis)) return TRUE;
+                }
+            }
+            // Weird - item immunity fear? Need to test
+            // Never affects allies. Will save type - if the will is always
+            // saved, it does nothing at all.
+            if(SpellHostAreaDis && (GetHasSpell(SPELL_WEIRD) ||
+                                    ItemHostAreaDis == SPELL_WEIRD))
+            {
+                // Get AOE object - this is a small (8M) range, collosal size, doesn't affect allies.
+                oAOE = AI_GetBestAreaSpellTarget(fShortRange, RADIUS_SIZE_COLOSSAL, i9, SAVING_THROW_WILL);
+                // Is it valid? 40% chance of casting.
+                if(GetIsObjectValid(oAOE))
+                {
+                    // Wierd. Level 9 (Wizard/Innate). 2 saves (will/fort) against death. Doesn't kill allies! (Illusion)
+                    if(AI_ActionCastSpellRandom(SPELL_WEIRD, SpellHostAreaDis, i30, oAOE, i19, TRUE, ItemHostAreaDis)) return TRUE;
+                }
+            }
+            //Meteor Swarm
+            // CONDITION: Closest enemy 5 ft. (1.5 meters) from me
+            // Changed to 10M ... the collosal sized actially used (on self)
+            // But only if the enemy is. Removed enemy fire, for now.
+            // 40% chance.
+            if(GlobalSpellTargetRange < f5)
+            {
+                if(AI_ActionCastSpellRandom(SPELL_METEOR_SWARM, SpellHostAreaDis, i30, OBJECT_SELF, i19, TRUE, ItemHostAreaDis)) return TRUE;
             }
         }
-        // Wail of the Banshee
-        // Fort save, else death, and it never affects us, but can kill allies.
-        if(SpellHostAreaDis && (GetHasSpell(SPELL_WAIL_OF_THE_BANSHEE) ||
-                                ItemHostAreaDis == SPELL_WAIL_OF_THE_BANSHEE))
+
+        // Multi spell override backup casting
+        if(MultiSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
+
+        // Finally, the single target spells again. IE cast them after the AOE ones
+        // if we don't choose an AOE one.
+        if(GlobalSeenSpell && GlobalNormalSpellsNoEffectLevel < i9)
         {
-            // Collosal range, fortitude, necromancy and death saves.
-            oAOE = AI_GetBestAreaSpellTarget(fShortRange, RADIUS_SIZE_COLOSSAL, i9, SAVING_THROW_FORT, SHAPE_SPHERE, GlobalFriendlyFireFriendly, TRUE, TRUE);
-            // If valid, 40% of firing.
-            if(GetIsObjectValid(oAOE))
+            // 50% chance of Crushing Hand.
+            // We try and not cast it twice on the same target (for a starter, wasting spells)
+            if(RangeLongValid && !GetHasSpellEffect(SPELL_BIGBYS_CRUSHING_HAND, GlobalSpellTarget) &&
+                !GetLocalInt(GlobalSpellTarget, "AI_Bigby"))
             {
-                // Wail of the Banshee. Level 9 (Mage/Innate). Caster cries out, kills everything that cannot save in area affected.
-                if(AI_ActionCastSpellRandom(SPELL_WAIL_OF_THE_BANSHEE, SpellHostAreaDis, i30, oAOE, i19, TRUE, ItemHostAreaDis)) return TRUE;
+                // Bigby's Crushing Hand. Level 9 (Mage). 2d6 + 12 damage/round.
+                if(AI_ActionCastSpellRandom(SPELL_BIGBYS_CRUSHING_HAND, SpellHostRanged, i40, GlobalSpellTarget, i19, FALSE, ItemHostRanged))
+                {
+                    SetLocalInt(GlobalSpellTarget, "AI_Bigby", TRUE);
+                    DelayCommand(3.0f, DeleteLocalInt(GlobalSpellTarget, "AI_Bigby"));
+                    return TRUE;
+                }
+
+            }
+
+            // Short range, not undead ETC.
+            if(RangeShortValid && !AI_GetSpellTargetImmunity(GlobalImmunityNecromancy) &&
+               GlobalSpellTargetRace != RACIAL_TYPE_UNDEAD &&
+              !AI_SaveImmuneSpellTarget(SAVING_THROW_FORT, i9))
+            {
+                // 30% chance of energy drain
+                // Energy Drain. Level 9 (Mage). 2d4 negative levels! -BAB, Saves, Stats! :-)
+                if(AI_ActionCastSpellRandom(SPELL_ENERGY_DRAIN, SpellHostRanged, i30, GlobalSpellTarget, i19, FALSE, ItemHostRanged)) return TRUE;
             }
         }
-        // Weird - item immunity fear? Need to test
-        // Never affects allies. Will save type - if the will is always
-        // saved, it does nothing at all.
-        if(SpellHostAreaDis && (GetHasSpell(SPELL_WEIRD) ||
-                                ItemHostAreaDis == SPELL_WEIRD))
+
+        // Backup, obviously, that we might not randomly choose Implision, if it
+        // fails the 40% check. Might sitll have the item/spell though!
+        if(AI_ActionCastBackupRandomSpell()) return TRUE;
+
+        if(IsFirstRunThrough)
         {
-            // Get AOE object - this is a small (8M) range, collosal size, doesn't affect allies.
-            oAOE = AI_GetBestAreaSpellTarget(fShortRange, RADIUS_SIZE_COLOSSAL, i9, SAVING_THROW_WILL);
-            // Is it valid? 40% chance of casting.
-            if(GetIsObjectValid(oAOE))
-            {
-                // Wierd. Level 9 (Wizard/Innate). 2 saves (will/fort) against death. Doesn't kill allies! (Illusion)
-                if(AI_ActionCastSpellRandom(SPELL_WEIRD, SpellHostAreaDis, i30, oAOE, i19, TRUE, ItemHostAreaDis)) return TRUE;
-            }
+            // Finally, we might as well cast that new (SoU) cleric spell which stops
+            // many negative effects :-)
+            // Undeath's Eternal Foe. Stops negative damage, ability score draining,
+            // negative levels, immunity poisons, immunity diseases.
+            // Level 9 (Cleric)
+            if(AI_ActionCastSpell(SPELL_UNDEATHS_ETERNAL_FOE, SpellEnhSinTar, OBJECT_SELF, i19, FALSE, ItemEnhSinTar, PotionEnh)) return TRUE;
         }
-        //Meteor Swarm
-        // CONDITION: Closest enemy 5 ft. (1.5 meters) from me
-        // Changed to 10M ... the collosal sized actially used (on self)
-        // But only if the enemy is. Removed enemy fire, for now.
-        // 40% chance.
-        if(GlobalSpellTargetRange < f5)
-        {
-            if(AI_ActionCastSpellRandom(SPELL_METEOR_SWARM, SpellHostAreaDis, i30, OBJECT_SELF, i19, TRUE, ItemHostAreaDis)) return TRUE;
-        }
-    }
-
-    // Multi spell override backup casting
-    if(MultiSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
-
-    // Finally, the single target spells again. IE cast them after the AOE ones
-    // if we don't choose an AOE one.
-    if(GlobalSeenSpell && GlobalNormalSpellsNoEffectLevel < i9)
-    {
-        // 50% chance of Crushing Hand.
-        // We try and not cast it twice on the same target (for a starter, wasting spells)
-        if(RangeLongValid && !GetHasSpellEffect(SPELL_BIGBYS_CRUSHING_HAND, GlobalSpellTarget))
-        {
-            // Bigby's Crushing Hand. Level 9 (Mage). 2d6 + 12 damage/round.
-            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_CRUSHING_HAND, SpellHostRanged, i40, GlobalSpellTarget, i19, FALSE, ItemHostRanged)) return TRUE;
-        }
-
-        // Short range, not undead ETC.
-        if(RangeShortValid && !AI_GetSpellTargetImmunity(GlobalImmunityNecromancy) &&
-           GlobalSpellTargetRace != RACIAL_TYPE_UNDEAD &&
-          !AI_SaveImmuneSpellTarget(SAVING_THROW_FORT, i9))
-        {
-            // 30% chance of energy drain
-            // Energy Drain. Level 9 (Mage). 2d4 negative levels! -BAB, Saves, Stats! :-)
-            if(AI_ActionCastSpellRandom(SPELL_ENERGY_DRAIN, SpellHostRanged, i30, GlobalSpellTarget, i19, FALSE, ItemHostRanged)) return TRUE;
-        }
-    }
-
-    // Backup, obviously, that we might not randomly choose Implision, if it
-    // fails the 40% check. Might sitll have the item/spell though!
-    if(AI_ActionCastBackupRandomSpell()) return TRUE;
-
-    if(IsFirstRunThrough)
-    {
-        // Finally, we might as well cast that new (SoU) cleric spell which stops
-        // many negative effects :-)
-        // Undeath's Eternal Foe. Stops negative damage, ability score draining,
-        // negative levels, immunity poisons, immunity diseases.
-        // Level 9 (Cleric)
-        if(AI_ActionCastSpell(SPELL_UNDEATHS_ETERNAL_FOE, SpellEnhSinTar, OBJECT_SELF, i19, FALSE, ItemEnhSinTar, PotionEnh)) return TRUE;
-    }
-/*::8888888888888888888888888888888888888888888888888888888888888888888888888888
+        //... some protections and a lot of strong spells here
+        SetLocalInt(OBJECT_SELF, "iAASLevel9e", TRUE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9c", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9d", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel8", FALSE);
+    }// if level9checked
+    /*::8888888888888888888888888888888888888888888888888888888888888888888888888888
     Level 8 Spells.
 //::8888888888888888888888888888888888888888888888888888888888888888888888888888
     Thoughts - LOTS of AOE spells here for all classes. *shrugs* all good too!
@@ -7816,594 +8802,676 @@ S X [Etherealness] - Total invisiblity (Bugged I say). Cast above.
 //::88888888888888888888888888888888888888888888888888888888888888888888888888*/
 
     // Jump out if we don't want to cast level 8 spells/abilities.
-    if(iLowestSpellLevel > i8) return FALSE;
+    if(iLowestSpellLevel > i8)
+    {
+        SetLocalInt(OBJECT_SELF, "iAASLevel9a", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9b", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9c", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9d", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9e", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel8", FALSE);
+        return FALSE;
+    }
 
     int iEnemyAlignment = GetAlignmentGoodEvil(GlobalSpellTarget);
-    if(IsFirstRunThrough)
+    //... check for levels 8
+    if (!iLevel8Checked)
     {
-        // Aura Vs. Alignment. d6 + d8 damage shield, 25SR, 4Saves, 4AC, mind immune VS alignemnt
-        if(GetAlignmentGoodEvil(GlobalSpellTarget) == ALIGNMENT_EVIL)
+//        SendMessageToPC(GetFirstPC(), "Level8");//...
+        if(IsFirstRunThrough)
         {
-            // Holy: Versus Evil. Level 8 (Cleric)
-            if(AI_ActionCastSubSpell(SPELL_HOLY_AURA, SpellEnhSelf, OBJECT_SELF, i18, FALSE, ItemEnhSelf)) return TRUE;
-        }
-        else if(iEnemyAlignment == ALIGNMENT_GOOD)
-        {
-            // Unholy Holy: Versus Good. Level 8 (Cleric)
-            if(AI_ActionCastSubSpell(SPELL_UNHOLY_AURA, SpellEnhSelf, OBJECT_SELF, i18, FALSE, ItemEnhSelf)) return TRUE;
-        }
-    }
-
-    // Cast regeneration + Natures Balance here if we are lacking HP.
-    if(IsFirstRunThrough && GlobalOurPercentHP <= i70)
-    {
-        if(!GetHasSpellEffect(SPELL_REGENERATE))
-        {
-            // Regeneration. Level 6 (Druid) 7 (Cleric). 6HP/Round. Good for persistant healing.
-            if(AI_ActionCastSpell(SPELL_REGENERATE, SpellEnhSelf, OBJECT_SELF, i17, FALSE, ItemEnhSelf, PotionEnh)) return TRUE;
-        }
-        // Cast at us, might as well.
-        // Natures Balance. Level 8 (Druid). Lowers SR of enemies by 1d4(CasterLevel/5) + Healing (3d6 + CasterLevel) for allies.
-        if(AI_ActionCastSpell(SPELL_NATURES_BALANCE, SpellHostAreaDis, OBJECT_SELF, i18, TRUE, ItemHostAreaDis)) return TRUE;
-    }
-
-    // Undead spells. We can cast sunbeam/sunburst (VERY similar!) and Searing Light.
-    // We do cast this against non-undead, but later on.
-    // We only do this if at 5+ intelligence. Those below are stupid :-)
-    if(GlobalSpellTargetRace == RACIAL_TYPE_UNDEAD &&
-       GlobalIntelligence >= i5 && GlobalNormalSpellsNoEffectLevel < i8)
-    {
-        // First, Undead to Death - Slays 1d4HD worth of undead/level.
-        //        (Max 20d4). Lowest first.
-        // - Will save!
-        // - 20M radius (but this we can ignore)
-        // - Takes into account all SR and so forth.
-        if(GlobalNormalSpellsNoEffectLevel < i6 &&
-          !AI_SaveImmuneSpellTarget(SAVING_THROW_WILL, i6) &&
-           RangeMediumValid)
-        {
-            // Undead to Death. Level 6 (Cleric) Slays 1d4HD worth of undead/level. (Max 20d4). Lowest first.
-            if(AI_ActionCastSpell(SPELL_UNDEATH_TO_DEATH, SpellHostAreaDis, GlobalSpellTarget, i16, TRUE, ItemHostAreaDis)) return TRUE;
-        }
-        // SUNBURST: 6d6 to non-undead. Kills vampires. Blindness. Limit of 25 dice for undead damage. Medium range/colosal size
-        // SUNBEAM: 3d6 to non-undead. Blindness. Limit of 20 dice for undead damage. Medium range/colosal size
-        // Really silly. Only druids/mages get SunBurst...and druids get Sunbeam anyway!
-        // *sigh* Only difference is sunburst has a higher limit for damage, kills
-        // vampires, and does 6d6 damage to non-undead, so marginally better.
-
-        // Won't even randomly choose between them. Not worth it.
-        if(RangeShortValid)
-        {
-            // Sunburst. Level 8 (Druid/Mage) 6d6 to non-undead. Kills vampires. Blindness. Limit of 25 dice for undead damage. Medium range/colosal size
-            if(AI_ActionCastSpell(SPELL_SUNBURST, SpellHostAreaDis, GlobalSpellTarget, i18, TRUE, ItemHostAreaDis)) return TRUE;
-            // Sunbeam. Level 8 (Cleric/Druid) 3d6 to non-undead. Blindness. Limit of 20 dice for undead damage. Medium range/colosal size
-            if(AI_ActionCastSpell(SPELL_SUNBEAM, SpellHostAreaDis, GlobalSpellTarget, i18, TRUE, ItemHostAreaDis)) return TRUE;
-
-            // If we can't destroy them, dominate them!
-            if(GlobalSpellTargetHitDice < GlobalOurChosenClassLevel * i3 &&
-               GlobalNormalSpellsNoEffectLevel < i8 &&
-              !GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_DOMINATED)))
+            // Aura Vs. Alignment. d6 + d8 damage shield, 25SR, 4Saves, 4AC, mind immune VS alignemnt
+            if(GetAlignmentGoodEvil(GlobalSpellTarget) == ALIGNMENT_EVIL)
             {
-                // Control undead. Level 6 (Cleric) 7 (Mage). Dominates 1 undead up to 3x Caster level.
-                if(AI_ActionCastSpell(SPELL_CONTROL_UNDEAD, SpellHostRanged, GlobalSpellTarget, i17, FALSE, ItemHostRanged)) return TRUE;
+                // Holy: Versus Evil. Level 8 (Cleric)
+                if(AI_ActionCastSubSpell(SPELL_HOLY_AURA, SpellEnhSelf, OBJECT_SELF, i18, FALSE, ItemEnhSelf)) return TRUE;
+            }
+            else if(iEnemyAlignment == ALIGNMENT_GOOD)
+            {
+                // Unholy Holy: Versus Good. Level 8 (Cleric)
+                if(AI_ActionCastSubSpell(SPELL_UNHOLY_AURA, SpellEnhSelf, OBJECT_SELF, i18, FALSE, ItemEnhSelf)) return TRUE;
             }
         }
-        // Medium spell
-        if(GlobalNormalSpellsNoEffectLevel < i3)
-        {
-            // Searing light. Level 3 (Cleric). Full level: 1-10d6 VS undead. Half Level: 1-5d6 VS constructs. 1-5d8 VS Others.
-            if(AI_ActionCastSpell(SPELL_SEARING_LIGHT, SpellHostRanged, GlobalSpellTarget, i13, FALSE, ItemHostRanged)) return TRUE;
-        }
-    }
 
-    // Gazes have short ranges - 80% chance.
-    // Why this high? (compared to say, fire storm?) because they are innate
-    // and so no concentration checks, and pretty good DC's.
-    if(RangeShortValid && d10() <= i8) // No GlobalNormalSpellsNoEffectLevel check
-    {
-        // We cast all of these, but randomly. It works through with most powerful
-        // getting the highest %'s of course :-)
-        if(!AI_GetSpellTargetImmunity(GlobalImmunityDeath))
+        // Cast regeneration + Natures Balance here if we are lacking HP.
+        if(IsFirstRunThrough && GlobalOurPercentHP <= i70)
         {
-            // Death gazes first - Golem one is the most deadly!
-            // 50% chance of either.
-            if(AI_ActionCastSpellRandom(SPELLABILITY_GOLEM_BREATH_GAS, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-            if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DEATH, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-        }
-        // Petrify - SoU. 50% chance (almost like death!)
-        if(!AI_GetSpellTargetImmunity(GlobalImmunityPetrify))
-        {
-            if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_PETRIFY, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-        }
-        // Destroy X are powerful. 50% chance each. They are basically as DEATH but for alignments.
-        if(iEnemyAlignment == ALIGNMENT_GOOD)
-        {
-            if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DESTROY_GOOD, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-        }
-        else if(iEnemyAlignment == ALIGNMENT_EVIL)
-        {
-            if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DESTROY_EVIL, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-        }
-        if(GetAlignmentLawChaos(GlobalSpellTarget) == ALIGNMENT_CHAOTIC)
-        {
-            if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DESTROY_CHAOS, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-        }
-        else if(GetAlignmentLawChaos(GlobalSpellTarget) == ALIGNMENT_LAWFUL)
-        {
-            if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DESTROY_LAW, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-        }
-        // Can't be immune to mind
-        if(!AI_GetSpellTargetImmunity(GlobalImmunityMind))
-        {
-            // Fear (and fixed: Added Krenshar Scare) 30%
-            if(!AI_GetSpellTargetImmunity(GlobalImmunityFear))
+            if(!GetHasSpellEffect(SPELL_REGENERATE))
             {
-                if(AI_ActionCastSpellRandom(SPELLABILITY_KRENSHAR_SCARE, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_FEAR, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+                // Regeneration. Level 6 (Druid) 7 (Cleric). 6HP/Round. Good for persistant healing.
+                if(AI_ActionCastSpell(SPELL_REGENERATE, SpellEnhSelf, OBJECT_SELF, i17, FALSE, ItemEnhSelf, PotionEnh)) return TRUE;
             }
-            // Domination/Charm 30%
-            if(!AI_GetSpellTargetImmunity(GlobalImmunityDomination))
+            // Cast at us, might as well.
+            // Natures Balance. Level 8 (Druid). Lowers SR of enemies by 1d4(CasterLevel/5) + Healing (3d6 + CasterLevel) for allies.
+            if(AI_ActionCastSpell(SPELL_NATURES_BALANCE, SpellHostAreaDis, OBJECT_SELF, i18, TRUE, ItemHostAreaDis)) return TRUE;
+        }
+
+        // Undead spells. We can cast sunbeam/sunburst (VERY similar!) and Searing Light.
+        // We do cast this against non-undead, but later on.
+        // We only do this if at 5+ intelligence. Those below are stupid :-)
+        if(GlobalSpellTargetRace == RACIAL_TYPE_UNDEAD &&
+           GlobalIntelligence >= i5 && GlobalNormalSpellsNoEffectLevel < i8)
+        {
+            // First, Undead to Death - Slays 1d4HD worth of undead/level.
+            //        (Max 20d4). Lowest first.
+            // - Will save!
+            // - 20M radius (but this we can ignore)
+            // - Takes into account all SR and so forth.
+            if(GlobalNormalSpellsNoEffectLevel < i6 &&
+              !AI_SaveImmuneSpellTarget(SAVING_THROW_WILL, i6) &&
+               RangeMediumValid)
             {
-                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DOMINATE, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_CHARM, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+                // Undead to Death. Level 6 (Cleric) Slays 1d4HD worth of undead/level. (Max 20d4). Lowest first.
+                if(AI_ActionCastSpell(SPELL_UNDEATH_TO_DEATH, SpellHostAreaDis, GlobalSpellTarget, i16, TRUE, ItemHostAreaDis)) return TRUE;
             }
-            // Other random mind things
-            if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_PARALYSIS, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-            if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_STUNNED, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-            if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_CONFUSION, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-            if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DOOM, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
-        }
-    }
+            // SUNBURST: 6d6 to non-undead. Kills vampires. Blindness. Limit of 25 dice for undead damage. Medium range/colosal size
+            // SUNBEAM: 3d6 to non-undead. Blindness. Limit of 20 dice for undead damage. Medium range/colosal size
+            // Really silly. Only druids/mages get SunBurst...and druids get Sunbeam anyway!
+            // *sigh* Only difference is sunburst has a higher limit for damage, kills
+            // vampires, and does 6d6 damage to non-undead, so marginally better.
 
-    // Level 8 summons. 20HD or under, or 2 melee enemy and under.
-    if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i8 &&
-      (GlobalOurHitDice <= i20 || GlobalMeleeAttackers <= i2))
+            // Won't even randomly choose between them. Not worth it.
+            if(RangeShortValid)
+            {
+                // Sunburst. Level 8 (Druid/Mage) 6d6 to non-undead. Kills vampires. Blindness. Limit of 25 dice for undead damage. Medium range/colosal size
+                if(AI_ActionCastSpell(SPELL_SUNBURST, SpellHostAreaDis, GlobalSpellTarget, i18, TRUE, ItemHostAreaDis)) return TRUE;
+                // Sunbeam. Level 8 (Cleric/Druid) 3d6 to non-undead. Blindness. Limit of 20 dice for undead damage. Medium range/colosal size
+                if(AI_ActionCastSpell(SPELL_SUNBEAM, SpellHostAreaDis, GlobalSpellTarget, i18, TRUE, ItemHostAreaDis)) return TRUE;
+
+                // If we can't destroy them, dominate them!
+                if(GlobalSpellTargetHitDice < GlobalOurChosenClassLevel * i3 &&
+                   GlobalNormalSpellsNoEffectLevel < i8 &&
+                  !GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_DOMINATED)))
+                {
+                    // Control undead. Level 6 (Cleric) 7 (Mage). Dominates 1 undead up to 3x Caster level.
+                    if(AI_ActionCastSpell(SPELL_CONTROL_UNDEAD, SpellHostRanged, GlobalSpellTarget, i17, FALSE, ItemHostRanged)) return TRUE;
+                }
+            }
+            // Medium spell
+            if(GlobalNormalSpellsNoEffectLevel < i3)
+            {
+                // Searing light. Level 3 (Cleric). Full level: 1-10d6 VS undead. Half Level: 1-5d6 VS constructs. 1-5d8 VS Others.
+                if(AI_ActionCastSpell(SPELL_SEARING_LIGHT, SpellHostRanged, GlobalSpellTarget, i13, FALSE, ItemHostRanged)) return TRUE;
+            }
+        }
+
+        // Gazes have short ranges - 80% chance.
+        // Why this high? (compared to say, fire storm?) because they are innate
+        // and so no concentration checks, and pretty good DC's.
+        if(RangeShortValid && d10() <= i8) // No GlobalNormalSpellsNoEffectLevel check
+        {
+            // We cast all of these, but randomly. It works through with most powerful
+            // getting the highest %'s of course :-)
+            if(!AI_GetSpellTargetImmunity(GlobalImmunityDeath))
+            {
+                // Death gazes first - Golem one is the most deadly!
+                // 50% chance of either.
+                if(AI_ActionCastSpellRandom(SPELLABILITY_GOLEM_BREATH_GAS, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DEATH, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+            }
+            // Petrify - SoU. 50% chance (almost like death!)
+            if(!AI_GetSpellTargetImmunity(GlobalImmunityPetrify))
+            {
+                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_PETRIFY, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+            }
+            // Destroy X are powerful. 50% chance each. They are basically as DEATH but for alignments.
+            if(iEnemyAlignment == ALIGNMENT_GOOD)
+            {
+                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DESTROY_GOOD, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+            }
+            else if(iEnemyAlignment == ALIGNMENT_EVIL)
+            {
+                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DESTROY_EVIL, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+            }
+            if(GetAlignmentLawChaos(GlobalSpellTarget) == ALIGNMENT_CHAOTIC)
+            {
+                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DESTROY_CHAOS, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+            }
+            else if(GetAlignmentLawChaos(GlobalSpellTarget) == ALIGNMENT_LAWFUL)
+            {
+                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DESTROY_LAW, FALSE, i40, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+            }
+            // Can't be immune to mind
+            if(!AI_GetSpellTargetImmunity(GlobalImmunityMind))
+            {
+                // Fear (and fixed: Added Krenshar Scare) 30%
+                if(!AI_GetSpellTargetImmunity(GlobalImmunityFear))
+                {
+                    if(AI_ActionCastSpellRandom(SPELLABILITY_KRENSHAR_SCARE, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+                    if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_FEAR, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+                }
+                // Domination/Charm 30%
+                if(!AI_GetSpellTargetImmunity(GlobalImmunityDomination))
+                {
+                    if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DOMINATE, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+                    if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_CHARM, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+                }
+                // Other random mind things
+                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_PARALYSIS, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_STUNNED, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_CONFUSION, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+                if(AI_ActionCastSpellRandom(SPELLABILITY_GAZE_DOOM, FALSE, i30, GlobalSpellTarget, FALSE, TRUE)) return TRUE;
+            }
+        }
+
+        // Level 8 summons. 20HD or under, or 2 melee enemy and under.
+        if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i8 &&
+          (GlobalOurHitDice <= i20 || GlobalMeleeAttackers <= i2))
+        {
+            // Create Greater undead - Pale Master
+            if(AI_ActionCastSummonSpell(AI_FEAT_PM_CREATE_GREATER_UNDEAD, iM1, i8)) return TRUE;
+
+            // Create Greater Undead. Level 8 (Cleric) Create Vampire, Doom knight, Lich, Mummy Cleric.
+            if(AI_ActionCastSummonSpell(SPELL_CREATE_GREATER_UNDEAD, i18, i8)) return TRUE;
+            // Summon an Greater elemental. Summon 8 - Druid/Cleric/Bard/Mage.
+            if(AI_ActionCastSummonSpell(SPELL_SUMMON_CREATURE_VIII, i18, i8)) return TRUE;
+            // Greater Planar Binding. Level 8 (Mage) Death Slaad (Evil) Vrock (Neutral) Trumpet Archon (Good)
+            if(AI_ActionCastSummonSpell(SPELL_GREATER_PLANAR_BINDING, i18, i8)) return TRUE;
+        }
+
+        // Level 8 general attack spells.
+        // Randomly pick one:
+    // [Sunbeam] - Blindness VS Reflex. d6(CasterLevel) divine VS undead, else 3d6 others. ReactionType.
+    // [Sun Burst] - Similar to sunbeam. 6d6 to others. Vampires die + all undead d6(Caster level) damage.
+    // [Earthquake] - 1d6(caster level) in damage to AOE, except caster.
+    // [Fire Storm] - 1d6(Caster level) in fire/divine damage. No allies. collosal over caster.
+    // [Bombardment] - 1d8(caster level) in fire damage. Like Horrid Wilting. Reflex save/long range/collosal
+    // [Incendiary Cloud] - 4d6 Fire damage/round in the large AOE.
+    // [Horrid Wilting] - d8(CasterLevel) in negative energy. Fort for half. Necromancy.
+
+    // Single:
+    // [Bigby's Clenched Fist] - Attack Each Round. 1d8 + 12 damage/round. Fort VS stunning as well.
+
+        // Is it best to cast Single Spells First?
+        // 70% if favourable.
+        if(SingleSpellsFirst && GlobalNormalSpellsNoEffectLevel < i8)
+        {
+            if(!GetHasSpellEffect(SPELL_BIGBYS_CLENCHED_FIST, GlobalSpellTarget) &&
+               !AI_CompareTimeStopStored(SPELL_BIGBYS_CLENCHED_FIST) &&
+                RangeLongValid && !GetLocalInt(GlobalSpellTarget, "AI_Bigby"))
+            {
+                // Bigby's Clenched Fist. Level 8 (Mage) Attack Each Round. 1d8 + 12 damage/round. Fort VS stunning as well.
+                if(AI_ActionCastSpellRandom(SPELL_BIGBYS_CLENCHED_FIST, SpellHostRanged, i60, GlobalSpellTarget, i18, FALSE, ItemHostRanged))
+                {
+                    SetLocalInt(GlobalSpellTarget, "AI_Bigby", TRUE);
+                    DelayCommand(3.0f, DeleteLocalInt(GlobalSpellTarget, "AI_Bigby"));
+                    return TRUE;
+                }
+
+            }
+            // No other single spells for level 8.
+
+            // Single spell override backup casting
+            if(SingleSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
+        }
+
+
+        // Area of effect spells. Go through - some do have higher %'s then othres.
+
+        // Fire storm - cast on self with a 10M range around caster (circle). 60% chance.
+        if(RangeShortValid && GlobalSpellTargetRange <= f8 &&
+           GlobalNormalSpellsNoEffectLevel < i8 &&
+          !AI_SaveImmuneSpellTarget(SAVING_THROW_REFLEX, i8))
+        {
+            // Fire storm. Level 8 (Cleric). 1d6(Caster level) in fire/divine damage. No allies. collosal over caster.
+            if(AI_ActionCastSpellRandom(SPELL_FIRE_STORM, SpellHostAreaDis, i50, OBJECT_SELF, i18, TRUE, ItemHostAreaDis)) return TRUE;
+        }
+
+        if(SpellHostAreaInd && RangeLongValid)
+        {
+            // Horrid Wilting
+            // Never affects allies. Fortitude - necromancy spell too. Lots of damage.
+            //... ops, seems it's affecting now
+            if((GetHasSpell(SPELL_HORRID_WILTING) || ItemHostAreaDis == SPELL_HORRID_WILTING)  && d10() > 5)
+            {
+                // Won't cast if got lots of undead. 20M range, huge radius.                 //... changed from FALSE to GlobalFriendlyFireHostile
+                oAOE = AI_GetBestAreaSpellTarget(fMediumRange, RADIUS_SIZE_HUGE, i8, SAVING_THROW_FORT, SHAPE_SPHERE, GlobalFriendlyFireHostile, FALSE, TRUE);
+                // Is it valid? 60% chance of casting.
+                if(GetIsObjectValid(oAOE) && GetMaster(oAOE) != OBJECT_SELF)
+                {
+//                    SendMessageToPC(GetFirstPC(), "Horrid wilting");
+                    // Horrid Wilting. Level 8 (Mage). d8(CasterLevel) in negative energy. Fort for half. Necromancy.
+                    if(AI_ActionCastSpell(SPELL_HORRID_WILTING, SpellHostAreaDis, oAOE, i18, TRUE, ItemHostAreaDis)) return TRUE;
+                }
+            }
+            // Bombardment. Similar to the above. Long range, relfex save, not affect allies.
+            // 40M range, colossal***large area. Relfex save.//... overriding decision, earthquake may harm...
+//            oAOE = AI_GetBestAreaSpellTarget(fLongRange, RADIUS_SIZE_LARGE, i8, SAVING_THROW_REFLEX);
+//            if(GetIsObjectValid(oAOE))
+            {
+                if (GetHasSpell(SPELL_BOMBARDMENT) || ItemHostAreaInd == SPELL_BOMBARDMENT)
+                {
+                    // 40M range, collosal area. Relfex save.
+                    oAOE = AI_GetBestAreaSpellTarget(fLongRange, RADIUS_SIZE_COLOSSAL, i8, SAVING_THROW_REFLEX);
+                    // Is it valid? 60% chance of casting.
+                    if(GetIsObjectValid(oAOE))
+                    {
+                        // Bombardment. Level 8 (Druid) 1d8(caster level) in fire damage. Like Horrid Wilting. Reflex save/long range/collosal
+                        if(AI_ActionCastSpellRandom(SPELL_BOMBARDMENT, SpellHostAreaInd, i50, oAOE, i18, TRUE, ItemHostAreaInd)) return TRUE;
+                    }
+                }
+                // Earthquake. No SR, long range, affects anyone except caster.
+                if (GetHasSpell(SPELL_EARTHQUAKE) || ItemHostAreaInd == SPELL_EARTHQUAKE)
+                {
+                    // 40M range, collosal area. Relfex save.
+                    oAOE = AI_GetBestAreaSpellTarget(fLongRange, RADIUS_SIZE_COLOSSAL, i8, SAVING_THROW_REFLEX);
+                    // Is it valid? 50% chance of casting.
+                    if(GetIsObjectValid(oAOE))
+                    {
+                        // Earthquake] - 1d6(caster level) (to 10d6) in damage to AOE, except caster.
+                        if(AI_ActionCastSpellRandom(SPELL_EARTHQUAKE, SpellHostAreaInd, i40, oAOE, i18, TRUE, ItemHostAreaInd)) return TRUE;
+                    }
+                }
+                // Incendiary Cloud. Long range, the AOE is 5.0M across. 4d6Damage/round is quite good.
+                if (!AI_CompareTimeStopStored(SPELL_INCENDIARY_CLOUD) &&
+                  (GetHasSpell(SPELL_INCENDIARY_CLOUD) || ItemHostAreaInd == SPELL_INCENDIARY_CLOUD))
+                {
+                    // 40M range, lagre (5.0 across) area. Relfex saves.
+                    oAOE = AI_GetBestAreaSpellTarget(fLongRange, RADIUS_SIZE_LARGE, i8, SAVING_THROW_REFLEX);
+                    // Is it valid? 50% chance of casting.
+                    if(GetIsObjectValid(oAOE))
+                    {
+                        // Earthquake] - 1d6(caster level) (to 10d6) in damage to AOE, except caster.
+                        if(AI_ActionCastSpellRandom(SPELL_INCENDIARY_CLOUD, SpellHostAreaInd, i40, oAOE, i18, TRUE, ItemHostAreaInd)) return TRUE;
+                    }
+                }
+                // Sunbeam and burst. Very similar spells and if they are not undead, then
+                // there should be very little chance of casting it.
+                // - Won't bother getting nearest undead.
+                if((GetHasSpell(SPELL_SUNBEAM) || GetHasSpell(SPELL_SUNBURST) ||
+                   ItemHostAreaDis == SPELL_SUNBEAM || ItemHostAreaDis == SPELL_SUNBURST))
+                {
+                    // 40M range, lagre (5.0 across) area. Relfex saves.
+                    oAOE = AI_GetBestAreaSpellTarget(fLongRange, RADIUS_SIZE_LARGE, i8, SAVING_THROW_REFLEX);
+                    // Is it valid? 20% chance of casting.        //...
+                    if(GetIsObjectValid(oAOE) && (
+                        GetRacialType(oAOE) == RACIAL_TYPE_UNDEAD || Random(100) > 79))
+                    {
+                        // Sunburst. Level 8 (Druid/Mage) 6d6 to non-undead. Kills vampires. Blindness. Limit of 25 dice for undead damage. Medium range/colosal size
+                        if(AI_ActionCastSpellRandom(SPELL_SUNBURST, SpellHostAreaDis, i10, oAOE, i18, TRUE, ItemHostAreaDis)) return TRUE;
+                        // Sunbeam. Level 8 (Cleric/Druid) 3d6 to non-undead. Blindness. Limit of 20 dice for undead damage. Medium range/colosal size
+                        if(AI_ActionCastSpellRandom(SPELL_SUNBEAM, SpellHostAreaDis, i10, oAOE, i18, TRUE, ItemHostAreaDis)) return TRUE;
+                    }
+                }
+            }//if getisvalid
+        }//if(SpellHostAreaInd && RangeLongValid)
+
+        // Multi spell override backup casting
+        if(MultiSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
+
+        // Single spells at end
+        if(SingleSpellsFirst && GlobalNormalSpellsNoEffectLevel < i8)
+        {
+            // 40% chance
+            if(!GetHasSpellEffect(SPELL_BIGBYS_CLENCHED_FIST, GlobalSpellTarget) &&
+               !AI_CompareTimeStopStored(SPELL_BIGBYS_CLENCHED_FIST) &&
+                RangeLongValid && !GetLocalInt(GlobalSpellTarget, "AI_Bigby"))
+            {
+                // Bigby's Clenched Fist. Level 8 (Mage) Attack Each Round. 1d8 + 12 damage/round. Fort VS stunning as well.
+                if(AI_ActionCastSpellRandom(SPELL_BIGBYS_CLENCHED_FIST, SpellHostRanged, i30, GlobalSpellTarget, i18, FALSE, ItemHostRanged))
+                {
+                    SetLocalInt(GlobalSpellTarget, "AI_Bigby", TRUE);
+                    DelayCommand(3.0f, DeleteLocalInt(GlobalSpellTarget, "AI_Bigby"));
+                    return TRUE;
+                }
+
+            }
+            // No other single spells for level 8.
+
+            // Single spell override backup casting
+            if(SingleSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
+        }
+
+        // Check if we had any of the above we didn't cast based on the %
+        if(AI_ActionCastBackupRandomSpell()) return TRUE;
+
+        SetLocalInt(OBJECT_SELF, "iAASLevel7", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel8", TRUE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9a", FALSE);
+    }// if check level 8
+
+    /*::7777777777777777777777777777777777777777777777777777777777777777777777777777
+        Level 7 Spells.
+    //::7777777777777777777777777777777777777777777777777777777777777777777777777777
+        Thoughts - well, quite a varied amount of spells. Among classes, there are
+        some variety. SoU adds Banishment, and Bigby's. Quite a few death spells
+        but note: Word of faith is very effective against 11s and under - stun, for
+        under 4's, death!
+
+        Hordes adds Great Thunderclap - requires 3 saves! :-)
+
+        AOE:
+    S X [Banishment] - Destroys summons (familiars, creatures, spells) to a 2xCasters HD limit.
+        [Word of Faith] - Enemies only. 4 Or Down die. 4+ Confuse Stun, Blind. 8+ Stun + Blind. 12+ Only Blind. (1Round/2Casterlevels) outsiders killed.
+        [Creeping Doom] - Until 1000 damage, d6 + d6/round stayed in damage in an AOE.
+        [Delayed Fireball Blast] - Up to 20d6 fire reflex damage. Can be set up as a trap (heh, nah!)
+        [Prismatic Spray] - Random damage/effects. Chance of doing double amount of effects.
+    H   [Great Thunderclap] - Will VS 1 round stun. Fort VS 1 Turn Deaf. Reflex VS 1 Round Knockdown.
+
+        Single:
+        [Distruction] - Short ranged instant death for fort, else take 10d6 Negative energy. Death + Necromantic.
+    S   [Bigby's Grasping Hand] - Hold target if sucessful grapple
+      X [Control Undead] - Yep, controls undead! Dominates them. Cast above near sunbeam.
+        [Finger of Death] - Short ranged instant Death on fort else 3d6 negative energy.
+        [Power Word, Stun] - Instant stun based on HP of target. Cast above if few targets. Here if more.
+
+        Defender:
+        [Aura of Vitality] - +4 STR, CON, DEX for all allies.
+        [Protection From Spells] +8 to all saves. Cast above, backup here.
+        [Shadow Shield] - Necromancy/negative energy immunity. Some other resistances and some DR.
+      X [Spell Mantle] - 1d8 + 8 spells stopped. Cast above (This is good VS anything that casts spells)
+        [Regenerate] - 6HP/Round healed. Cast above if damaged. Cast here anyway :-)
+
+        Summon:
+        [Summon Monster VII (7)] - Huge elemental
+        [Mordenkainen's Sword] - Good, nay, very good hitting summon.
+
+        Other:
+      X [Greater Restoration] - Heals lots of effects.
+      X [Resurrection] - Resurrection :-) cast on dead people not here.
+
+        Do Palemaster Death touch here. Always use it if they are not immune.
+    //::77777777777777777777777777777777777777777777777777777777777777777777777777*/
+
+        // Jump out if we don't want to cast level 7 spells.
+    if(iLowestSpellLevel > i7)
     {
-        // Create Greater undead - Pale Master
-        if(AI_ActionCastSummonSpell(AI_FEAT_PM_CREATE_GREATER_UNDEAD, iM1, i8)) return TRUE;
-
-        // Create Greater Undead. Level 8 (Cleric) Create Vampire, Doom knight, Lich, Mummy Cleric.
-        if(AI_ActionCastSummonSpell(SPELL_CREATE_GREATER_UNDEAD, i18, i8)) return TRUE;
-        // Summon an Greater elemental. Summon 8 - Druid/Cleric/Bard/Mage.
-        if(AI_ActionCastSummonSpell(SPELL_SUMMON_CREATURE_VIII, i18, i8)) return TRUE;
-        // Greater Planar Binding. Level 8 (Mage) Death Slaad (Evil) Vrock (Neutral) Trumpet Archon (Good)
-        if(AI_ActionCastSummonSpell(SPELL_GREATER_PLANAR_BINDING, i18, i8)) return TRUE;
+        SetLocalInt(OBJECT_SELF, "iAASLevel9a", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9b", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9c", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9d", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel9e", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel8", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel7", FALSE);
+        return FALSE;
     }
 
-    // Level 8 general attack spells.
-    // Randomly pick one:
-// [Sunbeam] - Blindness VS Reflex. d6(CasterLevel) divine VS undead, else 3d6 others. ReactionType.
-// [Sun Burst] - Similar to sunbeam. 6d6 to others. Vampires die + all undead d6(Caster level) damage.
-// [Earthquake] - 1d6(caster level) in damage to AOE, except caster.
-// [Fire Storm] - 1d6(Caster level) in fire/divine damage. No allies. collosal over caster.
-// [Bombardment] - 1d8(caster level) in fire damage. Like Horrid Wilting. Reflex save/long range/collosal
-// [Incendiary Cloud] - 4d6 Fire damage/round in the large AOE.
-// [Horrid Wilting] - d8(CasterLevel) in negative energy. Fort for half. Necromancy.
 
-// Single:
-// [Bigby's Clenched Fist] - Attack Each Round. 1d8 + 12 damage/round. Fort VS stunning as well.
-
-    // Is it best to cast Single Spells First?
-    // 70% if favourable.
-    if(SingleSpellsFirst && GlobalNormalSpellsNoEffectLevel < i8)
+    if (!iLevel7Checked)
     {
-        if(!GetHasSpellEffect(SPELL_BIGBYS_CLENCHED_FIST, GlobalSpellTarget) &&
-           !AI_CompareTimeStopStored(SPELL_BIGBYS_CLENCHED_FIST) &&
-            RangeLongValid)
+//        SendMessageToPC(GetFirstPC(), "Level7");//...
+        // Cast Shadow Shield only first. Good protections really :-)
+        // Visages are generally lower DR, with some spell-resisting or effect-immunty extras.
+
+        if(IsFirstRunThrough)
         {
-            // Bigby's Clenched Fist. Level 8 (Mage) Attack Each Round. 1d8 + 12 damage/round. Fort VS stunning as well.
-            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_CLENCHED_FIST, SpellHostRanged, i60, GlobalSpellTarget, i18, FALSE, ItemHostRanged)) return TRUE;
+            // Shadow Shield - has 10/+3 damage reduction + lots of stuff. Level 7 (Mage)
+            if(AI_SpellWrapperVisageProtections(i7)) return TRUE;
+
+            // Protection From Spells.
+            if(!AI_GetAIHaveSpellsEffect(GlobalHasProtectionSpellsSpell))
+            {
+                // Protection from spells. Level 7 (Mage), for +8 on all saves (Area effect too!)
+                if(AI_ActionCastSpell(SPELL_PROTECTION_FROM_SPELLS, SpellProAre, OBJECT_SELF, i17, FALSE, ItemProAre)) return TRUE;
+            }
         }
-        // No other single spells for level 8.
 
-        // Single spell override backup casting
-        if(SingleSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
-    }
-
-
-    // Area of effect spells. Go through - some do have higher %'s then othres.
-
-    // Fire storm - cast on self with a 10M range around caster (circle). 60% chance.
-    if(RangeShortValid && GlobalSpellTargetRange <= f8 &&
-       GlobalNormalSpellsNoEffectLevel < i8 &&
-      !AI_SaveImmuneSpellTarget(SAVING_THROW_REFLEX, i8))
-    {
-        // Fire storm. Level 8 (Cleric). 1d6(Caster level) in fire/divine damage. No allies. collosal over caster.
-        if(AI_ActionCastSpellRandom(SPELL_FIRE_STORM, SpellHostAreaDis, i50, OBJECT_SELF, i18, TRUE, ItemHostAreaDis)) return TRUE;
-    }
-    // Horrid Wilting
-    // Never affects allies. Fortitude - necromancy spell too. Lots of damage.
-    if(SpellHostAreaDis && RangeMediumValid &&
-      (GetHasSpell(SPELL_HORRID_WILTING) || ItemHostAreaDis == SPELL_HORRID_WILTING))
-    {
-        // Won't cast if got lots of undead. 20M range, huge radius.
-        oAOE = AI_GetBestAreaSpellTarget(fMediumRange, RADIUS_SIZE_HUGE, i8, SAVING_THROW_FORT, SHAPE_SPHERE, FALSE, FALSE, TRUE);
-        // Is it valid? 60% chance of casting.
-        if(GetIsObjectValid(oAOE))
+        // Palemaster death touch
+        // DC 17 + (Pale Master - 10) /2.
+        if(RangeTouchValid)
         {
-            // Horrid Wilting. Level 8 (Mage). d8(CasterLevel) in negative energy. Fort for half. Necromancy.
-            if(AI_ActionCastSpellRandom(SPELL_HORRID_WILTING, SpellHostAreaDis, i50, oAOE, i18, TRUE, ItemHostAreaDis)) return TRUE;
+            // Cannot affect creatures over large size
+            // - Module switch, but always checked here.
+            if(GetCreatureSize(GlobalSpellTarget) <= CREATURE_SIZE_LARGE &&
+              !AI_GetSpellTargetImmunity(GlobalImmunityNecromancy) &&
+              !AI_GetSpellTargetImmunity(GlobalImmunityDeath) &&
+            // Fort save DC 17
+              GlobalSpellTargetFort <= i16)
+            {
+                // Use the feat
+                if(AI_ActionUseFeatOnObject(FEAT_DEATHLESS_MASTER_TOUCH, GlobalSpellTarget)) return TRUE;
+            }
+            // Undead graft paralyzes!
+            if(GlobalSpellTargetRace !=  RACIAL_TYPE_ELF &&
+            // Fort save - 14 + Palemaster levels / 2
+              !GlobalSpellTargetFort < (i14 + GetLevelByClass(CLASS_TYPE_PALEMASTER)/i2))
+            {
+                // Use the feat
+                if(AI_ActionUseFeatOnObject(FEAT_UNDEAD_GRAFT_1, GlobalSpellTarget)) return TRUE;
+                // 2 versions
+                if(AI_ActionUseFeatOnObject(FEAT_UNDEAD_GRAFT_2, GlobalSpellTarget)) return TRUE;
+            }
         }
-    }
-    // Bombardment. Similar to the above. Long range, relfex save, not affect allies.
-    if(SpellHostAreaInd && RangeLongValid &&
-      (GetHasSpell(SPELL_BOMBARDMENT) || ItemHostAreaInd == SPELL_BOMBARDMENT))
-    {
-        // 40M range, collosal area. Relfex save.
-        oAOE = AI_GetBestAreaSpellTarget(fLongRange, RADIUS_SIZE_COLOSSAL, i8, SAVING_THROW_REFLEX);
-        // Is it valid? 60% chance of casting.
-        if(GetIsObjectValid(oAOE))
+
+        // Hostile spells here.
+        // We randomly choose one to cast (with higher %'s for some!)
+    // AOE:
+    // [Word of Faith] - Enemies only. 4 Or Down die. 4+ Confuse Stun, Blind. 8+ Stun + Blind. 12+ Only Blind. (1Round/2Casterlevels) outsiders killed.
+    // [Creeping Doom] - Until 1000 damage, d6 + d6/round stayed in damage in an AOE.
+    // [Delayed Fireball Blast] - Up to 20d6 fire reflex damage. Can be set up as a trap (heh, nah!)
+    // [Prismatic Spray] - Random damage/effects. Chance of doing double amount of effects.
+    // [Great Thunderclap] - Will VS 1 round stun. Fort VS 1 Turn Deaf. Reflex VS 1 Round Knockdown.
+    // [Stonehold] - AOE - Will Encase people in stone (Paralysis) VS Will Mind throw. (Save each round)
+    // Single:
+    // [Distruction] - Short ranged instant death for fort, else take 10d6 Negative energy. Death + Necromantic.
+    // [Bigby's Grasping Hand] - Hold target if sucessful grapple
+    // [Finger of Death] - Short ranged instant Death on fort else 3d6 negative energy.
+    // [Power Word, Stun] - Instant stun based on HP of target. Cast above if few targets. Here if more.
+
+        // Is it best to target with single-target spells first? Most are pretty good :-D
+        // 60-70% if favourable.
+        if(SingleSpellsFirst && GlobalNormalSpellsNoEffectLevel < i7)
         {
-            // Bombardment. Level 8 (Druid) 1d8(caster level) in fire damage. Like Horrid Wilting. Reflex save/long range/collosal
-            if(AI_ActionCastSpellRandom(SPELL_BOMBARDMENT, SpellHostAreaInd, i50, oAOE, i18, TRUE, ItemHostAreaInd)) return TRUE;
+            // Killing spells. These, if sucessful, rend all status-effect spells redundant.
+            // - Only fired if they are not immune :-D
+            if(RangeShortValid && !AI_CompareTimeStopStored(SPELL_DESTRUCTION, SPELL_FINGER_OF_DEATH) &&
+              !AI_SaveImmuneSpellTarget(SAVING_THROW_FORT, i7) &&
+              !AI_GetSpellTargetImmunity(GlobalImmunityNecromancy) &&
+              !AI_GetSpellTargetImmunity(GlobalImmunityDeath))
+            {
+                // Destruction, level 7 (Cleric). Fort (Death) for Death if fail, or 10d6 damage if pass.
+                if(AI_ActionCastSpellRandom(SPELL_DESTRUCTION, SpellHostRanged, i60, GlobalSpellTarget, i17, FALSE, ItemHostRanged)) return TRUE;
+                // Finger of Death. Level 7 (Mage). Fort (Death) for death if fail, or d6(3) + nCasterLvl damage if pass.
+                if(AI_ActionCastSpellRandom(SPELL_FINGER_OF_DEATH, SpellHostRanged, i50, GlobalSpellTarget, i17, FALSE, ItemHostRanged)) return TRUE;
+            }
+            // Is not immune to mind spell (I think this is a valid check) and not already stunned.
+            // Really, if under < 151 HP to be affected - short ranged
+            if (GlobalSpellTargetCurrentHitPoints <= i150 && RangeShortValid &&
+               !AI_GetSpellTargetImmunity(GlobalImmunityStun) &&
+               !AI_GetSpellTargetImmunity(GlobalImmunityMind) &&
+               !AI_CompareTimeStopStored(SPELL_POWER_WORD_STUN))
+            {
+                // Power Word Stun. Level 7 (Wizard). Stun duration based on HP.
+                if(AI_ActionCastSpellRandom(SPELL_POWER_WORD_STUN, SpellHostAreaInd, i60, GlobalSpellTarget, i17, FALSE, ItemHostAreaInd)) return TRUE;
+            }
+            // Bigbiy's Grasping hand last. We don't bother checking for grapple checks -
+            // they mainly work anyway, if anything. Powerful in its own right, as
+            // it holds on a sucessful check.
+            if(RangeLongValid && !GetHasSpellEffect(SPELL_BIGBYS_GRASPING_HAND, GlobalSpellTarget) &&
+                !AI_CompareTimeStopStored(SPELL_BIGBYS_GRASPING_HAND) &&
+                !AI_GetSpellTargetImmunity(GlobalImmunityStun) &&
+                !GetLocalInt(GlobalSpellTarget, "AI_Bigby"))
+            {
+                // Bigby's Grasping Hand. Level 7 (Mage) Hold target if sucessful grapple
+                if(AI_ActionCastSpellRandom(SPELL_BIGBYS_GRASPING_HAND, SpellHostRanged, i40, GlobalSpellTarget, i18, FALSE, ItemHostRanged))
+                {
+                    SetLocalInt(GlobalSpellTarget, "AI_Bigby", TRUE);
+                    DelayCommand(3.0f, DeleteLocalInt(GlobalSpellTarget, "AI_Bigby"));
+                    return TRUE;
+                }
+
+            }
+            // Single spell override backup casting
+            if(SingleSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
         }
-    }
-    // Earthquake. No SR, long range, affects anyone except caster.
-    if(SpellHostAreaInd && RangeLongValid &&
-      (GetHasSpell(SPELL_EARTHQUAKE) || ItemHostAreaInd == SPELL_EARTHQUAKE))
-    {
-        // 40M range, collosal area. Relfex save.
-        oAOE = AI_GetBestAreaSpellTarget(fLongRange, RADIUS_SIZE_COLOSSAL, i8, SAVING_THROW_REFLEX);
-        // Is it valid? 50% chance of casting.
-        if(GetIsObjectValid(oAOE))
+
+        // AOE spells now.
+    // [Word of Faith] - Enemies only. 4 Or Down die. 4+ Confuse Stun, Blind. 8+ Stun + Blind. 12+ Only Blind. (1Round/2Casterlevels) outsiders killed.
+    // [Creeping Doom] - Until 1000 damage, d6 + d6/round stayed in damage in an AOE.
+    // [Delayed Fireball Blast] - Up to 20d6 fire reflex damage. Can be set up as a trap (heh, nah!)
+    // [Prismatic Spray] - Random damage/effects. Chance of doing double amount of effects.
+    // [Great Thunderclap] - Will VS 1 round stun. Fort VS 1 Turn Deaf. Reflex VS 1 Round Knockdown.
+
+        // Word of faith
+        // Doesn't hurt allies, will-based save, at the very least blindness :-D Medium range, collosal size
+        if(SpellHostAreaDis && RangeMediumValid &&
+          (GetHasSpell(SPELL_WORD_OF_FAITH) || ItemHostAreaDis == SPELL_WORD_OF_FAITH))
         {
-            // Earthquake] - 1d6(caster level) (to 10d6) in damage to AOE, except caster.
-            if(AI_ActionCastSpellRandom(SPELL_EARTHQUAKE, SpellHostAreaInd, i40, oAOE, i18, TRUE, ItemHostAreaInd)) return TRUE;
+            // 20M medium range, colossal size, will save to deflect.
+            oAOE = AI_GetBestAreaSpellTarget(fMediumRange, RADIUS_SIZE_COLOSSAL, i7, SAVING_THROW_WILL);
+            // Is it valid? 70% chance of casting.
+            if(GetIsObjectValid(oAOE))
+            {
+                // Word of Faith. Level 7 (Cleric) Enemies only affected. 4 Or Down die. 4+ [Confuse|Stun|Blind]. 8+ [Stun|Blind]. 12+ [Blind]. (1Round/2Casterlevels) outsiders killed.
+                if(AI_ActionCastSpellRandom(SPELL_WORD_OF_FAITH, SpellHostAreaDis, i60, oAOE, i17, TRUE, ItemHostAreaDis)) return TRUE;
+            }
         }
-    }
-    // Incendiary Cloud. Long range, the AOE is 5.0M across. 4d6Damage/round is quite good.
-    if(SpellHostAreaInd && RangeLongValid &&
-      !AI_CompareTimeStopStored(SPELL_INCENDIARY_CLOUD) &&
-      (GetHasSpell(SPELL_INCENDIARY_CLOUD) || ItemHostAreaInd == SPELL_INCENDIARY_CLOUD))
-    {
-        // 40M range, lagre (5.0 across) area. Relfex saves.
-        oAOE = AI_GetBestAreaSpellTarget(fLongRange, RADIUS_SIZE_LARGE, i8, SAVING_THROW_REFLEX);
-        // Is it valid? 50% chance of casting.
-        if(GetIsObjectValid(oAOE))
+        // Creeping Doom
+        // Damage to all in AOE, to 1000 damage. d6(rounds in it) basically. Good AOE spell.
+        // Only 50% chance of casting, to not cast too many.
+        if(SpellHostAreaDis && RangeMediumValid && !GlobalInTimeStop &&
+          (GetHasSpell(SPELL_CREEPING_DOOM) || ItemHostAreaDis == SPELL_CREEPING_DOOM))
         {
-            // Earthquake] - 1d6(caster level) (to 10d6) in damage to AOE, except caster.
-            if(AI_ActionCastSpellRandom(SPELL_INCENDIARY_CLOUD, SpellHostAreaInd, i40, oAOE, i18, TRUE, ItemHostAreaInd)) return TRUE;
+            // 20M medium range, we'll say a huge size. No save can stop all damage ;-)
+            oAOE = AI_GetBestAreaSpellTarget(fMediumRange, RADIUS_SIZE_HUGE, i7, FALSE, SHAPE_SPHERE, GlobalFriendlyFireFriendly);
+            // Is it valid? 50% chance of casting.
+            if(GetIsObjectValid(oAOE))
+            {
+                // Creeping Doom. Level 7 (Druid) Until 1000 damage, d6 + d6/round stayed in damage in an AOE.
+                if(AI_ActionCastSpellRandom(SPELL_CREEPING_DOOM, SpellHostAreaDis, i40, oAOE, i17, TRUE, ItemHostAreaDis)) return TRUE;
+            }
         }
-    }
-    // Sunbeam and burst. Very similar spells and if they are not undead, then
-    // there should be very little chance of casting it.
-    // - Won't bother getting nearest undead.
-    if(SpellHostAreaInd && !GlobalInTimeStop && RangeLongValid &&
-      (GetHasSpell(SPELL_SUNBEAM) || GetHasSpell(SPELL_SUNBURST) ||
-       ItemHostAreaDis == SPELL_SUNBEAM || ItemHostAreaDis == SPELL_SUNBURST))
-    {
-        // 40M range, lagre (5.0 across) area. Relfex saves.
-        oAOE = AI_GetBestAreaSpellTarget(fLongRange, RADIUS_SIZE_LARGE, i8, SAVING_THROW_REFLEX);
-        // Is it valid? 20% chance of casting.
-        if(GetIsObjectValid(oAOE))
+        // Delayed Fireball Blast. Big fireball. Lots of fire damage - reflex saves.
+        if(SpellHostAreaInd && RangeMediumValid &&
+          !AI_CompareTimeStopStored(SPELL_DELAYED_BLAST_FIREBALL, SPELL_FIREBALL) &&
+          (GetHasSpell(SPELL_DELAYED_BLAST_FIREBALL) || ItemHostAreaInd == SPELL_DELAYED_BLAST_FIREBALL))
         {
-            // Sunburst. Level 8 (Druid/Mage) 6d6 to non-undead. Kills vampires. Blindness. Limit of 25 dice for undead damage. Medium range/colosal size
-            if(AI_ActionCastSpellRandom(SPELL_SUNBURST, SpellHostAreaDis, i10, oAOE, i18, TRUE, ItemHostAreaDis)) return TRUE;
-            // Sunbeam. Level 8 (Cleric/Druid) 3d6 to non-undead. Blindness. Limit of 20 dice for undead damage. Medium range/colosal size
-            if(AI_ActionCastSpellRandom(SPELL_SUNBEAM, SpellHostAreaDis, i10, oAOE, i18, TRUE, ItemHostAreaDis)) return TRUE;
+            // 20M medium range, blast is RADIUS_SIZE_HUGE, lower then Fireball, but more deadly (both save + damage)
+            oAOE = AI_GetBestAreaSpellTarget(fMediumRange, RADIUS_SIZE_HUGE, i7, SAVING_THROW_REFLEX, SHAPE_SPHERE, GlobalFriendlyFireFriendly);
+            // Is it valid? 60% chance of casting.
+            if(GetIsObjectValid(oAOE))
+            {
+                // Delayed Fireball Blast. Level 7 (Mage) Up to 20d6 fire reflex damage. Can be set up as a trap (heh, nah!)
+                if(AI_ActionCastSpellRandom(SPELL_DELAYED_BLAST_FIREBALL, SpellHostAreaInd, i50, oAOE, i17, TRUE, ItemHostAreaInd)) return TRUE;
+            }
         }
-    }
-
-    // Multi spell override backup casting
-    if(MultiSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
-
-    // Single spells at end
-    if(SingleSpellsFirst && GlobalNormalSpellsNoEffectLevel < i8)
-    {
-        // 40% chance
-        if(!GetHasSpellEffect(SPELL_BIGBYS_CLENCHED_FIST, GlobalSpellTarget) &&
-           !AI_CompareTimeStopStored(SPELL_BIGBYS_CLENCHED_FIST) &&
-            RangeLongValid)
+        // Great Thunderclap is OK, but doesn't really do too much. If anything, the
+        // 3 saves are cool :-P
+        if(SpellHostAreaInd && RangeMediumValid &&
+          !AI_CompareTimeStopStored(SPELL_GREAT_THUNDERCLAP) &&
+          (GetHasSpell(SPELL_GREAT_THUNDERCLAP) || ItemHostAreaInd == SPELL_GREAT_THUNDERCLAP))
         {
-            // Bigby's Clenched Fist. Level 8 (Mage) Attack Each Round. 1d8 + 12 damage/round. Fort VS stunning as well.
-            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_CLENCHED_FIST, SpellHostRanged, i30, GlobalSpellTarget, i18, FALSE, ItemHostRanged)) return TRUE;
+            // 20M medium range, hits a gargantuan area.
+            // - We ignore saves for this.
+            // - Doesn't actually hit ourselves. Won't bother checking this though.
+            oAOE = AI_GetBestAreaSpellTarget(fMediumRange, RADIUS_SIZE_GARGANTUAN, i7, SAVING_THROW_ALL, SHAPE_SPHERE, GlobalFriendlyFireFriendly);
+            // Is it valid? 50% chance of casting.
+            if(GetIsObjectValid(oAOE))
+            {
+                // Great Thunderclap. Level 7 (Mage)  Will VS 1 round stun. Fort VS 1 Turn Deaf. Reflex VS 1 Round Knockdown.
+                if(AI_ActionCastSpellRandom(SPELL_GREAT_THUNDERCLAP, SpellHostAreaInd, i40, oAOE, i17, TRUE, ItemHostAreaInd)) return TRUE;
+            }
         }
-        // No other single spells for level 8.
-
-        // Single spell override backup casting
-        if(SingleSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
-    }
-
-    // Check if we had any of the above we didn't cast based on the %
-    if(AI_ActionCastBackupRandomSpell()) return TRUE;
-
-/*::7777777777777777777777777777777777777777777777777777777777777777777777777777
-    Level 7 Spells.
-//::7777777777777777777777777777777777777777777777777777777777777777777777777777
-    Thoughts - well, quite a varied amount of spells. Among classes, there are
-    some variety. SoU adds Banishment, and Bigby's. Quite a few death spells
-    but note: Word of faith is very effective against 11s and under - stun, for
-    under 4's, death!
-
-    Hordes adds Great Thunderclap - requires 3 saves! :-)
-
-    AOE:
-S X [Banishment] - Destroys summons (familiars, creatures, spells) to a 2xCasters HD limit.
-    [Word of Faith] - Enemies only. 4 Or Down die. 4+ Confuse Stun, Blind. 8+ Stun + Blind. 12+ Only Blind. (1Round/2Casterlevels) outsiders killed.
-    [Creeping Doom] - Until 1000 damage, d6 + d6/round stayed in damage in an AOE.
-    [Delayed Fireball Blast] - Up to 20d6 fire reflex damage. Can be set up as a trap (heh, nah!)
-    [Prismatic Spray] - Random damage/effects. Chance of doing double amount of effects.
-H   [Great Thunderclap] - Will VS 1 round stun. Fort VS 1 Turn Deaf. Reflex VS 1 Round Knockdown.
-
-    Single:
-    [Distruction] - Short ranged instant death for fort, else take 10d6 Negative energy. Death + Necromantic.
-S   [Bigby's Grasping Hand] - Hold target if sucessful grapple
-  X [Control Undead] - Yep, controls undead! Dominates them. Cast above near sunbeam.
-    [Finger of Death] - Short ranged instant Death on fort else 3d6 negative energy.
-    [Power Word, Stun] - Instant stun based on HP of target. Cast above if few targets. Here if more.
-
-    Defender:
-    [Aura of Vitality] - +4 STR, CON, DEX for all allies.
-    [Protection From Spells] +8 to all saves. Cast above, backup here.
-    [Shadow Shield] - Necromancy/negative energy immunity. Some other resistances and some DR.
-  X [Spell Mantle] - 1d8 + 8 spells stopped. Cast above (This is good VS anything that casts spells)
-    [Regenerate] - 6HP/Round healed. Cast above if damaged. Cast here anyway :-)
-
-    Summon:
-    [Summon Monster VII (7)] - Huge elemental
-    [Mordenkainen's Sword] - Good, nay, very good hitting summon.
-
-    Other:
-  X [Greater Restoration] - Heals lots of effects.
-  X [Resurrection] - Resurrection :-) cast on dead people not here.
-
-    Do Palemaster Death touch here. Always use it if they are not immune.
-//::77777777777777777777777777777777777777777777777777777777777777777777777777*/
-
-    // Jump out if we don't want to cast level 7 spells.
-    if(iLowestSpellLevel > i7) return FALSE;
-
-    // Cast Shadow Shield only first. Good protections really :-)
-    // Visages are generally lower DR, with some spell-resisting or effect-immunty extras.
-
-    if(IsFirstRunThrough)
-    {
-        // Shadow Shield - has 10/+3 damage reduction + lots of stuff. Level 7 (Mage)
-        if(AI_SpellWrapperVisageProtections(i7)) return TRUE;
-
-        // Protection From Spells.
-        if(!AI_GetAIHaveSpellsEffect(GlobalHasProtectionSpellsSpell))
+        // Lastly, AOE wise, it is prismatic spray. Comparable, if a little (or very!)
+        // erratic. We might as well cast this whatever (So if they all are immune
+        // to the delay fireballs we have, this does good damage compared to 0!)
+        if(SpellHostAreaInd && RangeShortValid &&
+          !AI_CompareTimeStopStored(SPELL_PRISMATIC_SPRAY) &&
+          (GetHasSpell(SPELL_PRISMATIC_SPRAY) || ItemHostAreaInd == SPELL_PRISMATIC_SPRAY))
         {
-            // Protection from spells. Level 7 (Mage), for +8 on all saves (Area effect too!)
-            if(AI_ActionCastSpell(SPELL_PROTECTION_FROM_SPELLS, SpellProAre, OBJECT_SELF, i17, FALSE, ItemProAre)) return TRUE;
+            // 8M short range, blast is a cone, and no save. Spell script has fSpread at 11.0
+            oAOE = AI_GetBestAreaSpellTarget(fShortRange, f11, i7, FALSE, SHAPE_SPELLCONE, GlobalFriendlyFireFriendly);
+            // Is it valid? 40% chance of casting.
+            if(GetIsObjectValid(oAOE))
+            {
+                // Prismatic Spray. Level 7 (Mage) Random damage/effects. Chance of doing double amount of effects.
+                if(AI_ActionCastSpellRandom(SPELL_PRISMATIC_SPRAY, SpellHostAreaInd, i30, oAOE, i17, TRUE, ItemHostAreaInd)) return TRUE;
+            }
         }
-    }
+        // Multi spell override backup casting
+        if(MultiSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
 
-    // Palemaster death touch
-    // DC 17 + (Pale Master - 10) /2.
-    if(RangeTouchValid)
-    {
-        // Cannot affect creatures over large size
-        // - Module switch, but always checked here.
-        if(GetCreatureSize(GlobalSpellTarget) <= CREATURE_SIZE_LARGE &&
-          !AI_GetSpellTargetImmunity(GlobalImmunityNecromancy) &&
-          !AI_GetSpellTargetImmunity(GlobalImmunityDeath) &&
-        // Fort save DC 17
-          GlobalSpellTargetFort <= i16)
+        // Level 7 summon spells. Also cast the unique class-based summons (like
+        // a blackguards undead, a shadowdancers shadow ETC).
+        if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i7)
         {
-            // Use the feat
-            if(AI_ActionUseFeatOnObject(FEAT_DEATHLESS_MASTER_TOUCH, GlobalSpellTarget)) return TRUE;
-        }
-        // Undead graft paralyzes!
-        if(GlobalSpellTargetRace !=  RACIAL_TYPE_ELF &&
-        // Fort save - 14 + Palemaster levels / 2
-          !GlobalSpellTargetFort < (i14 + GetLevelByClass(CLASS_TYPE_PALEMASTER)/i2))
-        {
-            // Use the feat
-            if(AI_ActionUseFeatOnObject(FEAT_UNDEAD_GRAFT_1, GlobalSpellTarget)) return TRUE;
-            // 2 versions
-            if(AI_ActionUseFeatOnObject(FEAT_UNDEAD_GRAFT_2, GlobalSpellTarget)) return TRUE;
-        }
-    }
+            // Always use our feat-based ones (not level dependant) as they increase
+            // with level.
+            // - Shadow based on level
+            if(AI_ActionCastSummonSpell(FEAT_SUMMON_SHADOW, iM1, i7)) return TRUE;
+            // - Undead warrior (EG: doomknight) based on level
+            if(AI_ActionCastSummonSpell(AI_FEAT_BG_CREATE_UNDEAD, iM1, i7)) return TRUE;//...
+/*            {
+                SendMessageToPC(GetFirstPC(), "BG undead start");//...
+                ActionCastSpellAtLocation(SPELLABILITY_BG_CREATEDEAD, GetLocation(OBJECT_SELF), METAMAGIC_ANY, TRUE);
+                DecrementRemainingFeatUses(OBJECT_SELF, AI_FEAT_BG_CREATE_UNDEAD);
+                return TRUE;
+            }*/
+//            SendMessageToPC(GetFirstPC(), "BG undead end");//...
+            // - Shadow based on level
+            if(AI_ActionCastSummonSpell(AI_FEAT_BG_FIENDISH_SERVANT, iM1, i7)) return TRUE;//...
+/*            {
+//                SendMessageToPC(GetFirstPC(), "BG fiend start");//...
+                ActionCastSpellAtLocation(SPELLABILITY_BG_FIENDISH_SERVANT, GetLocation(OBJECT_SELF), METAMAGIC_ANY, TRUE);
+                DecrementRemainingFeatUses(OBJECT_SELF, AI_FEAT_BG_FIENDISH_SERVANT);
+                return TRUE;
+            }*/
+//            SendMessageToPC(GetFirstPC(), "BG fiend end");//...
+            // Pale master
+            if(AI_ActionCastSummonSpell(AI_FEAT_PM_CREATE_UNDEAD, iM1, i7)) return TRUE;
 
-    // Hostile spells here.
-    // We randomly choose one to cast (with higher %'s for some!)
-// AOE:
-// [Word of Faith] - Enemies only. 4 Or Down die. 4+ Confuse Stun, Blind. 8+ Stun + Blind. 12+ Only Blind. (1Round/2Casterlevels) outsiders killed.
-// [Creeping Doom] - Until 1000 damage, d6 + d6/round stayed in damage in an AOE.
-// [Delayed Fireball Blast] - Up to 20d6 fire reflex damage. Can be set up as a trap (heh, nah!)
-// [Prismatic Spray] - Random damage/effects. Chance of doing double amount of effects.
-// [Great Thunderclap] - Will VS 1 round stun. Fort VS 1 Turn Deaf. Reflex VS 1 Round Knockdown.
-// [Stonehold] - AOE - Will Encase people in stone (Paralysis) VS Will Mind throw. (Save each round)
-// Single:
-// [Distruction] - Short ranged instant death for fort, else take 10d6 Negative energy. Death + Necromantic.
-// [Bigby's Grasping Hand] - Hold target if sucessful grapple
-// [Finger of Death] - Short ranged instant Death on fort else 3d6 negative energy.
-// [Power Word, Stun] - Instant stun based on HP of target. Cast above if few targets. Here if more.
+            // Then, the normal summons.
+            if(GlobalOurHitDice <= i18 || GlobalMeleeAttackers <= i2)
+            {
+                // Mordenkainen's Sword Level 7 (Mage). Good, nay, very good hitting summon.
+                if(AI_ActionCastSummonSpell(SPELL_MORDENKAINENS_SWORD, i17, i7)) return TRUE;
 
-    // Is it best to target with single-target spells first? Most are pretty good :-D
-    // 60-70% if favourable.
-    if(SingleSpellsFirst && GlobalNormalSpellsNoEffectLevel < i7)
-    {
-        // Killing spells. These, if sucessful, rend all status-effect spells redundant.
-        // - Only fired if they are not immune :-D
-        if(RangeShortValid && !AI_CompareTimeStopStored(SPELL_DESTRUCTION, SPELL_FINGER_OF_DEATH) &&
-          !AI_SaveImmuneSpellTarget(SAVING_THROW_FORT, i7) &&
-          !AI_GetSpellTargetImmunity(GlobalImmunityNecromancy) &&
-          !AI_GetSpellTargetImmunity(GlobalImmunityDeath))
-        {
-            // Destruction, level 7 (Cleric). Fort (Death) for Death if fail, or 10d6 damage if pass.
-            if(AI_ActionCastSpellRandom(SPELL_DESTRUCTION, SpellHostRanged, i60, GlobalSpellTarget, i17, FALSE, ItemHostRanged)) return TRUE;
-            // Finger of Death. Level 7 (Mage). Fort (Death) for death if fail, or d6(3) + nCasterLvl damage if pass.
-            if(AI_ActionCastSpellRandom(SPELL_FINGER_OF_DEATH, SpellHostRanged, i50, GlobalSpellTarget, i17, FALSE, ItemHostRanged)) return TRUE;
+                // Summon Monster VII (7). Level 7 (Cleric, Mage, Druid, etc) Huge elemental
+                if(AI_ActionCastSummonSpell(SPELL_SUMMON_CREATURE_VII, i17, i7)) return TRUE;
+            }
         }
-        // Is not immune to mind spell (I think this is a valid check) and not already stunned.
-        // Really, if under < 151 HP to be affected - short ranged
-        if (GlobalSpellTargetCurrentHitPoints <= i150 && RangeShortValid &&
-           !AI_GetSpellTargetImmunity(GlobalImmunityStun) &&
-           !AI_GetSpellTargetImmunity(GlobalImmunityMind) &&
-           !AI_CompareTimeStopStored(SPELL_POWER_WORD_STUN))
-        {
-            // Power Word Stun. Level 7 (Wizard). Stun duration based on HP.
-            if(AI_ActionCastSpellRandom(SPELL_POWER_WORD_STUN, SpellHostAreaInd, i60, GlobalSpellTarget, i17, FALSE, ItemHostAreaInd)) return TRUE;
-        }
-        // Bigbiy's Grasping hand last. We don't bother checking for grapple checks -
-        // they mainly work anyway, if anything. Powerful in its own right, as
-        // it holds on a sucessful check.
-        if(RangeLongValid && !GetHasSpellEffect(SPELL_BIGBYS_GRASPING_HAND, GlobalSpellTarget) &&
-           !AI_CompareTimeStopStored(SPELL_BIGBYS_GRASPING_HAND) &&
-           !AI_GetSpellTargetImmunity(GlobalImmunityStun))
-        {
-            // Bigby's Grasping Hand. Level 7 (Mage) Hold target if sucessful grapple
-            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_GRASPING_HAND, SpellHostRanged, i40, GlobalSpellTarget, i18, FALSE, ItemHostRanged)) return TRUE;
-        }
-        // Single spell override backup casting
-        if(SingleSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
-    }
 
-    // AOE spells now.
-// [Word of Faith] - Enemies only. 4 Or Down die. 4+ Confuse Stun, Blind. 8+ Stun + Blind. 12+ Only Blind. (1Round/2Casterlevels) outsiders killed.
-// [Creeping Doom] - Until 1000 damage, d6 + d6/round stayed in damage in an AOE.
-// [Delayed Fireball Blast] - Up to 20d6 fire reflex damage. Can be set up as a trap (heh, nah!)
-// [Prismatic Spray] - Random damage/effects. Chance of doing double amount of effects.
-// [Great Thunderclap] - Will VS 1 round stun. Fort VS 1 Turn Deaf. Reflex VS 1 Round Knockdown.
+        // Now, back to single spell targets again.
+        if(GlobalSeenSpell && GlobalNormalSpellsNoEffectLevel < i7)
+        {
+            // Killing spells. These, if sucessful, rend all status-effect spells redundant.
+            // - Only fired if they are not immune :-D
+            if(RangeShortValid && !AI_CompareTimeStopStored(SPELL_DESTRUCTION, SPELL_FINGER_OF_DEATH) &&
+              !AI_SaveImmuneSpellTarget(SAVING_THROW_FORT, i7) &&
+              !AI_GetSpellTargetImmunity(GlobalImmunityNecromancy) &&
+              !AI_GetSpellTargetImmunity(GlobalImmunityDeath))
+            {
+                // Destruction, level 7 (Cleric). Fort (Death) for Death if fail, or 10d6 damage if pass.
+                if(AI_ActionCastSpellRandom(SPELL_DESTRUCTION, SpellHostRanged, i30, GlobalSpellTarget, i17, FALSE, ItemHostRanged)) return TRUE;
+                // Finger of Death. Leve 7 (Mage). Fort (Death) for death if fail, or d6(3) + nCasterLvl damage if pass.
+                if(AI_ActionCastSpellRandom(SPELL_FINGER_OF_DEATH, SpellHostRanged, i20, GlobalSpellTarget, i17, FALSE, ItemHostRanged)) return TRUE;
+            }
+            // Bigbiy's Grasping hand last. We don't bother checking for grapple checks -
+            // they mainly work anyway, if anything. Powerful in its own right, as
+            // it holds on a sucessful check.
+            if(RangeLongValid && !GetHasSpellEffect(SPELL_BIGBYS_GRASPING_HAND, GlobalSpellTarget) &&
+               !AI_CompareTimeStopStored(SPELL_BIGBYS_GRASPING_HAND) &&
+               !AI_GetSpellTargetImmunity(GlobalImmunityStun) &&
+                !GetLocalInt(GlobalSpellTarget, "AI_Bigby"))
+            {
+                // Bigby's Grasping Hand. Level 7 (Mage) Hold target if sucessful grapple
+                if(AI_ActionCastSpellRandom(SPELL_BIGBYS_GRASPING_HAND, SpellHostRanged, i20, GlobalSpellTarget, i18, FALSE, ItemHostRanged))
+                {
+                    SetLocalInt(GlobalSpellTarget, "AI_Bigby", TRUE);
+                    DelayCommand(3.0f, DeleteLocalInt(GlobalSpellTarget, "AI_Bigby"));
+                    return TRUE;
+                }
 
-    // Word of faith
-    // Doesn't hurt allies, will-based save, at the very least blindness :-D Medium range, collosal size
-    if(SpellHostAreaDis && RangeMediumValid &&
-      (GetHasSpell(SPELL_WORD_OF_FAITH) || ItemHostAreaDis == SPELL_WORD_OF_FAITH))
-    {
-        // 20M medium range, colossal size, will save to deflect.
-        oAOE = AI_GetBestAreaSpellTarget(fMediumRange, RADIUS_SIZE_COLOSSAL, i7, SAVING_THROW_WILL);
-        // Is it valid? 70% chance of casting.
-        if(GetIsObjectValid(oAOE))
-        {
-            // Word of Faith. Level 7 (Cleric) Enemies only affected. 4 Or Down die. 4+ [Confuse|Stun|Blind]. 8+ [Stun|Blind]. 12+ [Blind]. (1Round/2Casterlevels) outsiders killed.
-            if(AI_ActionCastSpellRandom(SPELL_WORD_OF_FAITH, SpellHostAreaDis, i60, oAOE, i17, TRUE, ItemHostAreaDis)) return TRUE;
+            }
+            // Is not immune to mind spell (I think this is a valid check) and not already stunned.
+            // Really, if under < 151 HP to be affected - short ranged
+            if (GlobalSpellTargetCurrentHitPoints <= i150 && RangeShortValid &&
+               !AI_GetSpellTargetImmunity(GlobalImmunityStun) &&
+               !AI_GetSpellTargetImmunity(GlobalImmunityMind) &&
+               !AI_CompareTimeStopStored(SPELL_POWER_WORD_STUN))
+            {
+                // Power Word Stun. Level 7 (Wizard). Stun duration based on HP.
+                if(AI_ActionCastSpellRandom(SPELL_POWER_WORD_STUN, SpellHostAreaInd, i20, GlobalSpellTarget, i17, FALSE, ItemHostAreaInd)) return TRUE;
+            }
         }
-    }
-    // Creeping Doom
-    // Damage to all in AOE, to 1000 damage. d6(rounds in it) basically. Good AOE spell.
-    // Only 50% chance of casting, to not cast too many.
-    if(SpellHostAreaDis && RangeMediumValid && !GlobalInTimeStop &&
-      (GetHasSpell(SPELL_CREEPING_DOOM) || ItemHostAreaDis == SPELL_CREEPING_DOOM))
-    {
-        // 20M medium range, we'll say a huge size. No save can stop all damage ;-)
-        oAOE = AI_GetBestAreaSpellTarget(fMediumRange, RADIUS_SIZE_HUGE, i7, FALSE, SHAPE_SPHERE, GlobalFriendlyFireFriendly);
-        // Is it valid? 50% chance of casting.
-        if(GetIsObjectValid(oAOE))
-        {
-            // Creeping Doom. Level 7 (Druid) Until 1000 damage, d6 + d6/round stayed in damage in an AOE.
-            if(AI_ActionCastSpellRandom(SPELL_CREEPING_DOOM, SpellHostAreaDis, i40, oAOE, i17, TRUE, ItemHostAreaDis)) return TRUE;
-        }
-    }
-    // Delayed Fireball Blast. Big fireball. Lots of fire damage - reflex saves.
-    if(SpellHostAreaInd && RangeMediumValid &&
-      !AI_CompareTimeStopStored(SPELL_DELAYED_BLAST_FIREBALL, SPELL_FIREBALL) &&
-      (GetHasSpell(SPELL_DELAYED_BLAST_FIREBALL) || ItemHostAreaInd == SPELL_DELAYED_BLAST_FIREBALL))
-    {
-        // 20M medium range, blast is RADIUS_SIZE_HUGE, lower then Fireball, but more deadly (both save + damage)
-        oAOE = AI_GetBestAreaSpellTarget(fMediumRange, RADIUS_SIZE_HUGE, i7, SAVING_THROW_REFLEX, SHAPE_SPHERE, GlobalFriendlyFireFriendly);
-        // Is it valid? 60% chance of casting.
-        if(GetIsObjectValid(oAOE))
-        {
-            // Delayed Fireball Blast. Level 7 (Mage) Up to 20d6 fire reflex damage. Can be set up as a trap (heh, nah!)
-            if(AI_ActionCastSpellRandom(SPELL_DELAYED_BLAST_FIREBALL, SpellHostAreaInd, i50, oAOE, i17, TRUE, ItemHostAreaInd)) return TRUE;
-        }
-    }
-    // Great Thunderclap is OK, but doesn't really do too much. If anything, the
-    // 3 saves are cool :-P
-    if(SpellHostAreaInd && RangeMediumValid &&
-      !AI_CompareTimeStopStored(SPELL_GREAT_THUNDERCLAP) &&
-      (GetHasSpell(SPELL_GREAT_THUNDERCLAP) || ItemHostAreaInd == SPELL_GREAT_THUNDERCLAP))
-    {
-        // 20M medium range, hits a gargantuan area.
-        // - We ignore saves for this.
-        // - Doesn't actually hit ourselves. Won't bother checking this though.
-        oAOE = AI_GetBestAreaSpellTarget(fMediumRange, RADIUS_SIZE_GARGANTUAN, i7, SAVING_THROW_ALL, SHAPE_SPHERE, GlobalFriendlyFireFriendly);
-        // Is it valid? 50% chance of casting.
-        if(GetIsObjectValid(oAOE))
-        {
-            // Great Thunderclap. Level 7 (Mage)  Will VS 1 round stun. Fort VS 1 Turn Deaf. Reflex VS 1 Round Knockdown.
-            if(AI_ActionCastSpellRandom(SPELL_GREAT_THUNDERCLAP, SpellHostAreaInd, i40, oAOE, i17, TRUE, ItemHostAreaInd)) return TRUE;
-        }
-    }
-    // Lastly, AOE wise, it is prismatic spray. Comparable, if a little (or very!)
-    // erratic. We might as well cast this whatever (So if they all are immune
-    // to the delay fireballs we have, this does good damage compared to 0!)
-    if(SpellHostAreaInd && RangeShortValid &&
-      !AI_CompareTimeStopStored(SPELL_PRISMATIC_SPRAY) &&
-      (GetHasSpell(SPELL_PRISMATIC_SPRAY) || ItemHostAreaInd == SPELL_PRISMATIC_SPRAY))
-    {
-        // 8M short range, blast is a cone, and no save. Spell script has fSpread at 11.0
-        oAOE = AI_GetBestAreaSpellTarget(fShortRange, f11, i7, FALSE, SHAPE_SPELLCONE, GlobalFriendlyFireFriendly);
-        // Is it valid? 40% chance of casting.
-        if(GetIsObjectValid(oAOE))
-        {
-            // Prismatic Spray. Level 7 (Mage) Random damage/effects. Chance of doing double amount of effects.
-            if(AI_ActionCastSpellRandom(SPELL_PRISMATIC_SPRAY, SpellHostAreaInd, i30, oAOE, i17, TRUE, ItemHostAreaInd)) return TRUE;
-        }
-    }
-    // Multi spell override backup casting
-    if(MultiSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
 
-    // Level 7 summon spells. Also cast the unique class-based summons (like
-    // a blackguards undead, a shadowdancers shadow ETC).
-    if(IsFirstRunThrough && GlobalCanSummonSimilarLevel <= i7)
-    {
-        // Always use our feat-based ones (not level dependant) as they increase
-        // with level.
-        // - Shadow based on level
-        if(AI_ActionCastSummonSpell(FEAT_SUMMON_SHADOW, iM1, i7)) return TRUE;
-        // - Undead warrior (EG: doomknight) based on level
-        if(AI_ActionCastSummonSpell(AI_FEAT_BG_CREATE_UNDEAD, iM1, i7)) return TRUE;
-        // - Shadow based on level
-        if(AI_ActionCastSummonSpell(AI_FEAT_BG_FIENDISH_SERVANT, iM1, i7)) return TRUE;
-        // Pale master
-        if(AI_ActionCastSummonSpell(AI_FEAT_PM_CREATE_UNDEAD, iM1, i7)) return TRUE;
+        // Backup casting of the level 7 hostle spells, just below the last
+        // level 7 summon spells :-)
+        if(AI_ActionCastBackupRandomSpell()) return TRUE;
 
-        // Then, the normal summons.
-        if(GlobalOurHitDice <= i18 || GlobalMeleeAttackers <= i2)
-        {
-            // Mordenkainen's Sword Level 7 (Mage). Good, nay, very good hitting summon.
-            if(AI_ActionCastSummonSpell(SPELL_MORDENKAINENS_SWORD, i17, i7)) return TRUE;
-
-            // Summon Monster VII (7). Level 7 (Cleric, Mage, Druid, etc) Huge elemental
-            if(AI_ActionCastSummonSpell(SPELL_SUMMON_CREATURE_VII, i17, i7)) return TRUE;
-        }
-    }
-
-    // Now, back to single spell targets again.
-    if(GlobalSeenSpell && GlobalNormalSpellsNoEffectLevel < i7)
-    {
-        // Killing spells. These, if sucessful, rend all status-effect spells redundant.
-        // - Only fired if they are not immune :-D
-        if(RangeShortValid && !AI_CompareTimeStopStored(SPELL_DESTRUCTION, SPELL_FINGER_OF_DEATH) &&
-          !AI_SaveImmuneSpellTarget(SAVING_THROW_FORT, i7) &&
-          !AI_GetSpellTargetImmunity(GlobalImmunityNecromancy) &&
-          !AI_GetSpellTargetImmunity(GlobalImmunityDeath))
-        {
-            // Destruction, level 7 (Cleric). Fort (Death) for Death if fail, or 10d6 damage if pass.
-            if(AI_ActionCastSpellRandom(SPELL_DESTRUCTION, SpellHostRanged, i30, GlobalSpellTarget, i17, FALSE, ItemHostRanged)) return TRUE;
-            // Finger of Death. Leve 7 (Mage). Fort (Death) for death if fail, or d6(3) + nCasterLvl damage if pass.
-            if(AI_ActionCastSpellRandom(SPELL_FINGER_OF_DEATH, SpellHostRanged, i20, GlobalSpellTarget, i17, FALSE, ItemHostRanged)) return TRUE;
-        }
-        // Bigbiy's Grasping hand last. We don't bother checking for grapple checks -
-        // they mainly work anyway, if anything. Powerful in its own right, as
-        // it holds on a sucessful check.
-        if(RangeLongValid && !GetHasSpellEffect(SPELL_BIGBYS_GRASPING_HAND, GlobalSpellTarget) &&
-           !AI_CompareTimeStopStored(SPELL_BIGBYS_GRASPING_HAND) &&
-           !AI_GetSpellTargetImmunity(GlobalImmunityStun))
-        {
-            // Bigby's Grasping Hand. Level 7 (Mage) Hold target if sucessful grapple
-            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_GRASPING_HAND, SpellHostRanged, i20, GlobalSpellTarget, i18, FALSE, ItemHostRanged)) return TRUE;
-        }
-        // Is not immune to mind spell (I think this is a valid check) and not already stunned.
-        // Really, if under < 151 HP to be affected - short ranged
-        if (GlobalSpellTargetCurrentHitPoints <= i150 && RangeShortValid &&
-           !AI_GetSpellTargetImmunity(GlobalImmunityStun) &&
-           !AI_GetSpellTargetImmunity(GlobalImmunityMind) &&
-           !AI_CompareTimeStopStored(SPELL_POWER_WORD_STUN))
-        {
-            // Power Word Stun. Level 7 (Wizard). Stun duration based on HP.
-            if(AI_ActionCastSpellRandom(SPELL_POWER_WORD_STUN, SpellHostAreaInd, i20, GlobalSpellTarget, i17, FALSE, ItemHostAreaInd)) return TRUE;
-        }
-    }
-
-    // Backup casting of the level 7 hostle spells, just below the last
-    // level 7 summon spells :-)
-    if(AI_ActionCastBackupRandomSpell()) return TRUE;
-
+        SetLocalInt(OBJECT_SELF, "iAASLevel8", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel7", TRUE);
+    }//... if check levels 8-7
 /*::6666666666666666666666666666666666666666666666666666666666666666666666666666
     Level 6 Spells.
 //::6666666666666666666666666666666666666666666666666666666666666666666666666666
@@ -8473,7 +9541,14 @@ XXXX[Legend Lore] - Lots of lore. Never cast.
 //::66666666666666666666666666666666666666666666666666666666666666666666666666*/
 
     // Jump out if we don't want to cast level 6 spells.
-    if(iLowestSpellLevel > i6) return FALSE;
+    if(iLowestSpellLevel > i6)
+    {
+        SetLocalInt(OBJECT_SELF, "iAASLevel9a", FALSE);
+        SetLocalInt(OBJECT_SELF, "iAASLevel7", FALSE);
+        return FALSE;
+    }
+
+//    SendMessageToPC(GetFirstPC(), "Level6");//...
 
     if(IsFirstRunThrough)
     {
@@ -8547,12 +9622,25 @@ XXXX[Legend Lore] - Lots of lore. Never cast.
     }
 
     // Dragon Diciple breath.
-    if(RangeTouchValid &&
+//    SendMessageToPC(GetFirstPC(), "DragonDiscip feat: " + IntToString(GetHasFeat(FEAT_DRAGON_DIS_BREATH)));//...
+    if(RangeTouchValid && GetHasFeat(FEAT_DRAGON_DIS_BREATH) && //... //!GetLocalTimer("DDBreath") &&//...
        // Reflex save. 19 + 1 per 4 levels after 10.
-       GlobalSpellTargetReflex < (i19 + (GetLevelByClass(CLASS_TYPE_DRAGONDISCIPLE) - i10)/i4))
+       GlobalSpellTargetReflex < ((i19 + (GetLevelByClass(CLASS_TYPE_DRAGONDISCIPLE) - i10)/i4)))
     {
+//        SendMessageToPC(GetFirstPC(), "DragonDiscip breath start");//...
         // Dragon diciple breath - x2_s2_descbreath
-        if(AI_ActionUseFeatOnObject(FEAT_DRAGON_DIS_BREATH, GlobalSpellTarget)) return TRUE;
+        if(GetLevelByClass(CLASS_TYPE_DRAGONDISCIPLE, GlobalSpellTarget) < 10 &&
+            !AI_GetAIHaveEffect(GlobalEffectDamageShield, GlobalSpellTarget) &&
+            GetAppearanceType(GlobalSpellTarget) != APPEARANCE_TYPE_DRAGON_RED &&
+            GetDistanceToObject(GlobalSpellTarget) < 5.0f)
+        {
+            ActionDoCommand(ActionCastSpellAtObject(690, GlobalSpellTarget, METAMAGIC_ANY, TRUE));
+            DecrementRemainingFeatUses(OBJECT_SELF, FEAT_DRAGON_DIS_BREATH);
+            SetAIOff();
+            DelayCommand(2.5f, SetAIOn());
+            return TRUE;
+        }
+//        SendMessageToPC(GetFirstPC(), "DragonDiscip breath end");//...
     }
 
     // Howl! HOOOOOOOOWWWWWWWWWWWLLLLLLLLL! Collosal range on self.
@@ -8659,11 +9747,18 @@ XXXX[Legend Lore] - Lots of lore. Never cast.
         // (Count as stun for immunity - that is anyting that stops them moving (daze included))
         // - Should affect mind-immune people. Bioware will fix this, been told. No mind check
         if(RangeLongValid && !GetHasSpellEffect(SPELL_BIGBYS_FORCEFUL_HAND, GlobalSpellTarget) &&
-           !AI_CompareTimeStopStored(SPELL_BIGBYS_FORCEFUL_HAND) &&
-           !AI_GetSpellTargetImmunity(GlobalImmunityStun))
+            !AI_CompareTimeStopStored(SPELL_BIGBYS_FORCEFUL_HAND) &&
+            !AI_GetSpellTargetImmunity(GlobalImmunityStun) &&
+            !GetLocalInt(GlobalSpellTarget, "AI_Bigby"))
         {
             // Bigby's Forceful Hand. Level 6 (Mage) Bullrush to make the target Knockdowned and Dazed all in one.
-            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_FORCEFUL_HAND, SpellHostRanged, i30, GlobalSpellTarget, i16, FALSE, ItemHostRanged)) return TRUE;
+            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_FORCEFUL_HAND, SpellHostRanged, i30, GlobalSpellTarget, i16, FALSE, ItemHostRanged))
+            {
+                SetLocalInt(GlobalSpellTarget, "AI_Bigby", TRUE);
+                DelayCommand(3.0f, DeleteLocalInt(GlobalSpellTarget, "AI_Bigby"));
+                return TRUE;
+            }
+
         }
         // Single spell override backup casting
         if(SingleSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
@@ -8760,10 +9855,17 @@ XXXX[Legend Lore] - Lots of lore. Never cast.
         // - Should affect mind-immune people. Bioware will fix this, been told. No mind check
         if(RangeLongValid && !GetHasSpellEffect(SPELL_BIGBYS_FORCEFUL_HAND, GlobalSpellTarget) &&
            !AI_CompareTimeStopStored(SPELL_BIGBYS_FORCEFUL_HAND) &&
-           !AI_GetSpellTargetImmunity(GlobalImmunityStun))
+           !AI_GetSpellTargetImmunity(GlobalImmunityStun) &&
+           !GetLocalInt(GlobalSpellTarget, "AI_Bigby"))
         {
             // Bigby's Forceful Hand. Level 6 (Mage) Bullrush to make the target Knockdowned and Dazed all in one.
-            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_FORCEFUL_HAND, SpellHostRanged, i20, GlobalSpellTarget, i16, FALSE, ItemHostRanged)) return TRUE;
+            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_FORCEFUL_HAND, SpellHostRanged, i20, GlobalSpellTarget, i16, FALSE, ItemHostRanged))
+            {
+                SetLocalInt(GlobalSpellTarget, "AI_Bigby", TRUE);
+                DelayCommand(3.0f, DeleteLocalInt(GlobalSpellTarget, "AI_Bigby"));
+                return TRUE;
+            }
+
         }
     }
 
@@ -8774,7 +9876,7 @@ XXXX[Legend Lore] - Lots of lore. Never cast.
     // Decent..but ...well, its alright :-)
     // THIS is spell 0 spell :-) we cast 100% and no backup casting.
     if(RangeLongValid && SpellHostAreaInd && !GlobalInTimeStop &&
-      (GetHasSpell(SPELL_ACID_FOG) || SpellHostAreaInd == SPELL_ACID_FOG))
+      (GetHasSpell(SPELL_ACID_FOG) || ItemHostAreaInd == SPELL_ACID_FOG))//... from SpellHost to Item
     {
         // 40M spell range, 5M radius (large) fortitude save, but doesn't stop damage.
         oAOE = AI_GetBestAreaSpellTarget(fLongRange, RADIUS_SIZE_LARGE, i6);
@@ -8785,6 +9887,7 @@ XXXX[Legend Lore] - Lots of lore. Never cast.
             if(AI_ActionCastSpell(SPELL_ACID_FOG, SpellHostAreaInd, oAOE, i16, TRUE, ItemHostAreaInd)) return TRUE;
         }
     }
+    SetLocalInt(OBJECT_SELF, "iAASLevel8", FALSE);
 
 /*::5555555555555555555555555555555555555555555555555555555555555555555555555555
     Level 5 Spells.
@@ -8884,7 +9987,7 @@ H   [Monsterous Regeneration] - +3 Regeneration for CasterLevel/2 + 1.
     if(IsFirstRunThrough && !GetHasSpellEffect(SPELL_BATTLETIDE))
     {
         // Battletide. Level 5 (Cleric). -2 Attack/Saves/damage to enemies who come in. +2 to same for caster.
-        if(AI_ActionCastSpell(SPELL_BATTLETIDE, SpellHostAreaDis, GlobalSpellTarget, i15, FALSE, ItemHostAreaDis)) return TRUE;
+        if(AI_ActionCastSpell(SPELL_BATTLETIDE, SpellHostAreaDis, GlobalSpellTarget, i15, TRUE, ItemHostAreaDis)) return TRUE;
     }
 
     // Giant Hurl Rock
@@ -8898,7 +10001,11 @@ H   [Monsterous Regeneration] - +3 Regeneration for CasterLevel/2 + 1.
     }
 
     // Monster cones - these ignore the GlobalNormalSpellsNoEffectLevel toggle.
-    if(RangeShortValid)
+    //... added gethasspell check bc it's better than going through the AOE loop
+    if(RangeShortValid && (GetHasSpell(SPELLABILITY_CONE_ACID) || GetHasSpell(SPELLABILITY_CONE_COLD) ||
+        GetHasSpell(SPELLABILITY_CONE_DISEASE) || GetHasSpell(SPELLABILITY_CONE_FIRE) ||
+        GetHasSpell(SPELLABILITY_CONE_LIGHTNING) || GetHasSpell(SPELLABILITY_CONE_POISON) ||
+        GetHasSpell(SPELLABILITY_CONE_SONIC) || GetHasSpell(SPELLABILITY_HELL_HOUND_FIREBREATH) ))
     {
         // Small-distance, cone-based spell.
         // - Take it as no level, and no save. These scale up with the HD of the
@@ -8924,7 +10031,8 @@ H   [Monsterous Regeneration] - +3 Regeneration for CasterLevel/2 + 1.
     if(RangeLongValid && (GlobalSpellTargetWill / i2 >= GlobalSpellAbilityModifier))
     {
         // Mind Fog. Level 5 (Mage/Bard) - Minus 10 to all will saves within the AOE.
-        if(AI_ActionCastSpell(SPELL_MIND_BLANK, SpellHostAreaInd, GlobalSpellTarget, i15, TRUE, ItemHostAreaInd)) return TRUE;
+                            //... corrected spell, was calling mind blank
+        if(AI_ActionCastSpell(SPELL_MIND_FOG, SpellHostAreaInd, GlobalSpellTarget, i15, TRUE, ItemHostAreaInd)) return TRUE;
     }
 
     // Feeblemind is Good if in medium range, and is a mage :-)
@@ -8983,11 +10091,18 @@ H   [Monsterous Regeneration] - +3 Regeneration for CasterLevel/2 + 1.
         // (Count as stun for immunity - that is anyting that stops them moving (daze included))
         // - Should affect mind-immune people. Bioware will fix this, been told. No mind check
         if(RangeLongValid && !AI_CompareTimeStopStored(SPELL_BIGBYS_INTERPOSING_HAND) &&
-           !GetHasSpellEffect(SPELL_BIGBYS_INTERPOSING_HAND, GlobalSpellTarget) &&
-            GetBaseAttackBonus(GlobalSpellTarget) >= GlobalOurHitDice/i2)
+            !GetHasSpellEffect(SPELL_BIGBYS_INTERPOSING_HAND, GlobalSpellTarget) &&
+            GetBaseAttackBonus(GlobalSpellTarget) >= GlobalOurHitDice/i2 &&
+            !GetLocalInt(GlobalSpellTarget, "AI_Bigby"))
         {
             // Bigby's Interposing Hand. Level 5 (Mage) No save, only SR. -10 attack rolls for target
-            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_INTERPOSING_HAND, SpellHostRanged, i50, GlobalSpellTarget, i16, FALSE, ItemHostRanged)) return TRUE;
+            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_INTERPOSING_HAND, SpellHostRanged, i50, GlobalSpellTarget, i16, FALSE, ItemHostRanged))
+            {
+                SetLocalInt(GlobalSpellTarget, "AI_Bigby", TRUE);
+                DelayCommand(3.0f, DeleteLocalInt(GlobalSpellTarget, "AI_Bigby"));
+                return TRUE;
+            }
+
         }
         // Single spell override backup casting
         if(SingleSpellOverride) if(AI_ActionCastBackupRandomSpell()) return TRUE;
@@ -9015,11 +10130,17 @@ H   [Monsterous Regeneration] - +3 Regeneration for CasterLevel/2 + 1.
         }
     }
     // Ball lightning - Medium spell, and missile storm. We cast this at the target.
-    if(RangeMediumValid && GlobalSeenSpell &&
+    if(RangeMediumValid && GlobalSeenSpell &&    //... added has spell check and changed to discriminant, it's a missile storm
+        (GetHasSpell(SPELL_BALL_LIGHTNING) || ItemHostAreaDis == SPELL_BALL_LIGHTNING) &&
       !AI_SaveImmuneSpellTarget(SAVING_THROW_REFLEX, i5))
     {
-        // Ball Lightning. Level 5 (Mage) 1d6/missile, to 15 missiles. Reflex based. Cast at singal target (like missile storms)
-        if(AI_ActionCastSpellRandom(SPELL_BALL_LIGHTNING, SpellHostAreaInd, i40, oAOE, i15, TRUE, ItemHostAreaInd)) return TRUE;
+        oAOE = AI_GetBestAreaSpellTarget(fMediumRange, RADIUS_SIZE_COLOSSAL, i5, SAVING_THROW_REFLEX, SHAPE_SPHERE);
+        // Is it valid? 60% chance of casting.
+        if(GetIsObjectValid(oAOE))
+        {
+            // Ball Lightning. Level 5 (Mage) 1d6/missile, to 15 missiles. Reflex based. Cast at singal target (like missile storms)
+            if(AI_ActionCastSpellRandom(SPELL_BALL_LIGHTNING, SpellHostAreaDis, i40, oAOE, i15, TRUE, ItemHostAreaDis)) return TRUE;
+        }
     }
 
     // (Shades) Cone of Cold. Shades = Never hits allies (Still same saves ETC).
@@ -9127,10 +10248,17 @@ H   [Monsterous Regeneration] - +3 Regeneration for CasterLevel/2 + 1.
         // - Should affect mind-immune people. Bioware will fix this, been told. No mind check
         if(RangeLongValid && !AI_CompareTimeStopStored(SPELL_BIGBYS_INTERPOSING_HAND) &&
            !GetHasSpellEffect(SPELL_BIGBYS_INTERPOSING_HAND, GlobalSpellTarget) &&
-            GetBaseAttackBonus(GlobalSpellTarget) >= GlobalOurHitDice/i2)
+            GetBaseAttackBonus(GlobalSpellTarget) >= GlobalOurHitDice/i2 &&
+            !GetLocalInt(GlobalSpellTarget, "AI_Bigby"))
         {
             // Bigby's Interposing Hand. Level 5 (Mage) No save, only SR. -10 attack rolls for target
-            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_INTERPOSING_HAND, SpellHostRanged, i20, GlobalSpellTarget, i16, FALSE, ItemHostRanged)) return TRUE;
+            if(AI_ActionCastSpellRandom(SPELL_BIGBYS_INTERPOSING_HAND, SpellHostRanged, i20, GlobalSpellTarget, i16, FALSE, ItemHostRanged))
+            {
+                SetLocalInt(GlobalSpellTarget, "AI_Bigby", TRUE);
+                DelayCommand(3.0f, DeleteLocalInt(GlobalSpellTarget, "AI_Bigby"));
+                return TRUE;
+            }
+
         }
     }
 
@@ -9191,6 +10319,15 @@ H X [Holy Sword] - Paladins sword gains the "Holy Avenger" property - +1d6 divin
     // Jump out if we don't want to cast level 4 spells.
     if(iLowestSpellLevel > i4) return FALSE;
 
+    int iBasicBABCheck = (IsFirstRunThrough && !SRA &&
+       GlobalOurChosenClass != CLASS_TYPE_WIZARD &&
+       GlobalOurChosenClass != CLASS_TYPE_SORCERER &&
+       GlobalOurChosenClass != CLASS_TYPE_FEY);
+
+    int iHalfBABCheck = (GlobalOurChosenClass == CLASS_TYPE_CLERIC ||
+           GlobalOurChosenClass == CLASS_TYPE_DRUID ||
+           GlobalOurChosenClass == CLASS_TYPE_BARD);
+
     if(IsFirstRunThrough)
     {
         // Cast normal stoneskin to prepare for greater stoneskin going down.
@@ -9205,16 +10342,29 @@ H X [Holy Sword] - Paladins sword gains the "Holy Avenger" property - +1d6 divin
         // Check for Arcane Archer feats here
         if(GetLevelByClass(CLASS_TYPE_ARCANE_ARCHER))
         {
-            // Arrow of death. DC20 or die.
-            if(AI_ActionUseFeatOnObject(FEAT_PRESTIGE_ARROW_OF_DEATH, GlobalSpellTarget)) return TRUE;
-            // Fireball arrow - won't harm allies
-            if(AI_ActionUseFeatOnObject(FEAT_PRESTIGE_IMBUE_ARROW, GlobalSpellTarget)) return TRUE;
-            // Seeker Arrow is cool
-            if(AI_ActionUseFeatOnObject(FEAT_PRESTIGE_SEEKER_ARROW_2, GlobalSpellTarget)) return TRUE;
-            // Hail of arrows is neat
-            if(AI_ActionUseFeatOnObject(FEAT_PRESTIGE_HAIL_OF_ARROWS, GlobalSpellTarget)) return TRUE;
-            // Seeker Arrow is cool
-            if(AI_ActionUseFeatOnObject(FEAT_PRESTIGE_SEEKER_ARROW_1, GlobalSpellTarget)) return TRUE;
+            //... only a worthy opponent
+            if (GetChallengeRating(GlobalSpellTarget) > (GetChallengeRating(OBJECT_SELF) -5.0f))
+            {
+                // Arrow of death. DC20 or die.
+                if(AI_ActionUseFeatOnObject(FEAT_PRESTIGE_ARROW_OF_DEATH, GlobalSpellTarget)) return TRUE;
+            }
+
+            //... make sure we're not wasting attacks
+            if (GlobalTotalSeenHeardEnemies > (GlobalOurBaseAttackBonus /5))
+            {
+                // Hail of arrows is neat
+                if(AI_ActionUseFeatOnObject(FEAT_PRESTIGE_HAIL_OF_ARROWS, GlobalSpellTarget)) return TRUE;
+                // Fireball arrow - won't harm allies
+                if(AI_ActionUseFeatOnObject(FEAT_PRESTIGE_IMBUE_ARROW, GlobalSpellTarget)) return TRUE;
+            }
+            //... make sure we're not wasting attacks
+            if ((GlobalOurBaseAttackBonus + 15) < GetAC(GlobalSpellTarget))
+            {
+                // Seeker Arrow is cool
+                if(AI_ActionUseFeatOnObject(FEAT_PRESTIGE_SEEKER_ARROW_2, GlobalSpellTarget)) return TRUE;
+                // Seeker Arrow is cool
+                if(AI_ActionUseFeatOnObject(FEAT_PRESTIGE_SEEKER_ARROW_1, GlobalSpellTarget)) return TRUE;
+            }
         }
 
         // Elemental Shield is a good spell - reflected damage. It is normally
@@ -9253,16 +10403,11 @@ H X [Holy Sword] - Paladins sword gains the "Holy Avenger" property - +1d6 divin
     //   normally even mages have a +X to attack, this provides a good indicator
     //   if we are going to easy, or very easily, hit the enemy.
     // - Clerics, Druids and Bards must be able to hit even better then normal.
-    if(IsFirstRunThrough && !SRA &&
-       GlobalOurChosenClass != CLASS_TYPE_WIZARD &&
-       GlobalOurChosenClass != CLASS_TYPE_SORCERER &&
-       GlobalOurChosenClass != CLASS_TYPE_FEY)
+    if(iBasicBABCheck)
     {
         // If a druid, cleric, and so on, have to be able to hit better then
         // more then normal
-        if(GlobalOurChosenClass == CLASS_TYPE_CLERIC ||
-           GlobalOurChosenClass == CLASS_TYPE_DRUID ||
-           GlobalOurChosenClass == CLASS_TYPE_BARD)
+        if(iHalfBABCheck)
         {
             // BAB check for level 4 spells.
             if(GlobalOurBaseAttackBonus - i5 >= GlobalMeleeTargetAC) return FALSE;
@@ -9616,14 +10761,6 @@ H X [Darkfire] - +1d6 + 1/caster level (to +10) in fire damage applied to non-ma
             if(AI_ActionCastSpell(SPELL_GREATER_MAGIC_FANG, SpellProSinTar, oAOE, i13, FALSE, ItemProSinTar)) return TRUE;
         }
 
-        // Divine Shield - a feat, but a damn good one.
-        // Up to +5 Dodge AC.
-        if(GetHasFeat(FEAT_TURN_UNDEAD))
-        {
-            // Divine Shield
-            if(AI_ActionUseFeatOnObject(FEAT_DIVINE_SHIELD)) return TRUE;
-        }
-
         // Magical vestment - this adds up to +5 AC to armor or shield!
         // - Affects only our equipped armor.
         oAOE = GetItemInSlot(INVENTORY_SLOT_CHEST);
@@ -9647,16 +10784,11 @@ H X [Darkfire] - +1d6 + 1/caster level (to +10) in fire damage applied to non-ma
     //   normally even mages have a +X to attack, this provides a good indicator
     //   if we are going to easy, or very easily, hit the enemy.
     // - Clerics, Druids and Bards must be able to hit even better then normal.
-    if(IsFirstRunThrough && !SRA &&
-       GlobalOurChosenClass != CLASS_TYPE_WIZARD &&
-       GlobalOurChosenClass != CLASS_TYPE_SORCERER &&
-       GlobalOurChosenClass != CLASS_TYPE_FEY)
+    if(iBasicBABCheck)
     {
         // If a druid, cleric, and so on, have to be able to hit better then
         // more then normal
-        if(GlobalOurChosenClass == CLASS_TYPE_CLERIC ||
-           GlobalOurChosenClass == CLASS_TYPE_DRUID ||
-           GlobalOurChosenClass == CLASS_TYPE_BARD)
+        if(iHalfBABCheck)
         {
             // BAB check for level 3 spells.
             // Must be able to hit them 100% of the time.
@@ -9695,9 +10827,9 @@ H X [Darkfire] - +1d6 + 1/caster level (to +10) in fire damage applied to non-ma
             if(AI_ActionCastSpellRandom(iCnt, SpellHostRanged, i30, GlobalSpellTarget)) return TRUE;
         }
         // Manticore spikes
-        if(AI_ActionCastSpellRandom(SPELLABILITY_MANTICORE_SPIKES, SpellHostRanged, i30, GlobalSpellTarget)) return TRUE;
+        if(AI_ActionCastSpellRandom(SPELLABILITY_MANTICORE_SPIKES, SpellHostRanged, i30, GlobalSpellTarget, 0, TRUE)) return TRUE;
         // Shifter one
-        if(AI_ActionCastSpellRandom(AI_SPELLABILITY_GWILDSHAPE_SPIKES, SpellHostRanged, i30, GlobalSpellTarget)) return TRUE;
+        if(AI_ActionCastSpellRandom(AI_SPELLABILITY_GWILDSHAPE_SPIKES, SpellHostRanged, i30, GlobalSpellTarget, 0, TRUE)) return TRUE;
         // Azer blast
         if(AI_ActionCastSpellRandom(AI_SPELLABILITY_AZER_FIRE_BLAST, SpellHostRanged, i30, GlobalSpellTarget)) return TRUE;
         // Shadow attack
@@ -10197,16 +11329,11 @@ H X [Aura of Glory] - +4 Char, and allies get +4 VS Fear effects.
     //   normally even mages have a +X to attack, this provides a good indicator
     //   if we are going to easy, or very easily, hit the enemy.
     // - Clerics, Druids and Bards must be able to hit even better then normal.
-    if(IsFirstRunThrough && !SRA &&
-       GlobalOurChosenClass != CLASS_TYPE_WIZARD &&
-       GlobalOurChosenClass != CLASS_TYPE_SORCERER &&
-       GlobalOurChosenClass != CLASS_TYPE_FEY)
+    if(iBasicBABCheck)
     {
         // If a druid, cleric, and so on, have to be able to hit better then
         // more then normal
-        if(GlobalOurChosenClass == CLASS_TYPE_CLERIC ||
-           GlobalOurChosenClass == CLASS_TYPE_DRUID ||
-           GlobalOurChosenClass == CLASS_TYPE_BARD)
+        if(iHalfBABCheck)
         {
             // BAB check for level 3 spells.
             // Must be able to hit them 75% of the time.
@@ -10608,7 +11735,7 @@ H X [Deafening Clang] +1 enchantment. +3 sonic damage. On Hit: Deafness, on a we
         }
 
         // Cast Entropic shield if nearest enemy is over 4 M away.
-        if(!GlobalEnemiesIn4Meters &&
+        if(!GlobalEnemiesIn3Meters &&
            !AI_GetAIHaveSpellsEffect(GlobalHasConsealmentSpells) &&
            !AI_GetAIHaveSpellsEffect(GlobalHasRangedConsealment) &&
            !AI_GetAIHaveEffect(GlobalEffectInvisible))
@@ -10644,16 +11771,11 @@ H X [Deafening Clang] +1 enchantment. +3 sonic damage. On Hit: Deafness, on a we
     //   normally even mages have a +X to attack, this provides a good indicator
     //   if we are going to easy, or very easily, hit the enemy.
     // - Clerics, Druids and Bards must be able to hit even better then normal.
-    if(IsFirstRunThrough && !SRA &&
-       GlobalOurChosenClass != CLASS_TYPE_WIZARD &&
-       GlobalOurChosenClass != CLASS_TYPE_SORCERER &&
-       GlobalOurChosenClass != CLASS_TYPE_FEY)
+    if(iBasicBABCheck)
     {
         // If a druid, cleric, and so on, have to be able to hit better then
         // more then normal
-        if(GlobalOurChosenClass == CLASS_TYPE_CLERIC ||
-           GlobalOurChosenClass == CLASS_TYPE_DRUID ||
-           GlobalOurChosenClass == CLASS_TYPE_BARD)
+        if(iHalfBABCheck)
         {
             // BAB check for level 4 spells. 50%
             if(GlobalOurBaseAttackBonus+ i10 >= GlobalMeleeTargetAC) return FALSE;
@@ -11029,7 +12151,7 @@ S   [Inflict Minor Wounds] 1 Negative damage, on a touch attack. Heals undead.
     if(IsFirstRunThrough)
     {
         // Need no enemies in 4 meters.
-        if(!GlobalEnemiesIn4Meters)
+        if(!GlobalEnemiesIn3Meters)
         {
             // Not sure of effectiveness...so acting as a cantrip.
             // Sanctuary. Level 1 (Cleric). Will save (low DC!) or cannot see target.
@@ -11051,6 +12173,37 @@ S   [Inflict Minor Wounds] 1 Negative damage, on a touch attack. Heals undead.
     //         if we can cast spells (IE right stats) and these are the worst we can cast.
     if(GlobalNormalSpellsNoEffectLevel < i1 && GlobalSeenSpell)
     {
+        //... let's try something different
+        //... works great, if we forgot anything above it's done here
+        if (GlobalOurHitDice > 10 &&
+            (GlobalOurChosenClass == CLASS_TYPE_WIZARD ||
+            GlobalOurChosenClass == CLASS_TYPE_SORCERER))
+        {
+            talent tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_AREAEFFECT_DISCRIMINANT, 40);
+            if (GetIsTalentValid(tCheck))
+            {
+                if(AI_ActionCastSpell(GetIdFromTalent(tCheck), SpellHostAreaDis, GlobalSpellTarget,
+                    i10, TRUE, ItemHostAreaDis)) return TRUE;
+            }
+            tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_RANGED, 40);
+            if (GetIsTalentValid(tCheck))
+            {
+                if(AI_ActionCastSpell(GetIdFromTalent(tCheck), SpellHostRanged, GlobalSpellTarget,
+                    i10, FALSE, ItemHostRanged)) return TRUE;
+            }
+            tCheck = GetCreatureTalentBest(TALENT_CATEGORY_HARMFUL_TOUCH, 40);
+            if (GetIsTalentValid(tCheck))
+            {
+                if(AI_ActionCastSpell(GetIdFromTalent(tCheck), SpellHostTouch, GlobalSpellTarget,
+                    i10, FALSE, ItemHostTouch)) return TRUE;
+            }
+            tCheck = GetCreatureTalentBest(TALENT_CATEGORY_BENEFICIAL_ENHANCEMENT_SELF, 40);
+            if (GetIsTalentValid(tCheck))
+            {                                                               //... DUH
+                if(AI_ActionCastSpell(GetIdFromTalent(tCheck), SpellEnhSelf, OBJECT_SELF,
+                    i10, FALSE, ItemEnhSelf)) return TRUE;
+            }
+        }
         // Random cast one of the 5 hostile cantrip spells
         // Daze!
         if(RangeLongValid &&
@@ -11084,7 +12237,7 @@ S   [Inflict Minor Wounds] 1 Negative damage, on a touch attack. Heals undead.
         if(AI_ActionCastBackupRandomSpell()) return TRUE;
     }
     // Need decent % HP and no enemies in 4 Meters to cast these
-    if(IsFirstRunThrough && GlobalOurPercentHP >= i60 && !GlobalEnemiesIn4Meters)
+    if(IsFirstRunThrough && GlobalOurPercentHP >= i60 && !GlobalEnemiesIn3Meters)
     {
         if(!GetHasSpellEffect(SPELL_VIRTUE))
         {
@@ -11152,6 +12305,7 @@ S   [Inflict Minor Wounds] 1 Negative damage, on a touch attack. Heals undead.
         if(AI_AttemptAllSpells(iLowestSpellLevel, iBABCheckHighestLevel, iLastCheckedRange + i1, RangeLongValid, RangeMediumValid, RangeShortValid, RangeTouchValid)) return TRUE;
     }
     // Return false. No spell cast.
+    SetLocalTimer("AI_IHaveNoSpells", 12.0f);
     return FALSE;
 }
 
@@ -11422,15 +12576,15 @@ int AI_ActionBeholderTeleport()
     int iCnt = GetLocalInt(OBJECT_SELF, MAXINT_ + ARRAY_ALLIES_RANGE_SEEN);
     if(iCnt <= FALSE) return FALSE;
     int iBreak = FALSE;
-    object oEnemy = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, i1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD, CREATURE_TYPE_IS_ALIVE, TRUE);
+    object oEnemy = (GlobalValidNearestHeardEnemy) ? GlobalNearestEnemyHeard : OBJECT_INVALID;//...GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, i1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD, CREATURE_TYPE_IS_ALIVE, TRUE);
     if(!GetIsObjectValid(oEnemy) || GetDistanceToObject(oEnemy) > f5) return FALSE;
     // Loop futhest to nearest
     object oAlly = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE_SEEN + IntToString(iCnt));
     while(GetIsObjectValid(oAlly) && iBreak != TRUE)
     {
         // Check nearest enemy to the ally.
-        oEnemy = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, oAlly, i1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD, CREATURE_TYPE_IS_ALIVE, TRUE);
-        if(GetDistanceToObject(oEnemy) > f5)
+        oEnemy = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, oAlly, i1, CREATURE_TYPE_IS_ALIVE, TRUE);
+        if(GetIsObjectValid(oEnemy) && GetDistanceToObject(oEnemy) > f5 && GetObjectHeard(oEnemy, oAlly))
         {
             iBreak = TRUE;
         }
@@ -11850,12 +13004,21 @@ void AI_SetDispelableEnchantments()
 void AI_TargetingArrayDistanceStore(string sOriginalArrayName, string sNewArrayName)
 {
     int bFilterPC;
-    if(sOriginalArrayName == ARRAY_TEMP_ENEMIES &&
+    int bEnemy = (sOriginalArrayName == ARRAY_TEMP_ENEMIES);
+    if(bEnemy &&
        GetSpawnInCondition(AI_FLAG_TARGETING_FILTER_FOR_PC_TARGETS, AI_TARGETING_FLEE_MASTER))
     {
         // Check for the nearest seen, enemy PC.
         bFilterPC = GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_IS_PC, OBJECT_SELF, 1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN));
     }
+    int bTrim;//... constraining size
+    if ((bEnemy || sOriginalArrayName == ARRAY_TEMP_ALLIES) && GlobalTotalPeople > 20)
+        bTrim = TRUE;//... constraining size
+
+    int iMax;  //...
+    if (bEnemy) iMax = 13;
+    else if (sOriginalArrayName == ARRAY_TEMP_ALLIES) iMax = 7;
+
     // Make sure sNewArrayName is cleared
     DeleteLocalInt(OBJECT_SELF, MAXINT_ + sNewArrayName);
     int iCnt = i1;
@@ -11864,7 +13027,7 @@ void AI_TargetingArrayDistanceStore(string sOriginalArrayName, string sNewArrayN
     object oTarget = GetLocalObject(OBJECT_SELF, sOriginalArrayName + IntToString(iCnt));
     while(GetIsObjectValid(oTarget))
     {
-        if(!bFilterPC || GetIsPC(oTarget))
+        if((!bFilterPC || GetIsPC(oTarget)) && (!bTrim || iCnt <= iMax))
         {
             fSetUpRange = GetDistanceToObject(oTarget);
             // We set it to sNewArrayName - highest to lowest.
@@ -11875,7 +13038,8 @@ void AI_TargetingArrayDistanceStore(string sOriginalArrayName, string sNewArrayN
         oTarget = GetLocalObject(OBJECT_SELF, sOriginalArrayName + IntToString(iCnt));
     }
     // If we have no valid targets, and PC's are on, we try again.
-    if(bFilterPC && !GetIsObjectValid(GetLocalObject(OBJECT_SELF, sNewArrayName + s1)))
+    if(bFilterPC && !bTrim &&
+        !GetIsObjectValid(GetLocalObject(OBJECT_SELF, sNewArrayName + s1)))
     {
         // Re-run again.
         iCnt = i1;
@@ -11890,6 +13054,12 @@ void AI_TargetingArrayDistanceStore(string sOriginalArrayName, string sNewArrayN
             oTarget = GetLocalObject(OBJECT_SELF, sOriginalArrayName + IntToString(iCnt));
         }
     }
+/*    if (bTrim && iCnt > 10)
+    {
+        GlobalTotalPeople -= (iCnt - 10);
+        if (sOriginalArrayName == ARRAY_TEMP_ALLIES)
+            GlobalTotalAllies -= (iCnt - 10);
+    }*/
     // delete old ones.
     int iCheck;
     for(iCheck = i1; iCheck <= iCnt; iCheck++)
@@ -12024,8 +13194,8 @@ void AI_TargetingArrayDelete(string sArray)
 // This sets ARRAY_TEMP_ARRAY of integer values to sNewArrayName.
 // - iTypeOfTarget, used TARGET_LOWER, TARGET_HIGHER.
 // - We work until iMinimum is filled, or we get to iMinimum and we get to
-//   a target with value > iImputMinimum. (20 - 25 > X?)
-int AI_TargetingArrayLimitTargets(string sNewArrayName, int iTypeOfTarget, int iImputMinLimit, int iMinLoop, int iMaxLoop)
+//   a target with value > iInputMinimum. (20 - 25 > X?)
+int AI_TargetingArrayLimitTargets(string sNewArrayName, int iTypeOfTarget, int iInputMinLimit, int iMinLoop, int iMaxLoop)
 {
     int iAddEachTime, iValue, iCnt, iCnt2, iCnt3, iBreak, iLowestHighestValue;
     string sCnt;
@@ -12034,6 +13204,7 @@ int AI_TargetingArrayLimitTargets(string sNewArrayName, int iTypeOfTarget, int i
     // - 1. Lowest to highest
     if(iTypeOfTarget == TARGET_LOWER)
     {
+    //...    if (iInputMinLimit == -1) iLowestHighestValue = 10000000;
         iAddEachTime = i1;
         iCnt = i1;
     }
@@ -12059,11 +13230,11 @@ int AI_TargetingArrayLimitTargets(string sNewArrayName, int iTypeOfTarget, int i
         // Check values.
         // we check if we have under minimum OR it is under/over X.
         // As it is in value order, once we get to a point to stop, we
-        // break the loop.
-        if((iCnt2 < iMaxLoop) &&
+        // break the loop.          <Max && (<Min || (Val+Low < InputLim && LOWER) )
+        if((iCnt2 < iMaxLoop) && //...iInputMinLimit != -1 &&
            ((iCnt2 < iMinLoop) /*Default, get minimum targets*/
-         || (iValue - iLowestHighestValue < iImputMinLimit && iTypeOfTarget == TARGET_LOWER)// Lowest to highest (20 - 25 < X?)
-         || (iLowestHighestValue - iValue < iImputMinLimit && iTypeOfTarget == TARGET_HIGHER)))// Highest to lowest  (25 - 20 < X?)
+         || (iValue - iLowestHighestValue < iInputMinLimit && iTypeOfTarget == TARGET_LOWER)// Lowest to highest (20 - 25 < X?)
+         || (iLowestHighestValue - iValue < iInputMinLimit && iTypeOfTarget == TARGET_HIGHER)))// Highest to lowest  (25 - 20 < X?)
         {
             // Set this as the newest highest/lowest value
             iLowestHighestValue = iValue;
@@ -12072,7 +13243,22 @@ int AI_TargetingArrayLimitTargets(string sNewArrayName, int iTypeOfTarget, int i
             sCnt = IntToString(iCnt2);
             SetLocalObject(OBJECT_SELF, sNewArrayName + sCnt, oSetUpTarget);
             SetLocalInt(OBJECT_SELF, sNewArrayName + sCnt, iValue);
-        }
+        }//... added new option setting iInputMinLimit = -1 it'll set the new array
+        //... getting only the lower and lower if TARGET_LOWER
+        //... and higher and higher if TARGET_HIGHER
+/*        else if((iCnt2 < iMaxLoop) && iInputMinLimit == -1 &&
+           ((iCnt2 < iMinLoop) //Default, get minimum targets
+         || (iValue < iLowestHighestValue && iTypeOfTarget == TARGET_LOWER)// Lowest to highest (20 - 25 < X?)
+         || (iLowestHighestValue < iValue && iTypeOfTarget == TARGET_HIGHER)))// Highest to lowest  (25 - 20 < X?)
+        {
+            // Set this as the newest highest/lowest value
+            iLowestHighestValue = iValue;
+            // Add it to array.
+            iCnt2++;
+            sCnt = IntToString(iCnt2);
+            SetLocalObject(OBJECT_SELF, sNewArrayName + sCnt, oSetUpTarget);
+            SetLocalInt(OBJECT_SELF, sNewArrayName + sCnt, iValue);
+        }*/
         else  // else break out. (If got to max targets, got to a target we don't want to target)
         {
             for(iCnt3 = iCnt; iBreak != TRUE; iCnt3 += iAddEachTime)
@@ -12105,9 +13291,9 @@ int AI_TargetingArrayLimitTargets(string sNewArrayName, int iTypeOfTarget, int i
 // This sets ARRAY_TEMP_ARRAY of float values to sNewArrayName.
 // - iTypeOfTarget, used TARGET_LOWER, TARGET_HIGHER.
 // - We work until iMinimum is filled, or we get to iMinimum and we get to
-//   a target with value > iImputMinimum. (20.0 - 25.0 > X?)
+//   a target with value > iInputMinimum. (20.0 - 25.0 > X?)
 // Returns the amount of targets set in sNewArrayName.
-int AI_TargetingArrayLimitTargetsFloat(string sNewArrayName, int iTypeOfTarget, float fImputMinLimit, int iMinLoop, int iMaxLoop)
+int AI_TargetingArrayLimitTargetsFloat(string sNewArrayName, int iTypeOfTarget, float fInputMinLimit, int iMinLoop, int iMaxLoop)
 {
     int iAddEachTime, iCnt, iCnt2, iCnt3, iBreak;
     float fValue, fLowestHighestValue;
@@ -12143,8 +13329,8 @@ int AI_TargetingArrayLimitTargetsFloat(string sNewArrayName, int iTypeOfTarget, 
         // break the loop.
         if((iCnt2 < iMaxLoop) &&
           ((iCnt2 < iMinLoop) /*Default, get minimum targets*/
-        || (fValue - fLowestHighestValue < fImputMinLimit && iTypeOfTarget == TARGET_LOWER)// Lowest to highest (20 - 25 < X?)
-        || (fLowestHighestValue - fValue < fImputMinLimit && iTypeOfTarget == TARGET_HIGHER)))// Highest to lowest  (25 - 20 < X?)
+        || (fValue - fLowestHighestValue < fInputMinLimit && iTypeOfTarget == TARGET_LOWER)// Lowest to highest (20 - 25 < X?)
+        || (fLowestHighestValue - fValue < fInputMinLimit && iTypeOfTarget == TARGET_HIGHER)))// Highest to lowest  (25 - 20 < X?)
         {
             // Set fLowestHighestValue
             fLowestHighestValue = fValue;
@@ -12194,7 +13380,7 @@ int AI_TargetingArrayLimitTargetsFloat(string sNewArrayName, int iTypeOfTarget, 
 // - DM
 // Must be: Seen or heard
 // Returns: TRUE if any of these are true.
-int AI_GetTargetSanityCheck(object oTarget)
+int AI_IsInsaneTarget(object oTarget)
 {
     if(!GetIsObjectValid(oTarget) || // Isn't valid
         GetIsDead(oTarget) ||        // Is dead
@@ -12208,12 +13394,40 @@ int AI_GetTargetSanityCheck(object oTarget)
     return FALSE;
 }
 
+//... New stuff: data sharing!
+void AI_TargetingArrayDistanceCopy(object oSource, string sArrayName)
+{
+    // Make sure sNewArrayName is cleared
+    DeleteLocalInt(OBJECT_SELF, MAXINT_ + sArrayName);
+    int iCnt = i1;
+    float fSetUpRange;
+    string sArrayCount = sArrayName + IntToString(iCnt);;
+
+    // Now, we check for things like if to do melee or ranged, or whatever :-)
+    object oTarget = GetLocalObject(oSource, sArrayCount);
+    while(GetIsObjectValid(oTarget))
+    {
+        // can be slightly out of order, but the improvement is worth it
+        // as we are eliminating nested for loops
+        fSetUpRange = GetDistanceToObject(oTarget);
+        // Already highest to lowest
+        SetLocalFloat(OBJECT_SELF, sArrayCount, fSetUpRange);
+        SetLocalObject(OBJECT_SELF, sArrayCount, oTarget);
+        if (iCnt >= 10) break;
+        // Next one
+        iCnt++;
+        sArrayCount = sArrayName + IntToString(iCnt);
+        oTarget = GetLocalObject(oSource, sArrayCount);
+    }
+    SetLocalInt(OBJECT_SELF, MAXINT_ + sArrayName, iCnt);
+}
+
 // We set up targets to Global* variables, GlobalSpellTarget, GlobalRangeTarget,
 // and GlobalMeleeTarget. Counts enemies, and so on.
 // - Uses oIntruder (to attack or move near) if anything.
 // - We return TRUE if it ActionAttack's, or moves to an enemy - basically
 //   that we cannot do an action, but shouldn't search. False if normal.
-int AI_SetUpAllObjects(object oImputBackup)
+int AI_SetUpAllObjects(object oInputBackup)
 {
     // Delete past arrays
     AI_TargetingArrayDelete(ARRAY_ENEMY_RANGE);
@@ -12229,12 +13443,13 @@ int AI_SetUpAllObjects(object oImputBackup)
     int iCnt, iCnt2, iCnt3, iBreak;//Counter loop.
     int iValue, iMaxTurnsAttackingX, iMaximum, iMinimum, iRemainingTargets, iTypeOfTarget;
     string sCnt; // IntToString(iCnt) :-)
-    object oTempLoopObject, oSetUpTarget, oLastHostile, oLastTarget, oImputBackUpToAttack;
+    object oTempLoopObject, oSetUpTarget, oLastHostile, oLastTarget, oInputBackUpToAttack;
 
     // Note: Here we check if oIntruder is a sane thing to attack.
-    if(GetIsObjectValid(oImputBackup) && !GetIgnoreNoFriend(oImputBackup))
+//    if(GetIsObjectValid(oInputBackup) && !GetIgnoreNoFriend(oInputBackup))
+    if (!AI_IsInsaneTarget(oInputBackup))
     {
-        oImputBackUpToAttack = oImputBackup;
+        oInputBackUpToAttack = oInputBackup;
     }
     // Note: oIntruder is still used to search near if anything.
 
@@ -12248,41 +13463,66 @@ int AI_SetUpAllObjects(object oImputBackup)
 
     // We set up 2 other targets...for testing against ETC.
     oLastHostile = GetLastHostileActor();
-    iMaxTurnsAttackingX = GetBoundriedAIInteger(AI_MAX_TURNS_TO_ATTACK_ONE_TARGET, i6, i40, i1);
+    iMaxTurnsAttackingX = GetBoundriedAIInteger(AI_MAX_TURNS_TO_ATTACK_ONE_TARGET, i10, i40, i1);
 
     // Start...
     // Gets all CREATURES within 50M andin LOS. THIS IS THE MAJOR OBJECT LOOP OF THE AI!
-    GlobalTotalPeople = FALSE;// Reset
-    oSetUpTarget = GetFirstObjectInShape(SHAPE_SPHERE, f50, lSelf, TRUE);
-    while(GetIsObjectValid(oSetUpTarget))
-    {
-        // We totally ignore DM's, and AI_IGNORE people
-        // - We don't use us as a target
-        // - We do dead people later, special with GetNearestCreature
-        if(!GetIgnore(oSetUpTarget) && !GetIsDM(oSetUpTarget) &&
-           !GetIsDead(oSetUpTarget) && oSetUpTarget != OBJECT_SELF)
-        {
-            // We count +1 more person in our LOS
-            GlobalTotalPeople++;
-            // If the target is a friend, we add 1 to targets, and set in array.
-            if(GetIsFriend(oSetUpTarget) || GetFactionEqual(oSetUpTarget))
-            {
-                GlobalTotalAllies++;
-                SetLocalObject(OBJECT_SELF, ARRAY_TEMP_ALLIES + IntToString(GlobalTotalAllies), oSetUpTarget);
-            }
-            // Enemy...add to enemy array, even if not seen nor heard.
-            else if(GetIsEnemy(oSetUpTarget))
-            {
-                //SpeakString("Enemy (no dead) in LOS:" + GetName(oSetUpTarget));
-                // We set up a "Seen or heard" enemies counter below
-                iCnt++;
-                SetLocalObject(OBJECT_SELF, ARRAY_TEMP_ENEMIES + IntToString(iCnt), oSetUpTarget);
-            }
-        }
-        oSetUpTarget = GetNextObjectInShape(SHAPE_SPHERE, f50, lSelf, TRUE);
-    }
-    // The first simple one is therefore done :-)
 
+    //... New stuff: data sharing!
+    object oAlliedSetup = GetLocalObject(OBJECT_SELF, "oAlliedSetup");
+    int iExtSetup = (oAlliedSetup != OBJECT_INVALID);//... yep, not GetIsObjectValid
+
+    if (iExtSetup)
+    {
+        // load arrays & global data here
+//        SpeakString("Loading data from ally");
+        GlobalTotalPeople = GetLocalInt(OBJECT_SELF, "iDSTotal");
+        GlobalTotalAllies = GetLocalInt(OBJECT_SELF, "iDSAllies");
+        AI_TargetingArrayDistanceCopy(oAlliedSetup, ARRAY_ENEMY_RANGE);
+        AI_TargetingArrayDistanceCopy(oAlliedSetup, ARRAY_ALLIES_RANGE);
+        DeleteLocalObject(OBJECT_SELF, "oAlliedSetup");
+    }
+    else
+    {
+        GlobalTotalPeople = FALSE;// Reset
+        oSetUpTarget = GetFirstObjectInShape(SHAPE_SPHERE, f50, lSelf, TRUE);
+        while(GetIsObjectValid(oSetUpTarget))
+        {
+            // We totally ignore DM's, and AI_IGNORE people
+            // - We don't use us as a target
+            // - We do dead people later, special with GetNearestCreature
+//            SendMessageToPC(GetFirstPC(), GetName(oSetUpTarget) + IntToString(GetIgnore(oSetUpTarget)));
+            if(!GetIgnore(oSetUpTarget) && !GetIsDM(oSetUpTarget) &&
+                !GetIsDead(oSetUpTarget) && oSetUpTarget != OBJECT_SELF)
+            {
+                // We count +1 more person in our LOS
+                GlobalTotalPeople++;
+                // If the target is a friend, we add 1 to targets, and set in array.
+                if(GetIsFriend(oSetUpTarget) || GetFactionEqual(oSetUpTarget))//...
+                {
+//                    SendMessageToPC(GetFirstPC(), "Friend: " + GetName(oSetUpTarget));
+                    GlobalTotalAllies++;
+                    SetLocalObject(OBJECT_SELF, ARRAY_TEMP_ALLIES + IntToString(GlobalTotalAllies), oSetUpTarget);
+                }
+                // Enemy...add to enemy array, even if not seen nor heard.
+                else if(GetIsEnemy(oSetUpTarget))
+                {
+//                    SendMessageToPC(GetFirstPC(), "Enemy: " + GetName(oSetUpTarget));
+                    //SpeakString("Enemy (no dead) in LOS:" + GetName(oSetUpTarget));
+                    // We set up a "Seen or heard" enemies counter below
+                    //... ethereal check here since this will be passed to allies under large battles
+                    //... and specific actions against ethereal enemies are treated separatedly
+                    if (!GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
+                    {
+                        iCnt++;
+                        SetLocalObject(OBJECT_SELF, ARRAY_TEMP_ENEMIES + IntToString(iCnt), oSetUpTarget);
+                    }
+                }
+            }
+            oSetUpTarget = GetNextObjectInShape(SHAPE_SPHERE, f50, lSelf, TRUE);
+        }
+        // The first simple one is therefore done :-)
+//        SendMessageToPC(GetFirstPC(), IntToString(GlobalTotalPeople) + "," + IntToString(GlobalTotalAllies));
 /*:://////////////////////////////////////////////
     Special case:
 
@@ -12300,7 +13540,9 @@ int AI_SetUpAllObjects(object oImputBackup)
 //::////////////////////////////////////////////*/
 
     // Next, we loop on range. Allies and Enemies
-    AI_TargetingArrayDistanceStore(ARRAY_TEMP_ENEMIES, ARRAY_ENEMY_RANGE);
+
+        AI_TargetingArrayDistanceStore(ARRAY_TEMP_ENEMIES, ARRAY_ENEMY_RANGE);
+    }//... end of if (iExtSetup) else
 
     // Before we start re-setting targets, we do set up an extra 2 arrays based
     // on seen and heard (one OR the other) arrays for the enemy. These are objects in our LOS.
@@ -12309,7 +13551,7 @@ int AI_SetUpAllObjects(object oImputBackup)
     iCnt3 = FALSE;// Counter for heard
     iValue = FALSE;// Counter for BAB
     iBreak = FALSE;// Counter for HD
-    GlobalEnemiesIn4Meters = FALSE;// Make sure at 0
+    GlobalEnemiesIn3Meters = FALSE;// Make sure at 0
     GlobalMeleeAttackers = FALSE;// Make sure at 0
     GlobalRangedAttackers = FALSE;// Make sure at 0
     oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE + IntToString(iCnt));
@@ -12319,12 +13561,12 @@ int AI_SetUpAllObjects(object oImputBackup)
         // Well, we have enemies in range. We check if we need to re-set constants
         // based on a timer. If done, set a timer.
         if(!GetLocalInt(oSetUpTarget, AI_JASPERRES_EFFECT_SET) &&
-           !GetLocalInt(oSetUpTarget, AI_TIMER_EFFECT_SET))
+           !GetLocalInt(oSetUpTarget, AI_DEFAULT_AI_COOLDOWN_EFFECT_SET))
         {
             AI_SetEffectsOnTarget(oSetUpTarget);
-            SetLocalInt(oSetUpTarget, AI_TIMER_EFFECT_SET, TRUE);
+            SetLocalInt(oSetUpTarget, AI_DEFAULT_AI_COOLDOWN_EFFECT_SET, TRUE);
             // Just set effects every round, not every possible action (2 with haste)
-            DelayCommand(f5, DeleteLocalInt(oSetUpTarget, AI_TIMER_EFFECT_SET));
+            DelayCommand(f5, DeleteLocalInt(oSetUpTarget, AI_DEFAULT_AI_COOLDOWN_EFFECT_SET));
         }
         // Don't target things who are petrified.
         if(!AI_GetAIHaveEffect(GlobalEffectPetrify, oSetUpTarget) && !GetIsDead(oSetUpTarget))
@@ -12343,10 +13585,10 @@ int AI_SetUpAllObjects(object oImputBackup)
                     GlobalMeleeAttackers++;
                 }
             }
-            // Total enemies in 4M
-            if(fCurrentRange <= f4)
+            // Total enemies in 3M
+            if(fCurrentRange <= f3)//... changing to 3m
             {
-                GlobalEnemiesIn4Meters++;
+                GlobalEnemiesIn3Meters++;
             }
             // It is nearest to futhest. Just set each one in one of 2 arrays.
             if(GetObjectSeen(oSetUpTarget))
@@ -12374,6 +13616,7 @@ int AI_SetUpAllObjects(object oImputBackup)
                 iCnt3++;
                 SetLocalFloat(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + IntToString(iCnt3), fCurrentRange);
                 SetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + IntToString(iCnt3), oSetUpTarget);
+//                _db("ArrayHeard: " + IntToString(iCnt3));
             }
         }
         // Next enemy
@@ -12402,7 +13645,8 @@ int AI_SetUpAllObjects(object oImputBackup)
 //::////////////////////////////////////////////*/
 
     // Friendly (ally) targets too - for curing ETC.
-    AI_TargetingArrayDistanceStore(ARRAY_TEMP_ALLIES, ARRAY_ALLIES_RANGE);
+    if (!iExtSetup)
+        AI_TargetingArrayDistanceStore(ARRAY_TEMP_ALLIES, ARRAY_ALLIES_RANGE);
 
     // Spells which affect GetIsReactionType
     oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE + s1);
@@ -12457,6 +13701,7 @@ int AI_SetUpAllObjects(object oImputBackup)
             AI_EquipBestShield();
             ActionEquipMostDamagingMelee();
             ActionMoveToLocation(GetLocation(oSetUpTarget), TRUE);
+            SendMessageToPC(GetFirstPC(), "Exiting with no targets available");
             return TRUE;
         }
     }
@@ -12473,11 +13718,58 @@ int AI_SetUpAllObjects(object oImputBackup)
         iCnt = i1;
         iCnt2 = i0;
         iCnt3 = i0;
+        int iCnt4 = FALSE;  //...
         iValue = FALSE;  // Just a temp for leader status set
+
+        fSetMaxWeCanGoTo = f20;
+        // we add this onto any ranges we input, so how far we'll move to.
+        GlobalBuffRangeAddon = 0.0;
+        // iValue is the limit of buff targets
+        // - Less if sorceror/bard (very few)
+        // - More if proper buffer
+        int iValue2 = i5;
+        if(GlobalWeAreSorcerorBard)
+        {
+            iValue2 = i2;
+        }
+        // If we are set to buff allies, we extend the range.
+        if(GetSpawnInCondition(AI_FLAG_COMBAT_MORE_ALLY_BUFFING_SPELLS, AI_COMBAT_MASTER))
+        {
+            iValue2 = i8;
+            fSetMaxWeCanGoTo = f40;
+            GlobalBuffRangeAddon = f30;
+        }
+
+        float fNewDist;
+        //... to avoid 2 checks being made 10 times
+        // we will no longer load anything else from this point on
+        // since the variable is now used for another purpose
+        if (GlobalTotalPeople < 15) iExtSetup = TRUE;
+
         oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE + IntToString(iCnt));
         while(GetIsObjectValid(oSetUpTarget))
         {
+            //...moved
+            fNewDist = GetDistanceToObject(oSetUpTarget);
+            //... New stuff: data sharing!
+            // only if there's a lot of people, we have no masters and
+            // we are not getting data from external sources ourselves
+            if (!iExtSetup && (fNewDist < 3.1f) &&
+                !GetIsObjectValid(GetMaster(oSetUpTarget))) // close range
+            {
+
+                // what this will have to do:
+                // 1: pass some globals as local object on ally
+                // total people, enemies, allies
+                // arrays will be retrieved by the ally to minimize load here
+                // arrays: ARRAY_ALLIES_RANGE, ARRAY_ENEMY_RANGE
+                SetLocalInt(oSetUpTarget, "iDSTotal", GlobalTotalPeople);
+                SetLocalInt(oSetUpTarget, "iDSAllies", GlobalTotalAllies);
+                SetLocalObject(oSetUpTarget, "oAlliedSetup", OBJECT_SELF);
+//                SpeakString("Setting data to ally");
+            }
             iCnt3 += GetHitDice(oSetUpTarget);
+
             if(GetObjectSeen(oSetUpTarget))
             {
                 iCnt2++;
@@ -12489,11 +13781,35 @@ int AI_SetUpAllObjects(object oImputBackup)
                     GlobalNearestLeader = oSetUpTarget;
                     iValue = TRUE;
                 }
-            }
+
+                if (iCnt4 <= iValue2 && fNewDist <= fSetMaxWeCanGoTo)
+                {
+                    // No arcane spellcasters.
+                    if(!GetLevelByClass(CLASS_TYPE_SORCERER, oSetUpTarget) &&
+                       !GetLevelByClass(CLASS_TYPE_WIZARD, oSetUpTarget) &&
+                    // - Master check
+                      (//...GlobalTotalAllies <= i3 ||
+                        !GetIsObjectValid(GetMaster(oSetUpTarget)) ||
+                        GetHitDice(oSetUpTarget) >= GlobalOurHitDice - i5))
+                    {
+                        // Add to new array
+                        iCnt4++;
+                        SetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE_SEEN_BUFF + IntToString(iCnt4), oSetUpTarget);
+                    }
+                // Loop allies
+                // - Only up to 10.
+                // - Check masters as above.
+                }//...moved
+        // We set up buff allies in a new array.
+        // - We may set up summons (or people with masters) if we have under
+        //   <= 3 people, or it is of comparable hit dice to us.
+            // Next seen ally
+
+            }// if ObjectSeen
             // Next ally
             iCnt++;
             oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE_SEEN + IntToString(iCnt));
-        }
+        }// while
         GlobalValidLeader = iValue;
         if(iCnt >= i1 && iCnt3 >= i1)
         {
@@ -12503,52 +13819,6 @@ int AI_SetUpAllObjects(object oImputBackup)
         GlobalNearestSeenAlly = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE_SEEN + s1);
         GlobalValidSeenAlly = GetIsObjectValid(GlobalNearestSeenAlly);
 
-        // We set up buff allies in a new array.
-        // - We may set up summons (or people with masters) if we have under
-        //   <= 3 people, or it is of comparable hit dice to us.
-        iCnt = i1;
-        iCnt2 = FALSE;
-        fSetMaxWeCanGoTo = f20;
-        // we add this onto any ranges we input, so how far we'll move to.
-        GlobalBuffRangeAddon = 0.0;
-        // iValue is the limit of buff targets
-        // - Less if sorceror/bard (very few)
-        // - More if proper buffer
-        iValue = i5;
-        if(GlobalWeAreSorcerorBard)
-        {
-            iValue = i2;
-        }
-        // If we are set to buff allies, we extend the range.
-        if(GetSpawnInCondition(AI_FLAG_COMBAT_MORE_ALLY_BUFFING_SPELLS, AI_COMBAT_MASTER))
-        {
-            iValue = i8;
-            fSetMaxWeCanGoTo = f40;
-            GlobalBuffRangeAddon = f30;
-        }
-        oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE_SEEN + IntToString(iCnt));
-        // Loop allies
-        // - Only up to 10.
-        // - Check masters as above.
-        while(GetIsObjectValid(oSetUpTarget) && iCnt2 <= iValue &&
-              GetDistanceToObject(oSetUpTarget) <= fSetMaxWeCanGoTo)
-        {
-            // No arcane spellcasters.
-            if(!GetLevelByClass(CLASS_TYPE_SORCERER, oSetUpTarget) &&
-               !GetLevelByClass(CLASS_TYPE_WIZARD, oSetUpTarget) &&
-            // - Master check
-              (GlobalTotalAllies <= i3 ||
-               !GetIsObjectValid(GetMaster(oSetUpTarget)) ||
-                GetHitDice(oSetUpTarget) >= GlobalOurHitDice - i5))
-            {
-                // Add to new array
-                iCnt2++;
-                SetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE_SEEN_BUFF + IntToString(iCnt2), oSetUpTarget);
-            }
-            // Next seen ally
-            iCnt++;
-            oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE_SEEN + IntToString(iCnt));
-        }
     }
 
 /*:://////////////////////////////////////////////
@@ -12573,7 +13843,7 @@ int AI_SetUpAllObjects(object oImputBackup)
     DeleteAIObject(AI_ATTACK_SPECIFIC_OBJECT);
     // Our specific target to attack
     // - sanity check just in case
-    if(!AI_GetTargetSanityCheck(oSetUpTarget))
+    if(!AI_IsInsaneTarget(oSetUpTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
     {
         // 40: "[DCR:Targeting] Override Target Seen. [Name]" + GetName(oSetUpTarget)
         DebugActionSpeakByInt(40, oSetUpTarget);
@@ -12585,7 +13855,7 @@ int AI_SetUpAllObjects(object oImputBackup)
     // Lagbusting, get nearest
     else if(GetSpawnInCondition(AI_FLAG_OTHER_LAG_TARGET_NEAREST_ENEMY, AI_TARGETING_FLEE_MASTER))
     {
-        if(GetIsObjectValid(GlobalNearestEnemySeen))
+        if(GetIsObjectValid(GlobalNearestEnemySeen) && !GetHasSpellEffect(SPELL_ETHEREALNESS, GlobalNearestEnemySeen))
         {
             // The validness of these are checked later anyway
             GlobalMeleeTarget = GlobalNearestEnemySeen;
@@ -12599,7 +13869,7 @@ int AI_SetUpAllObjects(object oImputBackup)
     {
         // We use this check - inbuilt, automatic, and also is simple!
         oSetUpTarget = GetFactionMostDamagedMember(GlobalNearestEnemySeen);
-        if(GetIsObjectValid(oSetUpTarget))
+        if(GetIsObjectValid(oSetUpTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
         {
             if(GetDistanceToObject(GlobalNearestEnemyHeard) > f4 ||
                GetDistanceToObject(oSetUpTarget) < f3)
@@ -12615,7 +13885,7 @@ int AI_SetUpAllObjects(object oImputBackup)
     {
         // We use this check - inbuilt, automatic, and also is simple!
         oSetUpTarget = GetFactionWeakestMember(GlobalNearestEnemySeen);
-        if(GetIsObjectValid(oSetUpTarget))
+        if(GetIsObjectValid(oSetUpTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
         {
             if(GetDistanceToObject(GlobalNearestEnemyHeard) > f4 ||
                GetDistanceToObject(oSetUpTarget) < f3)
@@ -12631,7 +13901,7 @@ int AI_SetUpAllObjects(object oImputBackup)
     {
         // We use this check - inbuilt, automatic, and also is simple!
         oSetUpTarget = GetFactionWorstAC(GlobalNearestEnemySeen);
-        if(GetIsObjectValid(oSetUpTarget))
+        if(GetIsObjectValid(oSetUpTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
         {
             // Make sure the nearest seen is not in front of the worst AC.
             if(GetDistanceToObject(GlobalNearestEnemyHeard) > f4 ||
@@ -12679,7 +13949,7 @@ int AI_SetUpAllObjects(object oImputBackup)
             oSetUpTarget = GetNearestCreature(CREATURE_TYPE_CLASS, CLASS_TYPE_WIZARD, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_IS_ALIVE, TRUE);
         }
         // If valid, use
-        if(GetIsObjectValid(oSetUpTarget) &&
+        if(GetIsObjectValid(oSetUpTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget) &&
           (GetObjectSeen(oSetUpTarget) || GetObjectHeard(oSetUpTarget)))
         {
             if(GetDistanceToObject(GlobalNearestEnemyHeard) > f4 ||
@@ -12691,11 +13961,31 @@ int AI_SetUpAllObjects(object oImputBackup)
             GlobalSpellTarget = oSetUpTarget;
         }
     }
+    else if (!GetIsObjectValid(GlobalMeleeTarget)) //... added default targetting to lowest hp, finish them off!
+    {
+//        _db("default code");
+        // We use this check - inbuilt, automatic, and also is simple!
+        oSetUpTarget = GetFactionMostDamagedMember(GlobalNearestEnemySeen);
+        if(!AI_IsInsaneTarget(oSetUpTarget) && GetCurrentHitPoints(oSetUpTarget) > 0 &&
+            !GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
+        {
+//            _db("def: targetting");
+            if(GetDistanceToObject(oSetUpTarget) < f3)
+            {
+                GlobalMeleeTarget = oSetUpTarget;
+                GlobalRangedTarget = oSetUpTarget;
+                GlobalSpellTarget = oSetUpTarget;
+            }
+            else if (GetObjectSeen(oSetUpTarget))
+                GlobalRangedTarget = oSetUpTarget;
+//           _db("def: target acquired=" + ObjectToString(oSetUpTarget));
+        }
+    }
     iValue = GetAIConstant(AI_FAVOURED_ENEMY_RACE);
     if(iValue >= FALSE)
     {
         oSetUpTarget = GetNearestCreature(CREATURE_TYPE_RACIAL_TYPE, iValue, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
-        if(GetIsObjectValid(oSetUpTarget))
+        if(GetIsObjectValid(oSetUpTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
         {
             // Make sure the nearest seen is not in front of the worst AC.
             if(GetDistanceToObject(GlobalNearestEnemyHeard) > f4 ||
@@ -12713,7 +14003,7 @@ int AI_SetUpAllObjects(object oImputBackup)
         if(iValue >= FALSE)
         {
             oSetUpTarget = GetNearestCreature(CREATURE_TYPE_CLASS, iValue, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
-            if(GetIsObjectValid(oSetUpTarget))
+            if(GetIsObjectValid(oSetUpTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
             {
                 // Make sure the nearest seen is not in front of the worst AC.
                 if(GetDistanceToObject(GlobalNearestEnemyHeard) > f4 ||
@@ -12738,6 +14028,8 @@ int AI_SetUpAllObjects(object oImputBackup)
 
     // Do we want to change melee targets?
     oLastTarget = GetAIObject(AI_LAST_MELEE_TARGET);
+    if (GetHasSpellEffect(SPELL_ETHEREALNESS, oLastTarget))
+        oLastTarget = OBJECT_INVALID;
 
     // iValid is the counter for attacking target X...
     iBreak = GetAIInteger(AI_MELEE_TURNS_ATTACKING);
@@ -12750,365 +14042,389 @@ int AI_SetUpAllObjects(object oImputBackup)
     // setups at the end still, but with the target being oOverride.
 
     // - No valid override target
-    if(!GetIsObjectValid(GlobalMeleeTarget) &&
-       (AI_GetTargetSanityCheck(oLastTarget) || // Sanity check (dead, valid, ETC)
-    // And must pass a % roll
-        d100() <= GetBoundriedAIInteger(AI_MELEE_LAST_TO_NEW_TARGET_CHANCE, i20, i100) ||
-    // OR last target attacked for X rounds
-        iBreak >= iMaxTurnsAttackingX))
+    //...  was !ValidG && (SC || % || Break)
+//  SendMessageToPC(GetFirstPC(), "MT0");
+
+    if(AI_IsInsaneTarget(GlobalMeleeTarget))//... there should be 2 ifs here with the else on the 2nd, so I did it
     {
-        // Loop targets, ETC, and get GlobalMeleeTarget normally.
-        // Set up melee  = ARRAY_MELEE_ENEMY
-
-        // Note: if we start getting wide gaps between group A and object B, we
-        // stop, because they are probably behind more enemies :-D
-        // Note 2: We only use seen enemies as a prioritory, else heard ones (like
-        //         invisible ones)
-
-        // 1. Nearby SEEN enemies. Obviously nearest to furthest!
-        // IE the maximum and minimum targets for the range checking.
-        iMinimum = GetBoundriedAIInteger(TARGETING_RANGE + MINIMUM, i2, i40, i1);
-        iMaximum = GetBoundriedAIInteger(TARGETING_RANGE + MAXIMUM, i8, i40, i1);
-
-        // fSetMaxWeCanGoTo = Maximum range away from us (GetDistanceToObject) that
-        // we can go to. This is increased if we have tumble (compared to level) or
-        // spring attack is king :-D
-        fSetMaxWeCanGoTo = GlobalOurReach + f1;// Have 1 extra as well
-        // We add a lot for spring attack - 3d4 (3 to 12)
-        // OR we have 13+ (IE a very high chance of suceeding) in tumble
-        if(GetHasFeat(FEAT_SPRING_ATTACK) || GetSkillRank(SKILL_TUMBLE) >= i13)
+        if ((AI_IsInsaneTarget(oLastTarget) ||
+        // And must pass a % roll                                //... from 20 to 1
+            d100() <= GetBoundriedAIInteger(AI_MELEE_LAST_TO_NEW_TARGET_CHANCE, i1, i100) ||
+        // OR last target attacked for X rounds
+            iBreak >= iMaxTurnsAttackingX))
         {
-            fSetMaxWeCanGoTo += IntToFloat(d4(i3));
-        }
-        else if(GetHasSkill(SKILL_TUMBLE))
-        {
-            // Else we add some for tumble
-            iBreak = GetSkillRank(SKILL_TUMBLE) - GlobalOurHitDice;
-            if(iBreak > FALSE)
+//            SendMessageToPC(GetFirstPC(), "MT1");
+            // Loop targets, ETC, and get GlobalMeleeTarget normally.
+            // Set up melee  = ARRAY_MELEE_ENEMY
+
+            // Note: if we start getting wide gaps between group A and object B, we
+            // stop, because they are probably behind more enemies :-D
+            // Note 2: We only use seen enemies as a prioritory, else heard ones (like
+            //         invisible ones)
+
+            // 1. Nearby SEEN enemies. Obviously nearest to furthest!
+            // IE the maximum and minimum targets for the range checking. //... 1st # from i2 to i1
+            iMinimum = GetBoundriedAIInteger(TARGETING_RANGE + MINIMUM, i1, i40, i1);
+            iMaximum = GetBoundriedAIInteger(TARGETING_RANGE + MAXIMUM, i8, i40, i1);
+
+            // fSetMaxWeCanGoTo = Maximum range away from us (GetDistanceToObject) that
+            // we can go to. This is increased if we have tumble (compared to level) or
+            // spring attack is king :-D
+            fSetMaxWeCanGoTo = GlobalOurReach + f1;// Have 1 extra as well
+            // We add a lot for spring attack - 3d4 (3 to 12)
+            // OR we have 13+ (IE a very high chance of suceeding) in tumble
+            if(GetHasFeat(FEAT_SPRING_ATTACK) || GetSkillRank(SKILL_TUMBLE) >= i13)
             {
-                // * Basis of Skill Rank - Our Hit Dice. 5 tumble on a level 2 makes +3M Range.
-                fSetMaxWeCanGoTo += IntToFloat(iBreak);
+                fSetMaxWeCanGoTo += IntToFloat(d4(i3));
             }
-        }
-        iBreak = FALSE;
-        // Start loop from array based on range.
-        // - Use seen array!
-        // - Break if we have added enough targets to our array.
-        iRemainingTargets = FALSE;
-        iCnt = i1;
-        sCnt = IntToString(iCnt);
-        oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + sCnt);
-        while(GetIsObjectValid(oSetUpTarget) && iRemainingTargets < iMaximum)
-        {
-            // If seen, we check range...
-            fCurrentRange = GetLocalFloat(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + sCnt);
-            // We start from the closest, so we need to cancle those out which
-            // are too far away.
-            // we check if it is in our reach. If so, we add it.
-            if(fCurrentRange < fSetMaxWeCanGoTo || iRemainingTargets < iMinimum)
+            else if(GetHasSkill(SKILL_TUMBLE))
             {
-                iRemainingTargets++;
-                sCnt = IntToString(iRemainingTargets);
-                SetLocalObject(OBJECT_SELF, ARRAY_MELEE_ENEMY + sCnt, oSetUpTarget);
-                SetLocalFloat(OBJECT_SELF, ARRAY_MELEE_ENEMY + sCnt, fCurrentRange);
+                // Else we add some for tumble
+                iBreak = GetSkillRank(SKILL_TUMBLE) - GlobalOurHitDice;
+                if(iBreak > FALSE)
+                {
+                    // * Basis of Skill Rank - Our Hit Dice. 5 tumble on a level 2 makes +3M Range.
+                    fSetMaxWeCanGoTo += IntToFloat(iBreak);
+                }
             }
-            // Get next nearest SEEN
-            iCnt++;
+            iBreak = FALSE;
+            // Start loop from array based on range.
+            // - Use seen array!
+            // - Break if we have added enough targets to our array.
+            iRemainingTargets = FALSE;
+            iCnt = i1;
             sCnt = IntToString(iCnt);
             oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + sCnt);
-        }
-        // 1a. If not valid, just use nearest seen if valid
-        if(!iRemainingTargets && GlobalValidNearestSeenEnemy)
-        {
-            iRemainingTargets = i1;
-            SetLocalObject(OBJECT_SELF, ARRAY_MELEE_ENEMY + s1, GlobalNearestEnemySeen);
-            SetLocalFloat(OBJECT_SELF, ARRAY_MELEE_ENEMY + s1, GetDistanceToObject(GlobalNearestEnemySeen));
-        }
-        else
-        {
-            // 2. Make sure the nearest HEARD is NOT very close compared to the nearest
-            //    SEEN OR we have no nearest seen.
-            // Check if we have no seen objects set, or the nearest heard is nearer then the futhest seen by 4M
-            fCurrentRange = GetDistanceToObject(GlobalNearestEnemyHeard);
-            if(GlobalValidNearestHeardEnemy && (!iRemainingTargets ||
-              // Range to nearest heard is nearer then the melee enemy
-              (fCurrentRange > f0 && ((fCurrentRange + f4) <
-              // Nearest melee range enemy we've set to seen
-               GetLocalFloat(OBJECT_SELF, ARRAY_MELEE_ENEMY + s1)))))
+            while(GetIsObjectValid(oSetUpTarget) && iRemainingTargets < iMaximum)
             {
-                //  - We half the amount we need for this range check
-                // Maximum
-                iMaximum /= i2;
-                if(iMaximum < i1) iMaximum = i1;
-                // Minimum
-                iMinimum /= i2;
-                if(iMinimum < i1) iMinimum = i1;
-                // Start loop from array based on range. Overrides exsisting targets
-                // - Use heard enemy array.
-                iCnt = i1;
-                iRemainingTargets = FALSE;
-                sCnt = IntToString(iCnt);
-                oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + sCnt);
-                while(GetIsObjectValid(oSetUpTarget) && iRemainingTargets < iMaximum)
+                // If seen, we check range...
+                fCurrentRange = GetLocalFloat(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + sCnt);
+                // We start from the closest, so we need to cancel those out which
+                // are too far away.
+                // we check if it is in our reach. If so, we add it.
+                if(fCurrentRange < fSetMaxWeCanGoTo || iRemainingTargets < iMinimum)
                 {
-                    // If seen, we check range...
-                    fCurrentRange = GetLocalFloat(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + sCnt);
-                    // We start from the closest, so we need to cancle those out which
-                    // are too far away.
-                    if(fCurrentRange < fSetMaxWeCanGoTo || iRemainingTargets < iMinimum)
-                    {
-                        iRemainingTargets++;
-                        sCnt = IntToString(iRemainingTargets);
-                        SetLocalObject(OBJECT_SELF, ARRAY_MELEE_ENEMY + sCnt, oSetUpTarget);
-                        SetLocalFloat(OBJECT_SELF, ARRAY_MELEE_ENEMY + sCnt, fCurrentRange);
-                    }
-                    // Get next HEARD
-                    iCnt++;
+                    iRemainingTargets++;
+                    sCnt = IntToString(iRemainingTargets);
+                    SetLocalObject(OBJECT_SELF, ARRAY_MELEE_ENEMY + sCnt, oSetUpTarget);
+                    SetLocalFloat(OBJECT_SELF, ARRAY_MELEE_ENEMY + sCnt, fCurrentRange);
+                }
+                // Get next nearest SEEN
+                iCnt++;
+                sCnt = IntToString(iCnt);
+                oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + sCnt);
+            }
+            // 1a. If not valid, just use nearest seen if valid
+            if(!iRemainingTargets && GlobalValidNearestSeenEnemy)
+            {
+                iRemainingTargets = i1;
+                SetLocalObject(OBJECT_SELF, ARRAY_MELEE_ENEMY + s1, GlobalNearestEnemySeen);
+                SetLocalFloat(OBJECT_SELF, ARRAY_MELEE_ENEMY + s1, GetDistanceToObject(GlobalNearestEnemySeen));
+            }
+            else
+            {
+                // 2. Make sure the nearest HEARD is NOT very close compared to the nearest
+                //    SEEN OR we have no nearest seen.
+                // Check if we have no seen objects set, or the nearest heard is nearer then the futhest seen by 4M
+                fCurrentRange = GetDistanceToObject(GlobalNearestEnemyHeard);
+                if(GlobalValidNearestHeardEnemy&& (!iRemainingTargets ||
+                  // Range to nearest heard is nearer then the melee enemy
+                  (fCurrentRange > f0 && ((fCurrentRange + f4) <
+                  // Nearest melee range enemy we've set to seen
+                   GetLocalFloat(OBJECT_SELF, ARRAY_MELEE_ENEMY + s1)))))
+                {
+                    //  - We half the amount we need for this range check
+                    // Maximum
+                    iMaximum /= i2;
+                    if(iMaximum < i1) iMaximum = i1;
+                    // Minimum
+                    iMinimum /= i2;
+                    if(iMinimum < i1) iMinimum = i1;
+                    // Start loop from array based on range. Overrides exsisting targets
+                    // - Use heard enemy array.
+                    iCnt = i1;
+                    iRemainingTargets = FALSE;
                     sCnt = IntToString(iCnt);
                     oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + sCnt);
-                }
-            }
-        }
-        // Now, do we have any Melee Targets?
-        if(!iRemainingTargets)
-        {
-            // If not, what can we use?
-            // - We use the imputted target!
-            // - We use anyone who allies are attacking!
-            // - We use anyone we hear!
-
-            // Imputted target (EG last attack that GetObjectSeen doesn't return
-            // for).
-            oSetUpTarget = oImputBackUpToAttack;
-            if(!GetIsObjectValid(oSetUpTarget))
-            {
-                // Anyone we hear
-                oSetUpTarget = GlobalNearestEnemyHeard;
-                if(!GetIsObjectValid(oSetUpTarget))
-                {
-                    // We get who our allies are attacking
-                    iCnt = i1;
-                    oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE + IntToString(iCnt));
-                    while(GetIsObjectValid(oSetUpTarget) && iBreak != TRUE)
+                    while(GetIsObjectValid(oSetUpTarget) && iRemainingTargets < iMaximum)
                     {
-                        // Get the allies attack target. If valid, attack it!
-                        oTempLoopObject = GetAttackTarget(oSetUpTarget);
-                        if(GetIsObjectValid(oTempLoopObject) &&
-                          !GetFactionEqual(oTempLoopObject) &&
-                          !GetIsFriend(oTempLoopObject))
+                        // If seen, we check range...
+                        fCurrentRange = GetLocalFloat(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + sCnt);
+                        // We start from the closest, so we need to cancle those out which
+                        // are too far away.
+                        if(fCurrentRange < fSetMaxWeCanGoTo || iRemainingTargets < iMinimum)
                         {
-                            oSetUpTarget = oTempLoopObject;
-                            iBreak = TRUE;
+                            iRemainingTargets++;
+                            sCnt = IntToString(iRemainingTargets);
+                            SetLocalObject(OBJECT_SELF, ARRAY_MELEE_ENEMY + sCnt, oSetUpTarget);
+                            SetLocalFloat(OBJECT_SELF, ARRAY_MELEE_ENEMY + sCnt, fCurrentRange);
                         }
-                        else
-                        {
-                            iCnt++;
-                            oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE + IntToString(iCnt));
-                        }
-                    }
-                    // Don't attack anyone we got in the loop, of course.
-                    if(GetIsFriend(oSetUpTarget) || GetFactionEqual(oSetUpTarget))
-                    {
-                        oSetUpTarget = OBJECT_INVALID;
+                        // Get next HEARD
+                        iCnt++;
+                        sCnt = IntToString(iCnt);
+                        oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + sCnt);
                     }
                 }
             }
-            // Do we have a target from those backups above?
-            // - If so, we ActionAttack it so we move near it, as it is not in
-            //   our LOS, or isn't in our seen range in our LOS.
-            if(GetIsObjectValid(oSetUpTarget))
+            // Now, do we have any Melee Targets?
+            if(!iRemainingTargets)
             {
-                // 41: [DCR:Targeting] No seen in LOS, Attempting to MOVE to something [Target]" + GetName(oSetUpTarget)
-                DebugActionSpeakByInt(41, oSetUpTarget);
-                DeleteAIObject(AI_LAST_MELEE_TARGET);
-                DeleteAIObject(AI_LAST_SPELL_TARGET);
-                DeleteAIObject(AI_LAST_RANGED_TARGET);
-                AI_EquipBestShield(); // in case of an ambush, be ready
-                ActionMoveToLocation(GetLocation(oSetUpTarget), TRUE);
-                return TRUE;
-            }
-            // If it doesn't have anything we can see/move to/attack/search
-            // near, then we make sure have make sure we have no target
-            // (GlobalAnyValidTargetObject) and break the function, so we can stop.
-            // "else"
-            GlobalAnyValidTargetObject = FALSE;
-            return FALSE;
-        }
-        // If only one, choose it
-        else if(iRemainingTargets == i1)
-        {
-            GlobalMeleeTarget = GetLocalObject(OBJECT_SELF, ARRAY_MELEE_ENEMY + s1);
-        }
-        else //if(iRemainingTargets > i1)
-        {
-            // If we have any set targets (heard/seen ones) then we
-            // will reduce the amount by AC, HP (current Percent/max/current)
-            // and HD and BAB
+                // If not, what can we use?
+                // - We use the input target!
+                // - We use anyone who allies are attacking!
+                // - We use anyone we hear!
 
-            // We only use range as a default. The rest are done in order if they
-            // are set! :-D
-
-            // We check for PC targets
-            // DODODODO
-
-        // Target:
-        // AC                - Used only for phisical attacks (TARGETING_AC)
-        // Phisical Protections - Used for both spells and melee (TARGETING_PHISICALS)
-        // Base Attack Bonus - Used for both spells and melee (TARGETING_BAB)
-        // Hit Dice          - Used for both spells and melee (TARGETING_HITDICE)
-        // HP Percent        - Used for both spells and melee (TARGETING_HP_PERCENT)
-        // HP Current        - Used for both spells and melee (TARGETING_HP_CURRENT)
-        // HP Maximum        - Used for both spells and melee (TARGETING_HP_MAXIMUM)
-
-            // 0. Sneak attack check
-            if(GetHasFeat(FEAT_SNEAK_ATTACK))
-            {
-                // We normally get the nearest enemy who is not attacking us, and
-                // actually stop!
-                AI_TargetingArrayIntegerStore(i9, ARRAY_MELEE_ENEMY);
-
-                // Get the closest who isn't attacking us.
-                oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_TEMP_ARRAY + s1);
-                if(GetAttackTarget(oSetUpTarget) != OBJECT_SELF)
+                // Inputted target (EG last attack that GetObjectSeen doesn't return
+                // for).
+                oSetUpTarget = oInputBackUpToAttack;
+                if(!GetIsObjectValid(oSetUpTarget) || GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
                 {
-                    GlobalMeleeTarget = oSetUpTarget;
-                    iRemainingTargets = FALSE;
+                    // Anyone we hear
+                    oSetUpTarget = GlobalNearestEnemyHeard;
+                    if(!GetIsObjectValid(oSetUpTarget) || GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
+                    {
+                        // We get who our allies are attacking
+                        iCnt = i1;
+                        oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE + IntToString(iCnt));
+                        while(GetIsObjectValid(oSetUpTarget) && iBreak != TRUE)
+                        {
+                            // Get the allies attack target. If valid, attack it!
+                            oTempLoopObject = GetAttackTarget(oSetUpTarget);
+                            if(GetIsObjectValid(oTempLoopObject) &&
+                              !GetFactionEqual(oTempLoopObject) &&
+                              !GetIsFriend(oTempLoopObject))
+                            {
+                                oSetUpTarget = oTempLoopObject;
+                                iBreak = TRUE;
+                            }
+                            else
+                            {
+                                iCnt++;
+                                oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE + IntToString(iCnt));
+                            }
+                        }
+                        // Don't attack anyone we got in the loop, of course.
+                        if(GetIsFriend(oSetUpTarget) || GetFactionEqual(oSetUpTarget) ||
+                            GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
+                        {
+                            oSetUpTarget = OBJECT_INVALID;
+                        }
+                    }
                 }
-                // If we have trouble using that one, IE they are attacking us, we
-                // just use normal methods.
+                // Do we have a target from those backups above?
+                // - If so, we ActionAttack it so we move near it, as it is not in
+                //   our LOS, or isn't in our seen range in our LOS.
+                if(GetIsObjectValid(oSetUpTarget))
+                {
+                    // 41: [DCR:Targeting] No seen in LOS, Attempting to MOVE to something [Target]" + GetName(oSetUpTarget)
+                    DebugActionSpeakByInt(41, oSetUpTarget);
+                    DeleteAIObject(AI_LAST_MELEE_TARGET);
+                    DeleteAIObject(AI_LAST_SPELL_TARGET);
+                    DeleteAIObject(AI_LAST_RANGED_TARGET);
+                    AI_EquipBestShield(); // in case of an ambush, be ready
+                    ActionMoveToLocation(GetLocation(oSetUpTarget), TRUE);
+//                SendMessageToPC(GetFirstPC(), "Exiting with melee target");
+                    return TRUE;
+                }
+                // If it doesn't have anything we can see/move to/attack/search
+                // near, then we make sure have make sure we have no target
+                // (GlobalAnyValidTargetObject) and break the function, so we can stop.
+                // "else"
+//                SendMessageToPC(GetFirstPC(), "Exiting without melee target");
+                GlobalAnyValidTargetObject = FALSE;
+                return FALSE;
             }
-            // 1. AC
-            iMinimum = GetAIInteger(TARGETING_AC + MINIMUM);
-            // Do we do AC? And over one target...
-            // - iCnt2 is the total target stored in the last array.
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_AC);
-                iMaximum = GetAIInteger(TARGETING_AC + MAXIMUM);
-
-                // We then set the array up in a new temp array. 1 = AC.
-                AI_TargetingArrayIntegerStore(i1, ARRAY_MELEE_ENEMY);
-
-                // We loop through all the targets in the temp array (we also
-                // delete the temp array targets!) and set what ones we want to target
-                // based on AC.
-                // - Continue until iMinimum is reached.
-                // - Never go over iMaximum
-                // - After iMinimum we make sure the AC differences is not a major one of
-                // over 5.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, i5, iMinimum, iMaximum);
-            }
-            // Most others are similar (and all integer values so easy to check)
-            // 2. Phisical protections.
-            iMinimum = GetAIInteger(TARGETING_PHISICALS + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_PHISICALS);
-                iMaximum = GetAIInteger(TARGETING_PHISICALS + MAXIMUM);
-                // We then set the array up in a new temp array. 3 = phisicals.
-                AI_TargetingArrayIntegerStore(i3, ARRAY_MELEE_ENEMY);
-                // We loop as AC, basically. As it is stored based on the amount
-                // of DR offered, we set the limit to 6, so if everyone had
-                // 0 DR, and 1 had 5, it'd add the 5 for the hell of it. If everyone
-                // had 20, and one had 25 it'd take the 25 too, but not a 30.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, i6, iMinimum, iMaximum);
-            }
-            // 4. BAB
-            iMinimum = GetAIInteger(TARGETING_BAB + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_BAB);
-                iMaximum = GetAIInteger(TARGETING_BAB + MAXIMUM);
-                // We then set the array up in a new temp array. 4 = BAB
-                AI_TargetingArrayIntegerStore(i4, ARRAY_MELEE_ENEMY);
-                // We loop as AC, basically. As it is BAB, IE how much chance
-                // they'll hit us (they might all hit on a 20, but it also shows
-                // who are the best fighters!). Set to 5, like AC.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, i5, iMinimum, iMaximum);
-            }
-            // 5. Hit Dice
-            iMinimum = GetAIInteger(TARGETING_HITDICE + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_HITDICE);
-                iMaximum = GetAIInteger(TARGETING_HITDICE + MAXIMUM);
-                // We then set the array up in a new temp array. 5 = Hit dice
-                AI_TargetingArrayIntegerStore(i5, ARRAY_MELEE_ENEMY);
-                // We loop as AC. Hit Dice is even easier. We set the limit to
-                // a max of 4.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, i4, iMinimum, iMaximum);
-            }
-            // 6. Percent HP
-            iMinimum = GetAIInteger(TARGETING_HP_PERCENT + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_HP_PERCENT);
-                iMaximum = GetAIInteger(TARGETING_HP_PERCENT + MAXIMUM);
-                // We then set the array up in a new temp array. 6 = %
-                AI_TargetingArrayIntegerStore(i6, ARRAY_MELEE_ENEMY);
-                // We loop as AC. Current Hit Points are easy, and are done
-                // by %ages. We set the % to 15 difference max.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, i15, iMinimum, iMaximum);
-            }
-            // 7. Current HP
-            iMinimum = GetAIInteger(TARGETING_HP_CURRENT + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_HP_CURRENT);
-                iMaximum = GetAIInteger(TARGETING_HP_CURRENT + MAXIMUM);
-                // We then set the array up in a new temp array. 7 = current HP
-                AI_TargetingArrayIntegerStore(i7, ARRAY_MELEE_ENEMY);
-                // We loop as AC. Current Hit points? Well, we set this limit to
-                // Our Hit Dice * 2.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, GlobalOurHitDice * i2, iMinimum, iMaximum);
-            }
-            // 8. Maximum HP
-            iMinimum = GetAIInteger(TARGETING_HP_MAXIMUM + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_HP_MAXIMUM);
-                iMaximum = GetAIInteger(TARGETING_HP_MAXIMUM + MAXIMUM);
-                // We then set the array up in a new temp array. 8 = maximum
-                AI_TargetingArrayIntegerStore(i8, ARRAY_MELEE_ENEMY);
-                // We loop as AC. Max hit Hit points? Well, we set this limit to
-                // Our Hit Dice * 3.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, GlobalOurHitDice * i3, iMinimum, iMaximum);
-            }
-            // WHEW!
-            // Now we should have 1 or more chosen targets in ARRAY_MELEE_ARRAY.
-            // iRemaining Targets is the array size...we mearly choose a random
-            // one, or the first one if there is only one :-D
-
             // If only one, choose it
-            if(iRemainingTargets == i1)
+            else if(iRemainingTargets == i1)
             {
                 GlobalMeleeTarget = GetLocalObject(OBJECT_SELF, ARRAY_MELEE_ENEMY + s1);
             }
-            // Check for 2+, if 0, we haven't got one to set!
-            else if(iRemainingTargets >= i2)
+            else //if(iRemainingTargets > i1)
             {
-                // Else Roll dice
-                iCnt = Random(iRemainingTargets) + i1;
-                // Set random target
-                GlobalMeleeTarget = GetLocalObject(OBJECT_SELF, ARRAY_MELEE_ENEMY + IntToString(iCnt));
+                // If we have any set targets (heard/seen ones) then we
+                // will reduce the amount by AC, HP (current Percent/max/current)
+                // and HD and BAB
+
+                // We only use range as a default. The rest are done in order if they
+                // are set! :-D
+
+                // We check for PC targets
+                // DODODODO
+
+            // Target:
+            // AC                - Used only for phisical attacks (TARGETING_AC)
+            // Phisical Protections - Used for both spells and melee (TARGETING_PHISICALS)
+            // Base Attack Bonus - Used for both spells and melee (TARGETING_BAB)
+            // Hit Dice          - Used for both spells and melee (TARGETING_HITDICE)
+            // HP Percent        - Used for both spells and melee (TARGETING_HP_PERCENT)
+            // HP Current        - Used for both spells and melee (TARGETING_HP_CURRENT)
+            // HP Maximum        - Used for both spells and melee (TARGETING_HP_MAXIMUM)
+
+                // 0. Sneak attack check
+                if(GetHasFeat(FEAT_SNEAK_ATTACK))
+                {
+                    // We normally get the nearest enemy who is not attacking us, and
+                    // actually stop!
+                    AI_TargetingArrayIntegerStore(i9, ARRAY_MELEE_ENEMY);
+
+                    // Get the closest who isn't attacking us.
+                    oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_TEMP_ARRAY + s1);
+                    if(GetAttackTarget(oSetUpTarget) != OBJECT_SELF)
+                    {
+                        GlobalMeleeTarget = oSetUpTarget;
+                        iRemainingTargets = FALSE;
+                    }
+                    // If we have trouble using that one, IE they are attacking us, we
+                    // just use normal methods.
+                }
+                // 1. AC
+                iMinimum = GetAIInteger(TARGETING_AC + MINIMUM);
+                // Do we do AC? And over one target...
+                // - iCnt2 is the total target stored in the last array.
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_AC);
+                    iMaximum = GetAIInteger(TARGETING_AC + MAXIMUM);
+
+                    // We then set the array up in a new temp array. 1 = AC.
+                    AI_TargetingArrayIntegerStore(i1, ARRAY_MELEE_ENEMY);
+
+                    // We loop through all the targets in the temp array (we also
+                    // delete the temp array targets!) and set what ones we want to target
+                    // based on AC.
+                    // - Continue until iMinimum is reached.
+                    // - Never go over iMaximum
+                    // - After iMinimum we make sure the AC differences is not a major one of
+                    // over 5.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, i5, iMinimum, iMaximum);
+                }
+                // Most others are similar (and all integer values so easy to check)
+                // 2. Phisical protections.
+                iMinimum = GetAIInteger(TARGETING_PHISICALS + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_PHISICALS);
+                    iMaximum = GetAIInteger(TARGETING_PHISICALS + MAXIMUM);
+                    // We then set the array up in a new temp array. 3 = phisicals.
+                    AI_TargetingArrayIntegerStore(i3, ARRAY_MELEE_ENEMY);
+                    // We loop as AC, basically. As it is stored based on the amount
+                    // of DR offered, we set the limit to 6, so if everyone had
+                    // 0 DR, and 1 had 5, it'd add the 5 for the hell of it. If everyone
+                    // had 20, and one had 25 it'd take the 25 too, but not a 30.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, i6, iMinimum, iMaximum);
+                }
+                // 4. BAB
+                iMinimum = GetAIInteger(TARGETING_BAB + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_BAB);
+                    iMaximum = GetAIInteger(TARGETING_BAB + MAXIMUM);
+                    // We then set the array up in a new temp array. 4 = BAB
+                    AI_TargetingArrayIntegerStore(i4, ARRAY_MELEE_ENEMY);
+                    // We loop as AC, basically. As it is BAB, IE how much chance
+                    // they'll hit us (they might all hit on a 20, but it also shows
+                    // who are the best fighters!). Set to 5, like AC.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, i5, iMinimum, iMaximum);
+                }
+                // 5. Hit Dice
+                iMinimum = GetAIInteger(TARGETING_HITDICE + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_HITDICE);
+                    iMaximum = GetAIInteger(TARGETING_HITDICE + MAXIMUM);
+                    // We then set the array up in a new temp array. 5 = Hit dice
+                    AI_TargetingArrayIntegerStore(i5, ARRAY_MELEE_ENEMY);
+                    // We loop as AC. Hit Dice is even easier. We set the limit to
+                    // a max of 4.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, i4, iMinimum, iMaximum);
+                }
+
+                // 6. Percent HP
+                int bPercDone;
+                iMinimum = GetAIInteger(TARGETING_HP_PERCENT + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    bPercDone = TRUE;
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_HP_PERCENT);
+                    iMaximum = GetAIInteger(TARGETING_HP_PERCENT + MAXIMUM);
+                    // We then set the array up in a new temp array. 6 = %
+                    AI_TargetingArrayIntegerStore(i6, ARRAY_MELEE_ENEMY);
+                    // We loop as AC. Current Hit Points are easy, and are done
+                    // by %ages. We set the % to 15 difference max.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, i15, iMinimum, iMaximum);
+                }
+                // 7. Current HP
+                iMinimum = GetAIInteger(TARGETING_HP_CURRENT + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_HP_CURRENT);
+                    iMaximum = GetAIInteger(TARGETING_HP_CURRENT + MAXIMUM);
+                    // We then set the array up in a new temp array. 7 = current HP
+                    AI_TargetingArrayIntegerStore(i7, ARRAY_MELEE_ENEMY);
+                    // We loop as AC. Current Hit points? Well, we set this limit to
+                    // Our Hit Dice * 2.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, GlobalOurHitDice * i2, iMinimum, iMaximum);
+                }
+                // 8. Maximum HP
+                iMinimum = GetAIInteger(TARGETING_HP_MAXIMUM + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_HP_MAXIMUM);
+                    iMaximum = GetAIInteger(TARGETING_HP_MAXIMUM + MAXIMUM);
+                    // We then set the array up in a new temp array. 8 = maximum
+                    AI_TargetingArrayIntegerStore(i8, ARRAY_MELEE_ENEMY);
+                    // We loop as AC. Max hit Hit points? Well, we set this limit to
+                    // Our Hit Dice * 3.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, iTypeOfTarget, GlobalOurHitDice * i3, iMinimum, iMaximum);
+                }
+                if(!bPercDone && iRemainingTargets >= i2)//... adding default option to most damaged
+                {
+                    // We then set the array up in a new temp array. 6 = %
+                    AI_TargetingArrayIntegerStore(i6, ARRAY_MELEE_ENEMY);
+                    // We loop as AC. Current Hit Points are easy, and are done
+                    // by %ages. We set the % to 15 difference max.
+                    //... something is amiss, when the current target dies in the next round
+                    //... this still reports the previous number
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_MELEE_ENEMY, TARGET_LOWER, i15, 2, 10)-1;
+                }
+                // WHEW!
+                // Now we should have 1 or more chosen targets in ARRAY_MELEE_ARRAY.
+                // iRemaining Targets is the array size...we mearly choose a random
+                // one, or the first one if there is only one :-D
+
+                // If only one, choose it
+                if(iRemainingTargets == i1)
+                {
+                    GlobalMeleeTarget = GetLocalObject(OBJECT_SELF, ARRAY_MELEE_ENEMY + s1);
+                }
+                // Check for 2+, if 0, we haven't got one to set!
+                else if(iRemainingTargets >= i2)
+                {
+                    // Else Roll dice
+                    iCnt = Random(iRemainingTargets) + i1;
+                    // Set random target
+                    GlobalMeleeTarget = GetLocalObject(OBJECT_SELF, ARRAY_MELEE_ENEMY + IntToString(iCnt));
+//                    _db("final target acquired-" + ObjectToString(GlobalMeleeTarget));
+                }
             }
         }
-    }
-    // Else, it is oLastTarget that will be our target
-    else
-    {
-        GlobalMeleeTarget = oLastTarget;
-    }
+        // Else, it is oLastTarget that will be our target
+        else // for (Insane-LastTarget || % || Break)
+        {
+            GlobalMeleeTarget = oLastTarget;
+//            _db("Target override");
+        }
+    }//... end if !Valid
 
     // If it is a new target, reset attacking counter to 0
-    if(GlobalMeleeTarget != oLastTarget)
+    if(GlobalMeleeTarget != oLastTarget || !GetIsObjectValid(oLastTarget))
     {
         DeleteAIInteger(AI_MELEE_TURNS_ATTACKING);
     }
@@ -13123,6 +14439,8 @@ int AI_SetUpAllObjects(object oImputBackup)
 
     // Do we want to change melee targets?
     oLastTarget = GetAIObject(AI_LAST_RANGED_TARGET);
+    if (GetHasSpellEffect(SPELL_ETHEREALNESS, oLastTarget))
+        oLastTarget = OBJECT_INVALID;
 
     // iValid is the counter for attacking target X...
     iBreak = GetAIInteger(AI_RANGED_TURNS_ATTACKING);
@@ -13136,228 +14454,230 @@ int AI_SetUpAllObjects(object oImputBackup)
     // - Hey, do we even have a ranged weapon?
     // - No valid override target
     // - No valid override target
-    if(!GetIsObjectValid(GlobalRangedTarget) && GetIsObjectValid(GetAIObject(AI_WEAPON_RANGED)) &&
-       (AI_GetTargetSanityCheck(oLastTarget) || // Sanity check (dead, valid, ETC)
-    // And must pass a % roll
-        d100() <= GetBoundriedAIInteger(AI_RANGED_LAST_TO_NEW_TARGET_CHANCE, i20, i100) ||
-    // OR last target attacked for X rounds
-        iBreak >= iMaxTurnsAttackingX))
+    if(!GetIsObjectValid(GlobalRangedTarget))//... same changes as in melee
     {
-        // 1. Set up all seen, else all heard, to the range array.
-        iCnt = i1;
-        iRemainingTargets = i0;
-        oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + IntToString(iCnt));
-        while(GetIsObjectValid(oSetUpTarget))
+        if (GetIsObjectValid(GetAIObject(AI_WEAPON_RANGED)) &&
+           (AI_IsInsaneTarget(oLastTarget) || // Sanity check (dead, valid, ETC)
+        // And must pass a % roll
+            d100() <= GetBoundriedAIInteger(AI_RANGED_LAST_TO_NEW_TARGET_CHANCE, i20, i100) ||
+        // OR last target attacked for X rounds
+            iBreak >= iMaxTurnsAttackingX))
         {
-            iRemainingTargets++;
-            SetLocalObject(OBJECT_SELF, ARRAY_RANGED_ENEMY + IntToString(iRemainingTargets), oSetUpTarget);
-            // Get Next seen
-            iCnt++;
-            oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + IntToString(iCnt));
-        }
-        // If we don't have any seen, used heard.
-        if(!iRemainingTargets)
-        {
+            // 1. Set up all seen, else all heard, to the range array.
             iCnt = i1;
             iRemainingTargets = i0;
-            oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + IntToString(iCnt));
+            oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + IntToString(iCnt));
             while(GetIsObjectValid(oSetUpTarget))
             {
                 iRemainingTargets++;
                 SetLocalObject(OBJECT_SELF, ARRAY_RANGED_ENEMY + IntToString(iRemainingTargets), oSetUpTarget);
                 // Get Next seen
                 iCnt++;
+                oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + IntToString(iCnt));
+            }
+            // If we don't have any seen, used heard.
+            if(!iRemainingTargets)
+            {
+                iCnt = i1;
+                iRemainingTargets = i0;
                 oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + IntToString(iCnt));
-            }
-        }
-        // If not valid, set to melee target at the end
-
-        // Do we have exactly 1 target? (iRemainingTargets == 1)
-        if(iRemainingTargets == i1)
-        {
-            // Then we make this our target and end it.
-            GlobalRangedTarget = GetLocalObject(OBJECT_SELF, ARRAY_RANGED_ENEMY + s1);
-        }
-        // Else we set up using range ETC, if we have more then 1.
-        else if(iRemainingTargets)
-        {
-            // Range - they are already in range order. As it is used for
-            // spells, it uses the same function.
-    // Range             - Used only for ranged phisical attacks and spell attacks  (TARGETING_RANGE)
-    //                      - Melee - Range is used to see what it can reach, and the MAX and MIN are taken to account
-    // AC                - Used only for phisical attacks (TARGETING_AC)
-    // Saving Throws     - Used only for spell attacks (TARGETING_SAVES)
-    // Phisical Protections - Used for both spells and phisical attacks (TARGETING_PHISICALS)
-    // Base Attack Bonus - Used for both spells and phisical attacks (TARGETING_BAB)
-    // Hit Dice          - Used for both spells and phisical attacks (TARGETING_HITDICE)
-    // HP Percent        - Used for both spells and phisical attacks (TARGETING_HP_PERCENT)
-    // HP Current        - Used for both spells and phisical attacks (TARGETING_HP_CURRENT)
-    // HP Maximum        - Used for both spells and phisical attacks (TARGETING_HP_MAXIMUM)
-            // 0. Sneak attack check
-            if(GetHasFeat(FEAT_SNEAK_ATTACK))
-            {
-                // We normally get the nearest enemy who is not attacking us, and
-                // actually stop!
-                AI_TargetingArrayIntegerStore(i9, ARRAY_RANGED_ENEMY);
-
-                // Get the closest who isn't attacking us.
-                oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_TEMP_ARRAY + s1);
-                if(GetAttackTarget(oSetUpTarget) != OBJECT_SELF)
+                while(GetIsObjectValid(oSetUpTarget))
                 {
-                    GlobalMeleeTarget = oSetUpTarget;
-                    iRemainingTargets = FALSE;
+                    iRemainingTargets++;
+                    SetLocalObject(OBJECT_SELF, ARRAY_RANGED_ENEMY + IntToString(iRemainingTargets), oSetUpTarget);
+                    // Get Next seen
+                    iCnt++;
+                    oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + IntToString(iCnt));
                 }
-                // If we have trouble using that one, IE they are attacking us, we
-                // just use normal methods.
+            }
+            // If not valid, set to melee target at the end
 
-                // Delete temp array
-                AI_TargetingArrayDelete(ARRAY_TEMP_ARRAY);
-            }
-            iMinimum = GetAIInteger(TARGETING_RANGE + MINIMUM);
-            // 1. Do we do range?
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_RANGE);
-                iMaximum = GetAIInteger(TARGETING_RANGE + MAXIMUM);
-
-                // We then set the array up in a new temp array.
-                AI_TargetingArrayDistanceStore(ARRAY_RANGED_ENEMY, ARRAY_TEMP_ARRAY);
-                // We loop range. Maximum one can be from another when got to the
-                // minimum is 5.0 M
-                iRemainingTargets = AI_TargetingArrayLimitTargetsFloat(ARRAY_RANGED_ENEMY, iTypeOfTarget, f5, iMinimum, iMaximum);
-            }
-            // 2. AC
-            iMinimum = GetAIInteger(TARGETING_AC + MINIMUM);
-            // Do we do AC? And over one target...
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_AC);
-                iMaximum = GetAIInteger(TARGETING_AC + MAXIMUM);
-
-                // We then set the array up in a new temp array. 1 = AC.
-                AI_TargetingArrayIntegerStore(i1, ARRAY_RANGED_ENEMY);
-
-                // We loop through all the targets in the temp array (we also
-                // delete the temp array targets!) and set what ones we want to target
-                // based on AC.
-                // - Continue until iMinimum is reached.
-                // - Never go over iMaximum
-                // - After iMinimum we make sure the AC differences is not a major one of
-                // over 5.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, i5, iMinimum, iMaximum);
-            }
-            // Most others are similar (and all integer values so easy to check)
-            // 3. Phisical protections.
-            iMinimum = GetAIInteger(TARGETING_PHISICALS + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_PHISICALS);
-                iMaximum = GetAIInteger(TARGETING_PHISICALS + MAXIMUM);
-                // We then set the array up in a new temp array. 3 = phisicals.
-                AI_TargetingArrayIntegerStore(i3, ARRAY_RANGED_ENEMY);
-                // We loop as AC, basically. As it is stored based on the amount
-                // of DR offered, limit is 0, not 6. Can't be any different.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, i0, iMinimum, iMaximum);
-            }
-            // 4. BAB
-            iMinimum = GetAIInteger(TARGETING_BAB + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_BAB);
-                iMaximum = GetAIInteger(TARGETING_BAB + MAXIMUM);
-                // We then set the array up in a new temp array. 4 = BAB
-                AI_TargetingArrayIntegerStore(i4, ARRAY_RANGED_ENEMY);
-                // We loop as AC, basically. As it is BAB, IE how much chance
-                // they'll hit us (they might all hit on a 20, but it also shows
-                // who are the best fighters!). Set to 5, like AC.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, i5, iMinimum, iMaximum);
-            }
-            // 5. Hit Dice
-            iMinimum = GetAIInteger(TARGETING_HITDICE + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_HITDICE);
-                iMaximum = GetAIInteger(TARGETING_HITDICE + MAXIMUM);
-                // We then set the array up in a new temp array. 5 = Hit dice
-                AI_TargetingArrayIntegerStore(i5, ARRAY_RANGED_ENEMY);
-                // We loop as AC. Hit Dice is even easier. We set the limit to
-                // a max of 4.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, i4, iMinimum, iMaximum);
-            }
-            // 6. Percent HP
-            iMinimum = GetAIInteger(TARGETING_HP_PERCENT + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_HP_PERCENT);
-                iMaximum = GetAIInteger(TARGETING_HP_PERCENT + MAXIMUM);
-                // We then set the array up in a new temp array. 5 = Hit dice
-                AI_TargetingArrayIntegerStore(i6, ARRAY_RANGED_ENEMY);
-                // We loop as AC. Current Hit Points are easy, and are done
-                // by %ages. We set the % to 15 difference max.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, i15, iMinimum, iMaximum);
-            }
-            // 7. Current HP
-            iMinimum = GetAIInteger(TARGETING_HP_CURRENT + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_HP_CURRENT);
-                iMaximum = GetAIInteger(TARGETING_HP_CURRENT + MAXIMUM);
-                // We then set the array up in a new temp array. 5 = Hit dice
-                AI_TargetingArrayIntegerStore(i7, ARRAY_RANGED_ENEMY);
-                // We loop as AC. Current Hit points? Well, we set this limit to
-                // Our Hit Dice * 2.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, GlobalOurHitDice * i2, iMinimum, iMaximum);
-            }
-            // 8. Maximum HP
-            iMinimum = GetAIInteger(TARGETING_HP_MAXIMUM + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_HP_MAXIMUM);
-                iMaximum = GetAIInteger(TARGETING_HP_MAXIMUM + MAXIMUM);
-                // We then set the array up in a new temp array. 5 = Hit dice
-                AI_TargetingArrayIntegerStore(i8, ARRAY_RANGED_ENEMY);
-                // We loop as AC. Max hit Hit points? Well, we set this limit to
-                // Our Hit Dice * 3.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, GlobalOurHitDice * i3, iMinimum, iMaximum);
-            }
-            // End narrowing down on ARRAY_RANGED_ENEMY
-
-            // If only one, choose it
+            // Do we have exactly 1 target? (iRemainingTargets == 1)
             if(iRemainingTargets == i1)
             {
+                // Then we make this our target and end it.
                 GlobalRangedTarget = GetLocalObject(OBJECT_SELF, ARRAY_RANGED_ENEMY + s1);
             }
-            // Check for 2+, if 0, we haven't got one to set!
-            else if(iRemainingTargets >= i2)
+            // Else we set up using range ETC, if we have more then 1.
+            else if(iRemainingTargets)
             {
-                // Else Roll dice
-                iCnt = Random(iRemainingTargets) + i1;
-                // Set random target
-                GlobalRangedTarget = GetLocalObject(OBJECT_SELF, ARRAY_RANGED_ENEMY + IntToString(iCnt));
+                // Range - they are already in range order. As it is used for
+                // spells, it uses the same function.
+        // Range             - Used only for ranged phisical attacks and spell attacks  (TARGETING_RANGE)
+        //                      - Melee - Range is used to see what it can reach, and the MAX and MIN are taken to account
+        // AC                - Used only for phisical attacks (TARGETING_AC)
+        // Saving Throws     - Used only for spell attacks (TARGETING_SAVES)
+        // Phisical Protections - Used for both spells and phisical attacks (TARGETING_PHISICALS)
+        // Base Attack Bonus - Used for both spells and phisical attacks (TARGETING_BAB)
+        // Hit Dice          - Used for both spells and phisical attacks (TARGETING_HITDICE)
+        // HP Percent        - Used for both spells and phisical attacks (TARGETING_HP_PERCENT)
+        // HP Current        - Used for both spells and phisical attacks (TARGETING_HP_CURRENT)
+        // HP Maximum        - Used for both spells and phisical attacks (TARGETING_HP_MAXIMUM)
+                // 0. Sneak attack check
+                if(GetHasFeat(FEAT_SNEAK_ATTACK))
+                {
+                    // We normally get the nearest enemy who is not attacking us, and
+                    // actually stop!
+                    AI_TargetingArrayIntegerStore(i9, ARRAY_RANGED_ENEMY);
+
+                    // Get the closest who isn't attacking us.
+                    oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_TEMP_ARRAY + s1);
+                    if(GetAttackTarget(oSetUpTarget) != OBJECT_SELF)
+                    {
+                        GlobalMeleeTarget = oSetUpTarget;
+                        iRemainingTargets = FALSE;
+                    }
+                    // If we have trouble using that one, IE they are attacking us, we
+                    // just use normal methods.
+
+                    // Delete temp array
+                    AI_TargetingArrayDelete(ARRAY_TEMP_ARRAY);
+                }
+                iMinimum = GetAIInteger(TARGETING_RANGE + MINIMUM);
+                // 1. Do we do range?
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_RANGE);
+                    iMaximum = GetAIInteger(TARGETING_RANGE + MAXIMUM);
+
+                    // We then set the array up in a new temp array.
+                    AI_TargetingArrayDistanceStore(ARRAY_RANGED_ENEMY, ARRAY_TEMP_ARRAY);
+                    // We loop range. Maximum one can be from another when got to the
+                    // minimum is 5.0 M
+                    iRemainingTargets = AI_TargetingArrayLimitTargetsFloat(ARRAY_RANGED_ENEMY, iTypeOfTarget, f5, iMinimum, iMaximum);
+                }
+                // 2. AC
+                iMinimum = GetAIInteger(TARGETING_AC + MINIMUM);
+                // Do we do AC? And over one target...
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_AC);
+                    iMaximum = GetAIInteger(TARGETING_AC + MAXIMUM);
+
+                    // We then set the array up in a new temp array. 1 = AC.
+                    AI_TargetingArrayIntegerStore(i1, ARRAY_RANGED_ENEMY);
+
+                    // We loop through all the targets in the temp array (we also
+                    // delete the temp array targets!) and set what ones we want to target
+                    // based on AC.
+                    // - Continue until iMinimum is reached.
+                    // - Never go over iMaximum
+                    // - After iMinimum we make sure the AC differences is not a major one of
+                    // over 5.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, i5, iMinimum, iMaximum);
+                }
+                // Most others are similar (and all integer values so easy to check)
+                // 3. Phisical protections.
+                iMinimum = GetAIInteger(TARGETING_PHISICALS + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_PHISICALS);
+                    iMaximum = GetAIInteger(TARGETING_PHISICALS + MAXIMUM);
+                    // We then set the array up in a new temp array. 3 = phisicals.
+                    AI_TargetingArrayIntegerStore(i3, ARRAY_RANGED_ENEMY);
+                    // We loop as AC, basically. As it is stored based on the amount
+                    // of DR offered, limit is 0, not 6. Can't be any different.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, i0, iMinimum, iMaximum);
+                }
+                // 4. BAB
+                iMinimum = GetAIInteger(TARGETING_BAB + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_BAB);
+                    iMaximum = GetAIInteger(TARGETING_BAB + MAXIMUM);
+                    // We then set the array up in a new temp array. 4 = BAB
+                    AI_TargetingArrayIntegerStore(i4, ARRAY_RANGED_ENEMY);
+                    // We loop as AC, basically. As it is BAB, IE how much chance
+                    // they'll hit us (they might all hit on a 20, but it also shows
+                    // who are the best fighters!). Set to 5, like AC.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, i5, iMinimum, iMaximum);
+                }
+                // 5. Hit Dice
+                iMinimum = GetAIInteger(TARGETING_HITDICE + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_HITDICE);
+                    iMaximum = GetAIInteger(TARGETING_HITDICE + MAXIMUM);
+                    // We then set the array up in a new temp array. 5 = Hit dice
+                    AI_TargetingArrayIntegerStore(i5, ARRAY_RANGED_ENEMY);
+                    // We loop as AC. Hit Dice is even easier. We set the limit to
+                    // a max of 4.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, i4, iMinimum, iMaximum);
+                }
+                // 6. Percent HP
+                iMinimum = GetAIInteger(TARGETING_HP_PERCENT + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_HP_PERCENT);
+                    iMaximum = GetAIInteger(TARGETING_HP_PERCENT + MAXIMUM);
+                    // We then set the array up in a new temp array. 5 = Hit dice
+                    AI_TargetingArrayIntegerStore(i6, ARRAY_RANGED_ENEMY);
+                    // We loop as AC. Current Hit Points are easy, and are done
+                    // by %ages. We set the % to 15 difference max.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, i15, iMinimum, iMaximum);
+                }
+                // 7. Current HP
+                iMinimum = GetAIInteger(TARGETING_HP_CURRENT + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_HP_CURRENT);
+                    iMaximum = GetAIInteger(TARGETING_HP_CURRENT + MAXIMUM);
+                    // We then set the array up in a new temp array. 5 = Hit dice
+                    AI_TargetingArrayIntegerStore(i7, ARRAY_RANGED_ENEMY);
+                    // We loop as AC. Current Hit points? Well, we set this limit to
+                    // Our Hit Dice * 2.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, GlobalOurHitDice * i2, iMinimum, iMaximum);
+                }
+                // 8. Maximum HP
+                iMinimum = GetAIInteger(TARGETING_HP_MAXIMUM + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_HP_MAXIMUM);
+                    iMaximum = GetAIInteger(TARGETING_HP_MAXIMUM + MAXIMUM);
+                    // We then set the array up in a new temp array. 5 = Hit dice
+                    AI_TargetingArrayIntegerStore(i8, ARRAY_RANGED_ENEMY);
+                    // We loop as AC. Max hit Hit points? Well, we set this limit to
+                    // Our Hit Dice * 3.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_RANGED_ENEMY, iTypeOfTarget, GlobalOurHitDice * i3, iMinimum, iMaximum);
+                }
+                // End narrowing down on ARRAY_RANGED_ENEMY
+
+                // If only one, choose it
+                if(iRemainingTargets == i1)
+                {
+                    GlobalRangedTarget = GetLocalObject(OBJECT_SELF, ARRAY_RANGED_ENEMY + s1);
+                }
+                // Check for 2+, if 0, we haven't got one to set!
+                else if(iRemainingTargets >= i2)
+                {
+                    // Else Roll dice
+                    iCnt = Random(iRemainingTargets) + i1;
+                    // Set random target
+                    GlobalRangedTarget = GetLocalObject(OBJECT_SELF, ARRAY_RANGED_ENEMY + IntToString(iCnt));
+                }
             }
         }
-    }
-    // Else, it is oLastTarget that will be our target
-    else
-    {
-        GlobalRangedTarget = oLastTarget;
-    }
-
+        // Else, it is oLastTarget that will be our target
+        else
+        {
+            GlobalRangedTarget = oLastTarget;
+        }
+    }//... end if !Valid
     // If not valid, set to melee target
     if(!GetIsObjectValid(GlobalRangedTarget))
     {
         GlobalRangedTarget = GlobalMeleeTarget;
     }
     // If it is a new target, reset attacking counter to 0
-    if(GlobalRangedTarget != oLastTarget)
+    if(GlobalRangedTarget != oLastTarget || !GetIsObjectValid(oLastTarget))
     {
         DeleteAIInteger(AI_RANGED_TURNS_ATTACKING);
     }
@@ -13374,6 +14694,8 @@ int AI_SetUpAllObjects(object oImputBackup)
 
     // Do we want to change melee targets?
     oLastTarget = GetAIObject(AI_LAST_SPELL_TARGET);
+    if (GetHasSpellEffect(SPELL_ETHEREALNESS, oLastTarget))
+        oLastTarget = OBJECT_INVALID;
 
     // iValid is the counter for attacking target X...
     iBreak = GetAIInteger(AI_SPELL_TURNS_ATTACKING);
@@ -13382,254 +14704,257 @@ int AI_SetUpAllObjects(object oImputBackup)
     // We set this to 0 if we our oLastTarget != GlobalMeleeTarget below changing.
 
     // - No valid override target
-    if(!GetIsObjectValid(GlobalSpellTarget) &&
-       (AI_GetTargetSanityCheck(oLastTarget) || // Sanity check (dead, valid, ETC)
-    // Or the last target was immune to all our spells
-        GetLocalInt(oLastTarget, AI_SPELL_IMMUNE_LEVEL) >= i9 ||
-    // OR must pass a % roll
-        d100() <= GetBoundriedAIInteger(AI_SPELL_LAST_TO_NEW_TARGET_CHANCE, i20, i100) ||
-    // OR last target attacked for X rounds
-        iBreak >= iMaxTurnsAttackingX))
+    if(!GetIsObjectValid(GlobalSpellTarget))//... again, same changes as in melee
     {
-        // 1. Set up all seen, else all heard, to the range array.
-        iCnt = i1;
-        iRemainingTargets = i0;
-        oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + IntToString(iCnt));
-        while(GetIsObjectValid(oSetUpTarget))
+        if ((AI_IsInsaneTarget(oLastTarget) || // Sanity check (dead, valid, ETC)
+        // Or the last target was immune to all our spells
+            GetLocalInt(oLastTarget, AI_SPELL_IMMUNE_LEVEL) >= i9 ||
+        // OR must pass a % roll
+            d100() <= GetBoundriedAIInteger(AI_SPELL_LAST_TO_NEW_TARGET_CHANCE, i20, i100) ||
+        // OR last target attacked for X rounds
+            iBreak >= iMaxTurnsAttackingX))
         {
-            // Totally immune to our spells - ignore!
-            if(!AI_SpellResistanceImmune(oSetUpTarget) &&
-                GetLocalInt(GlobalSpellTarget, AI_SPELL_IMMUNE_LEVEL) < i9)
-            {
-                iRemainingTargets++;
-                SetLocalObject(OBJECT_SELF, ARRAY_SPELL_ENEMY + IntToString(iRemainingTargets), oSetUpTarget);
-            }
-            // Get Next seen
-            iCnt++;
-            oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + IntToString(iCnt));
-        }
-        // If we don't have any seen, used heard.
-        if(!iRemainingTargets)
-        {
+            // 1. Set up all seen, else all heard, to the range array.
             iCnt = i1;
             iRemainingTargets = i0;
-            oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + IntToString(iCnt));
+            oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + IntToString(iCnt));
             while(GetIsObjectValid(oSetUpTarget))
             {
                 // Totally immune to our spells - ignore!
+                //...??????????????   GetLocalInt(GlobalSpellTarget?????? changing to oSetUpTarget
                 if(!AI_SpellResistanceImmune(oSetUpTarget) &&
-                    GetLocalInt(GlobalSpellTarget, AI_SPELL_IMMUNE_LEVEL) < i9)
+                    GetLocalInt(oSetUpTarget, AI_SPELL_IMMUNE_LEVEL) < i9)
                 {
                     iRemainingTargets++;
                     SetLocalObject(OBJECT_SELF, ARRAY_SPELL_ENEMY + IntToString(iRemainingTargets), oSetUpTarget);
                 }
                 // Get Next seen
                 iCnt++;
+                oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + IntToString(iCnt));
+            }
+            // If we don't have any seen, used heard.
+            if(!iRemainingTargets)
+            {
+                iCnt = i1;
+                iRemainingTargets = i0;
                 oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + IntToString(iCnt));
+                while(GetIsObjectValid(oSetUpTarget))
+                {
+                    // Totally immune to our spells - ignore!
+                    if(!AI_SpellResistanceImmune(oSetUpTarget) &&
+                        //...??????????????   GetLocalInt(GlobalSpellTarget?????? changing to oSetUpTarget
+                        GetLocalInt(oSetUpTarget, AI_SPELL_IMMUNE_LEVEL) < i9)
+                    {
+                        iRemainingTargets++;
+                        SetLocalObject(OBJECT_SELF, ARRAY_SPELL_ENEMY + IntToString(iRemainingTargets), oSetUpTarget);
+                    }
+                    // Get Next seen
+                    iCnt++;
+                    oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + IntToString(iCnt));
+                }
             }
-        }
-        // If not valid, its invalid! As this is the last thing, return iM1.
-        // This CAN happen!
-        // - If we have all targets naturally immune to spells via. spell reistance.
-        //   we can set GlobalNormalSpellsNoEffectLevel to 10, below, to stop all spells
-        // - After this lot of things, we do check for validness and set to melee target if no one else
+            // If not valid, its invalid! As this is the last thing, return iM1.
+            // This CAN happen!
+            // - If we have all targets naturally immune to spells via. spell reistance.
+            //   we can set GlobalNormalSpellsNoEffectLevel to 10, below, to stop all spells
+            // - After this lot of things, we do check for validness and set to melee target if no one else
 
-        // MELEE Targets get checked for LOS, so they should always move
-        // to people we should  attack ABOVE
-        // Do we have exactly 1 target? (iRemainingTargets == 1)
-        if(iRemainingTargets == i1)
-        {
-            // Then we make this our target and end it.
-            GlobalSpellTarget = GetLocalObject(OBJECT_SELF, ARRAY_SPELL_ENEMY + s1);
-        }
-        // Else we set up using range ETC, if we have more then 1.
-        else if(iRemainingTargets > i1)
-        {
-            // ARRAY_SPELL_ENEMY
-            // Similar to Ranged attacking for range setting :-D
-
-            // Range - they are already in range order. As it is used for
-            // spells, it uses the same function.
-
-    // PC, Mantals.
-    // Range             - Used only for ranged phisical attacks and spell attacks  (TARGETING_RANGE)
-    //                      - Melee - Range is used to see what it can reach, and the MAX and MIN are taken to account
-    // AC                - Used only for phisical attacks (TARGETING_AC)
-    // Saving Throws     - Used only for spell attacks (TARGETING_SAVES)
-    // Phisical Protections - Used for both spells and phisical attacks (TARGETING_PHISICALS)
-    // Base Attack Bonus - Used for both spells and phisical attacks (TARGETING_BAB)
-    // Hit Dice          - Used for both spells and phisical attacks (TARGETING_HITDICE)
-    // HP Percent        - Used for both spells and phisical attacks (TARGETING_HP_PERCENT)
-    // HP Current        - Used for both spells and phisical attacks (TARGETING_HP_CURRENT)
-    // HP Maximum        - Used for both spells and phisical attacks (TARGETING_HP_MAXIMUM)
-
-            // -1. Is it a PC...
-            // - Type 10
-            iMinimum = GetAIInteger(TARGETING_ISPC + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_ISPC);
-                iMaximum = GetAIInteger(TARGETING_ISPC + MAXIMUM);
-                // We then set the array up in a new temp array. 10 = PC.
-                AI_TargetingArrayIntegerStore(i10, ARRAY_SPELL_ENEMY);
-                // We loop and set up, with no difference in PC status, IE we should always choose those who are PCs.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i0, iMinimum, iMaximum);
-            }
-            // 0. Mantals
-            // - Type 10
-            iMinimum = GetAIInteger(TARGETING_ISPC + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_ISPC);
-                iMaximum = GetAIInteger(TARGETING_ISPC + MAXIMUM);
-                // We then set the array up in a new temp array. 10 = PC.
-                AI_TargetingArrayIntegerStore(i10, ARRAY_SPELL_ENEMY);
-                // We loop and set up, with no difference in PC status, IE we should always choose those who are PCs.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i0, iMinimum, iMaximum);
-            }
-            iMinimum = GetAIInteger(TARGETING_RANGE + MINIMUM);
-            // 1. Do we do range?
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_RANGE);
-                iMaximum = GetAIInteger(TARGETING_RANGE + MAXIMUM);
-
-                // We then set the array up in a new temp array
-                AI_TargetingArrayDistanceStore(ARRAY_SPELL_ENEMY, ARRAY_TEMP_ARRAY);
-                // We loop range. Maximum one can be from another when got to the
-                // minimum is 5.0 M
-                iRemainingTargets = AI_TargetingArrayLimitTargetsFloat(ARRAY_SPELL_ENEMY, iTypeOfTarget, f5, iMinimum, iMaximum);
-            }
-            // 2. Saving Throws
-            iMinimum = GetAIInteger(TARGETING_SAVES + MINIMUM);
-            // Do we do saves? And over one target...
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_SAVES);
-                iMaximum = GetAIInteger(TARGETING_SAVES + MAXIMUM);
-
-                // We then set the array up in a new temp array. 2 = total saves.
-                AI_TargetingArrayIntegerStore(i2, ARRAY_SPELL_ENEMY);
-
-                // Saves are basically a spells' AC, or at least may hamper
-                // spells' power.
-                // - difference of 4
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i4, iMinimum, iMaximum);
-            }
-            // Most others are similar (and all integer values so easy to check)
-            // 3. Phisical protections.
-            iMinimum = GetAIInteger(TARGETING_PHISICALS + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_PHISICALS);
-                iMaximum = GetAIInteger(TARGETING_PHISICALS + MAXIMUM);
-                // We then set the array up in a new temp array. 3 = phisicals.
-                AI_TargetingArrayIntegerStore(i3, ARRAY_SPELL_ENEMY);
-                // We loop as AC, basically. As it is stored based on the amount
-                // of DR offered, limit is 0, not 6. Can't be any different.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i0, iMinimum, iMaximum);
-            }
-            // 4. BAB
-            iMinimum = GetAIInteger(TARGETING_BAB + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_BAB);
-                iMaximum = GetAIInteger(TARGETING_BAB + MAXIMUM);
-                // We then set the array up in a new temp array. 4 = BAB
-                AI_TargetingArrayIntegerStore(i4, ARRAY_SPELL_ENEMY);
-                // We loop as AC, basically. As it is BAB, IE how much chance
-                // they'll hit us (they might all hit on a 20, but it also shows
-                // who are the best fighters!). Set to 5, like AC.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i5, iMinimum, iMaximum);
-            }
-            // 5. Hit Dice
-            iMinimum = GetAIInteger(TARGETING_HITDICE + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_HITDICE);
-                iMaximum = GetAIInteger(TARGETING_HITDICE + MAXIMUM);
-                // We then set the array up in a new temp array. 5 = Hit dice
-                AI_TargetingArrayIntegerStore(i5, ARRAY_SPELL_ENEMY);
-                // We loop as AC. Hit Dice is even easier. We set the limit to
-                // a max of 4.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i4, iMinimum, iMaximum);
-            }
-            // 6. Percent HP
-            iMinimum = GetAIInteger(TARGETING_HP_PERCENT + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_HP_PERCENT);
-                iMaximum = GetAIInteger(TARGETING_HP_PERCENT + MAXIMUM);
-                // We then set the array up in a new temp array. 6 = % HP
-                AI_TargetingArrayIntegerStore(i6, ARRAY_SPELL_ENEMY);
-                // We loop as AC. Current Hit Points are easy, and are done
-                // by %ages. We set the % to 15 difference max.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i15, iMinimum, iMaximum);
-            }
-            // 7. Current HP
-            iMinimum = GetAIInteger(TARGETING_HP_CURRENT + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_HP_CURRENT);
-                iMaximum = GetAIInteger(TARGETING_HP_CURRENT + MAXIMUM);
-                // We then set the array up in a new temp array. 7 = Current
-                AI_TargetingArrayIntegerStore(i7, ARRAY_SPELL_ENEMY);
-                // We loop as AC. Current Hit points? Well, we set this limit to
-                // Our Hit Dice * 2.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, GlobalOurHitDice * i2, iMinimum, iMaximum);
-            }
-            // 8. Maximum HP
-            iMinimum = GetAIInteger(TARGETING_HP_MAXIMUM + MINIMUM);
-            if(iMinimum && iRemainingTargets >= i2)
-            {
-                // If so, is it lowest or highest?
-                iTypeOfTarget = GetAIInteger(TARGETING_HP_MAXIMUM);
-                iMaximum = GetAIInteger(TARGETING_HP_MAXIMUM + MAXIMUM);
-                // We then set the array up in a new temp array. 8 = Maximum
-                AI_TargetingArrayIntegerStore(i8, ARRAY_SPELL_ENEMY);
-                // We loop as AC. Max hit Hit points? Well, we set this limit to
-                // Our Hit Dice * 3.
-                iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, GlobalOurHitDice * i3, iMinimum, iMaximum);
-            }
-            // End narrowing down on ARRAY_SPELL_ENEMY
-
-            // If only one, choose it
+            // MELEE Targets get checked for LOS, so they should always move
+            // to people we should  attack ABOVE
+            // Do we have exactly 1 target? (iRemainingTargets == 1)
             if(iRemainingTargets == i1)
             {
+                // Then we make this our target and end it.
                 GlobalSpellTarget = GetLocalObject(OBJECT_SELF, ARRAY_SPELL_ENEMY + s1);
             }
-            // Check for 2+, if 0, we haven't got one to set!
-            else if(iRemainingTargets >= i2)
+            // Else we set up using range ETC, if we have more then 1.
+            else if(iRemainingTargets > i1)
             {
-                // Else Roll dice
-                iCnt = Random(iRemainingTargets - i1) + i1;
-                // Set random target
-                GlobalSpellTarget = GetLocalObject(OBJECT_SELF, ARRAY_SPELL_ENEMY + IntToString(iCnt));
+                // ARRAY_SPELL_ENEMY
+                // Similar to Ranged attacking for range setting :-D
+
+                // Range - they are already in range order. As it is used for
+                // spells, it uses the same function.
+
+        // PC, Mantals.
+        // Range             - Used only for ranged phisical attacks and spell attacks  (TARGETING_RANGE)
+        //                      - Melee - Range is used to see what it can reach, and the MAX and MIN are taken to account
+        // AC                - Used only for phisical attacks (TARGETING_AC)
+        // Saving Throws     - Used only for spell attacks (TARGETING_SAVES)
+        // Phisical Protections - Used for both spells and phisical attacks (TARGETING_PHISICALS)
+        // Base Attack Bonus - Used for both spells and phisical attacks (TARGETING_BAB)
+        // Hit Dice          - Used for both spells and phisical attacks (TARGETING_HITDICE)
+        // HP Percent        - Used for both spells and phisical attacks (TARGETING_HP_PERCENT)
+        // HP Current        - Used for both spells and phisical attacks (TARGETING_HP_CURRENT)
+        // HP Maximum        - Used for both spells and phisical attacks (TARGETING_HP_MAXIMUM)
+
+                // -1. Is it a PC...
+                // - Type 10
+                iMinimum = GetAIInteger(TARGETING_ISPC + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_ISPC);
+                    iMaximum = GetAIInteger(TARGETING_ISPC + MAXIMUM);
+                    // We then set the array up in a new temp array. 10 = PC.
+                    AI_TargetingArrayIntegerStore(i10, ARRAY_SPELL_ENEMY);
+                    // We loop and set up, with no difference in PC status, IE we should always choose those who are PCs.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i0, iMinimum, iMaximum);
+                }
+                // 0. Mantals
+                // - Type 10
+                iMinimum = GetAIInteger(TARGETING_ISPC + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_ISPC);
+                    iMaximum = GetAIInteger(TARGETING_ISPC + MAXIMUM);
+                    // We then set the array up in a new temp array. 10 = PC.
+                    AI_TargetingArrayIntegerStore(i10, ARRAY_SPELL_ENEMY);
+                    // We loop and set up, with no difference in PC status, IE we should always choose those who are PCs.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i0, iMinimum, iMaximum);
+                }
+                iMinimum = GetAIInteger(TARGETING_RANGE + MINIMUM);
+                // 1. Do we do range?
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_RANGE);
+                    iMaximum = GetAIInteger(TARGETING_RANGE + MAXIMUM);
+
+                    // We then set the array up in a new temp array
+                    AI_TargetingArrayDistanceStore(ARRAY_SPELL_ENEMY, ARRAY_TEMP_ARRAY);
+                    // We loop range. Maximum one can be from another when got to the
+                    // minimum is 5.0 M
+                    iRemainingTargets = AI_TargetingArrayLimitTargetsFloat(ARRAY_SPELL_ENEMY, iTypeOfTarget, f5, iMinimum, iMaximum);
+                }
+                // 2. Saving Throws
+                iMinimum = GetAIInteger(TARGETING_SAVES + MINIMUM);
+                // Do we do saves? And over one target...
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_SAVES);
+                    iMaximum = GetAIInteger(TARGETING_SAVES + MAXIMUM);
+
+                    // We then set the array up in a new temp array. 2 = total saves.
+                    AI_TargetingArrayIntegerStore(i2, ARRAY_SPELL_ENEMY);
+
+                    // Saves are basically a spells' AC, or at least may hamper
+                    // spells' power.
+                    // - difference of 4
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i4, iMinimum, iMaximum);
+                }
+                // Most others are similar (and all integer values so easy to check)
+                // 3. Phisical protections.
+                iMinimum = GetAIInteger(TARGETING_PHISICALS + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_PHISICALS);
+                    iMaximum = GetAIInteger(TARGETING_PHISICALS + MAXIMUM);
+                    // We then set the array up in a new temp array. 3 = phisicals.
+                    AI_TargetingArrayIntegerStore(i3, ARRAY_SPELL_ENEMY);
+                    // We loop as AC, basically. As it is stored based on the amount
+                    // of DR offered, limit is 0, not 6. Can't be any different.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i0, iMinimum, iMaximum);
+                }
+                // 4. BAB
+                iMinimum = GetAIInteger(TARGETING_BAB + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_BAB);
+                    iMaximum = GetAIInteger(TARGETING_BAB + MAXIMUM);
+                    // We then set the array up in a new temp array. 4 = BAB
+                    AI_TargetingArrayIntegerStore(i4, ARRAY_SPELL_ENEMY);
+                    // We loop as AC, basically. As it is BAB, IE how much chance
+                    // they'll hit us (they might all hit on a 20, but it also shows
+                    // who are the best fighters!). Set to 5, like AC.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i5, iMinimum, iMaximum);
+                }
+                // 5. Hit Dice
+                iMinimum = GetAIInteger(TARGETING_HITDICE + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_HITDICE);
+                    iMaximum = GetAIInteger(TARGETING_HITDICE + MAXIMUM);
+                    // We then set the array up in a new temp array. 5 = Hit dice
+                    AI_TargetingArrayIntegerStore(i5, ARRAY_SPELL_ENEMY);
+                    // We loop as AC. Hit Dice is even easier. We set the limit to
+                    // a max of 4.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i4, iMinimum, iMaximum);
+                }
+                // 6. Percent HP
+                iMinimum = GetAIInteger(TARGETING_HP_PERCENT + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_HP_PERCENT);
+                    iMaximum = GetAIInteger(TARGETING_HP_PERCENT + MAXIMUM);
+                    // We then set the array up in a new temp array. 6 = % HP
+                    AI_TargetingArrayIntegerStore(i6, ARRAY_SPELL_ENEMY);
+                    // We loop as AC. Current Hit Points are easy, and are done
+                    // by %ages. We set the % to 15 difference max.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, i15, iMinimum, iMaximum);
+                }
+                // 7. Current HP
+                iMinimum = GetAIInteger(TARGETING_HP_CURRENT + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_HP_CURRENT);
+                    iMaximum = GetAIInteger(TARGETING_HP_CURRENT + MAXIMUM);
+                    // We then set the array up in a new temp array. 7 = Current
+                    AI_TargetingArrayIntegerStore(i7, ARRAY_SPELL_ENEMY);
+                    // We loop as AC. Current Hit points? Well, we set this limit to
+                    // Our Hit Dice * 2.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, GlobalOurHitDice * i2, iMinimum, iMaximum);
+                }
+                // 8. Maximum HP
+                iMinimum = GetAIInteger(TARGETING_HP_MAXIMUM + MINIMUM);
+                if(iMinimum && iRemainingTargets >= i2)
+                {
+                    // If so, is it lowest or highest?
+                    iTypeOfTarget = GetAIInteger(TARGETING_HP_MAXIMUM);
+                    iMaximum = GetAIInteger(TARGETING_HP_MAXIMUM + MAXIMUM);
+                    // We then set the array up in a new temp array. 8 = Maximum
+                    AI_TargetingArrayIntegerStore(i8, ARRAY_SPELL_ENEMY);
+                    // We loop as AC. Max hit Hit points? Well, we set this limit to
+                    // Our Hit Dice * 3.
+                    iRemainingTargets = AI_TargetingArrayLimitTargets(ARRAY_SPELL_ENEMY, iTypeOfTarget, GlobalOurHitDice * i3, iMinimum, iMaximum);
+                }
+                // End narrowing down on ARRAY_SPELL_ENEMY
+
+                // If only one, choose it
+                if(iRemainingTargets == i1)
+                {
+                    GlobalSpellTarget = GetLocalObject(OBJECT_SELF, ARRAY_SPELL_ENEMY + s1);
+                }
+                // Check for 2+, if 0, we haven't got one to set!
+                else if(iRemainingTargets >= i2)
+                {
+                    // Else Roll dice
+                    iCnt = Random(iRemainingTargets - i1) + i1;
+                    // Set random target
+                    GlobalSpellTarget = GetLocalObject(OBJECT_SELF, ARRAY_SPELL_ENEMY + IntToString(iCnt));
+                }
             }
         }
-    }
-    // Else, it is oLastTarget that will be our target
-    else
-    {
-        GlobalSpellTarget = oLastTarget;
-    }
-
+        // Else, it is oLastTarget that will be our target
+        else
+        {
+            GlobalSpellTarget = oLastTarget;
+        }
+    }// end if !Valid
     // If not valid, set to melee target
     if(!GetIsObjectValid(GlobalSpellTarget))
     {
         GlobalSpellTarget = GlobalMeleeTarget;
     }
     // If it is a new target, reset attacking counter to 0
-    if(GlobalSpellTarget != oLastTarget)
+    if(GlobalSpellTarget != oLastTarget || !GetIsObjectValid(oLastTarget))
     {
         DeleteAIInteger(AI_SPELL_TURNS_ATTACKING);
     }
@@ -13918,10 +15243,10 @@ int AI_AttemptFeatCombatHostile()
 {
     int iUseSpells = TRUE;
     // Don't chance the use of broken paladin and ranger spells.
-    if(GlobalOurChosenClass == CLASS_TYPE_PALADIN ||
+/*    if(GlobalOurChosenClass == CLASS_TYPE_PALADIN || //...
        GlobalOurChosenClass == CLASS_TYPE_RANGER)
         iUseSpells = FALSE;
-
+*/
     if(iUseSpells)
     {
         // Of course, we use, or attempt to use, our Divine Domain Powers, if
@@ -13994,6 +15319,8 @@ int AI_AttemptFeatCombatHostile()
         {
             // +Cha bonus to attack bonus.
             if(AI_ActionUseFeatOnObject(FEAT_DIVINE_MIGHT)) return TRUE;
+            if (GlobalMeleeTargetBAB +10 > GlobalOurAC) //...
+                if(AI_ActionUseFeatOnObject(FEAT_DIVINE_SHIELD)) return TRUE;
         }
 
         // We now cast the spells which will affect our weapon (if we have one!)
@@ -14226,22 +15553,49 @@ int AI_AttemptPolyMorph()
                 // 707   Greater_Wild_Shape_Red_dragon
                 // 708   Greater_Wild_Shape_Blue_dragon
                 // 709   Greater_Wild_Shape_Green_dragon
-            if(AI_ActionPolymorph(AI_FEAT_EPIC_WILD_SHAPE_DRAGON, 707, 3, TRUE)) return TRUE;
+            if(AI_ActionPolymorph(FEAT_EPIC_WILD_SHAPE_DRAGON, 707, 3, TRUE)) return TRUE;
+            // Epic Humanoid Shape
+                // 682   Drow
+                // 683   Lizardfolk
+                // 684   Kobold Assassin                                  //... 681 = IHS
+            if(AI_ActionPolymorph(FEAT_EPIC_SHIFTER_INFINITE_HUMANOID_SHAPE, 681, FALSE, TRUE, FALSE)) return TRUE;
+            // Undead - any of them
+                // 704   Undead_Shape_risen_lord
+                // 705   Undead_Shape_Vampire
+                // 706   Undead_Shape_Spectre               //... 685 = US
+            if(AI_ActionPolymorph(FEAT_EPIC_WILD_SHAPE_UNDEAD, 685, FALSE, TRUE)) return TRUE;
             // Construct feat
                 // 738   Construct_Shape_StoneGolem
                 // 739   Construct_Shape_DemonFleshGolem
                 // 740   Construct_Shape_IronGolem
-            if(AI_ActionPolymorph(AI_FEAT_EPIC_CONSTRUCT_SHAPE, 738, 3, TRUE)) return TRUE;
+            if(AI_ActionPolymorph(FEAT_EPIC_CONSTRUCT_SHAPE, 738, 3, TRUE)) return TRUE;
             // Outsider shape
                 // 733   Outsider_Shape_Azer
                 // 734   Outsider_Shape_Rakshasa
                 // 735   Outsider_Shape_DeathSlaad
-            if(AI_ActionPolymorph(AI_FEAT_EPIC_OUTSIDER_SHAPE, 733, 3, TRUE)) return TRUE;
-            // Undead - any of them
-                // 704   Undead_Shape_risen_lord
-                // 705   Undead_Shape_Vampire
-                // 706   Undead_Shape_Spectre
-            if(AI_ActionPolymorph(AI_FEAT_EPIC_WILD_SHAPE_UNDEAD, 704, 3, TRUE)) return TRUE;
+            if(AI_ActionPolymorph(FEAT_EPIC_OUTSIDER_SHAPE, 733, 3, TRUE)) return TRUE;
+            // Random choose one
+/*            iSpell = 670;
+            switch(d3())
+            {
+                case i1: iSpell = 670; break;
+                case i2: iSpell = 673; break;
+                case i3: iSpell = 674; break;
+            }*/                                                         //... 676 = GreaterWildShape3
+            if(AI_ActionPolymorph(FEAT_EPIC_SHIFTER_INFINITE_WILDSHAPE_3, 676, FALSE, TRUE, FALSE)) return TRUE;
+            // 2 - Infinite and normal shapes
+            // 2 - Not in any order (doh!)
+                // 672   Greater_Wild_Shape_Harpy
+                // 678   Greater_Wild_Shape_Gargoyle
+                // 680   Greater_Wild_Shape_Minotaur
+            if(AI_ActionPolymorph(FEAT_EPIC_SHIFTER_INFINITE_WILDSHAPE_2, 675, FALSE, TRUE, FALSE)) return TRUE;
+            // 1 - Infinite and normal shapes - In order
+                // 658   Greater_Wild_Shape_Wyrmling_Red
+                // 659   Greater_Wild_Shape_Wyrmling_Blue
+                // 660   Greater_Wild_Shape_Wyrmling_Black
+                // 661   Greater_Wild_Shape_Wyrmling_White
+                // 662   Greater_Wild_Shape_Wyrmling_Green
+            if(AI_ActionPolymorph(FEAT_EPIC_SHIFTER_INFINITE_WILDSHAPE_1, 658, 5, TRUE, FALSE)) return TRUE;
             // Shapechange
                 // 392   Shapechange_RED_DRAGON
                 // 393   Shapechange_FIRE_GIANT
@@ -14254,62 +15608,42 @@ int AI_AttemptPolyMorph()
                 // 398   Elemental_Shape_WATER
                 // 399   Elemental_Shape_EARTH
                 // 400   Elemental_Shape_AIR
-            if(AI_ActionPolymorph(AI_FEAT_EPIC_DRUID_INFINITE_ELEMENTAL_SHAPE, 397, 4, TRUE, FALSE)) return TRUE;
-            if(AI_ActionPolymorph(FEAT_ELEMENTAL_SHAPE, 397, 4, TRUE)) return TRUE;
+            if(AI_ActionPolymorph(FEAT_EPIC_DRUID_INFINITE_ELEMENTAL_SHAPE, 397, 4, TRUE, FALSE)) return TRUE;
             // Wildshape 4 is next best
             // - Infinite and normal shapes
             // - Not in any order (doh!)
-                // 671   Greater_Wild_Shape_Beholder
+                // 671   Greater_Wild_Shape_Beholder //...DOESN'T EXISTS ANYMORE, was causing bugs
                 // 679   Greater_Wild_Shape_Medusa
                 // 691   Greater_Wild_Shape_Mindflayer
                 // 694   Greater_Wild_Shape_DireTiger
+            //... 677 is general GWS4 so the spell code randomly picks 1
+            if(AI_ActionPolymorph(FEAT_EPIC_SHIFTER_INFINITE_WILDSHAPE_4, 677, FALSE, TRUE, FALSE)) return TRUE;
             // Random choose one
-            int iSpell = 671;
+/*            int iSpell = 671;
             switch(d4())
             {
                 case i1: iSpell = 671; break;
                 case i2: iSpell = 679; break;
                 case i3: iSpell = 691; break;
                 case i4: iSpell = 694; break;
-            }
-            if(AI_ActionPolymorph(AI_FEAT_EPIC_SHIFTER_INFINITE_WILDSHAPE_4, iSpell, FALSE, TRUE, FALSE)) return TRUE;
-            if(AI_ActionPolymorph(AI_FEAT_GREATER_WILDSHAPE_4, iSpell, FALSE, TRUE)) return TRUE;
+            }*/
+            if(AI_ActionPolymorph(FEAT_GREATER_WILDSHAPE_4, 677, FALSE, TRUE)) return TRUE;
             // Humanoid shape
                 // 682   Humanoid_Shape_Drow
                 // 683   Humanoid_Shape_Lizardfolk
                 // 684   Humanoid_Shape_KoboldAssa
-            if(AI_ActionPolymorph(AI_FEAT_EPIC_SHIFTER_INFINITE_HUMANOID_SHAPE, 682, 3, TRUE, FALSE)) return TRUE;
-            if(AI_ActionPolymorph(AI_FEAT_HUMANOID_SHAPE, 682, 3, TRUE)) return TRUE;
+//            if(AI_ActionPolymorph(AI_FEAT_EPIC_SHIFTER_INFINITE_HUMANOID_SHAPE, 682, 3, TRUE, FALSE)) return TRUE;
+            if(AI_ActionPolymorph(FEAT_HUMANOID_SHAPE, 682, 3, TRUE)) return TRUE;
             // 3 - Infinite and normal shapes
             // 3 - Not in any order (doh!)
                 // 670   Greater_Wild_Shape_Basilisk
                 // 673   Greater_Wild_Shape_Drider
                 // 674   Greater_Wild_Shape_Manticore
-            // Random choose one
-            iSpell = 670;
-            switch(d3())
-            {
-                case i1: iSpell = 670; break;
-                case i2: iSpell = 673; break;
-                case i3: iSpell = 674; break;
-            }
-            if(AI_ActionPolymorph(AI_FEAT_EPIC_SHIFTER_INFINITE_WILDSHAPE_3, iSpell, FALSE, TRUE, FALSE)) return TRUE;
-            if(AI_ActionPolymorph(AI_FEAT_GREATER_WILDSHAPE_3, iSpell, FALSE, TRUE)) return TRUE;
-            // 2 - Infinite and normal shapes
-            // 2 - Not in any order (doh!)
-                // 672   Greater_Wild_Shape_Harpy
-                // 678   Greater_Wild_Shape_Gargoyle
-                // 680   Greater_Wild_Shape_Minotaur
-            if(AI_ActionPolymorph(AI_FEAT_EPIC_SHIFTER_INFINITE_WILDSHAPE_2, iSpell, FALSE, TRUE, FALSE)) return TRUE;
-            if(AI_ActionPolymorph(AI_FEAT_GREATER_WILDSHAPE_2, iSpell, FALSE, TRUE)) return TRUE;
-            // 1 - Infinite and normal shapes - In order
-                // 658   Greater_Wild_Shape_Wyrmling_Red
-                // 659   Greater_Wild_Shape_Wyrmling_Blue
-                // 660   Greater_Wild_Shape_Wyrmling_Black
-                // 661   Greater_Wild_Shape_Wyrmling_White
-                // 662   Greater_Wild_Shape_Wyrmling_Green
-            if(AI_ActionPolymorph(AI_FEAT_EPIC_SHIFTER_INFINITE_WILDSHAPE_1, 658, 5, TRUE, FALSE)) return TRUE;
-            if(AI_ActionPolymorph(AI_FEAT_GREATER_WILDSHAPE_1, 658, 5, TRUE)) return TRUE;
+            if(AI_ActionPolymorph(FEAT_ELEMENTAL_SHAPE, 397, 4, TRUE)) return TRUE;
+            if(AI_ActionPolymorph(FEAT_GREATER_WILDSHAPE_3, 676, FALSE, TRUE)) return TRUE;
+            if(AI_ActionPolymorph(FEAT_EPIC_DRUID_INFINITE_WILDSHAPE, 401, 5, TRUE, FALSE)) return TRUE;
+            if(AI_ActionPolymorph(FEAT_GREATER_WILDSHAPE_2, 675, FALSE, TRUE)) return TRUE;
+            if(AI_ActionPolymorph(FEAT_GREATER_WILDSHAPE_1, 658, 5, TRUE)) return TRUE;
 
             // We can have items for this polymorph spell :-)
             if(AI_ActionCastSpell(SPELL_TENSERS_TRANSFORMATION, SpellEnhSelf, OBJECT_SELF, i16, ItemEnhSelf, PotionEnh)) return TRUE;
@@ -14320,7 +15654,6 @@ int AI_AttemptPolyMorph()
                 // 403   Wild_Shape_WOLF
                 // 404   Wild_Shape_BOAR
                 // 405   Wild_Shape_BADGER
-            if(AI_ActionPolymorph(AI_FEAT_EPIC_DRUID_INFINITE_WILDSHAPE, 401, 5, TRUE, FALSE)) return TRUE;
             if(AI_ActionPolymorph(FEAT_WILD_SHAPE, 401, 5, TRUE)) return TRUE;
 
             // Shapechange into - Troll, Pixie, Uber Hulk, Giant Spider, Zombie
@@ -14331,7 +15664,7 @@ int AI_AttemptPolyMorph()
                 // 391   Polymorph_ZOMBIE
             if(AI_ActionPolymorph(SPELL_POLYMORPH_SELF, 387, 5, TRUE)) return TRUE;
         }
-        else /*Else we have it*/if(d10() <= i6)
+        else /*Else we have it*///... removed if(d10() <= i6)
         {
             // The special abilities VIA. Shapechanger!
             // - We check our appearance and cast as appropriately.
@@ -14346,7 +15679,7 @@ int AI_AttemptPolyMorph()
                     // Only use if above 50HP, and enemy has less then 20 Fortitude
                     // and is within 4M
                     if(GlobalRangeToMeleeTarget < f4 && GlobalOurCurrentHP > i50 &&
-                       GetFortitudeSavingThrow(GlobalMeleeTarget) < i18)
+                       GetFortitudeSavingThrow(GlobalMeleeTarget) < i18 && d10() < 6)
                     {
                         AI_ActionCastShifterSpell(SPELLABILITY_PULSE_DROWN);
                         return TRUE;
@@ -14359,7 +15692,8 @@ int AI_AttemptPolyMorph()
                 {
                     // Can use Pulse: Whirlwind unlimited times/day.
                     // DC 14 or knockdown + some damage.
-                    if(GlobalRangeToMeleeTarget < f4 && GetReflexSavingThrow(GlobalMeleeTarget) < i15)
+                    if(GlobalRangeToMeleeTarget < f4 && GetReflexSavingThrow(GlobalMeleeTarget) < i15
+                        && d10() < 6)
                     {
                         AI_ActionCastShifterSpell(SPELLABILITY_PULSE_WHIRLWIND);
                         return TRUE;
@@ -14372,9 +15706,10 @@ int AI_AttemptPolyMorph()
                 case APPEARANCE_TYPE_MANTICORE:
                 {
                     // Can use Spike Attack (Greater Wild Shape Version) at
-                    // some reflex save or other.
-                    if(GlobalRangeToMeleeTarget < f10 &&
-                       GetReflexSavingThrow(GlobalMeleeTarget) < (i18+ d6()))
+                    // some reflex save or other. //... nope, no saves
+                    //if(GlobalRangeToMeleeTarget > f3 &&)
+                      // GetReflexSavingThrow(GlobalMeleeTarget) < (i18+ d6())
+                    if (d10() < 10) //... 90% chance
                     {
                         AI_ActionCastShifterSpell(AI_SPELLABILITY_GWILDSHAPE_SPIKES, GlobalMeleeTarget);
                         return TRUE;
@@ -14387,6 +15722,8 @@ int AI_AttemptPolyMorph()
                 {
                     // Harpysong - charm enemies. Will saving throw.
                     if(GlobalRangeToMeleeTarget < f4 &&
+                       !GetHasSpellEffect(AI_SPELLABILITY_HARPYSONG, GlobalMeleeTarget) &&
+                       !GetIsImmune(GlobalMeleeTarget, IMMUNITY_TYPE_CHARM, OBJECT_SELF) &&
                        GetWillSavingThrow(GlobalMeleeTarget) < (i14 + d4()))
                     {
                         AI_ActionCastShifterSpell(AI_SPELLABILITY_HARPYSONG);
@@ -14399,10 +15736,13 @@ int AI_AttemptPolyMorph()
                 case APPEARANCE_TYPE_MEDUSA:
                 {
                     // Limited petrify gaze attack
-                    // Pretty cool.
-                    if(GetLocalInt(OBJECT_SELF,"X2_GWILDSHP_LIMIT_" + IntToString(AI_SPELLABILITY_GWILDSHAPE_STONEGAZE)) &&
+                    // Pretty cool.   //... added ! in front of getlocalint, plus other checks
+                    if(!GetLocalInt(OBJECT_SELF,"X2_GWILDSHP_LIMIT_" + IntToString(AI_SPELLABILITY_GWILDSHAPE_STONEGAZE)) &&
                        GlobalRangeToMeleeTarget < f4 &&
-                       GetFortitudeSavingThrow(GlobalMeleeTarget) < (i14 + d4()))
+                       //!GetHasSpellEffect(AI_SPELLABILITY_GWILDSHAPE_STONEGAZE, GlobalMeleeTarget) &&
+                       !GetIsImmune(GlobalMeleeTarget, IMMUNITY_TYPE_PARALYSIS) &&
+                       !AI_GetSpellTargetImmunity(GlobalImmunityPetrify) && //... this only checks if it's already petrified
+                       GetFortitudeSavingThrow(GlobalMeleeTarget) < (i14 + d4()) && d10() < 7)
                     {
                         AI_ActionCastShifterSpell(AI_SPELLABILITY_GWILDSHAPE_STONEGAZE, GlobalMeleeTarget);
                         return TRUE;
@@ -14418,12 +15758,15 @@ int AI_AttemptPolyMorph()
                         AI_ActionCastShifterSpell(AI_SPELLABILITY_PSIONIC_INERTIAL_BARRIER);
                         return TRUE;
                     }
-                    // Else, we have Mind Blast. Limited uses, but stuns!
-                    else if(!GetHasSpellEffect(AI_SPELLABILITY_GWILDSHAPE_MINDBLAST, GlobalMeleeTarget) &&
-                             GetLocalInt(OBJECT_SELF,"X2_GWILDSHP_LIMIT_" + IntToString(AI_SPELLABILITY_GWILDSHAPE_MINDBLAST)) &&
-                             GlobalRangeToMeleeTarget < f8)
-                    {
-                        AI_ActionCastShifterSpell(AI_SPELLABILITY_GWILDSHAPE_MINDBLAST);
+                    // Else, we have Mind Blast. Limited uses, but stuns! //... added ! in front of GetLocalInt(OBJECT_SELF,"X2_GWILDSHP_LIMIT_" +
+                    else if(//... removed since it does damage to stunned creatures !GetHasSpellEffect(AI_SPELLABILITY_GWILDSHAPE_MINDBLAST, GlobalMeleeTarget) &&
+                             !GetLocalInt(OBJECT_SELF,"X2_GWILDSHP_LIMIT_" + IntToString(AI_SPELLABILITY_GWILDSHAPE_MINDBLAST)) &&
+                             !GetIsImmune(GlobalMeleeTarget, IMMUNITY_TYPE_STUN) &&
+                             !GetIsImmune(GlobalMeleeTarget, IMMUNITY_TYPE_MIND_SPELLS, OBJECT_SELF) &&
+                             GetWillSavingThrow(GlobalMeleeTarget) < (i14 + d4()) &&
+                             GlobalRangeToMeleeTarget < f8 && d10() < 9) //... 80% chance
+                    {                                                               //... added target
+                        AI_ActionCastShifterSpell(AI_SPELLABILITY_GWILDSHAPE_MINDBLAST, GlobalMeleeTarget);
                         return TRUE;
                     }
                     return FALSE;
@@ -14433,10 +15776,12 @@ int AI_AttemptPolyMorph()
                 case APPEARANCE_TYPE_VAMPIRE_FEMALE: // Vampires
                 case APPEARANCE_TYPE_VAMPIRE_MALE:   // Vampires
                 {
-                    // Limited Domination Gazes.
-                    if(GetLocalInt(OBJECT_SELF, "X2_GWILDSHP_LIMIT_" + IntToString(AI_SPELLABILITY_VAMPIRE_DOMINATION_GAZE)) &&
+                    // Limited Domination Gazes. //... added ! in front of GetLocalInt(OBJECT_SELF,"X2_GWILDSHP_LIMIT_" +
+                    if(!GetLocalInt(OBJECT_SELF, "X2_GWILDSHP_LIMIT_" + IntToString(AI_SPELLABILITY_VAMPIRE_DOMINATION_GAZE)) &&
                        !GetHasSpellEffect(AI_SPELLABILITY_VAMPIRE_DOMINATION_GAZE, GlobalMeleeTarget) &&
                         GetWillSavingThrow(GlobalMeleeTarget) < (i14 + d4()) &&
+                       !GetIsImmune(GlobalMeleeTarget, IMMUNITY_TYPE_MIND_SPELLS, OBJECT_SELF) &&
+                        GlobalRangeToMeleeTarget < f8 && d10() < 7 && //... 60% chance
                        // This is a simple check for "have we got a dominated guy already"
                        !AI_GetSpellTargetImmunity(GlobalImmunityDomination))
                     {
@@ -14449,17 +15794,17 @@ int AI_AttemptPolyMorph()
                 case APPEARANCE_TYPE_SPECTRE:
                 {
                     // Unlimited invisibility, and unlimited "spectre attack".
-                    // 60% chance of using the spectre attack.
-                    if(d10() <= i6 && GetFortitudeSavingThrow(GlobalMeleeTarget) < (i14 + d10()) &&
-                      !GetIsImmune(GlobalMeleeTarget, IMMUNITY_TYPE_NEGATIVE_LEVEL))
-                    {
-                        AI_ActionCastShifterSpell(AI_SPELLABILITY_SHIFTER_SPECTRE_ATTACK, GlobalMeleeTarget);
-                        return TRUE;
-                    }
-                    // Else invisiblity
-                    if(!AI_GetAIHaveEffect(GlobalEffectInvisible))
+                    if(!AI_GetAIHaveEffect(GlobalEffectInvisible) &&
+                        AI_GetSpellWhoCanSeeInvis(10) < 70)//... added to make sure it's a bonus
                     {
                         AI_ActionCastShifterSpell(AI_SPELLABILITY_VAMPIRE_INVISIBILITY);
+                        return TRUE;
+                    }
+                    // 60% chance of using the spectre attack. //... changed %, spectre is a bad form already
+                    if(d20() < 20 &&
+                      !GetIsImmune(GlobalMeleeTarget, IMMUNITY_TYPE_ABILITY_DECREASE)) //... correct immunity
+                    {
+                        AI_ActionCastShifterSpell(AI_SPELLABILITY_SHIFTER_SPECTRE_ATTACK, GlobalMeleeTarget);
                         return TRUE;
                     }
                     return FALSE;
@@ -14468,7 +15813,8 @@ int AI_AttemptPolyMorph()
                 case APPEARANCE_TYPE_WILL_O_WISP:
                 {
                     // Unlimited invisibility
-                    if(!AI_GetAIHaveEffect(GlobalEffectInvisible))
+                    if(!AI_GetAIHaveEffect(GlobalEffectInvisible) && d10() < 5 &&
+                        AI_GetSpellWhoCanSeeInvis(10) < 70)//... added to make sure it's a bonus
                     {
                         AI_ActionCastShifterSpell(SPELL_INVISIBILITY);
                         return TRUE;
@@ -14483,13 +15829,14 @@ int AI_AttemptPolyMorph()
                     // Burning hands and azer blast.
                     // 80% chance of azer blast
                     if(GetReflexSavingThrow(GlobalMeleeTarget) < (i14 + d6()) &&
-                       d10() <= i8)
+                       d10() <= i2)//... from i8 to i2
                     {
                         AI_ActionCastShifterSpell(AI_SPELLABILITY_AZER_FIRE_BLAST, GlobalMeleeTarget);
                         return TRUE;
                     }
                     // Else burning hands
-                    if(GetReflexSavingThrow(GlobalMeleeTarget) < (i12 + d4()))
+                    if(GetReflexSavingThrow(GlobalMeleeTarget) < (i12 + d4()) &&
+                       d10() <= i3)//... added %
                     {
                         AI_ActionCastShifterSpell(SPELL_BURNING_HANDS, GlobalMeleeTarget);
                         return TRUE;
@@ -14500,8 +15847,11 @@ int AI_AttemptPolyMorph()
                 case APPEARANCE_TYPE_SLAAD_DEATH:
                 {
                     // Unlimited spittle attacks. Just need the base 60% chance above.
-                    AI_ActionCastShifterSpell(AI_SPELLABILITY_SLAAD_CHAOS_SPITTLE, GlobalMeleeTarget);
-                    return TRUE;
+                    if (d10() <= i6)//... added % as I removed the 60% above
+                    {
+                        AI_ActionCastShifterSpell(AI_SPELLABILITY_SLAAD_CHAOS_SPITTLE, GlobalMeleeTarget);
+                        return TRUE;
+                    }
                 }
                 break;
                 case APPEARANCE_TYPE_RAKSHASA_TIGER_FEMALE:
@@ -14512,7 +15862,7 @@ int AI_AttemptPolyMorph()
                     // - Ice Storm
                     // - Mestils Acid Breath.
                     // Randomise each one. Don't bother checking saves.
-                    if(d10() <= i6)
+                    if(d10() <= i4) //... from 6 to 4
                     {
                         AI_ActionCastShifterSpell(SPELL_DISPEL_MAGIC, GlobalMeleeTarget);
                         return TRUE;
@@ -14522,7 +15872,7 @@ int AI_AttemptPolyMorph()
                         AI_ActionCastShifterSpell(VFX_FNF_ICESTORM, GlobalMeleeTarget);
                         return TRUE;
                     }
-                    else
+                    else if (d10() <= i6) //... added chance
                     {
                         AI_ActionCastShifterSpell(SPELL_MESTILS_ACID_BREATH, GlobalMeleeTarget);
                         return TRUE;
@@ -14532,8 +15882,8 @@ int AI_AttemptPolyMorph()
                 break;
                 case APPEARANCE_TYPE_GOLEM_IRON:
                 {
-                    // Unlimited spells Iron Golem Breath.
-                    if(GetFortitudeSavingThrow(GlobalMeleeTarget) < i20)
+                    // Unlimited spells Iron Golem Breath.          //... from 20 to 16, added %
+                    if(GetFortitudeSavingThrow(GlobalMeleeTarget) < i16 && d10() < 6)
                     {
                         AI_ActionCastShifterSpell(SPELLABILITY_GOLEM_BREATH_GAS, GlobalMeleeTarget);
                         return TRUE;
@@ -14543,8 +15893,9 @@ int AI_AttemptPolyMorph()
                 break;
                 case APPEARANCE_TYPE_GOLEM_STONE:
                 {
-                    // Unlimited spells: Throw rocks
-                    if(GetReflexSavingThrow(GlobalMeleeTarget) < i20 + d6())
+                    // Unlimited spells: Throw rocks             //... from 20 to 16, added %
+                    if(GetReflexSavingThrow(GlobalMeleeTarget) < i16 + d6() && d20() < 20 &&
+                        GlobalRangeToMeleeTarget > f4)//... added range
                     {
                         AI_ActionCastShifterSpell(AI_SPELLABILITY_GIANT_HURL_ROCK, GlobalMeleeTarget);
                         return TRUE;
@@ -14555,8 +15906,11 @@ int AI_AttemptPolyMorph()
                 case 302:// Kobold (assassin)
                 {
                     // Unlimited invisibility
-                    // Unlimited invisibility
-                    if(!AI_GetAIHaveEffect(GlobalEffectInvisible))
+                    //... AND HiPS!!!!
+                    if (GetSkillRank(SKILL_HIDE) > GetSkillRank(SKILL_SPOT, GlobalMeleeTarget))
+                        SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
+                    else if(!AI_GetAIHaveEffect(GlobalEffectInvisible) && d10() < 6 && //... added %
+                        AI_GetSpellWhoCanSeeInvis(10) < 70)//... added to make sure it's a bonus
                     {
                         AI_ActionCastShifterSpell(AI_SPELLABILITY_VAMPIRE_INVISIBILITY);
                         return TRUE;
@@ -14681,6 +16035,42 @@ int AI_StopWhatWeAreDoing()
     return TRUE;
 }
 
+int AI_CheckEtherealEnemies()
+{//... since I fixed behaviour when something vanishes from view this probably won't be seen action
+//... need to change OnPerception so it checks if it's not in combat & enemy ethereal then call this
+    if (GetIsObjectValid(GlobalNearestEnemyHeard) && LineOfSightObject(OBJECT_SELF, GlobalNearestEnemyHeard) &&
+        GetHasSpellEffect(SPELL_ETHEREALNESS, GlobalNearestEnemyHeard))
+    {
+        int iCheck = (GetSkillRank(SKILL_MOVE_SILENTLY, GlobalNearestEnemyHeard) + d20()) <=
+            (GetSkillRank(SKILL_LISTEN) + d20());
+//        _db("Ethereal targets check: " + IntToString(iCheck));
+        if (GetActionMode(GlobalNearestEnemyHeard, ACTION_MODE_STEALTH) && !iCheck)
+             return FALSE;
+
+        AISpeakString(CALL_TO_ARMS); //... Added this so we alert everyone that we heard something
+        string sShout;
+        switch(d4())
+        {
+            case 1: sShout = "There's something fishy over here..."; break;
+            case 2: sShout = "Did I hear something?"; break;
+            case 3: sShout = "What was that that noise?"; break;
+            case 4: sShout = "Hmmm?"; break;
+        }
+        SpeakString(sShout);
+
+        //... if so we buff ourselves & friends. Buff much improved!
+//        _db("Ethereal targets on");
+        if (AI_ActionCastWhenInvisible()) return TRUE;
+//        _db("Pre MD");
+        if(AI_ActionCastSpell(SPELL_MORDENKAINENS_DISJUNCTION, SpellHostAreaInd,
+            GlobalNearestEnemyHeard, i19, TRUE, ItemHostAreaInd)) return TRUE;
+//        _db("Post MD");
+        //... if we can't dispel it, get away. Maybe someone else can and we don't want to be near when it happens
+        ActionMoveAwayFromObject(GlobalNearestEnemyHeard, TRUE, 10.0f);
+        return TRUE;
+    }
+    return FALSE;
+ }
 /************************ [AI_DetermineCombatRound] ****************************
     This will do an action - EG: ActionAttack, against oIntruder, or against
     the best (or random) target in range.
@@ -14732,12 +16122,14 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         DeleteAIObject(AI_LAST_MELEE_TARGET);
         DeleteAIObject(AI_LAST_SPELL_TARGET);
         DeleteAIObject(AI_LAST_RANGED_TARGET);
+        DeleteLocalObject(OBJECT_SELF, "oAlliedSetup");//... data sharing stuff
         // 47: "[DCR] [PREMITURE EXIT] Cannot Do Anything."
         DebugActionSpeakByInt(47);
         return;
     }
     // 1.30 - daze is now as 3E rules,  you can move around walking, but no
     // attacking, casting or anything else :-(
+    // looks like a good place to put in some code about the black blade of disaster
     else if(AI_GetAIHaveEffect(GlobalEffectDazed))
     {
         // 48: "[DCR] [PREMITURE EXIT] Dazed move away."
@@ -14745,8 +16137,10 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         // Equip best shield for most AC
         AI_EquipBestShield();
         // Move away from the nearest heard enemy
-        GlobalNearestEnemyHeard = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, i1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD, CREATURE_TYPE_IS_ALIVE, TRUE);
-        ActionMoveAwayFromObject(GlobalNearestEnemyHeard);
+        if (GlobalValidNearestHeardEnemy)//... new addition since we set it up above
+            ActionMoveAwayFromObject(GlobalNearestEnemyHeard);
+        else ActionRandomWalk();
+        DeleteLocalObject(OBJECT_SELF, "oAlliedSetup");//... data sharing stuff
         return;
     }
     // Tempory integer
@@ -14765,6 +16159,7 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
     {
         // 49: "[DCR] [PREMITURE EXIT] Fleeing or otherwise"
         DebugActionSpeakByInt(49);
+        DeleteLocalObject(OBJECT_SELF, "oAlliedSetup");//... data sharing stuff
         return;
     }
 
@@ -14776,12 +16171,12 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
 
     // We set up 2 other targets...for testing against ETC.
     GlobalNearestEnemySeen = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, i1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN, CREATURE_TYPE_IS_ALIVE, TRUE);
-    GlobalNearestEnemyHeard = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, i1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD, CREATURE_TYPE_IS_ALIVE, TRUE);
+//...    GlobalNearestEnemyHeard = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, i1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD, CREATURE_TYPE_IS_ALIVE, TRUE);
     // Valids?
     GlobalValidNearestSeenEnemy = GetIsObjectValid(GlobalNearestEnemySeen);
-    GlobalValidNearestHeardEnemy = GetIsObjectValid(GlobalNearestEnemyHeard);
+//... set up above    GlobalValidNearestHeardEnemy = GetIsObjectValid(GlobalNearestEnemyHeard);
 
-    // Speakstring arrays
+    // Speakstring arrays //... this never works bc heard never works...
     if(GlobalValidNearestHeardEnemy)
     {
         // Add in range checking here
@@ -14793,7 +16188,6 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         {
             GlobalRangeToNearestEnemy = GetDistanceToObject(GlobalNearestEnemySeen);
         }
-
         iTempInt = GetHitDice(GlobalNearestEnemyHeard);
         // THEM_OVER_US - They have 5+ levels over us.
         if(iTempInt - i5 >= GlobalOurHitDice)
@@ -14820,7 +16214,11 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
     // Done before other things - best get out of some bad spells else they kill us!
     // - Returns TRUE if we did anything that would mean we don't want to do
     //   another action
-    if(AI_AttemptSpecialChecks()){return;}
+    if(AI_AttemptSpecialChecks())
+    {
+        DeleteLocalObject(OBJECT_SELF, "oAlliedSetup");//... data sharing stuff
+        return;
+    }
 
     // Sets up who to attack.
     // - Uses oIntruder (to attack or move near) if anything.
@@ -14828,6 +16226,7 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
     //   that we cannot do an action, but shouldn't search. False if normal.
     // - We do this after AOE checking and special spells.
     if(AI_SetUpAllObjects(oIntruder)){return;}
+//    _db("Step 1");
 
     // We then check if we have anyone to attack :-) This is a global integer.
     if(GlobalAnyValidTargetObject)
@@ -14870,13 +16269,16 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         // Turning, any sort of unturned and non-resistant creatures.
         // Used about every 3 rounds. Dragons may use this.
         if(AI_AttemptFeatTurning()){return;}
+//        _db("Step 2");
 
         // Special Dragon things now, else other monsters.
         if(AI_GetIsDragon())
         {
             // We may attempt a high level spells, wing buffet, and
             // always attack with this.
+//            _db("Step 3 Dragon");
             if(AI_AttemptDragonCombat()){return;}
+//            _db("Step 3b Dragon");
         }
         else
         {
@@ -14888,27 +16290,37 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
             // This may knockout dying PC's or coup de grace sleeping PC's nearby.
             if(AI_AttemptGoForTheKill()){return;}
 
+//            _db("Step 3: " + IntToString(GlobalAttemptAll));
             // Spells attempt
-            if(AI_AttemptAllSpells()){return;}
+            if (GlobalAttemptAll)
+                if(AI_AttemptAllSpells()){return;}
+//            _db("Step 3b");
 
             // We will attempt pickpocket/taunt/animal empathy after spells, before polymorph
             if(AI_AttemptHostileSkills()){return;}
+//            _db("Step 3c");
 
             // Attempt to cast all the buffing spells for melee - EG: Divine power,
             // magical weapons, and ability enchanters.
             if(AI_AttemptFeatCombatHostile()){return;}
 
+//            _db("Step 3d");
             // We polymorph before attacking, if set so we can.
             if(AI_AttemptPolyMorph()){return;}
 
             // This is called to attack, and should always attack something really.
             if(AI_AttemptMeleeAttackWrapper()){return;}
+//            _db("Step 4");
         }
     }
     // Else behaviour - we don't have a target. Any healing, extra or anything
     // here. Then searching, and finally walking waypoints.
     else
     {
+//        _db("Step 2 notargets");
+        //... Priority changed to move out of AOE
+        if (d10() < 8) //... 70% chance
+            if(AI_AttemptSpecialChecks()) return;
         // We will attempt to heal ourselves first as a prioritory.
         // Dragons may use this.
         if(AI_AttemptHealingSelf()){return;}
@@ -14919,6 +16331,11 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         // blindness always, with other things later.
         // Dragons use this, mostly with themselves.
         if(AI_AttemptCureCondition()){return;}
+/*        _db("Step 3 notargets: " + IntToString(GlobalValidNearestHeardEnemy) +
+            IntToString(GetIsObjectValid(GlobalNearestEnemyHeard)));
+*/
+        //... let's check against greater sanc
+        if (AI_CheckEtherealEnemies()) return;
     }
 // This is a call to the function which determines which way point to go back to.
 // This will only run if it cannot heal self, is not in an AOE spell, and no target.
@@ -14936,6 +16353,7 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
     // - Search around oIntruder - might be a dead person.
     Search(oIntruder);
     // Search should activate this after a cirtain amount of time
+//    SpeakString("Step end");
 }
 
 
