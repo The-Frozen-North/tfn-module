@@ -35,6 +35,9 @@ void ExportMinimap(object oPC);
 
 // Loads the PC's current area minimap data.
 void ImportMinimap(object oPC);
+
+// Gets the PC public cd key, name, and tag of the NPC. Used to determine the pair for checks and cooldowns in conversation
+string PCAndNPCKey(object oPC, object oNPC);
 // -------------------------------------------------------------------------
 // FUNCTIONS
 // -------------------------------------------------------------------------
@@ -69,6 +72,11 @@ int GetTemporaryInt(string sName)
 // -------------------------------------------------------------------------
 // PC FUNCTIONS
 // -------------------------------------------------------------------------
+
+string PCAndNPCKey(object oPC, object oNPC)
+{
+    return GetPCPublicCDKey(oPC, TRUE)+GetName(oPC)+"_"+GetTag(oNPC);
+}
 
 int CanSavePCInfo(object oPC)
 {
