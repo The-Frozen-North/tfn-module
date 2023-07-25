@@ -1,3 +1,74 @@
+#include "inc_henchman"
+#include "inc_general"
+
+// we are NOT using jasperre's on death handler
+
+void main()
+{
+    object oKiller = GetLastHostileActor();
+    if (GetFactionEqual(oKiller, OBJECT_SELF))
+    {
+        IncrementStat(oKiller, "allies_killed");
+        IncrementStat(GetMaster(OBJECT_SELF), "henchman_died");
+    }
+    
+    if (GetLocalInt(OBJECT_SELF, "PETRIFIED") == 1)
+    {
+        location lLocation = GetLocation(OBJECT_SELF);
+        ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_COM_CHUNK_STONE_MEDIUM), lLocation);
+        ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_RESTORATION), lLocation);
+
+        DestroyObject(OBJECT_SELF);
+
+        // don't do the rest of the script
+        return;
+    }
+
+
+    SpeakString("PARTY_I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
+
+    KillTaunt(oKiller, OBJECT_SELF);
+
+    DestroyPet(OBJECT_SELF);
+
+    if (GetStringLeft(GetResRef(OBJECT_SELF), 4) == "_hen")
+    {
+        SetLocalInt(OBJECT_SELF, "times_died", GetLocalInt(OBJECT_SELF, "times_died")+1);
+
+        string sText = "*" + GetName(OBJECT_SELF) + " has died*";
+
+        if (!IsCreatureRevivable(OBJECT_SELF))
+        {
+            sText = "*" + GetName(OBJECT_SELF) + " has died, and can only be revived by Raise Dead*";
+            // Allow selecting henchmen to cast raise dead on them
+            SetIsDestroyable(TRUE, TRUE, TRUE);
+        }
+
+        FloatingTextStringOnCreature(sText, GetMaster(OBJECT_SELF), FALSE);
+
+        if (Gibs(OBJECT_SELF))
+        {
+            DoMoraleCheckSphere(OBJECT_SELF, MORALE_PANIC_GIB_DC);
+        }
+        else
+        {
+            DoMoraleCheckSphere(OBJECT_SELF, MORALE_PANIC_DEATH_DC);
+        }
+    }
+    else // not a henchman and they can have die spectacularly
+    {
+        if (GibsNPC(OBJECT_SELF))
+        {
+            DoMoraleCheckSphere(OBJECT_SELF, MORALE_PANIC_GIB_DC);
+        }
+        else
+        {
+            DoMoraleCheckSphere(OBJECT_SELF, MORALE_PANIC_DEATH_DC);
+        }
+    }
+}
+
+
 /************************ [On Death] *******************************************
     Filename: j_ai_ondeath or nw_c2_default7
 ************************* [On Death] *******************************************
@@ -16,7 +87,7 @@
 ************************* [Arguments] ******************************************
     Arguments: GetLastKiller.
 ************************* [On Death] ******************************************/
-
+/*
 // We only require the constants/debug file. We have 1 function, not worth another include.
 #include "j_inc_constants"
 
@@ -60,24 +131,6 @@ void main()
     {
         // Set have died once, stops giving out mulitple amounts of XP.
         SetAIInteger(WE_HAVE_DIED_ONCE, TRUE);
-
-/************************ [Experience] *****************************************
-    THIS is the place for it, below this comment. To reward XP, you might want
-    to first apply EffectDeath to ourselves (uncomment the example lines) which
-    will remove the "You recieved 0 Experience" if you have normal XP at 0, as
-    the On Death event is before the reward, and therefore now our last killer
-    will be outselves. It will not cause any errors, oKiller is already set.
-
-    Anything else, I leave to you. GetFirstFactionMember (and next), GiveXPToCreature,
-    GetXP, SetXP, GetChallengeRating all are really useful.
-
-    Bug note: GetFirstFactionMember/Next with the PC parameter means either ONLY PC
-************************* [Experience] ****************************************/
-    // Do XP things (Use object "oKiller").
-
-
-
-/************************ [Experience] ****************************************/
     }
 
     // Note: Here we do a simple way of checking how many times we have died.
@@ -139,15 +192,6 @@ void main()
     }
     else
     {
-/************************ [Alternative Corpses] ********************************
-    This is where you can add some alternative corpse code - EG looting
-    and so on, without disrupting the rest of the AI (as the corpses
-    are turned off).
-************************* [Alternative Corpses] *******************************/
-    // Add alternative corpse code here
-
-
-/************************ [Alternative Corpses] *******************************/
     }
     // Signal the death event.
     FireUserEvent(AI_FLAG_UDE_DEATH_EVENT, EVENT_DEATH_EVENT);
@@ -164,3 +208,4 @@ void DeathCheck(int iDeaths)
         ExecuteScript(FILE_DEATH_CLEANUP, OBJECT_SELF);
     }
 }
+*/

@@ -66,9 +66,19 @@
 
 // This is required for all spawn in options!
 #include "j_inc_spawnin"
+#include "nwnx_creature"
+#include "x0_i0_assoc"
+
 
 void main()
 {
+
+    int bRange = GetWeaponRanged(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND));
+    int bCaster = GetLevelByClass(CLASS_TYPE_CLERIC > 0) || GetLevelByClass(CLASS_TYPE_DRUID) > 0 || GetLevelByClass(CLASS_TYPE_WIZARD) > 0 || GetLevelByClass(CLASS_TYPE_SORCERER) > 0 || GetLevelByClass(CLASS_TYPE_BARD) > 0;
+    int bHealer = GetLevelByClass(CLASS_TYPE_CLERIC > 0) || GetLevelByClass(CLASS_TYPE_DRUID) > 0 || GetLevelByClass(CLASS_TYPE_BARD > 0);
+    int bSneak = GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) > 0;
+    int bPhysical = GetBaseAttackBonus(OBJECT_SELF) > ((GetHitDice(OBJECT_SELF)/2) + 1);
+
 /************************ [Important Spawn Settings] **************************/
     SetAIInteger(AI_INTELLIGENCE, 10);
         // Intelligence value of the creauture. Can be 1-10, read readme's for help.
@@ -83,15 +93,15 @@ void main()
 /************************ [Targeting] ******************************************
     All targeting settings.
 ************************* [Targeting] *****************************************/
-    //SetSpawnInCondition(AI_FLAG_TARGETING_LIKE_LOWER_HP, AI_TARGETING_FLEE_MASTER);
+    SetSpawnInCondition(AI_FLAG_TARGETING_LIKE_LOWER_HP, AI_TARGETING_FLEE_MASTER);
         // We only attack the lowest current HP.
-    //SetSpawnInCondition(AI_FLAG_TARGETING_LIKE_LOWER_AC, AI_TARGETING_FLEE_MASTER);
+    if (bPhysical) SetSpawnInCondition(AI_FLAG_TARGETING_LIKE_LOWER_AC, AI_TARGETING_FLEE_MASTER);
         // We only attack the lowest AC (as in 1.2).
     //SetSpawnInCondition(AI_FLAG_TARGETING_LIKE_LOWER_HD, AI_TARGETING_FLEE_MASTER);
         // Target the lowest hit dice
     //SetSpawnInCondition(AI_FLAG_TARGETING_LIKE_MAGE_CLASSES, AI_TARGETING_FLEE_MASTER);
         // We go straight for mages/sorcerors. Nearest one.
-    //SetSpawnInCondition(AI_FLAG_TARGETING_LIKE_ARCHERS, AI_TARGETING_FLEE_MASTER);
+    if (bPhysical) SetSpawnInCondition(AI_FLAG_TARGETING_LIKE_ARCHERS, AI_TARGETING_FLEE_MASTER);
         // We go for the nearest enemy with a ranged weapon equipped.
     //SetSpawnInCondition(AI_FLAG_TARGETING_LIKE_PCS, AI_TARGETING_FLEE_MASTER);
         // We go for the nearest seen PC enemy.
@@ -128,7 +138,7 @@ void main()
     // Phisical protections. Used by spells, ranged and melee.
     // Jasperre - simple check if we are a fighter (hit lower phisicals) or a
     //            mage (attack higher!)
-    if(GetBaseAttackBonus(OBJECT_SELF) > ((GetHitDice(OBJECT_SELF)/2) + 1))
+    if(bPhysical)
     {
         // Fighter/Clerics (It is over a mages BAB + 1 (IE 0.5 BAB/Level) target lower
         AI_SetAITargetingValues(TARGETING_PHISICALS, TARGET_LOWER, i2, i6);
@@ -191,7 +201,7 @@ void main()
     Fighter (Phiscal attacks, really) specific stuff - disarmed weapons, better
     at hand to hand, and archer behaviour.
 ************************* [Combat - Fighters] *********************************/
-    SetSpawnInCondition(AI_FLAG_COMBAT_PICK_UP_DISARMED_WEAPONS, AI_COMBAT_MASTER);
+    //SetSpawnInCondition(AI_FLAG_COMBAT_PICK_UP_DISARMED_WEAPONS, AI_COMBAT_MASTER);
         // This sets to pick up weapons which are disarmed.
 
     //SetAIInteger(AI_RANGED_WEAPON_RANGE, 3);
@@ -205,7 +215,7 @@ void main()
         // For archers. If they have ally support, they'd rather move back & shoot then go into HTH.
     //SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER);
         // This forces the move back from attackers, and shoot bows. Very small chance to go melee.
-    //SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_USE_BOW, AI_COMBAT_MASTER);
+    if (bRange) SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_USE_BOW, AI_COMBAT_MASTER);
         // This will make the creature ALWAYs use any bows it has. ALWAYS.
 
     //SetSpawnInCondition(AI_FLAG_COMBAT_NO_GO_FOR_THE_KILL, AI_COMBAT_MASTER);
@@ -222,12 +232,12 @@ void main()
     dispelling, spell triggers, long ranged spells first, immunity toggles, and AOE settings.
 ************************* [Combat - Spell Casters] ****************************/
 
-    //SetSpawnInCondition(AI_FLAG_COMBAT_LONGER_RANGED_SPELLS_FIRST, AI_COMBAT_MASTER);
+    if (bCaster) SetSpawnInCondition(AI_FLAG_COMBAT_LONGER_RANGED_SPELLS_FIRST, AI_COMBAT_MASTER);
         // Casts spells only if the caster would not move into range to cast them.
         // IE long range spells, then medium, then short (unless the enemy comes to us!)
     //SetSpawnInCondition(AI_FLAG_COMBAT_FLAG_FAST_BUFF_ENEMY, AI_COMBAT_MASTER);
         // When an enemy comes in 40M, we fast-cast many defensive spells, as if prepared.
-    //SetSpawnInCondition(AI_FLAG_COMBAT_SUMMON_FAMILIAR, AI_COMBAT_MASTER);
+    SetSpawnInCondition(AI_FLAG_COMBAT_SUMMON_FAMILIAR, AI_COMBAT_MASTER);
         // The caster summons thier familiar/animal companion. Either a nameless Bat or Badger respectivly.
 
     // Counterspelling/Dispelling...
@@ -239,14 +249,14 @@ void main()
     //SetSpawnInCondition(AI_FLAG_COMBAT_COUNTER_SPELL_ONLY_IN_GROUP, AI_COMBAT_MASTER);
         // Recommended. Only counterspells with 5+ allies in group.
 
-    //SetSpawnInCondition(AI_FLAG_COMBAT_DISPEL_MAGES_MORE, AI_COMBAT_MASTER);
+    if (bCaster) SetSpawnInCondition(AI_FLAG_COMBAT_DISPEL_MAGES_MORE, AI_COMBAT_MASTER);
         // Targets seen mages to dispel, else uses normal spell target.
     SetSpawnInCondition(AI_FLAG_COMBAT_DISPEL_IN_ORDER, AI_COMBAT_MASTER);
         // This will make the mage not dispel just anything all the time, but important (spell-stopping)
         // things first, others later, after some spells. If off, anything is dispelled.
 
     // AOE's
-    //SetSpawnInCondition(AI_FLAG_COMBAT_NEVER_HIT_ALLIES, AI_COMBAT_MASTER);
+    if (bCaster) SetSpawnInCondition(AI_FLAG_COMBAT_NEVER_HIT_ALLIES, AI_COMBAT_MASTER);
         // Override toggle. Forces to never cast AOE's if it will hit an ally + harm them.
     //SetSpawnInCondition(AI_FLAG_COMBAT_AOE_DONT_MIND_IF_THEY_SURVIVE, AI_COMBAT_MASTER);
         // Allies who will survive the blast are ignored for calculating best target.
@@ -258,10 +268,13 @@ void main()
 
     // For these 2, if neither are set, the AI will choose AOE more if there are
     // lots of enemies, or singles if there are not many.
-    //SetSpawnInCondition(AI_FLAG_COMBAT_SINGLE_TARGETING, AI_COMBAT_MASTER);
-        // For Same-level spells, single target spells are used first.
-    //SetSpawnInCondition(AI_FLAG_COMBAT_MANY_TARGETING, AI_COMBAT_MASTER);
-        // For Same-level spells, AOE spells are used first.
+    if (bCaster)
+    {
+        SetSpawnInCondition(AI_FLAG_COMBAT_SINGLE_TARGETING, AI_COMBAT_MASTER);
+            // For Same-level spells, single target spells are used first.
+        SetSpawnInCondition(AI_FLAG_COMBAT_MANY_TARGETING, AI_COMBAT_MASTER);
+            // For Same-level spells, AOE spells are used first.
+    }
 
     SetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_INSTANT_DEATH_SPELLS, AI_COMBAT_MASTER);
         // A few Death spells may be cast top-prioritory if the enemy will always fail saves.
@@ -272,9 +285,12 @@ void main()
     SetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_SPECIFIC_SPELL_IMMUNITY, AI_COMBAT_MASTER);
         // Turns On checks for Globes & levels of spells. Auto on for 9+ Intel.
 
-    //SetSpawnInCondition(AI_FLAG_COMBAT_MORE_ALLY_BUFFING_SPELLS, AI_COMBAT_MASTER);
-        // This will make the caster buff more allies - or, in fact, use spells
-        // to buff allies which they might have not used before.
+    if (bCaster)
+    {
+        SetSpawnInCondition(AI_FLAG_COMBAT_MORE_ALLY_BUFFING_SPELLS, AI_COMBAT_MASTER);
+            // This will make the caster buff more allies - or, in fact, use spells
+            // to buff allies which they might have not used before.
+    }
 
     //SetSpawnInCondition(AI_FLAG_COMBAT_USE_ALL_POTIONS, AI_COMBAT_MASTER);
         // Uses all buffing spells before melee.
@@ -301,23 +317,29 @@ void main()
         // Min. Amount of Rounds between each breath use. See readme for counter defaults. Def: 3
 
     // Default checks for dragon flying automatic turning on of flying.
+    /*
     if(GetLevelByClass(CLASS_TYPE_DRAGON) || GetRacialType(OBJECT_SELF) == RACIAL_TYPE_DRAGON)
     {
         SetSpawnInCondition(AI_FLAG_COMBAT_FLYING, AI_COMBAT_MASTER);
         // This turns ON combat flying. I think anything winged looks A-OK. See readme for info.
     }
+    */
 /************************ [Combat - Dragons] **********************************/
 
 /************************ [Combat Other - Healers/Healing] *********************
     Healing behaviour - not specifically clerics. See readme.
 ************************* [Combat Other - Healers/Healing] ********************/
-    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_HEAL_AT_PERCENT_NOT_AMOUNT, AI_OTHER_COMBAT_MASTER);
-        // if this is set, we ignore the amount we need to be damaged, as long
-        // as we are under AI_HEALING_US_PERCENT.
-    //SetAIInteger(AI_HEALING_US_PERCENT, 50);
-        // % of HP we need to be at until we heal us at all. Default: 50
-    //SetAIInteger(AI_HEALING_ALLIES_PERCENT, 60);
-        // % of HP allies would need to be at to heal them Readme = info. Default: 60
+    if (bHealer)
+    {
+        SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_HEAL_AT_PERCENT_NOT_AMOUNT, AI_OTHER_COMBAT_MASTER);
+            // if this is set, we ignore the amount we need to be damaged, as long
+            // as we are under AI_HEALING_US_PERCENT.
+        SetAIInteger(AI_HEALING_US_PERCENT, 50);
+            // % of HP we need to be at until we heal us at all. Default: 50
+        SetAIInteger(AI_HEALING_ALLIES_PERCENT, 60);
+            // % of HP allies would need to be at to heal them Readme = info. Default: 60
+    }
+
     SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_WILL_RAISE_ALLIES_IN_BATTLE, AI_OTHER_COMBAT_MASTER);
         // Turns on rasing dead with Resurrection/Raise dead.
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_CURING, AI_OTHER_COMBAT_MASTER);
@@ -343,9 +365,9 @@ void main()
     // "NO" - This is for forcing the skill NEVER to be used by the combat AI.
     // "FORCE" - This forces it on (and to be used), except if they have no got the skill.
 
-    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_PICKPOCKETING, AI_OTHER_COMBAT_MASTER);
+    SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_PICKPOCKETING, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_PICKPOCKETING, AI_OTHER_COMBAT_MASTER);
-    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_TAUNTING, AI_OTHER_COMBAT_MASTER);
+    if (GetSkillRank(SKILL_TAUNT, OBJECT_SELF, TRUE) > 0) SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_TAUNTING, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_TAUNTING, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_EMPATHY, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_EMPATHY, AI_OTHER_COMBAT_MASTER);
@@ -354,9 +376,9 @@ void main()
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_OPENING_LOCKED_DOORS, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_OPENING_LOCKED_DOORS, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_USING_HEALING_KITS, AI_OTHER_COMBAT_MASTER);
-    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_PARRYING, AI_OTHER_COMBAT_MASTER);
+    SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_PARRYING, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_PARRYING, AI_OTHER_COMBAT_MASTER);
-    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_SEARCH, AI_OTHER_COMBAT_MASTER);
+    SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_SEARCH, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_SEARCH, AI_OTHER_COMBAT_MASTER);
     // - Concentration - special notes in the readme
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_CONCENTRATION, AI_OTHER_COMBAT_MASTER);
@@ -605,6 +627,7 @@ void main()
 ************************* [User] **********************************************/
     // Example (and default) of user addition:
     // - If we are from an encounter, set mobile (move around) animations.
+    /*
     if(GetIsEncounterCreature())
     {
         SetSpawnInCondition(NW_FLAG_AMBIENT_ANIMATIONS, NW_GENERIC_MASTER);
@@ -615,11 +638,50 @@ void main()
     {
         SetBaseAttackBonus(nNumber);
     }
+    */
 
 /************************ [User] **********************************************/
 
+    int nFamiliar = GetLocalInt(OBJECT_SELF, "familiar");
+    if (nFamiliar > 0)
+        NWNX_Creature_SetFamiliarCreatureType(OBJECT_SELF, nFamiliar);
+
+    int nCompanion = GetLocalInt(OBJECT_SELF, "companion");
+    if (nCompanion > 0)
+        NWNX_Creature_SetAnimalCompanionCreatureType(OBJECT_SELF, nCompanion);
+
+    NWNX_Creature_SetNoPermanentDeath(OBJECT_SELF, TRUE);
+
+    SetAssociateListenPatterns();//Sets up the special henchmen listening patterns
+
+    // not sure if we need these two
+    //SetAssociateState(NW_ASC_POWER_CASTING);
+    //SetAssociateState(NW_ASC_HEAL_AT_50);
+    SetAssociateState(NW_ASC_RETRY_OPEN_LOCKS);
+    SetAssociateState(NW_ASC_DISARM_TRAPS);
+    SetAssociateState(NW_ASC_MODE_DEFEND_MASTER, FALSE);
+
+    SetAssociateListenPatterns();//Sets up the special henchmen listening patterns
+
+    // functions are copied from x0_inc_henai
+    //bkSetListeningPatterns();      // Goes through and sets up which shouts the NPC will listen to.
+    SetListening(OBJECT_SELF, TRUE);
+    //SetListenPattern(OBJECT_SELF, "inventory",101);
+    SetListenPattern(OBJECT_SELF, "pick",102);
+    SetListenPattern(OBJECT_SELF, "trap", 103);
+
+    SetAssociateState(NW_ASC_DISTANCE_2_METERS);
+
+    SetListenPattern(OBJECT_SELF, "PARTY_I_WAS_ATTACKED", 200);
+
+    // common AI conditions
+    SetSpawnInCondition(AI_FLAG_FLEEING_FEARLESS, AI_TARGETING_FLEE_MASTER);
+    AI_SetAITargetingValues(TARGETING_HP_CURRENT, TARGET_LOWER, 1, 3);
+    //SetAIConstant(LAG_AI_LEVEL_NO_PC_OR_ENEMY_50M, AI_LEVEL_VERY_LOW);
+
     // Note: You shouldn't really remove this, even if they have no waypoints.
-    DelayCommand(f2, SpawnWalkWayPoints());
+    // idc ill remove it anyways
+    //DelayCommand(f2, SpawnWalkWayPoints());
         // Delayed walk waypoints, as to not upset instant combat spawning.
         // This will also check if to change to day/night posts during the walking, no heartbeats.
 }

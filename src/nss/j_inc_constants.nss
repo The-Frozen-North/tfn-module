@@ -40,19 +40,19 @@ const string COMBAT_FILE                            = "j_ai_detercombat";       
 // file will make it full-proof.
 //nw_walk_wp
 // - FILE_
-const string FILE_WALK_WAYPOINTS                    = "j_ai_walkwaypoin";       // FILENAME
-const string FILE_RE_SET_WEAPONS                    = "j_ai_setweapons";        // FILENAME
+//const string FILE_WALK_WAYPOINTS                    = "j_ai_walkwaypoin";       // FILENAME
+//const string FILE_RE_SET_WEAPONS                    = "j_ai_setweapons";        // FILENAME
 // If we are dead when this fires, it destroys us
-const string FILE_DEATH_CLEANUP                     = "j_ai_destroyself";       // FILENAME
+//const string FILE_DEATH_CLEANUP                     = "j_ai_destroyself";       // FILENAME
 
 // Heartbeat files. Speeds up (hopefully!) heartbeat calls and cirtainly heartbeat file size.
-const string FILE_HEARTBEAT_TALENT_BUFF             = "j_ai_heart_buff";
-const string FILE_HEARTBEAT_LOOT                    = "j_ai_heart_loot";
-const string FILE_HEARTBEAT_ANIMATIONS              = "j_ai_heart_aimate";
-const string FILE_HEARTBEAT_WALK_TO_PC              = "j_ai_heart_serch";
+//const string FILE_HEARTBEAT_TALENT_BUFF             = "j_ai_heart_buff";
+//const string FILE_HEARTBEAT_LOOT                    = "j_ai_heart_loot";
+//const string FILE_HEARTBEAT_ANIMATIONS              = "j_ai_heart_aimate";
+//const string FILE_HEARTBEAT_WALK_TO_PC              = "j_ai_heart_serch";
 
-const string FILE_DRAGON_WING_BUFFET                = "j_ai_wingbuffet";
-const string FILE_FLY_ATTACK                        = "j_ai_wingflying";
+//const string FILE_DRAGON_WING_BUFFET                = "j_ai_wingbuffet";
+//const string FILE_FLY_ATTACK                        = "j_ai_wingflying";
 
 // Spell trigger creation file
 const string FILE_SPELLTRIGGER_START                = "j_ai_spelltrig1";
@@ -217,6 +217,9 @@ const string AI_TIMER_BLOCKED                       = "AI_TIMER_BLOCKED";
 // this is set for 0.1 second to stop multiple DetermineCombatRound scripts being called
 // in a short space of time.
 const string AI_DEFAULT_AI_COOLDOWN                 = "AI_DEFAULT_AI_COOLDOWN";
+
+// this was added by BePower, but missing in the constants
+const string AI_DEFAULT_AI_COOLDOWN_EFFECT_SET      = "AI_DEFAULT_AI_COOLDOWN_EFFECT_SET";
 
 // If this timer is set On Death, it means we do NOT apply EffectDeath to self.
 const string AI_TIMER_DEATH_EFFECT_DEATH            = "AI_TIMER_DEATH_EFFECT_DEATH";
@@ -1174,7 +1177,7 @@ void SetAIConstant(string sName, int iConstant);
 int GetAIConstant(string sName);
 // Deletes a constant set to sName.
 // (To stop local's going awary, we set them with pre-fixes.)
-int DeleteAIConstant(string sName);
+void DeleteAIConstant(string sName);
 
 // Sets a local AI integers to ourselves.
 // (To stop local's going awary, we set them with pre-fixes.)
@@ -1189,7 +1192,7 @@ int GetAIInteger(string sName);
 int GetBoundriedAIInteger(string sName, int iDefault = 10, int iTop = 10, int iBottom = 1);
 // Deletes a local AI integers from ourselves.
 // (To stop local's going awary, we set them with pre-fixes.)
-int DeleteAIInteger(string sName);
+void DeleteAIInteger(string sName);
 
 // Sets a local AI object to ourselves.
 // (To stop local's going awary, we set them with pre-fixes.)
@@ -1918,6 +1921,8 @@ void SearchSpells()
 // This is used in combat (at the end thereof) and when something shouts, and is a placeable.
 // * oTarget - The target which may have shouted, or similar. Moves to and closes normally.
 // If no oTarget, it still searches
+// DO NOT USE! Makes AI go all over the place
+/*
 void Search(object oTarget = OBJECT_INVALID)
 {
     if(GetIsObjectValid(GetAttemptedSpellTarget()) ||
@@ -2019,6 +2024,7 @@ void Search(object oTarget = OBJECT_INVALID)
         }
     }
 }
+*/
 
 // Returns our custom AI file (if any)
 // - Blank string if not set

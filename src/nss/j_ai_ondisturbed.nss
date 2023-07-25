@@ -44,12 +44,12 @@ void main()
         if(nBase == BASE_ITEM_HEALERSKIT)
         {
             SetLocalInt(OBJECT_SELF, AI_WEAPONSETTING_SETWEAPONS, i2);
-            ExecuteScript(FILE_RE_SET_WEAPONS, OBJECT_SELF);
+            //ExecuteScript(FILE_RE_SET_WEAPONS, OBJECT_SELF);
         }
         else // Think it is a weapon. Saves time :-)
         {
             SetLocalInt(OBJECT_SELF, AI_WEAPONSETTING_SETWEAPONS, i1);
-            ExecuteScript(FILE_RE_SET_WEAPONS, OBJECT_SELF);
+            //ExecuteScript(FILE_RE_SET_WEAPONS, OBJECT_SELF);
         }
     }
     // Fight! Or search!

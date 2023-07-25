@@ -44,7 +44,7 @@
 /************************ [Intelligence Documentation] *************************
     Intelligence
 
-    in·tel·li·gence    ( P )  Pronunciation Key  (n-tl-jns)
+    inï¿½telï¿½liï¿½gence    ( P )  Pronunciation Key  (n-tl-jns)
     n.
 
     1. a, The capacity to acquire and apply knowledge.
@@ -56,8 +56,8 @@
     4. a, Secret information, especially about an actual or potential enemy.
        b, An agency, staff, or office employed in gathering such information.
        c, Espionage agents, organizations, and activities considered as a
-          group: “Intelligence is nothing if not an institutionalized black
-                  market in perishable commodities” (John le Carré).
+          group: ï¿½Intelligence is nothing if not an institutionalized black
+                  market in perishable commoditiesï¿½ (John le Carrï¿½).
 
     We'll take 1. a, as our definition of intelligence in my AI files.
 
@@ -184,6 +184,9 @@ v0.1:
 // Sets effects. This doesn't have to be seperate, but I like it seperate.
 #include "j_inc_seteffects"
 #include "x2_inc_itemprop"
+
+// this is pulled in for GetFollowDistance and other henchman things
+#include "x0_i0_assoc"
 
 /******************************************************************************/
 // Combat include, spell effect/immune constants
@@ -775,7 +778,7 @@ int AI_GetSpellCategoryHasItem(int nTalent);
 
 // Equips the best shield we have.
 // - Used before we cast a spell so casters can gain maximum AC.
-void AI_EquipBestShield();
+//void AI_EquipBestShield();
 // Turns on/off all melee things (not stealth or search!) but not iMode.
 void AI_SetMeleeMode(int iMode = -1);
 
@@ -1233,6 +1236,7 @@ int AI_GetWeaponArray(string sArray, object oCannotBe = OBJECT_INVALID, int iTyp
 }
 // Equips the best shield we have.
 // - Used before we cast a spell so casters can gain maximum AC.
+/*
 void AI_EquipBestShield()
 {
     object oShield = GetAIObject(AI_WEAPON_SHIELD);
@@ -1243,6 +1247,7 @@ void AI_EquipBestShield()
         ActionEquipItem(oShield, INVENTORY_SLOT_LEFTHAND);
     }
 }
+*/
 
 // Turns on/off all melee things (not stealth or search!) but not iMode.
 void AI_SetMeleeMode(int iMode = -1)
@@ -1276,10 +1281,12 @@ void AI_SetMeleeMode(int iMode = -1)
 void AI_ActionTurnOffHiding()
 {
     // Turn of searching and hiding here, if we want to!
+    /*
     if(!GetHasFeat(FEAT_KEEN_SENSE) && GetDetectMode(OBJECT_SELF) == DETECT_MODE_ACTIVE)
     {
         SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, FALSE);
     }
+    */
     // Turn of hiding if we have been seen lately.
     if(GetLocalTimer(AI_TIMER_TURN_OFF_HIDE) &&
        GetStealthMode(OBJECT_SELF) == STEALTH_MODE_ACTIVATED)
@@ -1319,6 +1326,7 @@ int AI_EquipAndAttack()
     }
 
     // - Flying
+    /*
     if(GlobalRangeToMeleeTarget > f8 &&
        GetSpawnInCondition(AI_FLAG_COMBAT_FLYING, AI_COMBAT_MASTER))
     {
@@ -1326,6 +1334,7 @@ int AI_EquipAndAttack()
         ExecuteScript(FILE_FLY_ATTACK, OBJECT_SELF);
         return TRUE;
     }
+    */
 
     // Set up the range to use weapons at, before moving into HTH
     // Default is 5.0 (+ Some for creature size) with no changes...
@@ -1383,8 +1392,27 @@ int AI_EquipAndAttack()
             }
         }
     }
+    
+    int iRanged = iRangedAttack;
+    object oEquipped = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
+    int iNeedMoreAC = FALSE;
+
+    // Check one: Is a lot more AC better? Or keep shield equipped, even?
+    // 1. Is our AC below 2x our HD? (IE under 20 at level 10)
+    if((GlobalOurAC < GlobalOurHitDice * i2) ||
+    // 2. Our AC is under average melee BAB + 6 (a badish roll)
+        (GlobalOurAC < GlobalAverageEnemyBAB + i6 &&
+        GlobalAverageEnemyHD >= GlobalOurHitDice - i5) ||
+    // 3. Melee attackers are great, over 1/4th of our HD + 2, and enemy HD is comparable toughness
+        (GlobalMeleeAttackers > ((GlobalOurHitDice / i4) + i2) &&
+        GlobalAverageEnemyHD >= GlobalOurHitDice - i3))
+    {
+        // We need more AC!
+        iNeedMoreAC = TRUE;
+    }
 
     // Declare everything
+    /* NO WEAPON CHECKING!
     object oEquipped, oMainWeapon, oMainPossessor, oPrimary, oSecondary, oTwohanded;
     int iPickUpDisarmed, iRanged, iShield, iValidAmmo, iStrength, iPrimaryNum,
         iSecondaryNum, iValidPrimary, iValidSecondary, iValidTwoHanded, iPrimaryDamage,
@@ -1789,6 +1817,7 @@ int AI_EquipAndAttack()
     // Now, we should have equipped something :-D
     // GlobalLeftHandWeapon, GlobalRightHandWeapon
     // GlobalOurSize, GlobalOurBaseAttackBonus, GlobalMeleeTargetAC, GlobalMeleeTargetBAB
+    */
 
     // We randomly hit, determined by our intelligence.
     // If we have higher intelligence, we take our rolls to be higher, so we use feats more.
@@ -1803,15 +1832,6 @@ int AI_EquipAndAttack()
     // Note:
     // - 8+ Intelligence also checks DISCIPLINE.
 
-/*  Ability: Strength.
-    Requires Training: No.
-    Classes: All.
-
-    A successful check allows the character to resist any combat feat
-    (Disarm, Called Shot, or Knockdown).n).
-
-    Check: The DC is equal to the attacker's attack roll.
-    Use: Automatic. */
 
     // We therefore make ValidFeat mean FALSE if the target has too much
     // disipline (by a margin)
@@ -1843,6 +1863,8 @@ int AI_EquipAndAttack()
         iOurHit += GetAbilityModifier(ABILITY_DEXTERITY);
 
         // We see if it is a weapon which we can use power attack with >:-D
+        // this doesnt work with throwing axes?
+        /*
         if(GetBaseItemType(oEquipped) == BASE_ITEM_THROWINGAXE)
         {
             if((iOurHit - i5) >= GlobalMeleeTargetAC)// Power attack
@@ -1858,6 +1880,8 @@ int AI_EquipAndAttack()
                 return FEAT_POWER_ATTACK;
             }
         }
+        */
+
         // Rapid shot - This provides another attack, at -2 to hit.
         if((iOurHit - i2) >= GlobalMeleeTargetAC && GetHasFeat(FEAT_RAPID_SHOT))
         {
@@ -1936,7 +1960,8 @@ int AI_EquipAndAttack()
         iTargetAlignment = GetAlignmentGoodEvil(GlobalMeleeTarget);
         // Now, monk, can it be done...
         if((!GetIsObjectValid(oEquipped) ||
-             GetBaseItemType(oEquipped) == BASE_ITEM_KAMA) &&
+             GetBaseItemType(oEquipped) == BASE_ITEM_KAMA ||
+             GetBaseItemType(oEquipped) == BASE_ITEM_QUARTERSTAFF) &&
              iTargetCreatureRace != RACIAL_TYPE_CONSTRUCT &&
              iTargetCreatureRace != RACIAL_TYPE_UNDEAD)
         {
@@ -2368,6 +2393,8 @@ int AI_AttemptConcentrationCheck(object oTarget)
         return FALSE;
     }
     // Jump out if we use defensive casting!
+    // no defensive casting
+    /*
     if(GetHasSkill(SKILL_CONCENTRATION) &&
     // If we have 15 + 9 skill (for a level 9 spell) so we'll never fail, we
     // always turn it on.
@@ -2390,6 +2417,7 @@ int AI_AttemptConcentrationCheck(object oTarget)
         // Turn it off
         SetActionMode(OBJECT_SELF, ACTION_MODE_DEFENSIVE_CAST, FALSE);
     }
+    */
 
     if(// Check if we have the feat FEAT_EPIC_IMPROVED_COMBAT_CASTING - no AOO
       !GetHasFeat(FEAT_EPIC_IMPROVED_COMBAT_CASTING) &&
@@ -2501,7 +2529,7 @@ int AI_ActionCastItemEqualTo(object oTarget, int iSpellID, int iLocation)
             // Sets a sub spell whatever, just in case.
             SetLocalInt(OBJECT_SELF, AI_SPELL_SUB_SPELL_CAST, iSpellID);
             // Equip the best shield we have
-            AI_EquipBestShield();
+            //AI_EquipBestShield();
             // Use this only for items, so we should not have the spell.
             if(iLocation)
             {
@@ -2531,7 +2559,7 @@ int AI_ActionCastSpontaeousSpell(int iSpellID, int nTalent, object oTarget)
         // 8: "[DCR: Casting] Workaround for Spontaeous [SpellID] " + IntToString(iSpellID) + " [Target] " + GetName(oTarget)
         DebugActionSpeakByInt(8, oTarget, iSpellID);
         // Equip the best shield we have
-        AI_EquipBestShield();
+        //AI_EquipBestShield();
         // Decrement the spell being cast by one as we cheat cast it
         DecrementRemainingSpellUses(OBJECT_SELF, iSpellID);
         // Cheat cast, it'll remove inflict wounds if it is an inflict spell anyway.
@@ -2594,7 +2622,7 @@ int AI_ActionCastSpell(int iSpellID, int nTalent = 0, object oTarget = OBJECT_SE
             // We turn off hiding/searching
             AI_ActionTurnOffHiding();
             // Equip the best shield we have
-            AI_EquipBestShield();
+            //AI_EquipBestShield();
             //... had to have some way of detecting if the spell is a touch one...
             if (GetIsEnemy(oTarget) && GetDistanceToObject(oTarget) < 3.0f)
                 AssignCommand(OBJECT_SELF, ActionMoveAwayFromObject(oTarget, TRUE, 5.0f));
@@ -2688,7 +2716,7 @@ int AI_ActionCastSubSpell(int iSubSpell, int nTalent = 0, object oTarget = OBJEC
             // We turn off hiding/searching
             AI_ActionTurnOffHiding();
             // Equip the best shield we have
-            AI_EquipBestShield();
+            //AI_EquipBestShield();
             // See 1.3 fix notes about metamagic not being used correctly with
             // cast spell at location.
             if(GetObjectSeen(oTarget) && !bEtherealEnemy)
@@ -2780,7 +2808,7 @@ int AI_ActionCastSpellRandom(int iSpellID, int nTalent, int iRandom, object oTar
                 // We turn off hiding/searching
                 AI_ActionTurnOffHiding();
                 // Equip the best shield we have
-                AI_EquipBestShield();
+                //AI_EquipBestShield();
                 // Note: 1.3 fix. Action Cast At Object will be used if we can see
                 // the target, even if it is a location spell
                 if(GetObjectSeen(oTarget) && !bEtherealEnemy)
@@ -2962,7 +2990,7 @@ int AI_ActionCastSummonSpell(int iThingID, int iRequirement = 0, int iSummonLeve
             // We turn off hiding/searching
             AI_ActionTurnOffHiding();
             // Equip the best shield we have
-            AI_EquipBestShield();
+            //AI_EquipBestShield();
             // Fire ActionSpellAtLocation at the given location
             // 1.3 fix - Until ActionCastSpellAtLocation works with METAMAGIC
             //           it will cheat-cast, and decrement the spell by one, with no metamagic.
@@ -3005,7 +3033,7 @@ int AI_ActionCastSummonSpell(int iThingID, int iRequirement = 0, int iSummonLeve
                 // 7: "[DCR:Casting] Talent(item) [TalentID] " + IntToString(GetIdFromTalent(tBestOfIt)) + " [Target] " + GetName(oTarget) + " [Location] " + IntToString(iLocation)
                 DebugActionSpeakByInt(7, GlobalSpellTarget, GetIdFromTalent(tBestOfIt));
                 // Equip the best shield we have
-                AI_EquipBestShield();
+                //AI_EquipBestShield();
                 // Use this only for items, so we should not have the spell.
                 ActionUseTalentAtLocation(tBestOfIt, GlobalSummonLocation);
                 SetAIInteger(AI_LAST_SUMMONED_LEVEL, iSummonLevel);
@@ -3133,7 +3161,7 @@ int AI_AttemptGrenadeThrowing(object oTarget)
             // 15: "[DCR:Casting] Grenade [ID] " + IntToString(ItemHostRanged) + " [Target] " + GetName(oTarget) + " [Location] " + IntToString(iLocation)
             DebugActionSpeakByInt(15, GlobalSpellTarget, ItemHostRanged, IntToString(iLocation));
             // Equip the best shield we have
-            AI_EquipBestShield();
+            //AI_EquipBestShield();
             // Use this only for items, so we should not have the spell.
             if(iLocation)
             {
@@ -3953,7 +3981,7 @@ void AI_SetUpUs()
         if(!GetIsObjectValid(GlobalHealingKit) && iHealLeft >= i2)
         {
             SetAIInteger(RESET_HEALING_KITS, TRUE);
-            ExecuteScript(FILE_RE_SET_WEAPONS, OBJECT_SELF);
+            //ExecuteScript(FILE_RE_SET_WEAPONS, OBJECT_SELF);
         }
     }
 
@@ -5363,21 +5391,21 @@ int AI_ActionHealObject(object oTarget)
     {
         if(iPotionValue == SPELL_HEAL)
         {
-            AI_EquipBestShield();
+            //AI_EquipBestShield();
             // Potion spell
             AI_ActionUseTalentDebug(tPotionHealing, OBJECT_SELF);
             return TRUE;
         }
         else if(iTouchHealingValue == SPELL_HEAL && !bPoly)
         {
-            AI_EquipBestShield();
+            //AI_EquipBestShield();
             // Touch heal spell
             AI_ActionUseTalentDebug(tTouchHealing, oTarget);
             return TRUE;
         }
         else if(iAOEHealingValue == SPELL_MASS_HEAL && !bPoly)
         {
-            AI_EquipBestShield();
+            //AI_EquipBestShield();
             // Mass heal spell
             AI_ActionUseTalentDebug(tAOEHealing, oTarget);
             return TRUE;
@@ -5519,7 +5547,7 @@ int AI_ActionHealObject(object oTarget)
                                         tToUse = tPotionHealing;
                                     else return FALSE;
                                 }
-                                AI_EquipBestShield();
+                                //AI_EquipBestShield();
                                 // No AI_ActionUseTalentDebug, just normal. Debug string above.
                                 DeleteLocalInt(OBJECT_SELF, AI_SPONTAEUOUSLY_CAST_HEALING);
                                 ActionUseTalentOnObject(tToUse, oTarget);
@@ -5700,7 +5728,7 @@ int AI_AttemptHealingSelf()
                   (GetSkillRank(SKILL_HEAL) >= (GlobalOurHitDice / i3) ||
                    GlobalOurPercentHP < i30))
                 {
-                    AI_EquipBestShield();
+                    //AI_EquipBestShield();
                     // 21: "[DCR:Casting] Healing self with healing kit, [Kit] " + GetName(GlobalHealingKit)
                     DebugActionSpeakByInt(21, GlobalHealingKit);
                     ActionUseSkill(SKILL_HEAL, OBJECT_SELF, i0, GlobalHealingKit);
@@ -6454,6 +6482,7 @@ int AI_AttemptGoForTheKill()
         // 26: "[DCR:GFTK] Attacking a PC who is dying/asleep! [Enemy]" + GetName(oTempEnemy)
         DebugActionSpeakByInt(26, oTempEnemy);
         // Attempt default most damaging to try and do most damage.
+        /*
         if(fDistance > GlobalRangeToMeleeTarget)
         {
             ActionEquipMostDamagingRanged(oTempEnemy);
@@ -6462,6 +6491,7 @@ int AI_AttemptGoForTheKill()
         {
             ActionEquipMostDamagingMelee(oTempEnemy);
         }
+        */
         ActionAttack(oTempEnemy);
         return TRUE;
     }
@@ -6496,6 +6526,7 @@ int AI_AttemptGoForTheKill()
             // - or it is 0.75 of our hit dice (IE cleric or better).
                GlobalOurBaseAttackBonus >= ((GetHitDice(oTempEnemy) * i3) / i2))
             {
+                /*
                 if(iHTH)
                 {
                     ActionEquipMostDamagingMelee(oTempEnemy);
@@ -6513,6 +6544,7 @@ int AI_AttemptGoForTheKill()
                 {
                     return FALSE;
                 }
+                */
                 ActionAttack(oTempEnemy);
                 return TRUE;
             }
@@ -6735,10 +6767,12 @@ int AI_AttemptArcherRetreat()
                     // 27: "[DCR:Moving] Archer Retreating back from the enemy [Enemy]" + GetName(GlobalMeleeTarget)
                     DebugActionSpeakByInt(27, GlobalMeleeTarget);
                     // - Equip the rnaged weapon if not already
+                    /*
                     if(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND) != oRanged)
                     {
                         ActionEquipItem(oRanged, INVENTORY_SLOT_RIGHTHAND);
                     }
+                    */
                     ActionMoveAwayFromObject(GlobalMeleeTarget, TRUE, f15);
                     return TRUE;
                 }
@@ -12477,6 +12511,7 @@ int AI_DragonBreathOrWing(object oTarget)
         }
         // Else wing must be higher, or no breath!
         // So we use wing buffet, re-set that, then try breath to end...
+        /*
         if(nWing >= iAboveXWing && GlobalOurSize >= CREATURE_SIZE_HUGE &&
            GetCreatureSize(oTarget) < CREATURE_SIZE_HUGE)
         {
@@ -12489,6 +12524,8 @@ int AI_DragonBreathOrWing(object oTarget)
             ExecuteScript(FILE_DRAGON_WING_BUFFET, OBJECT_SELF);
             return TRUE;
         }
+        */
+
         // Breath final...
         if(SpellHostBreath && nBreath >= iAboveXBreath)
         {
@@ -13485,7 +13522,8 @@ int AI_SetUpAllObjects(object oInputBackup)
     else
     {
         GlobalTotalPeople = FALSE;// Reset
-        oSetUpTarget = GetFirstObjectInShape(SHAPE_SPHERE, f50, lSelf, TRUE);
+        float fRange = 20.0; // 50 IS WAY TOO HIGH, WHY CHECK THAT FAR LMAO
+        oSetUpTarget = GetFirstObjectInShape(SHAPE_SPHERE, fRange, lSelf, TRUE);
         while(GetIsObjectValid(oSetUpTarget))
         {
             // We totally ignore DM's, and AI_IGNORE people
@@ -13519,7 +13557,7 @@ int AI_SetUpAllObjects(object oInputBackup)
                     }
                 }
             }
-            oSetUpTarget = GetNextObjectInShape(SHAPE_SPHERE, f50, lSelf, TRUE);
+            oSetUpTarget = GetNextObjectInShape(SHAPE_SPHERE, fRange, lSelf, TRUE);
         }
         // The first simple one is therefore done :-)
 //        SendMessageToPC(GetFirstPC(), IntToString(GlobalTotalPeople) + "," + IntToString(GlobalTotalAllies));
@@ -13698,10 +13736,12 @@ int AI_SetUpAllObjects(object oInputBackup)
             // just Move to the target
             // 39: "[DCR:Targeting] No valid enemies in sight, moving to allies target's. [Target] " + GetName(oSetUpTarget)
             DebugActionSpeakByInt(39, oSetUpTarget);
-            AI_EquipBestShield();
-            ActionEquipMostDamagingMelee();
-            ActionMoveToLocation(GetLocation(oSetUpTarget), TRUE);
-            SendMessageToPC(GetFirstPC(), "Exiting with no targets available");
+            //AI_EquipBestShield();
+            //ActionEquipMostDamagingMelee();
+            //ActionMoveToLocation(GetLocation(oSetUpTarget), TRUE);
+            ActionForceFollowObject(GetMaster(), GetFollowDistance());
+            //SendMessageToPC(GetFirstPC(), "Exiting with no targets available");
+            
             return TRUE;
         }
     }
@@ -14221,7 +14261,7 @@ int AI_SetUpAllObjects(object oInputBackup)
                     DeleteAIObject(AI_LAST_MELEE_TARGET);
                     DeleteAIObject(AI_LAST_SPELL_TARGET);
                     DeleteAIObject(AI_LAST_RANGED_TARGET);
-                    AI_EquipBestShield(); // in case of an ambush, be ready
+                    //AI_EquipBestShield(); // in case of an ambush, be ready
                     ActionMoveToLocation(GetLocation(oSetUpTarget), TRUE);
 //                SendMessageToPC(GetFirstPC(), "Exiting with melee target");
                     return TRUE;
@@ -15145,8 +15185,8 @@ void AI_ActionUseSkillOnMeleeTarget(int iSkill)
     AI_ActionTurnOffHiding();
     // Simple most damaging
     // - Equip shield first
-    AI_EquipBestShield();
-    ActionEquipMostDamagingMelee(GlobalMeleeTarget);
+    //AI_EquipBestShield();
+    //ActionEquipMostDamagingMelee(GlobalMeleeTarget);
     ActionUseSkill(iSkill, GlobalMeleeTarget);
     ActionWait(f2);
     ActionAttack(GlobalMeleeTarget);
@@ -15459,6 +15499,7 @@ int AI_AttemptFeatCombatHostile()
             DebugActionSpeakByInt(44, GlobalMeleeTarget);
             // Add attack to end of action queue. Should do this next round
             // anyway
+            /*
             if(GlobalRangeToMeleeTarget <= f4)
             {
                 ActionEquipMostDamagingMelee(GlobalMeleeTarget);
@@ -15467,6 +15508,7 @@ int AI_AttemptFeatCombatHostile()
             {
                 ActionEquipMostDamagingRanged(GlobalMeleeTarget);
             }
+            */
             ActionAttack(GlobalMeleeTarget);
             return TRUE;
         }
@@ -16127,6 +16169,9 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         DebugActionSpeakByInt(47);
         return;
     }
+
+    if (GetAssociateState(NW_ASC_IS_BUSY)) return;
+
     // 1.30 - daze is now as 3E rules,  you can move around walking, but no
     // attacking, casting or anything else :-(
     // looks like a good place to put in some code about the black blade of disaster
@@ -16135,11 +16180,13 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         // 48: "[DCR] [PREMITURE EXIT] Dazed move away."
         DebugActionSpeakByInt(48);
         // Equip best shield for most AC
-        AI_EquipBestShield();
+
+        //AI_EquipBestShield();
         // Move away from the nearest heard enemy
         if (GlobalValidNearestHeardEnemy)//... new addition since we set it up above
             ActionMoveAwayFromObject(GlobalNearestEnemyHeard);
-        else ActionRandomWalk();
+        else ActionForceFollowObject(GetMaster(), GetFollowDistance()); //ActionRandomWalk();
+
         DeleteLocalObject(OBJECT_SELF, "oAlliedSetup");//... data sharing stuff
         return;
     }
@@ -16232,12 +16279,13 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
     if(GlobalAnyValidTargetObject)
     {
         // We do our auras. Quicken casted.
-        AI_ActionAbilityAura();
+        //AI_ActionAbilityAura();
 
         // We may flee from massive odds, or if we panic...or commoner fleeing
-        if(AI_AttemptMoraleFlee()){return;}
+        //if(AI_AttemptMoraleFlee()){return;}
 
         // Beholder and Mindflayer special AI
+        /*
         iTempInt = GetAIInteger(AI_SPECIAL_AI);
         if(iTempInt == i1)
         {
@@ -16250,6 +16298,7 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
             // Special mindflayer things. This can fall through.
             if(AI_AttemptMindflayerCombat()){return;}
         }
+        */
 
         // We will attempt to heal ourselves first as a prioritory.
         // Dragons may use this.
@@ -16270,7 +16319,7 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         // Used about every 3 rounds. Dragons may use this.
         if(AI_AttemptFeatTurning()){return;}
 //        _db("Step 2");
-
+        
         // Special Dragon things now, else other monsters.
         if(AI_GetIsDragon())
         {
@@ -16347,11 +16396,14 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
     DeleteAIObject(AI_LAST_RANGED_TARGET);
     DeleteLocalObject(OBJECT_SELF, "NW_GENERIC_LAST_ATTACK_TARGET");
 
+// make them follow at this point
+    ActionForceFollowObject(GetMaster(), GetFollowDistance());
+
     // New: Search. This makes them go into search mode (if not already) and
     // wanders around for an amount of time. We will search for AI_SEARCH_COOLDOWN_TIME
     // seconds.
     // - Search around oIntruder - might be a dead person.
-    Search(oIntruder);
+    //Search(oIntruder);
     // Search should activate this after a cirtain amount of time
 //    SpeakString("Step end");
 }

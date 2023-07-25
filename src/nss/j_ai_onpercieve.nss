@@ -84,6 +84,7 @@ void main()
                 if(oAttackTarget == oPerceived)
                 {
                     // This means they have exited the area! follow!
+                    /* NO FOLLOWING!
                     if(GetArea(oPerceived) != GetArea(OBJECT_SELF))
                     {
                         ClearAllActions();
@@ -94,7 +95,7 @@ void main()
                     }
                     // - Added check for not casting a spell. If we are, we finnish
                     //  (EG: AOE spell) and automatically carry on.
-                    else if(GetCurrentAction() != ACTION_CASTSPELL)
+                    else */ if(GetCurrentAction() != ACTION_CASTSPELL)
                     {
                         ClearAllActions();
                         // 52: "[Perception] Enemy Vanished (Same area) Retargeting/Searching [Percieved] " + GetName(oPerceived)
@@ -148,6 +149,7 @@ void main()
             }
         }
         // Else, they are an equal faction, or not an enemy (or both)
+        /* nope, no investigating!
         else
         {
             // If they are dead, say we saw something on waypoints, we charge in
@@ -184,6 +186,7 @@ void main()
                 }
             }
         }
+        */
     }
 
     // Fire End of Percieve event

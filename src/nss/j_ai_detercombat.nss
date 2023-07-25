@@ -31,6 +31,57 @@
 
 #include "j_inc_generic_ai"
 
+int GetHasEffect(int nEffectType, object oTarget = OBJECT_SELF)
+{
+    effect eCheck = GetFirstEffect(oTarget);
+    while(GetIsEffectValid(eCheck))
+    {
+        if(GetEffectType(eCheck) == nEffectType)
+        {
+             return TRUE;
+             break;
+        }
+        eCheck = GetNextEffect(oTarget);
+    }
+    return FALSE;
+}
+
+void DoCombatVoice()
+{
+    if (GetIsDead(OBJECT_SELF)) return;
+
+// don't proceed if there is a cooldown
+    if (GetLocalInt(OBJECT_SELF, "battlecry_cd") == 1)
+        return;
+
+    SetLocalInt(OBJECT_SELF, "battlecry_cd", 1);
+
+    DelayCommand(10.0+IntToFloat(d10()), DeleteLocalInt(OBJECT_SELF, "battlecry_cd"));
+
+    string sBattlecryScript = GetLocalString(OBJECT_SELF, "battlecry_script");
+    if (sBattlecryScript != "")
+    {
+        ExecuteScript(sBattlecryScript, OBJECT_SELF);
+    }
+    else
+    {
+        int nRand = 40;
+        if (GetLocalInt(OBJECT_SELF, "boss") == 1) nRand = nRand/2;
+        if (!GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF))
+        {
+            switch (Random(nRand))
+            {
+                case 0: PlayVoiceChat(VOICE_CHAT_BATTLECRY1, OBJECT_SELF); break;
+                case 1: PlayVoiceChat(VOICE_CHAT_BATTLECRY2, OBJECT_SELF); break;
+                case 2: PlayVoiceChat(VOICE_CHAT_BATTLECRY3, OBJECT_SELF); break;
+                case 3: PlayVoiceChat(VOICE_CHAT_ATTACK, OBJECT_SELF); break;
+                case 4: PlayVoiceChat(VOICE_CHAT_TAUNT, OBJECT_SELF); break;
+                case 5: PlayVoiceChat(VOICE_CHAT_LAUGH, OBJECT_SELF); break;
+            }
+        }
+    }
+}
+
 void main()
 {
     // Pre-combat-event
@@ -44,8 +95,12 @@ void main()
     // Speak combat round speakstring
     //SpeakArrayString(AI_TALK_ON_COMBAT_ROUND, TRUE);
 
+    DoCombatVoice();
+
     // Call combat round using include
     AI_DetermineCombatRound(oTarget);
+
+    if (GetIsObjectValid(oTarget)) DelayCommand(IntToFloat(d10())/10.0, DoCombatVoice());
 
     // Delete it whatever happens
     DeleteAIObject(AI_TEMP_SET_TARGET);

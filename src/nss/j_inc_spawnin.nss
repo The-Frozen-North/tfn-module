@@ -468,13 +468,14 @@ void AI_SetListeningPatterns()
 }
 // Base for moving round thier waypoints
 // - Uses ExectuteScript to run the waypoint walking.
+/*
 void SpawnWalkWayPoints(int nRun = FALSE, float fPause = 1.0)
 {
     SetLocalInt(OBJECT_SELF, WAYPOINT_RUN, nRun);
     SetLocalFloat(OBJECT_SELF, WAYPOINT_PAUSE, fPause);
     ExecuteScript(FILE_WALK_WAYPOINTS, OBJECT_SELF);
 }
-
+*/
 
 void AI_SetUpEndOfSpawn()
 {

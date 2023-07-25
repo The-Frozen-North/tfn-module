@@ -1,3 +1,119 @@
+//::///////////////////////////////////////////////
+//:: Associate: On Dialogue
+//:: NW_CH_AC4
+//:: Copyright (c) 2001 Bioware Corp.
+//:://////////////////////////////////////////////
+/*
+    Determines the course of action to be taken
+    by the generic script after dialogue or a
+    shout is initiated.
+*/
+//:://////////////////////////////////////////////
+//:: Created By: Preston Watamaniuk
+//:: Created On: Oct 24, 2001
+//:://////////////////////////////////////////////
+/*
+Patch 1.72
+- fixed bug that allowed to speak with associate in disable states such as petrify
+- HotU associate conversation will now be used even outside of the HotU campaign
+*/
+
+// we are NOT using Jasperre's AI for conversation
+
+#include "j_inc_henchman"
+#include "inc_henchman"
+#include "x2_inc_switches"
+
+// * This function checks to make sure no
+// * dehibilating effects are on the player that should
+// * Don't use getcommandable for this since the dying system
+// * will sometimes leave a player in a noncommandable state
+int AbleToTalk(object oSelf)
+{
+    if (GetLocalInt(oSelf, "pending_destroy") == 1)
+    {
+        AssignCommand(OBJECT_SELF, ActionMoveToObject(GetNearestObject(OBJECT_TYPE_DOOR)));
+        return FALSE;
+    }
+
+    effect eSearch = GetFirstEffect(oSelf);
+    while(GetIsEffectValid(eSearch))
+    {
+        switch(GetEffectType(eSearch))
+        {
+            case EFFECT_TYPE_CONFUSED:
+            case EFFECT_TYPE_DOMINATED:
+            case EFFECT_TYPE_PETRIFY:
+            case EFFECT_TYPE_PARALYZE:
+            case EFFECT_TYPE_STUNNED:
+            case EFFECT_TYPE_FRIGHTENED:
+            case EFFECT_TYPE_DAZED:
+            case EFFECT_TYPE_CHARMED:
+            case EFFECT_TYPE_TURNED:
+            case EFFECT_TYPE_CUTSCENE_PARALYZE:
+            case EFFECT_TYPE_SLEEP:
+            return FALSE;
+        }
+        switch(GetEffectSpellId(eSearch))
+        {
+            case SPELL_BIGBYS_FORCEFUL_HAND:
+            case SPELL_BALAGARNSIRONHORN:
+            return FALSE;
+        }
+        eSearch = GetNextEffect(oSelf);
+    }
+    return TRUE;
+}
+
+void main()
+{
+    object oMaster = GetMaster();
+    int nMatch = GetListenPatternNumber();
+    object oShouter = GetLastSpeaker();
+    object oIntruder;
+
+
+
+    if (nMatch == ASSOCIATE_COMMAND_LEAVEPARTY)
+    {
+        DelayCommand(0.1, AddHenchman(oMaster));
+        SendMessageToPC(oMaster, "Henchmen cannot be dismissed from the radial menu");
+    }
+
+    if (GetIsControllable(OBJECT_SELF) && nMatch == 200 && GetIsFriend(oShouter) && !GetIsFighting()) // PARTY_I_WAS_ATTACKED
+    {
+        HenchmenCombatRound(GetLastHostileActor(oShouter));
+    }
+
+    if (nMatch == -1) {
+        if(AbleToTalk(OBJECT_SELF) && GetCurrentAction() != ACTION_OPENLOCK)
+        {
+            ClearActions(CLEAR_NW_CH_AC4_28);
+
+            // * if in XP2, use an alternative dialog file
+            string sDialog = "";
+            if (GetLocalInt(GetModule(), "X2_L_XP2") ==  1 || (GetAssociateType(OBJECT_SELF) != ASSOCIATE_TYPE_NONE && GetAssociateType(OBJECT_SELF) != ASSOCIATE_TYPE_HENCHMAN))
+            {
+                sDialog = "x2_associate";
+            }
+            BeginConversation(sDialog);
+        }
+    } else if (GetIsControllable(OBJECT_SELF)) {
+        // listening pattern matched
+        if (GetIsObjectValid(oShouter) && oMaster == oShouter)
+        {
+            SetCommandable(TRUE);
+            AI_RespondToHenchmenShout(oShouter, nMatch, oIntruder, TRUE);
+        }
+    }
+
+    // Signal user-defined event
+    //if(GetSpawnInCondition(NW_FLAG_ON_DIALOGUE_EVENT)) {
+    //    SignalEvent(OBJECT_SELF, EventUserDefined(EVENT_DIALOGUE));
+    //}
+}
+
+
 /************************ [On Conversation] ************************************
     Filename: j_ai_onconversat or nw_c2_default4
 ************************* [On Conversation] ************************************
@@ -22,11 +138,15 @@
     Arguments: GetListenPatternNumber, GetLastSpeaker, TestStringAgainstPattern,
                GetMatchedSubstring
 ************************* [On Conversation] ***********************************/
+/*
 
-#include "j_inc_other_ai"
+//#include "j_inc_other_ai"
+//#include "inc_henchman"
 
 void main()
 {
+    ExecuteScript("hen_onconvers");
+
     // Pre-heartbeat-event
     if(FireUserEvent(AI_FLAG_UDE_ON_DIALOGUE_PRE_EVENT, EVENT_ON_DIALOGUE_PRE_EVENT))
         // We may exit if it fires
@@ -39,16 +159,23 @@ void main()
     int nMatch = GetListenPatternNumber();
     object oShouter = GetLastSpeaker();
     string sSpoken = GetMatchedSubstring(i0);
+    object oMaster = GetMaster();
+
+    if (nMatch == ASSOCIATE_COMMAND_LEAVEPARTY)
+    {
+        //DelayCommand(0.1, AddHenchman(oMaster));
+        SendMessageToPC(oMaster, "Henchmen cannot be dismissed from the radial menu");
+    }
 
     // We can ignore everything under special cases - EG no valid shouter,
     // we are fleeing, its us, or we are not in the same area.
     // - We break out of the script if this happens.
-    if(!GetIsObjectValid(oShouter) ||     /* Must be a valid speaker! */
-       !GetCommandable() ||               /* Commandable */
-        oShouter == OBJECT_SELF ||        /* Not us!     */
-        GetIsPerformingSpecialAction() || /* Not fleeing */
-        GetIgnore(oShouter) ||            /* Not ignoring the shouter */
-        GetArea(oShouter) != GetArea(OBJECT_SELF))/* Same area (Stops "SHOUT" getting NPCs */
+    if(!GetIsObjectValid(oShouter) ||     // Must be a valid speaker!
+       !GetCommandable() ||               // Commandable 
+        oShouter == OBJECT_SELF ||        // Not us! 
+        GetIsPerformingSpecialAction() || // Not fleeing
+        GetIgnore(oShouter) ||            // Not ignoring the shouter
+        GetArea(oShouter) != GetArea(OBJECT_SELF)) // Same area (Stops "SHOUT" getting NPCs 
     {
         // Fire End of Dialogue event
         FireUserEvent(AI_FLAG_UDE_ON_DIALOGUE_EVENT, EVENT_ON_DIALOGUE_EVENT);
@@ -148,3 +275,5 @@ void main()
     // Fire End of Dialogue event
     FireUserEvent(AI_FLAG_UDE_ON_DIALOGUE_EVENT, EVENT_ON_DIALOGUE_EVENT);
 }
+
+*/

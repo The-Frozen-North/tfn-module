@@ -26,6 +26,24 @@ void LoopResetTriggers(string sString, object oTrigger);
 
 void main()
 {
+    object oFamiliar = GetAssociate(ASSOCIATE_TYPE_FAMILIAR);
+    if (GetIsObjectValid(oFamiliar))
+    {
+        ForceRest(oFamiliar);
+        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_SUMMON_FAMILIAR);
+    }
+
+    object oCompanion = GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION);
+    if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_ANIMALCOMPANION)))
+    {
+        ForceRest(oCompanion);
+        DecrementRemainingFeatUses(OBJECT_SELF, FEAT_ANIMAL_COMPANION);
+    }
+
+    //DeleteLocalInt(OBJECT_SELF, "invis");
+    DeleteLocalInt(OBJECT_SELF, "gsanc");
+    DeleteLocalInt(OBJECT_SELF, "healers_kit_cd");
+    
     // Pre-heartbeat-event
     if(FireUserEvent(AI_FLAG_UDE_RESTED_PRE_EVENT, EVENT_RESTED_PRE_EVENT))
         // We may exit if it fires
@@ -49,8 +67,8 @@ void main()
         LoopResetTriggers(SPELLTRIGGER_START_OF_COMBAT, oTrigger);
     }
     // Some sitting for a few seconds.
-    ActionPlayAnimation(ANIMATION_LOOPING_SIT_CROSS, f1, f6);
-    DelayCommand(f9, ExecuteScript(FILE_WALK_WAYPOINTS, OBJECT_SELF));
+    //ActionPlayAnimation(ANIMATION_LOOPING_SIT_CROSS, f1, f6);
+    //DelayCommand(f9, ExecuteScript(FILE_WALK_WAYPOINTS, OBJECT_SELF));
 
     // Fire End-heartbeat-UDE
     FireUserEvent(AI_FLAG_UDE_RESTED_EVENT, EVENT_RESTED_EVENT);

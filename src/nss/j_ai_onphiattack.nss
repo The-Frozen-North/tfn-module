@@ -25,6 +25,9 @@ void main()
     // AI status check. Is the AI on?
     if(GetAIOff()) return;
 
+    if (GetIsEnemy(GetLastAttacker()))
+        SpeakString("PARTY_I_WAS_ATTACKED", TALKVOLUME_SILENT_TALK);
+
     // Set up objects.
     object oAttacker = GetLastAttacker();
     object oWeapon = GetLastWeaponUsed(oAttacker);
