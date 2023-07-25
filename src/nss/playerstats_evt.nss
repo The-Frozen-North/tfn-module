@@ -102,13 +102,8 @@ void main()
         nToken = StringToInt(GetScriptParam("token"));
     }
     
-    int bCDKeyDB = 0;
-    json jUserData;
-    if (sUpdateAllBinds != "" || sUpdateBind != "" || (sElement == "toggleallcharacters" && sEvent == "click"))
-    {
-        jUserData = NuiGetUserData(oPC, nToken);
-        bCDKeyDB = JsonGetString(JsonObjectGet(jUserData, "activepanel")) == "player";
-    }
+    json jUserData = NuiGetUserData(oPC, nToken);
+    int bCDKeyDB = JsonGetString(JsonObjectGet(jUserData, "activepanel")) == "player";;
     
     if (sEvent == "click" && sElement == "toggleallcharacters")
     {
@@ -119,15 +114,20 @@ void main()
             // it has to set a lot of binds
             jUserData = JsonObjectSet(jUserData, "nextswitchtime", JsonInt(nNow+2));
             
+            // Logically: if currently looking at the cdkeydb, 
             if (bCDKeyDB)
             {
+                SendDebugMessage("Switch to one-character view");
                 jUserData = JsonObjectSet(jUserData, "activepanel", JsonString("character"));
-                NuiSetBind(oPC, nToken, "switchviewbuttontext", JsonString("View this Character's Stats"));
+                NuiSetBind(oPC, nToken, "switchviewbuttontext", JsonString("View all Character's Stats"));
+                NuiSetBind(oPC, nToken, "switchbuttontooltip", JsonString("Currently displaying this character's stats."));
             }
             else
             {
+                SendDebugMessage("Switch to all-character view");
                 jUserData = JsonObjectSet(jUserData, "activepanel", JsonString("player"));
-                NuiSetBind(oPC, nToken, "switchviewbuttontext", JsonString("View all Character Stats"));
+                NuiSetBind(oPC, nToken, "switchviewbuttontext", JsonString("View this Character Stats"));
+                NuiSetBind(oPC, nToken, "switchbuttontooltip", JsonString("Currently displaying combined stats for all characters."));
             }
             bCDKeyDB = !bCDKeyDB;
             sUpdateAllBinds = "1";

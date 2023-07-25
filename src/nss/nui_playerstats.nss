@@ -330,7 +330,7 @@ void ShowPlayerStatsUI(object oPC)
     }
     
     json jTop = JsonArray();
-    json jThisCharacterButton = NuiId(NuiHeight(NuiWidth(NuiButton(NuiBind("switchviewbuttontext")), 220.0), 40.0), "toggleallcharacters");
+    json jThisCharacterButton = NuiTooltip(NuiId(NuiHeight(NuiWidth(NuiButton(NuiBind("switchviewbuttontext")), 220.0), 40.0), "toggleallcharacters"), NuiBind("switchbuttontooltip"));
     jTop = JsonArrayInsert(jTop, jThisCharacterButton);
     json jTopRow = NuiRow(jTop);
     
@@ -415,6 +415,7 @@ void ShowPlayerStatsUI(object oPC)
     jUserData = JsonObjectSet(jUserData, "activecategory", JsonString("general"));
     NuiSetUserData(oPC, nToken, jUserData);
     NuiSetBind(oPC, nToken, "switchviewbuttontext", JsonString("View all Character Stats"));
+    NuiSetBind(oPC, nToken, "switchbuttontooltip", JsonString("Currently displaying this character's stats."));
     
     UpdatePlayerStatsUIBindIfOpen(oPC, "");
 }

@@ -531,6 +531,17 @@ void PopUpOptionsGUIPanel (object oPC, string sWinID)
     jCol = JsonArrayInsert(jCol, NuiRow(jRow));
     
     // Create row 1 (label).
+    jRow = JsonArray();
+    jButton = NuiButton(JsonString("Gameplay Statistics"));
+    jButton = NuiWidth(jButton, 300.0);
+    jButton = NuiHeight(jButton, 40.0);
+    jButton = NuiTooltip(jButton, JsonString("View your gameplay statistics."));
+    jButton = NuiId(jButton, "open_statistics");
+    jRow = JsonArrayInsert(jRow, jButton);
+    // Add row to the column.
+    jCol = JsonArrayInsert(jCol, NuiRow(jRow));
+    
+    // Create row 1 (label).
     jRow = JsonArray ();
     json jCheckBox = NuiWidth(NuiHeight(NuiCheck(NuiBind("hide_discord_label"), NuiBind("hide_discord_value2")), 40.0), 300.0);
     jCheckBox = NuiTooltip(jCheckBox, JsonString("Prevents non-login related game activities being shown to Discord or in-game."));
