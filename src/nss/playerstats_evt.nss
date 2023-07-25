@@ -9,6 +9,7 @@ string FormatTime(int nSeconds)
     int nHours = nSeconds / 3600;
     nSeconds = nSeconds - (nHours * 3600);
     int nMinutes = nSeconds / 60;
+    nSeconds = nSeconds - (nMinutes * 60);
     string sOut = "";
     if (nDays > 0)
     {
@@ -21,6 +22,10 @@ string FormatTime(int nSeconds)
     if (nMinutes > 0)
     {
         sOut += IntToString(nMinutes) + "m";
+    }
+    if (nMinutes < 1)
+    {
+        sOut += IntToString(nSeconds) + "s";
     }
     return sOut;
 }

@@ -134,7 +134,7 @@ void UpdatePlayerStatsUIBindIfOpen(object oPlayer, string sBind="");
 
 // gold_looted
 // gold_earned_from_selling
-// gold_spent_by_buying
+// gold_spent_from_buying
 // most_gold_carried
 // treasures_looted
 // items_bought
@@ -270,7 +270,7 @@ json _GetPlayerStatsPanelBreakdown()
         json jGoldTreasure = JsonArray();
         jGoldTreasure = JsonArrayInsert(jGoldTreasure, _PreparePlayerStatsPanelItem("gold_looted", "Gold Looted", "Total amount of raw gold looted."));
         jGoldTreasure = JsonArrayInsert(jGoldTreasure, _PreparePlayerStatsPanelItem("gold_earned_from_selling", "Gold from Selling", "Total amount of gold obtained from selling goods to shops."));
-        jGoldTreasure = JsonArrayInsert(jGoldTreasure, _PreparePlayerStatsPanelItem("gold_spent_by_buying", "Gold Spent", "Total amount of gold spent on items and services in both shops and dialogue."));
+        jGoldTreasure = JsonArrayInsert(jGoldTreasure, _PreparePlayerStatsPanelItem("gold_spent_from_buying", "Gold Spent", "Total amount of gold spent on items and services in both shops and dialogue."));
         jGoldTreasure = JsonArrayInsert(jGoldTreasure, _PreparePlayerStatsPanelItem("items_bought", "Items Bought", "Total number of items bought from stores."));
         jGoldTreasure = JsonArrayInsert(jGoldTreasure, _PreparePlayerStatsPanelItem("items_sold", "Items Sold", "Total number of items sold to stores."));
         jGoldTreasure = JsonArrayInsert(jGoldTreasure, _PreparePlayerStatsPanelItem("most_gold_carried", "Most Gold Carried", "Highest amount of gold carried at any time."));
