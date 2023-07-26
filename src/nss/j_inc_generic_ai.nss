@@ -6048,7 +6048,7 @@ int AI_AttemptHealingAlly()
             {
                 iSummonHeal = TRUE;
             }
-            fChosenLastDistance = MAX_RANGE_FOR_VALID_AI; // too farf60;// So 1st target in health band gets picked
+            fChosenLastDistance = MAX_RANGE_FOR_VALID_TARGET; // too farf60;// So 1st target in health band gets picked
             iCnt = i1;
             oLoopTarget = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE_SEEN + IntToString(iCnt));
             while(GetIsObjectValid(oLoopTarget))
@@ -16433,8 +16433,8 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
 
 // Debug: To compile this script full, uncomment all of the below.
 /* - Add two "/"'s at the start of this line
-void main()
-{
-    AI_DetermineCombatRound();
-}
+//void main()
+//{
+//    AI_DetermineCombatRound();
+//}
 //*/

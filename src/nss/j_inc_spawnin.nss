@@ -1236,8 +1236,8 @@ void SetSpellTrigger(string sType, int iValue, int iNumber, int iSpell1, int iSp
 }
 // Debug: To compile this script, uncomment all of the below.
 /* - Add two "/"'s at the start of this line
-void main()
-{
-    return;
-}
+//void main()
+//{
+//    return;
+//}
 //*/
