@@ -159,7 +159,7 @@ json _PreparePlayerStatsPanelItem(string sKey, string sLabel, string sTooltip)
 json _GetPlayerStatsPanelBreakdown()
 {
     json jRet = GetLocalJson(GetModule(), "playerstats_panel_breakdown");
-    if (jRet != JsonNull() || GetIsDevServer())
+    if (jRet == JsonNull() || GetIsDevServer())
     {
         jRet = JsonObject();
         json jGeneral = JsonArray();
@@ -289,7 +289,7 @@ json _GetPlayerStatsPanelBreakdown()
 json _PlayerStatsCategoryToNui(json jPanel, string sCategory)
 {
     json jRet = GetLocalJson(GetModule(), "playerstats_panel_nui_" + sCategory);
-    if (jRet != JsonNull() || GetIsDevServer())
+    if (jRet == JsonNull() || GetIsDevServer())
     {
         json jArray = JsonObjectGet(jPanel, sCategory);
         int nLength = JsonGetLength(jArray);
