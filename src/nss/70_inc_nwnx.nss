@@ -13,8 +13,9 @@
 
 const int REST_EVENTTYPE_REST_FORCEREST = 4;
 
-const int DURATION_TYPE_EQUIPPED = 3;
-const int DURATION_TYPE_INNATE = 4;
+// These conflict with real nwnx stuff
+//const int DURATION_TYPE_EQUIPPED = 3;
+//const int DURATION_TYPE_INNATE = 4;
 
 const int AREA_DAYTIME_RESET_DEFAULT = -1;
 const int AREA_DAYTIME_DAY = 0;

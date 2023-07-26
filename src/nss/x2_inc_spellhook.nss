@@ -43,6 +43,7 @@
 #include "x0_i0_match"
 #include "x2_inc_craft"
 #include "inc_debug"
+#include "inc_general"
 
 
 const int X2_EVENT_CONCENTRATION_BROKEN = 12400;
@@ -582,5 +583,27 @@ int X2PreSpellCastCode()
     DeleteLocalInt(OBJECT_SELF,"70_SPELLHOOK_LIMIT");
     DeleteLocalInt(OBJECT_SELF,"70_SPELLHOOK_SAVINGTHROW");
     DeleteLocalInt(OBJECT_SELF,"70_SPELLHOOK_TARGETTYPE");
+    if (!nRet && GetIsPC(OBJECT_SELF))
+    {
+        if (GetIsObjectValid(GetSpellCastItem()))
+        {
+            if (GetBaseItemType(GetSpellCastItem()) == BASE_ITEM_POTIONS)
+            {
+                IncrementPlayerStatistic(OBJECT_SELF, "potions_drunk");
+            }
+            else if (GetBaseItemType(GetSpellCastItem()) == BASE_ITEM_SPELLSCROLL)
+            {
+                IncrementPlayerStatistic(OBJECT_SELF, "spells_cast_from_scroll");
+            }
+            else
+            {
+                IncrementPlayerStatistic(OBJECT_SELF, "spells_cast_from_item");
+            }
+        }
+        else
+        {
+            IncrementPlayerStatistic(OBJECT_SELF, "spells_cast");
+        }
+    }
     return !nRet;
 }

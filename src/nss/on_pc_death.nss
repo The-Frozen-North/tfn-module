@@ -63,23 +63,23 @@ void main()
     if (SQLocalsPlayer_GetInt(oPlayer, "DEAD") == 0)
     {
         //SQLocalsPlayer_SetInt(oPlayer, "times_died", SQLocalsPlayer_GetInt(oPlayer, "times_died")+1);
-        IncrementStat(oPlayer, "deaths");
+        IncrementPlayerStatistic(oPlayer, "deaths");
 
         if (GetLocalString(oPlayer, "trap_triggered") != "")
         {
-            IncrementStat(oPlayer, "deaths_from_traps");    
+            IncrementPlayerStatistic(oPlayer, "deaths_from_traps");    
         }
 
         if (GetIsPC(oKiller))
         {
-            IncrementStat(oPlayer, "deaths_from_players");
-            IncrementStat(oKiller, "players_killed");
+            IncrementPlayerStatistic(oPlayer, "deaths_from_players");
+            IncrementPlayerStatistic(oKiller, "players_killed");
         }
 
         if (GetFactionEqual(oKiller, oPlayer))
         {
-            IncrementStat(oPlayer, "deaths_from_allies");
-            IncrementStat(oKiller, "allies_killed");
+            IncrementPlayerStatistic(oPlayer, "deaths_from_allies");
+            IncrementPlayerStatistic(oKiller, "allies_killed");
         }
 
         location lDeathSpot = GetLocation(oPlayer);

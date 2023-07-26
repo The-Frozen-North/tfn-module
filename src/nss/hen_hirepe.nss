@@ -1,5 +1,6 @@
 #include "inc_henchman"
 #include "inc_persist"
+#include "inc_general"
 
 
 int StartingConditional()
@@ -12,11 +13,13 @@ int StartingConditional()
 
     if(!(GetIsSkillSuccessful(oPC, nSkill, nDC)))
     {
+        IncrementPlayerStatistic(oPC, "persuade_failed");
         return FALSE;
     }
     else
     {
-        IncrementStat(oPC, "henchman_recruited");
+        IncrementPlayerStatistic(oPC, "persuade_succeeded");
+        IncrementPlayerStatistic(oPC, "henchman_recruited");
         SetMaster(OBJECT_SELF, oPC);
         ForceRest(OBJECT_SELF);
         return TRUE;

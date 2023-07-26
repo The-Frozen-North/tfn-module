@@ -15,6 +15,7 @@
 #include "70_inc_spells"
 #include "x2_inc_toollib"
 #include "x2_inc_spellhook"
+#include "inc_general"
 
 void main()
 {
@@ -38,5 +39,9 @@ void main()
     eSummon = ExtraordinaryEffect(eSummon);
     //Apply the summon visual and summon the dragon.
     ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, eSummon, spell.Loc, DurationToSeconds(nDuration));
+    if (GetIsPC(spell.Caster))
+    {
+        IncrementPlayerStatistic(spell.Caster, "creatures_summoned");
+    }
     DelayCommand(1.0,ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, eVis, spell.Loc));
 }

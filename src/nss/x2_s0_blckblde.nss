@@ -25,6 +25,7 @@ Patch 1.70
 
 #include "70_inc_spells"
 #include "x2_i0_spells"
+#include "inc_general"
 
 //Creates the weapon that the creature will be using.
 void spellsCreateItemForSummoned(object oCaster, int nStat)
@@ -87,6 +88,10 @@ void main()
     else
     {
         nStat = GetAbilityModifier(ABILITY_CHARISMA, spell.Caster);
+    }
+    if (GetIsPC(spell.Caster))
+    {
+        IncrementPlayerStatistic(spell.Caster, "creatures_summoned");
     }
     DelayCommand(1.5, spellsCreateItemForSummoned(spell.Caster, nStat));
 }

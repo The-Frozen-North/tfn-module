@@ -1,4 +1,5 @@
 #include "nwnx_creature"
+#include "inc_general"
 //#include "inc_debug"
 
 const int HENCHMAN_MOUNT = 16;
@@ -241,6 +242,7 @@ void ApplyMount(object oPC, int nHorse = 0)
 
     //SendMessageToPC(oPC, "Riding Applies: Skill Riding Check: "+IntToString(GetSkillRank(SKILL_RIDE, oPC) / 5)+" Spell Failure: "+IntToString(GetRidingSpellFailure(oPC))+"%");
     DetermineHorseEffects(oPC);
+    IncrementPlayerStatistic(oPC, "times_mounted");
 }
 
 void ValidateMount(object oPC)

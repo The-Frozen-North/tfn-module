@@ -10,11 +10,16 @@ void main()
         if (GetIsPC(OBJECT_SELF))
         {
             object oItem = StringToObject(NWNX_Events_GetEventData("ITEM"));
+            // According to docs, this runs even if the PC has no room for the item
+            if (GetBaseItemFitsInInventory(GetBaseItemType(oItem), OBJECT_SELF))
+            {
+            
 
-            IncrementStat(OBJECT_SELF, "gold_spent_from_buying", StringToInt(NWNX_Events_GetEventData("PRICE")));
-            IncrementStat(OBJECT_SELF, "items_bought");
+                IncrementPlayerStatistic(OBJECT_SELF, "gold_spent_from_buying", StringToInt(NWNX_Events_GetEventData("PRICE")));
+                IncrementPlayerStatistic(OBJECT_SELF, "items_bought");
 
-            ValuableItemWebhook(OBJECT_SELF, oItem, TRUE);
+                ValuableItemWebhook(OBJECT_SELF, oItem, TRUE);
+            }
         }
     }
 }

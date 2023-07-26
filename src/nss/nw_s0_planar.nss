@@ -22,6 +22,7 @@ Patch 1.71
 #include "70_inc_spells"
 #include "x0_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_general"
 
 void main()
 {
@@ -95,6 +96,10 @@ void main()
             case ALIGNMENT_NEUTRAL:
                 eSummon = EffectSummonCreature("sum_slaadgreen", VFX_FNF_SUMMON_MONSTER_3, 1.0);
             break;
+        }
+        if (GetIsPC(spell.Caster))
+        {
+            IncrementPlayerStatistic(spell.Caster, "creatures_summoned");
         }
         //Apply the summon effect and VFX impact
         ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, eSummon, spell.Loc, HoursToSeconds(nDuration));

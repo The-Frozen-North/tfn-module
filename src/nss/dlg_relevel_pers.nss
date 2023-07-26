@@ -1,5 +1,6 @@
 #include "inc_gold"
 #include "inc_persist"
+#include "inc_general"
 
 int StartingConditional()
 {
@@ -17,10 +18,12 @@ int StartingConditional()
 
     if(!(GetIsSkillSuccessful(oPC, nSkill, nDC)))
     {
+        IncrementPlayerStatistic(oPC, "persuade_failed");
         return FALSE;
     }
     else
     {
+        IncrementPlayerStatistic(oPC, "persuade_succeeded");
         TakeGoldFromCreature(nCost, oPC, TRUE);
         SetXP(oPC, 1);
         SetXP(oPC, nXP);

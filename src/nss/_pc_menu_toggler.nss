@@ -5,17 +5,18 @@
 void main()
 {
     object oPC = GetItemActivator();
+    string sKey = GetPCPublicCDKey(oPC, TRUE);
 
-    if (SQLocalsPlayer_GetInt(oPC, "pc_menu_disabled") == 1)
+    if (GetCampaignInt(sKey, "pc_menu_disabled") == 1)
     {
         SendColorMessageToPC(oPC, "Player menu enabled", MESSAGE_COLOR_INFO);
-        SQLocalsPlayer_DeleteInt(oPC, "pc_menu_disabled");
+        DeleteCampaignVariable(sKey, "pc_menu_disabled");
         PopUpPlayerHorGUIPanel(oPC);
     }
     else
     {
         SendColorMessageToPC(oPC, "Player menu disabled", MESSAGE_COLOR_INFO);
-        SQLocalsPlayer_SetInt(oPC, "pc_menu_disabled", 1);
+        SetCampaignInt(sKey, "pc_menu_disabled", 1);
         NuiDestroy(oPC, NuiFindWindow(oPC, "pcplayerwin"));
     }
 }

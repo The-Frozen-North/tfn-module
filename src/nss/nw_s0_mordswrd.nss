@@ -13,6 +13,7 @@
 
 #include "70_inc_spells"
 #include "x2_inc_spellhook"
+#include "inc_general"
 
 void main()
 {
@@ -34,6 +35,10 @@ void main()
     if (spell.Meta & METAMAGIC_EXTEND)
     {
         nDuration = nDuration *2;   //Duration is +100%
+    }
+    if (GetIsPC(spell.Caster))
+    {
+        IncrementPlayerStatistic(spell.Caster, "creatures_summoned");
     }
     //Apply the VFX impact and summon effect
     ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, eSummon, spell.Loc, DurationToSeconds(nDuration));

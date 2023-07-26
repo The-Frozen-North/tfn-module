@@ -1,4 +1,5 @@
 #include "inc_key"
+#include "inc_general"
 
 void main()
 {
@@ -10,6 +11,7 @@ void main()
         if (GetHasKey(oPC, sKeyTag))
         {
             SendMessageToPC(oPC, "You open the lock with the " + GetKeyName(sKeyTag) + " in your key bag.");
+            IncrementPlayerStatistic(oPC, "key_doors_opened");
             SetLocked(OBJECT_SELF, FALSE);
             AssignCommand(OBJECT_SELF, ActionOpenDoor(OBJECT_SELF));
             

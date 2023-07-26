@@ -5,6 +5,7 @@
 #include "inc_henchman"
 #include "inc_nwnx"
 #include "inc_key"
+#include "inc_general"
 
 // SetScriptParam: "exclusivelooter" to ObjectToString(oPC) to make oPC get everything.
 
@@ -490,10 +491,16 @@ int DeterminePartyMemberThatGetsItem(object oItem, int nStartWeights=1000)
     if (nAssignedIndex <= Party.PlayerSize)
     {
         oRecipient = GetLocalArrayObject(OBJECT_SELF, "Players", nAssignedIndex);
+        IncrementPlayerStatistic(oRecipient, "item_gold_value_assigned", nItemValue);
     }
     else
     {
         oRecipient = GetLocalArrayObject(OBJECT_SELF, "Henchmans", nAssignedIndex - Party.PlayerSize);
+        for (i=1; i<= Party.PlayerSize; i++)
+        {
+            object oPlayer = GetLocalArrayObject(OBJECT_SELF, "Players", i);
+            IncrementPlayerStatistic(oPlayer, "henchman_item_gold_value_assigned", nItemValue);
+        }
     }
     // Update gold owings
     // I guess the best way to do this is to just subtract (item gold value/(party size-1)) from everyone else's owing
@@ -865,6 +872,18 @@ void main()
 // =========================
 // START LOOP
 // =========================
+   // For stat tracking, work out who really killed this
+   // (and if it was a summon or dominated associate, direct it back to the owner)
+   object oKiller = GetLastKiller();
+   if (GetIsPC(GetMaster(oKiller)))
+   {
+       int nAssociateType = GetAssociateType(oKiller);
+       if (nAssociateType == ASSOCIATE_TYPE_ANIMALCOMPANION || nAssociateType == ASSOCIATE_TYPE_DOMINATED || nAssociateType == ASSOCIATE_TYPE_FAMILIAR || nAssociateType == ASSOCIATE_TYPE_SUMMONED)
+       {
+           oKiller = GetMaster(oKiller);
+       }
+   }
+   
    for(nNth = 1; nNth <= Party.PlayerSize; nNth++)
    {
 // Credit players in previously set array "Players"
@@ -876,9 +895,16 @@ void main()
       if (GetObjectType(OBJECT_SELF) == OBJECT_TYPE_CREATURE)
       {
           // includes neutrals or people outside of party
-          IncrementStat(oPC, "enemies_killed_with_credit");
+          IncrementPlayerStatistic(oPC, "enemies_killed_with_credit");
           GiveXPToPC(oPC, fXP);
           AdvanceQuest(OBJECT_SELF, oPC, GetLocalInt(OBJECT_SELF, "quest_kill"));
+          
+          if (oKiller == oPC)
+          {
+              // Number of personal kills is in ai_ondeath already
+              IncrementPlayerStatistic(oPC, "kill_xp_value", FloatToInt(fXP*100.0));
+          }
+          IncrementPlayerStatistic(oPC, "total_xp_from_partys_kills", FloatToInt(fXP*100.0));
       }
 
 // only proceed with loot code if container exists

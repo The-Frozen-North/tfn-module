@@ -17,6 +17,7 @@
 #include "util_i_csvlists"
 #include "inc_prettify"
 #include "inc_loot"
+#include "nwnx_damage"
 
 const int SEED_SPAWNS = 1;
 const int SEED_TREASURES = 1;
@@ -410,6 +411,11 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_WALK_TO_WAYPOINT_BEFORE", "stealth_move_fix");
     
     NWNX_Events_SubscribeEvent("NWNX_ON_CALENDAR_DUSK", "on_calendar_dusk");
+    
+    NWNX_Events_SubscribeEvent("NWNX_ON_INVENTORY_ADD_GOLD_AFTER", "on_inv_addgolda");
+    
+    NWNX_Damage_SetDamageEventScript("on_damage");
+    NWNX_Damage_SetAttackEventScript("on_attack");
 
 
     ServerWebhook("The Frozen North is starting!", "The Frozen North server is starting up. Once the module is stable and ready for players to login, we'll let you know.");

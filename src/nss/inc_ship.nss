@@ -171,8 +171,8 @@ void PayShipAndTravel(object oSpeaker, object oPlayer, int nTarget, int bPersuad
 // do not proceed if the player does not have enough gold
     if (GetGold(oPlayer) < nCost) return;
 
-    IncrementStat(oPlayer, "gold_spent_on_long_travel", nCost);
-    IncrementStat(oPlayer, "long_travel_used");
+    IncrementPlayerStatistic(oPlayer, "gold_spent_on_long_travel", nCost);
+    IncrementPlayerStatistic(oPlayer, "long_travel_used");
 
     object oArea = GetArea(oDestination);
 
