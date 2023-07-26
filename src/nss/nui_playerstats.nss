@@ -188,7 +188,7 @@ json _GetPlayerStatsPanelBreakdown()
         jKillsDeaths = JsonArrayInsert(jKillsDeaths, _PreparePlayerStatsPanelItem("revived", "Revives", "The number of times you have been revived by a nearby ally when out of combat."));
         jKillsDeaths = JsonArrayInsert(jKillsDeaths, _PreparePlayerStatsPanelItem("deaths_from_traps", "Deaths from Traps", "The number of times you have been killed by a trap."));
         jKillsDeaths = JsonArrayInsert(jKillsDeaths, _PreparePlayerStatsPanelItem("deaths_from_players", "Deaths from Players", "The number of times you have been killed by another player."));
-        jKillsDeaths = JsonArrayInsert(jKillsDeaths, _PreparePlayerStatsPanelItem("deaths_from_allies", "Deaths from Alies", "The number of times you have been killed by an ally."));
+        jKillsDeaths = JsonArrayInsert(jKillsDeaths, _PreparePlayerStatsPanelItem("deaths_from_allies", "Deaths from Allies", "The number of times you have been killed by an ally."));
         jKillsDeaths = JsonArrayInsert(jKillsDeaths, _PreparePlayerStatsPanelItem("followers_died", "Follower Deaths", "The number of your followers that have died."));
         jKillsDeaths = JsonArrayInsert(jKillsDeaths, _PreparePlayerStatsPanelItem("henchman_died", "Henchman Deaths", "The number of times your henchmen have died."));
         jKillsDeaths = JsonArrayInsert(jKillsDeaths, _PreparePlayerStatsPanelItem("innocents_killed", "Innocents Killed", "The number of innocent civilians you have killed."));
