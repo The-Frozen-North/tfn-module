@@ -83,7 +83,7 @@ void main()
         if (!bPlayersInInvalidArea && !bPlayersInArea && !bPlayersInLinkedArea)
         {
             SendDebugMessage("refreshing area "+sResRef, TRUE);
-            ExecuteScript("area_refresh");
+            ExecuteScript("area_cleanup");
             DeleteLocalInt(OBJECT_SELF, "refresh");
         }
         else if (bPlayersInInvalidArea)

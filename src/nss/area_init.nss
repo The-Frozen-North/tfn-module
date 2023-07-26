@@ -598,6 +598,8 @@ void main()
     if (nCreatures > 0) SendDebugMessage(sResRef+" creatures: "+IntToString(nCreatures), TRUE);
     if (nPlaceables > 0) SendDebugMessage(sResRef+" dynamic placeables: "+IntToString(nPlaceables), TRUE);
 
+// there isn't anything to clean up, but we run this to close doors, lock them, and set traps accordingly
+    ExecuteScript("area_cleanup");
     SendDebugMessage("initialized "+sResRef, TRUE);
     SetLocalInt(oArea, "initialized", 1);
 }
