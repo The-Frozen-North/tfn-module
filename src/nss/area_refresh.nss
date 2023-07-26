@@ -481,4 +481,3 @@ void main()
      string sRefreshScript = GetLocalString(OBJECT_SELF, "refresh_script");
      if (sRefreshScript != "") ExecuteScript(sRefreshScript, OBJECT_SELF);
 }
-

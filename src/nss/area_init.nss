@@ -598,9 +598,6 @@ void main()
     if (nCreatures > 0) SendDebugMessage(sResRef+" creatures: "+IntToString(nCreatures), TRUE);
     if (nPlaceables > 0) SendDebugMessage(sResRef+" dynamic placeables: "+IntToString(nPlaceables), TRUE);
 
-    // we will refresh it once so there's spawns
-    ExecuteScript("area_refresh", oArea);
-
     SendDebugMessage("initialized "+sResRef, TRUE);
     SetLocalInt(oArea, "initialized", 1);
 }

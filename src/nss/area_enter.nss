@@ -113,9 +113,9 @@ void main()
            int nRefresh = GetLocalInt(OBJECT_SELF, "refresh");
            if (nRefresh == 0)
            {
+                ExecuteScript("area_refresh");
                 SendDebugMessage(GetResRef(OBJECT_SELF)+" refresh started", TRUE);
                 SetLocalInt(OBJECT_SELF, "refresh", 1);
            }
        //}
 }
-
