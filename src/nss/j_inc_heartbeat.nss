@@ -15,7 +15,7 @@
     Arguments: N/A
 ************************* [Heartbeat Include] *********************************/
 
-#include "J_INC_CONSTANTS"
+#include "j_inc_constants"
 
 // Bioware walk waypoints condition name
 const string sWalkwayVarname = "NW_WALK_CONDITION";
