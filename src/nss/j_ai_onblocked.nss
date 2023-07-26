@@ -36,7 +36,7 @@
                GetLockKeyTag, GetLockUnlockDC, GetPlotFlag, DoDoorAction
 ************************* [On Blocked] ****************************************/
 
-#include "J_INC_OTHER_AI"
+#include "j_inc_other_ai"
 
 // Fires the end-blocked event.
 void FireBlockedEvent();

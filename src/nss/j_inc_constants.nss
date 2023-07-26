@@ -137,6 +137,9 @@ const float fShortRange  = 8.0;
 const float fMediumRange = 20.0;
 const float fLongRange   = 40.0;
 
+// max range before this target is considered invalid
+const float MAX_RANGE_FOR_VALID_TARGET = 30.0;
+
 // Types:
 // S. = Stored
 // FILENAME

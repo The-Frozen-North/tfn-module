@@ -8,10 +8,10 @@ void main()
     object oKiller = GetLastHostileActor();
     if (GetFactionEqual(oKiller, OBJECT_SELF))
     {
-        IncrementStat(oKiller, "allies_killed");
-        IncrementStat(GetMaster(OBJECT_SELF), "henchman_died");
+        IncrementPlayerStatistic(oKiller, "allies_killed");
+        IncrementPlayerStatistic(GetMaster(OBJECT_SELF), "henchman_died");
     }
-    
+
     if (GetLocalInt(OBJECT_SELF, "PETRIFIED") == 1)
     {
         location lLocation = GetLocation(OBJECT_SELF);

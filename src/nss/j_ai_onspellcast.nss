@@ -120,11 +120,13 @@ void main()
                     // perception event (as we are not currently in combat)
                     ActionMoveToObject(oCaster, TRUE);
                 }
+                /* wtf why move to it if not valid
                 else
                 {
                     // Move to the caster otherwise
                     ActionMoveToObject(oCaster, TRUE);
                 }
+                */
             }
         }
     }

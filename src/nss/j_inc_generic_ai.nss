@@ -973,7 +973,7 @@ void AI_SetUpUsEffects()
     GlobalValidNearestHeardEnemy = GetIsObjectValid(GlobalNearestEnemyHeard) && GetObjectHeard(GlobalNearestEnemyHeard);
 //    _db(GetName(GlobalNearestEnemyHeard) + IntToString(GlobalValidNearestHeardEnemy));
     if (GlobalValidNearestHeardEnemy &&
-        GetDistanceToObject(GlobalNearestEnemyHeard) < 40.0f)
+        GetDistanceToObject(GlobalNearestEnemyHeard) < MAX_RANGE_FOR_VALID_TARGET)
     {
         int i = 1;
         object oSummon = GetAssociate(ASSOCIATE_TYPE_SUMMONED);
@@ -4137,8 +4137,8 @@ object AI_GetNearbyFleeObject()
     // Set floats
     float fMaxCheckForGroup, fMaxGroupRange;
     // Check range (Ie people we get near to us, need to be in this range)
-    fMaxCheckForGroup = 100.0;// 10 tiles
-    if(GlobalIntelligence >= i8) fMaxCheckForGroup *= i2; // Double check range.
+    fMaxCheckForGroup = MAX_RANGE_FOR_VALID_TARGET;// 10 tiles this is way too far smh
+    //if(GlobalIntelligence >= i8) fMaxCheckForGroup *= i2; // Double check range. wtf? this is so far
     fMaxGroupRange = f15;// Default. No need to change.
 
     // We break when we have a group totaling some value of our HD...
@@ -6048,7 +6048,7 @@ int AI_AttemptHealingAlly()
             {
                 iSummonHeal = TRUE;
             }
-            fChosenLastDistance = f60;// So 1st target in health band gets picked
+            fChosenLastDistance = MAX_RANGE_FOR_VALID_AI; // too farf60;// So 1st target in health band gets picked
             iCnt = i1;
             oLoopTarget = GetLocalObject(OBJECT_SELF, ARRAY_ALLIES_RANGE_SEEN + IntToString(iCnt));
             while(GetIsObjectValid(oLoopTarget))
@@ -6227,12 +6227,12 @@ void AI_ActionFleeScared()
             if(!GetIsObjectValid(oTarget) || GetIsDead(oTarget))
             {
                 // Away from position
-                ActionMoveAwayFromLocation(GetLocation(OBJECT_SELF), TRUE, f50);
+                ActionMoveAwayFromLocation(GetLocation(OBJECT_SELF), TRUE, 15.0); //f50 is too much
                 return;// Stop, no move away from enemy
             }
         }
     }
-    ActionMoveAwayFromObject(oTarget, TRUE, f50);
+    ActionMoveAwayFromObject(oTarget, TRUE, 15.0); //f50 too much
 }
 /*::///////////////////////////////////////////////
 //:: Name Flee
@@ -6444,6 +6444,7 @@ int AI_AttemptGoForTheKill()
                         OBJECT_SELF, i1,
                         CREATURE_TYPE_IS_ALIVE, FALSE,
                         CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
+
     // Check if valid. If not, check for one with the spell "sleep" on them.
     if(!GetIsObjectValid(oTempEnemy))
     {
@@ -13988,6 +13989,10 @@ int AI_SetUpAllObjects(object oInputBackup)
             // Wizard
             oSetUpTarget = GetNearestCreature(CREATURE_TYPE_CLASS, CLASS_TYPE_WIZARD, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_IS_ALIVE, TRUE);
         }
+
+        // not a valid target if too far
+        if (GetDistanceToObject(oSetUpTarget) > MAX_RANGE_FOR_VALID_TARGET) oSetUpTarget = OBJECT_INVALID;
+
         // If valid, use
         if(GetIsObjectValid(oSetUpTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget) &&
           (GetObjectSeen(oSetUpTarget) || GetObjectHeard(oSetUpTarget)))
@@ -14025,6 +14030,10 @@ int AI_SetUpAllObjects(object oInputBackup)
     if(iValue >= FALSE)
     {
         oSetUpTarget = GetNearestCreature(CREATURE_TYPE_RACIAL_TYPE, iValue, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
+
+        // not a valid target if too far
+        if (GetDistanceToObject(oSetUpTarget) > MAX_RANGE_FOR_VALID_TARGET) oSetUpTarget = OBJECT_INVALID;
+
         if(GetIsObjectValid(oSetUpTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
         {
             // Make sure the nearest seen is not in front of the worst AC.
@@ -14043,6 +14052,10 @@ int AI_SetUpAllObjects(object oInputBackup)
         if(iValue >= FALSE)
         {
             oSetUpTarget = GetNearestCreature(CREATURE_TYPE_CLASS, iValue, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
+
+            // not a valid target if too far
+            if (GetDistanceToObject(oSetUpTarget) > MAX_RANGE_FOR_VALID_TARGET) oSetUpTarget = OBJECT_INVALID;
+
             if(GetIsObjectValid(oSetUpTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oSetUpTarget))
             {
                 // Make sure the nearest seen is not in front of the worst AC.
@@ -14254,7 +14267,7 @@ int AI_SetUpAllObjects(object oInputBackup)
                 // Do we have a target from those backups above?
                 // - If so, we ActionAttack it so we move near it, as it is not in
                 //   our LOS, or isn't in our seen range in our LOS.
-                if(GetIsObjectValid(oSetUpTarget))
+                if(GetIsObjectValid(oSetUpTarget) && GetDistanceToObject(oSetUpTarget) < MAX_RANGE_FOR_VALID_TARGET)
                 {
                     // 41: [DCR:Targeting] No seen in LOS, Attempting to MOVE to something [Target]" + GetName(oSetUpTarget)
                     DebugActionSpeakByInt(41, oSetUpTarget);
@@ -15145,10 +15158,18 @@ int AI_SetUpAllObjects(object oInputBackup)
             }
         }
     }
+
+    // not a valid target if too far
+    if (GetDistanceToObject(GlobalDispelTarget) > MAX_RANGE_FOR_VALID_TARGET) GlobalDispelTarget = OBJECT_INVALID;
+
     if(!GetIsObjectValid(GlobalDispelTarget))
     {
         GlobalDispelTarget = GlobalSpellTarget;
     }
+
+    // not a valid target if too far
+    if (GetDistanceToObject(GlobalDispelTarget) > MAX_RANGE_FOR_VALID_TARGET) GlobalDispelTarget = OBJECT_INVALID;
+
     // Set enchantments
     AI_SetDispelableEnchantments();
 
@@ -16064,13 +16085,14 @@ int AI_StopWhatWeAreDoing()
        GetStealthMode(OBJECT_SELF) == STEALTH_MODE_DISABLED &&
       !GetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_HIDING, AI_OTHER_COMBAT_MASTER))
     {
+        // no true seeing check
         // Check for nearest person with trueseeing (which pierces hiding)
-        if(!GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_HAS_SPELL_EFFECT, SPELL_TRUE_SEEING, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY)))
-        {
+       // if(!GetIsObjectValid(GetNearestCreature(CREATURE_TYPE_HAS_SPELL_EFFECT, SPELL_TRUE_SEEING, OBJECT_SELF, i1, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY)))
+       // {
             ClearAllActions(TRUE);
             SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, TRUE);
             return TRUE;
-        }
+        //}
     }
     // Else we return TRUE, meaning we have cleared all actions
     ClearAllActions();
@@ -16220,7 +16242,7 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
     GlobalNearestEnemySeen = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, i1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN, CREATURE_TYPE_IS_ALIVE, TRUE);
 //...    GlobalNearestEnemyHeard = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, i1, CREATURE_TYPE_PERCEPTION, PERCEPTION_HEARD, CREATURE_TYPE_IS_ALIVE, TRUE);
     // Valids?
-    GlobalValidNearestSeenEnemy = GetIsObjectValid(GlobalNearestEnemySeen);
+    GlobalValidNearestSeenEnemy = GetIsObjectValid(GlobalNearestEnemySeen) && GetDistanceToObject(GlobalNearestEnemySeen) < MAX_RANGE_FOR_VALID_TARGET;
 //... set up above    GlobalValidNearestHeardEnemy = GetIsObjectValid(GlobalNearestEnemyHeard);
 
     // Speakstring arrays //... this never works bc heard never works...
