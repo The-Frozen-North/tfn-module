@@ -22,8 +22,37 @@ void main()
     SetCommandable(TRUE);
     //ClearAllActions();
     //SpeakString( "...your will is my command...");
-
-    object oDominator = GetLocalObject(OBJECT_SELF, "dominator");
+    
+    effect eDominate;
+    object oDominator;
+    
+    if (GetLastRunScriptEffectScriptType() > 0)
+    {
+        eDominate = GetLastRunScriptEffect();
+        oDominator = GetEffectCreator(eDominate);
+    }
+    else
+    {
+        effect eTest = GetFirstEffect(OBJECT_SELF);
+        while (GetIsEffectValid(eTest))
+        {
+            if (GetEffectType(eTest) == EFFECT_TYPE_DOMINATED)
+            {
+                eDominate = eTest;
+                oDominator = GetEffectCreator(eDominate);
+                break;
+            }
+            eTest = GetNextEffect(OBJECT_SELF);
+        }
+    }
+    
+    SpeakString("Dominated by: " + GetName(oDominator));
+    
+    if (!GetIsObjectValid(oDominator) || GetIsDead(oDominator))
+    {
+        RemoveEffect(OBJECT_SELF, eDominate);
+        return;
+    }
 
 // if we are attacking the same faction for whatever reason, stop
     if (GetFactionEqual(oDominator, GetAttackTarget()))

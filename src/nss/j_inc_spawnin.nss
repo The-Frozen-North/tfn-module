@@ -580,7 +580,8 @@ void AI_SetUpEndOfSpawn()
         }
         // Just handling corpse raising/resurrection/removal
         // - Undestroyable, Raiseable and Selectable
-        SetIsDestroyable(FALSE, TRUE, TRUE);
+        // TFN assumes henchmen are destroyable, and fixes raisability itself anyway
+        //SetIsDestroyable(FALSE, TRUE, TRUE);
     }
 
 

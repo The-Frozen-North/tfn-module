@@ -25,8 +25,6 @@
 #include "inc_sql"
 #include "inc_penalty"
 
-const int MAX_NUMBER_BLOODSTAINS = 100;
-
 void PopUpDeathGUIPanelIfStillDead(object oPlayer, int bRespawn, int bWaitForHelp, int nHelpStrref, string sHelp)
 {
     if (GetIsDead(oPlayer))

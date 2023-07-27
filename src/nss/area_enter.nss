@@ -75,7 +75,7 @@ void main()
 
        ValidateMount(oPC);
 
-       UpdateQuestgiverHighlights(OBJECT_SELF, oPC);
+       
        
        ShowOrHideRestXPUI(oPC, OBJECT_SELF);
        UpdateRestXPUI(oPC);
@@ -118,4 +118,5 @@ void main()
                 SetLocalInt(OBJECT_SELF, "refresh", 1);
            }
        //}
+       UpdateQuestgiverHighlights(OBJECT_SELF, oPC);
 }
