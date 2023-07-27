@@ -52,7 +52,7 @@ void SearchDispells(object oPlaceable);
 // This MAY make us set a local timer to turn off hiding.
 // Turn of hiding, a timer to activate Hiding in the main file. This is
 // done in each of the events, with the opposition checking seen/heard.
-void TurnOffHiding(object oIntruder);
+//void TurnOffHiding(object oIntruder);
 // Used when we percieve a new enemy and are not in combat. Hides the creature
 // appropriatly with spawn settings and ability.
 // - At least it will clear all actions if it doesn't set hiding on
@@ -115,6 +115,7 @@ void ShoutBossShout(object oEnemy)
 // This MAY make us set a local timer to turn off hiding.
 // Turn of hiding, a timer to activate Hiding in the main file. This is
 // done in each of the events, with the opposition checking seen/heard.
+/*
 void TurnOffHiding(object oIntruder)
 {
     if(!GetLocalTimer(AI_TIMER_TURN_OFF_HIDE) &&
@@ -125,6 +126,7 @@ void TurnOffHiding(object oIntruder)
         SetLocalTimer(AI_TIMER_TURN_OFF_HIDE, f18);
     }
 }
+*/
 
 // Used when we percieve a new enemy and are not in combat. Hides the creature
 // appropriatly with spawn settings and ability.
@@ -501,11 +503,3 @@ int PerceptionFleeFrom(object oEnemy)
     // 0 or more morale.
     return FALSE;
 }
-
-// Debug: To compile this script full, uncomment all of the below.
-/* - Add two "/"'s at the start of this line
-void main()
-{
-    return;
-}
-//*/

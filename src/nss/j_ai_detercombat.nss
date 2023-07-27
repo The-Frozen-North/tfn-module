@@ -94,9 +94,7 @@ void main()
 
     // Speak combat round speakstring
     //SpeakArrayString(AI_TALK_ON_COMBAT_ROUND, TRUE);
-
-    DoCombatVoice();
-
+    
     // Call combat round using include
     AI_DetermineCombatRound(oTarget);
 

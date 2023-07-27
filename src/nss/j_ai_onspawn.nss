@@ -211,12 +211,15 @@ void main()
         // Set if you want them to move forwards into HTH sooner. Will always
         // if the enemy is a mage/archer, else % based on range.
 
-    //SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ATTACKING, AI_COMBAT_MASTER);
-        // For archers. If they have ally support, they'd rather move back & shoot then go into HTH.
-    //SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER);
-        // This forces the move back from attackers, and shoot bows. Very small chance to go melee.
-    if (bRange) SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_USE_BOW, AI_COMBAT_MASTER);
-        // This will make the creature ALWAYs use any bows it has. ALWAYS.
+    if (bRange)
+    {
+        //SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ATTACKING, AI_COMBAT_MASTER);
+            // For archers. If they have ally support, they'd rather move back & shoot then go into HTH.
+        //SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_MOVE_BACK, AI_COMBAT_MASTER);
+            // This forces the move back from attackers, and shoot bows. Very small chance to go melee.
+        SetSpawnInCondition(AI_FLAG_COMBAT_ARCHER_ALWAYS_USE_BOW, AI_COMBAT_MASTER);
+            // This will make the creature ALWAYs use any bows it has. ALWAYS.
+    }
 
     //SetSpawnInCondition(AI_FLAG_COMBAT_NO_GO_FOR_THE_KILL, AI_COMBAT_MASTER);
         // Turns off any attempts to kill dying PCs, or attack low hit point people.
@@ -232,75 +235,75 @@ void main()
     dispelling, spell triggers, long ranged spells first, immunity toggles, and AOE settings.
 ************************* [Combat - Spell Casters] ****************************/
 
-    if (bCaster) SetSpawnInCondition(AI_FLAG_COMBAT_LONGER_RANGED_SPELLS_FIRST, AI_COMBAT_MASTER);
-        // Casts spells only if the caster would not move into range to cast them.
-        // IE long range spells, then medium, then short (unless the enemy comes to us!)
-    //SetSpawnInCondition(AI_FLAG_COMBAT_FLAG_FAST_BUFF_ENEMY, AI_COMBAT_MASTER);
-        // When an enemy comes in 40M, we fast-cast many defensive spells, as if prepared.
-    SetSpawnInCondition(AI_FLAG_COMBAT_SUMMON_FAMILIAR, AI_COMBAT_MASTER);
-        // The caster summons thier familiar/animal companion. Either a nameless Bat or Badger respectivly.
-
-    // Counterspelling/Dispelling...
-    // It checks for these classes within the 20M counterspell range.
-    //SetSpawnInCondition(AI_FLAG_COMBAT_COUNTER_SPELL_ARCANE, AI_COMBAT_MASTER);
-        // If got dispels, it counterspells Arcane (Mage/Sorceror) spellcasters.
-    //SetSpawnInCondition(AI_FLAG_COMBAT_COUNTER_SPELL_DIVINE, AI_COMBAT_MASTER);
-        // If got dispels, it counterspells Divine (Cleric/Druid) spellcasters.
-    //SetSpawnInCondition(AI_FLAG_COMBAT_COUNTER_SPELL_ONLY_IN_GROUP, AI_COMBAT_MASTER);
-        // Recommended. Only counterspells with 5+ allies in group.
-
-    if (bCaster) SetSpawnInCondition(AI_FLAG_COMBAT_DISPEL_MAGES_MORE, AI_COMBAT_MASTER);
-        // Targets seen mages to dispel, else uses normal spell target.
-    SetSpawnInCondition(AI_FLAG_COMBAT_DISPEL_IN_ORDER, AI_COMBAT_MASTER);
-        // This will make the mage not dispel just anything all the time, but important (spell-stopping)
-        // things first, others later, after some spells. If off, anything is dispelled.
-
-    // AOE's
-    if (bCaster) SetSpawnInCondition(AI_FLAG_COMBAT_NEVER_HIT_ALLIES, AI_COMBAT_MASTER);
-        // Override toggle. Forces to never cast AOE's if it will hit an ally + harm them.
-    //SetSpawnInCondition(AI_FLAG_COMBAT_AOE_DONT_MIND_IF_THEY_SURVIVE, AI_COMBAT_MASTER);
-        // Allies who will survive the blast are ignored for calculating best target.
-    //SetAIInteger(AI_AOE_ALLIES_LOWEST_IN_AOE, 3);
-        // Defualt: 3. If amount of allies in blast radius are equal or more then
-        // this, then that location is ignored.
-    //SetAIInteger(AI_AOE_HD_DIFFERENCE, -8);
-        // Very weak allies (who are not comparable to us) are ignored if we would hit them.
-
-    // For these 2, if neither are set, the AI will choose AOE more if there are
-    // lots of enemies, or singles if there are not many.
-    if (bCaster)
+    if (bCaster) 
     {
+        SetSpawnInCondition(AI_FLAG_COMBAT_LONGER_RANGED_SPELLS_FIRST, AI_COMBAT_MASTER);
+            // Casts spells only if the caster would not move into range to cast them.
+            // IE long range spells, then medium, then short (unless the enemy comes to us!)
+        //SetSpawnInCondition(AI_FLAG_COMBAT_FLAG_FAST_BUFF_ENEMY, AI_COMBAT_MASTER);
+            // When an enemy comes in 40M, we fast-cast many defensive spells, as if prepared.
+        SetSpawnInCondition(AI_FLAG_COMBAT_SUMMON_FAMILIAR, AI_COMBAT_MASTER);
+            // The caster summons thier familiar/animal companion. Either a nameless Bat or Badger respectivly.
+
+        // Counterspelling/Dispelling...
+        // It checks for these classes within the 20M counterspell range.
+        //SetSpawnInCondition(AI_FLAG_COMBAT_COUNTER_SPELL_ARCANE, AI_COMBAT_MASTER);
+            // If got dispels, it counterspells Arcane (Mage/Sorceror) spellcasters.
+        //SetSpawnInCondition(AI_FLAG_COMBAT_COUNTER_SPELL_DIVINE, AI_COMBAT_MASTER);
+            // If got dispels, it counterspells Divine (Cleric/Druid) spellcasters.
+        //SetSpawnInCondition(AI_FLAG_COMBAT_COUNTER_SPELL_ONLY_IN_GROUP, AI_COMBAT_MASTER);
+            // Recommended. Only counterspells with 5+ allies in group.
+
+        SetSpawnInCondition(AI_FLAG_COMBAT_DISPEL_MAGES_MORE, AI_COMBAT_MASTER);
+            // Targets seen mages to dispel, else uses normal spell target.
+        SetSpawnInCondition(AI_FLAG_COMBAT_DISPEL_IN_ORDER, AI_COMBAT_MASTER);
+            // This will make the mage not dispel just anything all the time, but important (spell-stopping)
+            // things first, others later, after some spells. If off, anything is dispelled.
+
+        // AOE's
+        SetSpawnInCondition(AI_FLAG_COMBAT_NEVER_HIT_ALLIES, AI_COMBAT_MASTER);
+            // Override toggle. Forces to never cast AOE's if it will hit an ally + harm them.
+        //SetSpawnInCondition(AI_FLAG_COMBAT_AOE_DONT_MIND_IF_THEY_SURVIVE, AI_COMBAT_MASTER);
+            // Allies who will survive the blast are ignored for calculating best target.
+            // this may stop xanos from casting fireball on allies
+        SetAIInteger(AI_AOE_ALLIES_LOWEST_IN_AOE, 1);
+            // Defualt: 3. If amount of allies in blast radius are equal or more then
+            // this, then that location is ignored.
+        //SetAIInteger(AI_AOE_HD_DIFFERENCE, -8);
+            // Very weak allies (who are not comparable to us) are ignored if we would hit them.
+
+        // For these 2, if neither are set, the AI will choose AOE more if there are
+        // lots of enemies, or singles if there are not many.
+
         SetSpawnInCondition(AI_FLAG_COMBAT_SINGLE_TARGETING, AI_COMBAT_MASTER);
             // For Same-level spells, single target spells are used first.
         SetSpawnInCondition(AI_FLAG_COMBAT_MANY_TARGETING, AI_COMBAT_MASTER);
             // For Same-level spells, AOE spells are used first.
-    }
 
-    SetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_INSTANT_DEATH_SPELLS, AI_COMBAT_MASTER);
-        // A few Death spells may be cast top-prioritory if the enemy will always fail saves.
-    SetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_SUMMON_TARGETING, AI_COMBAT_MASTER);
-        // Will use a better target to summon a creature at (EG: Ranged attacker)
-    SetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_IMMUNITY_CHECKING, AI_COMBAT_MASTER);
-        // Turns On "GetIsImmune" checks. Auto on for 7+ Intel.
-    SetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_SPECIFIC_SPELL_IMMUNITY, AI_COMBAT_MASTER);
-        // Turns On checks for Globes & levels of spells. Auto on for 9+ Intel.
+        SetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_INSTANT_DEATH_SPELLS, AI_COMBAT_MASTER);
+            // A few Death spells may be cast top-prioritory if the enemy will always fail saves.
+        SetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_SUMMON_TARGETING, AI_COMBAT_MASTER);
+            // Will use a better target to summon a creature at (EG: Ranged attacker)
+        SetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_IMMUNITY_CHECKING, AI_COMBAT_MASTER);
+            // Turns On "GetIsImmune" checks. Auto on for 7+ Intel.
+        SetSpawnInCondition(AI_FLAG_COMBAT_IMPROVED_SPECIFIC_SPELL_IMMUNITY, AI_COMBAT_MASTER);
+            // Turns On checks for Globes & levels of spells. Auto on for 9+ Intel.
 
-    if (bCaster)
-    {
+
         SetSpawnInCondition(AI_FLAG_COMBAT_MORE_ALLY_BUFFING_SPELLS, AI_COMBAT_MASTER);
             // This will make the caster buff more allies - or, in fact, use spells
             // to buff allies which they might have not used before.
+
+        //SetSpawnInCondition(AI_FLAG_COMBAT_USE_ALL_POTIONS, AI_COMBAT_MASTER);
+            // Uses all buffing spells before melee.
+
+        //SetAICheatCastSpells(SPELL_MAGIC_MISSILE, SPELL_ICE_DAGGER, SPELL_HORIZIKAULS_BOOM, SPELL_MELFS_ACID_ARROW, SPELL_NEGATIVE_ENERGY_RAY, SPELL_FLAME_ARROW);
+            // Special: Mages cast for ever with this set.
+
+        // Spell triggers
+        //SetSpellTrigger(SPELLTRIGGER_NOT_GOT_FIRST_SPELL, FALSE, 1, SPELL_PREMONITION);
+            // This is just an example. See readme for more info.
     }
-
-    //SetSpawnInCondition(AI_FLAG_COMBAT_USE_ALL_POTIONS, AI_COMBAT_MASTER);
-        // Uses all buffing spells before melee.
-
-    //SetAICheatCastSpells(SPELL_MAGIC_MISSILE, SPELL_ICE_DAGGER, SPELL_HORIZIKAULS_BOOM, SPELL_MELFS_ACID_ARROW, SPELL_NEGATIVE_ENERGY_RAY, SPELL_FLAME_ARROW);
-        // Special: Mages cast for ever with this set.
-
-    // Spell triggers
-    //SetSpellTrigger(SPELLTRIGGER_NOT_GOT_FIRST_SPELL, FALSE, 1, SPELL_PREMONITION);
-        // This is just an example. See readme for more info.
 
 /************************ [Combat - Spell Casters] ****************************/
 
@@ -338,10 +341,11 @@ void main()
             // % of HP we need to be at until we heal us at all. Default: 50
         SetAIInteger(AI_HEALING_ALLIES_PERCENT, 60);
             // % of HP allies would need to be at to heal them Readme = info. Default: 60
+
+        SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_WILL_RAISE_ALLIES_IN_BATTLE, AI_OTHER_COMBAT_MASTER);
+        // Turns on rasing dead with Resurrection/Raise dead.
     }
 
-    SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_WILL_RAISE_ALLIES_IN_BATTLE, AI_OTHER_COMBAT_MASTER);
-        // Turns on rasing dead with Resurrection/Raise dead.
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_CURING, AI_OTHER_COMBAT_MASTER);
         // This turns off all healing.
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_ONLY_CURE_SELF, AI_OTHER_COMBAT_MASTER);
@@ -367,11 +371,11 @@ void main()
 
     SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_PICKPOCKETING, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_PICKPOCKETING, AI_OTHER_COMBAT_MASTER);
-    if (GetSkillRank(SKILL_TAUNT, OBJECT_SELF, TRUE) > 0) SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_TAUNTING, AI_OTHER_COMBAT_MASTER);
+    if (GetSkillRank(SKILL_TAUNT, OBJECT_SELF, TRUE) == 0) SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_TAUNTING, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_TAUNTING, AI_OTHER_COMBAT_MASTER);
-    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_EMPATHY, AI_OTHER_COMBAT_MASTER);
+    if (GetSkillRank(SKILL_ANIMAL_EMPATHY, OBJECT_SELF, TRUE) == 0) SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_EMPATHY, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_EMPATHY, AI_OTHER_COMBAT_MASTER);
-    //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_HIDING, AI_OTHER_COMBAT_MASTER);
+    if (GetSkillRank(SKILL_HIDE, OBJECT_SELF, TRUE) == 0) SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_HIDING, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_HIDING, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_NO_OPENING_LOCKED_DOORS, AI_OTHER_COMBAT_MASTER);
     //SetSpawnInCondition(AI_FLAG_OTHER_COMBAT_FORCE_OPENING_LOCKED_DOORS, AI_OTHER_COMBAT_MASTER);

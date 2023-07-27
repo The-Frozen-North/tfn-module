@@ -59,7 +59,7 @@
 //  - Get/Set spawn in values.
 #include "j_inc_other_ai"
 //  This contains some useful things to get NPC's to attack and so on.
-#include "j_inc_npc_attack"
+//#include "j_inc_npc_attack"
 
 /************************ [UDE Values] *****************************************
     These are uneeded, but here for reference. Use the constants in the file

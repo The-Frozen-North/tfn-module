@@ -60,7 +60,7 @@ void main()
         {
             // Turn of hiding, a timer to activate Hiding in the main file. This is
             // done in each of the events, with the opposition checking seen/heard.
-            TurnOffHiding(oPerceived);
+            //TurnOffHiding(oPerceived);
 
             // Well, are we both inaudible and vanished?
             // * the GetLastPerception should only say what specific event has fired!

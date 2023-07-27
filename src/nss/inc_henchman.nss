@@ -8,13 +8,10 @@
 // max number of heartbeats before the henchman respawns/resets
 const int MAX_NO_MASTER_COUNT = 50;
 
-// =======================================================
-// PROTOTYPES
-// =======================================================
-
 // Levels up the henchman and gear appropriately.
 // Equal to player level. 2 level minimum.
-void ScaleHenchman(object oHench);
+// returns TRUE if the henchman leveled up at all
+int ScaleHenchman(object oHench);
 
 // Clears out the master for the henchman
 // If bTagDestroy, the henchman will walk at doors in the expectation that something will destroy them
@@ -231,12 +228,12 @@ void _ScaleHenchmanWeaponry(object oHench, int nBonus)
     IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_ARMS, oHench), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_COLD, nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
 }
 
-void ScaleHenchman(object oHench)
+int ScaleHenchman(object oHench)
 {
     object oMaster = GetMaster(oHench);
 
 // Stop if there is no master.
-    if (!GetIsObjectValid(oMaster)) return;
+    if (!GetIsObjectValid(oMaster)) return FALSE;
 
     int nTargetLevel = GetHitDice(oMaster);
     if (nTargetLevel < 2) nTargetLevel = 2; //failsafe if less than 2
@@ -244,10 +241,10 @@ void ScaleHenchman(object oHench)
     int nHenchmanLevel = GetHitDice(oHench);
 
 // Don't do anything if the henchman is higher or equal to the target level.
-    if (nHenchmanLevel >= nTargetLevel) return;
+    if (nHenchmanLevel >= nTargetLevel) return FALSE;
 
 // Henchman cannot be higher than level 12
-    if (nHenchmanLevel > 12) return;
+    if (nHenchmanLevel > 12) return FALSE;
 
     string sResRef = GetResRef(oHench);
 
@@ -290,7 +287,7 @@ void ScaleHenchman(object oHench)
         if (LevelUpHenchman(oHench, nClass, FALSE, nPackage) == 0)
         {
             SendDebugMessage("Henchman failed to level up");
-            return;
+            return FALSE;
         }
         nHenchmanLevel = GetHitDice(oHench);
 
@@ -349,6 +346,8 @@ void ScaleHenchman(object oHench)
             break;
         }
     }
+
+    return TRUE;
 }
 
 void ClearMaster(object oHench, int bTagDestroy=1)

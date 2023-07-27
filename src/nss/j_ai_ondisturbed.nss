@@ -58,7 +58,7 @@ void main()
     {
         // Turn of hiding, a timer to activate Hiding in the main file. This is
         // done in each of the events, with the opposition checking seen/heard.
-        TurnOffHiding(oDisturber);
+        //TurnOffHiding(oDisturber);
         if(!CannotPerformCombatRound())
         {
             AISpeakString(CALL_TO_ARMS);
