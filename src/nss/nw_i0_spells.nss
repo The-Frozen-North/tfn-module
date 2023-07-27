@@ -938,10 +938,12 @@ int nDiff = GetGameDifficulty();
   }
   if(GetEffectType(eStandard) == EFFECT_TYPE_CHARMED || GetEffectType(eStandard) == EFFECT_TYPE_DOMINATED)
   {
-    //return EffectDazed();
-    SetLocalObject(oTarget, "dominator", oCaster);
-    string sScript = "nw_g0_dominate";
-    return EffectLinkEffects(eStandard, EffectRunScript(sScript, "", sScript, 2.0));
+    if (!GetIsImmune(oTarget, IMMUNITY_TYPE_MIND_SPELLS, OBJECT_SELF))
+    {
+        //return EffectDazed();
+        string sScript = "nw_g0_dominate";
+        return EffectRunScript(sScript, sScript, sScript, 2.0);
+    }
   }
  }
 return eStandard;

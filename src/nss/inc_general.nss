@@ -24,6 +24,9 @@ const int MESSAGE_COLOR_SERVER = 0xaaaaaa;
 
 const string STAT_PREFIX = "stat_";
 
+// Up to this many of the most recent PC bloodstains will persist between server restarts
+const int MAX_NUMBER_BLOODSTAINS = 2000;
+
 // Makes the killer play a voice sometimes. Won't work if the killer is a PC or if the killer was not hostile.
 void KillTaunt(object oKiller, object oKilled);
 

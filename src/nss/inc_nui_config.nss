@@ -778,11 +778,11 @@ void HandleEditModeEvents()
             }
             
             //jGeom = NuiRect(300.0, 300.0, 300.0, 40.0);
-            WriteTimestampedLogEntry("Save geom for " + sWindow + ": " + JsonDump(jGeom));
+            //WriteTimestampedLogEntry("Save geom for " + sWindow + ": " + JsonDump(jGeom));
             SetCampaignJson(sKey, "nui_geom_" + sWindow, jGeom);
             if (bChange)
             {
-                WriteTimestampedLogEntry("force changed geom, do new update");
+                //WriteTimestampedLogEntry("force changed geom, do new update");
                 NuiSetBind(oPC, nToken, "_geometry", jGeom);
             }
         }

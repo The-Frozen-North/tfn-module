@@ -124,6 +124,8 @@ void main()
        }
 
        NWNX_Area_SetFogClipDistance(oArea, 90.0);
+       
+        int i;
 
 
 //==========================================
@@ -574,7 +576,7 @@ void main()
     {
         SetLocalInt(oArea, "trap_spawns", nTrapSpawnPoints);
 
-        int i;
+        
         for (i = 0; i < nTrapSpawnPoints; i++)
         {
              lSpawnLocation = Location(oArea, StringToVector(GetListItem(sTrapRow, i)), 0.0);

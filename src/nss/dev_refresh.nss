@@ -6,6 +6,7 @@ void main()
 {
 	if (GetIsDeveloper(OBJECT_SELF))
 	{
+        ExecuteScript("area_cleanup", GetArea(OBJECT_SELF));
         if (GetLocalString(GetArea(OBJECT_SELF), "enter_script") != "")
         {
             location lOld = GetLocation(OBJECT_SELF);

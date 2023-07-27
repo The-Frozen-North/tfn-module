@@ -110,14 +110,15 @@ void main()
     TakeGoldFromCreature(1000, OBJECT_SELF, TRUE);
 
     DestroyPet(OBJECT_SELF);
-    /*
-    object eAOE = GetLocalObject(OBJECT_SELF, "aoe_to_cleanup");
-    if (GetIsObjectValid(eAOE))
+    
+    object oAOE = GetLocalObject(OBJECT_SELF, "aoe_to_cleanup");
+    if (GetIsObjectValid(oAOE))
     {
-        AssignCommand(eAOE, SetIsDestroyable(TRUE));
-        AssignCommand(eAOE, DestroyObject(eAOE, 0.5));
+        SendDebugMessage("Destroy old aoe: " + ObjectToString(oAOE));
+        AssignCommand(oAOE, SetIsDestroyable(TRUE));
+        AssignCommand(oAOE, DestroyObject(oAOE, 0.5));
     }
-    */
+    
     if (GetLocalInt(OBJECT_SELF, "defeated_webhook") == 1)
     {
         BossDefeatedWebhook(oKiller, OBJECT_SELF);
