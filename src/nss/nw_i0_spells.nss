@@ -942,7 +942,7 @@ int nDiff = GetGameDifficulty();
     {
         //return EffectDazed();
         string sScript = "nw_g0_dominate";
-        return EffectRunScript(sScript, "", sScript, 2.0);
+        return EffectRunScript(sScript, sScript, sScript, 2.0);
     }
   }
  }

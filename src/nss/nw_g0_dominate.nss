@@ -26,7 +26,15 @@ void main()
     effect eDominate;
     object oDominator;
     
-    if (GetLastRunScriptEffectScriptType() > 0)
+    int nScriptType = GetLastRunScriptEffectScriptType();
+    if (nScriptType == RUNSCRIPT_EFFECT_SCRIPT_TYPE_ON_REMOVED)
+    {
+        SetCommandable(TRUE);
+        return;
+    }
+    
+    
+    if (nScriptType > 0)
     {
         eDominate = GetLastRunScriptEffect();
         oDominator = GetEffectCreator(eDominate);
@@ -46,11 +54,12 @@ void main()
         }
     }
     
-    SpeakString("Dominated by: " + GetName(oDominator));
+    //SpeakString("Dominated by: " + GetName(oDominator) + ", script type = " + IntToString(nScriptType));
     
     if (!GetIsObjectValid(oDominator) || GetIsDead(oDominator))
     {
         RemoveEffect(OBJECT_SELF, eDominate);
+        SetCommandable(TRUE);
         return;
     }
 
