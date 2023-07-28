@@ -196,6 +196,16 @@ void CheckMasterAssignment(object oHench)
     }
 }
 
+void _SetHenchmanAmmunitionInfinite(object oHench)
+{
+    // ItemPropertyCustom(14) is the boomerang property
+    // which is implemented with nwnx stack decrement before
+    // so any items in these slots should never go down
+    IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_ARROWS, oHench), ItemPropertyCustom(14), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+    IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_BOLTS, oHench), ItemPropertyCustom(14), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+    IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_BULLETS, oHench), ItemPropertyCustom(14), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+}
+
 void _ScaleHenchmanWeaponry(object oHench, int nBonus)
 {
     IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oHench), ItemPropertyEnhancementBonus(nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
@@ -208,13 +218,13 @@ void _ScaleHenchmanWeaponry(object oHench, int nBonus)
     {
         IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench), ItemPropertyAttackBonus(nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
         IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench), ItemPropertyMaxRangeStrengthMod(2+nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
-
-        // bishop has fire arrows, so don't give him custom unlimited ammo
-        if (GetResRef(oHench) != "hen_bishop")
-        {
-            // unlimited +1 starts at 11, start at 10 and just add 1 to the bonus
-            IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench), ItemPropertyUnlimitedAmmo(10+nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);    
-        }
+        
+        
+        IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_ARROWS, oHench), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_PIERCING, nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+        IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_BOLTS, oHench), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_PIERCING, nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+        IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_BULLETS, oHench), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_BLUDGEONING, nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+        
+        // Infinite ammo is now handled by _SetHenchmanAmmunitionInfinite
     }
 
     // Don't put deflection bonus on offhand melees
@@ -346,7 +356,7 @@ int ScaleHenchman(object oHench)
             break;
         }
     }
-
+    _SetHenchmanAmmunitionInfinite(oHench);
     return TRUE;
 }
 

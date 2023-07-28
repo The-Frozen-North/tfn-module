@@ -111,13 +111,20 @@ void main()
 
     DestroyPet(OBJECT_SELF);
     
-    object oAOE = GetLocalObject(OBJECT_SELF, "aoe_to_cleanup");
-    if (GetIsObjectValid(oAOE))
+    json jAOEs = GetLocalJson(OBJECT_SELF, "aoe_to_cleanup");
+    int nCount = JsonGetLength(jAOEs);
+    int i;
+    for (i=0; i<nCount; i++)
     {
-        SendDebugMessage("Destroy old aoe: " + ObjectToString(oAOE));
-        AssignCommand(oAOE, SetIsDestroyable(TRUE));
-        AssignCommand(oAOE, DestroyObject(oAOE, 0.5));
+        object oAOE = StringToObject(JsonGetString(JsonArrayGet(jAOEs, i)));
+        if (GetIsObjectValid(oAOE))
+        {
+            SendDebugMessage("Destroy old aoe: " + ObjectToString(oAOE));
+            AssignCommand(oAOE, SetIsDestroyable(TRUE));
+            AssignCommand(oAOE, DestroyObject(oAOE, 0.5));
+        }
     }
+    
     
     if (GetLocalInt(OBJECT_SELF, "defeated_webhook") == 1)
     {

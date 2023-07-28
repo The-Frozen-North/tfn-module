@@ -3,6 +3,7 @@
 #include "inc_persist"
 #include "inc_quest"
 #include "inc_restxp"
+#include "inc_nui_config"
 
 void WarningMessage(object oPC)
 {
@@ -74,6 +75,8 @@ void main()
        SendDebugMessage(PlayerDetailedName(oPC)+" has entered "+GetName(OBJECT_SELF)+", tag: "+GetTag(OBJECT_SELF)+", resref: "+GetResRef(OBJECT_SELF)+", climate: "+GetLocalString(OBJECT_SELF, "climate"));
 
        ValidateMount(oPC);
+       
+       LoadSavedGeometryForAllConfigurableWindows(oPC);
 
        
        
@@ -105,8 +108,7 @@ void main()
            }
        }
 
-       sScript = GetLocalString(OBJECT_SELF, "enter_script");
-       if (sScript != "") ExecuteScript(sScript, OBJECT_SELF);
+       
 
        //if (GetLocalInt(OBJECT_SELF, "instance") == 1)
        //{
@@ -120,5 +122,24 @@ void main()
                 SetLocalInt(OBJECT_SELF, "refresh", 1);
            }
        //}
+       
+       // bootonrefresh needs to know the time the entered area last refreshed
+       // setting this on client disconnect is probably already too late!
+       SQLocalsPlayer_SetInt(oPC, "LogoutAreaCleanedTime", GetLocalInt(OBJECT_SELF, "cleaned_time"));
+       object oBootOnRefreshWP = GetLocalObject(OBJECT_SELF, "bootonrefresh_wp");
+       if (GetIsObjectValid(oBootOnRefreshWP))
+       {
+           SQLocalsPlayer_SetString(oPC, "RefreshBootArea", GetTag(OBJECT_SELF));
+       }
+       if (GetLocalInt(oPC, "bootedonrefresh"))
+       {
+           DeleteLocalInt(oPC, "bootedonrefresh");
+           FadeFromBlack(oPC, FADE_SPEED_MEDIUM);
+           AssignCommand(oPC, PlayAnimation(d2() == 1 ? ANIMATION_LOOPING_DEAD_BACK : ANIMATION_LOOPING_DEAD_FRONT, 1.0, 3.0));
+           SendMessageToPC(oPC, "You gradually come to your senses in new surroundings...");
+       }
+       
        UpdateQuestgiverHighlights(OBJECT_SELF, oPC);
+       sScript = GetLocalString(OBJECT_SELF, "enter_script");
+       if (sScript != "") ExecuteScript(sScript, OBJECT_SELF);
 }

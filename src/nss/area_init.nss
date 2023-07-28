@@ -322,6 +322,10 @@ void main()
                            nEventSpawns = nEventSpawns + 1;
                            SetTag(oObject, sResRef+"WP_EVENT"+IntToString(nEventSpawns));
                        }
+                       if (GetTag(oObject) == "bootonrefresh_wp")
+                       {
+                           SetLocalObject(oArea, "bootonrefresh_wp", oObject);
+                       }
                  break;
                  case OBJECT_TYPE_DOOR:
                     SetTrapDisabled(oObject); // in case the door has a trap, we init with a custom one anyways

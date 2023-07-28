@@ -920,7 +920,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 78
+                "value": 79
               },
               "IsChild": {
                 "type": "byte",
@@ -5203,7 +5203,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 79
+                "value": 80
               },
               "IsChild": {
                 "type": "byte",
@@ -5588,7 +5588,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 77
+                "value": 78
               },
               "IsChild": {
                 "type": "byte",
@@ -5597,6 +5597,25 @@
             },
             {
               "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 77
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 2,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -5619,7 +5638,115 @@
               }
             },
             {
-              "__struct_id": 2,
+              "__struct_id": 3,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 13
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "As it happens, yes. I've recently recieved reports that undead activity has been increasing around Helm's Hold. With the death of Desther, we are not sure why this might be, but in the interests of the city's security I would like you to look into it."
+          }
+        }
+      },
+      {
+        "__struct_id": 66,
+        "ActionParams": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "target"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "15"
+              }
+            }
+          ]
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 14
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            },
+            {
+              "__struct_id": 1,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -5658,12 +5785,61 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "As it happens, yes. I've recently recieved reports that undead activity has been increasing around Helm's Hold. With the death of Desther, we are not sure why this might be, but in the interests of the city's security I would like you to look into it."
+            "0": "<StartCheck>[Failure]</Start> I'm sorry to say this after all you've done for us, <FirstName>, but I have yet to hear reports to that effect. Word reaches my ear very quickly, and I hope it is not too unreasonable to ask you to wait a moment for that to arrive, if you are being truthful. I hope you understand that with our resources stretched as thin as they are, I cannot afford to reward you until I have heard the news from another source."
           }
         }
       },
       {
-        "__struct_id": 66,
+        "__struct_id": 67,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartCheck>[Success]</Start> You have? That is most fortuitous. Here, take this gold as a reward."
+          }
+        }
+      },
+      {
+        "__struct_id": 68,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -5754,61 +5930,12 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Failure]</Start> I'm sorry to say this after all you've done for us, <FirstName>, but I have yet to hear reports to that effect. Word reaches my ear very quickly, and I hope it is not too unreasonable to ask you to wait a moment for that to arrive, if you are being truthful. I hope you understand that with our resources stretched as thin as they are, I cannot afford to reward you until I have heard the news from another source."
+            "0": "Thank you, <FirstName>. Was there something else you needed?"
           }
         }
       },
       {
-        "__struct_id": 67,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": []
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "<StartCheck>[Success]</Start> You have? That is most fortuitous. Here, take this gold as a reward."
-          }
-        }
-      },
-      {
-        "__struct_id": 68,
+        "__struct_id": 69,
         "ActionParams": {
           "type": "list",
           "value": [
@@ -5916,75 +6043,6 @@
         }
       },
       {
-        "__struct_id": 69,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 79
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "<FirstName>! I have terrible news! The cure reagents have been stolen!"
-          }
-        }
-      },
-      {
         "__struct_id": 70,
         "ActionParams": {
           "type": "list",
@@ -6049,7 +6107,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "We believe that this is the work of Desther, an advisor of Lord Nasher who seems to have had ties with the temple of Helm. We think he has headed to Helm's Hold in the southeast."
+            "0": "<FirstName>! I have terrible news! The cure reagents have been stolen!"
           }
         }
       },
@@ -6118,12 +6176,81 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "For all you have done for our city, please take this gold and cloak. May it protect you on your travels."
+            "0": "We believe that this is the work of Desther, an advisor of Lord Nasher who seems to have had ties with the temple of Helm. We think he has headed to Helm's Hold in the southeast."
           }
         }
       },
       {
         "__struct_id": 72,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 82
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "For all you have done for our city, please take this gold and cloak. May it protect you on your travels."
+          }
+        }
+      },
+      {
+        "__struct_id": 73,
         "ActionParams": {
           "type": "list",
           "value": [
@@ -6187,7 +6314,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 2347
+    "value": 2359
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -11361,7 +11488,19 @@
         "__struct_id": 78,
         "ActionParams": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "target"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "15"
+              }
+            }
+          ]
         },
         "Animation": {
           "type": "dword",
@@ -11409,7 +11548,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_q_adv"
         },
         "Sound": {
           "type": "resref",
@@ -11418,7 +11557,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I have dealt with the source of the undead in Helm's Hold - a lich had taken up residence in an ancient tomb below the fortress."
+            "0": "Consider it done."
           }
         }
       },
@@ -11459,7 +11598,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 70
+                "value": 69
               },
               "IsChild": {
                 "type": "byte",
@@ -11483,7 +11622,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": ""
+            "0": "I have dealt with the source of the undead in Helm's Hold - a lich had taken up residence in an ancient tomb below the fortress."
           }
         }
       },
@@ -11556,19 +11695,7 @@
         "__struct_id": 81,
         "ActionParams": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Key": {
-                "type": "cexostring",
-                "value": "target"
-              },
-              "Value": {
-                "type": "cexostring",
-                "value": "13"
-              }
-            }
-          ]
+          "value": []
         },
         "Animation": {
           "type": "dword",
@@ -11628,6 +11755,83 @@
             "0": ""
           }
         }
+      },
+      {
+        "__struct_id": 82,
+        "ActionParams": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "target"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "13"
+              }
+            }
+          ]
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 73
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
+          }
+        }
       }
     ]
   },
@@ -11658,7 +11862,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 69
+          "value": 70
         }
       },
       {
