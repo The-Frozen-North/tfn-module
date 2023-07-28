@@ -289,6 +289,7 @@ void InitializeItem(object oItem)
 
     // Boomerang item values: additional item value is added once for each item in the stack
     // which means that additional item value needs to map stack size 1 -> max stack size
+    /*
     if (GetItemHasItemProperty(oItem, ITEM_PROPERTY_BOOMERANG))
     {
         SetItemStackSize(oItem, 1);
@@ -297,6 +298,7 @@ void InitializeItem(object oItem)
         nGold *= (nMaxStackSize - 1);
         NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + nGold);
     }
+    */
 
 
 
