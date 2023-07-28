@@ -35,6 +35,7 @@ void main()
     int iDamage = GetTotalDamageDealt();
     object oDamager = GetLastDamager();
     // Check to see if we will polymorph.
+    /*
     int iPolymorph = GetAIConstant(AI_POLYMORPH_INTO);
 
     // Polymorph check.
@@ -49,6 +50,7 @@ void main()
         }
         SetAIConstant(AI_POLYMORPH_INTO, -1);// We set it to invalid (sets to 0).
     }
+    */
     // First, we check AOE spells...
     if(GetObjectType(oDamager) == OBJECT_TYPE_AREA_OF_EFFECT)
     {

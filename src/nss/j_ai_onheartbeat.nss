@@ -19,6 +19,7 @@
 #include "j_inc_henchman"
 #include "inc_ai_combat"
 #include "nwnx_area"
+#include "j_inc_generic_ai"
 
 // we are not using Jasperre's AI script for heartbeats
 
@@ -102,6 +103,85 @@ void main()
         }
     }
 
+    // if master is dead, commence operation black hawk down
+    if (GetIsDead(oStoredMaster))
+    {
+        float fEnemyDistance = 40.0;
+
+        string sVarName = "being_useless_while_master_dead";
+        
+        // too far to revive? go to master
+        if (GetDistanceToObject(oStoredMaster) > fEnemyDistance)
+        {
+            //SendMessageToPC(GetFirstPC(), GetName(OBJECT_SELF)+" moving to master because too far");
+            ClearAllActions();
+            DeleteLocalInt(OBJECT_SELF, sVarName);
+            ActionMoveToObject(oStoredMaster, TRUE);
+            return; // do nothing else but go to the master    
+        }
+
+        object oClosestEnemy = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, oStoredMaster, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN, CREATURE_TYPE_IS_ALIVE, TRUE);
+
+        // if the enemy is still alive and within 40 yards, make the follower attack them immediately if not already doing so
+        if (GetIsObjectValid(oClosestEnemy) && 
+            GetDistanceBetween(oStoredMaster, oClosestEnemy) < fEnemyDistance &&
+            GetAttemptedAttackTarget() != oClosestEnemy &&
+            GetAttemptedSpellTarget() != oClosestEnemy)
+        {
+            //SendMessageToPC(GetFirstPC(), GetName(OBJECT_SELF)+" attacking nearest enemy to master");
+            ClearAllActions();
+            DeleteLocalInt(OBJECT_SELF, sVarName);
+            AI_DetermineCombatRound(oClosestEnemy);
+            return; // do nothing else but attack the enemy
+        }
+
+        int nBeingUselessWhileMasterIsDead = GetLocalInt(OBJECT_SELF, sVarName);
+
+        // if i have been stuck for a while, go immediately to the master
+        if (nBeingUselessWhileMasterIsDead > 2)
+        {
+            // if i am close enough it is okay not to go to the master anymore in this scenario. there might be an enemy to fight at this point
+            if (GetDistanceToObject(oStoredMaster) < 10.0)
+            {
+                DeleteLocalInt(OBJECT_SELF, sVarName);
+            }
+            else
+            {            
+                ClearAllActions();
+                ActionMoveToObject(oStoredMaster, TRUE);  
+            }
+        }
+
+        // if you are NOT attacking anything at all at this point, most likely you are stuck. count how long we are stuck on this, but dont return or clear actions in case i am doing something
+        if (!GetIsObjectValid(GetAttemptedAttackTarget()) &&
+            !GetIsObjectValid(GetAttemptedSpellTarget()))
+        {
+            //SendMessageToPC(GetFirstPC(), GetName(OBJECT_SELF)+" attacking nearest enemy to master");
+            SetLocalInt(OBJECT_SELF, sVarName, nBeingUselessWhileMasterIsDead + 1);
+        }
+
+
+        // if that fails, attempt to attack the nearest enemy to yourself
+        /*
+        oClosestEnemy = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY, OBJECT_SELF, 1, CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN, CREATURE_TYPE_IS_ALIVE, TRUE);
+
+        // if the enemy is still alive and within 40 yards, make the follower attack them immediately if not already doing so
+        if (GetIsObjectValid(oClosestEnemy) && 
+            GetDistanceBetween(OBJECT_SELF, oClosestEnemy) < fEnemyDistance &&
+            GetAttemptedAttackTarget() != oClosestEnemy &&
+            GetAttemptedSpellTarget() != oClosestEnemy)
+        {
+            //SendMessageToPC(GetFirstPC(), GetName(OBJECT_SELF)+" attacking nearest enemy to myself");
+            ClearAllActions();
+            AI_DetermineCombatRound(oClosestEnemy);
+            return; // do nothing else but attack the enemy
+        }
+        */
+
+        // if that fails, do it again but based on yourself, not the master
+    }
+
+    /*
     if (GetIsObjectValid(oStoredMaster) && !GetIsInCombat(OBJECT_SELF) && GetIsDead(oStoredMaster))
     {
         ClearAllActions(TRUE);
@@ -115,6 +195,7 @@ void main()
         ActionMoveToObject(oStoredMaster, TRUE);
         return; // don't do any more actions that might interrupt this
     }
+    */
 
     int nSelected = GetLocalInt(OBJECT_SELF, "selected");
     int nSelectedRemove = GetLocalInt(OBJECT_SELF, "selected_remove");

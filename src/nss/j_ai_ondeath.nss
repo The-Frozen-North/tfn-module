@@ -31,7 +31,7 @@ void main()
 
     DestroyPet(OBJECT_SELF);
 
-    if (GetStringLeft(GetResRef(OBJECT_SELF), 4) == "_hen")
+    if (GetStringLeft(GetResRef(OBJECT_SELF), 4) == "hen_")
     {
         SetLocalInt(OBJECT_SELF, "times_died", GetLocalInt(OBJECT_SELF, "times_died")+1);
 

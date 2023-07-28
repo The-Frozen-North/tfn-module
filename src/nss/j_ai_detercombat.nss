@@ -84,6 +84,8 @@ void DoCombatVoice()
 
 void main()
 {
+    if (!GetIsInCombat()) return;
+    
     // Pre-combat-event
     if(FireUserEvent(AI_FLAG_UDE_COMBAT_ACTION_PRE_EVENT, EVENT_COMBAT_ACTION_PRE_EVENT))
         // We may exit if it fires
@@ -94,11 +96,11 @@ void main()
 
     // Speak combat round speakstring
     //SpeakArrayString(AI_TALK_ON_COMBAT_ROUND, TRUE);
-    
+
     // Call combat round using include
     AI_DetermineCombatRound(oTarget);
 
-    if (GetIsObjectValid(oTarget)) DelayCommand(IntToFloat(d10())/10.0, DoCombatVoice());
+    DelayCommand(IntToFloat(d10())/10.0, DoCombatVoice());
 
     // Delete it whatever happens
     DeleteAIObject(AI_TEMP_SET_TARGET);

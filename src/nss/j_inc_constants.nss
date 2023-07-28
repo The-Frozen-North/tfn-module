@@ -1830,6 +1830,9 @@ int GetIsBusyWithAction()
 // * Checks if we are fleeing too
 int CannotPerformCombatRound()
 {
+    // if the master happens to be dead, you can always do a combat round    
+    if (GetIsDead(GetMaster(OBJECT_SELF))) return TRUE;
+    
     return GetAssociateState(NW_ASC_IS_BUSY) + GetAssociateState(NW_ASC_MODE_STAND_GROUND) + GetIsPerformingSpecialAction() + GetIsBusyWithAction() + GetIsFighting();
 }
 
