@@ -12,7 +12,7 @@
 //:: Created By: Preston Watamaniuk
 //:: Created On: Oct 26, 2001
 //:://////////////////////////////////////////////
-
+#include "inc_general"
 void main()
 {
     //Declare major variables
@@ -48,6 +48,10 @@ void main()
          eSummon = EffectSummonCreature("X1_S_SHADLORD",VFX_FNF_SUMMON_UNDEAD);
       }
 
+    }
+    if (GetIsPC(OBJECT_SELF))
+    {
+        IncrementPlayerStatistic(OBJECT_SELF, "creatures_summoned");
     }
 
     //Apply VFX impact and summon effect

@@ -17,6 +17,8 @@ Patch 1.72
 - druid and ranger levels stacks together for determining the animal companion level now
 */
 
+#include "inc_general"
+
 void main()
 {
     string sResRef = Get2DAString("hen_companion","BASERESREF",GetAnimalCompanionCreatureType(OBJECT_SELF));
@@ -29,4 +31,5 @@ void main()
     SetLocalString(OBJECT_SELF, "NWNX!PATCH!SETSUMMONEDRESREF",sResRef);
     //Yep thats it
     SummonAnimalCompanion();
+    IncrementPlayerStatistic(OBJECT_SELF, "creatures_summoned");
 }

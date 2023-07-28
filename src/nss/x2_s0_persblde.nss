@@ -20,6 +20,7 @@ Patch 1.71
 
 #include "70_inc_spells"
 #include "x2_i0_spells"
+#include "inc_general"
 #include "x2_inc_spellhook"
 
 //Creates the weapon that the creature will be using.
@@ -89,6 +90,10 @@ void main()
     else
     {
         nStat = GetAbilityModifier(ABILITY_CHARISMA, spell.Caster);
+    }
+    if (GetIsPC(spell.Caster))
+    {
+        IncrementPlayerStatistic(spell.Caster, "creatures_summoned");
     }
     DelayCommand(1.0, spellsCreateItemForSummoned(spell.Caster,nStat));
 }

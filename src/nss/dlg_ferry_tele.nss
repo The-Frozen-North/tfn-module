@@ -12,8 +12,8 @@ void main()
     {
         TakeGoldFromCreature(nCost, oPC, TRUE);
 
-        IncrementStat(oPC, "gold_spent_on_ferries", nCost);
-        IncrementStat(oPC, "ferries_used");
+        IncrementPlayerStatistic(oPC, "gold_spent_on_ferries", nCost);
+        IncrementPlayerStatistic(oPC, "ferries_used");
 
         location lLocation = GetLocation(GetObjectByTag(GetScriptParam("target")));
         FadeToBlack(oPC);

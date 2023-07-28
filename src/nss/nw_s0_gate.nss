@@ -17,6 +17,7 @@ void CreateBalor(location lLoc);
 
 #include "70_inc_spells"
 #include "x2_inc_spellhook"
+#include "inc_general"
 
 void main()
 {
@@ -58,6 +59,10 @@ void main()
     {
         ApplyEffectAtLocation(DURATION_TYPE_INSTANT, eVis, spell.Loc);
         DelayCommand(3.0, CreateBalor(spell.Loc));
+    }
+    if (GetIsPC(spell.Caster))
+    {
+        IncrementPlayerStatistic(spell.Caster, "creatures_summoned");
     }
 }
 

@@ -56,6 +56,7 @@ void RefreshCompletedBounties(object oPC, int nTime, string sList);
 void UpdateQuestgiverHighlights(object oArea, object oPC);
 
 // True of oPC is eligible for a quest stage handed out by oNPC.
+// Also ignores "no highlight" quests.
 int IsPCEligibleForQuestFromNPC(object oNPC, object oPC);
 
 // Variables on quest givers/items:
@@ -273,7 +274,11 @@ void AdvanceQuest(object oQuestObject, object oPC, int nTarget, int bBluff = FAL
     // record stat for bounties
     if (GetStringLeft(sQuestName, 2) == "b_" && jeQuest.nQuestCompleted)
     {
-        IncrementStat(oPC, "bounties_completed");
+        IncrementPlayerStatistic(oPC, "bounties_completed");
+    }
+    else if (jeQuest.nQuestCompleted)
+    {
+        IncrementPlayerStatistic(oPC, "quests_completed");
     }
 
     UpdateQuestgiverHighlights(GetArea(oQuestObject), oPC);
@@ -299,9 +304,12 @@ int IsPCEligibleForQuestFromNPC(object oNPC, object oPC)
     int i;
     for (i = 1; i < HIGHEST_QUEST_COUNT; i++)
     {
-        if (GetIsQuestStageEligible(oNPC, oPC, i))
+        if (!GetLocalInt(oNPC, "quest" + IntToString(i) + "_nohighlight"))
         {
-            return 1;
+            if (GetIsQuestStageEligible(oNPC, oPC, i))
+            {
+                return 1;
+            }
         }
     }
     return 0;

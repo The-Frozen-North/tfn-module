@@ -16,6 +16,7 @@
 //:: Latest Update: Andrew Nobbs April 9, 2003
 
 #include "x2_inc_spellhook"
+#include "inc_general"
 
 void main()
 {
@@ -45,6 +46,9 @@ void main()
 
     // 0.5 sec delay between VFX and creature creation
     effect eSummon = EffectSummonCreature(sResRef, VFX_FNF_SUMMON_MONSTER_3, 0.5);
-
+    if (GetIsPC(spell.Caster))
+    {
+        IncrementPlayerStatistic(spell.Caster, "creatures_summoned");
+    }
     ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, eSummon, GetSpellTargetLocation(), fDuration);
 }

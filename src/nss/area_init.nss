@@ -124,6 +124,8 @@ void main()
        }
 
        NWNX_Area_SetFogClipDistance(oArea, 90.0);
+       
+        int i;
 
 
 //==========================================
@@ -319,6 +321,10 @@ void main()
                        {
                            nEventSpawns = nEventSpawns + 1;
                            SetTag(oObject, sResRef+"WP_EVENT"+IntToString(nEventSpawns));
+                       }
+                       if (GetTag(oObject) == "bootonrefresh_wp")
+                       {
+                           SetLocalObject(oArea, "bootonrefresh_wp", oObject);
                        }
                  break;
                  case OBJECT_TYPE_DOOR:
@@ -574,7 +580,7 @@ void main()
     {
         SetLocalInt(oArea, "trap_spawns", nTrapSpawnPoints);
 
-        int i;
+        
         for (i = 0; i < nTrapSpawnPoints; i++)
         {
              lSpawnLocation = Location(oArea, StringToVector(GetListItem(sTrapRow, i)), 0.0);
@@ -598,9 +604,8 @@ void main()
     if (nCreatures > 0) SendDebugMessage(sResRef+" creatures: "+IntToString(nCreatures), TRUE);
     if (nPlaceables > 0) SendDebugMessage(sResRef+" dynamic placeables: "+IntToString(nPlaceables), TRUE);
 
-    // we will refresh it once so there's spawns
-    ExecuteScript("area_refresh", oArea);
-
+// there isn't anything to clean up, but we run this to close doors, lock them, and set traps accordingly
+    ExecuteScript("area_cleanup");
     SendDebugMessage("initialized "+sResRef, TRUE);
     SetLocalInt(oArea, "initialized", 1);
 }

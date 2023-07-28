@@ -1,5 +1,5 @@
 #include "inc_debug"
-#include "nw_i0_generic"
+//#include "nw_i0_generic"
 #include "inc_general"
 
 // assigns normal creature scripts to this follower and deletes some local master related variables
@@ -27,19 +27,19 @@ void AssignNormalScripts(object oCreature)
 void AssignHenchmanScripts(object oCreature);
 void AssignHenchmanScripts(object oCreature)
 {
-    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_BLOCKED_BY_DOOR, "hen_onblocked");
-    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DAMAGED, "hen_ondamaged");
-    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DIALOGUE, "hen_onconvers");
-    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DISTURBED, "hen_ondisturb");
-    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_END_COMBATROUND, "hen_oncombrnd");
-    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_HEARTBEAT, "hen_onheartb");
-    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED, "hen_onattacked");
-    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_NOTICE, "hen_onpercep");
-    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_RESTED, "hen_onrest");
-    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_SPELLCASTAT, "hen_onspellcas");
-    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_USER_DEFINED_EVENT, "hen_onuserdef");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_BLOCKED_BY_DOOR, "j_ai_onblocked");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DAMAGED, "j_ai_ondamaged");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DIALOGUE, "j_ai_onconversat");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DISTURBED, "j_ai_ondisturbed");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_END_COMBATROUND, "j_ai_oncombatrou");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_HEARTBEAT, "j_ai_onheartbeat");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED, "j_ai_onphiattack");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_NOTICE, "j_ai_onpercieve");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_RESTED, "j_ai_onrest");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_SPELLCASTAT, "j_ai_onspellcast");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_USER_DEFINED_EVENT, "j_ai_onuserdef");
 
-    ExecuteScript("hen_onspawn", oCreature);
+    ExecuteScript("j_ai_onspawn", oCreature);
 }
 
 // get how many followers this player has (not henchman or any other associates)
@@ -108,7 +108,7 @@ void SetFollowerMaster(object oFollower, object oPlayer)
 
     SetTag(oFollower, "follower");
 
-    SetAssociateState(NW_ASC_DISTANCE_2_METERS, TRUE, oFollower);
+    //SetAssociateState(NW_ASC_DISTANCE_2_METERS, TRUE, oFollower);
 
 // Make sure oPlayer is actually a player
     if (!GetIsPC(oPlayer)) return;
@@ -116,7 +116,7 @@ void SetFollowerMaster(object oFollower, object oPlayer)
     SetLocalString(oFollower, "master", GetObjectUUID(oPlayer));
     SetLocalString(oFollower, "heartbeat_script", "fol_heartb");
 
-    IncrementStat(oPlayer, "followers_recruited");
+    IncrementPlayerStatistic(oPlayer, "followers_recruited");
 
     AddHenchman(oPlayer, oFollower);
     AssignHenchmanScripts(oFollower);
@@ -129,9 +129,9 @@ void DismissFollower(object oFollower)
     DeleteLocalInt(oFollower, "no_master_count");
     DeleteLocalString(oFollower, "master");
 
-    SetCombatCondition(X0_COMBAT_FLAG_RANGED, FALSE, oFollower);
-    SetAssociateState(NW_ASC_USE_RANGED_WEAPON, FALSE, oFollower);
-    SetAssociateState(NW_ASC_DISTANCE_2_METERS, FALSE, oFollower);
+    //SetCombatCondition(X0_COMBAT_FLAG_RANGED, FALSE, oFollower);
+    //SetAssociateState(NW_ASC_USE_RANGED_WEAPON, FALSE, oFollower);
+    //SetAssociateState(NW_ASC_DISTANCE_2_METERS, FALSE, oFollower);
     DeleteLocalString(oFollower, "heartbeat_script");
 
     RemoveHenchman(GetMaster(oFollower), oFollower);

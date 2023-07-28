@@ -11,7 +11,7 @@ void main()
         ActionOpenDoor(OBJECT_SELF);
         TakeGoldFromCreature(nGold, oPC, TRUE);
         SetCampaignInt(GetPCPublicCDKey(oPC), "house_cost", nGold);
-        IncrementStat(oPC, "gold_spent_from_buying", nGold);
+        IncrementPlayerStatistic(oPC, "gold_spent_from_buying", nGold);
         InitializeHouseMapPin(oPC);
         HouseBuyWebhook(oPC, nGold, GetArea(OBJECT_SELF));
     }

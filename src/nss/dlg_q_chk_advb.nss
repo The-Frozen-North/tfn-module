@@ -10,11 +10,13 @@ int StartingConditional()
     AdjustAlignment(oPC, ALIGNMENT_CHAOTIC, BLUFF_CHAOS_SHIFT, FALSE);
     if(GetIsSkillSuccessful(oPC, nSkill, nDC))
     {
+        IncrementPlayerStatistic(oPC, "bluff_succeeded");
         AdvanceQuest(OBJECT_SELF, oPC, nTarget, TRUE);
         return TRUE;
     }
     else
     {
+        IncrementPlayerStatistic(oPC, "bluff_failed");
         return FALSE;
     }
 }

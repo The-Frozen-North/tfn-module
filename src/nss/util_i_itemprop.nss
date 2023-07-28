@@ -264,7 +264,12 @@ itemproperty GetFirstItemPropertyOnItemWithSpell(int nSpellID, object oItem)
 string ItemPropertyToString(itemproperty ipItemProperty)
 {
     int nIPType = GetItemPropertyType(ipItemProperty);
-    string sName = GetStringByStrRef(StringToInt(Get2DAString("itempropdef", "GameStrRef", nIPType)));
+    int nGameStrRef = StringToInt(Get2DAString("itempropdef", "GameStrRef", nIPType));
+    if (nGameStrRef == -1)
+    {
+        nGameStrRef = StringToInt(Get2DAString("itempropdef", "Name", nIPType));
+    }
+    string sName = GetStringByStrRef(nGameStrRef);
     if(GetItemPropertySubType(ipItemProperty) != -1)//nosubtypes
     {
         string sSubTypeResRef = Get2DAString("itempropdef", "SubTypeResRef", nIPType);

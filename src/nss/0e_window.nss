@@ -11,62 +11,6 @@
 #include "inc_restxp"
 #include "inc_sqlite_time"
 
-void SendStatistic(object oPlayer, string sLabel, string sStatKey)
-{
-    string sStat = IntToString(SQLocalsPlayer_GetInt(oPlayer, STAT_PREFIX+sStatKey));
-    
-    SendColorMessageToPC(oPlayer, sLabel + ": " + sStat, MESSAGE_COLOR_INFO);    
-}
-
-// TODO: Make this into NUI
-void SendStatistics(object oPlayer)
-{
-    SendStatistic(oPlayer, "Time played (seconds)", "time_played");
-
-    SendStatistic(oPlayer, "Locks unlocked", "locks_unlocked");
-    SendStatistic(oPlayer, "Locks bashed", "locks_bashed");
-    
-    SendStatistic(oPlayer, "Henchman recruited", "henchman_recruited");
-    SendStatistic(oPlayer, "Henchman died", "henchman_died");
-    SendStatistic(oPlayer, "Followers recruited", "followers_recruited");
-    SendStatistic(oPlayer, "Followers died", "followers_died");
-
-    SendStatistic(oPlayer, "Bounties completed", "bounties_completed");
-
-    SendStatistic(oPlayer, "Gold looted", "gold_looted");
-    SendStatistic(oPlayer, "Treasures looted", "treasures_looted");
-    SendStatistic(oPlayer, "Gold earned from selling", "gold_earned_from_selling");
-    SendStatistic(oPlayer, "Items sold", "items_sold");
-
-    SendStatistic(oPlayer, "Gold spent", "gold_spent_from_buying");
-    SendStatistic(oPlayer, "Items bought", "items_bought");
-
-    SendStatistic(oPlayer, "Ferries used", "ferries_used");
-    SendStatistic(oPlayer, "Gold spent on ferries", "gold_spent_on_ferries");
-
-    SendStatistic(oPlayer, "Boats used", "long_travel_used");
-    SendStatistic(oPlayer, "Gold spent on boats", "gold_spent_on_long_travel");
-
-    SendStatistic(oPlayer, "Treasure maps completed", "treasure_maps_completed");
-
-    SendStatistic(oPlayer, "Traps triggered", "traps_triggered");
-    
-    SendStatistic(oPlayer, "Assassination attempts thwarted", "assasination_attempts_thwarted");
-    SendStatistic(oPlayer, "Times rested", "rests_completed");
-    SendStatistic(oPlayer, "Times ambushed while resting", "rest_ambushes");
-
-    SendStatistic(oPlayer, "Enemies killed", "enemies_killed");
-    SendStatistic(oPlayer, "Enemies killed by you", "enemies_killed_with_credit");
-    SendStatistic(oPlayer, "Bosses killed by you", "bosses_killed");
-    SendStatistic(oPlayer, "Innocents murdered by you", "innocents_killed");
-    SendStatistic(oPlayer, "Allies killed by you", "allies_killed");
-
-    SendStatistic(oPlayer, "Deaths", "deaths");
-    SendStatistic(oPlayer, "Deaths from traps", "deaths_from_traps");
-    SendStatistic(oPlayer, "Respawns", "respawned");
-    SendStatistic(oPlayer, "Revived", "revived"); // this can probably be deprecated, you can determine this from deaths + respawns
-}
-
 void main()
 {
   // Let the inspector handle what it wants.
@@ -119,7 +63,6 @@ void main()
         string sRespawn = GetRespawnLocationName(oPlayer);
         SendColorMessageToPC(oPlayer, "You have chosen to respawn in " + sRespawn + ".", MESSAGE_COLOR_INFO);
         SendRestedXPNotifierToPC(oPlayer);
-        SendStatistics(oPlayer);
         // PopUpPlayerSummaryGUIPanel(oPlayer, "pcsummarywin");
     }
   }
@@ -169,6 +112,10 @@ void main()
       else if (sEvent == "click" && sElem == "open_customisation")
       {
           DisplayUIMasterConfigurationInterface(oPlayer);
+      }
+      else if (sEvent == "click" && sElem == "open_statistics")
+      {
+          ShowPlayerStatsUI(oPlayer);
       }
   }
   // This is the bug report event.

@@ -78,7 +78,7 @@ void BashLock(object oAttacker)
         nEffect = VFX_COM_BLOOD_SPARK_LARGE;
         AssignCommand(oAttacker, ClearAllActions(TRUE));
 
-        IncrementStat(oAttacker, "locks_bashed");
+        IncrementPlayerStatistic(oAttacker, "locks_bashed");
 
         PlaySound("cb_bu_metallrg");
 

@@ -1,4 +1,5 @@
 #include "inc_xp"
+#include "inc_general"
 
 void main()
 {
@@ -20,5 +21,9 @@ void main()
         return;
      }
 
-     if (GetIsPC(oPC)) GiveXPToPC(oPC, IntToFloat(nXP));
+     if (GetIsPC(oPC))
+     {
+         GiveXPToPC(oPC, IntToFloat(nXP));
+         IncrementPlayerStatistic(oPC, "traps_disarmed");
+     }
 }

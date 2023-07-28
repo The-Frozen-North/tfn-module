@@ -22,6 +22,7 @@ effect SetSummonEffect(int nSpellID, int bAnimalDomain);
 
 #include "70_inc_spells"
 #include "x2_inc_spellhook"
+#include "inc_general"
 
 void main()
 {
@@ -46,7 +47,10 @@ void main()
         nDuration = nDuration *2;   //Duration is +100%
     }
     //Apply the VFX impact and summon effect
-
+    if (GetIsPC(spell.Caster))
+    {
+        IncrementPlayerStatistic(spell.Caster, "creatures_summoned");
+    }
     ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, eSummon, spell.Loc, DurationToSeconds(nDuration));
 }
 

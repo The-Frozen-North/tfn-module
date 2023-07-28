@@ -11,8 +11,8 @@ void main()
     object oTargetPawnStore = GetObjectByTag(sString);
     if (StringToInt(NWNX_Events_GetEventData("RESULT")) == TRUE)
     {
-        IncrementStat(OBJECT_SELF, "gold_earned_from_selling", StringToInt(NWNX_Events_GetEventData("PRICE")));
-        IncrementStat(OBJECT_SELF, "items_sold");
+        IncrementPlayerStatistic(OBJECT_SELF, "gold_earned_from_selling", StringToInt(NWNX_Events_GetEventData("PRICE")));
+        IncrementPlayerStatistic(OBJECT_SELF, "items_sold");
         
         if (GetIsObjectValid(oTargetPawnStore))
         {

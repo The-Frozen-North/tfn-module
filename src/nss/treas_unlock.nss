@@ -18,5 +18,5 @@ void main()
     // do nothing if not a PC still
     if (!GetIsPC(oUnlocker)) return;
 
-    IncrementStat(oUnlocker, "locks_unlocked");
+    IncrementPlayerStatistic(oUnlocker, "locks_unlocked");
 }

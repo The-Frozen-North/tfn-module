@@ -11,6 +11,8 @@
 //:: Created On:
 //:://////////////////////////////////////////////
 
+#include "inc_general"
+
 void main()
 {
 
@@ -26,6 +28,10 @@ void main()
     else
      eSummon = EffectSummonCreature("sum_bg_ghast",VFX_FNF_SUMMON_UNDEAD);
 
+    if (GetIsPC(OBJECT_SELF))
+    {
+        IncrementPlayerStatistic(OBJECT_SELF, "creatures_summoned");
+    }
     ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, eSummon, GetSpellTargetLocation(), HoursToSeconds(nDuration));
 
 }

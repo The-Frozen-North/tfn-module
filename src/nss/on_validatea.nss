@@ -93,19 +93,68 @@ void main()
 
 // Set this so it never runs again.
     SQLocalsPlayer_SetInt(OBJECT_SELF, "migrated", 1);
-
-// if the WP exists, then we can skip the rest as it's already done
-    object oWP = GetObjectByTag(sKey+sBic);
-    if (GetIsObjectValid(oWP)) return;
-
-
+    
+    string sLocA = SQLocalsPlayer_GetString(OBJECT_SELF, "LOC_A");
+    object oLogoutArea = GetObjectByTag(sLocA);
+    
     float fLocX = SQLocalsPlayer_GetFloat(OBJECT_SELF, "LOC_X");
     float fLocY = SQLocalsPlayer_GetFloat(OBJECT_SELF, "LOC_Y");
     float fLocZ = SQLocalsPlayer_GetFloat(OBJECT_SELF, "LOC_Z");
     float fLocO = SQLocalsPlayer_GetFloat(OBJECT_SELF, "LOC_O");
-    string fLocA = SQLocalsPlayer_GetString(OBJECT_SELF, "LOC_A");
+    
+    location lLocation = Location(oLogoutArea, Vector(fLocX, fLocY, fLocZ), fLocO);
+    
+    // bootonrefresh: kick the player back to a saved waypoint if they log into an area
+    // with this variable set, and this area has refreshed since they logged out
+    
+    int nBootVariable = GetLocalInt(oLogoutArea, "bootonrefresh");
+    int bBoot = 0;
+    object oWP = GetObjectByTag(sKey+sBic);
+    if (nBootVariable)
+    {
+        int nAreaCleaned = GetLocalInt(oLogoutArea, "cleaned_time");
+        int nPCAreaCleaned = SQLocalsPlayer_GetInt(OBJECT_SELF, "LogoutAreaCleanedTime");
+        WriteTimestampedLogEntry("PC logged into area " + GetTag(oLogoutArea) + " which boots on refresh");
+        WriteTimestampedLogEntry("Area's clean time = " + IntToString(nAreaCleaned) + " vs PC's saved " + IntToString(nPCAreaCleaned));
+        if (nAreaCleaned != nPCAreaCleaned)
+        {
+            string sRefreshBootArea = SQLocalsPlayer_GetString(OBJECT_SELF, "RefreshBootArea");
+            WriteTimestampedLogEntry("Try to boot PC to last boot WP area " + sRefreshBootArea);
+            object oBootArea = GetObjectByTag(sRefreshBootArea);
+            object oBootWP = GetLocalObject(oBootArea, "bootonrefresh_wp");
+            string sOverride = GetLocalString(oLogoutArea, "bootonrefresh_wp_override");
+            object oAreaBootWPOverride = OBJECT_INVALID;
+            if (sOverride != "")
+            {
+                oAreaBootWPOverride = GetObjectByTag(sOverride);
+            }
+            if (GetIsObjectValid(oAreaBootWPOverride))
+            {
+                oBootWP = oAreaBootWPOverride;
+            }
+            
+            if (GetIsObjectValid(oBootWP))
+            {
+                SetLocalInt(OBJECT_SELF, "bootedonrefresh", 1);
+                bBoot = 1;
+                lLocation = GetLocation(oBootWP);
+            }
+        }
+    }
 
-    location lLocation = Location(GetObjectByTag(fLocA), Vector(fLocX, fLocY, fLocZ), fLocO);
+// if the WP exists, then we can skip the rest as it's already done
+    
+    if (GetIsObjectValid(oWP) && !bBoot)
+    {
+        return;
+    }
+    else if (bBoot && GetIsObjectValid(oWP))
+    {
+        DestroyObject(oWP);
+    }
+    
+
+    
 
     oWP = CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lLocation, FALSE, sKey+sBic);
 

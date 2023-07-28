@@ -31,34 +31,38 @@ void main()
 
     if (GetLocalString(OBJECT_SELF, "heartbeat_script") == "fol_heartb")
     {
-        IncrementStat(GetMaster(OBJECT_SELF), "followers_died");
+        IncrementPlayerStatistic(GetMaster(OBJECT_SELF), "followers_died");
     }
 
     // not counting associates. we should count summons though
-
-    if (GetIsPC(oKiller))
-    {
-        IncrementStat(oKiller, "enemies_killed");
-
-        if (GetLocalInt(OBJECT_SELF, "boss") == 1)
-        {
-            IncrementStat(oKiller, "bosses_killed");
-        }
-    }
-    else if (GetIsPC(GetMaster(oKiller)))
+    object oPCToIncrementOn = oKiller;
+    
+    if (GetIsPC(GetMaster(oKiller)))
     {
         int nAssociateType = GetAssociateType(oKiller);
 
         if (nAssociateType == ASSOCIATE_TYPE_FAMILIAR || nAssociateType == ASSOCIATE_TYPE_ANIMALCOMPANION || nAssociateType == ASSOCIATE_TYPE_DOMINATED || nAssociateType == ASSOCIATE_TYPE_SUMMONED)
         {
-            object oPC = GetMaster(oKiller);
+            oPCToIncrementOn = GetMaster(oKiller);
+        }
+    }
+    
+    if (GetIsPC(oPCToIncrementOn))
+    {
+        int nCR = GetLocalInt(OBJECT_SELF, "cr");
+        IncrementPlayerStatistic(oPCToIncrementOn, "enemies_killed");
 
-            IncrementStat(oPC, "enemies_killed");
-
-            if (GetLocalInt(OBJECT_SELF, "boss") == 1)
-            {
-                IncrementStat(oPC, "bosses_killed");
-            }
+        if (GetLocalInt(OBJECT_SELF, "boss") == 1)
+        {
+            nCR++;
+            IncrementPlayerStatistic(oPCToIncrementOn, "bosses_killed");
+        }
+        
+        int nOldMaxCR = GetPlayerStatistic(oPCToIncrementOn, "most_powerful_cr");
+        if (nCR > nOldMaxCR)
+        {
+            SetPlayerStatistic(oPCToIncrementOn, "most_powerful_cr", nCR);
+            SetPlayerStatisticString(oPCToIncrementOn, "most_powerful_killed", GetName(OBJECT_SELF));
         }
     }
 
@@ -79,7 +83,7 @@ void main()
             oMurderer = oKiller;
         }
 
-        IncrementStat(oMurderer, "innocents_killed");
+        IncrementPlayerStatistic(oMurderer, "innocents_killed");
 
         if (GetIsPC(oMurderer))
             AdjustAlignment(oMurderer, ALIGNMENT_EVIL, 5, FALSE);
@@ -106,14 +110,22 @@ void main()
     TakeGoldFromCreature(1000, OBJECT_SELF, TRUE);
 
     DestroyPet(OBJECT_SELF);
-    /*
-    object eAOE = GetLocalObject(OBJECT_SELF, "aoe_to_cleanup");
-    if (GetIsObjectValid(eAOE))
+    
+    json jAOEs = GetLocalJson(OBJECT_SELF, "aoe_to_cleanup");
+    int nCount = JsonGetLength(jAOEs);
+    int i;
+    for (i=0; i<nCount; i++)
     {
-        AssignCommand(eAOE, SetIsDestroyable(TRUE));
-        AssignCommand(eAOE, DestroyObject(eAOE, 0.5));
+        object oAOE = StringToObject(JsonGetString(JsonArrayGet(jAOEs, i)));
+        if (GetIsObjectValid(oAOE))
+        {
+            SendDebugMessage("Destroy old aoe: " + ObjectToString(oAOE));
+            AssignCommand(oAOE, SetIsDestroyable(TRUE));
+            AssignCommand(oAOE, DestroyObject(oAOE, 0.5));
+        }
     }
-    */
+    
+    
     if (GetLocalInt(OBJECT_SELF, "defeated_webhook") == 1)
     {
         BossDefeatedWebhook(oKiller, OBJECT_SELF);

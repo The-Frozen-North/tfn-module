@@ -141,6 +141,9 @@ json GetNuiConfigValue(object oPC, string sWindow, string sConfigName);
 // This also assigns a new JsonObject to UserData if it is empty.
 void LoadNuiConfigBinds(object oPC, int nToken);
 
+// Load and apply saved geometry for all windows oPC has open that have had SetIsInterfaceConfigurable called on them.
+void LoadSavedGeometryForAllConfigurableWindows(object oPC);
+
    
    
 /////////////////////////////////////////////
@@ -418,19 +421,12 @@ json EditableNuiWindow(string sName, string sDisplayName, json jRoot, string sTi
     return NuiWindow(jRoot, jTitle, jGeometry, jResizeable, JsonBool(bCollapse), jCloseable, jTransparent, jBorder);
 }
 
-void LoadNuiConfigBinds(object oPC, int nToken)
+void LoadSavedGeometryForWindow(object oPC, int nToken)
 {
-    json jUserData = NuiGetUserData(oPC, nToken);
-    if (jUserData == JsonNull())
-    {
-        jUserData = JsonObject();
-        NuiSetUserData(oPC, nToken, jUserData);
-    }
-    string sWindow = NuiGetWindowId(oPC, nToken);
     string sKey = GetPCPublicCDKey(oPC, TRUE);
+    string sWindow = NuiGetWindowId(oPC, nToken);
+    if (sWindow == "") { return; }
     json jGeom = GetCampaignJson(sKey, "nui_geom_" + sWindow);
-    int bEditMode = GetInterfaceEditModeState(oPC);
-    
     if (jGeom != JsonNull())
     {
         float fFixedWidth = _NuiDataDB_GetFloat(sWindow + "_fixed_width");
@@ -446,6 +442,32 @@ void LoadNuiConfigBinds(object oPC, int nToken)
         NuiSetBind(oPC, nToken, "_geometry", jGeom);
         //WriteTimestampedLogEntry("Set geom to " + JsonDump(jGeom));
     }
+}
+
+void LoadSavedGeometryForAllConfigurableWindows(object oPC)
+{
+    json jArray = GetLocalJson(oPC, LOCAL_EDITABLE_INTERFACES);
+    int nLength = JsonGetLength(jArray);
+    int i;
+    for (i=0; i<nLength; i++)
+    {
+        int nToken = JsonGetInt(JsonArrayGet(jArray, i));
+        LoadSavedGeometryForWindow(oPC, nToken);
+    }
+}
+
+void LoadNuiConfigBinds(object oPC, int nToken)
+{
+    json jUserData = NuiGetUserData(oPC, nToken);
+    if (jUserData == JsonNull())
+    {
+        jUserData = JsonObject();
+        NuiSetUserData(oPC, nToken, jUserData);
+    }
+    string sWindow = NuiGetWindowId(oPC, nToken);
+    int bEditMode = GetInterfaceEditModeState(oPC);
+    
+    LoadSavedGeometryForWindow(oPC, nToken);
     NuiSetBindWatch(oPC, nToken, "_geometry", 1);
     _UpdateEditModeBinds(oPC, nToken, sWindow, 0);
     int nNumConfigs = _NuiDataDB_GetInt(sWindow + "_num_configs");
@@ -760,30 +782,37 @@ void HandleEditModeEvents()
     // Save updated geometry
     if (sEvent == "watch" && sElement == "_geometry")
     {
-        json jGeom = NuiGetBind(oPC, nToken, "_geometry");
-        float fW = JsonGetFloat(JsonObjectGet(jGeom, "w"));
-        float fH = JsonGetFloat(JsonObjectGet(jGeom, "h"));
-        if (fW != 0.0 && fH != 0.0)
+        // Do not save changes to non-resizeable windows
+        // These are typically moved by doing things like (accidentally) resizing your game window
+        // _title is either: a string, or JsonBool(0)
+        // JsonGetString(JsonBool(0)) -> ""
+        if (JsonGetString(NuiGetBind(oPC, nToken, "_title")) != "")
         {
-            int bChange = 0;
-            if (fW < 50.0)
+            json jGeom = NuiGetBind(oPC, nToken, "_geometry");
+            float fW = JsonGetFloat(JsonObjectGet(jGeom, "w"));
+            float fH = JsonGetFloat(JsonObjectGet(jGeom, "h"));
+            if (fW != 0.0 && fH != 0.0)
             {
-                jGeom = JsonObjectSet(jGeom, "w", JsonFloat(50.0));
-                bChange = 1;
-            }
-            if (fH < 5.0)
-            {
-                jGeom = JsonObjectSet(jGeom, "h", JsonFloat(5.0));
-                bChange = 1;
-            }
-            
-            //jGeom = NuiRect(300.0, 300.0, 300.0, 40.0);
-            WriteTimestampedLogEntry("Save geom for " + sWindow + ": " + JsonDump(jGeom));
-            SetCampaignJson(sKey, "nui_geom_" + sWindow, jGeom);
-            if (bChange)
-            {
-                WriteTimestampedLogEntry("force changed geom, do new update");
-                NuiSetBind(oPC, nToken, "_geometry", jGeom);
+                int bChange = 0;
+                if (fW < 50.0)
+                {
+                    jGeom = JsonObjectSet(jGeom, "w", JsonFloat(50.0));
+                    bChange = 1;
+                }
+                if (fH < 5.0)
+                {
+                    jGeom = JsonObjectSet(jGeom, "h", JsonFloat(5.0));
+                    bChange = 1;
+                }
+                
+                //jGeom = NuiRect(300.0, 300.0, 300.0, 40.0);
+                //WriteTimestampedLogEntry("Save geom for " + sWindow + ": " + JsonDump(jGeom));
+                SetCampaignJson(sKey, "nui_geom_" + sWindow, jGeom);
+                if (bChange)
+                {
+                    //WriteTimestampedLogEntry("force changed geom, do new update");
+                    NuiSetBind(oPC, nToken, "_geometry", jGeom);
+                }
             }
         }
     }

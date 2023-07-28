@@ -14,6 +14,7 @@
 
 #include "70_inc_spells"
 #include "x2_inc_spellhook"
+#include "inc_general"
 
 void main()
 {
@@ -33,6 +34,10 @@ void main()
     //Warrior Mummy
     effect eSummon = EffectSummonCreature("X2_S_MUMMYWARR",VFX_FNF_SUMMON_EPIC_UNDEAD,1.0);
     eSummon = ExtraordinaryEffect(eSummon);
+    if (GetIsPC(spell.Caster))
+    {
+        IncrementPlayerStatistic(spell.Caster, "creatures_summoned");
+    }
     //Apply the summon visual and summon the undead.
     ApplyEffectAtLocation(DURATION_TYPE_TEMPORARY, eSummon, spell.Loc, DurationToSeconds(nDuration));
 }

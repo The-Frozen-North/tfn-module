@@ -1,8 +1,8 @@
-#include "inc_trap"
 #include "inc_loot"
 #include "inc_debug"
 #include "util_i_csvlists"
 #include "nwnx_object"
+#include "inc_sqlite_time"
 
 string ChooseSpawnRef(object oArea, int nTarget)
 {
@@ -59,14 +59,6 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
       if (nSpawns == 0) return;
       int nTotalSpawns = nSpawns + (Random(nSpawns/4));
       if (nTotalSpawns > nMax) nTotalSpawns = 100;
-
-// Destroy all stored creatures.
-// typically done on a refresh
-      int i;
-      for (i = 1; i <= nMax; i++)
-        DestroyObject(GetLocalObject(oArea, "random"+IntToString(nTarget)+"_creature"+IntToString(i)));
-
-
 
       // Make spawns a little more even
       // In areas with few strong creatures, they are much more likely to become clustered, making them
@@ -142,16 +134,6 @@ void main()
      int iColumns = GetAreaSize(AREA_HEIGHT, OBJECT_SELF);
      //int bInstance = GetLocalInt(OBJECT_SELF, "instance");
 
-// ==============================
-// Treasures
-// ==============================
-// clean up old treasures
-    int nOldTreasure;
-    int nNumOld = GetLocalInt(OBJECT_SELF, "num_spawned_treasures");
-    for (nOldTreasure = 0; nOldTreasure < nNumOld; nOldTreasure++)
-        DestroyObject(GetLocalObject(OBJECT_SELF, "treasure"+IntToString(nOldTreasure)));
-     DeleteLocalInt(OBJECT_SELF, "num_spawned_treasures");
-
      int nTargetGold = GetLocalInt(OBJECT_SELF, "target_placeable_gold");
      int iCR = GetLocalInt(OBJECT_SELF, "cr");
      string sACR = IntToString(iCR);
@@ -225,37 +207,7 @@ void main()
          nTreasureIndex = JsonGetInt(JsonArrayGet(jKeepTreasures, i));
          SpawnTreasureIndex(nTreasureIndex);
      }
-     
-
-
-
-
-// ==============================
-// Events
-// ==============================
-// clean up old events
-    int nOldEvent;
-    for (nOldEvent = 0; nOldEvent < 20; nOldEvent++)
-        DestroyObject(GetObjectByTag(sResRef+"_event", nOldEvent));
-
-    // Event stores: currently the only sources of stores in refreshing areas is from the
-    // random event merchant
-    // Might not always be the case, though...
-    // In any case, accumulating useless stores won't be doing the
-    // server's memory usage over long uptimes any good...
-    int nStoreIndex;
-    object oOldStore;
-    for (nStoreIndex=0; nStoreIndex < 10; nStoreIndex++)
-    {
-        string sVar = "event_store" + IntToString(nStoreIndex);
-        oOldStore = GetLocalObject(OBJECT_SELF, sVar);
-        if (GetIsObjectValid(oOldStore))
-        {
-            SendDebugMessage("Destroying event store " + GetResRef(oOldStore) + " at var " + sVar);
-            DestroyObject(oOldStore);
-        }
-    }
-
+    
 // 50% chance of an event, unless overridden
     int nEventSpawns = GetLocalInt(OBJECT_SELF, "event_spawn_points");
     int nEventChance = GetLocalInt(OBJECT_SELF, "event_chance");
@@ -282,114 +234,8 @@ void main()
         ExecuteScript(sEvent, oEventWP);
      }
 
-// ==============================
-// Traps
-// ==============================
-
-
-     int nTrapChance = (iRows*iColumns)/12;
-// cap the density of traps
-     if (nTrapChance >= 30) nTrapChance = 30;
-
-     if (GetLocalInt(OBJECT_SELF, "less_traps") == 1)
-        nTrapChance = nTrapChance/3;
-
-     int bTrapped = GetLocalInt(OBJECT_SELF, "trapped");
-
-     if (bTrapped == 1)
-     {
-        int nTrapChance = (iRows*iColumns)/12;
-
-        object oTrap, oTrapWP;
-
-        int nTrapSpawns = GetLocalInt(OBJECT_SELF, "trap_spawns");
-
-        int i;
-        for (i = 1; i <= nTrapSpawns; i++)
-        {
-            oTrapWP = GetObjectByTag(sResRef+"_trap_spawn_point"+IntToString(i));
-
-// delete the trap that is stored on this WP
-// this is typically needed when the area is refreshed
-            DestroyObject(GetLocalObject(oTrapWP, "trap"));
-
-            if (d100() <= nTrapChance)
-            {
-                oTrap = CreateTrapAtLocation(DetermineTrap(iCR), GetLocation(oTrapWP), 2.5+(IntToFloat(Random(10)+1)/10.0), "", STANDARD_FACTION_HOSTILE, "on_trap_disarm");
-                TrapLogic(oTrap);
-
-// store the trap so it can deleted later on refresh
-                SetLocalObject(oTrapWP, "trap", oTrap);
-            }
-        }
-}
-
-// ==============================
-// Doors
-// ==============================
-
-     //if (bInstance == 1)
-     //{
-
-        int nDoors = GetLocalInt(OBJECT_SELF, "doors");
-        object oDoor, oTransitionDoor;
-
-
-        for (i = 1; i <= nDoors; i++)
-        {
-            oDoor = GetLocalObject(OBJECT_SELF, "door"+IntToString(i));
-
-// close all doors
-            AssignCommand(oDoor, ActionCloseDoor(oDoor));
-
-            oTransitionDoor = GetTransitionTarget(oDoor);
-
-            if (GetIsObjectValid(oTransitionDoor) && GetObjectType(oTransitionDoor) == OBJECT_TYPE_DOOR)
-            {
-                AssignCommand(oTransitionDoor, ActionCloseDoor(oTransitionDoor));
-            }
-
-            if (bTrapped == 1 && d100() <= nTrapChance)
-            {
-                CreateTrapOnObject(DetermineTrap(iCR), oDoor, STANDARD_FACTION_HOSTILE, "on_trap_disarm");
-                TrapLogic(oDoor);
-            }
-
-// lock door if set
-            if (GetLocalInt(OBJECT_SELF, "door_locked"+IntToString(i)) == 1)
-            {
-                SetLocked(oDoor, TRUE);
-            }
-        }
-    //}
-
-
-
-
-// ==============================
-// Hand-placed creatures
-// ==============================
-
     //if (bInstance == 1)
     //{
-// clean up old creatures
-        int nOldCreature;
-        object oOldCreature;
-        for (nOldCreature = 0; nOldCreature < 200; nOldCreature++)
-         {
-            oOldCreature = GetLocalObject(OBJECT_SELF, "creature"+IntToString(nOldCreature));
-
-// do not clean up creatures that have a PC master
-            if (GetIsObjectValid(oOldCreature) && GetLocalString(oOldCreature, "master") == "")
-            {
-                // This might allow new creatures to spawn directly on top of the old ones
-                // without it, they get offset a bit
-                ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectCutsceneGhost(), oOldCreature, 6.0);
-                DestroyObject(oOldCreature);
-                // Remove from the quest npc list on the area
-                RemoveLocalListItem(OBJECT_SELF, "quest_npcs", ObjectToString(oOldCreature));
-            }
-         }
          int nCreatures = GetLocalInt(OBJECT_SELF, "creatures");
 
          if (nCreatures > 0)
@@ -422,24 +268,8 @@ void main()
          }
      //}
 
-// ==============================
-// Hand-placed respawnable placeables
-// ==============================
-
     //if (bInstance == 1)
     //{
-// clean up old placeables
-        int nOldPlaceable;
-        object oOldPlaceable;
-        for (nOldPlaceable = 0; nOldPlaceable < 200; nOldPlaceable++)
-         {
-            oOldPlaceable = GetLocalObject(OBJECT_SELF, "placeable"+IntToString(nOldPlaceable));
-
-            if (GetIsObjectValid(oOldCreature) && GetLocalString(oOldCreature, "master") == "")
-            {
-                DestroyObject(oOldPlaceable);
-            }
-         }
          int nPlaceables = GetLocalInt(OBJECT_SELF, "placeables");
 
          if (nPlaceables > 0)
@@ -461,9 +291,6 @@ void main()
          }
      //}
 
-// ==============================
-// Random Creature Spawns
-// ==============================
      string sEncounter;
      int nRandomSpawnPointTotal;
      //int i;
@@ -477,8 +304,9 @@ void main()
 
         CreateRandomSpawns(OBJECT_SELF, i, nRandomSpawnPointTotal);
      }
+     
+     
 
      string sRefreshScript = GetLocalString(OBJECT_SELF, "refresh_script");
      if (sRefreshScript != "") ExecuteScript(sRefreshScript, OBJECT_SELF);
 }
-

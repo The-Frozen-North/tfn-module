@@ -14,6 +14,7 @@
 
 #include "70_inc_spells"
 #include "x2_inc_spellhook"
+#include "inc_general"
 
 void main()
 {
@@ -51,6 +52,10 @@ void main()
     else if ((spell.Level >= 16))
     {
         eSummon = EffectSummonCreature("NW_S_SPECTRE",VFX_FNF_SUMMON_UNDEAD);
+    }
+    if (GetIsPC(spell.Caster))
+    {
+        IncrementPlayerStatistic(spell.Caster, "creatures_summoned");
     }
 
     //Apply VFX impact and summon effect

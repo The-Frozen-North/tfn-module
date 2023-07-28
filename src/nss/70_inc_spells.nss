@@ -45,6 +45,8 @@ rewritten onto New Spell Engine and you will understand quicky.
 //:: Created On: ?-11-2010
 //:://////////////////////////////////////////////
 #include "x2_inc_switches"
+#include "nwnx_util"
+#include "nwnx_consts"
 
 const int SPELL_TARGET_SINGLETARGET   = 2;
 const int SPELL_DURATION_TYPE_SECONDS = 1;
@@ -754,57 +756,71 @@ DelayCommand(6.0,AOEHeartbeat(sScript));
 
 object spellsSetupNewAOE(string sTag="", string scriptHeartbeat="", int numRounds=-1)
 {
-int nTh;
-object oNew, oAOE = sTag != "" ? GetObjectByTag(sTag) : GetNearestObjectToLocation(OBJECT_TYPE_AREA_OF_EFFECT,spell.Loc,++nTh);
- while(oAOE != OBJECT_INVALID)
- {
-  if((sTag == "" || GetTag(oAOE) == sTag) && GetAreaOfEffectCreator(oAOE) == spell.Caster && GetLocalObject(oAOE,"AOE_OWNER") == OBJECT_INVALID)
-  {
-  SetLocalObject(oAOE,"AOE_OWNER",spell.Target == OBJECT_INVALID ? spell.Caster : spell.Target);
-  SetLocalInt(oAOE,"AOE_ID",spell.Id);
-  SetLocalInt(oAOE,"AOE_DC",spell.DC);
-  SetLocalInt(oAOE,"AOE_META",spell.Meta+1);
-  SetLocalInt(oAOE,"AOE_LEVEL",spell.Level);
-  SetLocalInt(oAOE,"AOE_CLASS",spell.Class+1);
-  SetLocalInt(oAOE,"AOE_DAMAGECAP",spell.DamageCap);
-  SetLocalInt(oAOE,"AOE_DURTYPE",spell.DurationType);
-  SetLocalInt(oAOE,"AOE_TARGETTYPE",spell.TargetType);
-  SetLocalFloat(oAOE,"AOE_RANGE",spell.Range);
-  SetLocalInt(oAOE,"AOE_LIMIT",spell.Limit);
-  SetLocalInt(oAOE,"AOE_DAMAGETYPE",spell.DamageType);
-  SetLocalInt(oAOE,"AOE_SAVINGTHROW",spell.SavingThrow);
-  SetLocalInt(oAOE,"AOE_DICE",spell.Dice);
-  SetLocalInt(oAOE,"AOE_SR",spell.SR);
-  SetLocalInt(oAOE,"AOE_DURATION",numRounds+1);
-  SetLocalObject(spell.Target == OBJECT_INVALID ? spell.Caster : spell.Target,"OWNER_"+IntToString(spell.Id),oAOE);
-  // may fail when there's more than one aoe, oh well should solve most cases
-  //SetLocalObject(spell.Target == OBJECT_INVALID ? spell.Caster : spell.Target,"aoe_to_cleanup",oAOE);
-   if(scriptHeartbeat != "" && GetModuleSwitchValue("70_AOE_HEARTBEAT_WORKAROUND"))
-   {
-   AssignCommand(oAOE,DelayCommand(6.0,AOEHeartbeat(scriptHeartbeat)));
-   }
-  oNew = oAOE;
-  }
- oAOE = GetNearestObjectToLocation(OBJECT_TYPE_AREA_OF_EFFECT,spell.Loc,++nTh);
- }
-int nLimit = GetModuleSwitchValue("72_DISABLE_AOE_SPELLS_STACKING");
- if(nLimit > 0 && oNew != OBJECT_INVALID)
- {
- nTh = 1;
- oAOE = GetNearestObjectToLocation(OBJECT_TYPE_AREA_OF_EFFECT,spell.Loc,nTh);
-  while(oAOE != OBJECT_INVALID)
-  {
-   if(oAOE != oNew && GetAreaOfEffectCreator(oAOE) == spell.Caster && GetLocalInt(oAOE,"AOE_ID") == spell.Id)
-   {
-    if(--nLimit < 1)
+    int nTh;
+    object oNew, oAOE = sTag != "" ? GetObjectByTag(sTag) : GetNearestObjectToLocation(OBJECT_TYPE_AREA_OF_EFFECT,spell.Loc,++nTh);
+    int bTriedNWNX = 0;
+    object oVariableRecipient = spell.Target == OBJECT_INVALID ? spell.Caster : spell.Target;
+    while(oAOE != OBJECT_INVALID)
     {
-    DestroyObject(oAOE);
+        if((sTag == "" || GetTag(oAOE) == sTag) && GetAreaOfEffectCreator(oAOE) == spell.Caster && GetLocalObject(oAOE,"AOE_OWNER") == OBJECT_INVALID)
+        {
+            SetLocalObject(oAOE,"AOE_OWNER", oVariableRecipient);
+            SetLocalInt(oAOE,"AOE_ID",spell.Id);
+            SetLocalInt(oAOE,"AOE_DC",spell.DC);
+            SetLocalInt(oAOE,"AOE_META",spell.Meta+1);
+            SetLocalInt(oAOE,"AOE_LEVEL",spell.Level);
+            SetLocalInt(oAOE,"AOE_CLASS",spell.Class+1);
+            SetLocalInt(oAOE,"AOE_DAMAGECAP",spell.DamageCap);
+            SetLocalInt(oAOE,"AOE_DURTYPE",spell.DurationType);
+            SetLocalInt(oAOE,"AOE_TARGETTYPE",spell.TargetType);
+            SetLocalFloat(oAOE,"AOE_RANGE",spell.Range);
+            SetLocalInt(oAOE,"AOE_LIMIT",spell.Limit);
+            SetLocalInt(oAOE,"AOE_DAMAGETYPE",spell.DamageType);
+            SetLocalInt(oAOE,"AOE_SAVINGTHROW",spell.SavingThrow);
+            SetLocalInt(oAOE,"AOE_DICE",spell.Dice);
+            SetLocalInt(oAOE,"AOE_SR",spell.SR);
+            SetLocalInt(oAOE,"AOE_DURATION",numRounds+1);
+            SetLocalObject(oVariableRecipient,"OWNER_"+IntToString(spell.Id),oAOE);
+            // just in case anyone does multiple auras, jsonify it
+            json jAOEs = GetLocalJson(oVariableRecipient, "aoe_to_cleanup");
+            if (jAOEs == JsonNull())
+            {
+                jAOEs = JsonArray();
+            }
+            jAOEs = JsonArrayInsert(jAOEs, JsonString(ObjectToString(oAOE)));
+            SetLocalJson(oVariableRecipient,"aoe_to_cleanup", jAOEs);
+            //WriteTimestampedLogEntry("Add newly created aoe of " + GetName(oVariableRecipient) + " -> " + ObjectToString(oAOE));
+            if(scriptHeartbeat != "" && GetModuleSwitchValue("70_AOE_HEARTBEAT_WORKAROUND"))
+            {
+                AssignCommand(oAOE,DelayCommand(6.0,AOEHeartbeat(scriptHeartbeat)));
+            }
+            oNew = oAOE;
+        }
+        oAOE = GetNearestObjectToLocation(OBJECT_TYPE_AREA_OF_EFFECT,spell.Loc,++nTh);
+        if (!GetIsObjectValid(oAOE) && !bTriedNWNX)
+        {
+            oAOE = NWNX_Util_GetLastCreatedObject(NWNX_Consts_TranslateNWScriptObjectType(OBJECT_TYPE_AREA_OF_EFFECT));
+            bTriedNWNX = 1;
+        }
     }
-   }
-  oAOE = GetNearestObjectToLocation(OBJECT_TYPE_AREA_OF_EFFECT,spell.Loc,++nTh);
-  }
- }
-return oNew;
+    int nLimit = GetModuleSwitchValue("72_DISABLE_AOE_SPELLS_STACKING");
+    if(nLimit > 0 && oNew != OBJECT_INVALID)
+    {
+        nTh = 1;
+        oAOE = GetNearestObjectToLocation(OBJECT_TYPE_AREA_OF_EFFECT,spell.Loc,nTh);
+        while(oAOE != OBJECT_INVALID)
+        {
+            if(oAOE != oNew && GetAreaOfEffectCreator(oAOE) == spell.Caster && GetLocalInt(oAOE,"AOE_ID") == spell.Id)
+            {
+                if(--nLimit < 1)
+                {
+                    DestroyObject(oAOE);
+                }
+            }
+            oAOE = GetNearestObjectToLocation(OBJECT_TYPE_AREA_OF_EFFECT,spell.Loc,++nTh);
+        }
+    }
+    return oNew;
 }
 
 void SetAreaOfEffectUndispellable(object oAOE)

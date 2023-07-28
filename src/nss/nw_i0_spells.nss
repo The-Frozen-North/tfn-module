@@ -9,6 +9,7 @@
 //:: Updated By: 2003/20/10 Georg Zoeller
 //:://////////////////////////////////////////////
 #include "70_inc_spells"
+#include "inc_general"
 
 // GZ: Number of spells in GetSpellBreachProtections
 const int NW_I0_SPELLS_MAX_BREACH = 32;//1.72: removed duplicated shadow shield on list
@@ -523,6 +524,7 @@ itemproperty ip;
 return FALSE;
 }
 
+// Oh my god what the heck is this indentation, it's hideous
 int MyResistSpell(object oCaster, object oTarget, float fDelay = 0.0)
 {
  if(spell.SR == NO) return 0;//dynamic spell resist override feature, -1 = ignore SR for this spell
@@ -585,7 +587,13 @@ effect eWorkaround;
    }
   effect eMantle = EffectVisualEffect(VFX_IMP_SPELL_MANTLE_USE);
   DelayCommand(fDelay,ApplyEffectToObject(DURATION_TYPE_INSTANT,eMantle,oTarget));
-  return ResistSpell(oCaster,oTarget);
+  int nResisted = ResistSpell(oCaster,oTarget);
+  if (nResisted == 1)
+  {
+      IncrementPlayerStatistic(oTarget, "incoming_spells_resisted");
+      IncrementPlayerStatistic(oCaster, "outgoing_spells_resisted");
+  }
+  return nResisted;
   }
  int nResisted = 0;
   if(SR > 0)//1.72: fixed custom spell resist calculation not counting spell penetration feats
@@ -604,6 +612,11 @@ effect eWorkaround;
   sFeedback = "<c\x9b\xfe\xfe>"+GetName(oTarget)+"</c> <c\xcd\x7f\xfe>"+sFeedback+" "+GetStringByStrRef(nResisted == 1 ? 8343 : 5353)+"</c>";
   SendMessageToPC(oTarget,sFeedback);
   SendMessageToPC(oCaster,sFeedback);
+  }
+  if (nResisted == 1)
+  {
+      IncrementPlayerStatistic(oTarget, "incoming_spells_resisted");
+      IncrementPlayerStatistic(oCaster, "outgoing_spells_resisted");
   }
  return nResisted;
  }
@@ -649,6 +662,11 @@ DeleteLocalInt(oTarget,"GetSpellResistance");//cleanup
   }
  effect eMantle = EffectVisualEffect(VFX_IMP_SPELL_MANTLE_USE);
  DelayCommand(fDelay,ApplyEffectToObject(DURATION_TYPE_INSTANT,eMantle,oTarget));
+ }
+ if (nResist == 1)
+ {
+     IncrementPlayerStatistic(oTarget, "incoming_spells_resisted");
+     IncrementPlayerStatistic(oCaster, "outgoing_spells_resisted");
  }
 return nResist;
 }
@@ -920,10 +938,12 @@ int nDiff = GetGameDifficulty();
   }
   if(GetEffectType(eStandard) == EFFECT_TYPE_CHARMED || GetEffectType(eStandard) == EFFECT_TYPE_DOMINATED)
   {
-    //return EffectDazed();
-    SetLocalObject(oTarget, "dominator", oCaster);
-    string sScript = "nw_g0_dominate";
-    return EffectLinkEffects(eStandard, EffectRunScript(sScript, "", sScript, 2.0));
+    if (!GetIsImmune(oTarget, IMMUNITY_TYPE_MIND_SPELLS, OBJECT_SELF))
+    {
+        //return EffectDazed();
+        string sScript = "nw_g0_dominate";
+        return EffectRunScript(sScript, sScript, sScript, 2.0);
+    }
   }
  }
 return eStandard;

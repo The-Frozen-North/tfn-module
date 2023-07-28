@@ -90,14 +90,14 @@ int GetMultiplierForBaseItemType(int nBaseItem)
     else if (nBaseItem == BASE_ITEM_SPELLSCROLL) { nMultiplier = 0; }
     else if (nBaseItem == BASE_ITEM_GLOVES) { nMultiplier = 3; }
     else if (nBaseItem == BASE_ITEM_BRACER) { nMultiplier = 3; }
-    else if (nBaseItem == BASE_ITEM_RING) { nMultiplier = 5; }
-    else if (nBaseItem == BASE_ITEM_AMULET) { nMultiplier = 6; }
+    else if (nBaseItem == BASE_ITEM_RING) { nMultiplier = 3; }
+    else if (nBaseItem == BASE_ITEM_AMULET) { nMultiplier = 3; }
     else if (nBaseItem == BASE_ITEM_CLOAK) { nMultiplier = 3; }
     else if (nBaseItem == BASE_ITEM_BELT) { nMultiplier = 3; }
     else if (nBaseItem == BASE_ITEM_HELMET) { nMultiplier = 3; }
     else if (nBaseItem == BASE_ITEM_LARGESHIELD) { nMultiplier = 3; }
     else if (nBaseItem == BASE_ITEM_TOWERSHIELD) { nMultiplier = 4; }
-    else if (nBaseItem == BASE_ITEM_MAGICWAND) { nMultiplier = 8; }
+    else if (nBaseItem == BASE_ITEM_MAGICWAND) { nMultiplier = 3; }
     return nMultiplier;
 }
 
@@ -191,15 +191,13 @@ float _GetExpectedCostForItemOfTier(float fChance, float fExpectedItemValue, int
 }
 
 float GetAverageCostForBaseItem(int nBaseItem, int nCost)
-{
-    int nMultiplier = GetMultiplierForBaseItemType(nBaseItem);
-    
+{    
     int nRandom = d100();
     
     
-    float fT5Chance = IntToFloat(1*nMultiplier)/100.0;
-    float fT4Chance = IntToFloat(3*nMultiplier)/100.0;
-    float fT3Chance = IntToFloat(7*nMultiplier)/100.0;
+    float fT5Chance = 3.0/100.0;
+    float fT4Chance = 7.0/100.0;
+    float fT3Chance = 20.0/100.0;
     
     
     float fT2Chance = 1.0 - (fT3Chance + fT4Chance + fT5Chance);
@@ -231,13 +229,12 @@ float GetAverageCostForBaseItem(int nBaseItem, int nCost)
 
 float GetAverageCostForBaseAC(int nAC, int nCost)
 {
-    int nMultiplier = GetMultiplierForBaseAC(nAC);
     int nRandom = d100();
     
     
-    float fT5Chance = IntToFloat(1*nMultiplier)/100.0;
-    float fT4Chance = IntToFloat(3*nMultiplier)/100.0;
-    float fT3Chance = IntToFloat(7*nMultiplier)/100.0;
+    float fT5Chance = 3.0/100.0;
+    float fT4Chance = 7.0/100.0;
+    float fT3Chance = 20.0/100.0;
    
     
     float fT2Chance = 1.0 - (fT3Chance + fT4Chance + fT5Chance);

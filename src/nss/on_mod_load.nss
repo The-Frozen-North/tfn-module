@@ -17,6 +17,7 @@
 #include "util_i_csvlists"
 #include "inc_prettify"
 #include "inc_loot"
+#include "nwnx_damage"
 
 const int SEED_SPAWNS = 1;
 const int SEED_TREASURES = 1;
@@ -43,7 +44,7 @@ void SpawnPCBloodstains()
 {
     // get ALL the bloodstains, let players leave their "mark" :)
     int i;
-    for (i=0; i <= 2000; i++)
+    for (i=0; i <= MAX_NUMBER_BLOODSTAINS; i++)
     {
         location lLoc = GetCampaignLocation("pcbloodstains", "Pos" + IntToString(i));
 
@@ -51,6 +52,49 @@ void SpawnPCBloodstains()
         {
             CreateObject(OBJECT_TYPE_PLACEABLE, "_pc_bloodstain", lLoc);
         }
+    }
+}
+
+void EnsureAreaBilateralLinkages()
+{
+    // Ensure area linkages go both ways
+    // This CAN'T BE DONE IN area_init because not all the area tags will be set yet
+    // (GetObjectByTag will be a lot more efficient)
+    object oArea = GetFirstArea();
+    while (GetIsObjectValid(oArea))
+    {
+        int nLink = 1;
+        while (1)
+        {
+            object oLinked = GetObjectByTag(GetLocalString(oArea, "link" + IntToString(nLink)));
+            if (!GetIsObjectValid(oLinked))
+            {
+                break;
+            }
+            int nLinkedIndex = 1;
+            int bFoundSelf = 0;
+            while (1)
+            {
+                object oLinkedAreaOfOther = GetObjectByTag(GetLocalString(oLinked, "link" + IntToString(nLinkedIndex)));
+                if (!GetIsObjectValid(oLinkedAreaOfOther))
+                {
+                    break;
+                }
+                if (oLinkedAreaOfOther == oArea)
+                {
+                    bFoundSelf = 1;
+                    break;
+                }
+                nLinkedIndex++;
+            }
+            if (!bFoundSelf)
+            {
+                WriteTimestampedLogEntry("Area " + GetTag(oArea) + " has linked area " + GetTag(oLinked) + " which doesn't link back to it, adding at index " + IntToString(nLinkedIndex));
+                SetLocalString(oLinked, "link" + IntToString(nLinkedIndex), GetTag(oArea));
+            }
+            nLink++;
+        }
+        oArea = GetNextArea();
     }
 }
 
@@ -410,6 +454,11 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_WALK_TO_WAYPOINT_BEFORE", "stealth_move_fix");
     
     NWNX_Events_SubscribeEvent("NWNX_ON_CALENDAR_DUSK", "on_calendar_dusk");
+    
+    NWNX_Events_SubscribeEvent("NWNX_ON_INVENTORY_ADD_GOLD_AFTER", "on_inv_addgolda");
+    
+    NWNX_Damage_SetDamageEventScript("on_damage");
+    NWNX_Damage_SetAttackEventScript("on_attack");
 
 
     ServerWebhook("The Frozen North is starting!", "The Frozen North server is starting up. Once the module is stable and ready for players to login, we'll let you know.");
@@ -666,9 +715,7 @@ void main()
 
    object oArea = GetFirstArea();
    string sAreaResRef;
-   location lBaseLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);
-   object oAreaRefresher;
-   
+   location lBaseLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);   
    
 
    LoadAllPrettifyPlaceables();
@@ -695,6 +742,8 @@ void main()
 
        oArea = GetNextArea();
    }
+   EnsureAreaBilateralLinkages();
+   
    // Add quests that don't have variables set on any creature here
    // The above only scours the module for quests on creatures, some quests are purely scripted
    // and without being put in the quests list they aren't loaded into PC journals on join

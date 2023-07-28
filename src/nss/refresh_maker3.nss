@@ -182,7 +182,7 @@ void main()
                             float fFacing = (i > 0 ? 270.0 : 90.0) + IntToFloat(Random(60)) - 30.0;
                             lLoc = Location(OBJECT_SELF, vPos, fFacing);
                         }
-                        DelayCommand(6.0, MakeGolemCorpse(lLoc, sResRef, sVar));
+                        DelayCommand(0.2, MakeGolemCorpse(lLoc, sResRef, sVar));
                     }
                 }
             }

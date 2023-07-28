@@ -229,6 +229,12 @@ void AddRestedXPHeartbeat(object oPC)
         float fOldPercentage = GetRestedXPPercentage(oPC);
         _AddRestedXP(oPC, 6.0);
         float fNewPercentage = GetRestedXPPercentage(oPC);
+        
+        if (!GetIsPlayerHomeless(oPC) && GetTag(GetArea(oPC)) == GetHomeTag(oPC))
+        {
+            IncrementPlayerStatistic(oPC, "time_spent_in_house", 6);
+        }
+        
         if (fmod(fOldPercentage, RESTEDXP_NOTIFICATION_PERCENTAGE) > fmod(fNewPercentage, RESTEDXP_NOTIFICATION_PERCENTAGE))
         {
             SendRestedXPNotifierToPC(oPC);
@@ -284,6 +290,7 @@ void GiveHouseRestingXP(object oPC)
             FloatingTextStringOnCreature("You cannot accumulate more Rested XP!", oPC, FALSE);
             return;
         }
+        IncrementPlayerStatistic(oPC, "times_rested_in_house");
         int nNow = SQLite_GetTimeStamp();
         SQLocalsPlayer_SetInt(oPC, "RestXP_LastHouseRest", nNow);
         int nHouseCost = GetCampaignInt(GetPCPublicCDKey(oPC), "house_cost");
