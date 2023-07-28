@@ -179,7 +179,7 @@ void main()
                 {
                     sResRef = "duergar_wizard";
                 }
-                DelayCommand(6.0, MakeDuergarCorpse(oTest, sResRef));
+                DelayCommand(0.1, MakeDuergarCorpse(oTest, sResRef));
                 
             }
             else if (sTag == "maker_spawn_rand_weapon")

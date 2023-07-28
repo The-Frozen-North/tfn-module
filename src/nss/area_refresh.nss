@@ -2,6 +2,7 @@
 #include "inc_debug"
 #include "util_i_csvlists"
 #include "nwnx_object"
+#include "inc_sqlite_time"
 
 string ChooseSpawnRef(object oArea, int nTarget)
 {
@@ -303,6 +304,8 @@ void main()
 
         CreateRandomSpawns(OBJECT_SELF, i, nRandomSpawnPointTotal);
      }
+     
+     
 
      string sRefreshScript = GetLocalString(OBJECT_SELF, "refresh_script");
      if (sRefreshScript != "") ExecuteScript(sRefreshScript, OBJECT_SELF);

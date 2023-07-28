@@ -166,4 +166,6 @@ void main()
 
         CleanupRandomSpawns(OBJECT_SELF, i);
      }
+     
+     SetLocalInt(OBJECT_SELF, "cleaned_time", SQLite_GetTimeStamp());
 }
