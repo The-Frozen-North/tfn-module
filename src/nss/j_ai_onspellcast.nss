@@ -78,7 +78,7 @@ void main()
                     SpeakArrayString(AI_TALK_ON_HOSTILE_SPELL_CAST_AT);
                 }
                 // Turn of hiding check
-                TurnOffHiding(oCaster);
+                //TurnOffHiding(oCaster);
                 // Attack
                 AISpeakString(I_WAS_ATTACKED);
                 // We attack

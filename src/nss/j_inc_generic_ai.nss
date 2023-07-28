@@ -185,9 +185,6 @@ v0.1:
 #include "j_inc_seteffects"
 #include "x2_inc_itemprop"
 
-// this is pulled in for GetFollowDistance and other henchman things
-#include "x0_i0_assoc"
-
 /******************************************************************************/
 // Combat include, spell effect/immune constants
 /******************************************************************************/
@@ -881,7 +878,7 @@ int AI_StopWhatWeAreDoing();
 // active.
 // This should be called before any action using a feat, spell or similar, if
 // we need to move.
-void AI_ActionTurnOffHiding();
+//void AI_ActionTurnOffHiding();
 
 // Simple return TRUE if it matches hex GlobalTargetImmunitiesHex
 int AI_GetSpellTargetImmunity(int iImmunityHex);
@@ -1278,15 +1275,14 @@ void AI_SetMeleeMode(int iMode = -1)
 // active.
 // This should be called before any action using a feat, spell or similar, if
 // we need to move.
+/*
 void AI_ActionTurnOffHiding()
 {
     // Turn of searching and hiding here, if we want to!
-    /*
     if(!GetHasFeat(FEAT_KEEN_SENSE) && GetDetectMode(OBJECT_SELF) == DETECT_MODE_ACTIVE)
     {
         SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, FALSE);
     }
-    */
     // Turn of hiding if we have been seen lately.
     if(GetLocalTimer(AI_TIMER_TURN_OFF_HIDE) &&
        GetStealthMode(OBJECT_SELF) == STEALTH_MODE_ACTIVATED)
@@ -1294,6 +1290,7 @@ void AI_ActionTurnOffHiding()
         SetActionMode(OBJECT_SELF, ACTION_MODE_STEALTH, FALSE);
     }
 }
+*/
 
 /*::///////////////////////////////////////////////
 //:: Name AI_EquipAndAttack
@@ -1854,7 +1851,7 @@ int AI_EquipAndAttack()
         iOurHit = GlobalOurBaseAttackBonus + i100;// Massive amount - we act as if we rolled 100!
     }
     // We turn off hiding/searching as we will at least do ActionAttack...
-    AI_ActionTurnOffHiding();
+    //AI_ActionTurnOffHiding();
 
     // Ranged weapon?
     if(iRanged && ValidFeats && !AI_GetAIHaveEffect(GlobalEffectPolymorph))
@@ -2620,7 +2617,7 @@ int AI_ActionCastSpell(int iSpellID, int nTalent = 0, object oTarget = OBJECT_SE
             // 9: "[DCR:Casting] NormalSpell [ID] " + IntToString(iSpellID) + " [Target] " + GetName(oTarget) + " [Location] " + IntToString(iLocation)
             DebugActionSpeakByInt(9, oTarget, iSpellID, IntToString(iLocation));
             // We turn off hiding/searching
-            AI_ActionTurnOffHiding();
+            //AI_ActionTurnOffHiding();
             // Equip the best shield we have
             //AI_EquipBestShield();
             //... had to have some way of detecting if the spell is a touch one...
@@ -2714,7 +2711,7 @@ int AI_ActionCastSubSpell(int iSubSpell, int nTalent = 0, object oTarget = OBJEC
             // 11: "[DCR:Casting] SubSpecialSpell. [ID] " + IntToString(iSubSpell) + " [Target] " + GetName(oTarget) + " [Location] " + IntToString(iLocation)
             DebugActionSpeakByInt(11, oTarget, iSubSpell, IntToString(iLocation));
             // We turn off hiding/searching
-            AI_ActionTurnOffHiding();
+            //AI_ActionTurnOffHiding();
             // Equip the best shield we have
             //AI_EquipBestShield();
             // See 1.3 fix notes about metamagic not being used correctly with
@@ -2806,7 +2803,7 @@ int AI_ActionCastSpellRandom(int iSpellID, int nTalent, int iRandom, object oTar
                 // 12: "[DCR:Casting] NormalRandomSpell. [ID] " + IntToString(iSpellID) + " [Target] " + GetName(oTarget) + " [Location] " + IntToString(iLocation)
                 DebugActionSpeakByInt(12, oTarget, iSpellID, IntToString(iLocation));
                 // We turn off hiding/searching
-                AI_ActionTurnOffHiding();
+                //AI_ActionTurnOffHiding();
                 // Equip the best shield we have
                 //AI_EquipBestShield();
                 // Note: 1.3 fix. Action Cast At Object will be used if we can see
@@ -2988,7 +2985,7 @@ int AI_ActionCastSummonSpell(int iThingID, int iRequirement = 0, int iSummonLeve
             // 9: "[DCR:Casting] NormalSpell [ID] " + IntToString(iSpellID) + " [Target] " + GetName(oTarget) + " [Location] " + IntToString(iLocation)
             DebugActionSpeakByInt(9, GlobalSpellTarget, iThingID);
             // We turn off hiding/searching
-            AI_ActionTurnOffHiding();
+            //AI_ActionTurnOffHiding();
             // Equip the best shield we have
             //AI_EquipBestShield();
             // Fire ActionSpellAtLocation at the given location
@@ -3068,7 +3065,7 @@ int AI_ActionUseFeatOnObject(int iFeat, object oObject = OBJECT_SELF)
 //            SendMessageToPC(GetFirstPC(), "[DCR:Feat] [ID] " + IntToString(iFeat) + " [Enemy] " + GetName(oObject)); //...
             DebugActionSpeakByInt(14, oObject, iFeat);
             // We turn off hiding/searching
-            AI_ActionTurnOffHiding();
+            //AI_ActionTurnOffHiding();
             ActionUseFeat(iFeat, oObject);
             if(oObject == OBJECT_SELF)
             {
@@ -3091,7 +3088,7 @@ int AI_ActionUseEpicSpell(int nFeat, int nSpell, object oTarget = OBJECT_SELF)
         DebugActionSpeakByInt(14, oTarget, nFeat);
         if (nSpell == SPELL_EPIC_HELLBALL)
         {
-            AI_ActionTurnOffHiding();
+            //AI_ActionTurnOffHiding();
             ActionCastSpellAtLocation(nSpell, GetLocation(oTarget), METAMAGIC_NONE, TRUE);
             DecrementRemainingFeatUses(OBJECT_SELF, nFeat);
             return TRUE;
@@ -3099,7 +3096,7 @@ int AI_ActionUseEpicSpell(int nFeat, int nSpell, object oTarget = OBJECT_SELF)
         else if (GetIsEnemy(oTarget) && !GetHasSpellEffect(SPELL_ETHEREALNESS, oTarget))
         {
             // We turn off hiding/searching
-            AI_ActionTurnOffHiding();
+            //AI_ActionTurnOffHiding();
             // Cheat cast the spell
             ActionCastSpellAtObject(nSpell, oTarget, METAMAGIC_NONE, TRUE);
             // Decrement casting of it.
@@ -15203,7 +15200,7 @@ void AI_ActionUseSkillOnMeleeTarget(int iSkill)
     // 42: "[DCR:Skill] Using agressive skill (+Attack). [Skill] " + IntToString(iSkill) + " [Enemy]" + GetName(GlobalMeleeTarget)
     DebugActionSpeakByInt(42, GlobalMeleeTarget, iSkill);
     // We turn off hiding/searching
-    AI_ActionTurnOffHiding();
+    //AI_ActionTurnOffHiding();
     // Simple most damaging
     // - Equip shield first
     //AI_EquipBestShield();
@@ -16192,7 +16189,7 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         return;
     }
 
-    if (GetAssociateState(NW_ASC_IS_BUSY)) return;
+    if (CannotPerformCombatRound()) return;
 
     // 1.30 - daze is now as 3E rules,  you can move around walking, but no
     // attacking, casting or anything else :-(
@@ -16429,12 +16426,3 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
     // Search should activate this after a cirtain amount of time
 //    SpeakString("Step end");
 }
-
-
-// Debug: To compile this script full, uncomment all of the below.
-/* - Add two "/"'s at the start of this line
-//void main()
-//{
-//    AI_DetermineCombatRound();
-//}
-//*/

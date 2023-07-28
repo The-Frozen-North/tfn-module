@@ -17,6 +17,8 @@
 #include "inc_horse"
 #include "nwnx_creature"
 #include "j_inc_henchman"
+#include "inc_ai_combat"
+#include "nwnx_area"
 
 // we are not using Jasperre's AI script for heartbeats
 
@@ -38,6 +40,13 @@ void main()
         ExecuteScript("j_ai_detercombat");
 
         DelayCommand(3.0, ExecuteScript("j_ai_detercombat"));
+    }
+    // const int NWNX_AREA_PVP_SETTING_FULL_PVP            = 2;
+    // const int NWNX_AREA_PVP_SETTING_SERVER_DEFAULT      = 3;
+    // this is considered a dangerous area, start buffing
+    else if (NWNX_Area_GetPVPSetting(GetArea(OBJECT_SELF)) >= 2) 
+    {
+        FastBuff(FALSE, FALSE, FALSE); // do not do low duration buffs. no item buffs because we cant tell if it is buffed yet     
     }
 
     DetermineHenchmanMount(OBJECT_SELF);

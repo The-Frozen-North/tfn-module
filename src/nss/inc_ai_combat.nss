@@ -18,7 +18,7 @@ void BuffIfNotBuffed(int bSpell, int bInstant)
 
 // FAST BUFF SELF
 // * Dec 19 2002: Added the instant parameter so this could be used for 'legal' spellcasting as well
-void FastBuff(int bInstant = TRUE)
+void FastBuff(int bInstant = TRUE, int bLowDurationBuffs = TRUE, int bItemBuffs = TRUE)
 {
     if (GetLocalInt(OBJECT_SELF, "fast_buffed") == 1) return;
     SetLocalInt(OBJECT_SELF, "fast_buffed", 1);
@@ -35,14 +35,14 @@ void FastBuff(int bInstant = TRUE)
     BuffIfNotBuffed(SPELL_SPELL_RESISTANCE, bInstant);
     BuffIfNotBuffed(SPELL_RESISTANCE, bInstant);
     BuffIfNotBuffed(SPELL_VIRTUE, bInstant);
-    BuffIfNotBuffed(SPELL_CLAIRAUDIENCE_AND_CLAIRVOYANCE, bInstant);
+    if (bLowDurationBuffs) BuffIfNotBuffed(SPELL_CLAIRAUDIENCE_AND_CLAIRVOYANCE, bInstant);
 
     // Cleric buffs
     BuffIfNotBuffed(SPELL_BLESS, bInstant);
-    BuffIfNotBuffed(SPELL_PRAYER, bInstant);
+    if (bLowDurationBuffs) BuffIfNotBuffed(SPELL_PRAYER, bInstant);
     BuffIfNotBuffed(SPELL_AID, bInstant);
-    BuffIfNotBuffed(SPELL_DIVINE_FAVOR, bInstant);
-    BuffIfNotBuffed(SPELL_DIVINE_POWER, bInstant);
+    if (bLowDurationBuffs) BuffIfNotBuffed(SPELL_DIVINE_FAVOR, bInstant);
+    if (bLowDurationBuffs) BuffIfNotBuffed(SPELL_DIVINE_POWER, bInstant);
 
 
     // Ranger/Druid buffs
@@ -51,17 +51,20 @@ void FastBuff(int bInstant = TRUE)
     BuffIfNotBuffed(SPELL_ONE_WITH_THE_LAND, bInstant);
 
     // Weapon Buffs
-    BuffIfNotBuffed(SPELL_DARKFIRE, bInstant);
-    BuffIfNotBuffed(SPELL_MAGIC_VESTMENT, bInstant);
-    BuffIfNotBuffed(SPELL_MAGIC_WEAPON, bInstant);
-    BuffIfNotBuffed(SPELL_GREATER_MAGIC_WEAPON, bInstant);
-    BuffIfNotBuffed(SPELL_FLAME_WEAPON, bInstant);
-    BuffIfNotBuffed(SPELL_KEEN_EDGE, bInstant);
-    BuffIfNotBuffed(SPELL_BLADE_THIRST, bInstant);
-    BuffIfNotBuffed(SPELL_BLACKSTAFF, bInstant);
-    BuffIfNotBuffed(SPELL_BLESS_WEAPON, bInstant);
-    BuffIfNotBuffed(SPELL_DEAFENING_CLANG, bInstant);
-    BuffIfNotBuffed(SPELL_HOLY_SWORD, bInstant);
+    if (bItemBuffs)
+    {
+        BuffIfNotBuffed(SPELL_DARKFIRE, bInstant);
+        BuffIfNotBuffed(SPELL_MAGIC_VESTMENT, bInstant);
+        BuffIfNotBuffed(SPELL_MAGIC_WEAPON, bInstant);
+        BuffIfNotBuffed(SPELL_GREATER_MAGIC_WEAPON, bInstant);
+        BuffIfNotBuffed(SPELL_FLAME_WEAPON, bInstant);
+        BuffIfNotBuffed(SPELL_KEEN_EDGE, bInstant);
+        if (bLowDurationBuffs) BuffIfNotBuffed(SPELL_BLADE_THIRST, bInstant);
+        if (bLowDurationBuffs) BuffIfNotBuffed(SPELL_BLACKSTAFF, bInstant);
+        BuffIfNotBuffed(SPELL_BLESS_WEAPON, bInstant);
+        if (bLowDurationBuffs) BuffIfNotBuffed(SPELL_DEAFENING_CLANG, bInstant);
+        if (bLowDurationBuffs) BuffIfNotBuffed(SPELL_HOLY_SWORD, bInstant);
+    }
 
     // Armor buffs
     BuffIfNotBuffed(SPELL_MAGE_ARMOR, bInstant);
@@ -91,7 +94,7 @@ void FastBuff(int bInstant = TRUE)
         DecrementRemainingFeatUses(OBJECT_SELF, FEAT_HARPER_EAGLES_SPLENDOR);
     }
     
-    if (GetLevelByClass(CLASS_TYPE_DIVINECHAMPION) >= 5 && GetHasFeat(FEAT_DIVINE_WRATH))
+    if (bLowDurationBuffs && GetLevelByClass(CLASS_TYPE_DIVINECHAMPION) >= 5 && GetHasFeat(FEAT_DIVINE_WRATH))
     {
         // 622 - divine wrath
         NWNX_Creature_DoItemCastSpell(OBJECT_SELF, OBJECT_SELF, GetLocation(OBJECT_SELF), 622, GetLevelByClass(CLASS_TYPE_DIVINECHAMPION), 0.0);
@@ -99,6 +102,7 @@ void FastBuff(int bInstant = TRUE)
     }
 
     // Stat buffs
+    // TODO: Only buff the highest stat because this buff removes other similar buffs
     BuffIfNotBuffed(SPELL_AURA_OF_VITALITY, bInstant);
     BuffIfNotBuffed(SPELL_BULLS_STRENGTH, bInstant);
     BuffIfNotBuffed(SPELL_OWLS_WISDOM, bInstant);
@@ -107,7 +111,7 @@ void FastBuff(int bInstant = TRUE)
     BuffIfNotBuffed(SPELL_ENDURANCE, bInstant);
     BuffIfNotBuffed(SPELL_CATS_GRACE, bInstant);
     
-    if (GetLevelByClass(CLASS_TYPE_CLERIC))
+    if (GetLevelByClass(CLASS_TYPE_CLERIC) && bLowDurationBuffs)
     {
         if (GetHasFeat(FEAT_TRICKERY_DOMAIN_POWER))
         {
@@ -183,21 +187,21 @@ void FastBuff(int bInstant = TRUE)
     }
 
     //Evasion Protections
-    if(GetHasSpell(SPELL_IMPROVED_INVISIBILITY) && !GetHasSpellEffect(SPELL_IMPROVED_INVISIBILITY))
+    if (GetHasSpell(SPELL_IMPROVED_INVISIBILITY) && !GetHasSpellEffect(SPELL_IMPROVED_INVISIBILITY))
     {
         ActionCastSpellAtObject(SPELL_IMPROVED_INVISIBILITY, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
-    else if(GetHasSpell(SPELL_DISPLACEMENT)&& !GetHasSpellEffect(SPELL_DISPLACEMENT))
+    else if (bLowDurationBuffs && GetHasSpell(SPELL_DISPLACEMENT) && !GetHasSpellEffect(SPELL_DISPLACEMENT))
     {
         ActionCastSpellAtObject(SPELL_DISPLACEMENT, OBJECT_SELF, METAMAGIC_ANY, 0, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
 
     //Regeneration Protections
-    if(GetHasSpell(SPELL_REGENERATE) && !GetHasSpellEffect(SPELL_REGENERATE))
+    if (bLowDurationBuffs && GetHasSpell(SPELL_REGENERATE) && !GetHasSpellEffect(SPELL_REGENERATE))
     {
         ActionCastSpellAtObject(SPELL_REGENERATE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
-    else if(GetHasSpell(SPELL_MONSTROUS_REGENERATION)&& !GetHasSpellEffect(SPELL_MONSTROUS_REGENERATION))
+    else if(bLowDurationBuffs && GetHasSpell(SPELL_MONSTROUS_REGENERATION)&& !GetHasSpellEffect(SPELL_MONSTROUS_REGENERATION))
     {
         ActionCastSpellAtObject(SPELL_MONSTROUS_REGENERATION, OBJECT_SELF, METAMAGIC_ANY, 0, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
@@ -235,38 +239,38 @@ void FastBuff(int bInstant = TRUE)
         ActionCastSpellAtObject(SPELL_GHOSTLY_VISAGE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
     //Mantle Protections
-    if(GetHasSpell(SPELL_GREATER_SPELL_MANTLE)&& !GetHasSpellEffect(SPELL_GREATER_SPELL_MANTLE))
+    if(bLowDurationBuffs && GetHasSpell(SPELL_GREATER_SPELL_MANTLE)&& !GetHasSpellEffect(SPELL_GREATER_SPELL_MANTLE))
     {
         ActionCastSpellAtObject(SPELL_GREATER_SPELL_MANTLE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
-    else if(GetHasSpell(SPELL_SPELL_MANTLE)&& !GetHasSpellEffect(SPELL_SPELL_MANTLE))
+    else if(bLowDurationBuffs && GetHasSpell(SPELL_SPELL_MANTLE)&& !GetHasSpellEffect(SPELL_SPELL_MANTLE))
     {
         ActionCastSpellAtObject(SPELL_SPELL_MANTLE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
-    else if(GetHasSpell(SPELL_LESSER_SPELL_MANTLE)&& !GetHasSpellEffect(SPELL_LESSER_SPELL_MANTLE))
+    else if(bLowDurationBuffs && GetHasSpell(SPELL_LESSER_SPELL_MANTLE)&& !GetHasSpellEffect(SPELL_LESSER_SPELL_MANTLE))
     {
         ActionCastSpellAtObject(SPELL_LESSER_SPELL_MANTLE, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
     // Globes
-    if(GetHasSpell(SPELL_GLOBE_OF_INVULNERABILITY)&& !GetHasSpellEffect(SPELL_GLOBE_OF_INVULNERABILITY))
+    if(bLowDurationBuffs && GetHasSpell(SPELL_GLOBE_OF_INVULNERABILITY)&& !GetHasSpellEffect(SPELL_GLOBE_OF_INVULNERABILITY))
     {
         ActionCastSpellAtObject(SPELL_GLOBE_OF_INVULNERABILITY, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
-    else if(GetHasSpell(SPELL_MINOR_GLOBE_OF_INVULNERABILITY)&& !GetHasSpellEffect(SPELL_MINOR_GLOBE_OF_INVULNERABILITY))
+    else if(bLowDurationBuffs && GetHasSpell(SPELL_MINOR_GLOBE_OF_INVULNERABILITY)&& !GetHasSpellEffect(SPELL_MINOR_GLOBE_OF_INVULNERABILITY))
     {
         ActionCastSpellAtObject(SPELL_MINOR_GLOBE_OF_INVULNERABILITY, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
 
     //Misc Protections
-    if(GetHasSpell(SPELL_ELEMENTAL_SHIELD)&& !GetHasSpellEffect(SPELL_ELEMENTAL_SHIELD))
+    if(bLowDurationBuffs && GetHasSpell(SPELL_ELEMENTAL_SHIELD)&& !GetHasSpellEffect(SPELL_ELEMENTAL_SHIELD))
     {
         ActionCastSpellAtObject(SPELL_ELEMENTAL_SHIELD, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
-    else if (GetHasSpell(SPELL_MESTILS_ACID_SHEATH)&& !GetHasSpellEffect(SPELL_MESTILS_ACID_SHEATH))
+    else if (bLowDurationBuffs && GetHasSpell(SPELL_MESTILS_ACID_SHEATH)&& !GetHasSpellEffect(SPELL_MESTILS_ACID_SHEATH))
     {
         ActionCastSpellAtObject(SPELL_MESTILS_ACID_SHEATH, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
-    else if (GetHasSpell(SPELL_DEATH_ARMOR)&& !GetHasSpellEffect(SPELL_DEATH_ARMOR))
+    else if (bLowDurationBuffs && GetHasSpell(SPELL_DEATH_ARMOR)&& !GetHasSpellEffect(SPELL_DEATH_ARMOR))
     {
         ActionCastSpellAtObject(SPELL_DEATH_ARMOR, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
@@ -298,7 +302,7 @@ void FastBuff(int bInstant = TRUE)
     {
         ActionCastSpellAtObject(SPELL_LESSER_MIND_BLANK, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
-    else if(GetHasSpell(SPELL_CLARITY)&& !GetHasSpellEffect(SPELL_CLARITY))
+    else if(bLowDurationBuffs && GetHasSpell(SPELL_CLARITY)&& !GetHasSpellEffect(SPELL_CLARITY))
     {
         ActionCastSpellAtObject(SPELL_CLARITY, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }

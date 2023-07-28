@@ -19,7 +19,8 @@
 ************************* [Spawn In Include] **********************************/
 
 // All constants.
-#include "j_inc_setweapons"
+//#include "j_inc_setweapons"
+#include "j_inc_constants"
 // Set weapons
 // - Constants file is in this
 
@@ -566,10 +567,11 @@ void AI_SetUpEndOfSpawn()
         AI_SetTurningLevel();
             // This sets what weapons the creature will use. They will use the best, according to a "value"
             // Giving a creature the feat Two-weapon-fighting makes them deul wield if appropriate weapons.
-        SetWeapons();
+        //SetWeapons();
     }
 
     // We don't set up corpses if set not to...else set to resurrect
+    /*
     if(!GetSpawnInCondition(AI_FLAG_OTHER_TURN_OFF_CORPSES, AI_OTHER_MASTER))
     {
         // Note: Here, if we can, we set Bioware's lootable on.
@@ -583,6 +585,7 @@ void AI_SetUpEndOfSpawn()
         // TFN assumes henchmen are destroyable, and fixes raisability itself anyway
         //SetIsDestroyable(FALSE, TRUE, TRUE);
     }
+    */
 
 
     // Goes through and sets up which shouts the NPC will listen to.
@@ -1235,10 +1238,3 @@ void SetSpellTrigger(string sType, int iValue, int iNumber, int iSpell1, int iSp
         SetLocalInt(oTrigger, MAXIMUM + sType, iNumber);
     }
 }
-// Debug: To compile this script, uncomment all of the below.
-/* - Add two "/"'s at the start of this line
-//void main()
-//{
-//    return;
-//}
-//*/

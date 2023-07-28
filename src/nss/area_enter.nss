@@ -91,6 +91,8 @@ void main()
        if (GetLocalInt(OBJECT_SELF, "underdark") == 1 && !GetIsDM(oPC))
        {
            SetGuiPanelDisabled(oPC, GUI_PANEL_MINIMAP, TRUE);
+           // just in case the map still shows up
+           DelayCommand(0.5, SetGuiPanelDisabled(oPC, GUI_PANEL_MINIMAP, TRUE));
        }
        else
        {

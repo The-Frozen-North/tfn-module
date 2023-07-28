@@ -65,7 +65,7 @@ void main()
 
         // Turn of hiding, a timer to activate Hiding in the main file. This is
         // done in each of the events, with the opposition checking seen/heard.
-        TurnOffHiding(oAttacker);
+        //TurnOffHiding(oAttacker);
 
         // We set if we are attacked in HTH onto a low-delay timer.
         // - Not currently used

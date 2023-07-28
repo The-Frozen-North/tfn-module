@@ -29,6 +29,9 @@
 // Multiple includes are ignored anyway :-D
 #include "j_inc_debug"
 
+// this is pulled in for GetFollowDistance and other henchman things
+#include "x0_i0_assoc"
+
 // This is a seperate script from all others. It is executed if a creature wants
 // to DetermineCombatRound. It must be seperate to have override and non-override
 // versions working together.
@@ -68,6 +71,8 @@ const string AI_CUSTOM_AI_SCRIPT = "AI_CUSTOM_AI_SCRIPT";
 // these might be better.
 // - Especially used for imputting the spell talent numbers, and required
 //   INT, WIS or CHA for that spell. :-D
+
+// TODO: Refactor and completely rename/remove all of these variables
 const int iM10  = -10;// Dying threshold - die at -11
 const int iM1   = -1;
 const int i0    = 0;
@@ -1825,7 +1830,7 @@ int GetIsBusyWithAction()
 // * Checks if we are fleeing too
 int CannotPerformCombatRound()
 {
-    return GetIsPerformingSpecialAction() + GetIsBusyWithAction() + GetIsFighting();
+    return GetAssociateState(NW_ASC_IS_BUSY) + GetAssociateState(NW_ASC_MODE_STAND_GROUND) + GetIsPerformingSpecialAction() + GetIsBusyWithAction() + GetIsFighting();
 }
 
 // This will SpeakString a value from sName's array. i1000 uses a d1000 for % chance
