@@ -12,6 +12,7 @@
 #include "inc_horse"
 #include "inc_restxp"
 #include "inc_itemupdate"
+#include "nwnx_feedback"
 
 void CreateItemIfBlank(object oPC, string sItem)
 {
@@ -91,6 +92,9 @@ void main()
     ExecuteScript("70_featfix",oPC);
 
     DetermineHorseEffects(oPC);
+
+    // NWNX_FEEDBACK_COMBAT_RUNNING_OUT_OF_AMMO = 24
+    NWNX_Feedback_SetFeedbackMessageHidden(24, 1, oPC);
 
     //SetEventScript(oPC,EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED,"70_mod_attacked");
     //SetEventScript(oPC,EVENT_SCRIPT_CREATURE_ON_DAMAGED,"70_mod_damaged");

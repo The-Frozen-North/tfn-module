@@ -677,19 +677,23 @@ object CopyTierItemToLocation(object oItem, location lTarget)
     //int nRarityCount = GetLocalInt(GetModule(), sRarity);
     //SetLocalInt(GetModule(), sRarity, nRarityCount+1);
 
-// Set a stack size. Don't go above 50, due to certain stack sizes.
     int nBaseType = GetBaseItemType(oNewItem);
-    if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT) SetItemStackSize(oNewItem, Random(45)+1);
+    if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT)
+    {
+        // if it has ANY item properties at all, it is considered magical
+        if (GetIsItemPropertyValid(GetFirstItemProperty(oNewItem)))
+        {
+            SetItemStackSize(oNewItem, 1);    
+        }
+        // Otherwise it is mundane ammo, set a stack size. Don't go above 50, due to certain stack sizes.
+        {
+            SetItemStackSize(oNewItem, Random(45)+1);
+        }
+    }
 
 // for magic wands and rods, set a random number of charges based on the initial (max) amount of charges
     int nCharges = GetItemCharges(oNewItem);
     if (nCharges > 0 && (nBaseType == BASE_ITEM_MAGICWAND || nBaseType == BASE_ITEM_MAGICROD)) SetItemCharges(oNewItem, Random(nCharges)+1);
-
-    // Boomerang items should always generate as stack size 1
-    if (GetItemHasItemProperty(oNewItem, ITEM_PROPERTY_BOOMERANG))
-    {
-        SetItemStackSize(oNewItem, 1);
-    }
 
     // Set visual transforms, and do the rest if it wasn't done for any reason
     InitializeItem(oNewItem);
@@ -713,15 +717,30 @@ object CopyTierItemToContainer(object oItem, object oContainer)
     //int nRarityCount = GetLocalInt(GetModule(), sRarity);
     //SetLocalInt(GetModule(), sRarity, nRarityCount+1);
 
-// Set a stack size. Don't go above 50, due to certain stack sizes.
     int nBaseType = GetBaseItemType(oNewItem);
-    if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT) SetItemStackSize(oNewItem, Random(45)+1);
+    if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT) 
+    {
+        if (GetIsItemPropertyValid(GetFirstItemProperty(OBJECT_SELF)))
+        { // If the ammo has ANY item properties at all, it is considered magical and infinite. Make sure it only has a stack size of 1.
+            SetItemStackSize(oNewItem, 1);
+        }
+        else
+        { // Set a stack size for mundane items. Don't go above 50, due to certain stack sizes.
+            SetItemStackSize(oNewItem, Random(45)+1);
+        }
+    }
 
     // Boomerang items should always generate as stack size 1
+    /*
     if (GetItemHasItemProperty(oNewItem, ITEM_PROPERTY_BOOMERANG))
     {
         SetItemStackSize(oNewItem, 1);
     }
+    */
+
+    // for magic wands and rods, set a random number of charges based on the initial (max) amount of charges
+    int nCharges = GetItemCharges(oNewItem);
+    if (nCharges > 0 && (nBaseType == BASE_ITEM_MAGICWAND || nBaseType == BASE_ITEM_MAGICROD)) SetItemCharges(oNewItem, Random(nCharges)+1);
 
     // Set visual transforms, and do the rest if it wasn't done for any reason
     InitializeItem(oNewItem);
@@ -1400,7 +1419,8 @@ float GetAverageLootValueOfItem(int nTier, string sType)
                 object oTest = GetFirstItemInInventory(oChest);
                 while (GetIsObjectValid(oTest))
                 {
-                    int nBaseType = GetBaseItemType(oTest);
+                    //int nBaseType = GetBaseItemType(oTest);
+                    /* I don't think we need to do this anymore, every magic ammo and throwing weapon are a stack size of 1
                     if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT)
                     {
                         int nOneItemGold = GetIdentifiedItemCost(oTest)/GetItemStackSize(oTest);
@@ -1410,9 +1430,9 @@ float GetAverageLootValueOfItem(int nTier, string sType)
                         nGoldTotal += nCost;
                     }
                     else
-                    {
+                    { */
                         nGoldTotal += GetIdentifiedItemCost(oTest);
-                    }
+                    //}
                     nRealObjCount++;
                     oTest = GetNextItemInInventory(oChest);
                 }

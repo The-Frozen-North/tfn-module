@@ -58,6 +58,7 @@ void CopyChest(object oTarget, string sChest, int nBaseItemType = BASE_ITEM_INVA
         {
             oNewItem = CopyItem(oItem, oTarget, TRUE);
 
+            /*
             switch (GetBaseItemType(oNewItem))
             {
                 case BASE_ITEM_ARROW:
@@ -68,6 +69,7 @@ void CopyChest(object oTarget, string sChest, int nBaseItemType = BASE_ITEM_INVA
                 case BASE_ITEM_SHURIKEN: SetItemStackSize(oNewItem, 99); break;
                 default: SetItemStackSize(oNewItem, 1); break;
             }
+            */
 
             SetInfiniteFlag(oNewItem, bInfinite);
         }

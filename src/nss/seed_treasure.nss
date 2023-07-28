@@ -2,9 +2,7 @@
 #include "nwnx_admin"
 #include "nwnx_item"
 #include "nwnx_util"
-#include "inc_craft"
 #include "inc_sqlite_time"
-
 
 int GetIsItemConsumableMisc(object oItem)
 {
@@ -35,6 +33,7 @@ int GetIsItemConsumableMisc(object oItem)
     return 0;
 }
 
+/*
 void CreateFabricator(object oAmmo, object oTargetChest)
 {
             if (!GetIsObjectValid(oAmmo))
@@ -70,6 +69,7 @@ void CreateFabricator(object oAmmo, object oTargetChest)
             NWNX_Item_SetItemAppearance(oFabricator, ITEM_APPR_TYPE_SIMPLE_MODEL, 0, nAppearance);
             SetName(oFabricator, sAmmoName+" Fabricator ("+GetName(oAmmo)+")");
 }
+*/
 
 object ChangeSpecialWeapon(object oItem, int nTopModel, int nTopColor)
 {
@@ -216,6 +216,13 @@ void PopulateChestWeapon(string sSeedChestTag, string sPrependName, string sAppe
 // of course, these weapons don't add physical damage but instead use mighty
            switch (nBaseType)
            {
+               case BASE_ITEM_THROWINGAXE:
+               case BASE_ITEM_DART:
+               case BASE_ITEM_SHURIKEN:
+               {
+                 return; // we cannot make high quality weapons for these types
+                 break;
+               }
                case BASE_ITEM_LONGBOW:
                case BASE_ITEM_SHORTBOW:
                case BASE_ITEM_HEAVYCROSSBOW:
@@ -255,7 +262,6 @@ void PopulateChestWeapon(string sSeedChestTag, string sPrependName, string sAppe
                case BASE_ITEM_GREATAXE:
                case BASE_ITEM_GREATSWORD:
                case BASE_ITEM_TWOBLADEDSWORD:
-               case BASE_ITEM_THROWINGAXE:
                {
                   ipPhysicalBonus = ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_SLASHING, nPhysicalBonus);
                   break;
@@ -265,8 +271,6 @@ void PopulateChestWeapon(string sSeedChestTag, string sPrependName, string sAppe
                case BASE_ITEM_RAPIER:
                case BASE_ITEM_SHORTSPEAR:
                case BASE_ITEM_TRIDENT:
-               case BASE_ITEM_DART:
-               case BASE_ITEM_SHURIKEN:
                {
                   ipPhysicalBonus = ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_PIERCING, nPhysicalBonus);
                   break;
@@ -292,12 +296,10 @@ void PopulateChestWeapon(string sSeedChestTag, string sPrependName, string sAppe
            case BASE_ITEM_ARROW:
            case BASE_ITEM_BOLT:
            case BASE_ITEM_BULLET:
-                SetItemStackSize(oNewItem, 99);
-           break;
            case BASE_ITEM_DART:
            case BASE_ITEM_THROWINGAXE:
            case BASE_ITEM_SHURIKEN:
-                SetItemStackSize(oNewItem, 50);
+                SetItemStackSize(oNewItem, 1);
            break;
        }
 
@@ -420,12 +422,10 @@ void CreateTypeLoot(string sType)
            case BASE_ITEM_ARROW:
            case BASE_ITEM_BOLT:
            case BASE_ITEM_BULLET:
-                SetItemStackSize(oNewItem, 99);
-           break;
            case BASE_ITEM_DART:
            case BASE_ITEM_THROWINGAXE:
            case BASE_ITEM_SHURIKEN:
-                SetItemStackSize(oNewItem, 50);
+                SetItemStackSize(oNewItem, 1);
            break;
        }
        DestroyObject(oItem);
@@ -662,6 +662,7 @@ void DistributeTreasureToStores(object oItem)
         SendDebugMessage(GetName(oItem) + "-> _"+sType+sRarity+sTier+sNonUnique);
 
         // Turn these into ammo makers.
+        /*
         if (GetIsItemPropertyValid(GetFirstItemProperty(oItem)) && (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT))
         {
             if (!GetItemHasItemProperty(oItem, ITEM_PROPERTY_BOOMERANG))
@@ -671,6 +672,7 @@ void DistributeTreasureToStores(object oItem)
                 SetPlotFlag(oItem, TRUE);
             }
         }
+        */
 
         oNewItem = CopyItemToExistingTarget(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));
 
@@ -697,7 +699,7 @@ void CountItemsThroughTiers()
             {
                 nItems = nItems + 1;
 
-                if (GetName(oContainer) != "_FabricatorAmmo")
+                //if (GetName(oContainer) != "_FabricatorAmmo")
                     SetItemStackSize(oItem, 1);
 
                 oItem = GetNextItemInInventory(oContainer);
@@ -765,6 +767,7 @@ void CreateContainersForItemTypesByTier()
                         object oTest = GetFirstItemInInventory(oContainerToSearchThrough);
                         while (GetIsObjectValid(oTest))
                         {
+                            /*
                             int bWasFabricator = 0;
                             // Follow fabricator ammo, or for some reason this doesn't get put into the chests
                             if (GetStringLength(GetLocalString(oTest, "ammo_tag")) > 0)
@@ -776,6 +779,7 @@ void CreateContainersForItemTypesByTier()
                                     bWasFabricator = 1;
                                 }
                             }
+                            */
                             int nBaseItem = GetBaseItemType(oTest);
                             object oContainerForItem;
                             if (nBaseItem == BASE_ITEM_ARMOR)
@@ -804,6 +808,7 @@ void CreateContainersForItemTypesByTier()
                             int bOkay = 1;
                             // Following fabricators is allowing dupes in the same container, so if it was a fabricator
                             // Take a little while to check for dupes first
+                            /*
                             if (bWasFabricator)
                             {
                                 object oTest2 = GetFirstItemInInventory(oContainerForItem);
@@ -817,6 +822,7 @@ void CreateContainersForItemTypesByTier()
                                     oTest2 = GetNextItemInInventory(oContainerForItem);
                                 }
                             }
+                            */
                             if (bOkay)
                             {
                                 CopyItem(oTest, oContainerForItem, TRUE);
@@ -888,14 +894,15 @@ void main()
       CreateTreasureContainer("_JewelsT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 35.0);
    }
 
-   object oFabricatorContainer = CreateObject(OBJECT_TYPE_PLACEABLE, "_treas_container", Location(GetObjectByTag("_TREASURE"), Vector(40.0, 40.0, 40.0), 0.0), FALSE, "_FabricatorAmmo");
-        SetName(oFabricatorContainer, "_FabricatorAmmo");
+   //object oFabricatorContainer = CreateObject(OBJECT_TYPE_PLACEABLE, "_treas_container", Location(GetObjectByTag("_TREASURE"), Vector(40.0, 40.0, 40.0), 0.0), FALSE, "_FabricatorAmmo");
+    //    SetName(oFabricatorContainer, "_FabricatorAmmo");
 
 // seed these mundane items to distribution
    CopySeedContainerToDistribution(GetObjectByTag(TREASURE_MELEE_SEED_CHEST));
    CopySeedContainerToDistribution(GetObjectByTag(TREASURE_RANGE_SEED_CHEST));
    CopySeedContainerToDistribution(GetObjectByTag(TREASURE_ARMOR_SEED_CHEST));
 
+    /*
    int i, nFabricatorCost;
    object oArrow, oBolt, oBullet;
    location lStaging = GetTreasureStagingLocation();
@@ -929,6 +936,7 @@ void main()
             CreateFabricator(oBullet, GetObjectByTag("_RangeRareT"+IntToString(i+1)+"NonUnique"));
         }
    }
+   */
 
 // grab items from palette
    CreateTypeLoot("apparel");

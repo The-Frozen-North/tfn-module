@@ -6,7 +6,7 @@
   },
   "BaseItem": {
     "type": "int",
-    "value": 20
+    "value": 25
   },
   "Charges": {
     "type": "byte",
@@ -14,11 +14,11 @@
   },
   "Comment": {
     "type": "cexostring",
-    "value": ""
+    "value": "1"
   },
   "Cost": {
     "type": "dword",
-    "value": 4610
+    "value": 16065
   },
   "Cursed": {
     "type": "byte",
@@ -31,32 +31,34 @@
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": ""
+    }
   },
   "Identified": {
     "type": "byte",
     "value": 0
   },
   "LocalizedName": {
-    "id": 40584,
+    "id": 40588,
     "type": "cexolocstring",
     "value": {}
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 12
+    "value": 34
   },
   "ModelPart2": {
     "type": "byte",
-    "value": 12
+    "value": 24
   },
   "ModelPart3": {
     "type": "byte",
-    "value": 22
+    "value": 34
   },
   "PaletteID": {
     "type": "byte",
-    "value": 27
+    "value": 28
   },
   "Plot": {
     "type": "byte",
@@ -73,42 +75,11 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 10
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 2
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 11
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
           "value": 4
         },
         "CostValue": {
           "type": "word",
-          "value": 2
+          "value": 3
         },
         "Param1": {
           "type": "byte",
@@ -131,7 +102,7 @@
   },
   "StackSize": {
     "type": "word",
-    "value": 99
+    "value": 1
   },
   "Stolen": {
     "type": "byte",
@@ -139,11 +110,11 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_WAMMAR010"
+    "value": "weapon469"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "arrow2"
+    "value": "weapon469"
   },
   "VarTable": {
     "type": "list",
@@ -164,5 +135,17 @@
         }
       }
     ]
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 34
+  },
+  "xModelPart2": {
+    "type": "word",
+    "value": 24
+  },
+  "xModelPart3": {
+    "type": "word",
+    "value": 34
   }
 }

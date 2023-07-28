@@ -1173,7 +1173,7 @@ object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance,
     if (nBaseItem == BASE_ITEM_BULLET || nBaseItem == BASE_ITEM_ARROW || nBaseItem == BASE_ITEM_BOLT || nBaseItem == BASE_ITEM_SHURIKEN || nBaseItem == BASE_ITEM_DART || nBaseItem == BASE_ITEM_THROWINGAXE)
     {
         oAmmo = oNew;
-        SetItemStackSize(oNew, 99);
+        SetItemStackSize(oNew, 1);
     }
     else if (nBaseItem == BASE_ITEM_SLING)
     {
@@ -1188,7 +1188,7 @@ object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance,
         oAmmo = TryEquippingRandomItemOfTier(BASE_ITEM_ARROW, nTier, nUniqueChance, oCreature, INVENTORY_SLOT_ARROWS);
     }
     if (GetIsObjectValid(oAmmo))
-    {
+    { // Any ammo with an item property is now infinite. We should keep this if they just have plain arrows.
         AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyCustom(ITEM_PROPERTY_BOOMERANG), oAmmo);
     }
     return oNew;

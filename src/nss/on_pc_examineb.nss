@@ -1,7 +1,6 @@
 #include "nwnx_admin"
 #include "nwnx_events"
 #include "nwnx_item"
-#include "inc_craft"
 
 const string ILR_OVERLEVEL_COLOUR = "<c\xc8\xc8\xc8>";
 
@@ -25,11 +24,14 @@ void main()
     }
     else if (GetObjectType(oObject) == OBJECT_TYPE_ITEM && GetIdentified(oObject))
     {
+        /*
         if (GetResRef(oObject) == "ammo_maker")
         {
             object oAmmo = GetAmmo(GetLocalString(oObject, "ammo_tag"));
             SetDescription(oObject, "This appears to be some sort of contraption that can create ammunition.\n\nThe difficulty class and gold required is dependent on the type of ammunition that this device outputs.\n\nDC: "+IntToString(DetermineAmmoCraftingDC(oAmmo))+"\nGold: "+IntToString(DetermineAmmoCraftingCost(oAmmo)));
         }
+        */
+        
         // Add ILR text
         string sILROverlevel = GetILROverlevelInfo(oObject);
         string sDesc = GetDescription(oObject);

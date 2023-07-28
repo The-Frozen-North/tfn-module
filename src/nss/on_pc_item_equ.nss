@@ -47,7 +47,7 @@ doing so, do this only if running original event has no longer sense.
 //:: Created On: 31-05-2017
 //:://////////////////////////////////////////////
 
-#include "nwnx_feedback"
+//#include "nwnx_feedback"
 #include "x0_i0_spells"
 #include "70_inc_itemprop"
 #include "inc_horse"
@@ -59,6 +59,7 @@ void main()
     object oPC   = GetPCItemLastEquippedBy();
 
     // Boomerang weapons should suppress "you are running out of ammo" messages
+    /* we will suppress this feedback permanently
     object oRightHand = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oPC);
     if (GetItemHasItemProperty(oRightHand, ITEM_PROPERTY_BOOMERANG))
     {
@@ -69,6 +70,7 @@ void main()
     {
         NWNX_Feedback_SetFeedbackMessageHidden(24, 0, oPC);
     }
+    */
 
     DetermineHorseEffects(oPC);
 
@@ -93,6 +95,7 @@ void main()
         }
     }
 
+    /*
     string sItemTag = GetTag(oItem);
     // * When wearing Nasher's set of items, get special (Brent)
     // * benefits
@@ -133,5 +136,6 @@ void main()
             ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_GOOD_HELP), oPC);
         }
     }
+    */
 }
 

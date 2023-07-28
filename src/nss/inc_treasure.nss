@@ -27,6 +27,8 @@ const int WAND_VALUE_MULTIPLIER = 2;
 const int SCROLL_VALUE_MULTIPLIER = 6;
 const int MISC_VALUE_MULTIPLIER = 5;
 
+const string MAGIC_THROWING_WEAPON_DESCRIPTION = "\n\nEnchanted throwing weapons return to the wielder's hand when thrown.";
+const string MAGIC_AMMUNITION_DESCRIPTION = "\n\nEnchanted ammunition is infinite and will never deplete.";
 
 // =======================================================
 // DETERMINE ENCHANT VALUE
@@ -245,6 +247,21 @@ void InitializeItem(object oItem)
     }
 
     AddEWR(oItem);
+
+    if (GetIsItemPropertyValid(GetFirstItemProperty(oItem)))
+    {
+        int nBaseItemType = GetBaseItemType(oItem);
+        string sDescription = GetDescription(oItem);
+        if (nBaseItemType == BASE_ITEM_ARROW || nBaseItemType == BASE_ITEM_BOLT || nBaseItemType == BASE_ITEM_BULLET)
+        {
+            SetDescription(oItem, sDescription+MAGIC_AMMUNITION_DESCRIPTION);
+        }
+        else if (nBaseItemType == BASE_ITEM_THROWINGAXE || nBaseItemType == BASE_ITEM_SHURIKEN || nBaseItemType == BASE_ITEM_DART)
+        {
+            SetDescription(oItem, sDescription+MAGIC_THROWING_WEAPON_DESCRIPTION);
+        }
+    }
+
 
     if (GetBaseItemType(oItem) == BASE_ITEM_ARMOR)
     {

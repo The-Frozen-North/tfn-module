@@ -6,7 +6,7 @@
   },
   "BaseItem": {
     "type": "int",
-    "value": 25
+    "value": 31
   },
   "Charges": {
     "type": "byte",
@@ -18,45 +18,43 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 16810
+    "value": 21600
   },
   "Cursed": {
     "type": "byte",
     "value": 0
   },
   "DescIdentified": {
-    "id": 12432,
+    "id": 14424,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Soaked in the blood of an efreeti and fletched with the feathers of a phoenix, these missiles burst into flame when thrown."
+    }
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": ""
+    }
   },
   "Identified": {
     "type": "byte",
-    "value": 1
+    "value": 0
   },
   "LocalizedName": {
-    "id": 40588,
+    "id": 14423,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Dart of Fire"
+    }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 34
-  },
-  "ModelPart2": {
-    "type": "byte",
-    "value": 24
-  },
-  "ModelPart3": {
-    "type": "byte",
-    "value": 34
+    "value": 43
   },
   "PaletteID": {
     "type": "byte",
-    "value": 28
+    "value": 52
   },
   "Plot": {
     "type": "byte",
@@ -73,42 +71,11 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 10
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 3
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 11
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
           "value": 4
         },
         "CostValue": {
           "type": "word",
-          "value": 3
+          "value": 7
         },
         "Param1": {
           "type": "byte",
@@ -124,14 +91,45 @@
         },
         "Subtype": {
           "type": "word",
-          "value": 1
+          "value": 10
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 2
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 2
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 6
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 0
         }
       }
     ]
   },
   "StackSize": {
     "type": "word",
-    "value": 99
+    "value": 1
   },
   "Stolen": {
     "type": "byte",
@@ -139,30 +137,14 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_WAMMBO010"
+    "value": "weapon463"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "bolt3"
+    "value": "weapon463"
   },
-  "VarTable": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "non_unique"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      }
-    ]
+  "xModelPart1": {
+    "type": "word",
+    "value": 43
   }
 }
