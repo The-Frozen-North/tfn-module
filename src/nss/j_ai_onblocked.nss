@@ -80,7 +80,7 @@ void main()
         if(GetIsEnemy(oBlocker))
         {
             // Check if seen or heard
-            if(GetObjectSeen(oBlocker) || GetObjectSeen(oBlocker))
+            if(GetObjectSeen(oBlocker)) // || GetObjectSeen(oBlocker))
             {
                 // Enemy :-) We can re-target (as know of thier presence), using
                 // them as a target.

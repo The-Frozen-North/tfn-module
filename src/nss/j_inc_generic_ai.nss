@@ -1389,7 +1389,7 @@ int AI_EquipAndAttack()
             }
         }
     }
-    
+
     int iRanged = iRangedAttack;
     object oEquipped = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
     int iNeedMoreAC = FALSE;
@@ -13422,7 +13422,7 @@ int AI_IsInsaneTarget(object oTarget)
         GetIsDM(oTarget) ||          // Is DM
         GetIgnore(oTarget) ||        // Is ignored
         AI_GetAIHaveEffect(GlobalEffectPetrify, oTarget) ||  // Is petrified
-      (!GetObjectSeen(oTarget) && !GetObjectHeard(oTarget))) // Is not seen nor heard.
+        !GetObjectSeen(oTarget)) // && !GetObjectHeard(oTarget))) // Is not seen nor heard. New change - they have to see the enemy too to prevent x-raying of enemies
     {
         return TRUE;
     }
@@ -13640,6 +13640,7 @@ int AI_SetUpAllObjects(object oInputBackup)
                 SetLocalFloat(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + IntToString(iCnt2), fCurrentRange);
                 SetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + IntToString(iCnt2), oSetUpTarget);
             }
+            /*
             else if(GetObjectHeard(oSetUpTarget))
             {
                 // iBreak counts average HD
@@ -13654,6 +13655,7 @@ int AI_SetUpAllObjects(object oInputBackup)
                 SetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + IntToString(iCnt3), oSetUpTarget);
 //                _db("ArrayHeard: " + IntToString(iCnt3));
             }
+            */
         }
         // Next enemy
         iCnt++;
@@ -13739,7 +13741,7 @@ int AI_SetUpAllObjects(object oInputBackup)
             //ActionMoveToLocation(GetLocation(oSetUpTarget), TRUE);
             ActionForceFollowObject(GetMaster(), GetFollowDistance());
             //SendMessageToPC(GetFirstPC(), "Exiting with no targets available");
-            
+
             return TRUE;
         }
     }
@@ -14526,6 +14528,7 @@ int AI_SetUpAllObjects(object oInputBackup)
                 oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + IntToString(iCnt));
             }
             // If we don't have any seen, used heard.
+            /*
             if(!iRemainingTargets)
             {
                 iCnt = i1;
@@ -14540,6 +14543,7 @@ int AI_SetUpAllObjects(object oInputBackup)
                     oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + IntToString(iCnt));
                 }
             }
+            */
             // If not valid, set to melee target at the end
 
             // Do we have exactly 1 target? (iRemainingTargets == 1)
@@ -14783,6 +14787,7 @@ int AI_SetUpAllObjects(object oInputBackup)
                 oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_SEEN + IntToString(iCnt));
             }
             // If we don't have any seen, used heard.
+            /*
             if(!iRemainingTargets)
             {
                 iCnt = i1;
@@ -14803,6 +14808,7 @@ int AI_SetUpAllObjects(object oInputBackup)
                     oSetUpTarget = GetLocalObject(OBJECT_SELF, ARRAY_ENEMY_RANGE_HEARD + IntToString(iCnt));
                 }
             }
+            */
             // If not valid, its invalid! As this is the last thing, return iM1.
             // This CAN happen!
             // - If we have all targets naturally immune to spells via. spell reistance.
@@ -16338,7 +16344,7 @@ void AI_DetermineCombatRound(object oIntruder = OBJECT_INVALID)
         // Used about every 3 rounds. Dragons may use this.
         if(AI_AttemptFeatTurning()){return;}
 //        _db("Step 2");
-        
+
         // Special Dragon things now, else other monsters.
         if(AI_GetIsDragon())
         {
