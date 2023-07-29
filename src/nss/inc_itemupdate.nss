@@ -77,22 +77,23 @@ int DeprecateItem(object oItem, object oPC)
     int nBaseItemType = GetBaseItemType(oItem);
     if (GetTag(oItem) == "crafted_ammo")
     {
-        int nDivider = ITEM_UPDATE_THROWING_WEAPON_DIVISION_FACTOR;
+        
+        //int nDivider = ITEM_UPDATE_THROWING_WEAPON_DIVISION_FACTOR;
 
-        if (nBaseItemType == BASE_ITEM_ARROW || nBaseItemType == BASE_ITEM_BOLT || nBaseItemType == BASE_ITEM_BULLET)
-        {
-            int nDivider = ITEM_UPDATE_AMMO_DIVISION_FACTOR;    
-        }
+        //if (nBaseItemType == BASE_ITEM_ARROW || nBaseItemType == BASE_ITEM_BOLT || nBaseItemType == BASE_ITEM_BULLET)
+       // {
+        //    int nDivider = ITEM_UPDATE_AMMO_DIVISION_FACTOR;    
+        //}
 
-        int nRefund = GetGoldPieceValue(oItem) / nDivider;
+        //int nRefund = GetGoldPieceValue(oItem) / nDivider;
 
-        if (nRefund > ITEM_UPDATE_AMMO_MAX_GOLD_REFUND) nRefund = ITEM_UPDATE_AMMO_MAX_GOLD_REFUND;
+        //if (nRefund > ITEM_UPDATE_AMMO_MAX_GOLD_REFUND) nRefund = ITEM_UPDATE_AMMO_MAX_GOLD_REFUND;
 
-        SendColorMessageToPC(oPC, GetName(oItem) + " was deprecated, refunded: "+IntToString(nRefund), MESSAGE_COLOR_DANGER);
+        SendColorMessageToPC(oPC, GetName(oItem) + " was deprecated", MESSAGE_COLOR_DANGER);//, refunded: "+IntToString(nRefund), MESSAGE_COLOR_DANGER);
 
         DestroyObject(oItem);
 
-        GiveGoldToCreature(oPC, nRefund);
+        //GiveGoldToCreature(oPC, nRefund);
 
         return TRUE;
     }    
@@ -208,7 +209,7 @@ int DeprecateItem(object oItem, object oPC)
             SetLocalInt(oItem, "infinite", 1); // set this boomerang item to infinite so it never goes through this process again
             return FALSE; // do nothing and let the script change the properties on this item if already infinite from before
         }
-
+        /*
         int nDivider = ITEM_UPDATE_THROWING_WEAPON_DIVISION_FACTOR;
 
         if (nBaseItemType == BASE_ITEM_ARROW || nBaseItemType == BASE_ITEM_BOLT || nBaseItemType == BASE_ITEM_BULLET)
@@ -219,12 +220,12 @@ int DeprecateItem(object oItem, object oPC)
         int nRefund = GetGoldPieceValue(oItem) / nDivider;
 
         if (nRefund > ITEM_UPDATE_AMMO_MAX_GOLD_REFUND) nRefund = ITEM_UPDATE_AMMO_MAX_GOLD_REFUND;
-
-        SendColorMessageToPC(oPC, GetName(oItem) + " was deprecated, refunded: "+IntToString(nRefund), MESSAGE_COLOR_DANGER);
+        */
+        SendColorMessageToPC(oPC, GetName(oItem) + " was deprecated", MESSAGE_COLOR_DANGER);//, refunded: "+IntToString(nRefund), MESSAGE_COLOR_DANGER);
 
         DestroyObject(oItem);
 
-        GiveGoldToCreature(oPC, nRefund);
+        //GiveGoldToCreature(oPC, nRefund);
 
         return TRUE;
     }
