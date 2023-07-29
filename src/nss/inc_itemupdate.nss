@@ -72,6 +72,31 @@ const int ITEM_UPDATE_FABRICATOR_MAX_GOLD_REFUND = 4000;
 // returns TRUE if an item was destroyed by this deprecation
 int DeprecateItem(object oItem, object oPC)
 {   
+
+    // there was a bug where crafted ammo was never cleaned up for some reason, do it immediately
+    int nBaseItemType = GetBaseItemType(oItem);
+    if (GetTag(oItem) == "crafted_ammo")
+    {
+        int nDivider = ITEM_UPDATE_THROWING_WEAPON_DIVISION_FACTOR;
+
+        if (nBaseItemType == BASE_ITEM_ARROW || nBaseItemType == BASE_ITEM_BOLT || nBaseItemType == BASE_ITEM_BULLET)
+        {
+            int nDivider = ITEM_UPDATE_AMMO_DIVISION_FACTOR;    
+        }
+
+        int nRefund = GetGoldPieceValue(oItem) / nDivider;
+
+        if (nRefund > ITEM_UPDATE_AMMO_MAX_GOLD_REFUND) nRefund = ITEM_UPDATE_AMMO_MAX_GOLD_REFUND;
+
+        SendColorMessageToPC(oPC, GetName(oItem) + " was deprecated, refunded: "+IntToString(nRefund), MESSAGE_COLOR_DANGER);
+
+        DestroyObject(oItem);
+
+        GiveGoldToCreature(oPC, nRefund);
+
+        return TRUE;
+    }    
+    
     if (!IsAmmoInfinite(oItem))
         return FALSE; // do nothing if it has no properties. even the fabricator has properties
 
@@ -81,8 +106,6 @@ int DeprecateItem(object oItem, object oPC)
     // check if it is a new PC, otherwise this can be exploited by players coming in with custom items and a hacked character
     if (GetXP(oPC) < 1)
         return FALSE;
-    
-    int nBaseItemType = GetBaseItemType(oItem);
 
     if (GetXP(oPC) > 1 && GetTag(oItem) == "ammo_maker")
     {
@@ -167,7 +190,6 @@ int DeprecateItem(object oItem, object oPC)
 
         SendColorMessageToPC(oPC, sOriginalName + " was deprecated and replaced with the infinite item equivalent.", MESSAGE_COLOR_DANGER);
         DestroyObject(oItem);
-        GiveGoldToCreature(oPC, nRefund);
         
         object oNewItem = CopyItem(oTFN, oPC, TRUE);
         InitializeItem(oNewItem);
