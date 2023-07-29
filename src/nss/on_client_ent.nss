@@ -39,7 +39,7 @@ void main()
 
     SetCampaignString(GetPCPublicCDKey(oPC), "player_name", GetPCPlayerName(oPC));
 
-    InitializeHouseMapPin(oPC);
+    DelayCommand(0.01, InitializeHouseMapPin(oPC));
 
     AddRestedXPOnLogin(oPC);
 
