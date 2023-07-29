@@ -76,11 +76,14 @@ int DeprecateItem(object oItem, object oPC)
         return FALSE; // do nothing if it has no properties. even the fabricator has properties
 
     if (GetLocalInt(oItem, "infinite") == 1)
-        return FALSE; // if already deemed infinite, keep the item
+        return FALSE; // if already deemed infinite, do not do anything to this item
+
+    // check if it is a new PC, otherwise this can be exploited by players coming in with custom items and a hacked character
+    if (GetXP(oPC) < 1)
+        return FALSE;
     
     int nBaseItemType = GetBaseItemType(oItem);
 
-    // check if it is a new PC, otherwise this can be exploited by players coming in with custom items and a hacked character
     if (GetXP(oPC) > 1 && GetTag(oItem) == "ammo_maker")
     {
         SetIdentified(oItem, TRUE);
@@ -129,13 +132,13 @@ int DeprecateItem(object oItem, object oPC)
         // If we couldn't find a parantheses or the correct base item, this wasn't a valid item. Do nothing in this case
         if (nNamePosition == 0)
         {
-            SendMessageToPC(oPC, sOriginalName + " was not a valid ammo maker due to an invalid name and was destroyed without refund.");
+            SendColorMessageToPC(oPC, sOriginalName + " was not a valid ammo maker due to an invalid name and was destroyed without refund.", MESSAGE_COLOR_DANGER);
             DestroyObject(oItem);
             return TRUE;
         }
         else if (nBaseItem == -1)
         {
-            SendMessageToPC(oPC, sOriginalName + " was not a valid ammo maker due to an invalid item type and was destroyed without refund.");
+            SendColorMessageToPC(oPC, sOriginalName + " was not a valid ammo maker due to an invalid item type and was destroyed without refund.", MESSAGE_COLOR_DANGER);
             DestroyObject(oItem);
             return TRUE;
         }
@@ -145,16 +148,16 @@ int DeprecateItem(object oItem, object oPC)
 
         //SendMessageToPC(GetFirstPC(), "Extracted name: |"+sName+"|");
 
-        object oTFN = GetTFNEquipmentFromName(sName, nBaseItemType);
+        object oTFN = GetTFNEquipmentFromName(sName, nBaseItem);
 
-            int nRefund = GetGoldPieceValue(oItem) / 2;
-            if (nRefund > ITEM_UPDATE_FABRICATOR_MAX_GOLD_REFUND) nRefund = ITEM_UPDATE_FABRICATOR_MAX_GOLD_REFUND;
+        int nRefund = GetGoldPieceValue(oItem) / 2;
+        if (nRefund > ITEM_UPDATE_FABRICATOR_MAX_GOLD_REFUND) nRefund = ITEM_UPDATE_FABRICATOR_MAX_GOLD_REFUND;
 
         //SendMessageToPC(GetFirstPC(), "Found item: "+GetName(oTFN));
 
         if (!GetIsObjectValid(oTFN))
         {           
-            SendMessageToPC(oPC, sOriginalName + " was deprecated but the item cannot be found, refunded: " + IntToString(nRefund));
+            SendColorMessageToPC(oPC, sOriginalName + " was deprecated but the item cannot be found, refunded: " + IntToString(nRefund), MESSAGE_COLOR_DANGER);
             DestroyObject(oItem);
 
             GiveGoldToCreature(oPC, nRefund);
@@ -162,12 +165,15 @@ int DeprecateItem(object oItem, object oPC)
             return TRUE;            
         }
 
-        SendMessageToPC(oPC, sOriginalName + " was deprecated and replaced with the infinite item equivalent.");
+        SendColorMessageToPC(oPC, sOriginalName + " was deprecated and replaced with the infinite item equivalent.", MESSAGE_COLOR_DANGER);
         DestroyObject(oItem);
         GiveGoldToCreature(oPC, nRefund);
         
-        object oNewItem = CopyItem(oItem, oPC, TRUE);
+        object oNewItem = CopyItem(oTFN, oPC, TRUE);
         InitializeItem(oNewItem);
+
+        // just do them a favor and identify it for them at this point
+        SetIdentified(oNewItem, TRUE);
 
         return TRUE;
     }
@@ -177,6 +183,7 @@ int DeprecateItem(object oItem, object oPC)
 
         if (GetItemHasItemProperty(oItem, ITEM_PROPERTY_BOOMERANG))
         {
+            SetLocalInt(oItem, "infinite", 1); // set this boomerang item to infinite so it never goes through this process again
             return FALSE; // do nothing and let the script change the properties on this item if already infinite from before
         }
 
@@ -191,7 +198,7 @@ int DeprecateItem(object oItem, object oPC)
 
         if (nRefund > ITEM_UPDATE_AMMO_MAX_GOLD_REFUND) nRefund = ITEM_UPDATE_AMMO_MAX_GOLD_REFUND;
 
-        SendMessageToPC(oPC, GetName(oItem) + " was deprecated, refunded: "+IntToString(nRefund));
+        SendColorMessageToPC(oPC, GetName(oItem) + " was deprecated, refunded: "+IntToString(nRefund), MESSAGE_COLOR_DANGER);
 
         DestroyObject(oItem);
 

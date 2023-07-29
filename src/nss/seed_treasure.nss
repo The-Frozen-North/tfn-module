@@ -635,19 +635,6 @@ void DistributeTreasureToStores(object oItem)
           
         SendDebugMessage(GetName(oItem) + "-> _"+sType+sRarity+sTier+sNonUnique);
 
-        // Turn these into ammo makers.
-        /*
-        if (GetIsItemPropertyValid(GetFirstItemProperty(oItem)) && (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT))
-        {
-            if (!GetItemHasItemProperty(oItem, ITEM_PROPERTY_BOOMERANG))
-            {
-                CreateFabricator(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));
-                SetTag(oItem, "crafted_ammo");
-                SetPlotFlag(oItem, TRUE);
-            }
-        }
-        */
-
         oNewItem = CopyItemToExistingTarget(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));
 
         if (nIdentified != 1) SetIdentified(oNewItem, FALSE);
@@ -742,19 +729,6 @@ void CreateContainersForItemTypesByTier()
                         object oTest = GetFirstItemInInventory(oContainerToSearchThrough);
                         while (GetIsObjectValid(oTest))
                         {
-                            /*
-                            int bWasFabricator = 0;
-                            // Follow fabricator ammo, or for some reason this doesn't get put into the chests
-                            if (GetStringLength(GetLocalString(oTest, "ammo_tag")) > 0)
-                            {
-                                object oAmmo = GetAmmo(GetLocalString(oTest, "ammo_tag"));
-                                if (GetIsObjectValid(oAmmo))
-                                {
-                                    oTest = oAmmo;
-                                    bWasFabricator = 1;
-                                }
-                            }
-                            */
                             int nBaseItem = GetBaseItemType(oTest);
                             object oContainerForItem;
                             if (nBaseItem == BASE_ITEM_ARMOR)
