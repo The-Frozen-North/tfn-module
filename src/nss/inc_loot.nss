@@ -681,7 +681,7 @@ object CopyTierItemToLocation(object oItem, location lTarget)
     if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT)
     {
         // if it has ANY item properties at all, it is considered magical
-        if (GetIsItemPropertyValid(GetFirstItemProperty(oNewItem)))
+        if (IsAmmoInfinite(oNewItem))
         {
             SetItemStackSize(oNewItem, 1);    
         }
@@ -720,7 +720,7 @@ object CopyTierItemToContainer(object oItem, object oContainer)
     int nBaseType = GetBaseItemType(oNewItem);
     if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT) 
     {
-        if (GetIsItemPropertyValid(GetFirstItemProperty(OBJECT_SELF)))
+        if (IsAmmoInfinite(OBJECT_SELF))
         { // If the ammo has ANY item properties at all, it is considered magical and infinite. Make sure it only has a stack size of 1.
             SetItemStackSize(oNewItem, 1);
         }

@@ -107,7 +107,7 @@ void main()
         }
     }
     // if it has an item property, these ammo / throwing weapons are infinite
-    else if (GetIsItemPropertyValid(GetFirstItemProperty(OBJECT_SELF)) &&
+    else if (IsAmmoInfinite(OBJECT_SELF) &&
              (nBaseItemType == BASE_ITEM_ARROW ||
               nBaseItemType == BASE_ITEM_BOLT ||
               nBaseItemType == BASE_ITEM_BULLET ||
@@ -116,7 +116,8 @@ void main()
               nBaseItemType == BASE_ITEM_SHURIKEN))
     { // https://github.com/nwnxee/unified/pull/178
         // Clippy: Logic is simple: If items have different local variables, they will not stack. If you want to prevent stacking on a certain item, you can use:
-        SetLocalString(oItem, "_no_stack", ObjectToString(oItem));
+        if (GetLocalString(oItem, "prevent_stack") == "")
+            SetLocalString(oItem, "prevent_stack", GetRandomUUID());
         // That will guarantee it has a unique variable and it won't be merged because other item objects will have different object IDs.
     }
 

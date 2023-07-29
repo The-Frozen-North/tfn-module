@@ -859,4 +859,23 @@ void SendMessageToAllPCs(string sMessage, int nColor = MESSAGE_COLOR_SERVER)
         oPC = GetNextPC();
     }
 }
+
+// TRUE if the item has any permanent item properties
+int IsAmmoInfinite(object oItem);
+int IsAmmoInfinite(object oItem)
+{
+    itemproperty ip = GetFirstItemProperty(oItem);
+
+    while (GetIsItemPropertyValid(ip))
+    {
+        if (GetItemPropertyDurationType(ip) == DURATION_TYPE_PERMANENT)
+        {
+            return TRUE;
+        }
+
+        ip = GetNextItemProperty(oItem);
+    }
+
+    return FALSE;
+}
 //void main(){}

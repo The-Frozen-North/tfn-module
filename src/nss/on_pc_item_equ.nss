@@ -47,7 +47,7 @@ doing so, do this only if running original event has no longer sense.
 //:: Created On: 31-05-2017
 //:://////////////////////////////////////////////
 
-//#include "nwnx_feedback"
+#include "nwnx_feedback"
 #include "x0_i0_spells"
 #include "70_inc_itemprop"
 #include "inc_horse"
@@ -58,10 +58,15 @@ void main()
     object oItem = GetPCItemLastEquipped();
     object oPC   = GetPCItemLastEquippedBy();
 
-    // Boomerang weapons should suppress "you are running out of ammo" messages
-    /* we will suppress this feedback permanently
+    // Magic throwing weapons and ammo should suppress "you are running out of ammo" messages
     object oRightHand = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oPC);
-    if (GetItemHasItemProperty(oRightHand, ITEM_PROPERTY_BOOMERANG))
+    int nBaseItem = GetBaseItemType(oRightHand);
+    if (
+        ((nBaseItem == BASE_ITEM_DART || nBaseItem == BASE_ITEM_THROWINGAXE || nBaseItem == BASE_ITEM_SHURIKEN) && IsAmmoInfinite(oRightHand)) ||
+        ((nBaseItem == BASE_ITEM_LONGBOW || nBaseItem == BASE_ITEM_SHORTBOW) && IsAmmoInfinite(GetItemInSlot(INVENTORY_SLOT_ARROWS))) ||
+        ((nBaseItem == BASE_ITEM_LIGHTCROSSBOW || nBaseItem == BASE_ITEM_HEAVYCROSSBOW) && IsAmmoInfinite(GetItemInSlot(INVENTORY_SLOT_BOLTS))) ||
+        (nBaseItem == BASE_ITEM_SLING && IsAmmoInfinite(GetItemInSlot(INVENTORY_SLOT_BULLETS)))
+        )
     {
         // NWNX_FEEDBACK_COMBAT_RUNNING_OUT_OF_AMMO = 24
         NWNX_Feedback_SetFeedbackMessageHidden(24, 1, oPC);
@@ -70,7 +75,6 @@ void main()
     {
         NWNX_Feedback_SetFeedbackMessageHidden(24, 0, oPC);
     }
-    */
 
     DetermineHorseEffects(oPC);
 

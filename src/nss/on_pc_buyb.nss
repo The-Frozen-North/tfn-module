@@ -7,9 +7,11 @@ void main()
     if (GetIsPC(OBJECT_SELF) && GetGold(OBJECT_SELF) >= nPrice)
     {
         object oItem = StringToObject(NWNX_Events_GetEventData("ITEM"));
-        object oKhadala = GetObjectByTag("khadala");
+
         if (GetTag(oItem) == "gamble")
         {
+            object oKhadala = GetObjectByTag("khadala");
+            
             NWNX_Events_SkipEvent();
             object oNewItem = CopyItem(GetLocalObject(oItem, "item"), OBJECT_SELF, TRUE);
             DestroyObject(oItem);
@@ -47,6 +49,20 @@ void main()
                     }
                 }
                 AssignCommand(oKhadala, SpeakString(sOneLiner));
+            }
+        }
+        else if (IsAmmoInfinite(oItem))
+        {
+            int nBaseItem = GetBaseItemType(oItem);
+
+            if (nBaseItem == BASE_ITEM_DART || 
+                nBaseItem == BASE_ITEM_THROWINGAXE || 
+                nBaseItem == BASE_ITEM_SHURIKEN || 
+                nBaseItem == BASE_ITEM_ARROW || 
+                nBaseItem == BASE_ITEM_BOLT || 
+                nBaseItem == BASE_ITEM_BULLET)
+            {
+                SetLocalString(oItem, "buy_uuid", GetRandomUUID());    
             }
         }
     }

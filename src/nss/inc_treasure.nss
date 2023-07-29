@@ -248,7 +248,7 @@ void InitializeItem(object oItem)
 
     AddEWR(oItem);
 
-    if (GetIsItemPropertyValid(GetFirstItemProperty(oItem)))
+    if (IsAmmoInfinite(oItem))
     {
         int nBaseItemType = GetBaseItemType(oItem);
         string sDescription = GetDescription(oItem);
