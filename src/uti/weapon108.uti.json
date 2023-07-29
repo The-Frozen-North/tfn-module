@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 10650
+    "value": 17663
   },
   "Cursed": {
     "type": "byte",
@@ -28,7 +28,7 @@
     "id": 14435,
     "type": "cexolocstring",
     "value": {
-      "0": "These shurikens were the tools of the Unseen, a highly secretive Waterdhavian assassin guild. The guild was named for their trademark sign: a myriad of brutal shuriken wounds, but never any sign of the shurikens that inflicted them. One of these shurikens was discovered when one assassin failed on his mission.\n\nThis shuriken returns to its wielder's hand when thrown."
+      "0": "These shurikens were the tools of the Unseen, a highly secretive Waterdhavian assassin guild. The guild was named for their trademark sign: a myriad of brutal shuriken wounds, but never any sign of the shurikens that inflicted them. One of these shurikens was discovered when one assassin failed on his mission."
     }
   },
   "Description": {
@@ -71,37 +71,6 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 0
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 0
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 14
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
           "value": 2
         },
         "CostValue": {
@@ -124,12 +93,43 @@
           "type": "word",
           "value": 0
         }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 24
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 0
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 48
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 25
+        }
       }
     ]
   },
   "StackSize": {
     "type": "word",
-    "value": 50
+    "value": 1
   },
   "Stolen": {
     "type": "byte",
@@ -142,5 +142,9 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "weapon108"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 41
   }
 }

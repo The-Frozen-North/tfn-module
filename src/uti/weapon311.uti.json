@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 16000
+    "value": 18813
   },
   "Cursed": {
     "type": "byte",
@@ -28,7 +28,7 @@
     "id": 14420,
     "type": "cexolocstring",
     "value": {
-      "0": "This dart gleams like a streak of light when flying through the air. When it hits its target, it releases a tiny acid droplet before soaring back to the hand that threw it. Sometimes the acid manages to burn a hole in the target's armor.\n\nThis weapon has a chance to reduce target's armor class on hit by one (10% / 1 turn). It also returns to its wielder's hand when thrown."
+      "0": "This dart gleams like a streak of light when flying through the air. When it hits its target, it releases a tiny acid droplet. Sometimes the acid manages to burn a hole in the target's armor.\n\nThis weapon has a chance to reduce target's armor class on hit by one (10% / 1 turn)."
     }
   },
   "Description": {
@@ -102,37 +102,6 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 0
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 0
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 14
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
           "value": 4
         },
         "CostValue": {
@@ -168,7 +137,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 1
+          "value": 2
         },
         "Param1": {
           "type": "byte",
@@ -222,7 +191,7 @@
   },
   "StackSize": {
     "type": "word",
-    "value": 50
+    "value": 1
   },
   "Stolen": {
     "type": "byte",
@@ -235,5 +204,9 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "weapon311"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 21
   }
 }

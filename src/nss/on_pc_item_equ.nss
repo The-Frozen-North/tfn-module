@@ -58,9 +58,15 @@ void main()
     object oItem = GetPCItemLastEquipped();
     object oPC   = GetPCItemLastEquippedBy();
 
-    // Boomerang weapons should suppress "you are running out of ammo" messages
+    // Magic throwing weapons and ammo should suppress "you are running out of ammo" messages
     object oRightHand = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oPC);
-    if (GetItemHasItemProperty(oRightHand, ITEM_PROPERTY_BOOMERANG))
+    int nBaseItem = GetBaseItemType(oRightHand);
+    if (
+        ((nBaseItem == BASE_ITEM_DART || nBaseItem == BASE_ITEM_THROWINGAXE || nBaseItem == BASE_ITEM_SHURIKEN) && IsAmmoInfinite(oRightHand)) ||
+        ((nBaseItem == BASE_ITEM_LONGBOW || nBaseItem == BASE_ITEM_SHORTBOW) && IsAmmoInfinite(GetItemInSlot(INVENTORY_SLOT_ARROWS))) ||
+        ((nBaseItem == BASE_ITEM_LIGHTCROSSBOW || nBaseItem == BASE_ITEM_HEAVYCROSSBOW) && IsAmmoInfinite(GetItemInSlot(INVENTORY_SLOT_BOLTS))) ||
+        (nBaseItem == BASE_ITEM_SLING && IsAmmoInfinite(GetItemInSlot(INVENTORY_SLOT_BULLETS)))
+        )
     {
         // NWNX_FEEDBACK_COMBAT_RUNNING_OUT_OF_AMMO = 24
         NWNX_Feedback_SetFeedbackMessageHidden(24, 1, oPC);
@@ -93,6 +99,7 @@ void main()
         }
     }
 
+    /*
     string sItemTag = GetTag(oItem);
     // * When wearing Nasher's set of items, get special (Brent)
     // * benefits
@@ -133,5 +140,6 @@ void main()
             ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_IMP_GOOD_HELP), oPC);
         }
     }
+    */
 }
 

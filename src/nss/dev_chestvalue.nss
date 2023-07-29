@@ -100,6 +100,7 @@ void main()
                         while (GetIsObjectValid(oTest))
                         {
                             int nBaseType = GetBaseItemType(oTest);
+                            // this needs edits probably
                             if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT)
                             {
                                 int nOneItemGold = GetIdentifiedItemCost(oTest)/GetItemStackSize(oTest);

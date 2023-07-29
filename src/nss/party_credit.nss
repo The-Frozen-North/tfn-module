@@ -943,7 +943,7 @@ void main()
            for (nAssignedItemIndex=0; nAssignedItemIndex<nAssignedCount; nAssignedItemIndex++)
            {
                object oSourceItem = StringToObject(JsonGetString(JsonArrayGet(jItemArray, nAssignedItemIndex)));
-               CopyTierItemToContainer(oSourceItem, oPersonalLoot);
+               CopyTierItemToObjectOrLocation(oSourceItem, oPersonalLoot);
            }
         }
 
@@ -1007,7 +1007,7 @@ void main()
                for (nAssignedItemIndex=0; nAssignedItemIndex<nAssignedCount; nAssignedItemIndex++)
                {
                    object oSourceItem = StringToObject(JsonGetString(JsonArrayGet(jItemArray, nAssignedItemIndex)));
-                   object oRealItem = CopyTierItemToContainer(oSourceItem, oMerchant);
+                   object oRealItem = CopyTierItemToObjectOrLocation(oSourceItem, oMerchant);
 
 // items that are copied to a merchant are automatically identified, this is a hack to store that status somehow
 // so that when henchmans pick it up, they can do an appropriate voice emote

@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 8411
+    "value": 12191
   },
   "Cursed": {
     "type": "byte",
@@ -31,7 +31,9 @@
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": ""
+    }
   },
   "Identified": {
     "type": "byte",
@@ -69,7 +71,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 5
+          "value": 4
         },
         "Param1": {
           "type": "byte",
@@ -82,6 +84,37 @@
         "PropertyName": {
           "type": "word",
           "value": 56
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 0
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 0
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 43
         },
         "Subtype": {
           "type": "word",
@@ -105,5 +138,9 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "weapon96"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 22
   }
 }

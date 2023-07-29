@@ -4,6 +4,7 @@
 #include "inc_debug"
 #include "util_i_itemprop"
 #include "nw_inc_nui"
+#include "x3_inc_string"
 
 // Get the hash of an item's itemproperties
 // (and several other things intrinsic to the item, such as additional gold cost).
@@ -56,7 +57,159 @@ const int ITEM_UPDATE_QUEUE_REPORT_NONE = 0;
 const int ITEM_UPDATE_QUEUE_REPORT_PC_BIC = 1;
 const int ITEM_UPDATE_QUEUE_REPORT_CDKEY_DB = 2;
 
+// the new 2da changes has made ammo very, very expensive. in order to deprecate the ammo, we will need to divide their total cost by this amount
+// for example, a stack of +3 darts is 1009200. after dividing it by 10000 we will get 126.15, so in that case we will give the player back 100 gold.
+// it's a little more generous than it should be
+const int ITEM_UPDATE_AMMO_DIVISION_FACTOR = 17000; 
+const int ITEM_UPDATE_THROWING_WEAPON_DIVISION_FACTOR = 10000; 
 
+// we should definitely cap this if the numbers happen to be off
+const int ITEM_UPDATE_AMMO_MAX_GOLD_REFUND = 100;
+
+const int ITEM_UPDATE_FABRICATOR_MAX_GOLD_REFUND = 4000;
+
+// just handles throwing weapons, fabricators, and ammo for now
+// returns TRUE if an item was destroyed by this deprecation
+int DeprecateItem(object oItem, object oPC)
+{   
+    if (!IsAmmoInfinite(oItem))
+        return FALSE; // do nothing if it has no properties. even the fabricator has properties
+
+    if (GetLocalInt(oItem, "infinite") == 1)
+        return FALSE; // if already deemed infinite, do not do anything to this item
+
+    // check if it is a new PC, otherwise this can be exploited by players coming in with custom items and a hacked character
+    if (GetXP(oPC) < 1)
+        return FALSE;
+    
+    int nBaseItemType = GetBaseItemType(oItem);
+
+    if (GetXP(oPC) > 1 && GetTag(oItem) == "ammo_maker")
+    {
+        SetIdentified(oItem, TRUE);
+        // unfortunately we have removed the fabricator chest so this will be very hard to do. we only stored the tag of the item
+
+        // old ammo sample tag: ammo_Arrow1
+        // even if we can get the tag, there's no guarantee it was set properly. the only thing we can do is attempt to find it through name...
+
+        string sName = GetName(oItem);
+        string sOriginalName = sName;
+
+        int nBaseItem = -1;
+
+        // we must compare with the exact name, there is a throwing axe called "Rhyte's Last Arrow" ><
+        if (FindSubString(sName, "Arrow Fabricator") > -1)
+        {
+            nBaseItem = BASE_ITEM_ARROW;
+        }
+        else if (FindSubString(sName, "Bolt Fabricator") > -1)
+        {
+            nBaseItem = BASE_ITEM_BOLT;
+        }
+        else if (FindSubString(sName, "Throwing Axe Fabricator") > -1)
+        {
+            nBaseItem = BASE_ITEM_THROWINGAXE;
+        }
+        else if (FindSubString(sName, "Shuriken Fabricator") > -1)
+        {
+            nBaseItem = BASE_ITEM_SHURIKEN;
+        }
+        else if (FindSubString(sName, "Bullet Fabricator") > -1)
+        {
+            nBaseItem = BASE_ITEM_BULLET;
+        }
+        else if (FindSubString(sName, "Dart Fabricator") > -1)
+        {
+            nBaseItem = BASE_ITEM_DART;
+        }
+
+        //SendMessageToPC(GetFirstPC(), "Base item: "+IntToString(nBaseItem));
+        
+        // remove the last parantheses to make it easier later on, keep the first one so we can find use it to extract the name
+        sName = StringReplace(sName, ")", "");
+        int nNamePosition = FindSubString(sName, "(");
+
+        // If we couldn't find a parantheses or the correct base item, this wasn't a valid item. Do nothing in this case
+        if (nNamePosition == 0)
+        {
+            SendColorMessageToPC(oPC, sOriginalName + " was not a valid ammo maker due to an invalid name and was destroyed without refund.", MESSAGE_COLOR_DANGER);
+            DestroyObject(oItem);
+            return TRUE;
+        }
+        else if (nBaseItem == -1)
+        {
+            SendColorMessageToPC(oPC, sOriginalName + " was not a valid ammo maker due to an invalid item type and was destroyed without refund.", MESSAGE_COLOR_DANGER);
+            DestroyObject(oItem);
+            return TRUE;
+        }
+
+
+        sName = GetSubString(sName, nNamePosition + 1, 32);
+
+        //SendMessageToPC(GetFirstPC(), "Extracted name: |"+sName+"|");
+
+        object oTFN = GetTFNEquipmentFromName(sName, nBaseItem);
+
+        int nRefund = GetGoldPieceValue(oItem) / 2;
+        if (nRefund > ITEM_UPDATE_FABRICATOR_MAX_GOLD_REFUND) nRefund = ITEM_UPDATE_FABRICATOR_MAX_GOLD_REFUND;
+
+        //SendMessageToPC(GetFirstPC(), "Found item: "+GetName(oTFN));
+
+        if (!GetIsObjectValid(oTFN))
+        {           
+            SendColorMessageToPC(oPC, sOriginalName + " was deprecated but the item cannot be found, refunded: " + IntToString(nRefund), MESSAGE_COLOR_DANGER);
+            DestroyObject(oItem);
+
+            GiveGoldToCreature(oPC, nRefund);
+
+            return TRUE;            
+        }
+
+        SendColorMessageToPC(oPC, sOriginalName + " was deprecated and replaced with the infinite item equivalent.", MESSAGE_COLOR_DANGER);
+        DestroyObject(oItem);
+        GiveGoldToCreature(oPC, nRefund);
+        
+        object oNewItem = CopyItem(oTFN, oPC, TRUE);
+        InitializeItem(oNewItem);
+
+        // just do them a favor and identify it for them at this point
+        SetIdentified(oNewItem, TRUE);
+
+        return TRUE;
+    }
+    else if (nBaseItemType == BASE_ITEM_ARROW || nBaseItemType == BASE_ITEM_BOLT || nBaseItemType == BASE_ITEM_BULLET || nBaseItemType == BASE_ITEM_THROWINGAXE || nBaseItemType == BASE_ITEM_SHURIKEN || nBaseItemType == BASE_ITEM_DART)
+    { // for all arrows, bolts, and bullets, throwing weapons just destroy them all and give the player a refund
+        SetIdentified(oItem, TRUE);
+
+        if (GetItemHasItemProperty(oItem, ITEM_PROPERTY_BOOMERANG))
+        {
+            SetLocalInt(oItem, "infinite", 1); // set this boomerang item to infinite so it never goes through this process again
+            return FALSE; // do nothing and let the script change the properties on this item if already infinite from before
+        }
+
+        int nDivider = ITEM_UPDATE_THROWING_WEAPON_DIVISION_FACTOR;
+
+        if (nBaseItemType == BASE_ITEM_ARROW || nBaseItemType == BASE_ITEM_BOLT || nBaseItemType == BASE_ITEM_BULLET)
+        {
+            int nDivider = ITEM_UPDATE_AMMO_DIVISION_FACTOR;    
+        }
+
+        int nRefund = GetGoldPieceValue(oItem) / nDivider;
+
+        if (nRefund > ITEM_UPDATE_AMMO_MAX_GOLD_REFUND) nRefund = ITEM_UPDATE_AMMO_MAX_GOLD_REFUND;
+
+        SendColorMessageToPC(oPC, GetName(oItem) + " was deprecated, refunded: "+IntToString(nRefund), MESSAGE_COLOR_DANGER);
+
+        DestroyObject(oItem);
+
+        GiveGoldToCreature(oPC, nRefund);
+
+        return TRUE;
+    }
+
+    // no branches were hit
+    return FALSE;
+}
 
 int GetItemPropertiesHash(object oItem, int bForce=0)
 {
@@ -344,6 +497,10 @@ void ProcessItemUpdateQueue(json jQueue, json jUpdateData, object oPCToShowNUI=O
         return;
     }
     object oItem = StringToObject(JsonGetString(JsonArrayGet(jQueue, nArrayPosition)));
+
+    // this will be an issue if the PC is invalid! Gold may not be refunded!
+    DeprecateItem(oItem, oPCToShowNUI);
+
     if (GetIsObjectValid(oItem))
     {
         jUpdateData = _UpdateItemPropertiesToJson(jUpdateData, oItem);

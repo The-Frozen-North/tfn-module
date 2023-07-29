@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 5073
+    "value": 16065
   },
   "Cursed": {
     "type": "byte",
@@ -31,7 +31,9 @@
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": ""
+    }
   },
   "Identified": {
     "type": "byte",
@@ -73,42 +75,11 @@
         },
         "CostTable": {
           "type": "byte",
-          "value": 10
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 3
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 11
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 0
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
           "value": 4
         },
         "CostValue": {
           "type": "word",
-          "value": 6
+          "value": 3
         },
         "Param1": {
           "type": "byte",
@@ -131,7 +102,7 @@
   },
   "StackSize": {
     "type": "word",
-    "value": 99
+    "value": 1
   },
   "Stolen": {
     "type": "byte",
@@ -139,10 +110,22 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_WAMMBO001"
+    "value": "weapon129"
   },
   "TemplateResRef": {
     "type": "resref",
     "value": "weapon129"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 21
+  },
+  "xModelPart2": {
+    "type": "word",
+    "value": 41
+  },
+  "xModelPart3": {
+    "type": "word",
+    "value": 11
   }
 }

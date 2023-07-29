@@ -86,8 +86,9 @@ void main()
         }
     }
     
+    int nBaseItemType = GetBaseItemType(oItem);
     // Item containers should retroactively be given unique power self only for renaming
-    if (GetBaseItemType(oItem) == BASE_ITEM_LARGEBOX)
+    if (nBaseItemType == BASE_ITEM_LARGEBOX)
     {
         itemproperty ipTest = GetFirstItemProperty(oItem);
         int nFound = 0;
@@ -104,6 +105,20 @@ void main()
         {
             IPSafeAddItemProperty(oItem, ItemPropertyCastSpell(IP_CONST_CASTSPELL_UNIQUE_POWER_SELF_ONLY, IP_CONST_CASTSPELL_NUMUSES_UNLIMITED_USE));
         }
+    }
+    // if it has an item property, these ammo / throwing weapons are infinite
+    else if (IsAmmoInfinite(OBJECT_SELF) &&
+             (nBaseItemType == BASE_ITEM_ARROW ||
+              nBaseItemType == BASE_ITEM_BOLT ||
+              nBaseItemType == BASE_ITEM_BULLET ||
+              nBaseItemType == BASE_ITEM_DART ||
+              nBaseItemType == BASE_ITEM_THROWINGAXE ||
+              nBaseItemType == BASE_ITEM_SHURIKEN))
+    { // https://github.com/nwnxee/unified/pull/178
+        // Clippy: Logic is simple: If items have different local variables, they will not stack. If you want to prevent stacking on a certain item, you can use:
+        if (GetLocalString(oItem, "prevent_stack") == "")
+            SetLocalString(oItem, "prevent_stack", GetRandomUUID());
+        // That will guarantee it has a unique variable and it won't be merged because other item objects will have different object IDs.
     }
 
     ExecuteScript("remove_invis", oPC);

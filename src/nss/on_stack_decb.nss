@@ -1,10 +1,10 @@
-#include "inc_treasure"
 #include "nwnx_events"
+#include "inc_general"
 
 void main()
 {
-    // Boomerang items should not be able to decrease stack size
-    if (GetItemHasItemProperty(OBJECT_SELF, ITEM_PROPERTY_BOOMERANG))
+    // If the throwing weapon or ammo has ANY item property at all, it is considered magical / infinite
+    if (IsAmmoInfinite(OBJECT_SELF))
     {
         NWNX_Events_SkipEvent();
     }

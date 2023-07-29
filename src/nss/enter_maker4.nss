@@ -15,13 +15,13 @@ void main()
         vector vSling = vPos + Vector(IntToFloat(Random(1000))/100 - 5.0, IntToFloat(Random(1000))/100 - 5.0, 0.0);
         object oChestItem = GetTieredItemOfType(BASE_ITEM_BULLET, 1, 0);
         location lLoc = Location(OBJECT_SELF, vBullets, IntToFloat(Random(360)));
-        object oFloorItem = CopyTierItemToLocation(oChestItem, lLoc);
+        object oFloorItem = CopyTierItemToObjectOrLocation(oChestItem, OBJECT_INVALID, lLoc);
         SetItemStackSize(oFloorItem, 10 + d4(3));
         SetLocalObject(OBJECT_SELF, "puzzle_bullets", oFloorItem);
         
         oChestItem = GetTieredItemOfType(BASE_ITEM_SLING, 1, 0);
         lLoc = Location(OBJECT_SELF, vSling, IntToFloat(Random(360)));
-        oFloorItem = CopyTierItemToLocation(oChestItem, lLoc);
+        oFloorItem = CopyTierItemToObjectOrLocation(oChestItem, OBJECT_INVALID, lLoc);
         SetLocalObject(OBJECT_SELF, "puzzle_sling", oFloorItem);
     }
 }

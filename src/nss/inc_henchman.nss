@@ -201,6 +201,7 @@ void _SetHenchmanAmmunitionInfinite(object oHench)
     // ItemPropertyCustom(14) is the boomerang property
     // which is implemented with nwnx stack decrement before
     // so any items in these slots should never go down
+    // New update made it so that any ammo with an item property never actually decreases
     IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_ARROWS, oHench), ItemPropertyCustom(14), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
     IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_BOLTS, oHench), ItemPropertyCustom(14), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
     IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_BULLETS, oHench), ItemPropertyCustom(14), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);

@@ -708,7 +708,6 @@ void main()
       }
    }
 
-   LoadTreasureContainer("_FabricatorAmmo", IntToFloat(nIndex)*2.0, 35.0);
    BuildItemNamesToObjectsDB();
    SetLocalInt(GetModule(), "treasure_ready", 1);
    CalculatePlaceableLootValues();
