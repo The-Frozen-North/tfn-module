@@ -5,7 +5,7 @@ void MakeGroundItem(object oTest)
     object oChestItem = SelectTierItem(12, 12, "Melee", 0, OBJECT_INVALID, d100() < 5 ? FALSE : TRUE);
     location lLoc = GetLocation(oTest);
     lLoc = Location(GetAreaFromLocation(lLoc), GetPositionFromLocation(lLoc), IntToFloat(Random(360)));
-    object oFloorItem = CopyTierItemToLocation(oChestItem, lLoc);
+    object oFloorItem = CopyTierItemToObjectOrLocation(oChestItem, OBJECT_INVALID, lLoc);
     SetLocalObject(oTest, "ground_weapon", oFloorItem);
 }
 
@@ -42,5 +42,5 @@ void main()
         }
         SetLocalInt(OBJECT_SELF, "spawned_ground_weapons", 1);
     }
-    
+
 }

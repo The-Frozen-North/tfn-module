@@ -33,44 +33,6 @@ int GetIsItemConsumableMisc(object oItem)
     return 0;
 }
 
-/*
-void CreateFabricator(object oAmmo, object oTargetChest)
-{
-            if (!GetIsObjectValid(oAmmo))
-                return;
-
-            SetIdentified(oAmmo, TRUE);
-
-            object oFabricator = CreateItemOnObject("ammo_maker", oTargetChest);
-            SetTag(oAmmo, "ammo_"+GetName(oAmmo));
-            SetLocalString(oFabricator, "ammo_tag", GetTag(oAmmo));
-
-            int nValue = GetGoldPieceValue(oAmmo);
-            string sAmmoName;
-            int nAppearance, nStack;
-            switch (GetBaseItemType(oAmmo))
-            {
-                case BASE_ITEM_THROWINGAXE: sAmmoName = "Throwing Axe"; nAppearance = 20; break;
-                case BASE_ITEM_DART: sAmmoName = "Dart"; nAppearance = 7; break;
-                case BASE_ITEM_SHURIKEN: sAmmoName = "Shuriken"; nAppearance = 9;; break;
-                case BASE_ITEM_ARROW: sAmmoName = "Arrow"; nAppearance = 19; break;
-                case BASE_ITEM_BULLET: sAmmoName = "Bullet"; nAppearance = 18; break;
-                case BASE_ITEM_BOLT: sAmmoName = "Bolt"; nAppearance = 8; break;
-            }
-
-            // set the stack size to 50 for similar cost eval to throwing weapons
-            SetItemStackSize(oAmmo, 50);
-
-            SetTag(oAmmo, GetTag(oAmmo));
-            object oNewAmmo = CopyItemToExistingTarget(oAmmo, GetObjectByTag("_FabricatorAmmo"));
-
-            NWNX_Item_SetAddGoldPieceValue(oFabricator, nValue);
-
-            NWNX_Item_SetItemAppearance(oFabricator, ITEM_APPR_TYPE_SIMPLE_MODEL, 0, nAppearance);
-            SetName(oFabricator, sAmmoName+" Fabricator ("+GetName(oAmmo)+")");
-}
-*/
-
 object ChangeSpecialWeapon(object oItem, int nTopModel, int nTopColor)
 {
      int nBaseType = GetBaseItemType(oItem);
@@ -185,7 +147,7 @@ void PopulateChestWeapon(string sSeedChestTag, string sPrependName, string sAppe
 
 // Modify the appearance. If 0, leave unchanged.
        int nBaseType = GetBaseItemType(oNewItemStaging);
-
+       
 // For slings, darts, and shurikens, do something special for them for appearance changing (simple model).
        if (nBaseType == BASE_ITEM_SLING || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN)
        {
@@ -220,7 +182,9 @@ void PopulateChestWeapon(string sSeedChestTag, string sPrependName, string sAppe
                case BASE_ITEM_DART:
                case BASE_ITEM_SHURIKEN:
                {
-                 return; // we cannot make high quality weapons for these types
+                 DestroyObject(oNewItemStaging);
+                 oItem = GetNextItemInInventory(oSeedChest);
+                 continue; // we cannot make high quality weapons for these types
                  break;
                }
                case BASE_ITEM_LONGBOW:
@@ -309,6 +273,7 @@ void PopulateChestWeapon(string sSeedChestTag, string sPrependName, string sAppe
        if (nPhysicalBonus > 0) SetLocalInt(oNewItemStaging, "identified", 1);
 
        oNewItem = CopyItemToExistingTarget(oNewItemStaging, oDistribution);
+
        DestroyObject(oNewItemStaging);
        if (!GetIsObjectValid(oNewItem))
        {
@@ -377,9 +342,18 @@ void CopySeedContainerToDistribution(object oContainer)
 {
     object oItem = GetFirstItemInInventory(oContainer);
     object oNewItem;
+    string sResRef;
 
     while (GetIsObjectValid(oItem))
     {
+        sResRef = GetResRef(oItem);
+
+        if (sResRef == "nw_wthax001" || sResRef == "nw_wthsh001" || sResRef == "nw_wthdt001") // skip throwing weapons for mundane weapons, we add these manually elsewhere
+        {
+            oItem = GetNextItemInInventory(oContainer);
+            continue;
+        }
+        
         oNewItem = CopyItemToExistingTarget(oItem, GetObjectByTag(TREASURE_DISTRIBUTION));
         SetLocalInt(oNewItem, "non_unique", 1);
         SetLocalInt(oNewItem, "identified", 1);
@@ -603,7 +577,7 @@ void DistributeTreasureToStores(object oItem)
                case BASE_ITEM_QUARTERSTAFF:
                case BASE_ITEM_LONGBOW:
                case BASE_ITEM_SHORTBOW:
-               case BASE_ITEM_THROWINGAXE:
+               case BASE_ITEM_DART:
                case BASE_ITEM_ARROW:
                   sRarity = "Common";
                break;
@@ -619,7 +593,7 @@ void DistributeTreasureToStores(object oItem)
                case BASE_ITEM_MORNINGSTAR:
                case BASE_ITEM_HEAVYCROSSBOW:
                case BASE_ITEM_LIGHTCROSSBOW:
-               case BASE_ITEM_DART:
+               case BASE_ITEM_THROWINGAXE:
                case BASE_ITEM_BOLT:
                   sRarity = "Uncommon";
                break;
@@ -699,8 +673,9 @@ void CountItemsThroughTiers()
             {
                 nItems = nItems + 1;
 
+                // we should make sure every item that is fed here are singles (stack of 1)
                 //if (GetName(oContainer) != "_FabricatorAmmo")
-                    SetItemStackSize(oItem, 1);
+                    //SetItemStackSize(oItem, 1);
 
                 oItem = GetNextItemInInventory(oContainer);
             }
@@ -894,49 +869,10 @@ void main()
       CreateTreasureContainer("_JewelsT"+IntToString(nIndex), IntToFloat(nIndex)*2.0, 35.0);
    }
 
-   //object oFabricatorContainer = CreateObject(OBJECT_TYPE_PLACEABLE, "_treas_container", Location(GetObjectByTag("_TREASURE"), Vector(40.0, 40.0, 40.0), 0.0), FALSE, "_FabricatorAmmo");
-    //    SetName(oFabricatorContainer, "_FabricatorAmmo");
-
 // seed these mundane items to distribution
    CopySeedContainerToDistribution(GetObjectByTag(TREASURE_MELEE_SEED_CHEST));
    CopySeedContainerToDistribution(GetObjectByTag(TREASURE_RANGE_SEED_CHEST));
    CopySeedContainerToDistribution(GetObjectByTag(TREASURE_ARMOR_SEED_CHEST));
-
-    /*
-   int i, nFabricatorCost;
-   object oArrow, oBolt, oBullet;
-   location lStaging = GetTreasureStagingLocation();
-   for (i = 0; i < 5; i++)
-   {
-        if (i == 0)
-        {
-            CreateItemOnObject("arrow"+IntToString(i), GetObjectByTag("_RangeCommonT"+IntToString(i+1)+"NonUnique"), 99);
-            CreateItemOnObject("bolt"+IntToString(i), GetObjectByTag("_RangeUncommonT"+IntToString(i+1)+"NonUnique"), 99);
-            CreateItemOnObject("bullet"+IntToString(i), GetObjectByTag("_RangeRareT"+IntToString(i+1)+"NonUnique"), 99);
-        }
-        else
-        {
-            switch (i)
-            {
-                case 1: nFabricatorCost = 2000; break;
-                case 2: nFabricatorCost = 6000; break;
-                case 3: nFabricatorCost = 12000; break;
-            }
-
-            oArrow = CreateObject(OBJECT_TYPE_ITEM, "arrow"+IntToString(i), lStaging);
-            //SetItemStackSize(oArrow, 50);
-            CreateFabricator(oArrow, GetObjectByTag("_RangeCommonT"+IntToString(i+1)+"NonUnique"));
-
-            oBolt = CreateObject(OBJECT_TYPE_ITEM, "bolt"+IntToString(i), lStaging);
-            //SetItemStackSize(oBolt, 50);
-            CreateFabricator(oBolt, GetObjectByTag("_RangeUncommonT"+IntToString(i+1)+"NonUnique"));
-
-            oBullet = CreateObject(OBJECT_TYPE_ITEM, "bullet"+IntToString(i), lStaging);
-            //SetItemStackSize(oBullet, 50);
-            CreateFabricator(oBullet, GetObjectByTag("_RangeRareT"+IntToString(i+1)+"NonUnique"));
-        }
-   }
-   */
 
 // grab items from palette
    CreateTypeLoot("apparel");
@@ -1389,6 +1325,17 @@ void SeedTreasurePart2()
    PopulateChestWeapon(TREASURE_RANGE_SEED_CHEST, "Composite ", " +1", "c1", sCompositeEnchanted, 2, 3, 4, 3, 3, 3, ItemPropertyAttackBonus(1), ItemPropertyMaxRangeStrengthMod(3), ItemPropertyNoDamage(), 0, TRUE);
    PopulateChestWeapon(TREASURE_RANGE_SEED_CHEST, "Composite ", " +2", "c2", sCompositeEnchanted, 2, 3, 4, 2, 2, 2, ItemPropertyAttackBonus(2), ItemPropertyMaxRangeStrengthMod(4), ItemPropertyNoDamage(), 0, TRUE);
    PopulateChestWeapon(TREASURE_RANGE_SEED_CHEST, "Composite ", " +3", "c3", sCompositeEnchanted, 2, 3, 4, 4, 4, 4, ItemPropertyAttackBonus(3), ItemPropertyMaxRangeStrengthMod(5), ItemPropertyNoDamage(), 0, TRUE);
+
+
+// these need to be special cased and added
+
+    CreateItemOnObject("nw_wamar001", GetObjectByTag("_RangeCommonT1NonUnique"), 99); // arrows
+    CreateItemOnObject("nw_wambo001", GetObjectByTag("_RangeUncommonT1NonUnique"), 99); // bolts
+    CreateItemOnObject("nw_wambu001", GetObjectByTag("_RangeRareT1NonUnique"), 99); // bullets
+
+    CreateItemOnObject("dart", GetObjectByTag("_RangeCommonT1NonUnique"), 50); 
+    CreateItemOnObject("throwing_axe", GetObjectByTag("_RangeUncommonT1NonUnique"), 50);
+    CreateItemOnObject("shuriken", GetObjectByTag("_RangeRareT1NonUnique"), 50);
 
    SendDebugMessage("Treasure weapons created", TRUE);
 

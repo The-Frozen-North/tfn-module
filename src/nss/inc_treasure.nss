@@ -287,22 +287,6 @@ void InitializeItem(object oItem)
 
      NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) - GetLocalInt(oItem, "reduce_cost"));
 
-    // Boomerang item values: additional item value is added once for each item in the stack
-    // which means that additional item value needs to map stack size 1 -> max stack size
-    /*
-    if (GetItemHasItemProperty(oItem, ITEM_PROPERTY_BOOMERANG))
-    {
-        SetItemStackSize(oItem, 1);
-        int nMaxStackSize = StringToInt(Get2DAString("baseitems", "Stacking", GetBaseItemType(oItem)));
-        int nGold = GetGoldPieceValue(oItem);
-        nGold *= (nMaxStackSize - 1);
-        NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + nGold);
-    }
-    */
-
-
-
-
     SetIdentified(oItem, nWasIdentified);
     SetLocalInt(oItem, "initialized", 1);
 }

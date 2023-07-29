@@ -160,16 +160,16 @@ const string OPENED_LOOT_HIGHLIGHT_STRING = "<c\x80\x80\x80>";
 // The item returned by this function WILL BE IN A CONTAINER IN THE LOOT AREA.
 // This does NOT MOVE OR MAKE A COPY OF THE ITEM in oContainer. oContainer is used to make sure the item in question
 // is appropriate to generate in some situations (eg gems in stores are pointless)
-// Use CopyTierItemToContainer to copy the return from this function to its final destination.
+// Use CopyTierItemToObjectOrLocation to copy the return from this function to its final destination.
 object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, object oContainer=OBJECT_INVALID, int bNonUnique = FALSE, float fQualityExponentModifier=0.0);
 
-// Copy oItem (which should be from SelectTierItem) to oContainer and correctly initialise it
-object CopyTierItemToContainer(object oItem, object oContainer);
+// Copy oItem (which should be from SelectTierItem) to oContainer or lLocation and correctly initialise it
+object CopyTierItemToObjectOrLocation(object oItem, object oContainer = OBJECT_INVALID, location lLocation = LOCATION_INVALID);
 
 // Generate a tier Item. Specific Tier granted if nTier is 1-5.
 // Valid types: "Armor", "Melee", "Range", "Misc, "Apparel"
 // "Potion", "ScrollsDivine", "ScrollsArcane"
-// An amalgamation of SelectTierItem and CopyTierItemToContainer for convenience.
+// An amalgamation of SelectTierItem and CopyTierItemToObjectOrLocation for convenience.
 object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = "", int nTier = 0, int bNonUnique = FALSE, float fQualityExponentModifier=0.0);
 
 // Open a personal loot. Called from a containing object.
@@ -655,72 +655,45 @@ object SelectTierItem(int iCR, int iAreaCR, string sType = "", int nTier = 0, ob
     return oItem;
 }
 
-// ---------------------------------------------------------
-// This function is used to generate a tier item.
-// ---------------------------------------------------------
-object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = "", int nTier = 0, int bNonUnique = FALSE, float fQualityExponentModifier=0.0)
-{
-    object oItem = SelectTierItem(iCR, iAreaCR, sType, nTier, oContainer, bNonUnique, fQualityExponentModifier);
-    object oNewItem = CopyTierItemToContainer(oItem, oContainer);
-    return oNewItem;
-}
-
-object CopyTierItemToLocation(object oItem, location lTarget)
+object CopyTierItemToObjectOrLocation(object oItem, object oContainer = OBJECT_INVALID, location lLocation = LOCATION_INVALID)
 {
     if (!GetIsObjectValid(oItem))
     {
         return OBJECT_INVALID;
     }
-    object oNewItem = CopyObject(oItem, lTarget, OBJECT_INVALID, "", TRUE);
+    
+    // i know we do some checks below, but the local needs to be set before it goes any further
+    // adds a new UUID to make sure the item does not stack
+    int nBaseType = GetBaseItemType(oItem);
 
-
-    //int nRarityCount = GetLocalInt(GetModule(), sRarity);
-    //SetLocalInt(GetModule(), sRarity, nRarityCount+1);
-
-    int nBaseType = GetBaseItemType(oNewItem);
-    if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT)
+    if (IsAmmoInfinite(oItem) && (nBaseType == BASE_ITEM_THROWINGAXE || 
+        nBaseType == BASE_ITEM_DART || 
+        nBaseType == BASE_ITEM_SHURIKEN || 
+        nBaseType == BASE_ITEM_ARROW || 
+        nBaseType == BASE_ITEM_BULLET || 
+        nBaseType == BASE_ITEM_BOLT))
     {
-        // if it has ANY item properties at all, it is considered magical
-        if (IsAmmoInfinite(oNewItem))
-        {
-            SetItemStackSize(oNewItem, 1);    
-        }
-        // Otherwise it is mundane ammo, set a stack size. Don't go above 50, due to certain stack sizes.
-        {
-            SetItemStackSize(oNewItem, Random(45)+1);
-        }
+        SetLocalString(oItem, "new_uuid", GetRandomUUID());
+    }
+    
+    object oNewItem;
+    if (GetIsObjectValid(oContainer))
+    {
+        object oNewItem = CopyItem(oItem, oContainer, TRUE);
+    }
+    else
+    {
+        object oNewItem = CopyObject(oItem, lLocation, OBJECT_INVALID, "", TRUE);   
     }
 
-// for magic wands and rods, set a random number of charges based on the initial (max) amount of charges
-    int nCharges = GetItemCharges(oNewItem);
-    if (nCharges > 0 && (nBaseType == BASE_ITEM_MAGICWAND || nBaseType == BASE_ITEM_MAGICROD)) SetItemCharges(oNewItem, Random(nCharges)+1);
-
-    // Set visual transforms, and do the rest if it wasn't done for any reason
-    InitializeItem(oNewItem);
-
-    return oNewItem;
-}
-
-object CopyTierItemToContainer(object oItem, object oContainer)
-{
     if (!GetIsObjectValid(oItem))
     {
         return OBJECT_INVALID;
     }
-    if (!GetIsObjectValid(oContainer))
-    {
-        return OBJECT_INVALID;
-    }
-    object oNewItem = CopyItem(oItem, oContainer, TRUE);
 
-
-    //int nRarityCount = GetLocalInt(GetModule(), sRarity);
-    //SetLocalInt(GetModule(), sRarity, nRarityCount+1);
-
-    int nBaseType = GetBaseItemType(oNewItem);
     if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT) 
     {
-        if (IsAmmoInfinite(OBJECT_SELF))
+        if (IsAmmoInfinite(oNewItem))
         { // If the ammo has ANY item properties at all, it is considered magical and infinite. Make sure it only has a stack size of 1.
             SetItemStackSize(oNewItem, 1);
         }
@@ -730,14 +703,6 @@ object CopyTierItemToContainer(object oItem, object oContainer)
         }
     }
 
-    // Boomerang items should always generate as stack size 1
-    /*
-    if (GetItemHasItemProperty(oNewItem, ITEM_PROPERTY_BOOMERANG))
-    {
-        SetItemStackSize(oNewItem, 1);
-    }
-    */
-
     // for magic wands and rods, set a random number of charges based on the initial (max) amount of charges
     int nCharges = GetItemCharges(oNewItem);
     if (nCharges > 0 && (nBaseType == BASE_ITEM_MAGICWAND || nBaseType == BASE_ITEM_MAGICROD)) SetItemCharges(oNewItem, Random(nCharges)+1);
@@ -745,6 +710,17 @@ object CopyTierItemToContainer(object oItem, object oContainer)
     // Set visual transforms, and do the rest if it wasn't done for any reason
     InitializeItem(oNewItem);
 
+    return oNewItem;
+}
+
+// ---------------------------------------------------------
+// This function is used to generate a tier item.
+// ---------------------------------------------------------
+object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = "", int nTier = 0, int bNonUnique = FALSE, float fQualityExponentModifier=0.0)
+{
+    object oItem = SelectTierItem(iCR, iAreaCR, sType, nTier, oContainer, bNonUnique, fQualityExponentModifier);
+
+    object oNewItem = CopyTierItemToObjectOrLocation(oItem, oContainer);
     return oNewItem;
 }
 
@@ -1147,7 +1123,7 @@ object GenerateLoot(object oLootSource, object oDestinationContainer=OBJECT_INVA
         return OBJECT_INVALID;
     }
     object oItem = SelectLoot(oLootSource, oDestinationContainer);
-    return CopyTierItemToContainer(oItem, oDestinationContainer);
+    return CopyTierItemToObjectOrLocation(oItem, oDestinationContainer);
 }
 
 void DecrementLootAndDestroyIfEmpty(object oOpener, object oLootParent, object oPersonalLoot)

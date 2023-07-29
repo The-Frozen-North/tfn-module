@@ -38,6 +38,6 @@ void main()
     nACR = nACR + 1 + Random(nVariability*2) - nVariability;
 
     object oMap = SetupProgenitorTreasureMap(nACR, "Highcliff. It was purchased from " + GetName(OBJECT_SELF));
-    CopyTierItemToContainer(oMap, oPC);
+    CopyTierItemToObjectOrLocation(oMap, oPC);
     SQLocalsPlayer_SetInt(oPC, "andriel_lastbuy", SQLite_GetTimeStamp());
 }

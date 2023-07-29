@@ -103,7 +103,7 @@ int RollForTreasureMap(object oSource=OBJECT_SELF);
 object MaybeGenerateTreasureMap(int nObjectACR);
 
 // Sets up the progenitor map to match the given ACR (in the treasure system area) and returns its OID.
-// Does not copy it to another container. Use inc_loot's CopyTierItemToContainer for that.
+// Does not copy it to another container. Use inc_loot's CopyTierItemToObjectOrLocation for that.
 // If sLocation is given, adds some text to the description about where it was found
 object SetupProgenitorTreasureMap(int nObjectACR, string sLocation="");
 

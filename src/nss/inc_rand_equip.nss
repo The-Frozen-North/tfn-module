@@ -1173,7 +1173,6 @@ object TryEquippingRandomItemOfTier(int nBaseItem, int nTier, int nUniqueChance,
     if (nBaseItem == BASE_ITEM_BULLET || nBaseItem == BASE_ITEM_ARROW || nBaseItem == BASE_ITEM_BOLT || nBaseItem == BASE_ITEM_SHURIKEN || nBaseItem == BASE_ITEM_DART || nBaseItem == BASE_ITEM_THROWINGAXE)
     {
         oAmmo = oNew;
-        SetItemStackSize(oNew, 1);
     }
     else if (nBaseItem == BASE_ITEM_SLING)
     {
