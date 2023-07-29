@@ -246,6 +246,11 @@ void InitializeItem(object oItem)
         return;
     }
 
+    if (IsAmmoInfinite(oItem))
+    {
+        SetLocalInt(oItem, "infinite", 1);
+    }
+
     AddEWR(oItem);
 
     if (IsAmmoInfinite(oItem))
@@ -371,6 +376,24 @@ void BuildItemNamesToObjectsDB()
     }
 }
 
+object GetTFNEquipmentFromName(string sItemName, int nBaseItemType)
+{
+    string sName = sItemName + IntToString(nBaseItemType);
+    sqlquery sql = SqlPrepareQueryObject(GetModule(),
+        "SELECT oid FROM item_name_lookup " +
+        "WHERE itemname = @itemname;");
+    SqlBindString(sql, "@itemname", sName);
+    if (SqlStep(sql))
+    {
+        object oRet = StringToObject(SqlGetString(sql, 0));
+        //WriteTimestampedLogEntry("GetTFNEquipmentByName: " + GetName(oItem) + " -> " + GetName(oRet));
+        return oRet;
+    }
+    //WriteTimestampedLogEntry("GetTFNEquipmentByName: " + GetName(oItem) + " -> invalid");
+
+    return OBJECT_INVALID;
+}
+
 object GetTFNEquipmentByName(object oItem)
 {
     if (GetIsObjectValid(oItem))
@@ -382,19 +405,9 @@ object GetTFNEquipmentByName(object oItem)
         {
             sName = GetLocalString(oItem, "tfn_item_name");
         }
-        sName = sName + IntToString(GetBaseItemType(oItem));
+
         SetIdentified(oItem, bIdentified);
-        sqlquery sql = SqlPrepareQueryObject(GetModule(),
-            "SELECT oid FROM item_name_lookup " +
-            "WHERE itemname = @itemname;");
-        SqlBindString(sql, "@itemname", sName);
-        if (SqlStep(sql))
-        {
-            object oRet = StringToObject(SqlGetString(sql, 0));
-            //WriteTimestampedLogEntry("GetTFNEquipmentByName: " + GetName(oItem) + " -> " + GetName(oRet));
-            return oRet;
-        }
-        //WriteTimestampedLogEntry("GetTFNEquipmentByName: " + GetName(oItem) + " -> invalid");
+        return GetTFNEquipmentFromName(sName, GetBaseItemType(oItem));
     }
     return OBJECT_INVALID;
 }
