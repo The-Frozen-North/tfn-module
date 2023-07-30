@@ -173,7 +173,7 @@ void main()
             if (GetLocalInt(oCreator, "pdk_shield_diffarea") >= 30)
             {
                 sReason = "Your Heroic Shield on " + GetName(OBJECT_SELF) + " ended because they have been in another area for too long.";
-                DeleteLocalInt(OBJECT_SELF, "pdk_shield_diffarea");
+                DeleteLocalInt(oCreator, "pdk_shield_diffarea");
                 bRemove = 1;
             }
             else
@@ -184,7 +184,7 @@ void main()
         }
         else
         {
-            DeleteLocalInt(OBJECT_SELF, "pdk_shield_diffarea");
+            DeleteLocalInt(oCreator, "pdk_shield_diffarea");
         }
         
         if (bRemove)
