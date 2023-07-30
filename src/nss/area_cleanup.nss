@@ -167,5 +167,11 @@ void main()
         CleanupRandomSpawns(OBJECT_SELF, i);
      }
      
+     string sScript = GetLocalString(OBJECT_SELF, "clean_script");
+     if (sScript != "")
+     {
+         ExecuteScript(sScript, OBJECT_SELF);
+     }
+     
      SetLocalInt(OBJECT_SELF, "cleaned_time", SQLite_GetTimeStamp());
 }
