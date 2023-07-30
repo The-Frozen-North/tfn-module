@@ -23,6 +23,7 @@
 ************************* [Arguments] ******************************************
     Arguments: N/A
 ************************* [Debug] *********************************************/
+#include "inc_debug"
 
 // This will speak a cirtain integer number string (similar to a dialog reference).
 // - I (Jass) have just moved all strings I used all the time into here, so
@@ -170,7 +171,7 @@ void DebugActionSpeak(string sString)
 // - Useful for singleplayer testing
     if (GetIsObjectValid(GetMaster()))
     {
-        SendMessageToPC(GetFirstPC(), sNew);
+        SendDebugMessage(sNew);
     }
 
 // This writes the entry to the log, very important, if debugging
@@ -178,11 +179,3 @@ void DebugActionSpeak(string sString)
 //         - Use to find problems in the AI and report to me :-D (Jasperre)
     //WriteTimestampedLogEntry(sNew);
 }
-
-// Debug: To compile this script full, uncomment all of the below.
-/*
-void main()
-{
-    DebugActionSpeak("Test");
-}
-*/
