@@ -11,9 +11,15 @@ void main()
     object oAttacker = GetLastAttacker();
     if (GetIsPC(oAttacker) || GetIsPC(GetMaster(oAttacker))) SetLocalInt(OBJECT_SELF, "player_tagged", 1);
 
+
+    string sAttackScript = GetLocalString(OBJECT_SELF, "attack_script");
+    if (sAttackScript != "")
+        ExecuteScript(sAttackScript);
+
     object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
 
-    if  (d2() == 1 && GetLocalInt(OBJECT_SELF, "melee_attacked") == 0 && GetDistanceToObject(oAttacker) < 3.0 && (!GetIsObjectValid(oWeapon) || GetWeaponRanged(oWeapon)))
+    // chance for a range attacker to go melee
+    if  (d2() == 1 && GetLocalInt(OBJECT_SELF, "melee_attacked") == 0 && GetDistanceToObject(oAttacker) < 3.0 && GetWeaponRanged(oWeapon))
     {
         SetLocalInt(OBJECT_SELF, "melee_attacked", 1);
         //SendMessageToPC(oAttacker, GetName(oAttacker)+" attempting to go melee");
@@ -24,6 +30,12 @@ void main()
         return;
 
         DelayCommand(7.0, DeleteLocalInt(OBJECT_SELF, "melee_attacked"));
+    }
+
+    // just an issue for attackers (we dont need to worry abou spellcasters), don't do anything below so we keep the same attack target
+    if (gsCBGetHasAttackTarget())
+    {
+        return;
     }
 
 
@@ -46,9 +58,5 @@ void main()
     {
         gsCBDetermineCombatRound(oAttacker);
     }
-
-    string sAttackScript = GetLocalString(OBJECT_SELF, "attack_script");
-    if (sAttackScript != "")
-        ExecuteScript(sAttackScript);
 }
 

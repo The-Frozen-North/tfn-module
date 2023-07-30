@@ -23,7 +23,21 @@ void main()
         DoMoraleCheck(OBJECT_SELF, MORALE_PANIC_DAMAGE_DC);
     }
 
+        string sAttackScript = GetLocalString(OBJECT_SELF, "attack_script");
+    if (sAttackScript != "")
+        ExecuteScript(sAttackScript);
+
+    string sScript = GetLocalString(OBJECT_SELF, "damage_script");
+    if (sScript != "")
+        ExecuteScript(sScript);
+
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_DAMAGED));
+
+// just an issue for attackers (we dont need to worry abou spellcasters), don't do anything below so we keep the same attack target
+    if (gsCBGetHasAttackTarget())
+    {
+        return;
+    }
 
  //   gsFXBleed();
     gsC2SetDamage();
@@ -69,11 +83,4 @@ void main()
             DelayCommand(fDuration, DeleteLocalInt(OBJECT_SELF, "unconscious"));
         }
     }
-    string sAttackScript = GetLocalString(OBJECT_SELF, "attack_script");
-    if (sAttackScript != "")
-        ExecuteScript(sAttackScript);
-
-    string sScript = GetLocalString(OBJECT_SELF, "damage_script");
-    if (sScript != "")
-        ExecuteScript(sScript);
 }

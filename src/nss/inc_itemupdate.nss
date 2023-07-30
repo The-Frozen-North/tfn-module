@@ -522,7 +522,11 @@ void ProcessItemUpdateQueue(json jQueue, json jUpdateData, object oPCToShowNUI=O
     object oItem = StringToObject(JsonGetString(JsonArrayGet(jQueue, nArrayPosition)));
 
     // this will be an issue if the PC is invalid! Gold may not be refunded!
-    DeprecateItem(oItem, oPCToShowNUI);
+    // only do it if it is a PC, do not do it on the storage itself
+    if (nVarReportType == ITEM_UPDATE_QUEUE_REPORT_PC_BIC)
+    {
+        DeprecateItem(oItem, oPCToShowNUI);
+    }
 
     if (GetIsObjectValid(oItem))
     {
