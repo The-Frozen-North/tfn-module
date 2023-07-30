@@ -8,7 +8,7 @@ void main()
     CopyChest(OBJECT_SELF, "_RangeCommonT1NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_RangeCommonT2NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_RangeCommonT3NonUnique", 256, "", TRUE);
-    CopyChest(OBJECT_SELF, "_RangeCommonT4NonUnique", 256, "", TRUE);
+    //CopyChest(OBJECT_SELF, "_RangeCommonT4NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_RangeUncommonT2NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_RangeUncommonT3NonUnique", 256, "", TRUE);
     CopyChest(OBJECT_SELF, "_RangeRareT2NonUnique", 256, "", TRUE);
@@ -54,7 +54,7 @@ void main()
         GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 4, TRUE);
     }
 
-    nMax = d2(5);
+    nMax = d2(3);
     for (i = 0; i < nMax; i++)
     {
         GenerateTierItem(0, 0, OBJECT_SELF, "Range", 4, TRUE);
