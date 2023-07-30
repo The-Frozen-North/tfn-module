@@ -49,8 +49,6 @@ void DebugActionSpeakByInt(int iInteger, object oInput = OBJECT_INVALID, int iIn
     // - Add/Remove in "//" before the next lines "/*"
     // - Recompile all files
 
-    /*
-
     string sDebug;
     switch(iInteger)
     {
@@ -154,13 +152,12 @@ void DebugActionSpeakByInt(int iInteger, object oInput = OBJECT_INVALID, int iIn
     {
         DebugActionSpeak(sDebug);
     }
-    // */
 }
 
 void DebugActionSpeak(string sString)
 {
 // You MUST uncomment this line, IF you use either of the below things
-    //string sNew = "[Debug]" + GetName(OBJECT_SELF) + "[ObjectID]" + ObjectToString(OBJECT_SELF) + " [Debug] " + sString;
+    string sNew = "[Debug]" + GetName(OBJECT_SELF) + "[ObjectID]" + ObjectToString(OBJECT_SELF) + " [Debug] " + sString;
 
 // Note, uncomment this, so that DM's can hear the debug speaks, normally it is
 // only server admins who can hear the debug. If you are not testing, it might
@@ -171,7 +168,10 @@ void DebugActionSpeak(string sString)
 
 // Note, uncomment this line to send a message to the first PC in the module.
 // - Useful for singleplayer testing
-    //SendMessageToPC(GetFirstPC(), sNew);
+    if (GetIsObjectValid(GetMaster()))
+    {
+        SendMessageToPC(GetFirstPC(), sNew);
+    }
 
 // This writes the entry to the log, very important, if debugging
 // Futher: - If left up for a long time, logs can get very big with the AI
