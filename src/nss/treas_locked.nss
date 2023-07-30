@@ -10,6 +10,12 @@ void main()
 
     FloatingTextStringOnCreature("*locked*", oPC, FALSE);
 
+    if (!GetLockKeyRequired(OBJECT_SELF) && !GetIsInCombat(oPC) && GetSkillRank(SKILL_OPEN_LOCK, oPC, TRUE) > 0 && ((GetSkillRank(SKILL_OPEN_LOCK, oPC)+20) >= GetLockLockDC(OBJECT_SELF)))
+    {
+        object oChest = OBJECT_SELF;
+        AssignCommand(oPC, ActionUnlockObject(oChest));
+    }
+
     object oParty = GetFirstFactionMember(oPC, FALSE);
 
     while (GetIsObjectValid(oParty))
