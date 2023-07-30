@@ -21,7 +21,7 @@
     Arguments: N/A
 ************************* [Set Effects] ***************************************/
 
-#include "J_INC_CONSTANTS"
+#include "j_inc_constants"
 
 // List (use Global to not conflict with the nwscript.nss!)
 const int GlobalEffectUncommandable               = 0x00000001;// Stun. Sleep. Fear. Turning.

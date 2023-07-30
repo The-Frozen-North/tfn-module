@@ -47,7 +47,7 @@ void main()
     // this is considered a dangerous area, start buffing
     else if (NWNX_Area_GetPVPSetting(GetArea(OBJECT_SELF)) >= 2) 
     {
-        FastBuff(FALSE, FALSE, FALSE); // do not do low duration buffs. no item buffs because we cant tell if it is buffed yet     
+        FastBuff(FALSE, FALSE, FALSE, FALSE, FALSE); // do not do low duration buffs. no item buffs because we cant tell if it is buffed yet    
     }
 
     DetermineHenchmanMount(OBJECT_SELF);

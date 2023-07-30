@@ -18,11 +18,19 @@ void BuffIfNotBuffed(int bSpell, int bInstant)
 
 // FAST BUFF SELF
 // * Dec 19 2002: Added the instant parameter so this could be used for 'legal' spellcasting as well
-void FastBuff(int bInstant = TRUE, int bLowDurationBuffs = TRUE, int bItemBuffs = TRUE)
+void FastBuff(int bInstant = TRUE, int bLowDurationBuffs = TRUE, int bItemBuffs = TRUE, int bDoOnce = TRUE, int bClearActions = TRUE)
 {
-    if (GetLocalInt(OBJECT_SELF, "fast_buffed") == 1) return;
-    SetLocalInt(OBJECT_SELF, "fast_buffed", 1);
-    ClearAllActions(TRUE);
+    if (bDoOnce)
+    {
+        if (GetLocalInt(OBJECT_SELF, "fast_buffed") == 1) return;
+        SetLocalInt(OBJECT_SELF, "fast_buffed", 1);
+    }
+
+    // we probably dont want to clear actions for henchmans, this will keep running for them constantly and may cause them to stop every now and then
+    if (bClearActions)
+    {
+        ClearAllActions(TRUE);
+    }
 
     // General Protections and misc buffs
     BuffIfNotBuffed(SPELL_NEGATIVE_ENERGY_PROTECTION, bInstant);
