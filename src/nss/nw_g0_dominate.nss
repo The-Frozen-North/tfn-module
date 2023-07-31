@@ -29,6 +29,7 @@ void main()
     int nScriptType = GetLastRunScriptEffectScriptType();
     if (nScriptType == RUNSCRIPT_EFFECT_SCRIPT_TYPE_ON_REMOVED)
     {
+        ClearAllActions();
         SetCommandable(TRUE);
         return;
     }

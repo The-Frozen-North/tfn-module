@@ -5,6 +5,7 @@ void main()
 {
     object oObject = StringToObject(NWNX_Events_GetEventData("ITEM"));
     object oPossessor = GetItemPossessor(oObject);
+    object oPC = OBJECT_SELF;
 
     if (GetObjectType(oObject) == OBJECT_TYPE_ITEM && GetIdentified(oObject) && GetLocalInt(oObject, "identified_in_storage") == 0 && GetObjectType(oPossessor) == OBJECT_TYPE_PLACEABLE && GetResRef(oPossessor) == "_pc_storage")
     {
@@ -16,8 +17,8 @@ void main()
         if (GetLocalInt(oObject, "loreb_wasunidentified"))
         {
             DeleteLocalInt(oObject, "loreb_wasunidentified");
-            SetLocalObject(oObject, "webhook_valuable_identifier", oPossessor);
-            ValuableItemWebhook(OBJECT_SELF, oObject, FALSE);
+            ValuableItemWebhook(oPC, oObject, FALSE);
+            SetLocalObject(oObject, "webhook_valuable_identifier", oPC);
         }
     }
 }
