@@ -356,6 +356,13 @@ void main()
                         SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_UNLOCK, "unlock");
                         SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_MELEE_ATTACKED, "bash_lock");
                         nDoors = nDoors + 1;
+
+                        if (!GetLockKeyRequired(oObject))
+                        {
+                            SetLocalInt(oObject, "locked", 1); // set this door to be lockable
+                            SetLocalInt(oObject, "cr", nACR);
+                        }
+
                         if (GetLocked(oObject)) SetLocalInt(oArea, "door_locked"+IntToString(nDoors), 1);
                         SetLocalObject(oArea, "door"+IntToString(nDoors), oObject);
                     //}
