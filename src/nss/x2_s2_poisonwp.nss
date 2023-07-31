@@ -88,7 +88,7 @@ void main()
   }
 
    int nSaveDC     =  StringToInt(Get2DAString(X2_IP_POISONWEAPON_2DA,"SaveDC",nRow));
-   float fDuration   =  120.0 + TurnsToSeconds(d3()); // lasts 2 turns + d3 turns
+   float fDuration   = TurnsToSeconds(4) + TurnsToSeconds(d3()); // lasts 4 turns + d3 turns
    int nPoisonType =  StringToInt(Get2DAString(X2_IP_POISONWEAPON_2DA,"PoisonType",nRow)) ;
    int nApplyDC    =  StringToInt(Get2DAString(X2_IP_POISONWEAPON_2DA,"ApplyCheckDC",nRow)) ;
 
@@ -99,7 +99,7 @@ void main()
        AssignCommand(oPC,ClearAllActions(TRUE));
 
        // poisons do not last as long for the unskilled
-       fDuration = 30.0 + RoundsToSeconds(d6()); // lasts 5 rounds + d6 rounds
+       fDuration = TurnsToSeconds(2) + TurnsToSeconds(d2()); // lasts 2 turns + d2() turns
 
 
        // Poison restricted to assassins and blackguards only?

@@ -4,6 +4,20 @@
 #include "nwnx_util"
 #include "inc_sqlite_time"
 
+void AddPoisonToContainer(string sResRef, string sContainerTag)
+{
+    object oContainer = GetObjectByTag(sContainerTag);
+
+    object oItem = CreateItemOnObject(sResRef, oContainer);
+
+    // remove the first item property, we are going to give it charges instead and allow the poison to be used multiple times
+    RemoveItemProperty(oItem, GetFirstItemProperty(oItem));
+    AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyCastSpell(497, IP_CONST_CASTSPELL_NUMUSES_1_CHARGE_PER_USE), oItem);
+
+    SetItemCharges(oItem, 3);
+    SetIdentified(oItem, TRUE);
+}
+
 int GetIsItemConsumableMisc(object oItem)
 {
     int nBaseItem = GetBaseItemType(oItem);
@@ -876,7 +890,28 @@ void main()
     CreateItemOnObject("manualcha", GetObjectByTag("_MiscT5"));
     CreateItemOnObject("manualint", GetObjectByTag("_MiscT5"));
 
+    // poisons
 
+    // centipede
+    AddPoisonToContainer("x2_it_poison008", "_MiscConsT1");
+    AddPoisonToContainer("x2_it_poison014", "_MiscConsT2");
+    AddPoisonToContainer("x2_it_poison020", "_MiscConsT3");
+    AddPoisonToContainer("x2_it_poison026", "_MiscConsT4");
+    AddPoisonToContainer("x2_it_poison032", "_MiscConsT5");
+
+    // giant bee
+    AddPoisonToContainer("x2_it_poison009", "_MiscConsT1");
+    AddPoisonToContainer("x2_it_poison015", "_MiscConsT2");
+    AddPoisonToContainer("x2_it_poison021", "_MiscConsT3");
+    AddPoisonToContainer("x2_it_poison027", "_MiscConsT4");
+    AddPoisonToContainer("x2_it_poison033", "_MiscConsT5");
+
+    // spider venom
+    AddPoisonToContainer("x2_it_poison007", "_MiscConsT1");
+    AddPoisonToContainer("x2_it_poison013", "_MiscConsT2");
+    AddPoisonToContainer("x2_it_poison019", "_MiscConsT3");
+    AddPoisonToContainer("x2_it_poison025", "_MiscConsT4");
+    AddPoisonToContainer("x2_it_poison031", "_MiscConsT5");
 
     // Hypothesis: there's a limit to the number of items allowed in one container
     // And everything beyond a certain point trying to stuff more in just gets told NO.
