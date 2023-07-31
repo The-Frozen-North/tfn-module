@@ -679,11 +679,11 @@ object CopyTierItemToObjectOrLocation(object oItem, object oContainer = OBJECT_I
     object oNewItem;
     if (GetIsObjectValid(oContainer))
     {
-        object oNewItem = CopyItem(oItem, oContainer, TRUE);
+        oNewItem = CopyItem(oItem, oContainer, TRUE);
     }
     else
     {
-        object oNewItem = CopyObject(oItem, lLocation, OBJECT_INVALID, "", TRUE);   
+        oNewItem = CopyObject(oItem, lLocation, OBJECT_INVALID, "", TRUE);   
     }
 
     if (!GetIsObjectValid(oItem))
