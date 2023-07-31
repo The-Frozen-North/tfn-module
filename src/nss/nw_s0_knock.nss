@@ -47,6 +47,13 @@ void main()
             if (nResist == 0 && !GetLockKeyRequired(oTarget))
             {
                 int nRoll = d20();
+
+                // casters can take 20 out of combat
+                if (!GetIsInCombat(spell.Caster))
+                {
+                    nRoll = 20;
+                }
+
                 int nBase = spell.DC - 10;
                 int nTotal = nRoll + nBase;
                 int nUnlockDC =  GetLockUnlockDC(oTarget);
