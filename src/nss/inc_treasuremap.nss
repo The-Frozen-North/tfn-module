@@ -189,7 +189,7 @@ json SurfacematToNuiColor(int nSurfacemat)
     if (nSurfacemat == 1) { return NuiColor(130, 100, 50, TREASUREMAP_OVERLAY_OPACITY); }   // Dirt
     if (nSurfacemat == 2) { return NuiColor(100, 100, 100, TREASUREMAP_OVERLAY_OPACITY); }  // "Obscuring"
     if (nSurfacemat == 3) { return NuiColor(70, 130, 70, TREASUREMAP_OVERLAY_OPACITY); }    // Grass - light green
-    if (nSurfacemat == 4) { return NuiColor(200, 200, 200, TREASUREMAP_OVERLAY_OPACITY); }  // Stone - grey
+    if (nSurfacemat == 4) { return NuiColor(180, 180, 180, TREASUREMAP_OVERLAY_OPACITY); }  // Stone - grey
     if (nSurfacemat == 5) { return NuiColor(165, 140, 50, TREASUREMAP_OVERLAY_OPACITY); }   // Wood
     if (nSurfacemat == 6) { return NuiColor(50, 125, 255, TREASUREMAP_OVERLAY_OPACITY); }   // Walkable water - light blue
     if (nSurfacemat == 7) { return NuiColor(215, 255, 255, TREASUREMAP_OVERLAY_OPACITY); }  // "nonwalk" - pale cyan
