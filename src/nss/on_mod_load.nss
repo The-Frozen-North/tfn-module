@@ -351,6 +351,7 @@ void main()
 
 // Hide XP gained messages because we handle it ourselves
     NWNX_Feedback_SetFeedbackMessageHidden(182, TRUE);
+    //NWNX_Feedback_SetFeedbackMessageHidden(13, TRUE); // hide lock feedback as we also handle it ourselves
 
 // Events.
 

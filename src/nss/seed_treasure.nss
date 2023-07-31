@@ -492,6 +492,16 @@ void DistributeTreasureToStores(object oItem)
        }
        
        int nTier = GetItemTier(oItem);
+
+// Raise an error if there is an item with a tier that is too high, we multiply costs for some items like scrolls
+       if (nTier > 5)
+       {
+           CopyItemToExistingTarget(oItem, GetObjectByTag("_overvalue"));
+           WriteTimestampedLogEntry("Overvalued Item (Too high of a tier) (" + IntToString(nValue) + "): " + GetName(oItem) + ", resref=" + GetResRef(oItem));
+           DestroyObject(oItem);
+           return;
+       }
+
        sTier = "T" + IntToString(nTier);
 
 

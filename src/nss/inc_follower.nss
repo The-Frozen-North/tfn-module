@@ -115,6 +115,7 @@ void SetFollowerMaster(object oFollower, object oPlayer)
 
     SetLocalString(oFollower, "master", GetObjectUUID(oPlayer));
     SetLocalString(oFollower, "heartbeat_script", "fol_heartb");
+    SetLocalInt(oFollower, "no_credit", 1);
 
     IncrementPlayerStatistic(oPlayer, "followers_recruited");
 

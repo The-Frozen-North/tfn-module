@@ -84,6 +84,12 @@ int GetItemTier(object oItem)
         }
     }
 
+    // if the item exceeds the ILR of a level 12 item. For scrolls this gets rid of lvl 8 and 9 spells
+    if (nValue > 22000)
+    {
+        return 6;
+    }
+
     // Sort by item value
     if (nValue >= MIN_VALUE_T5) {nTier = 5;}
     else if (nValue >= MIN_VALUE_T4) {nTier = 4;}

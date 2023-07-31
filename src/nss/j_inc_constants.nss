@@ -1742,7 +1742,9 @@ int GetIsFighting()
         return TRUE;
     }
     // Final check. Are we in combat?
-    return GetIsInCombat();
+    // we don't actually want to check if in combat, because what happens is that it makes the AI stand still and not attempt to get new targets,
+    // meaning they just stand there while getting pelted with arrows or axes
+    return FALSE; //GetIsInCombat();
 }
 // We check if we can perform a combat action currently.
 // * Checks our action list. Some things like skills, opening doors and so on
@@ -1831,7 +1833,7 @@ int GetIsBusyWithAction()
 int CannotPerformCombatRound()
 {
     // if the master happens to be dead, you can always do a combat round    
-    if (GetIsDead(GetMaster(OBJECT_SELF))) return TRUE;
+    if (GetIsDead(GetMaster(OBJECT_SELF))) return FALSE;
     
     return GetAssociateState(NW_ASC_IS_BUSY) + GetAssociateState(NW_ASC_MODE_STAND_GROUND) + GetIsPerformingSpecialAction() + GetIsBusyWithAction() + GetIsFighting();
 }

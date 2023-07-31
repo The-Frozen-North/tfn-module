@@ -24,7 +24,47 @@ void main()
 
 // only give credit if a PC or their associate killed it or if it was already tagged
 // TODO: Handle traps
-    if (GetIsPC(GetMaster(oKiller)) || GetIsPC(oKiller) || (GetLocalInt(OBJECT_SELF, "player_tagged") == 1))
+
+// dismiss henchman when killing innocent in non-pvp area
+    if ((GetStandardFactionReputation(STANDARD_FACTION_COMMONER, OBJECT_SELF) >= 50 || GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) >= 50) && NWNX_Area_GetPVPSetting(GetArea(OBJECT_SELF)) == NWNX_AREA_PVP_SETTING_NO_PVP)
+    {
+        object oMurderer;
+
+        if (GetIsPC(GetMaster(oKiller)))
+        {
+            oMurderer = GetMaster(oKiller);
+        }
+        else if (GetIsPC(oKiller))
+        {
+            oMurderer = oKiller;
+        }
+
+        IncrementPlayerStatistic(oMurderer, "innocents_killed");
+
+        if (GetIsPC(oMurderer))
+            AdjustAlignment(oMurderer, ALIGNMENT_EVIL, 5, FALSE);
+
+        if (GetIsObjectValid(oMurderer))
+        {
+            ExecuteScript("party_credit", OBJECT_SELF);
+            
+            object oHench = GetFirstFactionMember(oMurderer, FALSE);
+
+            while (GetIsObjectValid(oHench))
+            {
+
+                if (GetMaster(oHench) == oMurderer)
+                {
+                    // skip grimgnaw
+                    if (GetLocalInt(oHench, "follower") == 1) { DismissFollower(oHench); }
+                    else if (GetStringLeft(GetResRef(oHench), 3) == "hen" && GetResRef(oHench) != "hen_grimgnaw") { DismissHenchman(oHench); }
+                }
+
+                oHench = GetNextFactionMember(oMurderer, FALSE);
+            }
+        }
+    }
+    else if (GetIsPC(GetMaster(oKiller)) || GetIsPC(oKiller) || (GetLocalInt(OBJECT_SELF, "player_tagged") == 1))
     {
         ExecuteScript("party_credit", OBJECT_SELF);
     }
@@ -68,44 +108,6 @@ void main()
 
 // Set for no credit after first death so no multiple credit is rewarded (cases of rez or resurrection)
     SetLocalInt(OBJECT_SELF, "no_credit", 1);
-
-// dismiss henchman when killing innocent in non-pvp area
-    if ((GetStandardFactionReputation(STANDARD_FACTION_COMMONER, OBJECT_SELF) >= 50 || GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) >= 50) && NWNX_Area_GetPVPSetting(GetArea(OBJECT_SELF)) == NWNX_AREA_PVP_SETTING_NO_PVP)
-    {
-        object oMurderer;
-
-        if (GetIsPC(GetMaster(oKiller)))
-        {
-            oMurderer = GetMaster(oKiller);
-        }
-        else if (GetIsPC(oKiller))
-        {
-            oMurderer = oKiller;
-        }
-
-        IncrementPlayerStatistic(oMurderer, "innocents_killed");
-
-        if (GetIsPC(oMurderer))
-            AdjustAlignment(oMurderer, ALIGNMENT_EVIL, 5, FALSE);
-
-        if (GetIsObjectValid(oMurderer))
-        {
-            object oHench = GetFirstFactionMember(oMurderer, FALSE);
-
-            while (GetIsObjectValid(oHench))
-            {
-
-                if (GetMaster(oHench) == oMurderer)
-                {
-                    // skip grimgnaw
-                    if (GetLocalInt(oHench, "follower") == 1 && GetResRef(oHench) != "hen_grimgnaw") { DismissFollower(oHench); }
-                    else if (GetStringLeft(GetResRef(oHench), 3) == "hen") { DismissHenchman(oHench); }
-                }
-
-                oHench = GetNextFactionMember(oMurderer, FALSE);
-            }
-        }
-    }
 
     TakeGoldFromCreature(1000, OBJECT_SELF, TRUE);
 

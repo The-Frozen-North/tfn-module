@@ -90,7 +90,7 @@
   },
   "ChallengeRating": {
     "type": "float",
-    "value": 1.0
+    "value": 0.5
   },
   "ClassList": {
     "type": "list",
@@ -99,11 +99,11 @@
         "__struct_id": 2,
         "Class": {
           "type": "int",
-          "value": 20
+          "value": 4
         },
         "ClassLevel": {
           "type": "short",
-          "value": 2
+          "value": 1
         }
       }
     ]
@@ -142,7 +142,7 @@
   },
   "CurrentHitPoints": {
     "type": "short",
-    "value": 5
+    "value": 10
   },
   "DecayTime": {
     "type": "dword",
@@ -187,7 +187,7 @@
   },
   "FactionID": {
     "type": "word",
-    "value": 2
+    "value": 4
   },
   "FeatList": {
     "type": "list",
@@ -197,6 +197,13 @@
         "Feat": {
           "type": "word",
           "value": 228
+        }
+      },
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 90
         }
       },
       {
@@ -228,7 +235,7 @@
   },
   "HitPoints": {
     "type": "short",
-    "value": 5
+    "value": 10
   },
   "Int": {
     "type": "byte",
@@ -262,7 +269,7 @@
   },
   "MaxHitPoints": {
     "type": "short",
-    "value": 7
+    "value": 11
   },
   "NaturalAC": {
     "type": "byte",
@@ -563,11 +570,11 @@
   },
   "StartingPackage": {
     "type": "byte",
-    "value": 82
+    "value": 4
   },
   "Str": {
     "type": "byte",
-    "value": 10
+    "value": 12
   },
   "Subrace": {
     "type": "cexostring",
@@ -588,26 +595,6 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "cook"
-  },
-  "VarTable": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "no_credit"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      }
-    ]
   },
   "WalkRate": {
     "type": "int",

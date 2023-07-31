@@ -23,6 +23,7 @@
 ************************* [Arguments] ******************************************
     Arguments: N/A
 ************************* [Debug] *********************************************/
+#include "inc_debug"
 
 // This will speak a cirtain integer number string (similar to a dialog reference).
 // - I (Jass) have just moved all strings I used all the time into here, so
@@ -48,8 +49,6 @@ void DebugActionSpeakByInt(int iInteger, object oInput = OBJECT_INVALID, int iIn
     // TO UNCOMMENT/COMMENT:
     // - Add/Remove in "//" before the next lines "/*"
     // - Recompile all files
-
-    /*
 
     string sDebug;
     switch(iInteger)
@@ -154,13 +153,12 @@ void DebugActionSpeakByInt(int iInteger, object oInput = OBJECT_INVALID, int iIn
     {
         DebugActionSpeak(sDebug);
     }
-    // */
 }
 
 void DebugActionSpeak(string sString)
 {
 // You MUST uncomment this line, IF you use either of the below things
-    //string sNew = "[Debug]" + GetName(OBJECT_SELF) + "[ObjectID]" + ObjectToString(OBJECT_SELF) + " [Debug] " + sString;
+    string sNew = "[Debug]" + GetName(OBJECT_SELF) + "[ObjectID]" + ObjectToString(OBJECT_SELF) + " [Debug] " + sString;
 
 // Note, uncomment this, so that DM's can hear the debug speaks, normally it is
 // only server admins who can hear the debug. If you are not testing, it might
@@ -171,18 +169,13 @@ void DebugActionSpeak(string sString)
 
 // Note, uncomment this line to send a message to the first PC in the module.
 // - Useful for singleplayer testing
-    //SendMessageToPC(GetFirstPC(), sNew);
+    if (GetIsObjectValid(GetMaster()))
+    {
+        SendDebugMessage(sNew);
+    }
 
 // This writes the entry to the log, very important, if debugging
 // Futher: - If left up for a long time, logs can get very big with the AI
 //         - Use to find problems in the AI and report to me :-D (Jasperre)
     //WriteTimestampedLogEntry(sNew);
 }
-
-// Debug: To compile this script full, uncomment all of the below.
-/*
-void main()
-{
-    DebugActionSpeak("Test");
-}
-*/

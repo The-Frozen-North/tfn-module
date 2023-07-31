@@ -7,6 +7,8 @@
 #include "nwnx_item"
 #include "inc_general"
 
+const string MODULE_HOME_TAG_SUFFIX = "_home_tag";
+
 /* Declarations */
 // Return iPinID of the first deleted map pin within the personal map pin array
 int GetFirstDeletedMapPin(object oPC);
@@ -138,57 +140,57 @@ string GetHomeTagInDistrict(string sPlayerCDKey, string sAreaTag)
     return "";
 }
 
+string GetHomeTagByCDKey(string sPlayerCDKey);
+string GetHomeTagByCDKey(string sPlayerCDKey)
+{
+    object oModule = GetModule();
+    
+    // get the cached home tag if present
+    string sModuleLocal = GetLocalString(GetModule(), sPlayerCDKey+MODULE_HOME_TAG_SUFFIX);
+
+    // this won't be retrieved for the first time, but on any subsequent try if they have a home
+    if (sModuleLocal != "")
+    {
+        return sModuleLocal;
+    }
+    
+    if (GetHomeTagInDistrict(sPlayerCDKey, "begg") != "")
+    {
+        // cache the result
+        SetLocalString(oModule, sPlayerCDKey+MODULE_HOME_TAG_SUFFIX, GetHomeTagInDistrict(sPlayerCDKey, "begg"));
+        return GetHomeTagInDistrict(sPlayerCDKey, "begg");
+    }
+    else if (GetHomeTagInDistrict(sPlayerCDKey, "core") != "")
+    {
+        SetLocalString(oModule, sPlayerCDKey+MODULE_HOME_TAG_SUFFIX, GetHomeTagInDistrict(sPlayerCDKey, "core"));
+        return GetHomeTagInDistrict(sPlayerCDKey, "core");
+    }
+    else if (GetHomeTagInDistrict(sPlayerCDKey, "dock") != "")
+    {
+        SetLocalString(oModule, sPlayerCDKey+MODULE_HOME_TAG_SUFFIX, GetHomeTagInDistrict(sPlayerCDKey, "dock"));
+        return GetHomeTagInDistrict(sPlayerCDKey, "dock");
+    }
+    else if (GetHomeTagInDistrict(sPlayerCDKey, "blak") != "")
+    {
+        SetLocalString(oModule, sPlayerCDKey+MODULE_HOME_TAG_SUFFIX, GetHomeTagInDistrict(sPlayerCDKey, "blak"));
+        return GetHomeTagInDistrict(sPlayerCDKey, "blak");
+    }
+    else
+    {
+        // if for some reason this fails, just delete the stored home tag
+        DeleteLocalString(oModule, sPlayerCDKey+MODULE_HOME_TAG_SUFFIX);
+        return "";
+    }
+}
+
 string GetHomeTag(object oPC);
 string GetHomeTag(object oPC)
 {
     string sPlayerCDKey = GetPCPublicCDKey(oPC);
 
-    if (GetHomeTagInDistrict(sPlayerCDKey, "begg") != "")
-    {
-        return GetHomeTagInDistrict(sPlayerCDKey, "begg");
-    }
-    else if (GetHomeTagInDistrict(sPlayerCDKey, "core") != "")
-    {
-        return GetHomeTagInDistrict(sPlayerCDKey, "core");
-    }
-    else if (GetHomeTagInDistrict(sPlayerCDKey, "dock") != "")
-    {
-        return GetHomeTagInDistrict(sPlayerCDKey, "dock");
-    }
-    else if (GetHomeTagInDistrict(sPlayerCDKey, "blak") != "")
-    {
-        return GetHomeTagInDistrict(sPlayerCDKey, "blak");
-    }
-    else
-    {
-        return "";
-    }
+    return GetHomeTagByCDKey(sPlayerCDKey);
 }
 
-string GetHomeTagByCDKey(string sPlayerCDKey);
-string GetHomeTagByCDKey(string sPlayerCDKey)
-{
-    if (GetHomeTagInDistrict(sPlayerCDKey, "begg") != "")
-    {
-        return GetHomeTagInDistrict(sPlayerCDKey, "begg");
-    }
-    else if (GetHomeTagInDistrict(sPlayerCDKey, "core") != "")
-    {
-        return GetHomeTagInDistrict(sPlayerCDKey, "core");
-    }
-    else if (GetHomeTagInDistrict(sPlayerCDKey, "dock") != "")
-    {
-        return GetHomeTagInDistrict(sPlayerCDKey, "dock");
-    }
-    else if (GetHomeTagInDistrict(sPlayerCDKey, "blak") != "")
-    {
-        return GetHomeTagInDistrict(sPlayerCDKey, "blak");
-    }
-    else
-    {
-        return "";
-    }
-}
 
 // returns true if the PC is a homeless bum :P
 // i.e he doesn't have a house in the beggar's nest, city core, docks, or blacklake
@@ -288,6 +290,9 @@ void InitializeHouse(object oArea)
 void ClearHouseOwnership(object oDoor, object oPC);
 void ClearHouseOwnership(object oDoor, object oPC)
 {
+    // delete the module cache for the home tag
+    DeleteLocalString(GetModule(), GetPCPublicCDKey(oPC)+MODULE_HOME_TAG_SUFFIX);
+    
     string sTag = GetLocalString(oDoor, "area");
     DeleteCampaignVariable("housing", sTag);
     FloatingTextStringOnCreature("You are no longer the owner of the house at "+GetName(GetArea(oDoor))+" "+GetLocalString(oDoor, "coordinates")+".", oPC, FALSE);
