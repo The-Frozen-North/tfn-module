@@ -118,7 +118,17 @@ void OpenMerchant(object oMerchant, object oStore, object oPC)
     if (nBonusMarkDown > MERCHANT_BUY_MODIFIER_CAP) nBonusMarkDown = MERCHANT_BUY_MODIFIER_CAP;
     if (nBonusMarkDown < -MERCHANT_BUY_MODIFIER_CAP) nBonusMarkDown = -MERCHANT_BUY_MODIFIER_CAP;
 
-    FloatingTextStringOnCreature("*Merchant Reaction: " + IntToString(nAdjust) + " (Appraise: "+IntToString(nPCAppraise)+", Charisma: "+IntToString(nPCCharisma)+sCharm+")*", oPC, FALSE);
+    string sReaction = "neutral";
+    if (nAdjust < 0)
+    {
+        sReaction = "unfavorable";
+    }
+    else if (nAdjust > 0)
+    {
+        sReaction = "favorable";
+    }
+
+    FloatingTextStringOnCreature("*Merchant Reaction is " + sReaction + ": " + IntToString(nAdjust) + " (Appraise: "+IntToString(nPCAppraise)+", Charisma: "+IntToString(nPCCharisma)+sCharm+")*", oPC, FALSE);
     // FloatingTextStringOnCreature("*Merchant Reaction: " + IntToString(nBonusMarkUp) + "% discount, " + IntToString(nBonusMarkUp) + "% sell price (Appraise: "+IntToString(nPCAppraise)+", Charisma: "+IntToString(nPCCharisma)+sCharm+")*", oPC, FALSE);
 
     OpenStore(oStore, oPC, -nBonusMarkUp, nBonusMarkDown);

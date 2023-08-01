@@ -14,9 +14,19 @@
 void main()
 {
     RandomiseGenderAndAppearance(OBJECT_SELF);
-    RandomiseCreatureSoundset_Rough(OBJECT_SELF);
+
     int bRanged = 0;
     string sResRef = GetResRef(OBJECT_SELF);
+
+    if (sResRef == "bandit_mage")
+    {
+        RandomiseCreatureSoundset_Intellectual(OBJECT_SELF);
+    }
+    else
+    {
+        RandomiseCreatureSoundset_Rough(OBJECT_SELF);
+    }
+
     if (sResRef == "bandit" || sResRef == "bandit_outlaw")
     {
         bRanged = 1;

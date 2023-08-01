@@ -60,61 +60,11 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 1
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
                 "value": 0
               },
               "IsChild": {
                 "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
+                "value": 0
               }
             }
           ]
@@ -134,7 +84,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Hey there! You're one of the students here at the Academy, aren't you? I'm Berna, the quartermaster. If you need any supplies before you set out to help the city, I can help you with that. I'm not much for buying items though - Olgerd in the Docks will offer more than I do, if you feel up to the walk."
+            "0": "Hey there! You're one of the students here at the Academy, aren't you?"
           }
         }
       },
@@ -179,11 +129,15 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
             },
             {
@@ -198,11 +152,15 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 1
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
             },
             {
@@ -217,11 +175,15 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 0
+                "value": 1
               },
               "IsChild": {
                 "type": "byte",
-                "value": 0
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
               }
             }
           ]
@@ -232,17 +194,16 @@
         },
         "Sound": {
           "type": "resref",
-          "value": "vs_nnwcomf1_052"
+          "value": ""
         },
         "Speaker": {
           "type": "cexostring",
           "value": ""
         },
         "Text": {
-          "id": 61524,
           "type": "cexolocstring",
           "value": {
-            "0": "Welcome back, <FirstName>. What can I do for you? Do you need more basic supplies? I can buy items you find too, but don't forget that Olgerd in the Docks should offer more for them."
+            "0": "I'm Berna, the quartermaster. If you need any supplies before you set out to help the city, I can help you with that. I'm not much for buying items though - Olgerd in the Docks will offer more than I do, if you feel up to the walk."
           }
         }
       },
@@ -287,7 +248,115 @@
               },
               "Index": {
                 "type": "dword",
+                "value": 3
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
                 "value": 2
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 2,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 1
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": "vs_nnwcomf1_hi"
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "id": 61524,
+          "type": "cexolocstring",
+          "value": {
+            "0": "Welcome back, <FirstName>. What can I do for you? Do you need more basic supplies? I can buy items you find too, but don't forget that Olgerd in the Docks should offer more for them."
+          }
+        }
+      },
+      {
+        "__struct_id": 3,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -310,7 +379,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 0
+                "value": 1
               },
               "IsChild": {
                 "type": "byte",
@@ -363,6 +432,71 @@
         },
         "Animation": {
           "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "EntriesList": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 1
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            }
+          ]
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": ""
+          }
+        }
+      },
+      {
+        "__struct_id": 1,
+        "ActionParams": {
+          "type": "list",
+          "value": []
+        },
+        "Animation": {
+          "type": "dword",
           "value": 1
         },
         "AnimLoop": {
@@ -402,7 +536,7 @@
         }
       },
       {
-        "__struct_id": 1,
+        "__struct_id": 2,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -438,7 +572,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -467,7 +601,7 @@
         }
       },
       {
-        "__struct_id": 2,
+        "__struct_id": 3,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -529,7 +663,7 @@
         },
         "Index": {
           "type": "dword",
-          "value": 1
+          "value": 2
         }
       },
       {
