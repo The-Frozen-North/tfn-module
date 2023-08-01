@@ -1,6 +1,8 @@
-#include "nui_playerstats"
+#include "inc_areadist"
 
 void main()
 {
-    ShowPlayerStatsUI(GetFirstPC());
+    object oArea = GetArea(GetFirstPC());
+    //PrepareAreaTransitionDB();
+    SpeakString(JsonDump(GetAreasWithinDistance(oArea, 1000)));
 }

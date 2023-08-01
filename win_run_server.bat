@@ -43,12 +43,14 @@ del /f server\database\treasures.sqlite3
 del /f server\database\randspellbooks.sqlite3
 del /f server\database\prettify.sqlite3
 del /f server\database\tmapsolutions.sqlite3
+del /f server\database\areadistances.sqlite3
 del /f server\settings.tml
 rmdir /s /q  server\override
 copy modules\TFN.mod server\modules\TFN.mod
 copy config\common.env server\config\common.env
 copy settings.tml server\settings.tml
 copy seeded_database\tmapsolutions.sqlite3 server\database\tmapsolutions.sqlite3
+copy seeded_database\areadistances.sqlite3 server\database\areadistances.sqlite3
 copy seeded_database\spawns.sqlite3 server\database\spawns.sqlite3
 copy seeded_database\treasures.sqlite3 server\database\treasures.sqlite3
 copy seeded_database\randspellbooks.sqlite3 server\database\randspellbooks.sqlite3

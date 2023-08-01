@@ -17,6 +17,7 @@
 #include "util_i_csvlists"
 #include "inc_prettify"
 #include "inc_loot"
+#include "inc_areadist"
 #include "nwnx_damage"
 
 const int SEED_SPAWNS = 1;
@@ -25,8 +26,9 @@ const int SEED_SPELLBOOKS = 0;
 // These two check to see if stuff needs updating before doing it
 // Turning them off might shave off 30s to a minute from a seeding run but that is about it
 // When run from scratch they are by far the slowest of the bunch
+const int SEED_AREA_CONNECTIONS = 1; // ~5 minutes, but knows if something was changed
 const int SEED_PRETTIFY_PLACEABLES = 1; // ~40 minutes
-const int SEED_TREASUREMAPS = 1;        // ~3 hours
+const int SEED_TREASUREMAPS = 1;        // ~4 hours
 
 void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)
 {
@@ -96,6 +98,33 @@ void EnsureAreaBilateralLinkages()
         }
         oArea = GetNextArea();
     }
+}
+
+void InitialiseAreas()
+{
+    object oArea = GetFirstArea();
+    while (GetIsObjectValid(oArea))
+   {
+       string sAreaResRef = GetResRef(oArea);
+// Skip the system areas or copied areas. They are prepended with an underscore.
+       if (GetStringLeft(sAreaResRef, 1) == "_")
+       {
+           oArea = GetNextArea();
+           continue;
+       }
+
+        // Skip prefab areas
+        if (GetStringLeft(GetName(oArea), 8) == "_PREFAB_")
+        {
+            oArea = GetNextArea();
+            continue;
+        }
+
+       ExecuteScript("area_init", oArea);
+
+       oArea = GetNextArea();
+   }
+    
 }
 
 void SeedMonitor()
@@ -222,6 +251,15 @@ void SeedMonitor()
                 ExecuteScript("seed_treasuremap");
             }
         }
+        else if (nStage == 5)
+        {
+            if (SEED_AREA_CONNECTIONS)
+            {
+                // This is needed to set up connection lists for all areas
+                InitialiseAreas();
+                PrepareAreaTransitionDB();
+            }
+        }
         else
         {
             // Done!
@@ -229,6 +267,7 @@ void SeedMonitor()
             WriteTimestampedLogEntry("Spawns were " + (SEED_SPAWNS ? "" : "NOT ") + "seeded.");
             WriteTimestampedLogEntry("Treasures were " + (SEED_TREASURES ? "" : "NOT ") + "seeded.");
             WriteTimestampedLogEntry("Random spellbooks were " + (SEED_SPELLBOOKS ? "" : "NOT ") + "seeded.");
+            WriteTimestampedLogEntry("Area connections were " + (SEED_AREA_CONNECTIONS ? "" : "NOT ") + "seeded.");
             WriteTimestampedLogEntry("Prettify placeables were " + (SEED_PRETTIFY_PLACEABLES ? "" : "NOT ") + "seeded.");
             WriteTimestampedLogEntry("Treasure map locations were " + (SEED_TREASUREMAPS ? "" : "NOT ") + "seeded.");
             NWNX_Administration_ShutdownServer();
@@ -712,36 +751,12 @@ void main()
    BuildItemNamesToObjectsDB();
    SetLocalInt(GetModule(), "treasure_ready", 1);
    CalculatePlaceableLootValues();
-
-   object oArea = GetFirstArea();
-   string sAreaResRef;
-   location lBaseLocation = Location(GetObjectByTag("_BASE"), Vector(1.0, 1.0, 1.0), 0.0);   
    
 
    LoadAllPrettifyPlaceables();
 
 // Loop through all objects in the module.
-   while (GetIsObjectValid(oArea))
-   {
-       sAreaResRef = GetResRef(oArea);
-// Skip the system areas or copied areas. They are prepended with an underscore.
-       if (GetStringLeft(sAreaResRef, 1) == "_")
-       {
-           oArea = GetNextArea();
-           continue;
-       }
-
-        // Skip prefab areas
-        if (GetStringLeft(GetName(oArea), 8) == "_PREFAB_")
-        {
-            oArea = GetNextArea();
-            continue;
-        }
-
-       ExecuteScript("area_init", oArea);
-
-       oArea = GetNextArea();
-   }
+   InitialiseAreas();
    EnsureAreaBilateralLinkages();
    
    // Add quests that don't have variables set on any creature here
