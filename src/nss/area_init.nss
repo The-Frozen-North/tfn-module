@@ -178,8 +178,28 @@ void main()
                       }
                 }
 
+                json jVarTable = GffGetList(jEncounter, "VarTable");
+                int nSize = JsonGetLength(jVarTable);
+                int nPos = 0;
+                string sRare;
+                for (nPos=0; nPos<nSize; nPos++)
+                {
+                    json jStruct = JsonArrayGet(jVarTable, nPos);
+                    string sVarName = JsonGetString(GffGetString(jStruct, "Name"));
+
+                    if (sVarName == "rare")
+                    {
+                        sRare = JsonGetString(GffGetString(jStruct, "Value"));
+                    }
+                }
+
                 WriteTimestampedLogEntry(sTarget+"_list_unique "+sListUnique);
                 WriteTimestampedLogEntry(sTarget+"_list "+sList);
+
+                if (sRare != "")
+                {
+                    SetLocalString(oArea, sTarget+"_rare", sRare);    
+                }
 
                 SetLocalString(oArea, sTarget+"_list_unique", sListUnique);
                 SetLocalString(oArea, sTarget+"_list", sList);

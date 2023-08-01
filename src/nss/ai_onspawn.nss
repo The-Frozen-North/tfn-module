@@ -106,7 +106,7 @@ void main()
                 if (d3() == 1) GeneratePickpocketItem();
             }
             // 2x the gold on semibosses or immortals (quest/unique npcs usually)
-            else if (GetLocalInt(OBJECT_SELF, "semiboss") == 1 || GetImmortal(OBJECT_SELF))
+            else if (GetLocalInt(OBJECT_SELF, "semiboss") == 1 || GetLocalInt(OBJECT_SELF, "rare") || GetImmortal(OBJECT_SELF))
             {
                 nGold = nGold * 2;
                 GeneratePickpocketItem("Misc");
@@ -132,7 +132,7 @@ void main()
         // Increased area CR means higher quality loot allowed
         iAreaCR = FloatToInt(IntToFloat(iAreaCR) * BOSS_AREA_CR_MULTIPLIER);
     }
-    else if (GetLocalInt(OBJECT_SELF, "semiboss"))
+    else if (GetLocalInt(OBJECT_SELF, "semiboss") || GetLocalInt(OBJECT_SELF, "rare"))
     {
         fCR = fCR * SEMIBOSS_CR_MULTIPLIER;
         iAreaCR = FloatToInt(IntToFloat(iAreaCR) * SEMIBOSS_AREA_CR_MULTIPLIER);

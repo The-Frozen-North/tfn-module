@@ -98,7 +98,13 @@ void main()
     
     int nAC = GetACOfArmorToEquip(OBJECT_SELF, nMaxAC);
     //WriteTimestampedLogEntry("Max AC = " + IntToString(nMaxAC) + " -> " + IntToString(nAC));
-    TryEquippingRandomArmorOfTier(nAC, 1 + (d100() > 95), 2, OBJECT_SELF);
+
+    // rare bandits have static armor
+    if (sResRef != "bandit_leader" && sResRef != "bandit_captain")
+    {
+        TryEquippingRandomArmorOfTier(nAC, 1 + (d100() > 95), 2, OBJECT_SELF);
+    }
+
     struct RandomWeaponResults rwr = RollRandomWeaponTypesForCreature(OBJECT_SELF);
     
     object oMain = TryEquippingRandomItemOfTier(rwr.nMainHand, 1 + (d100() > 95), 2, OBJECT_SELF, INVENTORY_SLOT_RIGHTHAND);

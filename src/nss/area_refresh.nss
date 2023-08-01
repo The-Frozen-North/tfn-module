@@ -4,6 +4,8 @@
 #include "nwnx_object"
 #include "inc_sqlite_time"
 
+const int CHANCE_OF_RARE_SPAWN = 15;
+
 string ChooseSpawnRef(object oArea, int nTarget)
 {
     string sTarget = "random"+IntToString(nTarget);
@@ -48,7 +50,7 @@ int CanSpendGoldOnPlaceable(int nTargetGold, int nPlaceableCost)
     return 0;
 }
 
-void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
+void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints, int bSpawnRare)
 {
       string sResRef = GetResRef(oArea);
       int nMax = 100;
@@ -75,6 +77,9 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
       int nSpawn;
       int nSpawnPoint;
       int nTotalSpawnsOfThisTarget = 1;
+      string sSpawnRef;
+      int nRareSpawnPoint = Random(nSpawns) +1;
+      int bRareSpawned = FALSE;
       for (nSpawnPoint = 1; nSpawnPoint <= nSpawnPoints; nSpawnPoint++)
       {
           int nSpawnPointsRemaining = (nSpawnPoints+1) - nSpawnPoints;
@@ -85,12 +90,25 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints)
               nNumAtThisSpawnPoint++;
               nLeftoverEvenSpawns--;
           }
+
+        if (bSpawnRare && !bRareSpawned && nSpawnPoint == nRareSpawnPoint)
+        {
+            sSpawnRef = GetLocalString(oArea, "random"+IntToString(nTarget)+"_rare");
+            bRareSpawned = TRUE; // rare has been spawned, do NOT spawn another one!
+            SendDebugMessage("rare spawned: "+sSpawnRef);
+        }
+        else
+        {
+            sSpawnRef = ChooseSpawnRef(oArea, nTarget);
+        }
+               
+
           for (nSpawn = 1; nSpawn <= nNumAtThisSpawnPoint; nSpawn++)
           {
                lLocation = GetLocalLocation(oArea, "random"+IntToString(nTarget)+"_spawn_point"+IntToString(nSpawnPoint));
                vSpawnWP = GetPositionFromLocation(lLocation);
 
-               oCreature = CreateObject(OBJECT_TYPE_CREATURE, ChooseSpawnRef(oArea, nTarget), Location(oArea, Vector(vSpawnWP.x, vSpawnWP.y, vSpawnWP.z), IntToFloat(Random(360)+1)));
+               oCreature = CreateObject(OBJECT_TYPE_CREATURE, sSpawnRef, Location(oArea, Vector(vSpawnWP.x, vSpawnWP.y, vSpawnWP.z), IntToFloat(Random(360)+1)));
 
                if (sSpawnScript != "")
                {
@@ -293,7 +311,30 @@ void main()
 
      string sEncounter;
      int nRandomSpawnPointTotal;
-     //int i;
+     json jRandomRareTargetsList = JsonArray();
+     int nRareTarget = -1;
+
+// construct a list of encounters that are eligible to spawn a rare
+     if (d100() <= CHANCE_OF_RARE_SPAWN)
+     {
+        // first get a list of all encounters that are eligible for a rare spawn
+        for (i = 1; i < 10; i++)
+        {
+            sEncounter = GetLocalString(OBJECT_SELF, "random"+IntToString(i));
+            if (sEncounter == "") continue;
+
+            nRandomSpawnPointTotal = GetLocalInt(OBJECT_SELF, "random"+IntToString(i)+"_spawn_point_total");
+            if (nRandomSpawnPointTotal == 0) continue;
+
+            if (GetLocalString(OBJECT_SELF, "random"+IntToString(i)+"_rare") != "")
+            {
+                jRandomRareTargetsList = JsonArrayInsert(jRandomRareTargetsList, JsonInt(i));
+            }
+        }
+        nRareTarget = JsonGetInt(JsonArrayGet(jRandomRareTargetsList, Random(JsonGetLength(jRandomRareTargetsList))));
+     }
+
+     int bSpawnRare = FALSE;
      for (i = 1; i < 10; i++)
      {
         sEncounter = GetLocalString(OBJECT_SELF, "random"+IntToString(i));
@@ -302,11 +343,15 @@ void main()
         nRandomSpawnPointTotal = GetLocalInt(OBJECT_SELF, "random"+IntToString(i)+"_spawn_point_total");
         if (nRandomSpawnPointTotal == 0) continue;
 
-        CreateRandomSpawns(OBJECT_SELF, i, nRandomSpawnPointTotal);
+        bSpawnRare = FALSE;
+        if (nRareTarget == i)
+        {
+            bSpawnRare = TRUE;
+        }
+
+        CreateRandomSpawns(OBJECT_SELF, i, nRandomSpawnPointTotal, bSpawnRare);
      }
      
-     
-
      string sRefreshScript = GetLocalString(OBJECT_SELF, "refresh_script");
      if (sRefreshScript != "") ExecuteScript(sRefreshScript, OBJECT_SELF);
 }

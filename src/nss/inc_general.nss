@@ -642,7 +642,7 @@ void DetermineMaxHitPoints(object oCreature)
     // don't do this for pets
     if (GetAssociateType(oCreature) == ASSOCIATE_TYPE_FAMILIAR || GetAssociateType(oCreature) == ASSOCIATE_TYPE_ANIMALCOMPANION) return;
 
-    int bMaximize = GetLocalInt(oCreature, "boss") == 1 || GetLocalInt(oCreature, "semiboss") == 1;
+    int bMaximize = GetLocalInt(oCreature, "boss") == 1 || GetLocalInt(oCreature, "semiboss") == 1 || GetLocalInt(oCreature, "rare") == 1;
 
     int nHP = GetHitPointsByClassPosition(oCreature, 1, bMaximize) + GetHitPointsByClassPosition(oCreature, 2, bMaximize) + GetHitPointsByClassPosition(oCreature, 3, bMaximize);
 
