@@ -22,13 +22,13 @@ const float QUEST_XP_LEVEL_ADJUSTMENT_MODIFIER = 0.1;
 const float BASE_XP = 4.0;
 
 // The XP tiers for quests.
-const float QUEST_XP_T1 = 50.0;
-const float QUEST_XP_T2 = 100.0;
-const float QUEST_XP_T3 = 200.0;
-const float QUEST_XP_T4 = 400.0;
+const float QUEST_XP_T1 = 75.0;
+const float QUEST_XP_T2 = 150.0;
+const float QUEST_XP_T3 = 300.0;
+const float QUEST_XP_T4 = 600.0;
 
 // The maximum XP limit for a single kill
-const float XP_MAX = 20.0;
+const float XP_MAX = 25.0;
 
 // The amount of XP rewarded per target level for quests
 const float XP_BONUS_PER_LEVEL = 0.1;
@@ -60,8 +60,16 @@ const int K_DEBUG_TEXT = 0;
 const int PARTY_GAP_MAX = 4;
 
 // PARTY_SIZE_BASE_MOD / PARTY_SIZE_BASE_MOD - 1.0 + party size = 75% xp with a party size of 2 and a base mod of 3
-const float PARTY_SIZE_BASE_MOD = 3.0; // increase
+// with a base mod of 5 and a party of two, the xp percentage is 83%
+const float PARTY_SIZE_BASE_MOD = 5.0; // increase to decrease XP penalty
 
+const float XP_FACTOR_PER_CR = 14.0;
+
+// at very low levels, you get a lot more XP than you should just because the levels are divided by a very small number
+// this is a special case to decrease the amount of xp in those cases
+const float LEVEL_2_XP_MULTIPLIER = 0.7;
+
+const float LEVEL_3_XP_MULTIPLIER = 0.85;
 
 // **** SYSTEM SETTINGS END - YOU SHOULD NOT MODIFY ANYTHING BELOW THIS! *******************************************
 
@@ -131,9 +139,6 @@ float Truncate(float fFloat)
 {
     return StringToFloat(FloatToString(fFloat, 3, 2));
 }
-
-
-
 
 void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
 {
@@ -323,29 +328,29 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
    if (GetLocalInt(oCreature, "no_xp") == 1) return 0.0;
 
    if (fCR <= 0.0) {return 0.0;}
-   else if (fCR <= 1.0/8.0) {fXP = BASE_XP + 2.0;}
-   else if (fCR <= 1.0/6.0) {fXP = BASE_XP + 3.0;}
-   else if (fCR <= 1.0/4.0) {fXP = BASE_XP + 4.0;}
-   else if (fCR <= 1.0/3.0) {fXP = BASE_XP + 5.0;}
-   else if (fCR <= 1.0/2.0) {fXP = BASE_XP + 6.0;}
-   else if (fCR <= 1.0) {fXP = BASE_XP + 12.0;}
-   else if (fCR <= 2.0) {fXP = BASE_XP + 20.0;}
-   else if (fCR <= 3.0) {fXP = BASE_XP + 28.0;}
-   else if (fCR <= 4.0) {fXP = BASE_XP + 36.0;}
-   else if (fCR <= 5.0) {fXP = BASE_XP + 44.0;}
-   else if (fCR <= 6.0) {fXP = BASE_XP + 52.0;}
-   else if (fCR <= 7.0) {fXP = BASE_XP + 60.0;}
-   else if (fCR <= 8.0) {fXP = BASE_XP + 66.0;}
-   else if (fCR <= 9.0) {fXP = BASE_XP + 72.0;}
-   else if (fCR <= 10.0) {fXP = BASE_XP + 80.0;}
-   else if (fCR <= 11.0) {fXP = BASE_XP + 88.0;}
-   else if (fCR <= 12.0) {fXP = BASE_XP + 96.0;}
-   else if (fCR <= 13.0) {fXP = BASE_XP + 104.0;}
-   else if (fCR <= 14.0) {fXP = BASE_XP + 112.0;}
-   else if (fCR <= 15.0) {fXP = BASE_XP + 120.0;}
-   else if (fCR <= 16.0) {fXP = BASE_XP + 128.0;}
-   else if (fCR <= 17.0) {fXP = BASE_XP + 136.0;}
-   else if (fCR > 17.0) {fXP = BASE_XP + 144.0;}
+   else if (fCR <= 0.13) {fXP = BASE_XP + 4.0;}
+   else if (fCR <= 0.17) {fXP = BASE_XP + 5.0;}
+   else if (fCR <= 0.26) {fXP = BASE_XP + 6.0;}
+   else if (fCR <= 0.34) {fXP = BASE_XP + 8.0;}
+   else if (fCR <= 0.51) {fXP = BASE_XP + 10.0;}
+   else if (fCR <= 1.0) {fXP = BASE_XP + (1.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 2.0) {fXP = BASE_XP + (2.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 3.0) {fXP = BASE_XP + (3.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 4.0) {fXP = BASE_XP + (4.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 5.0) {fXP = BASE_XP + (5.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 6.0) {fXP = BASE_XP + (6.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 7.0) {fXP = BASE_XP + (7.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 8.0) {fXP = BASE_XP + (8.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 9.0) {fXP = BASE_XP + (9.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 10.0) {fXP = BASE_XP + (10.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 11.0) {fXP = BASE_XP + (11.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 12.0) {fXP = BASE_XP + (12.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 13.0) {fXP = BASE_XP + (13.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 14.0) {fXP = BASE_XP + (14.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 15.0) {fXP = BASE_XP + (15.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 16.0) {fXP = BASE_XP + (16.0 * XP_FACTOR_PER_CR);}
+   else if (fCR <= 17.0) {fXP = BASE_XP + (17.0 * XP_FACTOR_PER_CR);}
+   else if (fCR > 17.0) {fXP = BASE_XP + (18.0 * XP_FACTOR_PER_CR);}
    else {return 0.0;}
 
    fXP = fXP * fMultiplier;
@@ -388,7 +393,7 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
        if ((fXP*fXPPenaltyMod) > XP_MAX) fXP = XP_MAX;
 
     // award more XP if the enemy is a caster or can summon pets
-       if (GetLevelByClass(CLASS_TYPE_DRUID, OBJECT_SELF) >= 1 || GetLevelByClass(CLASS_TYPE_SORCERER, OBJECT_SELF) > 1 || GetLevelByClass(CLASS_TYPE_WIZARD, OBJECT_SELF) >= 1 || GetLevelByClass(CLASS_TYPE_CLERIC, OBJECT_SELF) > 1 || GetLevelByClass(CLASS_TYPE_RANGER, OBJECT_SELF) >= 6 )
+       if (GetLevelByClass(CLASS_TYPE_DRUID, oCreature) >= 1 || GetLevelByClass(CLASS_TYPE_SORCERER, oCreature) > 1 || GetLevelByClass(CLASS_TYPE_WIZARD, oCreature) >= 1 || GetLevelByClass(CLASS_TYPE_CLERIC, oCreature) > 1 || GetLevelByClass(CLASS_TYPE_RANGER, oCreature) >= 6 )
            fXP = fXP * 1.25;
    }
 

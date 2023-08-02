@@ -885,7 +885,10 @@ void main()
            oKiller = GetMaster(oKiller);
        }
    }
-   
+
+   int nPCLevel;
+   int nAdjustedXP;
+
    for(nNth = 1; nNth <= Party.PlayerSize; nNth++)
    {
 // Credit players in previously set array "Players"
@@ -898,15 +901,29 @@ void main()
       {
           // includes neutrals or people outside of party
           IncrementPlayerStatistic(oPC, "enemies_killed_with_credit");
-          GiveXPToPC(oPC, fXP);
+
+          nPCLevel = GetLevelFromXP(GetXP(oPC));
+          float fAdjustedXP = fXP;
+
+        // low levels get too much XP from killing things
+        if (nPCLevel <= 2)
+        {
+            fAdjustedXP *= LEVEL_2_XP_MULTIPLIER;
+        }
+        else if (nPCLevel == 3)
+        {
+            fAdjustedXP *= LEVEL_3_XP_MULTIPLIER;   
+        }
+
+          GiveXPToPC(oPC, fAdjustedXP);
           AdvanceQuest(OBJECT_SELF, oPC, GetLocalInt(OBJECT_SELF, "quest_kill"));
           
           if (oKiller == oPC)
           {
               // Number of personal kills is in ai_ondeath already
-              IncrementPlayerStatistic(oPC, "kill_xp_value", FloatToInt(fXP*100.0));
+              IncrementPlayerStatistic(oPC, "kill_xp_value", FloatToInt(fAdjustedXP*100.0));
           }
-          IncrementPlayerStatistic(oPC, "total_xp_from_partys_kills", FloatToInt(fXP*100.0));
+          IncrementPlayerStatistic(oPC, "total_xp_from_partys_kills", FloatToInt(fAdjustedXP*100.0));
       }
 
 // only proceed with loot code if container exists
