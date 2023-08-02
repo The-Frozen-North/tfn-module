@@ -10,7 +10,7 @@ int StartingConditional()
     {
         if (GetResRef(oItem) == sResRef) return TRUE;
 
-        object oItem = GetNextItemInInventory(oPC);
+        oItem = GetNextItemInInventory(oPC);
     }
 
     return FALSE;

@@ -56,7 +56,19 @@
               },
               "ConditionParams": {
                 "type": "list",
-                "value": []
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "resref"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "misc60"
+                    }
+                  }
+                ]
               },
               "Index": {
                 "type": "dword",
@@ -75,7 +87,19 @@
               },
               "ConditionParams": {
                 "type": "list",
-                "value": []
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "resref"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "misc73"
+                    }
+                  }
+                ]
               },
               "Index": {
                 "type": "dword",
@@ -94,7 +118,19 @@
               },
               "ConditionParams": {
                 "type": "list",
-                "value": []
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "resref"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "misc105"
+                    }
+                  }
+                ]
               },
               "Index": {
                 "type": "dword",
@@ -196,7 +232,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_pet_cat"
         },
         "Sound": {
           "type": "resref",
@@ -215,6 +251,128 @@
       },
       {
         "__struct_id": 2,
+        "ActionParams": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "resref"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "misc105"
+              }
+            }
+          ]
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": "as_an_catmeow1"
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartAction>[The cat excitedly gobbles up the treat that you have set down.]</Start>"
+          }
+        }
+      },
+      {
+        "__struct_id": 3,
+        "ActionParams": {
+          "type": "list",
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "resref"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "misc105"
+              }
+            }
+          ]
+        },
+        "Animation": {
+          "type": "dword",
+          "value": 0
+        },
+        "AnimLoop": {
+          "type": "byte",
+          "value": 1
+        },
+        "Comment": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Delay": {
+          "type": "dword",
+          "value": 4294967295
+        },
+        "Quest": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "RepliesList": {
+          "type": "list",
+          "value": []
+        },
+        "Script": {
+          "type": "resref",
+          "value": ""
+        },
+        "Sound": {
+          "type": "resref",
+          "value": "as_an_catmeow1"
+        },
+        "Speaker": {
+          "type": "cexostring",
+          "value": ""
+        },
+        "Text": {
+          "type": "cexolocstring",
+          "value": {
+            "0": "<StartAction>[The cat excitedly gobbles up the treat that you have set down.]</Start>"
+          }
+        }
+      },
+      {
+        "__struct_id": 4,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -258,15 +416,27 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartAction>[The cat stares at the food and then at you. It appears that it is not hungry at the moment.]</Start>"
+            "0": "<StartAction>[The cat stares at the food and then at you. It seems that it is not hungry at the moment.]</Start>"
           }
         }
       },
       {
-        "__struct_id": 3,
+        "__struct_id": 5,
         "ActionParams": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Key": {
+                "type": "cexostring",
+                "value": "resref"
+              },
+              "Value": {
+                "type": "cexostring",
+                "value": "misc105"
+              }
+            }
+          ]
         },
         "Animation": {
           "type": "dword",
@@ -315,7 +485,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 71
+    "value": 95
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -458,7 +628,62 @@
         },
         "EntriesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_feed"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "resref"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "misc105"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 2
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 4
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
         },
         "Quest": {
           "type": "cexostring",
@@ -503,7 +728,62 @@
         },
         "EntriesList": {
           "type": "list",
-          "value": []
+          "value": [
+            {
+              "__struct_id": 0,
+              "Active": {
+                "type": "resref",
+                "value": "dlg_feed"
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "resref"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "misc73"
+                    }
+                  }
+                ]
+              },
+              "Index": {
+                "type": "dword",
+                "value": 3
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 0
+              }
+            },
+            {
+              "__struct_id": 1,
+              "Active": {
+                "type": "resref",
+                "value": ""
+              },
+              "ConditionParams": {
+                "type": "list",
+                "value": []
+              },
+              "Index": {
+                "type": "dword",
+                "value": 4
+              },
+              "IsChild": {
+                "type": "byte",
+                "value": 1
+              },
+              "LinkComment": {
+                "type": "cexostring",
+                "value": ""
+              }
+            }
+          ]
         },
         "Quest": {
           "type": "cexostring",
@@ -553,15 +833,27 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_feed"
               },
               "ConditionParams": {
                 "type": "list",
-                "value": []
+                "value": [
+                  {
+                    "__struct_id": 0,
+                    "Key": {
+                      "type": "cexostring",
+                      "value": "resref"
+                    },
+                    "Value": {
+                      "type": "cexostring",
+                      "value": "misc60"
+                    }
+                  }
+                ]
               },
               "Index": {
                 "type": "dword",
-                "value": 3
+                "value": 5
               },
               "IsChild": {
                 "type": "byte",
@@ -580,7 +872,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
+                "value": 4
               },
               "IsChild": {
                 "type": "byte",
