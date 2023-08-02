@@ -887,7 +887,7 @@ void main()
    }
 
    int nPCLevel;
-   int nAdjustedXP;
+   float fAdjustedXP;
 
    for(nNth = 1; nNth <= Party.PlayerSize; nNth++)
    {
@@ -903,7 +903,7 @@ void main()
           IncrementPlayerStatistic(oPC, "enemies_killed_with_credit");
 
           nPCLevel = GetLevelFromXP(GetXP(oPC));
-          float fAdjustedXP = fXP;
+          fAdjustedXP = fXP;
 
         // low levels get too much XP from killing things
         if (nPCLevel <= 2)
