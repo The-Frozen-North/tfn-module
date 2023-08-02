@@ -107,12 +107,6 @@ const string AREA_TREASURE_MAP_MULTIPLIER = "treasuremap_multiplier";
 // Surfaces steeper than this amount become walls even if they weren't before
 const float TREASUREMAP_GRADIENT_BECOMES_WALL = 2.0;
 
-// We keep this many UUIDs per puzzle ID.
-// UUIDs are stored on the map so you can't simply cheat by downloading the public database,
-// exporting your character and checking the puzzle ID saved on your items
-// 5 is hopefully enough to make the other ways to cheat more attractive than this
-const int TREASUREMAP_UUIDS_PER_PUZZLE_ID = 5;
-
 
 /////////////////////
 // External functions
@@ -231,12 +225,6 @@ location GetRandomValidTreasureLocationInArea(object oArea);
 // Calculate maps for a given nPuzzleID and saves them to the DB.
 // If the location of this map is not valid, rolls another one.
 void CalculateTreasureMaps(int nPuzzleID);
-
-// The server keeps a database where we store some random UUIDs for each puzzle ID.
-// This means you can't cheat at maps simply by exporting your character and checking the puzzle ID
-// saved on your maps, because the server keeps the UUID->puzzle ID mapping secret
-int GetPuzzleIDFromPuzzleUUID(string sUUID);
-string GetPuzzleUUIDFromPuzzleID(int nPuzzleID);
 
 ///////////////////
 
@@ -1660,6 +1648,12 @@ void InitialiseTreasureMap(object oMap, int nACR, string sExtraDesc="")
 void AssignNewPuzzleToMap(object oMap, object oNearbyArea, int bNearby)
 {
     int nACR = GetLocalInt(oMap, "acr");
+    if (nACR < TREASUREMAP_ACR_MIN)
+    {
+        SetLocalInt(oMap, "acr", nACR);
+        nACR = TREASUREMAP_ACR_MIN;
+    }
+    
     if (bNearby && GetIsObjectValid(oNearbyArea))
     {
         int nDist = TREASUREMAP_NEARBY_START_DISTANCE;
@@ -1704,7 +1698,7 @@ void AssignNewPuzzleToMap(object oMap, object oNearbyArea, int bNearby)
         {           
             int nPuzzleID = SqlGetInt(sql, 0);
             SendDebugMessage("Picked area tag = " + SqlGetString(sql, 1));
-            SetLocalString(oMap, "puzzleuuid", GetPuzzleUUIDFromPuzzleID(nPuzzleID));
+            SetLocalInt(oMap, "puzzleid", nPuzzleID);
         }
         else
         {
@@ -1722,7 +1716,7 @@ void AssignNewPuzzleToMap(object oMap, object oNearbyArea, int bNearby)
         SqlBindInt(sql, "@minacr", nACR);
         SqlStep(sql);
         int nPuzzleID = SqlGetInt(sql, 0);
-        SetLocalString(oMap, "puzzleuuid", GetPuzzleUUIDFromPuzzleID(nPuzzleID));
+        SetLocalInt(oMap, "puzzleid", nPuzzleID);
     }
 }
 
@@ -1731,7 +1725,6 @@ void UseTreasureMap(object oMap)
     int nACR = GetLocalInt(oMap, "acr");
     int nDifficulty = GetLocalInt(oMap, "difficulty");
     // Update legacy maps that were made before the difficulty bands were a thing
-    int nPuzzleID;
     if (nDifficulty == 0)
     {
         if (nACR == 15) { nDifficulty = TREASUREMAP_DIFFICULTY_MASTER; }
@@ -1739,18 +1732,9 @@ void UseTreasureMap(object oMap)
         else if (nACR > 6) { nDifficulty = TREASUREMAP_DIFFICULTY_MEDIUM; }
         else { nDifficulty = TREASUREMAP_DIFFICULTY_EASY; }
         SetLocalInt(oMap, "difficulty", nDifficulty);
-        nPuzzleID = GetLocalInt(oMap, "puzzleid");
-        if (nPuzzleID > 0)
-        {
-            SetLocalString(oMap, "puzzleuuid", GetPuzzleUUIDFromPuzzleID(nPuzzleID));
-        }
-        DeleteLocalInt(oMap, "puzzleid");
+        
     }
-    string sUUID = GetLocalString(oMap, "puzzleuuid");
-    if (sUUID != "")
-    {
-        nPuzzleID = GetPuzzleIDFromPuzzleUUID(sUUID);
-    }
+    int nPuzzleID = GetLocalInt(oMap, "puzzleid");
     string sAreaTag = "";
     int nAssignPuzzle = 1;
     if (nPuzzleID > 0)
@@ -1775,7 +1759,7 @@ void UseTreasureMap(object oMap)
     if (nAssignPuzzle)
     {
         AssignNewPuzzleToMap(oMap, OBJECT_INVALID, 0);
-        nPuzzleID = GetPuzzleIDFromPuzzleUUID(GetLocalString(oMap, "puzzleuuid"));
+        nPuzzleID = GetLocalInt(oMap, "puzzleid");
     }
     DisplayTreasureMapUI(GetItemPossessor(oMap), nPuzzleID, nDifficulty, oMap);
 }
@@ -1860,7 +1844,7 @@ int RollForTreasureMap(object oSource=OBJECT_SELF)
 
 int DoesLocationCompleteMap(object oMap, location lTest)
 {
-    int nPuzzleID = GetPuzzleIDFromPuzzleUUID(GetLocalString(oMap, "puzzleuuid"));
+    int nPuzzleID = GetLocalInt(oMap, "puzzleid");
     if (nPuzzleID >= 0)
     {
         if (GetTreasureMapDifficulty(oMap) > 0)
@@ -1948,61 +1932,4 @@ int GetIsSurfacematDiggable(int nSurfacemat)
         return 0;
     }
     return 1;
-}
-
-// The server keeps a database where we store some random UUIDs for each puzzle ID.
-// This means you can't cheat at maps simply by exporting your character and checking the puzzle ID
-// saved on your maps, because the server keeps the UUID->puzzle ID mapping secret
-int GetPuzzleIDFromPuzzleUUID(string sUUID)
-{
-    string sQuery = "CREATE TABLE IF NOT EXISTS tmapuuidassociation (" +
-        "uuid TEXT PRIMARY KEY, " +
-        "puzzleid INTEGER);";
-    sqlquery sql = SqlPrepareQueryCampaign("tmapuuidassociation", sQuery);
-    SqlStep(sql);
-    
-    sQuery = "SELECT puzzleid from tmapuuidassociation WHERE uuid = @uuid;";
-    sql = SqlPrepareQueryCampaign("tmapuuidassociation", sQuery);
-    SqlBindString(sql, "@uuid", sUUID);
-    if (SqlStep(sql))
-    {
-        return SqlGetInt(sql, 0);
-    }
-    
-    return -1;    
-}
-
-string GetPuzzleUUIDFromPuzzleID(int nPuzzleID)
-{
-    string sQuery = "CREATE TABLE IF NOT EXISTS tmapuuidassociation (" +
-        "uuid TEXT PRIMARY KEY, " +
-        "puzzleid INTEGER);";
-    sqlquery sql = SqlPrepareQueryCampaign("tmapuuidassociation", sQuery);
-    SqlStep(sql);
-    
-    sQuery = "SELECT uuid from tmapuuidassociation WHERE puzzleid = @puzzleid ORDER BY RANDOM() LIMIT 1;";
-    sql = SqlPrepareQueryCampaign("tmapuuidassociation", sQuery);
-    SqlBindInt(sql, "@puzzleid", nPuzzleID);
-    if (SqlStep(sql))
-    {
-        return SqlGetString(sql, 0);
-    }
-    
-    
-    int i;
-    sql = SqlPrepareQueryCampaign("tmapuuidassociation", "BEGIN TRANSACTION");
-    SqlStep(sql);
-    for (i=0; i<TREASUREMAP_UUIDS_PER_PUZZLE_ID; i++)
-    {
-        sQuery = "INSERT INTO tmapuuidassociation " +
-        "(uuid, puzzleid) " +
-        "VALUES (@uuid, @puzzleid);";
-        sql = SqlPrepareQueryCampaign("tmapuuidassociation", sQuery);
-        SqlBindString(sql, "@uuid", GetRandomUUID());
-        SqlBindInt(sql, "@puzzleid", nPuzzleID);
-        SqlStep(sql);
-    }
-    sql = SqlPrepareQueryCampaign("tmapuuidassociation", "COMMIT");
-    SqlStep(sql);
-    return GetPuzzleUUIDFromPuzzleID(nPuzzleID);
 }

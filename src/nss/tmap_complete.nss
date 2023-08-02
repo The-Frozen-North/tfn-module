@@ -6,7 +6,7 @@ void main()
     object oMap = OBJECT_SELF;
     object oOwner = GetItemPossessor(OBJECT_SELF);
     string sTreasureName = "Buried Treasure";
-    int nPuzzleID = GetPuzzleIDFromPuzzleUUID(GetLocalString(oMap, "puzzleuuid"));
+    int nPuzzleID = GetLocalInt(oMap, "puzzleid");
     location lSolution = GetPuzzleSolutionLocation(nPuzzleID);
     int nSurfacemat = GetSurfaceMaterial(lSolution);
     if (!GetIsSurfacematDiggable(nSurfacemat))
