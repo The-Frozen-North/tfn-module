@@ -14,10 +14,20 @@ void main()
 	int nGenerated = GetLocalInt(OBJECT_SELF, "doneloot");
 	if (!nGenerated)
 	{
-		
         int nACR = GetLocalInt(OBJECT_SELF, "area_cr");
         int nNewMapACR = 1 + nACR + (nACR / 6);
         if (nNewMapACR > TREASUREMAP_ACR_MAX) { nNewMapACR = TREASUREMAP_ACR_MAX; }
+        int nParentDifficulty = GetLocalInt(OBJECT_SELF, "parent_map_difficulty");
+        int nNewDifficulty = nParentDifficulty + 1;
+        if (nNewDifficulty > TREASUREMAP_HIGHEST_DIFFICULTY)
+        {
+            nNewDifficulty = TREASUREMAP_HIGHEST_DIFFICULTY;
+        }
+        WriteTimestampedLogEntry(GetName(oUser) + " completed a treasure map difficulty " + IntToString(nParentDifficulty) + " and acr " + IntToString(nACR));
+        int nDowngradeChance = TREASUREMAP_REWARD_DOWNGRADE_EASY;
+        if (nParentDifficulty == TREASUREMAP_DIFFICULTY_MEDIUM) { nDowngradeChance = TREASUREMAP_REWARD_DOWNGRADE_MEDIUM; }
+        else if (nParentDifficulty == TREASUREMAP_DIFFICULTY_HARD) { nDowngradeChance = TREASUREMAP_REWARD_DOWNGRADE_HARD; }
+        else if (nParentDifficulty == TREASUREMAP_DIFFICULTY_MASTER) { nDowngradeChance = TREASUREMAP_REWARD_DOWNGRADE_MASTER; }
 		int i;
 		int nTries = d2(2);
 		for (i=0; i<nTries; i++)
@@ -26,7 +36,7 @@ void main()
             {
                 SetLocalInt(OBJECT_SELF, "boss", 1);
             }
-            else if (Random(100) < 85)
+            else if (Random(100) < nDowngradeChance)
             {
                 DeleteLocalInt(OBJECT_SELF, "boss");
                 SetLocalInt(OBJECT_SELF, "semiboss", 1);
@@ -55,6 +65,7 @@ void main()
             int nIdentified = GetIdentified(oTest);
             SetIdentified(oTest, TRUE);
             int nGold = GetGoldPieceValue(oTest);
+            nGold = (nGold * TREASUREMAP_MUNDANE_ITEM_GOLD_CONVERSION_RATE)/100;
             SetIdentified(oTest, nIdentified);
             int nTurnToGold = 0;
             if (nGold < 200)
@@ -78,6 +89,16 @@ void main()
                 if (GetTag(oTest) == "treasuremap")
                 {
                     SetLocalInt(oTest, "acr", nNewMapACR);
+                    // 50% to be local, 50% to full random
+                    if (Random(100) < 50)
+                    {
+                        AssignNewPuzzleToMap(oTest, OBJECT_INVALID, 0);
+                    }
+                    else
+                    {
+                        AssignNewPuzzleToMap(oTest, GetArea(OBJECT_SELF), 1);
+                    }
+                    SetTreasureMapDifficulty(oTest, nNewDifficulty);
                 }
                 CopyItem(oTest, oPersonalLootNew, TRUE);
             }

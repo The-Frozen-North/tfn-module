@@ -167,12 +167,23 @@ void PrepareAreaTransitionDB()
     // This is the point at which we have something we can hash to avoid doing this again
     // if nothing changed
     int nHash = NWNX_Util_Hash(JsonDump(jDist));
-    if (GetCampaignInt("areadistances", "hashdata") == nHash)
+    
+    int nSavedHash = 0;
+    sqlquery sql = SqlPrepareQueryCampaign("areadistances", "SELECT hash from areadistshash;");
+    if (SqlStep(sql))
+    {
+        nSavedHash = SqlGetInt(sql, 0);
+    }
+    
+    if (_ShouldAbortAreaDistOnError(SqlGetError(sql))) return;
+    
+    if (0)
+    //if (nSavedHash == nHash)
     {
         WriteTimestampedLogEntry("Hashes match. Skip rebuilding DB this time!");
         return;
     }
-    WriteTimestampedLogEntry("Hashes do not match. Continuing...");
+    WriteTimestampedLogEntry("Hashes do not match (old = " + IntToString(nSavedHash) + " vs new " + IntToString(nHash) + ". Continuing...");
         
     // "for each vertex v do"
     // "dist[v][v] ← 0"
@@ -225,11 +236,24 @@ void PrepareAreaTransitionDB()
     
     WriteTimestampedLogEntry("PrepareAreaTransitionDB: Saving connections to db...");
     
-    sqlquery sql = SqlPrepareQueryCampaign("areadistances",
+    sql = SqlPrepareQueryCampaign("areadistances",
         "CREATE TABLE IF NOT EXISTS areadists (" +
         "areasource TEXT, " +
         "areadest TEXT, " +
         "distance INTEGER);");
+    SqlStep(sql);
+    if (_ShouldAbortAreaDistOnError(SqlGetError(sql))) return;
+    
+    WriteTimestampedLogEntry("Make indexes");
+    
+    // Attempting to speed up the lookup of this thing
+    sql = SqlPrepareQueryCampaign("areadistances",
+        "CREATE INDEX IF NOT EXISTS idx_areadists_source_distance ON areadists(areasource, distance);");
+    SqlStep(sql);
+    if (_ShouldAbortAreaDistOnError(SqlGetError(sql))) return;
+    
+    sql = SqlPrepareQueryCampaign("areadistances",
+        "CREATE INDEX IF NOT EXISTS idx_areadists_source_dest ON areadists(areasource, areadest);");
     SqlStep(sql);
     if (_ShouldAbortAreaDistOnError(SqlGetError(sql))) return;
     
@@ -263,7 +287,26 @@ void PrepareAreaTransitionDB()
     
     WriteTimestampedLogEntry("PrepareAreaTransitionDB: Finished storing connections");
     
-    SetCampaignInt("areadistances", "hashdata", nHash);
+    // Not using campaign DB might seem deranged, but the campaign DB is not happy with the schema change
+    // and simply trying to throw the hash in via SetCampaignInt fails
+    // so this seems like the... only way to do it?
+    
+    sql = SqlPrepareQueryCampaign("areadistances",
+        "CREATE TABLE IF NOT EXISTS areadistshash (" +
+        "hash INTEGER);");
+    SqlStep(sql);
+    
+    if (_ShouldAbortAreaDistOnError(SqlGetError(sql))) return;
+    
+    sql = SqlPrepareQueryCampaign("areadistances", "DELETE FROM areadistshash;");
+    SqlStep(sql);
+    if (_ShouldAbortAreaDistOnError(SqlGetError(sql))) return;
+    
+    sql = SqlPrepareQueryCampaign("areadistances", "INSERT INTO areadistshash (hash) VALUES (@hash);");
+    SqlBindInt(sql, "@hash", nHash);
+    SqlStep(sql);
+    if (_ShouldAbortAreaDistOnError(SqlGetError(sql))) return;
+
     
     NWNX_Util_SetInstructionLimit(nOldInstructionLimit);
 }
@@ -292,7 +335,7 @@ json GetAreasWithinDistance(object oAreaStart, int nDistance)
     if (nDistance < 0)
     {
         return JsonArray();
-    }
+    }    
     sqlquery sql = SqlPrepareQueryCampaign("areadistances", "SELECT areadest from areadists " +
     "WHERE areasource = @areasource AND distance <= @distance;");
     SqlBindString(sql, "@areasource", GetTag(oAreaStart));
@@ -310,6 +353,5 @@ json GetAreasWithinDistance(object oAreaStart, int nDistance)
         WriteTimestampedLogEntry("Warning: query for areas within " + IntToString(nDistance) + " of " + GetTag(oAreaStart) + " returned no rows!");
         jOutput = JsonArrayInsert(jOutput, JsonString(GetTag(oAreaStart)));
     }
-    
     return jOutput;
 }

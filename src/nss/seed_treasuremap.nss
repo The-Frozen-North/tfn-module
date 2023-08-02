@@ -160,7 +160,7 @@ void main()
             }
         }
         nAreaCount++;
-        //if (nAreaCount >= 5) { break; }
+        //if (nAreaCount >= 15) { break; }
         oArea = GetNextArea();
     }
 }

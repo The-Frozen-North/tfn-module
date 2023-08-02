@@ -33,11 +33,16 @@ void main()
     IncrementPlayerStatistic(oPC, "items_bought");
 
     int nACR = GetHitDice(oPC);
-    int nVariability = GetHitDice(oPC) / 4;
-    // ACR of map = HD � HD/4 rounded down
-    nACR = nACR + 1 + Random(nVariability*2) - nVariability;
+    // ACR of map = HD +/- 1
+    nACR = nACR + Random(3) - 1;
 
-    object oMap = SetupProgenitorTreasureMap(nACR, "Highcliff. It was purchased from " + GetName(OBJECT_SELF));
+    object oMap = SetupProgenitorTreasureMap(nACR, GetArea(OBJECT_SELF), 0, "It was purchased from " + GetName(OBJECT_SELF) +": there is no telling where it was originally from, nor where the treasure might be.");
+    // Andriel's altered map difficulty
+    int nRoll = d100();
+    if (nRoll <= 80) { SetTreasureMapDifficulty(oMap, TREASUREMAP_DIFFICULTY_HARD); }
+    else if (nRoll <= 85) { SetTreasureMapDifficulty(oMap, TREASUREMAP_DIFFICULTY_MEDIUM); }
+    else if (nRoll <= 90) { SetTreasureMapDifficulty(oMap, TREASUREMAP_DIFFICULTY_EASY); }
+    else { SetTreasureMapDifficulty(oMap, TREASUREMAP_DIFFICULTY_MASTER); }
     CopyTierItemToObjectOrLocation(oMap, oPC);
     SQLocalsPlayer_SetInt(oPC, "andriel_lastbuy", SQLite_GetTimeStamp());
 }
