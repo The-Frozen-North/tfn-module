@@ -12,10 +12,10 @@ void main()
         if (GetLocalInt(OBJECT_SELF, "combat") == 0)
             SetLocalInt(OBJECT_SELF, "combat", 1);
 
+        SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
+
         if (gsCBGetHasAttackTarget())
         {
-            SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
-
             object oTarget = gsCBGetLastAttackTarget();
 
 // if the enemy spellcaster is within range, switch to it 25% of the time if already attacking

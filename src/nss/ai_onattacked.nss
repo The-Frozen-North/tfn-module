@@ -18,6 +18,9 @@ void main()
 
     object oWeapon = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
 
+// attack whoever attacked me!
+    SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
+
     // chance for a range attacker to go melee
     if  (d2() == 1 && GetLocalInt(OBJECT_SELF, "melee_attacked") == 0 && GetDistanceToObject(oAttacker) < 3.0 && GetWeaponRanged(oWeapon))
     {
@@ -33,7 +36,7 @@ void main()
     }
 
     // just an issue for attackers (we dont need to worry abou spellcasters), don't do anything below so we keep the same attack target
-    if (gsCBGetHasAttackTarget())
+    if (GetIsObjectValid(GetAttemptedAttackTarget()) || GetIsObjectValid(GetAttemptedSpellTarget()))
     {
         return;
     }
@@ -42,9 +45,6 @@ void main()
     if (gsCBGetHasAttackTarget())
     {
         object oTarget = gsCBGetLastAttackTarget();
-
-// attack whoever attacked me!
-        SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
 
         if (oAttacker != oTarget &&
             (gsCBGetIsFollowing() ||

@@ -1,3 +1,5 @@
+#include "70_inc_spells"
+
 void main()
 {
     object oBaram = GetObjectByTag("baram");

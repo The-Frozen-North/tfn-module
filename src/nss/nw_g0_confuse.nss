@@ -44,9 +44,11 @@ void main()
         int nTh = 2;
         object oCreature = GetNearestCreature(CREATURE_TYPE_IS_ALIVE,TRUE);
 
+        float fMaxDistance = 20.0;
+
         while(oCreature != OBJECT_INVALID)
         {
-            if(GetObjectSeen(oCreature) || GetObjectHeard(oCreature))
+            if((GetObjectSeen(oCreature) || GetObjectHeard(oCreature)) && GetDistanceToObject(oCreature) <= fMaxDistance)
             {
 
                 oCreatureTarget = oCreature;
@@ -60,7 +62,7 @@ void main()
 
         while(oPlaceable != OBJECT_INVALID)
         {
-            if(GetUseableFlag(oPlaceable) && LineOfSightObject(OBJECT_SELF, oPlaceable))
+            if(!GetPlotFlag(oPlaceable) && GetUseableFlag(oPlaceable) && GetDistanceToObject(oCreature) <= fMaxDistance)
             {
                 oPlaceableTarget = oPlaceable;
                 break;

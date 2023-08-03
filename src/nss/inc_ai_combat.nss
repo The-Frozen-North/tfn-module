@@ -852,9 +852,7 @@ void gsCBDetermineAttackTarget(object oVictim)
 {
     if (GetIsObjectValid(oVictim))
     {
-        object oAttacker = GetIsPC(oVictim) ?
-                           OBJECT_INVALID :
-                           gsCBGetAttackTarget(oVictim);
+        object oAttacker = gsCBGetAttackTarget(oVictim);
 
         if (GetIsObjectValid(oAttacker))
         {
@@ -943,9 +941,6 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
 
     if (GetStandardFactionReputation(STANDARD_FACTION_COMMONER) > 25) SpeakString("GS_AI_INNOCENT_ATTACKED", TALKVOLUME_SILENT_TALK);
 
-    //follow target
-    if (gsCBGetIsFollowing()) return;
-
     //call aid
 //    if (! gsFLGetFlag(GS_FL_DISABLE_CALL))
 //    if (GetLocalInt(OBJECT_SELF, "boss") == 1 || GetLocalInt(OBJECT_SELF, "semiboss") == 1)
@@ -953,6 +948,9 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         SpeakString("GS_AI_ATTACK_TARGET", TALKVOLUME_SILENT_TALK);
         gsCBRequestReinforcement();
 //    }
+
+    //follow target
+    if (gsCBGetIsFollowing()) return;
 
     if (gsCBReinforce()) oTarget = gsCBGetLastAttackTarget();
 
