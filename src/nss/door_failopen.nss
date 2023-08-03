@@ -21,7 +21,7 @@ void main()
                 ExecuteScript(sScript, OBJECT_SELF);
             }
         }
-        else if (!GetLockKeyRequired(OBJECT_SELF) && !GetIsInCombat(oPC) && GetSkillRank(SKILL_OPEN_LOCK, oPC, TRUE) > 0 && ((GetSkillRank(SKILL_OPEN_LOCK, oPC)+20) >= GetLockLockDC(OBJECT_SELF)))
+        else if (!GetLockKeyRequired(OBJECT_SELF) && !GetIsInCombat(oPC) && GetSkillRank(SKILL_OPEN_LOCK, oPC, TRUE) > 0 && ((GetSkillRank(SKILL_OPEN_LOCK, oPC)+20) >= GetLockUnlockDC(OBJECT_SELF)))
         {
             //PlaySound("as_sw_genericlk1");
             //FloatingTextStringOnCreature("*locked*", oPC, FALSE);

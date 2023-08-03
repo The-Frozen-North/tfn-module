@@ -86,25 +86,6 @@
           "type": "byte",
           "value": 1
         }
-      },
-      {
-        "__struct_id": 0,
-        "Appearance": {
-          "type": "int",
-          "value": 411
-        },
-        "CR": {
-          "type": "float",
-          "value": 9.0
-        },
-        "ResRef": {
-          "type": "resref",
-          "value": "duergar_captain"
-        },
-        "SingleSpawn": {
-          "type": "byte",
-          "value": 1
-        }
       }
     ]
   },
@@ -186,5 +167,25 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "duergar_moderate"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "rare"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "duergar_captain"
+        }
+      }
+    ]
   }
 }

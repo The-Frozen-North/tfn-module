@@ -28,5 +28,6 @@ void main()
     else if (GetHomeTag(oPC) == GetTag(GetArea(oPC)))
     {
         ExecuteScript("placeable_nui");
+        ExecuteScript("name_pet_nui");
     }
 }

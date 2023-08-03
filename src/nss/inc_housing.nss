@@ -9,6 +9,12 @@
 
 const string MODULE_HOME_TAG_SUFFIX = "_home_tag";
 
+//const int MAX_PETS_SLUM_HOUSE = 2;
+//const int MAX_PETS_NORMAL_HOUSE = 3;
+//const int MAX_PETS_RICH_HOUSE = 4;
+
+const int MAX_PETS = 3;
+
 /* Declarations */
 // Return iPinID of the first deleted map pin within the personal map pin array
 int GetFirstDeletedMapPin(object oPC);
@@ -241,6 +247,103 @@ void InitializeHouseMapPin(object oPC)
    }
 }
 
+int GetAvailablePetSlot(object oPC)
+{
+    // player's housing DB
+    string sDB = GetPCPublicCDKey(oPC);
+    
+    if (GetCampaignString(sDB, "pet1_resref") == "") return 1;
+    if (GetCampaignString(sDB, "pet2_resref") == "") return 2;
+    if (GetCampaignString(sDB, "pet3_resref") == "") return 3;
+
+    // all slots full
+    return -1;
+}
+
+// TODO: Spawn at saved location vs static waypoints
+void SpawnPet(string sCDKey, int nTarget, object oArea)
+{
+    // invalid slot, do nothing
+    if (nTarget == -1) return;
+
+    string sTarget = IntToString(nTarget);
+
+    string sTag = sCDKey+"_pet"+sTarget;
+
+    // failsafe in case the same pet was spawned
+    if (GetIsObjectValid(GetObjectByTag(sTag))) return;
+
+    string sName = GetCampaignString(sCDKey, "pet"+sTarget+"_name");
+    string sResRef = GetCampaignString(sCDKey, "pet"+sTarget+"_resref");
+    string sPortraitResRef = GetCampaignString(sCDKey, "pet"+sTarget+"_portrait_resref");
+    int nTailModel = GetCampaignInt(sCDKey, "pet"+sTarget+"_tail_model");
+    int nAppearanceType = GetCampaignInt(sCDKey, "pet"+sTarget+"_appearance_type");
+    //location lLocation = GetCampaignLocation(sCDKey, "pet"+sTarget+"_location");
+    
+    location lLocation = GetLocation(GetNearestObjectByTag("PET_WP"+sTarget, GetFirstObjectInArea(oArea, OBJECT_TYPE_DOOR)));
+
+    object oPet = CreateObject(OBJECT_TYPE_CREATURE, sResRef, lLocation, FALSE, sTag);
+
+    SetCreatureAppearanceType(oPet, nAppearanceType);
+    SetCreatureTailType(nTailModel, oPet);
+    SetPortraitResRef(oPet, sPortraitResRef);
+    SetName(oPet, sName);
+
+    SetImmortal(oPet, TRUE);
+
+    SetLocalInt(oPet, "target", nTarget);
+    SetLocalString(oPet, "cd_key", sCDKey);
+}
+
+void SpawnPets(string sCDKey, object oArea)
+{
+    SpawnPet(sCDKey, 1, oArea);
+    SpawnPet(sCDKey, 2, oArea);
+    SpawnPet(sCDKey, 3, oArea);
+}
+
+void AdoptPet(object oPC, object oPet)
+{
+    // despite what you see in real life, hobos do not get pets!
+    if (GetIsPlayerHomeless(oPC)) return; 
+
+    int nTarget = GetAvailablePetSlot(oPC);
+
+    // invalid slot or too many pets, do nothing
+    if (nTarget == -1) return;
+
+    string sTarget = IntToString(nTarget);
+
+    // player's housing DB
+    string sDB = GetPCPublicCDKey(oPC);
+
+    SetCampaignString(sDB, "pet"+sTarget+"_name", GetName(oPet));
+    SetCampaignString(sDB, "pet"+sTarget+"_resref", GetResRef(oPet));
+    SetCampaignString(sDB, "pet"+sTarget+"_portrait_resref", GetPortraitResRef(oPet));
+    SetCampaignInt(sDB, "pet"+sTarget+"_tail_model", GetCreatureTailType(oPet));
+    SetCampaignInt(sDB, "pet"+sTarget+"_appearance_type", GetAppearanceType(oPet));
+    //SetCampaignLocation(sDB, "pet"+sTarget+"_location", GetLocation(oPet));
+
+    SpawnPet(sDB, nTarget, GetObjectByTag(GetHomeTag(oPC)));
+}
+
+void AbandonPet(object oPC, object oPet)
+{
+    string sDB = GetPCPublicCDKey(oPC);
+
+    int nTarget = GetLocalInt(oPet, "target");
+    string sTarget = IntToString(nTarget);
+
+    DeleteCampaignVariable(sDB, "pet"+sTarget+"_name");
+    DeleteCampaignVariable(sDB, "pet"+sTarget+"_resref");
+    DeleteCampaignVariable(sDB, "pet"+sTarget+"_portrait_resref");
+    DeleteCampaignVariable(sDB, "pet"+sTarget+"_tail_model");
+    DeleteCampaignVariable(sDB, "pet"+sTarget+"_appearance_type");
+    DeleteCampaignVariable(sDB, "pet"+sTarget+"_location");
+
+    AssignCommand(oPet, ActionMoveToObject(GetNearestObject(OBJECT_TYPE_DOOR)));
+    DestroyObject(oPet, 10.0);
+}
 
 void InitializeHouse(object oArea)
 {
@@ -276,13 +379,17 @@ void InitializeHouse(object oArea)
     SetName(oArea, sName);
 
     object oDoor = GetObjectByTag(sTag+"_exterior_door");
-    if (GetHouseCDKey(sTag) == "")
+
+    string sCDKey = GetHouseCDKey(sTag);
+
+    if (sCDKey == "")
     {
         SetName(oDoor, "Vacant Home "+sCoordinates);
     }
     else
     {
         SetName(oDoor, "Home ("+GetHousePlayerName(sTag)+")");
+        SpawnPets(sCDKey, oArea);
     }
 }
 
@@ -823,5 +930,3 @@ void InitializeAllHouses()
 
     SetLocalInt(GetModule(), "houses_initialized", TRUE);
 }
-
-//void main() {}

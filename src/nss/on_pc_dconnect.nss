@@ -1,5 +1,6 @@
 #include "nwnx_events"
 #include "inc_nwnx"
+#include "inc_general"
 
 void main()
 {
@@ -15,7 +16,7 @@ void main()
     object oPC = GetFirstPC();
     while (GetIsObjectValid(oPC))
     {
-        SendMessageToPC(oPC, sMessage);
+        SendColorMessageToPC(oPC, sMessage, MESSAGE_COLOR_SERVER);
 
         oPC = GetNextPC();
     }

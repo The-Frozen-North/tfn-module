@@ -14,9 +14,19 @@
 void main()
 {
     RandomiseGenderAndAppearance(OBJECT_SELF);
-    RandomiseCreatureSoundset_Rough(OBJECT_SELF);
+
     int bRanged = 0;
     string sResRef = GetResRef(OBJECT_SELF);
+
+    if (sResRef == "bandit_mage")
+    {
+        RandomiseCreatureSoundset_Intellectual(OBJECT_SELF);
+    }
+    else
+    {
+        RandomiseCreatureSoundset_Rough(OBJECT_SELF);
+    }
+
     if (sResRef == "bandit" || sResRef == "bandit_outlaw")
     {
         bRanged = 1;
@@ -98,7 +108,13 @@ void main()
     
     int nAC = GetACOfArmorToEquip(OBJECT_SELF, nMaxAC);
     //WriteTimestampedLogEntry("Max AC = " + IntToString(nMaxAC) + " -> " + IntToString(nAC));
-    TryEquippingRandomArmorOfTier(nAC, 1 + (d100() > 95), 2, OBJECT_SELF);
+
+    // rare bandits have static armor
+    if (sResRef != "bandit_leader" && sResRef != "bandit_captain")
+    {
+        TryEquippingRandomArmorOfTier(nAC, 1 + (d100() > 95), 2, OBJECT_SELF);
+    }
+
     struct RandomWeaponResults rwr = RollRandomWeaponTypesForCreature(OBJECT_SELF);
     
     object oMain = TryEquippingRandomItemOfTier(rwr.nMainHand, 1 + (d100() > 95), 2, OBJECT_SELF, INVENTORY_SLOT_RIGHTHAND);

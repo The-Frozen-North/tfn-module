@@ -1,6 +1,7 @@
 #include "inc_trap"
 #include "inc_general"
 #include "util_i_csvlists"
+#include "inc_lock"
 
 void CleanupRandomSpawns(object oArea, int nTarget)
 {
@@ -153,7 +154,15 @@ void main()
 
             if (GetLocalInt(OBJECT_SELF, "door_locked"+IntToString(i)) == 1)
             {
-                SetLocked(oDoor, TRUE);
+                // if a key is not required to it, calculate the lock on this door
+                if (GetLockKeyRequired(oDoor))
+                {
+                    SetLocked(oDoor, TRUE);
+                }
+                else
+                {
+                    GenerateLockOnObject(oDoor);
+                }
             }
         }
 

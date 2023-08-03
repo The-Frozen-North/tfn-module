@@ -578,6 +578,7 @@ void main()
 
     int bBoss = GetLocalInt(OBJECT_SELF, "boss");
     int bSemiBoss = GetLocalInt(OBJECT_SELF, "semiboss");
+    int bRare = GetLocalInt(OBJECT_SELF, "rare");
 
     int iCR = GetLocalInt(OBJECT_SELF, "cr");
     int iAreaCR = GetLocalInt(OBJECT_SELF, "area_cr");
@@ -599,7 +600,7 @@ void main()
 
         if (GetLocalInt(OBJECT_SELF, "half_loot") == 1) nTreasureChance = nTreasureChance/2;
 
-        if ((bBoss == 1) || (bSemiBoss == 1))
+        if ((bBoss == 1) || (bSemiBoss == 1) || (bRare == 1))
         {
             nTreasureChance = 100;
         }
@@ -739,7 +740,7 @@ void main()
             SetLocalFloat(GetModule(), LOOT_DEBUG_DROP_CHANCE_MULT, fTreasureChance);
         }
         if (bBoss == 1) nGold = DetermineGoldFromCR(iAreaCR, 5);
-        else if (bSemiBoss == 1) nGold = DetermineGoldFromCR(iAreaCR, 3);
+        else if (bSemiBoss == 1 || bRare == 1) nGold = DetermineGoldFromCR(iAreaCR, 3);
         else
         {
             nGold = DetermineGoldFromCR(iAreaCR);
@@ -771,7 +772,8 @@ void main()
        nNumItems = 3;
        fLootBagScale = 1.0;
    }
-   else if (nItemsRoll <= nChanceTwo)
+   // rares always guarantees at least 2 items
+   else if (nItemsRoll <= nChanceTwo || (bRare == 1))
    {
        nNumItems = 2;
        fLootBagScale = 0.9;
@@ -815,7 +817,7 @@ void main()
    {
         fMultiplier = 3.0;
    }
-   else if (bSemiBoss == 1)
+   else if (bSemiBoss == 1 || bRare == 1)
    {
         fMultiplier = 2.0;
    }
@@ -883,7 +885,10 @@ void main()
            oKiller = GetMaster(oKiller);
        }
    }
-   
+
+   int nPCLevel;
+   float fAdjustedXP;
+
    for(nNth = 1; nNth <= Party.PlayerSize; nNth++)
    {
 // Credit players in previously set array "Players"
@@ -896,15 +901,29 @@ void main()
       {
           // includes neutrals or people outside of party
           IncrementPlayerStatistic(oPC, "enemies_killed_with_credit");
-          GiveXPToPC(oPC, fXP);
+
+          nPCLevel = GetLevelFromXP(GetXP(oPC));
+          fAdjustedXP = fXP;
+
+        // low levels get too much XP from killing things
+        if (nPCLevel <= 2)
+        {
+            fAdjustedXP *= LEVEL_2_XP_MULTIPLIER;
+        }
+        else if (nPCLevel == 3)
+        {
+            fAdjustedXP *= LEVEL_3_XP_MULTIPLIER;   
+        }
+
+          GiveXPToPC(oPC, fAdjustedXP);
           AdvanceQuest(OBJECT_SELF, oPC, GetLocalInt(OBJECT_SELF, "quest_kill"));
           
           if (oKiller == oPC)
           {
               // Number of personal kills is in ai_ondeath already
-              IncrementPlayerStatistic(oPC, "kill_xp_value", FloatToInt(fXP*100.0));
+              IncrementPlayerStatistic(oPC, "kill_xp_value", FloatToInt(fAdjustedXP*100.0));
           }
-          IncrementPlayerStatistic(oPC, "total_xp_from_partys_kills", FloatToInt(fXP*100.0));
+          IncrementPlayerStatistic(oPC, "total_xp_from_partys_kills", FloatToInt(fAdjustedXP*100.0));
       }
 
 // only proceed with loot code if container exists

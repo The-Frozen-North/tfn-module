@@ -30,7 +30,17 @@ void main()
     // Declare all the required effects
     effect eVis1;
     effect eVis2;
-    effect eStrenghDrain;
+
+    effect eSaves = EffectSavingThrowDecrease(SAVING_THROW_ALL,1);
+    effect eAttack = EffectAttackDecrease(1);
+    effect eDamage = EffectDamageDecrease(1,DAMAGE_TYPE_BLUDGEONING|DAMAGE_TYPE_SLASHING|DAMAGE_TYPE_PIERCING);
+    effect eSkill = EffectSkillDecrease(SKILL_ALL_SKILLS,1);
+    effect ePoison = EffectPoison(POISON_GREENBLOOD_OIL);
+
+    effect eLink = EffectLinkEffects(eAttack,eDamage);
+    eLink = EffectLinkEffects(eLink,eSaves);
+    eLink = EffectLinkEffects(eLink,eSkill);
+    eLink = EffectLinkEffects(eLink,ePoison);
 
     if(!GetHasSpellEffect(SPELLABILITY_TROGLODYTE_STENCH, oTarget))
     {
@@ -41,13 +51,8 @@ void main()
             SignalEvent(oTarget, EventSpellCastAt(OBJECT_SELF, AOE_MOB_TROGLODYTE_STENCH));
 
             // Prepare the visual effect for the casting and saving throw
-            eVis1 = EffectVisualEffect(VFX_IMP_REDUCE_ABILITY_SCORE);
+            eVis1 = EffectVisualEffect(VFX_IMP_POISON_S);
             eVis2 = EffectVisualEffect(VFX_IMP_FORTITUDE_SAVING_THROW_USE);
-
-            // Create the 1d6 strength reduction effect
-            // and make it supernatural so it can be dispelled
-            eStrenghDrain = EffectAbilityDecrease(ABILITY_STRENGTH, d6());
-            eStrenghDrain = SupernaturalEffect(eStrenghDrain);
 
             ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis2, oTarget);
 
@@ -57,7 +62,7 @@ void main()
                 if (!GetIsImmune(oTarget, IMMUNITY_TYPE_POISON, oSource))
                 {
                     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis1, oTarget);
-                    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eStrenghDrain, oTarget, RoundsToSeconds(10));
+                    ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, oTarget, RoundsToSeconds(10));
                 }
                 else
                 {

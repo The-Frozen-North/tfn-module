@@ -97,6 +97,11 @@ void main()
             nCR++;
             IncrementPlayerStatistic(oPCToIncrementOn, "bosses_killed");
         }
+        else if (GetLocalInt(OBJECT_SELF, "rare") == 1)
+        {
+            nCR++;
+            IncrementPlayerStatistic(oPCToIncrementOn, "rares_killed");
+        }
         
         int nOldMaxCR = GetPlayerStatistic(oPCToIncrementOn, "most_powerful_cr");
         if (nCR > nOldMaxCR)
