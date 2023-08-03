@@ -29,7 +29,7 @@ void ProcessConfigChange(object oPC, string sElement, int nToken, string sParent
                 sConfig = _NuiDataDB_GetString(sChangedWindowName + "_config_" + IntToString(nChangedConfigID));
                 // Change it back to the old one!
                 json jValue = GetNuiConfigValue(oPC, sChangedWindowName, sConfig);
-                SetCampaignJson(sKey, "nuicfg" + sChangedWindowName + "_" + sConfig, jValue);
+                SetCdkeyJson(oPC, "nuiconfig", "nuicfg" + sChangedWindowName + "_" + sConfig, jValue);
                 NuiSetBind(oPC, nParentToken, "_config_" + sConfig, jValue);
                 WriteTimestampedLogEntry("Tried to change config " + sConfig + " of " + sChangedWindowName + " while visible window was " + sParentWindowName);
                 return;
@@ -67,7 +67,7 @@ void ProcessConfigChange(object oPC, string sElement, int nToken, string sParent
     }
        
     
-    SetCampaignJson(sKey, "nuicfg" + sParentWindowName + "_" + sConfigName, jValue);
+    SetCdkeyJson(oPC, "nuiconfig", "nuicfg" + sParentWindowName + "_" + sConfigName, jValue);
     NuiSetBind(oPC, nParentToken, "_config_" + sConfigName, jValue);
     //WriteTimestampedLogEntry("ConfigChange " + sConfigName + " (id " + IntToString(nConfigID) + " -> " + JsonDump(jValue));
     if (GetStringLeft(sConfigName, 8) == "finemove")
@@ -153,7 +153,7 @@ void main()
         string sWindowToReset = GetSubString(sElement, 10, 99);
         if (sWindowToReset == sParentWindowName)
         {
-            json jGeom = GetCampaignJson(sKey, "nui_geom_" + sWindowToReset);
+            json jGeom = GetCdkeyJson(oPC, "nuiconfig", "nui_geom_" + sWindowToReset);
             json jDefault = _NuiDataDB_GetJson(sWindowToReset + "_default_geom");
             jGeom = JsonObjectSet(jGeom, "w", JsonObjectGet(jDefault, "w"));
             jGeom = JsonObjectSet(jGeom, "h", JsonObjectGet(jDefault, "h"));
@@ -165,7 +165,7 @@ void main()
         string sWindowToReset = GetSubString(sElement, 9, 99);
         if (sWindowToReset == sParentWindowName)
         {
-            json jGeom = GetCampaignJson(sKey, "nui_geom_" + sWindowToReset);
+            json jGeom = GetCdkeyJson(oPC, "nuiconfig", "nui_geom_" + sWindowToReset);
             json jDefault = _NuiDataDB_GetJson(sWindowToReset + "_default_geom");
             jGeom = JsonObjectSet(jGeom, "x", JsonObjectGet(jDefault, "x"));
             jGeom = JsonObjectSet(jGeom, "y", JsonObjectGet(jDefault, "y"));

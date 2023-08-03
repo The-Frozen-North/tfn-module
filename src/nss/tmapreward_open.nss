@@ -105,6 +105,12 @@ void main()
             DestroyObject(oTest);
             oTest = GetNextItemInInventory(oPersonalLoot);
         }
+        if (Random(100) < 15)
+        {
+            object oProgenitor = SetupProgenitorTreasureMap(nNewMapACR, GetArea(OBJECT_SELF), (d2() == 2));
+            SetTreasureMapDifficulty(oProgenitor, nNewDifficulty);
+            CopyTierItemToObjectOrLocation(oProgenitor, oPersonalLootNew);
+        }
         SetLocalInt(oPersonalLootNew, PERSONAL_LOOT_GOLD_AMOUNT, GetLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT) + nGoldToAdd);
 		SetLocalInt(OBJECT_SELF, "doneloot", 1);
         

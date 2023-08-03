@@ -20,15 +20,15 @@
 #include "inc_areadist"
 #include "nwnx_damage"
 
-const int SEED_SPAWNS = 0;
-const int SEED_TREASURES = 0;
+const int SEED_SPAWNS = 1;
+const int SEED_TREASURES = 1;
 const int SEED_SPELLBOOKS = 0;
 // These two check to see if stuff needs updating before doing it
 // Turning them off might shave off 1-2mins from a seeding run but that is about it
 // When run from scratch they are by far the slowest of the bunch
 const int SEED_AREA_CONNECTIONS = 1; // ~7 minutes if changed else just ~1 minute of area_init loop
-const int SEED_PRETTIFY_PLACEABLES = 0; // ~40 minutes
-const int SEED_TREASUREMAPS = 0;        // ~4 hours
+const int SEED_PRETTIFY_PLACEABLES = 1; // ~40 minutes
+const int SEED_TREASUREMAPS = 1;        // ~4 hours
 
 void LoadTreasureContainer(string sTag, float x = 1.0, float y = 1.0, float z = 1.0)
 {

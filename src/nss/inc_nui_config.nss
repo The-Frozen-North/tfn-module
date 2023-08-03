@@ -32,6 +32,7 @@ const float NUI_SPACE_WIDTH = 8.0;
 #include "nw_inc_nui"
 #include "inc_sqlite_time"
 #include "inc_debug"
+#include "inc_cdkeyvars"
 
 /*
 Usage notes:
@@ -423,10 +424,9 @@ json EditableNuiWindow(string sName, string sDisplayName, json jRoot, string sTi
 
 void LoadSavedGeometryForWindow(object oPC, int nToken)
 {
-    string sKey = GetPCPublicCDKey(oPC, TRUE);
     string sWindow = NuiGetWindowId(oPC, nToken);
     if (sWindow == "") { return; }
-    json jGeom = GetCampaignJson(sKey, "nui_geom_" + sWindow);
+    json jGeom = GetCdkeyJson(oPC, "nuiconfig", "nui_geom_" + sWindow);
     if (jGeom != JsonNull())
     {
         float fFixedWidth = _NuiDataDB_GetFloat(sWindow + "_fixed_width");
@@ -484,24 +484,22 @@ void LoadNuiConfigBinds(object oPC, int nToken)
 
 json GetPersistentWindowGeometryBind(object oPC, string sWindow, json jDefault)
 {
-    string sKey = GetPCPublicCDKey(oPC, TRUE);
     _NuiDataDB_SetJson(sWindow + "_default_geom", jDefault);
-    json jSaved = GetCampaignJson(sKey, "nui_geom_" + sWindow);
+    json jSaved = GetCdkeyJson(oPC, "nuiconfig", "nui_geom_" + sWindow);
     if (jSaved == JsonNull())
     {
-        SetCampaignJson(sKey, "nui_geom_" + sWindow, jDefault);
+        SetCdkeyJson(oPC, "nuiconfig", "nui_geom_" + sWindow, jDefault);
     }
     return NuiBind("_geometry");
 }
 
 json GetPersistentWindowGeometry(object oPC, string sWindow, json jDefault)
 {
-    string sKey = GetPCPublicCDKey(oPC, TRUE);
     _NuiDataDB_SetJson(sWindow + "_default_geom", jDefault);
-    json jSaved = GetCampaignJson(sKey, "nui_geom_" + sWindow);
+    json jSaved = GetCdkeyJson(oPC, "nuiconfig", "nui_geom_" + sWindow);
     if (jSaved == JsonNull())
     {
-        SetCampaignJson(sKey, "nui_geom_" + sWindow, jDefault);
+        SetCdkeyJson(oPC, "nuiconfig", "nui_geom_" + sWindow, jDefault);
         jSaved = jDefault;
     }
     return jSaved;
@@ -610,8 +608,7 @@ string GetNuiConfigBindString(string sWindow, string sConfigName)
 // (It is necessary to add the config options before calling this, else no defaults will be found on the first pass)
 json GetNuiConfigValue(object oPC, string sWindow, string sConfigName)
 {
-    string sKey = GetPCPublicCDKey(oPC, TRUE);
-    json jFetch = GetCampaignJson(sKey, "nuicfg" + sWindow + "_" + sConfigName);
+    json jFetch = GetCdkeyJson(oPC, "nuiconfig", "nuicfg" + sWindow + "_" + sConfigName);
     if (jFetch == JsonNull())
     {
         int nConfigID = _NuiDataDB_GetInt(sWindow + "_config_" + sConfigName)-1;
@@ -807,7 +804,7 @@ void HandleEditModeEvents()
                 
                 //jGeom = NuiRect(300.0, 300.0, 300.0, 40.0);
                 //WriteTimestampedLogEntry("Save geom for " + sWindow + ": " + JsonDump(jGeom));
-                SetCampaignJson(sKey, "nui_geom_" + sWindow, jGeom);
+                SetCdkeyJson(oPC, "nuiconfig", "nui_geom_" + sWindow, jGeom);
                 if (bChange)
                 {
                     //WriteTimestampedLogEntry("force changed geom, do new update");

@@ -341,4 +341,7 @@ void main()
             SetLocalInt(oModule, "yesgar_count", nYesgarCount + 1);
         }
     }
+    
+    // Writes one PC's updated stats database to disk
+    UpdateOldestCachedCdkeyDB();
 }
