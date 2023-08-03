@@ -177,8 +177,8 @@ void PrepareAreaTransitionDB()
     
     if (_ShouldAbortAreaDistOnError(SqlGetError(sql))) return;
     
-    if (0)
-    //if (nSavedHash == nHash)
+    //if (0)
+    if (nSavedHash == nHash)
     {
         WriteTimestampedLogEntry("Hashes match. Skip rebuilding DB this time!");
         return;
