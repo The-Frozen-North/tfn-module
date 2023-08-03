@@ -48,7 +48,7 @@ void main()
   */
   // This now does all that.
   HandleEditModeEvents();
-  
+
   // This is a player menu event.
   if (sWndId == "pcplayerwin")
   {
@@ -80,7 +80,7 @@ void main()
       if (sEvent == "watch" && sElem == "hide_discord_label")
       {
           int bHideDiscord = JsonGetInt (NuiGetBind (oPlayer, nToken, "hide_discord_value"));
-      
+
           if (bHideDiscord)
           {
               DeleteCampaignVariable(sKey, "hide_discord");
@@ -107,7 +107,7 @@ void main()
           int nNewValue = JsonGetInt(NuiGetBind(oPlayer, nToken, "xp_bar"));
           SetCampaignInt(sKey, "option_pc_xpbar", nNewValue);
           ShowOrHideXPBarUI(oPlayer);
-          
+
       }
       else if (sEvent == "click" && sElem == "open_customisation")
       {

@@ -67,7 +67,7 @@
   },
   "Dex": {
     "type": "byte",
-    "value": 11
+    "value": 8
   },
   "Disarmable": {
     "type": "byte",
@@ -92,6 +92,13 @@
   "FeatList": {
     "type": "list",
     "value": [
+      {
+        "__struct_id": 1,
+        "Feat": {
+          "type": "word",
+          "value": 23
+        }
+      },
       {
         "__struct_id": 1,
         "Feat": {
@@ -480,6 +487,41 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "dog"
+  },
+  "VarTable": {
+    "type": "list",
+    "value": [
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "spawn_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "rand_dog"
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "heartbeat_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "hb_dog"
+        }
+      }
+    ]
   },
   "WalkRate": {
     "type": "int",
