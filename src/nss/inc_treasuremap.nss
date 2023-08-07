@@ -4,6 +4,7 @@
 #include "nw_inc_nui"
 #include "inc_persist"
 #include "inc_prettify"
+#include "inc_areadist"
 
 // Include for treasure maps and various functions for interacting with them.
 
@@ -24,7 +25,6 @@ const int TREASUREMAP_OVERLAY_OPACITY = 150;
 // Minimum/maximum ACR ranges maps to seed for.
 const int TREASUREMAP_ACR_MIN = 3;
 const int TREASUREMAP_ACR_MAX = 15;
-const int TREASUREMAP_ACR_STEP = 3;
 
 // An eligible area will have ((width in tiles * height in tiles) * this number) of possible map locations made for it.
 // At least 1 location will be made for any eligible area.
@@ -37,10 +37,44 @@ const float TREASUREMAP_SEED_DENSITY = 0.025;
 // How close you have to get to the true location to count as getting your treasure.
 const float TREASUREMAP_LOCATION_TOLERANCE = 5.0;
 
-// What proportion of mapped distance is omitted per increasing ACR
-// Lowest ACR (TREASUREMAP_ACR_MIN) will display all of the scanned region.
-// Each ACR above that loses ((this ACR - TREASUREMAP_ACR_MIN) * this constant)
-const float TREASUREMAP_PROPORTION_DISTANCE_REMOVED_PER_ACR = 0.045;
+
+// Chance for treasure map solution location to be completely random instead of somewhere near
+// where you found the map
+const int TREASUREMAP_CHANCE_FOR_RANDOM_LOCATION = 15;
+
+// When picking a nearby map, the range that is considered close starts at this value...
+const int TREASUREMAP_NEARBY_START_DISTANCE = 1000;
+// And then it might be increased by this much...
+const int TREASUREMAP_START_DISTANCE_INCREASE_AMOUNT = 333;
+// And there's this chance to keep stacking them on top of each other
+// (keep increasing until you fail this check)
+const int TREASUREMAP_START_DISTANCE_INCREASE_CHANCE = 70;
+
+const int TREASUREMAP_DIFFICULTY_EASY = 1;
+const int TREASUREMAP_DIFFICULTY_MEDIUM = 2;
+const int TREASUREMAP_DIFFICULTY_HARD = 3;
+const int TREASUREMAP_DIFFICULTY_MASTER = 4;
+const int TREASUREMAP_HIGHEST_DIFFICULTY = 4;
+
+// What proportion of mapped edge dimensions is omitted at each difficulty
+// Because the area removed is effectively this squared, it starts getting increasingly nasty
+const float TREASUREMAP_PROPORTION_DISTANCE_REMOVED_EASY = 0.1;
+const float TREASUREMAP_PROPORTION_DISTANCE_REMOVED_MEDIUM = 0.27;
+const float TREASUREMAP_PROPORTION_DISTANCE_REMOVED_HARD = 0.4;
+const float TREASUREMAP_PROPORTION_DISTANCE_REMOVED_MASTER = 0.54;
+
+// The way loot works:
+// All maps are guaranteed 1 boss roll
+// They have 2d2 rolls total, after their first roll they roll to avoid getting downgraded to semiboss loot
+// for the rest of their 2d2 rolls.
+const int TREASUREMAP_REWARD_DOWNGRADE_EASY = 93;
+const int TREASUREMAP_REWARD_DOWNGRADE_MEDIUM = 81;
+const int TREASUREMAP_REWARD_DOWNGRADE_HARD = 64;
+const int TREASUREMAP_REWARD_DOWNGRADE_MASTER = 42;
+
+// Items without item properties or with a value < 200 get turned into pure gold.
+// This sets the percentage of the item's value that is turned into gold
+const int TREASUREMAP_MUNDANE_ITEM_GOLD_CONVERSION_RATE = 80;
 
 // Set a local int on an area with any positive nonzero value to make treasuremap destinations not be generated there
 const string DISABLE_TREASUREMAPS_FOR_AREA = "notreasuremaps";
@@ -81,10 +115,11 @@ const float TREASUREMAP_GRADIENT_BECOMES_WALL = 2.0;
 
 
 // Opens a treasure map display for oPC.
-// Displays the given map ID at the given ACR.
+// Displays the given map ID at the given difficulty.
 // Nothing happens if these are invalid.
-void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJECT_INVALID);
+void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nDifficulty, object oMap=OBJECT_INVALID);
 
+// Convert a vector to a string representation for debug purposes
 string tmVectorToString(vector vVec);
 
 
@@ -103,9 +138,19 @@ int RollForTreasureMap(object oSource=OBJECT_SELF);
 object MaybeGenerateTreasureMap(int nObjectACR);
 
 // Sets up the progenitor map to match the given ACR (in the treasure system area) and returns its OID.
+// if oNearbyArea is a valid area and not bNearby, has a TREASUREMAP_CHANCE_FOR_RANDOM_LOCATION to pick a completely random solution location
+// Otherwise picks a nearby area as described around TREASUREMAP_NEARBY_START_DISTANCE above.
 // Does not copy it to another container. Use inc_loot's CopyTierItemToObjectOrLocation for that.
-// If sLocation is given, adds some text to the description about where it was found
-object SetupProgenitorTreasureMap(int nObjectACR, string sLocation="");
+// If sExtraDesc is given, adds some text to the description about where it was found
+object SetupProgenitorTreasureMap(int nObjectACR, object oNearbyArea, int bNearby, string sExtraDesc="");
+
+// If you want to override the default difficulty weightings or force a particular difficulty, use this.
+void SetTreasureMapDifficulty(object oMap, int nDifficulty);
+
+// Should return a TREASUREMAP_DIFFICULTY* constant. May return 0 for legacy maps that
+// were not opened since difficulties were added
+// but such maps aren't completable any more anyway.
+int GetTreasureMapDifficulty(object oMap);
 
 // Do what needs doing when oMap's unique power is used.
 void UseTreasureMap(object oMap);
@@ -1138,7 +1183,7 @@ void TreasureMapSwatch(object oPC)
 }
 
 
-void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJECT_INVALID)
+void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nDifficulty, object oMap=OBJECT_INVALID)
 {
     SetLocalObject(oPC, "opened_treasuremap", oMap);
     int nScale = GetPlayerDeviceProperty(oPC, PLAYER_DEVICE_PROPERTY_GUI_SCALE);
@@ -1158,16 +1203,12 @@ void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nACR, object oMap=OBJEC
     
     // "-" may not be legal for sqlite, I don't want to find out what happens then or if it's possible to do something
     // bad to the db in this case
-    if (nACR < 0)
+    if (nDifficulty < TREASUREMAP_DIFFICULTY_EASY || nDifficulty > TREASUREMAP_HIGHEST_DIFFICULTY)
     {
         return;
     }
-    if (nACR > TREASUREMAP_ACR_MAX)
-    {
-        nACR = TREASUREMAP_ACR_MAX;
-    }
-    nACR = (nACR/TREASUREMAP_ACR_STEP)*TREASUREMAP_ACR_STEP;
-    string sJsonData = "json" + IntToString(nACR);
+    
+    string sJsonData = "difficulty" + IntToString(nDifficulty);
     sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions",
             "SELECT " + sJsonData +
             " FROM treasuremaps WHERE puzzleid = @puzzleid;");
@@ -1345,14 +1386,31 @@ void CreateNewTreasureMapPuzzleAtLocation(location lLoc)
         "tilehash INTEGER, " +
         "minacr INTEGER";
 
-    for (i=TREASUREMAP_ACR_MIN; i<=TREASUREMAP_ACR_MAX; i++)
+    for (i=TREASUREMAP_DIFFICULTY_EASY; i<=TREASUREMAP_HIGHEST_DIFFICULTY; i++)
     {
-        sQuery = sQuery + ", json" + IntToString(i) + " TEXT";
+        sQuery = sQuery + ", difficulty" + IntToString(i) + " TEXT";
     }
     sQuery = sQuery + ");";
-
+    
+    // Indexing: we do the following:
+    // select jsondata<difficulty where puzzleid=? (when opening a map)
+    // select areatag, position where puzzleid=? (when digging for maps)
+    // select puzzleid, areatag where minacr<=? and areatag in (???) (when making a map near an are)
+    // select puzzleid, areatag where minacr<=? (when making a map in a random area)
+    
     sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions", sQuery);
     SqlStep(sql);
+    
+    sql = SqlPrepareQueryCampaign("tmapsolutions",
+        "CREATE INDEX IF NOT EXISTS idx_minacr ON treasuremaps(minacr);");
+    SqlStep(sql);
+    sql = SqlPrepareQueryCampaign("tmapsolutions",
+        "CREATE INDEX IF NOT EXISTS idx_minacr_areatag ON treasuremaps(minacr, areatag);");
+    SqlStep(sql);
+    sql = SqlPrepareQueryCampaign("tmapsolutions",
+        "CREATE INDEX IF NOT EXISTS idx_puzzleid ON treasuremaps(puzzleid);");
+    SqlStep(sql);
+
 
     object oArea = GetAreaFromLocation(lLoc);
     int nMinAcr = GetLocalInt(oArea, "cr");
@@ -1453,25 +1511,23 @@ void CalculateTreasureMaps(int nPuzzleID)
     mpSettings.MAPDATA_AREA_CULL_THRESHOLD_PROPORTION = 0.002;
     mpSettings.MAPDATA_MINIMUM_AREA_CULL_THRESHOLD = 12.0;
 
-    int nAreaCR = GetLocalInt(oArea, "cr");
-    if (nAreaCR < TREASUREMAP_ACR_MIN) { nAreaCR = TREASUREMAP_ACR_MIN; }
-    if (nAreaCR > TREASUREMAP_ACR_MAX) { nAreaCR = TREASUREMAP_ACR_MAX; }
 
-    // Go to the first possible step
-    nAreaCR = (nAreaCR/TREASUREMAP_ACR_STEP)*TREASUREMAP_ACR_STEP;
-
-    int nCurrentACR;
-    for (nCurrentACR=nAreaCR; nCurrentACR<=TREASUREMAP_ACR_MAX; nCurrentACR+=TREASUREMAP_ACR_STEP)
+    int nCurrentDifficulty;
+    for (nCurrentDifficulty=TREASUREMAP_DIFFICULTY_EASY; nCurrentDifficulty<=TREASUREMAP_HIGHEST_DIFFICULTY; nCurrentDifficulty++)
     {
-        float fCRDiff = IntToFloat(nCurrentACR - TREASUREMAP_ACR_MIN);
-        int nNumFewerScansForThisACR = FloatToInt(fCRDiff * TREASUREMAP_PROPORTION_DISTANCE_REMOVED_PER_ACR * IntToFloat(nRealScanCount));
-        int nScanCountForThisACR = nRealScanCount - nNumFewerScansForThisACR;
-        //WriteTimestampedLogEntry("Scancount: " + IntToString(nRealScanCount) + " - " + IntToString(nNumFewerScansForThisACR) + " -> " + IntToString(nScanCountForThisACR));
+        float fProportionRemoved = 0.0;
+        if (nCurrentDifficulty == TREASUREMAP_DIFFICULTY_EASY) { fProportionRemoved = TREASUREMAP_PROPORTION_DISTANCE_REMOVED_EASY; }
+        else if (nCurrentDifficulty == TREASUREMAP_DIFFICULTY_MEDIUM) { fProportionRemoved = TREASUREMAP_PROPORTION_DISTANCE_REMOVED_MEDIUM; }
+        else if (nCurrentDifficulty == TREASUREMAP_DIFFICULTY_HARD) { fProportionRemoved = TREASUREMAP_PROPORTION_DISTANCE_REMOVED_HARD; }
+        else if (nCurrentDifficulty == TREASUREMAP_DIFFICULTY_MASTER) { fProportionRemoved = TREASUREMAP_PROPORTION_DISTANCE_REMOVED_MASTER; }
+        int nNumFewerScansForThisDifficulty = FloatToInt(fProportionRemoved * IntToFloat(nRealScanCount));
+        int nScanCountForThisDifficulty = nRealScanCount - nNumFewerScansForThisDifficulty;
+        //WriteTimestampedLogEntry("Scancount: " + IntToString(nRealScanCount) + " - " + IntToString(nNumFewerScansForThisDifficulty) + " -> " + IntToString(nScanCountForThisDifficulty));
 
         // We calculated the offset for the scan based on the MAXIMUM scan distance
-        // there is no guarantee that it's the same with the reduced scan count due to ACR increase...
-        vector vOffsetForThisACR = GetVectorToMoveScanLocationWithinAreaBounds(lLoc, nScanCountForThisACR, nScanCountForThisACR, fInterval);
-        vector vOffsetFromScanCentreForThisACR = vPosScan - (vLoc + vOffsetForThisACR);
+        // there is no guarantee that it's the same with the reduced scan count due to difficulty increase...
+        vector vOffsetForThisDifficulty = GetVectorToMoveScanLocationWithinAreaBounds(lLoc, nScanCountForThisDifficulty, nScanCountForThisDifficulty, fInterval);
+        vector vOffsetFromScanCentreForThisDifficulty = vPosScan - (vLoc + vOffsetForThisDifficulty);
 
         // ProcessMapData takes two variables per axis
         // 1)   Ending interval index.
@@ -1490,31 +1546,31 @@ void CalculateTreasureMaps(int nPuzzleID)
         // The negation here in the x axis seems to fix some left/right mirroring issues.
         // I'm assuming has to do with the fact that y axis was inverted at some point scanning but x wasn't
         // but my brain is fried and my mathematical reasoning is failing me
-        int nOffsetIntervalsX = FloatToInt(-vOffsetFromScanCentreForThisACR.x/fInterval);
-        int nOffsetIntervalsY = FloatToInt(vOffsetFromScanCentreForThisACR.y/fInterval);
+        int nOffsetIntervalsX = FloatToInt(-vOffsetFromScanCentreForThisDifficulty.x/fInterval);
+        int nOffsetIntervalsY = FloatToInt(vOffsetFromScanCentreForThisDifficulty.y/fInterval);
 
-        int nNonOffsetIntervalCount = nNumFewerScansForThisACR/2;
+        int nNonOffsetIntervalCount = nNumFewerScansForThisDifficulty/2;
 
 
-        //WriteTimestampedLogEntry("vOffsetFromScanCentreForThisACR " + tmVectorToString(vOffsetFromScanCentreForThisACR));
+        //WriteTimestampedLogEntry("vOffsetFromScanCentreForThisDifficulty " + tmVectorToString(vOffsetFromScanCentreForThisDifficulty));
 
         // Same deal with negating the x axis adjustment
-        mpSettings.fCrossOffsetX = -(vScanAdjustment.x - vOffsetFromScanCentreForThisACR.x)/fInterval;
-        mpSettings.fCrossOffsetY = (vScanAdjustment.y - vOffsetFromScanCentreForThisACR.y)/fInterval;
+        mpSettings.fCrossOffsetX = -(vScanAdjustment.x - vOffsetFromScanCentreForThisDifficulty.x)/fInterval;
+        mpSettings.fCrossOffsetY = (vScanAdjustment.y - vOffsetFromScanCentreForThisDifficulty.y)/fInterval;
 
-        mpSettings.MAPDATA_MINIMUM_POLYGON_AREA = 0.02 / IntToFloat(nScanCountForThisACR);
+        mpSettings.MAPDATA_MINIMUM_POLYGON_AREA = 0.02 / IntToFloat(nScanCountForThisDifficulty);
 
         int nStartIntervalX = nNonOffsetIntervalCount+nOffsetIntervalsX;
         int nStartIntervalY = nNonOffsetIntervalCount+nOffsetIntervalsY;
 
-        //WriteTimestampedLogEntry("Process map data: X = " + IntToString(nStartIntervalX) + " to " + IntToString(nStartIntervalX+nScanCountForThisACR) + ", Y = " + IntToString(nStartIntervalY) + " to " + IntToString(nStartIntervalY+nScanCountForThisACR));
+        //WriteTimestampedLogEntry("Process map data: X = " + IntToString(nStartIntervalX) + " to " + IntToString(nStartIntervalX+nScanCountForThisDifficulty) + ", Y = " + IntToString(nStartIntervalY) + " to " + IntToString(nStartIntervalY+nScanCountForThisDifficulty));
 
         // This will be very very prone to TMI
         NWNX_Util_SetInstructionsExecuted(0);
 
-        json jDrawListElements = ProcessTreasureMapData(nStartIntervalX+nScanCountForThisACR, nStartIntervalY+nScanCountForThisACR, nStartIntervalX, nStartIntervalY, mpSettings);
+        json jDrawListElements = ProcessTreasureMapData(nStartIntervalX+nScanCountForThisDifficulty, nStartIntervalY+nScanCountForThisDifficulty, nStartIntervalX, nStartIntervalY, mpSettings);
 
-        string sJsonFieldName = "json" + IntToString(nCurrentACR);
+        string sJsonFieldName = "difficulty" + IntToString(nCurrentDifficulty);
         sql = SqlPrepareQueryCampaign("tmapsolutions",
         "UPDATE treasuremaps " +
         "SET " + sJsonFieldName + " = @value " +
@@ -1545,11 +1601,21 @@ int GetTreasureMapGoldValue(int nACR)
     else if (nACR >= 6) { nValue += (nACR * 2); }
 
     // Then multiply up by a bit...
-    nValue *= 4;
+    nValue *= 6;
     return nValue;
 }
 
-void InitialiseTreasureMap(object oMap, int nACR, string sLocation="")
+void SetTreasureMapDifficulty(object oMap, int nDifficulty)
+{
+    SetLocalInt(oMap, "difficulty", nDifficulty);
+}
+
+int GetTreasureMapDifficulty(object oMap)
+{
+    return GetLocalInt(oMap, "difficulty");
+}
+
+void InitialiseTreasureMap(object oMap, int nACR, string sExtraDesc="")
 {
     if (nACR > TREASUREMAP_ACR_MAX)
     {
@@ -1566,18 +1632,109 @@ void InitialiseTreasureMap(object oMap, int nACR, string sLocation="")
     NWNX_Item_SetAddGoldPieceValue(oMap, nValue - nBaseValue);
     SetLocalInt(oMap, "acr", nACR);
     SetDescription(oMap, "");
-    if (sLocation != "")
+    if (sExtraDesc != "")
     {
         string sDesc = GetDescription(oMap);
-        sDesc += "\n\nThis map was obtained in " + sLocation + ".";
+        sDesc += "\n\n" + sExtraDesc;
         SetDescription(oMap, sDesc);
+    }
+    int nRoll = d100();
+    if (nRoll <= 31) { SetTreasureMapDifficulty(oMap, TREASUREMAP_DIFFICULTY_EASY); }
+    else if (nRoll <= 62) { SetTreasureMapDifficulty(oMap, TREASUREMAP_DIFFICULTY_MEDIUM); }
+    else if (nRoll <= 93) { SetTreasureMapDifficulty(oMap, TREASUREMAP_DIFFICULTY_HARD); }
+    else { SetTreasureMapDifficulty(oMap, TREASUREMAP_DIFFICULTY_MASTER); }
+}
+
+void AssignNewPuzzleToMap(object oMap, object oNearbyArea, int bNearby)
+{
+    int nACR = GetLocalInt(oMap, "acr");
+    if (nACR < TREASUREMAP_ACR_MIN)
+    {
+        SetLocalInt(oMap, "acr", nACR);
+        nACR = TREASUREMAP_ACR_MIN;
+    }
+    
+    if (bNearby && GetIsObjectValid(oNearbyArea))
+    {
+        int nDist = TREASUREMAP_NEARBY_START_DISTANCE;
+        while (Random(100) < TREASUREMAP_START_DISTANCE_INCREASE_CHANCE)
+        {
+            nDist += TREASUREMAP_START_DISTANCE_INCREASE_AMOUNT;
+        }
+        json jAreaTags = GetAreasWithinDistance(oNearbyArea, nDist);
+        int nLength = JsonGetLength(jAreaTags);
+        int nValidAreas = 0;
+        int i;
+        json jValid = JsonArray();
+        string sAreas = "";
+        for (i=0; i<nLength; i++)
+        {
+            object oArea = GetObjectByTag(JsonGetString(JsonArrayGet(jAreaTags, i)));
+            if (CanAreaHaveTreasureMaps(oArea) && GetLocalInt(oArea, "cr") <= nACR)
+            {
+                jValid = JsonArrayInsert(jValid, JsonArrayGet(jAreaTags, i));
+                nValidAreas++;
+                sAreas = sAreas + "'" + JsonGetString(JsonArrayGet(jAreaTags, i)) + "',";
+            }
+        }
+        // If there aren't enough possible areas this will probably be too easy
+        // so in that case just go full random
+        if (nValidAreas < 5)
+        {
+            AssignNewPuzzleToMap(oMap, OBJECT_INVALID, FALSE);
+            return;
+        }
+        
+        // Remove trailing comma
+        sAreas = GetStringLeft(sAreas, GetStringLength(sAreas)-1);
+        
+        
+        
+        string sQuery = "SELECT puzzleid, areatag FROM treasuremaps WHERE minacr <= @minacr AND areatag in (" + sAreas + ") " +
+        "ORDER BY RANDOM() LIMIT 1;";
+        sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions", sQuery);
+        SqlBindInt(sql, "@minacr", nACR);
+        if (SqlStep(sql))
+        {           
+            int nPuzzleID = SqlGetInt(sql, 0);
+            SendDebugMessage("Picked area tag = " + SqlGetString(sql, 1));
+            SetLocalInt(oMap, "puzzleid", nPuzzleID);
+        }
+        else
+        {
+            SendDebugMessage("Failed to get a map in this area list, going random");
+            // In theory this should not be possible
+            AssignNewPuzzleToMap(oMap, OBJECT_INVALID, FALSE);
+        }
+    }
+    else
+    {
+        string sQuery = "SELECT puzzleid " +
+        "FROM treasuremaps WHERE minacr <= @minacr " +
+        "ORDER BY RANDOM() LIMIT 1;";
+        sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions", sQuery);
+        SqlBindInt(sql, "@minacr", nACR);
+        SqlStep(sql);
+        int nPuzzleID = SqlGetInt(sql, 0);
+        SetLocalInt(oMap, "puzzleid", nPuzzleID);
     }
 }
 
 void UseTreasureMap(object oMap)
 {
-    int nPuzzleID = GetLocalInt(oMap, "puzzleid");
     int nACR = GetLocalInt(oMap, "acr");
+    int nDifficulty = GetLocalInt(oMap, "difficulty");
+    // Update legacy maps that were made before the difficulty bands were a thing
+    if (nDifficulty == 0)
+    {
+        if (nACR == 15) { nDifficulty = TREASUREMAP_DIFFICULTY_MASTER; }
+        else if (nACR > 10) { nDifficulty = TREASUREMAP_DIFFICULTY_HARD; }
+        else if (nACR > 6) { nDifficulty = TREASUREMAP_DIFFICULTY_MEDIUM; }
+        else { nDifficulty = TREASUREMAP_DIFFICULTY_EASY; }
+        SetLocalInt(oMap, "difficulty", nDifficulty);
+        
+    }
+    int nPuzzleID = GetLocalInt(oMap, "puzzleid");
     string sAreaTag = "";
     int nAssignPuzzle = 1;
     if (nPuzzleID > 0)
@@ -1601,16 +1758,10 @@ void UseTreasureMap(object oMap)
     }
     if (nAssignPuzzle)
     {
-        string sQuery = "SELECT puzzleid " +
-            "FROM treasuremaps WHERE minacr <= @minacr";
-        sQuery = sQuery + " ORDER BY RANDOM() LIMIT 1;";
-        sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions", sQuery);
-        SqlBindInt(sql, "@minacr", nACR);
-        SqlStep(sql);
-        nPuzzleID = SqlGetInt(sql, 0);
-        SetLocalInt(oMap, "puzzleid", nPuzzleID);
+        AssignNewPuzzleToMap(oMap, OBJECT_INVALID, 0);
+        nPuzzleID = GetLocalInt(oMap, "puzzleid");
     }
-    DisplayTreasureMapUI(GetItemPossessor(oMap), nPuzzleID, nACR, oMap);
+    DisplayTreasureMapUI(GetItemPossessor(oMap), nPuzzleID, nDifficulty, oMap);
 }
 
 location GetPuzzleSolutionLocation(int nPuzzleID)
@@ -1694,31 +1845,37 @@ int RollForTreasureMap(object oSource=OBJECT_SELF)
 int DoesLocationCompleteMap(object oMap, location lTest)
 {
     int nPuzzleID = GetLocalInt(oMap, "puzzleid");
-    location lSolution = GetPuzzleSolutionLocation(nPuzzleID);
-    if (GetIsObjectValid(GetAreaFromLocation(lSolution)))
+    if (nPuzzleID >= 0)
     {
-        if (GetAreaFromLocation(lSolution) == GetAreaFromLocation(lTest))
+        if (GetTreasureMapDifficulty(oMap) > 0)
         {
-            float fDist = TREASUREMAP_LOCATION_TOLERANCE;
-            object oPC = GetItemPossessor(oMap);
-            float fSearch = IntToFloat(GetSkillRank(SKILL_SEARCH, oPC));
-            fDist = fDist + (fSearch * 0.05 * fDist);
-            if (GetDistanceBetweenLocations(lSolution, lTest) <= fDist)
+            location lSolution = GetPuzzleSolutionLocation(nPuzzleID);
+            if (GetIsObjectValid(GetAreaFromLocation(lSolution)))
             {
-                if (!CanSavePCInfo(oPC))
+                if (GetAreaFromLocation(lSolution) == GetAreaFromLocation(lTest))
                 {
-                    FloatingTextStringOnCreature("You find some treasure, but cannot dig it up while polymorphed.", oPC, FALSE);
-                    DelayCommand(6.0, FloatingTextStringOnCreature("You find some treasure, but cannot dig it up while polymorphed.", oPC, FALSE));
-                    return 0;
+                    float fDist = TREASUREMAP_LOCATION_TOLERANCE;
+                    object oPC = GetItemPossessor(oMap);
+                    float fSearch = IntToFloat(GetSkillRank(SKILL_SEARCH, oPC));
+                    fDist = fDist + (fSearch * 0.05 * fDist);
+                    if (GetDistanceBetweenLocations(lSolution, lTest) <= fDist)
+                    {
+                        if (!CanSavePCInfo(oPC))
+                        {
+                            FloatingTextStringOnCreature("You find some treasure, but cannot dig it up while polymorphed.", oPC, FALSE);
+                            DelayCommand(6.0, FloatingTextStringOnCreature("You find some treasure, but cannot dig it up while polymorphed.", oPC, FALSE));
+                            return 0;
+                        }
+                        return 1;
+                    }
                 }
-                return 1;
             }
         }
     }
     return 0;
 }
 
-object SetupProgenitorTreasureMap(int nObjectACR, string sLocation="")
+object SetupProgenitorTreasureMap(int nObjectACR, object oNearbyArea, int bNearby, string sExtraDesc="")
 {
     // Treasure generation expects a valid OID to copy that's in a system area
     // I guess we give it one
@@ -1735,7 +1892,12 @@ object SetupProgenitorTreasureMap(int nObjectACR, string sLocation="")
             WriteTimestampedLogEntry("ERROR: couldn't make seed treasure map");
         }
     }
-    InitialiseTreasureMap(oProgenitor, nObjectACR, sLocation);
+    if (GetIsObjectValid(oNearbyArea))
+    {
+        sExtraDesc = "This map was obtained in " + GetName(oNearbyArea) + ". " + sExtraDesc;
+    }
+    InitialiseTreasureMap(oProgenitor, nObjectACR, sExtraDesc);
+    AssignNewPuzzleToMap(oProgenitor, oNearbyArea, bNearby);
     return oProgenitor;
 }
 
@@ -1751,7 +1913,7 @@ object MaybeGenerateTreasureMap(int nObjectACR)
 
     string sLocation = GetName(GetArea(OBJECT_SELF));
 
-    return SetupProgenitorTreasureMap(nObjectACR, sLocation);
+    return SetupProgenitorTreasureMap(nObjectACR, GetArea(OBJECT_SELF), Random(100) < TREASUREMAP_CHANCE_FOR_RANDOM_LOCATION ? 0 : 1);
 }
 
 void CompleteTreasureMap(object oMap)

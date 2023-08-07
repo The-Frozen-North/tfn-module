@@ -7,7 +7,7 @@
 #include "0i_win_layouts"
 #include "0i_database"
 
-void main ()
+void main()
 {
     string sKey = GetPCPublicCDKey(OBJECT_SELF, TRUE);
     if (GetCampaignInt(sKey, "pc_menu_disabled") != 1)

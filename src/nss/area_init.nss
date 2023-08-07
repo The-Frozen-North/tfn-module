@@ -1,3 +1,4 @@
+
 #include "inc_debug"
 #include "util_i_csvlists"
 #include "nwnx_area"
@@ -265,12 +266,32 @@ void main()
        int nHighGold = GetLocalInt(oModule, "placeable_value_high_" + sACR);
        json jKeepTreasures = JsonArray();
        
+       int nNextTransitionIndex = 1;
+       while (1)
+       {
+           if (GetLocalString(oArea, "connection" + IntToString(nNextTransitionIndex)) == "")
+           {
+               break;
+           }
+           nNextTransitionIndex++;
+       }
+       
        int nThisTreasureGold;
 
 // Loop through all objects in the area and do something special with them
        while (GetIsObjectValid(oObject))
        {
                nType = GetObjectType(oObject);
+               
+               // The warden tele script is used... for more things that just wardens now
+               // Doors and placeables can have it too!
+                string sWardenTeleWP = GetLocalString(oObject, "warden_tele_wp");
+                if (sWardenTeleWP != "" && GetIsObjectValid(GetObjectByTag(sWardenTeleWP)))
+                {
+                    object oTargetArea = GetArea(GetObjectByTag(sWardenTeleWP));
+                    SetLocalString(oArea, "connection" + IntToString(nNextTransitionIndex), GetResRef(oTargetArea));
+                    nNextTransitionIndex++;
+                }
 
 // tag merchants/quest NPCs that are plot/immortal as dm_immune
 // these types should never be skipped
@@ -365,6 +386,11 @@ void main()
 
 // all doors are plot
                     SetPlotFlag(oObject, TRUE);
+                    if (GetIsObjectValid(GetTransitionTarget(oObject)))
+                    {
+                        SetLocalString(oArea, "connection" + IntToString(nNextTransitionIndex), GetResRef(GetArea(GetTransitionTarget(oObject))));
+                        nNextTransitionIndex++;
+                    }
 
                  if (GetStringLeft(GetResRef(oObject), 5) != "_home")
                  {
@@ -552,6 +578,15 @@ void main()
                         SetPlotFlag(oObject, TRUE);
                    }
                  break;
+                 case OBJECT_TYPE_TRIGGER:
+                 {
+                    if (GetIsObjectValid(GetTransitionTarget(oObject)))
+                    {
+                        SetLocalString(oArea, "connection" + IntToString(nNextTransitionIndex), GetResRef(GetArea(GetTransitionTarget(oObject))));
+                        nNextTransitionIndex++;
+                    }
+                    break;
+                 }
                }
            oObject = GetNextObjectInArea(oArea);
        }
@@ -615,6 +650,26 @@ void main()
              CreateObject(OBJECT_TYPE_WAYPOINT, "nw_waypoint001", lSpawnLocation, FALSE, sResRef+"_trap_spawn_point"+IntToString(i+1));
         }
         SendDebugMessage(sResRef+" loaded trap spawn points: "+IntToString(nTrapSpawnPoints), TRUE);
+    }
+    
+    // Connections: rewrite these to make sure there aren't any duplicates
+    // The area distance graph calculation is already bad enough, don't make it worse!
+    json jConnections = JsonArray();
+    for (i=1; i<nNextTransitionIndex; i++)
+    {
+        string sConnection = GetLocalString(oArea, "connection" + IntToString(i));
+        DeleteLocalString(oArea, "connection" + IntToString(i));
+        if (JsonFind(jConnections, JsonString(sConnection)) == JsonNull())
+        {
+            jConnections = JsonArrayInsert(jConnections, JsonString(sConnection));
+        }
+    }
+    WriteTimestampedLogEntry("Area connections (found " + IntToString(nNextTransitionIndex-1) + " transitions total): " + JsonDump(jConnections));
+    int nLength = JsonGetLength(jConnections);
+    for (i=1; i<=nLength; i++)
+    {
+        string sConnect = JsonGetString(JsonArrayGet(jConnections, i-1));
+        SetLocalString(oArea, "connection" + IntToString(i), sConnect);
     }
 
 //==========================================

@@ -24,13 +24,13 @@ def treasuremaploots(downgradechance, trials = 1e6):
 	return (numhigh/trials, numlow/trials)
 
 def main():
-	results = treasuremaploots(0.95)
+	results = treasuremaploots(0.93)
 	print(f"Low: {results[0]} boss, {results[1]} downgraded")
-	results = treasuremaploots(0.85)
+	results = treasuremaploots(0.81)
 	print(f"Medium: {results[0]} boss, {results[1]} downgraded")
-	results = treasuremaploots(0.7)
+	results = treasuremaploots(0.64)
 	print(f"High: {results[0]} boss, {results[1]} downgraded")
-	results = treasuremaploots(0.5)
+	results = treasuremaploots(0.42)
 	print(f"Master: {results[0]} boss, {results[1]} downgraded")
 	
 if __name__ == "__main__":

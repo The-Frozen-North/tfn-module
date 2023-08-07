@@ -95,8 +95,8 @@ void main()
         if (nFurthestLinkedAreaOffRefresh > 0 && nFurthestLinkedAreaOffRefresh < REFRESH_HEARTBEAT_COUNT)
         {
             // Waiting for another area doesn't affect our refresh counter, so don't spam the log too hard with this
-            //if (nRefresh % 20 == 0)
-            if (1)
+            if (nRefresh % 20 == 0)
+            //if (1)
             {
                 SendDebugMessage("Can't refresh " + sResRef + " due to linked area not being ready, furthest count = " + IntToString(nFurthestLinkedAreaOffRefresh), TRUE);
             }

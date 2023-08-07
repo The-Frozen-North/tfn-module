@@ -34,6 +34,7 @@ rm server/database/treasures.sqlite3
 rm server/database/spawns.sqlite3
 rm server/database/prettify.sqlite3
 rm server/database/tmapsolutions.sqlite3
+rm server/database/areadistances.sqlite3
 
 mkdir server/override
 mkdir server/config
@@ -48,6 +49,7 @@ cp seeded_database/treasures.sqlite3 server/database/treasures.sqlite3
 cp seeded_database/randspellbooks.sqlite3 server/database/randspellbooks.sqlite3
 cp seeded_database/prettify.sqlite3 server/database/prettify.sqlite3
 cp seeded_database/tmapsolutions.sqlite3 server/database/tmapsolutions.sqlite3
+cp seeded_database/areadistances.sqlite3 server/database/areadistances.sqlite3
 
 cp server/env/env.2da server/override/env.2da
 cp server/env/env_dm.2da server/override/env_dm.2da

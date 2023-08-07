@@ -6,6 +6,7 @@
 #include "x0_i0_match"
 #include "util_i_color"
 #include "nui_playerstats"
+#include "inc_cdkeyvars"
 
 const float MORALE_RADIUS = 30.0;
 const float REMAINS_DECAY = 120.0;
@@ -776,11 +777,9 @@ int IncrementPlayerStatistic(object oPC, string sStat, int nIncrement = 1)
     int nNewTotal = SQLocalsPlayer_GetInt(oPC, sVarName) + nIncrement;
     SQLocalsPlayer_SetInt(oPC, sVarName, nNewTotal);
     
-    string sKey = GetPCPublicCDKey(oPC, TRUE);
-    int nOldPlayerValue = GetCampaignInt(sKey, STAT_PREFIX+sStat);
-    SetCampaignInt(sKey, STAT_PREFIX+sStat, nOldPlayerValue+nIncrement);
+    nNewTotal = GetCachedCdkeyInt(oPC, "playerstats", sVarName);
+    SetCachedCdkeyInt(oPC, "playerstats", sVarName, nNewTotal + nIncrement);
     UpdatePlayerStatsUIBindIfOpen(oPC, sStat);
-
     return nNewTotal;
 }
 
@@ -795,8 +794,7 @@ void SetPlayerStatisticString(object oPC, string sStat, string sValue, int bCDKe
         SQLocalsPlayer_SetString(oPC, sVarName, sValue);
         return;
     }
-    string sKey = GetPCPublicCDKey(oPC, TRUE);
-    SetCampaignString(sKey, STAT_PREFIX+sStat, sValue);
+    SetCachedCdkeyString(oPC, "playerstats", sVarName, sValue);
 }
 
 void SetPlayerStatistic(object oPC, string sStat, int nValue, int bCDKeyDB=0);
@@ -810,8 +808,7 @@ void SetPlayerStatistic(object oPC, string sStat, int nValue, int bCDKeyDB=0)
         SQLocalsPlayer_SetInt(oPC, sVarName, nValue);
         return;
     }
-    string sKey = GetPCPublicCDKey(oPC, TRUE);
-    SetCampaignInt(sKey, STAT_PREFIX+sStat, nValue);
+    SetCachedCdkeyInt(oPC, "playerstats", sVarName, nValue);
 }
 
 string GetPlayerStatisticString(object oPC, string sStat, int bCDKeyDB=0);
@@ -824,8 +821,7 @@ string GetPlayerStatisticString(object oPC, string sStat, int bCDKeyDB=0)
     {
         return SQLocalsPlayer_GetString(oPC, sVarName);
     }
-    string sKey = GetPCPublicCDKey(oPC, TRUE);
-    return GetCampaignString(sKey, STAT_PREFIX+sStat);
+    return GetCachedCdkeyString(oPC, "playerstats", sVarName);
 }
 
 int GetPlayerStatistic(object oPC, string sStat, int bCDKeyDB=0);
@@ -838,8 +834,7 @@ int GetPlayerStatistic(object oPC, string sStat, int bCDKeyDB=0)
     {
         return SQLocalsPlayer_GetInt(oPC, sVarName);
     }
-    string sKey = GetPCPublicCDKey(oPC, TRUE);
-    return GetCampaignInt(sKey, STAT_PREFIX+sStat);
+    return GetCachedCdkeyInt(oPC, "playerstats", sVarName);
 }
 
 // for delays

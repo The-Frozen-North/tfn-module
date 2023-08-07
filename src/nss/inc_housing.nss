@@ -569,6 +569,7 @@ object InstanceHouseArea(string sCoordinates, string sTag, float fOrientation)
 
     object oTemplateArea = GetObjectByTag("_home"+sDoorTag+"_"+sFacing);
     object oNewArea = CopyArea(oTemplateArea, sTag);
+    SetLocalInt(oNewArea, "playerhouse", 1);
 
     //SendDebugMessage("_home"+sDoorTag+"_"+sFacing+" created: "+IntToString(GetIsObjectValid(oNewArea)), TRUE);
     SetLocalString(oNewArea, "coordinates", sCoordinates);

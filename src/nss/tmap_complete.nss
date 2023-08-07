@@ -15,12 +15,14 @@ void main()
     }
     
     object oReward = CreateObject(OBJECT_TYPE_PLACEABLE, "treasuremap_loot", GetLocation(oOwner));
+    ApplyEffectToObject(DURATION_TYPE_PERMANENT, SupernaturalEffect(EffectCutsceneGhost()), oReward);
     SetName(oReward, sTreasureName);
     SetObjectVisualTransform(oReward, OBJECT_VISUAL_TRANSFORM_SCALE, 0.5);
     SetLocalString(oReward, "owner", GetPCPublicCDKey(oOwner));
-    int nLootLevel = (GetLocalInt(oMap, "acr")*3)/2;
+    int nLootLevel = GetLocalInt(oMap, "acr");
     SetLocalInt(oReward, "cr", nLootLevel);
     SetLocalInt(oReward, "area_cr", nLootLevel);
+    SetLocalInt(oReward, "parent_map_difficulty", GetTreasureMapDifficulty(OBJECT_SELF));
     SetPlotFlag(oReward, 1);
     AssignCommand(GetModule(), DelayCommand(280.0, SetPlotFlag(oReward, 0)));
     DestroyObject(oReward, 300.0);
