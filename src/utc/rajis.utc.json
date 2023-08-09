@@ -2,7 +2,7 @@
   "__data_type": "UTC ",
   "Appearance_Type": {
     "type": "word",
-    "value": 286
+    "value": 133
   },
   "BodyBag": {
     "type": "byte",
@@ -64,7 +64,7 @@
     "id": 12667,
     "type": "cexolocstring",
     "value": {
-      "0": "Devout worshipers of evil, pureblooded Yuan-ti often appear human at first glance. It is only when they draw close that their snake-like features can be seen."
+      "0": "Primitive and savage, these reptilian humanoids can be very dangerous if provoked. They are fiercely territorial, banding together to protect the swamplands they inhabit."
     }
   },
   "Dex": {
@@ -104,13 +104,6 @@
         "EquippedRes": {
           "type": "resref",
           "value": "nw_it_crewpsp026"
-        }
-      },
-      {
-        "__struct_id": 131072,
-        "EquippedRes": {
-          "type": "resref",
-          "value": "nw_it_creitem044"
         }
       }
     ]
@@ -207,7 +200,7 @@
   },
   "Gender": {
     "type": "byte",
-    "value": 0
+    "value": 2
   },
   "GoodEvil": {
     "type": "byte",
@@ -275,7 +268,7 @@
   },
   "PortraitId": {
     "type": "word",
-    "value": 349
+    "value": 268
   },
   "Race": {
     "type": "byte",
@@ -540,7 +533,7 @@
   },
   "SoundSetFile": {
     "type": "word",
-    "value": 108
+    "value": 58
   },
   "SpecAbilityList": {
     "type": "list",
@@ -620,6 +613,21 @@
         "Value": {
           "type": "int",
           "value": 1
+        }
+      },
+      {
+        "__struct_id": 0,
+        "Name": {
+          "type": "cexostring",
+          "value": "spawn_script"
+        },
+        "Type": {
+          "type": "dword",
+          "value": 3
+        },
+        "Value": {
+          "type": "cexostring",
+          "value": "size_120"
         }
       }
     ]

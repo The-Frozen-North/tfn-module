@@ -12,7 +12,7 @@ void main()
     // 1 in 100 chance of falling asleep for an hour or two at any time of the day
     if (d100() == 1)
     {
-        ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectSleep(), OBJECT_SELF, TurnsToSeconds(10 + d10()));
+        ApplyEffectToObject(DURATION_TYPE_TEMPORARY, EffectSleep(), OBJECT_SELF, TurnsToSeconds(5 + d6()));
         return;
     }
     

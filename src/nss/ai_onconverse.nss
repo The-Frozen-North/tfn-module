@@ -10,8 +10,27 @@ void main()
     if (gsC2GetHasEffect(EFFECT_TYPE_PETRIFY, OBJECT_SELF))
         return;
 
+    object oSpeaker = GetLastSpeaker();
+    
     if (gsC2GetHasEffect(EFFECT_TYPE_SLEEP, OBJECT_SELF))
+    {
+        // wake up if prompted for conversation
+        if (!GetIsInCombat(oSpeaker) && GetDistanceToObject(oSpeaker) < 3.0 && GetListenPatternNumber() == -1)
+        {
+            effect e = GetFirstEffect(OBJECT_SELF);
+            while(GetIsEffectValid(e))
+            {
+                if(GetEffectType(e) == EFFECT_TYPE_SLEEP)
+                {
+                    RemoveEffect(OBJECT_SELF, e);
+                    break;
+                }
+                e = GetNextEffect(OBJECT_SELF);
+            }
+        }
+
         return;
+    }
 
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_CONVERSATION));
 
@@ -21,7 +40,6 @@ void main()
         return;
     }
 
-    object oSpeaker = GetLastSpeaker();
     object oTarget  = OBJECT_INVALID;
     string sConv = GetLocalString(OBJECT_SELF, "conversation_override");
 

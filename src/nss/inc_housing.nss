@@ -285,7 +285,12 @@ void SpawnPet(string sCDKey, int nTarget, object oArea)
     object oPet = CreateObject(OBJECT_TYPE_CREATURE, sResRef, lLocation, FALSE, sTag);
 
     SetCreatureAppearanceType(oPet, nAppearanceType);
-    SetCreatureTailType(nTailModel, oPet);
+    
+    if (nTailModel > 0)
+    {
+        SetCreatureTailType(nTailModel, oPet);
+    }
+
     SetPortraitResRef(oPet, sPortraitResRef);
     SetName(oPet, sName);
 
