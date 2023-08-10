@@ -855,10 +855,29 @@ void SendMessageToAllPCs(string sMessage, int nColor = MESSAGE_COLOR_SERVER)
     }
 }
 
+int IsAmmo(object oItem);
+int IsAmmo(object oItem)
+{
+    int nBaseType = GetBaseItemType(oItem);
+    
+    if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT)
+    {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
 // TRUE if the item has any permanent item properties
 int IsAmmoInfinite(object oItem);
 int IsAmmoInfinite(object oItem)
 {
+    // not ammo, don't tag it as infinite
+    if (!IsAmmo(oItem))
+    {
+        return FALSE;
+    }
+    
     itemproperty ip = GetFirstItemProperty(oItem);
 
     while (GetIsItemPropertyValid(ip))

@@ -49,8 +49,10 @@ doing so, do this only if running original event has no longer sense.
 
 #include "x0_i0_spells"
 #include "70_inc_itemprop"
-#include "inc_quest"
 #include "inc_key"
+#include "inc_treasure"
+#include "inc_quest"
+#include "nwnx_feedback"
 
 void main()
 {
@@ -59,13 +61,6 @@ void main()
     object oOwner = GetModuleItemAcquiredFrom();
     int nStackSize =GetModuleItemAcquiredStackSize();
 
-    if (GetTag(oItem) == "quest")
-    {
-        AdvanceQuest(oItem, oPC, 1);
-        DestroyObject(oItem);
-        return;
-    }
-    
     if (GetIsPC(oPC))
     {
         int bIsKey = 0;
@@ -84,6 +79,16 @@ void main()
         {
             AddKeyToPlayer(oPC, oItem);
         }
+    }
+
+    // cleaner solution is to do it on nwnx before action events, unfortunately it doesnt fire when taking items from containers, only NWNX_ON_INVENTORY_REMOVE_ITEM_BEFORE does
+    // which doesn't have an object for the item remover
+    if (GetTag(oItem) == "quest")
+    {
+        AdvanceQuest(oItem, oPC, 1);
+        DestroyObject(oItem);
+        NWNX_Feedback_SetFeedbackMessageHidden(NWNX_FEEDBACK_ITEM_LOST, TRUE, oPC);
+        return;
     }
     
     int nBaseItemType = GetBaseItemType(oItem);
@@ -107,13 +112,7 @@ void main()
         }
     }
     // if it has an item property, these ammo / throwing weapons are infinite
-    else if (IsAmmoInfinite(OBJECT_SELF) &&
-             (nBaseItemType == BASE_ITEM_ARROW ||
-              nBaseItemType == BASE_ITEM_BOLT ||
-              nBaseItemType == BASE_ITEM_BULLET ||
-              nBaseItemType == BASE_ITEM_DART ||
-              nBaseItemType == BASE_ITEM_THROWINGAXE ||
-              nBaseItemType == BASE_ITEM_SHURIKEN))
+    else if (IsAmmoInfinite(oItem))
     { // https://github.com/nwnxee/unified/pull/178
         // Clippy: Logic is simple: If items have different local variables, they will not stack. If you want to prevent stacking on a certain item, you can use:
         if (GetLocalString(oItem, "prevent_stack") == "")
@@ -124,6 +123,8 @@ void main()
     ExecuteScript("remove_invis", oPC);
 
     DeleteLocalInt(oItem, "destroy_count");
+    DeleteLocalInt(oItem, "non_unique"); // not needed at this point
+    InitializeItem(oItem);
 
     //1.71: craft dupe fix
     if(GetLocalInt(oItem,"DUPLICATED_ITEM") == TRUE)

@@ -47,7 +47,7 @@ doing so, do this only if running original event has no longer sense.
 //:: Created On: 31-05-2017
 //:://////////////////////////////////////////////
 #include "inc_debug"
-
+#include "nwnx_feedback"
 
 void main()
 {
@@ -62,6 +62,8 @@ void main()
         DestroyObject(oItem);
         return;
     }
+
+    NWNX_Feedback_SetFeedbackMessageHidden(NWNX_FEEDBACK_ITEM_LOST, FALSE, oPC);
 
 
     //1.71: fix for automatic unarmed attack when stack of throwing weapons gets destroyed

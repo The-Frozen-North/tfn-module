@@ -33,7 +33,18 @@ void BashLock(object oAttacker)
     string sUUID = GetObjectUUID(oAttacker);
     int nHighestRoll = GetLocalInt(OBJECT_SELF, sUUID);
 
-    if (nHighestRoll = 20)
+    // cannot use the highest roll if there is an enemy nearby
+    object oEnemy = GetNearestCreature(CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY,
+                                         oAttacker, 1,
+                                         CREATURE_TYPE_IS_ALIVE, TRUE,
+                                         CREATURE_TYPE_PERCEPTION, PERCEPTION_SEEN);
+
+    if (GetIsObjectValid(oEnemy) && GetDistanceBetweenLocations(GetLocation(oAttacker), GetLocation(oEnemy)) < 20.0)
+    {
+        nHighestRoll = 0;
+    }
+
+    if (nHighestRoll == 20)
         nRoll = 20;
 
     if (nRoll > 0 && nRoll < 20)
