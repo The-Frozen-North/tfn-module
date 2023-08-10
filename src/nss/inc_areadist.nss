@@ -7,7 +7,7 @@
 const int AREA_DISTANCE_INFINITY = 1073741823; // 2^30 - 1
 
 // Returns a crude estimate of the ingame distance needed to travel to oAreaDest from oAreaStart.
-// Returns AREA_DISTANCE_INFINITY if no route was found.
+// Returns -1 if no route was found.
 int GetDistanceBetweenAreas(object oAreaStart, object oAreaDest);
 
 // Finds areas expected to be reachable within nDistance starting in oAreaStart.
@@ -312,19 +312,26 @@ void PrepareAreaTransitionDB()
 }
 
 // Returns a crude estimate of the ingame distance needed to travel to oAreaDest from oAreaStart.
-// Returns AREA_DISTANCE_INFINITY if no route was found.
 int GetDistanceBetweenAreas(object oAreaStart, object oAreaDest)
 {
     sqlquery sql = SqlPrepareQueryCampaign("areadistances", "SELECT distance from areadists " +
     "WHERE areasource = @areasource AND areadest = @areadest;");
     SqlBindString(sql, "@areasource", GetTag(oAreaStart));
     SqlBindString(sql, "@areadest", GetTag(oAreaDest));
+    int nRet = -1;
     if (SqlStep(sql))
     {
-        return SqlGetInt(sql, 0);
+        nRet = SqlGetInt(sql, 0);
+        if (nRet >= AREA_DISTANCE_INFINITY)
+        {
+            nRet = -1;
+        }
     }
-    WriteTimestampedLogEntry("Warning: distance retrieval between " + GetTag(oAreaStart) + " and " + GetTag(oAreaDest) + " returned no rows!");
-    return AREA_DISTANCE_INFINITY;
+    else
+    {
+        WriteTimestampedLogEntry("Warning: distance retrieval between " + GetTag(oAreaStart) + " and " + GetTag(oAreaDest) + " returned no rows!");
+    }
+    return nRet;
 }
 
 // Finds areas expected to be reachable within nDistance starting in oAreaStart.
