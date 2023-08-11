@@ -1,3 +1,12 @@
+del /f database\prettify.sqlite3
+del /f database\tmapsolutions.sqlite3
+del /f database\areadistances.sqlite3
+
+copy seeded_database\randspellbooks.sqlite3 database\randspellbooks.sqlite3
+copy seeded_database\prettify.sqlite3 database\prettify.sqlite3
+copy seeded_database\areadistances.sqlite3 database\areadistances.sqlite3
+
+
 docker-compose -f docker-compose-dev-seed.yml down
 docker-compose -f docker-compose-dev-seed.yml up --no-recreate
 

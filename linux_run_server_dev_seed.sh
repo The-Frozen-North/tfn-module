@@ -1,5 +1,13 @@
 #!/bin/bash
 
+rm database/prettify.sqlite3
+rm database/areadistances.sqlite3
+rm database/tmapsolutions.sqlite3
+
+cp seeded_database/prettify.sqlite3 database/prettify.sqlite3
+cp seeded_database/areadistances.sqlite3 database/areadistances.sqlite3
+cp seeded_database/tmapsolutions.sqlite3 database/tmapsolutions.sqlite3
+
 docker-compose -f docker-compose-dev-seed.yml down
 docker-compose -f docker-compose-dev-seed.yml up --no-recreate
 
