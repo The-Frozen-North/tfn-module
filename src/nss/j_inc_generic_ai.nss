@@ -6830,7 +6830,7 @@ int AI_AttemptFeatTurning()
         object oTarget = GetNearestCreature(CREATURE_TYPE_PLAYER_CHAR, PLAYER_CHAR_NOT_PC , OBJECT_SELF, nCnt, CREATURE_TYPE_REPUTATION, REPUTATION_TYPE_ENEMY);
         while(GetIsObjectValid(oTarget) && iValid == FALSE && GetDistanceToObject(oTarget) <= f20)
         {   //... from !GetIsFriend below to rep_enemy on nearest, was turning allies' summoned/created undead
-            if((GetObjectSeen(oTarget) || GetObjectHeard(oTarget)))
+            if((GetObjectSeen(oTarget))) //|| GetObjectHeard(oTarget)))
             {
                 nHD = GetHitDice(oTarget) + GetTurnResistanceHD(oTarget);
                 nRacial = GetRacialType(oTarget);
@@ -14266,7 +14266,7 @@ int AI_SetUpAllObjects(object oInputBackup)
                 // Do we have a target from those backups above?
                 // - If so, we ActionAttack it so we move near it, as it is not in
                 //   our LOS, or isn't in our seen range in our LOS.
-                if(GetIsObjectValid(oSetUpTarget) && GetDistanceToObject(oSetUpTarget) < MAX_RANGE_FOR_VALID_TARGET)
+                if(GetIsObjectValid(oSetUpTarget) && GetDistanceToObject(oSetUpTarget) < MAX_RANGE_FOR_VALID_TARGET && LineOfSightObject(OBJECT_SELF, oSetUpTarget))
                 {
                     // 41: [DCR:Targeting] No seen in LOS, Attempting to MOVE to something [Target]" + GetName(oSetUpTarget)
                     DebugActionSpeakByInt(41, oSetUpTarget);

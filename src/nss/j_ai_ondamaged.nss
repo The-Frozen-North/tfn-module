@@ -120,13 +120,14 @@ void main()
             int iHighestDamage = GetAIInteger(AI_HIGHEST_DAMAGE_AMOUNT);
             // If the original was not valid...or not seen/heard, we delete it whatever.
             if(!GetIsObjectValid(oHighestDamager) ||
-              (!GetObjectSeen(oHighestDamager) && !GetObjectHeard(oHighestDamager)))
+              (!GetObjectSeen(oHighestDamager))) //&& !GetObjectHeard(oHighestDamager)))
             {
                 DeleteAIObject(AI_HIGHEST_DAMAGER);
                 DeleteAIInteger(AI_HIGHEST_DAMAGE_AMOUNT);
             }
             // Set the highest damager.
-            if((GetObjectSeen(oDamager) || GetObjectHeard(oDamager)) &&
+            // if((GetObjectSeen(oDamager) || GetObjectHeard(oDamager)) &&
+            if((GetObjectSeen(oDamager)) &&
                 iDamage >= iHighestDamage)
             {
                 SetAIObject(AI_HIGHEST_DAMAGER, oDamager);

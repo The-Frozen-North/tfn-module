@@ -315,6 +315,12 @@ void FastBuff(int bInstant = TRUE, int bLowDurationBuffs = TRUE, int bItemBuffs 
         ActionCastSpellAtObject(SPELL_CLARITY, OBJECT_SELF, METAMAGIC_ANY, FALSE, 0, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
 
+    // below are summon spells. do not attempt to summon again if you have one
+    if (GetIsObjectValid(GetAssociate(ASSOCIATE_TYPE_SUMMONED)))
+    {
+        return;
+    }
+
     //Summon Ally
     if (GetLevelByClass(CLASS_TYPE_BLACKGUARD) >= 5 && GetHasFeat(475))
     {
@@ -416,8 +422,6 @@ void FastBuff(int bInstant = TRUE, int bLowDurationBuffs = TRUE, int bItemBuffs 
     {
         ActionCastSpellAtLocation(SPELL_LESSER_PLANAR_BINDING, GetLocation(OBJECT_SELF), METAMAGIC_ANY, FALSE, PROJECTILE_PATH_TYPE_DEFAULT, bInstant);
     }
-
-
 }
 
 void DoCombatVoice()
@@ -1003,15 +1007,22 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
     int nAttack     = 80;
     int nSpell      = 20;
 
+    int nMonsterSpell = 90;
+
     //adjust class behavior
     switch (gsCBDetermineClass())
     {
     case CLASS_TYPE_ABERRATION:
+        nAttack = 90;
+        nSpell  = nMonsterSpell;
         break;
     case CLASS_TYPE_ANIMAL:
         nAttack = 70;
+        nSpell  = nMonsterSpell;
         break;
     case CLASS_TYPE_ARCANE_ARCHER:
+        nAttack = 90;
+        nSpell  = nMonsterSpell;
         break;
     case CLASS_TYPE_ASSASSIN:
         nAttack = 70;
@@ -1026,9 +1037,11 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         break;
     case CLASS_TYPE_BEAST:
         nAttack = 90;
+        nSpell  = nMonsterSpell;
         break;
     case CLASS_TYPE_BLACKGUARD:
         nAttack = 90;
+        nSpell  = 10;
         break;
     case CLASS_TYPE_CLERIC:
         nAttack = 70;
@@ -1039,7 +1052,7 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         break;
     case CLASS_TYPE_CONSTRUCT:
         nAttack = 90;
-        nSpell  = 10;
+        nSpell  = nMonsterSpell;
         break;
     case CLASS_TYPE_DRAGON:
         nAttack = 70;
@@ -1051,7 +1064,7 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         break;
     case CLASS_TYPE_DRUID:
         nAttack = 70;
-        nSpell  = 40;
+        nSpell  = 80; // druids are much more oriented to spellcasting than their cleric counterparts
         break;
     case CLASS_TYPE_DWARVENDEFENDER:
         nAttack = 90;
@@ -1059,7 +1072,7 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         break;
     case CLASS_TYPE_ELEMENTAL:
         nAttack = 90;
-        nSpell  = 10;
+        nSpell  = 50;
         break;
     case CLASS_TYPE_FEY:
         nAttack = 70;
@@ -1071,7 +1084,7 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         break;
     case CLASS_TYPE_GIANT:
         nAttack = 90;
-        nSpell  = 10;
+        nSpell  = 60;
         break;
     case CLASS_TYPE_HARPER:
         nAttack = 70;
@@ -1082,7 +1095,7 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         break;
     case CLASS_TYPE_MAGICAL_BEAST:
         nAttack = 90;
-        nSpell  = 40;
+        nSpell  = nMonsterSpell;
         break;
     case CLASS_TYPE_MONK:
         nAttack = 90;
@@ -1090,11 +1103,11 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         break;
     case CLASS_TYPE_MONSTROUS:
         nAttack = 90;
-        nSpell  = 10;
+        nSpell  = nMonsterSpell;
         break;
     case CLASS_TYPE_OOZE:
         nAttack = 90;
-        nSpell  = 10;
+        nSpell  = nMonsterSpell;
         break;
     case CLASS_TYPE_OUTSIDER:
         nSpell  = 30;
@@ -1119,17 +1132,19 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
     case CLASS_TYPE_SHAPECHANGER:
         break;
     case CLASS_TYPE_SHIFTER:
+        nAttack = 90;
+        nSpell  = nMonsterSpell;
         break;
     case CLASS_TYPE_SORCERER:
         nSpell  = 100;
         break;
     case CLASS_TYPE_UNDEAD:
         nAttack = 90;
-        nSpell  = 10;
+        nSpell  = nMonsterSpell;
         break;
     case CLASS_TYPE_VERMIN:
         nAttack = 90;
-        nSpell  = 10;
+        nSpell  = nMonsterSpell;
         break;
     case CLASS_TYPE_WEAPON_MASTER:
         nAttack = 90;
@@ -1158,6 +1173,18 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
     if (gsCBTalentEvadeDarkness())           return;
     if (gsCBTalentDragonWing(oTarget, TRUE)) return;
 
+    //spell
+    if (Random(100) < nSpell && LineOfSightObject(OBJECT_SELF, oTarget))
+    {
+        SetLocalInt(OBJECT_SELF, "GS_CB_BEHAVIOR", GS_CB_BEHAVIOR_ATTACK_SPELL);
+
+        if (Random(100) >= 25 && gsCBTalentUseTurning())           return;
+        if (Random(100) >= 25 && gsCBTalentCounterMeasure())       return;
+        if (Random(100) >= 25 && gsCBTalentDispelMagic(oTarget))   return;
+        if (Random(100) >= 50 && gsCBTalentDragonBreath(oTarget))  return;
+        if (gsCBTalentSpellAttack(oTarget))                        return;
+    }
+
     //defensive
     if (Random(100) >= nAttack)
     {
@@ -1171,18 +1198,6 @@ void gsCBDetermineCombatRound(object oTarget = OBJECT_INVALID)
         if (Random(100) >= 25 && gsCBTalentEnhanceSelf())          return;
         if (Random(100) >= 25 && gsCBTalentEnhanceOthers())        return;
         if (Random(100) >= 25 && gsCBTalentSummonAlly(oTarget))    return;
-    }
-
-    //spell
-    if (Random(100) < nSpell && LineOfSightObject(OBJECT_SELF, oTarget))
-    {
-        SetLocalInt(OBJECT_SELF, "GS_CB_BEHAVIOR", GS_CB_BEHAVIOR_ATTACK_SPELL);
-
-        if (Random(100) >= 25 && gsCBTalentUseTurning())           return;
-        if (Random(100) >= 25 && gsCBTalentCounterMeasure())       return;
-        if (Random(100) >= 25 && gsCBTalentDispelMagic(oTarget))   return;
-        if (Random(100) >= 50 && gsCBTalentDragonBreath(oTarget))  return;
-        if (gsCBTalentSpellAttack(oTarget))                        return;
     }
 
     //offensive
