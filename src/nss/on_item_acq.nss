@@ -61,24 +61,34 @@ void main()
     object oOwner = GetModuleItemAcquiredFrom();
     int nStackSize =GetModuleItemAcquiredStackSize();
 
-    if (GetIsPC(oPC))
+    // this shouldnt run for non-PCs
+    if (!GetIsPC(oPC))
     {
-        int bIsKey = 0;
-        if (GetBaseItemType(oItem) == BASE_ITEM_KEY)
-        {
-            if (!GetLocalInt(oItem, "nokeybag"))
-            {
-                bIsKey = 1;
-            }
-        }
-        else if (GetLocalInt(oItem, "is_key"))
+        return;
+    }
+
+    // do not do anything on creature items
+    int nBaseItemType = GetBaseItemType(oItem);
+    if (nBaseItemType == BASE_ITEM_CPIERCWEAPON || nBaseItemType == BASE_ITEM_CREATUREITEM || nBaseItemType == BASE_ITEM_CSLASHWEAPON || nBaseItemType == BASE_ITEM_CSLSHPRCWEAP || nBaseItemType == BASE_ITEM_CBLUDGWEAPON)
+    {
+        return;
+    }
+
+    int bIsKey = 0;
+    if (GetBaseItemType(oItem) == BASE_ITEM_KEY)
+    {
+        if (!GetLocalInt(oItem, "nokeybag"))
         {
             bIsKey = 1;
         }
-        if (bIsKey)
-        {
-            AddKeyToPlayer(oPC, oItem);
-        }
+    }
+    else if (GetLocalInt(oItem, "is_key"))
+    {
+        bIsKey = 1;
+    }
+    if (bIsKey)
+    {
+        AddKeyToPlayer(oPC, oItem);
     }
 
     // cleaner solution is to do it on nwnx before action events, unfortunately it doesnt fire when taking items from containers, only NWNX_ON_INVENTORY_REMOVE_ITEM_BEFORE does
@@ -91,7 +101,6 @@ void main()
         return;
     }
     
-    int nBaseItemType = GetBaseItemType(oItem);
     // Item containers should retroactively be given unique power self only for renaming
     if (nBaseItemType == BASE_ITEM_LARGEBOX)
     {
