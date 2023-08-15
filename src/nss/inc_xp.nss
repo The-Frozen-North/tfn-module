@@ -19,16 +19,17 @@ void UpdateXPBarUI(object oPC);
 // The amount of bonus or penalty XP modified by level.
 const float QUEST_XP_LEVEL_ADJUSTMENT_MODIFIER = 0.1;
 
-const float BASE_XP = 4.0;
+// how much XP you should earn at the equivalent level
+const float BASE_XP = 10.0;
 
 // The XP tiers for quests.
-const float QUEST_XP_T1 = 75.0;
-const float QUEST_XP_T2 = 150.0;
-const float QUEST_XP_T3 = 300.0;
-const float QUEST_XP_T4 = 600.0;
+const float QUEST_XP_T1 = 50.0;
+const float QUEST_XP_T2 = 100.0;
+const float QUEST_XP_T3 = 200.0;
+const float QUEST_XP_T4 = 400.0;
 
 // The maximum XP limit for a single kill
-const float XP_MAX = 25.0;
+const float XP_MAX = 20.0;
 
 // The amount of XP rewarded per target level for quests
 const float XP_BONUS_PER_LEVEL = 0.1;
@@ -62,14 +63,6 @@ const int PARTY_GAP_MAX = 4;
 // PARTY_SIZE_BASE_MOD / PARTY_SIZE_BASE_MOD - 1.0 + party size = 75% xp with a party size of 2 and a base mod of 3
 // with a base mod of 5 and a party of two, the xp percentage is 83%
 const float PARTY_SIZE_BASE_MOD = 5.0; // increase to decrease XP penalty
-
-const float XP_FACTOR_PER_CR = 14.0;
-
-// at very low levels, you get a lot more XP than you should just because the levels are divided by a very small number
-// this is a special case to decrease the amount of xp in those cases
-const float LEVEL_2_XP_MULTIPLIER = 0.7;
-
-const float LEVEL_3_XP_MULTIPLIER = 0.85;
 
 // **** SYSTEM SETTINGS END - YOU SHOULD NOT MODIFY ANYTHING BELOW THIS! *******************************************
 
@@ -322,56 +315,37 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
 {
 // If the CR is 0.0, then assume this is not a kill and do not do any XP related thingies.
    float fCR = GetChallengeRating(oCreature);
-   float fXP;
 
 // if tagged no xp just return 0 early
    if (GetLocalInt(oCreature, "no_xp") == 1) return 0.0;
 
-   if (fCR <= 0.0) {return 0.0;}
-   else if (fCR <= 0.13) {fXP = BASE_XP + 4.0;}
-   else if (fCR <= 0.17) {fXP = BASE_XP + 5.0;}
-   else if (fCR <= 0.26) {fXP = BASE_XP + 6.0;}
-   else if (fCR <= 0.34) {fXP = BASE_XP + 8.0;}
-   else if (fCR <= 0.51) {fXP = BASE_XP + 10.0;}
-   else if (fCR <= 1.0) {fXP = BASE_XP + (1.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 2.0) {fXP = BASE_XP + (2.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 3.0) {fXP = BASE_XP + (3.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 4.0) {fXP = BASE_XP + (4.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 5.0) {fXP = BASE_XP + (5.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 6.0) {fXP = BASE_XP + (6.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 7.0) {fXP = BASE_XP + (7.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 8.0) {fXP = BASE_XP + (8.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 9.0) {fXP = BASE_XP + (9.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 10.0) {fXP = BASE_XP + (10.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 11.0) {fXP = BASE_XP + (11.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 12.0) {fXP = BASE_XP + (12.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 13.0) {fXP = BASE_XP + (13.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 14.0) {fXP = BASE_XP + (14.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 15.0) {fXP = BASE_XP + (15.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 16.0) {fXP = BASE_XP + (16.0 * XP_FACTOR_PER_CR);}
-   else if (fCR <= 17.0) {fXP = BASE_XP + (17.0 * XP_FACTOR_PER_CR);}
-   else if (fCR > 17.0) {fXP = BASE_XP + (18.0 * XP_FACTOR_PER_CR);}
-   else {return 0.0;}
+   if (fAverageLevel < 1.0) fAverageLevel = 1.0; //failsafe if party average level was 0 or less
 
+   float fXP = BASE_XP;
+
+   if (fCR > fAverageLevel)
+   {
+        fXP = fmin(100.0, BASE_XP * pow(2.0, (fCR - fAverageLevel)/5.0));
+   }
+   else if (fCR < fAverageLevel)
+   {
+        fXP = fmin(100.0, BASE_XP * pow(2.0, (fCR - fAverageLevel)/2.0)); 
+   }
+
+   // apply any boss multipliers, etc
    fXP = fXP * fMultiplier;
 
-   float fXPPenaltyMod = 1.0;
+// award more XP if the enemy is a caster or can summon pets
+   if (GetLevelByClass(CLASS_TYPE_DRUID, oCreature) >= 1 || GetLevelByClass(CLASS_TYPE_SORCERER, oCreature) > 1 || GetLevelByClass(CLASS_TYPE_WIZARD, oCreature) >= 1 || GetLevelByClass(CLASS_TYPE_CLERIC, oCreature) > 1 || GetLevelByClass(CLASS_TYPE_RANGER, oCreature) >= 6 )
+        fXP = fXP * 1.25;   
 
-   float fDifference = fAverageLevel - fCR;
-
-   if (fDifference > 0.0) fXPPenaltyMod = fXPPenaltyMod - (fDifference*0.15);
-
-   if (fXPPenaltyMod < 0.1) fXPPenaltyMod = 0.1;
-
-// penalty should never be higher than 1.0 otherwise that's a bonus
-   if (fXPPenaltyMod > 1.0) fXPPenaltyMod = 1.0;
+   // Cap the xp.
+   if (fXP > XP_MAX) fXP = XP_MAX;
 
    if (fXP > 0.0)
    {
 // ambushes only give 1/3 xp
        if (bAmbush) fXP = fXP/3.0;
-
-       if (fAverageLevel < 1.0) fAverageLevel = 1.0; //failsafe if party average level was 0 or less
 
        float fTotalSize = IntToFloat(iTotalSize);
        if (fTotalSize < 1.0) fTotalSize = 1.0; //failsafe if party total size was 0 or less
@@ -380,26 +354,17 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
 
        if (fPartyMod > 1.0) fPartyMod = 1.0; //failsafe if party mod is greater than 1
 
-       fXP = fXP*fXPPenaltyMod;
-
        //SendDebugMessage("Party XP mod: "+FloatToString(fPartyMod));
        //SendDebugMessage("fXP penalty mod: "+FloatToString(fXPPenaltyMod));
        //SendDebugMessage("fCR: "+FloatToString(fCR));
        //SendDebugMessage("fXP: "+FloatToString(fXP));
 
-       fXP = (fXP / fAverageLevel) * fPartyMod;
-
-    // Cap the xp
-       if ((fXP*fXPPenaltyMod) > XP_MAX) fXP = XP_MAX;
-
-    // award more XP if the enemy is a caster or can summon pets
-       if (GetLevelByClass(CLASS_TYPE_DRUID, oCreature) >= 1 || GetLevelByClass(CLASS_TYPE_SORCERER, oCreature) > 1 || GetLevelByClass(CLASS_TYPE_WIZARD, oCreature) >= 1 || GetLevelByClass(CLASS_TYPE_CLERIC, oCreature) > 1 || GetLevelByClass(CLASS_TYPE_RANGER, oCreature) >= 6 )
-           fXP = fXP * 1.25;
+       fXP = fXP * fPartyMod;
    }
 
    if (fXP == 0.0) return 0.0;
 
-   if (fXP < 0.01) fXP = 0.01;
+   if (fXP < 0.01) return 0.01;
 
    //SendDebugMessage("fXP (modified by average level and party): "+FloatToString(fXP));
    return fXP;
