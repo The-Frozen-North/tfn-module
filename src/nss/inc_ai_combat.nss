@@ -170,6 +170,9 @@ void FastBuff(int bInstant = TRUE, int bLowDurationBuffs = TRUE, int bItemBuffs 
     BuffIfNotBuffed(SPELLABILITY_AURA_STUN, bInstant);
     BuffIfNotBuffed(SPELLABILITY_AURA_UNEARTHLY_VISAGE, bInstant);
     BuffIfNotBuffed(SPELLABILITY_AURA_UNNATURAL, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_TYRANT_FOG_MIST, bInstant);
+    BuffIfNotBuffed(SPELLABILITY_TROGLODYTE_STENCH, bInstant);
+
     BuffIfNotBuffed(SPELL_HOLY_AURA, bInstant);
     BuffIfNotBuffed(SPELL_UNHOLY_AURA, bInstant);
 

@@ -18,6 +18,7 @@
 #include "70_inc_spells"
 #include "nw_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -45,6 +46,8 @@ void main()
     {
         nDuration = nDuration *2; //Duration is +100%
     }
+
+    RemoveDamageReductionSpellEffects(spell.Target);
 
     RemoveEffectsFromSpell(spell.Target, spell.Id);
     //Apply the linked effect

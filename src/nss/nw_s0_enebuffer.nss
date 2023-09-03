@@ -17,6 +17,7 @@
 #include "70_inc_spells"
 #include "nw_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -60,6 +61,8 @@ void main()
     }
 
     RemoveEffectsFromSpell(spell.Target, spell.Id);
+
+    RemoveElementalResistanceSpellEffects(spell.Target);
 
     //Apply the VFX impact and effects
     ApplyEffectToObject(DURATION_TYPE_TEMPORARY, eLink, spell.Target, DurationToSeconds(nDuration));

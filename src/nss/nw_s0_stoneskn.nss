@@ -23,6 +23,7 @@ Patch 1.70
 #include "70_inc_spells"
 #include "nw_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -66,6 +67,8 @@ void main()
     eLink = EffectLinkEffects(eLink, eDur);
 
     RemoveEffectsFromSpell(spell.Target, spell.Id);
+
+    RemoveDamageReductionSpellEffects(spell.Target);
 
     //Apply the linked effects.
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis2, spell.Target);

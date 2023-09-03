@@ -8,13 +8,33 @@ void DisplaceSpell(object oCreature, int nSpell, string sSpell)
     string sMessage = "*"+sSpell+" does not stack and has been displaced*";
     if (GetHasSpellEffect(nSpell, oCreature))
     {
-        FloatingTextStringOnCreature(sMessage, oCreature, FALSE);
-        if (OBJECT_SELF != oCreature)
+        // do not display any message if we are replacing it with the same exact spell
+        if (GetHasSpellEffect(nSpell, oCreature) != nSpell) 
         {
-            FloatingTextStringOnCreature(sMessage, OBJECT_SELF, FALSE);
+            FloatingTextStringOnCreature(sMessage, oCreature, FALSE);
+            if (OBJECT_SELF != oCreature)
+            {
+                FloatingTextStringOnCreature(sMessage, OBJECT_SELF, FALSE);
+            }
         }
+
         RemoveEffectsFromSpell(oCreature, nSpell);
     }
+}
+
+void RemoveElementalResistanceSpellEffects(object oCreature)
+{
+    DisplaceSpell(oCreature, SPELL_ENDURE_ELEMENTS, "Endure Elements");
+    DisplaceSpell(oCreature, SPELL_RESIST_ELEMENTS, "Resist Elements");
+    DisplaceSpell(oCreature, SPELL_PROTECTION_FROM_ELEMENTS, "Protection from Elements");
+    DisplaceSpell(oCreature, SPELL_ENERGY_BUFFER, "Energy Buffer");
+}
+
+void RemoveDamageReductionSpellEffects(object oCreature)
+{
+    DisplaceSpell(oCreature, SPELL_STONESKIN, "Stoneskin");
+    DisplaceSpell(oCreature, SPELL_GREATER_STONESKIN, "Greater Stoneskin");
+    DisplaceSpell(oCreature, SPELL_PREMONITION, "Premonition");
 }
 
 void RemoveAnimalSpellEffects(object oCreature)

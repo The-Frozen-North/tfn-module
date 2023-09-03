@@ -18,6 +18,7 @@
 #include "70_inc_spells"
 #include "nw_i0_spells"
 #include "x2_inc_spellhook"
+#include "inc_spells"
 
 void main()
 {
@@ -59,6 +60,8 @@ void main()
 
     //Remove effects from target if they have Greater Stoneskin cast on them already.
     RemoveEffectsFromSpell(spell.Target, spell.Id);
+
+    RemoveDamageReductionSpellEffects(spell.Target);
 
     //Apply the linked effect
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis2, spell.Target);

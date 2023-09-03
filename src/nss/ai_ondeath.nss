@@ -25,27 +25,38 @@ void main()
 // only give credit if a PC or their associate killed it or if it was already tagged
 // TODO: Handle traps
 
-// dismiss henchman when killing innocent in non-pvp area
-    if ((GetStandardFactionReputation(STANDARD_FACTION_COMMONER, OBJECT_SELF) >= 50 || GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) >= 50) && NWNX_Area_GetPVPSetting(GetArea(OBJECT_SELF)) == NWNX_AREA_PVP_SETTING_NO_PVP)
+// dismiss henchman when killing innocents
+    if (GetStandardFactionReputation(STANDARD_FACTION_COMMONER, OBJECT_SELF) >= 50 || GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) >= 50)
     {
         object oMurderer;
 
-        if (GetIsPC(GetMaster(oKiller)))
-        {
-            oMurderer = GetMaster(oKiller);
-        }
-        else if (GetIsPC(oKiller))
+        string sResRef = GetResRef(oKiller);
+
+        // simple case, use the PC if they killed the innocent
+        if (GetIsPC(oKiller))
         {
             oMurderer = oKiller;
         }
-
-        IncrementPlayerStatistic(oMurderer, "innocents_killed");
+        // otherwise, if the killer is evil or NOT a henchman, use their master if present (associate case)
+        else if ((GetAlignmentGoodEvil(oKiller) == ALIGNMENT_EVIL || GetAssociateType(oKiller) != ASSOCIATE_TYPE_HENCHMAN) && GetIsPC(GetMaster(oKiller)))
+        {
+            oMurderer = GetMaster(oKiller);
+        }
+        // final try, if the killer is a henchman or follower, AND not evil in a friendly (non-pvp) area, associate the master as the murderer
+        else if (GetAlignmentGoodEvil(oKiller) != ALIGNMENT_EVIL && GetAssociateType(oKiller) == ASSOCIATE_TYPE_HENCHMAN && NWNX_Area_GetPVPSetting(GetArea(oKiller)) == NWNX_AREA_PVP_SETTING_NO_PVP && GetIsPC(GetMaster(oKiller)))
+        {
+            oMurderer = GetMaster(oKiller);    
+        }
+        // anyone else who kills an innocent won't count, for example if Boddyknock or a mage follower casted a fireball or something at a group of enemies
+        // this may introduce a loophole where a PC could kill an innocent with a non-evil henchman and not count as murder in pvp areas
 
         if (GetIsPC(oMurderer))
             AdjustAlignment(oMurderer, ALIGNMENT_EVIL, 5, FALSE);
 
         if (GetIsObjectValid(oMurderer))
         {
+            IncrementPlayerStatistic(oMurderer, "innocents_killed");
+
             ExecuteScript("party_credit", OBJECT_SELF);
             
             object oHench = GetFirstFactionMember(oMurderer, FALSE);
@@ -55,9 +66,13 @@ void main()
 
                 if (GetMaster(oHench) == oMurderer)
                 {
-                    // skip grimgnaw
-                    if (GetLocalInt(oHench, "follower") == 1) { DismissFollower(oHench); }
-                    else if (GetStringLeft(GetResRef(oHench), 3) == "hen" && GetResRef(oHench) != "hen_grimgnaw") { DismissHenchman(oHench); }
+                    // only dismiss henchman and followers that are not evil
+                    if (GetAlignmentGoodEvil(oHench) != ALIGNMENT_EVIL)
+                    {
+                        // dismiss followers and henchman
+                        if (GetLocalInt(oHench, "follower") == 1) { DismissFollower(oHench); }                  
+                        else if (GetStringLeft(GetResRef(oHench), 3) == "hen") { DismissHenchman(oHench); }
+                    }
                 }
 
                 oHench = GetNextFactionMember(oMurderer, FALSE);
