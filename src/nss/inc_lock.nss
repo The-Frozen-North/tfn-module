@@ -29,10 +29,25 @@ void GenerateLockOnObject(object oObject = OBJECT_SELF)
 
    int nLockChance = BASE_LOCK_CHANCE + (nCR * INCREASED_LOCK_CHANCE_FACTOR_PER_CR);
 
-   // Door DCs should be automatically set, disregard toolset value. In that case always use full CR and add some
+   // Door DCs should be automatically and always be set, disregard toolset value.
    if (GetObjectType(oObject) == OBJECT_TYPE_DOOR)
    {
-       int nLockDC = BASE_LOCK_DC + nCR + INCREASED_DOOR_DC; 
+       int nLockDC = BASE_LOCK_DC + nCR;
+
+       // add increased door DC if it doesn't have a transition target
+       if (GetTransitionTarget(oObject) == OBJECT_INVALID)
+       {            
+            int nIncreasedDoorDC = INCREASED_DOOR_DC;
+            
+            // if set on an area, use that area's increased door DC
+            int nAreaIncreasedDoorDC = GetLocalInt(GetArea(oObject), "increased_door_dc");
+            if (nAreaIncreasedDoorDC > 0)
+            {
+                nIncreasedDoorDC = nAreaIncreasedDoorDC;
+            }
+            
+            nLockDC += nIncreasedDoorDC;
+       } 
 
        SetLockUnlockDC(oObject, nLockDC);
        SetLocked(oObject, TRUE);
