@@ -1,12 +1,19 @@
 #include "nw_o2_coninclude"
 #include "nw_i0_generic"
 
+void VoidBeginConversation(string sResRef, object oConversationTarget)
+{
+    BeginConversation(sResRef, oConversationTarget);
+}
+
 void ScanTarget(object oTarget, object oScanner)
 {
     effect eVis = EffectVisualEffect(VFX_IMP_MAGIC_RESISTANCE_USE);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
 
     if (GetIsDead(oTarget)) return;
+
+    if (GetLocalInt(oTarget, "warden_interrogate") != 1) return;
 
 // don't interrogate while in conversation
     if (IsInConversation(oScanner)) return;
@@ -37,7 +44,7 @@ void ScanTarget(object oTarget, object oScanner)
     PlayVoiceChat(VOICE_CHAT_STOP, OBJECT_SELF);
 
     AssignCommand(oScanner, ClearAllActions());
-    AssignCommand(oScanner, ActionStartConversation(oTarget));
+    AssignCommand(oScanner, VoidBeginConversation("", oTarget));
 }
 
 int DispelInvis() {
