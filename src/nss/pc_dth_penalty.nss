@@ -39,6 +39,7 @@ void main()
     if (nXP >= 3000)
     {
         SetXP(oPlayer, GetXPOnRespawn(oPlayer));
+        RemoveStolenItems(oPlayer);
         TakeGoldFromCreature(GetGoldLossOnRespawn(oPlayer), oPlayer, TRUE);
         UpdateXPBarUI(oPlayer);
     }

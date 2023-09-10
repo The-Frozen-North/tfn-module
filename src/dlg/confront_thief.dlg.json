@@ -10,7 +10,7 @@
   },
   "EndConverAbort": {
     "type": "resref",
-    "value": "nw_walk_wp"
+    "value": "nw_d1_attonend02"
   },
   "EndConversation": {
     "type": "resref",
@@ -52,7 +52,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_chk_crimegp"
               },
               "ConditionParams": {
                 "type": "list",
@@ -60,7 +60,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 6
+                "value": 5
               },
               "IsChild": {
                 "type": "byte",
@@ -79,7 +79,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 5
+                "value": 4
               },
               "IsChild": {
                 "type": "byte",
@@ -98,7 +98,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -117,7 +117,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 3
+                "value": 2
               },
               "IsChild": {
                 "type": "byte",
@@ -136,25 +136,6 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 2
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 5,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
                 "value": 1
               },
               "IsChild": {
@@ -163,7 +144,7 @@
               }
             },
             {
-              "__struct_id": 6,
+              "__struct_id": 5,
               "Active": {
                 "type": "resref",
                 "value": ""
@@ -235,7 +216,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_chk_crimegp"
               },
               "ConditionParams": {
                 "type": "list",
@@ -243,7 +224,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 6
+                "value": 5
               },
               "IsChild": {
                 "type": "byte",
@@ -266,7 +247,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 5
+                "value": 4
               },
               "IsChild": {
                 "type": "byte",
@@ -289,7 +270,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 4
+                "value": 3
               },
               "IsChild": {
                 "type": "byte",
@@ -327,7 +308,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_aggro_all"
         },
         "Sound": {
           "type": "resref",
@@ -425,7 +406,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_aggro_all"
         },
         "Sound": {
           "type": "resref",
@@ -519,104 +500,11 @@
         },
         "RepliesList": {
           "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 6
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 5
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 2,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 4
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            },
-            {
-              "__struct_id": 3,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 0
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 1
-              },
-              "LinkComment": {
-                "type": "cexostring",
-                "value": ""
-              }
-            }
-          ]
+          "value": []
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_aggro_all"
         },
         "Sound": {
           "type": "resref",
@@ -629,7 +517,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Failure]</Start> I don't believe you! Pay your debt, or I'll kill you where you stand."
+            "0": "I'll have to take whatever is off your corpse, then."
           }
         }
       },
@@ -665,7 +553,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_aggro_all"
         },
         "Sound": {
           "type": "resref",
@@ -678,7 +566,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Success]</Start> Hmm, is that right? Fine, but I've got my eye on you."
+            "0": "You're lying, you don't have enough gold. I guess I'll have to retrieve what is mine from your corpse."
           }
         }
       },
@@ -727,105 +615,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "I'll have to take whatever is off your corpse, then."
-          }
-        }
-      },
-      {
-        "__struct_id": 8,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": []
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "You're lying, you don't have enough gold. I guess I'll have to retrieve what is mine from your corpse."
-          }
-        }
-      },
-      {
-        "__struct_id": 9,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "RepliesList": {
-          "type": "list",
-          "value": []
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Speaker": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "Good, that settles it. Keep your hands to yourself next time."
+            "0": "Good, that settles the matter. You may have the item, but keep your hands to yourself next time."
           }
         }
       }
@@ -833,7 +623,7 @@
   },
   "NumWords": {
     "type": "dword",
-    "value": 203
+    "value": 167
   },
   "PreventZoomIn": {
     "type": "byte",
@@ -874,7 +664,7 @@
         },
         "Script": {
           "type": "resref",
-          "value": ""
+          "value": "dlg_aggro_all"
         },
         "Sound": {
           "type": "resref",
@@ -916,7 +706,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_chk_perscrim"
               },
               "ConditionParams": {
                 "type": "list",
@@ -1000,7 +790,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_chk_inticrim"
               },
               "ConditionParams": {
                 "type": "list",
@@ -1092,25 +882,6 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 6
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            },
-            {
-              "__struct_id": 1,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
                 "value": 5
               },
               "IsChild": {
@@ -1135,7 +906,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "<StartCheck>[Bluff]</Start> You have to believe me, it was already gone! I swear I didn't take anything."
+            "0": "I don't have enough gold to pay you back."
           }
         }
       },
@@ -1176,72 +947,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 7
-              },
-              "IsChild": {
-                "type": "byte",
-                "value": 0
-              }
-            }
-          ]
-        },
-        "Quest": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Script": {
-          "type": "resref",
-          "value": ""
-        },
-        "Sound": {
-          "type": "resref",
-          "value": ""
-        },
-        "Text": {
-          "type": "cexolocstring",
-          "value": {
-            "0": "I don't have enough gold to pay you back."
-          }
-        }
-      },
-      {
-        "__struct_id": 5,
-        "ActionParams": {
-          "type": "list",
-          "value": []
-        },
-        "Animation": {
-          "type": "dword",
-          "value": 0
-        },
-        "AnimLoop": {
-          "type": "byte",
-          "value": 1
-        },
-        "Comment": {
-          "type": "cexostring",
-          "value": ""
-        },
-        "Delay": {
-          "type": "dword",
-          "value": 4294967295
-        },
-        "EntriesList": {
-          "type": "list",
-          "value": [
-            {
-              "__struct_id": 0,
-              "Active": {
-                "type": "resref",
-                "value": ""
-              },
-              "ConditionParams": {
-                "type": "list",
-                "value": []
-              },
-              "Index": {
-                "type": "dword",
-                "value": 7
+                "value": 5
               },
               "IsChild": {
                 "type": "byte",
@@ -1274,7 +980,7 @@
         }
       },
       {
-        "__struct_id": 6,
+        "__struct_id": 5,
         "ActionParams": {
           "type": "list",
           "value": []
@@ -1302,7 +1008,7 @@
               "__struct_id": 0,
               "Active": {
                 "type": "resref",
-                "value": ""
+                "value": "dlg_crimetakegp"
               },
               "ConditionParams": {
                 "type": "list",
@@ -1310,7 +1016,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 9
+                "value": 7
               },
               "IsChild": {
                 "type": "byte",
@@ -1329,7 +1035,7 @@
               },
               "Index": {
                 "type": "dword",
-                "value": 8
+                "value": 6
               },
               "IsChild": {
                 "type": "byte",
@@ -1353,7 +1059,7 @@
         "Text": {
           "type": "cexolocstring",
           "value": {
-            "0": "Seems I took something I shouldn't have. Here, this should cover it."
+            "0": "Seems I took something I shouldn't have. Here, <CUSTOM6701> gold should cover it."
           }
         }
       }

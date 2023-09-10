@@ -61,6 +61,35 @@ int GetItemGoldValue(object oItem)
     }
 }
 
+void RemoveStolenItems(object oPlayer)
+{
+    object oItem = GetFirstItemInInventory(oPlayer);
+
+    while (oItem != OBJECT_INVALID)
+    {
+
+        // TODO: Players can also drop them before death.
+        if (GetLocalInt(oItem, "stolen") == 1)
+        {
+            DestroyObject(oItem);
+        }
+
+        oItem = GetNextItemInInventory(oPlayer);
+    }
+
+    int nSlot;
+    object oSlotItem;
+    for (nSlot = 0; nSlot < 14; ++nSlot)
+    {
+        oSlotItem = GetItemInSlot(nSlot, oPlayer);
+
+        if (GetLocalInt(oItem, "stolen") == 1)
+        {
+            DestroyObject(oItem);
+        }
+    }
+}
+
 int GetGoldLossOnRespawn(object oPlayer)
 {
     int nGold = GetGold(oPlayer);
@@ -72,8 +101,11 @@ int GetGoldLossOnRespawn(object oPlayer)
     while (oItem != OBJECT_INVALID)
     {
 
-        if (!GetPlotFlag(oItem))
+        // TODO: Players can also drop them before death.
+        if (!GetPlotFlag(oItem) && GetLocalInt(oItem, "stolen") != 1)
+        {
             nGold = nGold + GetItemGoldValue(oItem);
+        }
 
         oItem = GetNextItemInInventory(oPlayer);
     }
@@ -85,7 +117,7 @@ int GetGoldLossOnRespawn(object oPlayer)
     {
         oSlotItem = GetItemInSlot(nSlot, oPlayer);
 
-        if (!GetPlotFlag(oSlotItem))
+        if (!GetPlotFlag(oSlotItem) && GetLocalInt(oItem, "stolen") != 1)
             nGold = nGold + GetItemGoldValue(oSlotItem);
     }
 
