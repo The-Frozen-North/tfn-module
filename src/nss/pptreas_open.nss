@@ -13,6 +13,9 @@ void main()
     object oPC = GetLastOpenedBy();
 
     if (!GetIsPC(oPC)) return;
+
+    ExecuteScript("remove_invis", oPC);
+    SetActionMode(oPC, ACTION_MODE_STEALTH, FALSE);
     
     SendColorMessageToPC(oPC, "Taking items from this container will be considered stealing.", MESSAGE_COLOR_DANGER);
     SendColorMessageToPC(oPC, "You must make a pick pocket check against all nearby creatures to take an item without being caught.", MESSAGE_COLOR_INFO);
@@ -50,6 +53,4 @@ void main()
     }
 
     int bChanceGold = 50;
-
-
 }

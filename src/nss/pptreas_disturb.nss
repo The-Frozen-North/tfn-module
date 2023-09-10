@@ -9,7 +9,7 @@ int ValidThiefChecker(object oTarget, object oThief)
     if (GetLocalInt(oTarget, "unconscious") == 1) return FALSE;
     if (GetAssociateType(oTarget) > 0 ) return FALSE;
     //if (GetStandardFactionReputation(STANDARD_FACTION_COMMONER, OBJECT_SELF) <= 50 && GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) <= 50) return FALSE;
-    if (!GetObjectSeen(oThief, oTarget)) return FALSE;
+    if (!GetObjectSeen(oThief, oTarget) && !LineOfSightObject(oThief, oTarget)) return FALSE;
 
     return AmIAHumanoid(oTarget);
 }
@@ -52,6 +52,9 @@ void main()
     if (!GetStolenFlag(oItem)) return;
 
     if (GetInventoryDisturbType() == INVENTORY_DISTURB_TYPE_ADDED) return;
+
+    ExecuteScript("remove_invis", oPC);
+    SetActionMode(oPC, ACTION_MODE_STEALTH, FALSE);
 
     float fRadius = 15.0;
 
