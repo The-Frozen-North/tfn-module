@@ -26,7 +26,12 @@ void main()
 // TODO: Handle traps
 
 // dismiss henchman when killing innocents
-    if (GetStandardFactionReputation(STANDARD_FACTION_COMMONER, OBJECT_SELF) >= 50 || GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) >= 50)
+    int nFaction = NWNX_Creature_GetFaction(OBJECT_SELF);
+    //SendMessageToPC(GetFirstPC(), "faction id: "+IntToString(nFaction));
+
+    int nNWNXCommonerFaction = 2;
+    int nNWNXDefenderFaction = 4;
+    if (nFaction == nNWNXCommonerFaction || nFaction == nNWNXDefenderFaction)
     {
         object oMurderer;
 
@@ -42,7 +47,8 @@ void main()
         {
             oMurderer = GetMaster(oKiller);
         }
-        // final try, if the killer is a henchman or follower, AND not evil in a friendly (non-pvp) area, associate the master as the murderer
+        // final try, if the killer is a henchman or follower, AND not evil in a friendly (non-pvp) area, associate the master as the murderer.
+        // This is to guard against the case where a henchman might case an AOE that kills a friendly NPC in combat, but in a town it should always act as murder
         else if (GetAlignmentGoodEvil(oKiller) != ALIGNMENT_EVIL && GetAssociateType(oKiller) == ASSOCIATE_TYPE_HENCHMAN && NWNX_Area_GetPVPSetting(GetArea(oKiller)) == NWNX_AREA_PVP_SETTING_NO_PVP && GetIsPC(GetMaster(oKiller)))
         {
             oMurderer = GetMaster(oKiller);    
