@@ -13,7 +13,7 @@ void ScanTarget(object oTarget, object oScanner)
 
     if (GetIsDead(oTarget)) return;
 
-    if (GetLocalInt(oTarget, "warden_interrogate") != 1) return;
+    if (GetLocalInt(oTarget, "warden_interrogate") < 2) return;
 
 // don't interrogate while in conversation
     if (IsInConversation(oScanner)) return;

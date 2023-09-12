@@ -44,7 +44,7 @@ void main()
        if (!GetIsPC(oPC)) return;
 
 // always reset this on a new area, this will be added in a delay in the luskan area
-       DeleteLocalInt(oPC, "warden_interrogation");
+       DeleteLocalInt(oPC, "warden_interrogate");
 
        string sResRef = GetStringLeft(GetResRef(OBJECT_SELF), 4);
        if (sResRef != "acad") DelayCommand(0.5, WarningMessage(oPC));
