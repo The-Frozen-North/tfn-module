@@ -19,6 +19,13 @@ void main()
         if(GetFactionEqual(oTarget, OBJECT_SELF))
         {
             SetIsTemporaryEnemy(oPC, oTarget, TRUE);
+            SetLocalInt(oTarget, "combat", 1);
+            
+            if (!GetIsInCombat(oTarget))
+            {
+                AssignCommand(oTarget, FastBuff());
+            }
+
             AssignCommand(oTarget, gsCBDetermineCombatRound(oPC));
         }
         //Get next target in area

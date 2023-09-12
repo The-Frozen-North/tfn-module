@@ -3,6 +3,17 @@
 #include "inc_ai_combat"
 #include "x0_i0_walkway"
 
+void ClearPersonalReputationsWithAllPCs()
+{
+    object oPC = GetFirstPC();
+
+    while (GetIsObjectValid(oPC))
+    {
+        ClearPersonalReputation(oPC, OBJECT_SELF);
+        oPC = GetNextPC();
+    }
+}
+
 void main()
 {
     if (GetIsDead(OBJECT_SELF)) return;
@@ -45,6 +56,40 @@ void main()
     }
 
     int nCombat = GetIsInCombat(OBJECT_SELF);
+
+    object oPC = GetFirstPC();
+
+    int bEnemyPCSeen = FALSE;
+
+    while (GetIsObjectValid(oPC))
+    {
+        if (GetIsEnemy(oPC) && (GetObjectSeen(oPC) || GetObjectHeard(oPC)))
+        {
+            bEnemyPCSeen = TRUE;
+            break;
+        }
+
+        oPC = GetNextPC();
+    }
+
+    int nCountBeforeClearReputation = GetLocalInt(OBJECT_SELF, "count_before_clearing_pc_reputation");
+
+    // clear reputation with all PCs if no enemy PCs have been seen for a while
+    // don't check for combat, what could happen is that the creature is in combat with a non-PC
+    // like a combat dummy and never clears reputation
+    if (bEnemyPCSeen)
+    {
+        SetLocalInt(OBJECT_SELF, "count_before_clearing_pc_reputation", 5);
+    }
+    else if (nCountBeforeClearReputation <= 0)
+    {
+        DeleteLocalInt(OBJECT_SELF, "count_before_clearing_pc_reputation");
+        ClearPersonalReputationsWithAllPCs();
+    }
+    else
+    {
+        SetLocalInt(OBJECT_SELF, "count_before_clearing_pc_reputation", nCountBeforeClearReputation - 1);
+    } 
 
     // torch stuff
     object oArea = GetArea(OBJECT_SELF);
