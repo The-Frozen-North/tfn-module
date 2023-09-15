@@ -65,7 +65,7 @@ void main()
     {   
         if(ValidThiefChecker(oTarget, oPC))
         {
-            int nDC = GetSkillRank(SKILL_SPOT, oPC) + d20();
+            int nDC = GetSkillRank(SKILL_SPOT, oTarget) + d20();
 
             if (nDC < 1) nDC = 1;
             

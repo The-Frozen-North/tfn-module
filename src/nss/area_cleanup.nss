@@ -65,6 +65,15 @@ void main()
 
             if (GetIsObjectValid(oOldPlaceable) && GetLocalString(oOldPlaceable, "master") == "")
             {
+                object oItem = GetFirstItemInInventory(oOldPlaceable);
+
+                // clear all items on destruction
+                while (GetIsObjectValid(oItem))
+                {
+                    DestroyObject(oItem);
+                    oItem = GetNextItemInInventory(oOldPlaceable);
+                }
+                
                 DestroyObject(oOldPlaceable);
             }
          }
