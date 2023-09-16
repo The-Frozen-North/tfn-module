@@ -54,6 +54,14 @@ void main()
 
     DetermineMaxHitPoints(OBJECT_SELF);
 
+    if (GetImmortal(OBJECT_SELF))
+    {
+        SetLocalInt(OBJECT_SELF, "immortal", 1);
+        SetLocalInt(OBJECT_SELF, "no_credit", 1);
+        SetImmortal(OBJECT_SELF, FALSE);
+        SetIsDestroyable(FALSE, TRUE, FALSE);
+    }
+
     //listen
     SetListenPattern(OBJECT_SELF, "GS_AI_ATTACK_TARGET",         10000);
     SetListenPattern(OBJECT_SELF, "GS_AI_REQUEST_REINFORCEMENT", 10003);
@@ -106,7 +114,7 @@ void main()
                 if (d3() == 1) GeneratePickpocketItem();
             }
             // 2x the gold on semibosses or immortals (quest/unique npcs usually)
-            else if (GetLocalInt(OBJECT_SELF, "semiboss") == 1 || GetLocalInt(OBJECT_SELF, "rare") || GetImmortal(OBJECT_SELF))
+            else if (GetLocalInt(OBJECT_SELF, "semiboss") == 1 || GetLocalInt(OBJECT_SELF, "rare") || GetLocalInt(OBJECT_SELF, "immortal") == 1)
             {
                 nGold = nGold * 2;
                 GeneratePickpocketItem("Misc");

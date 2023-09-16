@@ -907,7 +907,7 @@ void DoCaltropEffect(object oTarget)
 
 int CanCreatureBeDestroyed(object oTarget)
 {
-    return !GetPlotFlag(oTarget) && !GetImmortal(oTarget);
+    return !GetPlotFlag(oTarget) && !GetImmortal(oTarget) && GetLocalInt(oTarget, "immortal") != 1;
 }
 
 //*GZ: 2003-07-23. honor critical and weapon spec

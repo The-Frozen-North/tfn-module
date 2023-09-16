@@ -136,7 +136,7 @@ void main()
     if (GetLocalInt(OBJECT_SELF, "ambush") == 1)
     {
 // only attack or move to the ambush location when not in combat, otherwise combat can be interrupted
-        if (!GetIsInCombat(OBJECT_SELF))
+        if (!nCombat)
         {
             object oTarget = GetLocalObject(OBJECT_SELF, "ambush_target");
 
@@ -160,21 +160,43 @@ void main()
     {
 // return to the original spawn point if it is too far
         location lSpawn = GetLocalLocation(OBJECT_SELF, "spawn");
-        float fDistanceFromSpawn = GetDistanceBetweenLocations(GetLocation(OBJECT_SELF), lSpawn);
-        float fMaxDistance = 5.0;
-
-        if (GetLocalString(OBJECT_SELF, "merchant") != "") fMaxDistance = fMaxDistance * 0.5;
-
-// enemies and herbivores have a much farther distance before they need to reset
-        if ((GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) <= 10) || GetLocalInt(OBJECT_SELF, "herbivore") == 1) fMaxDistance = fMaxDistance*10.0;
-
-        if (GetLocalInt(OBJECT_SELF, "no_wander") == 1) fMaxDistance = 0.0;
-// Not in combat? Different/Invalid area? Too far from spawn?
-        if (GetLocalInt(OBJECT_SELF, "ambient") != 1 && !nCombat && !bBusy && ((fDistanceFromSpawn == -1.0) || (fDistanceFromSpawn > fMaxDistance)))
+        object oSpawnArea = GetAreaFromLocation(lSpawn);
+        
+// if not in the same area, force the NPC to jump back to the spawn location after a while
+        if (GetIsObjectValid(oSpawnArea) && oSpawnArea != GetArea(OBJECT_SELF))
         {
-            AssignCommand(OBJECT_SELF, ClearAllActions());
-            MoveToNewLocation(lSpawn, OBJECT_SELF);
-            return;
+            int nNotInSameAreaCount = GetLocalInt(OBJECT_SELF, "not_in_same_area_count");
+            if (!nCombat && nNotInSameAreaCount >= 25)
+            {
+                ClearAllActions();
+                ActionJumpToLocation(lSpawn);
+                DeleteLocalInt(OBJECT_SELF, "not_in_same_area_count");
+            }
+            else
+            {
+                SetLocalInt(OBJECT_SELF, "not_in_same_area_count", nNotInSameAreaCount + 1);
+            }
+        }
+        else
+        {
+            DeleteLocalInt(OBJECT_SELF, "not_in_same_area_count");
+            
+            float fDistanceFromSpawn = GetDistanceBetweenLocations(GetLocation(OBJECT_SELF), lSpawn);
+            float fMaxDistance = 5.0;
+
+            if (GetLocalString(OBJECT_SELF, "merchant") != "") fMaxDistance = fMaxDistance * 0.5;
+
+    // enemies and herbivores have a much farther distance before they need to reset
+            if ((GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) <= 10) || GetLocalInt(OBJECT_SELF, "herbivore") == 1) fMaxDistance = fMaxDistance*10.0;
+
+            if (GetLocalInt(OBJECT_SELF, "no_wander") == 1) fMaxDistance = 0.0;
+    // Not in combat? Different/Invalid area? Too far from spawn?
+            if (GetLocalInt(OBJECT_SELF, "ambient") != 1 && !nCombat && !bBusy && ((fDistanceFromSpawn == -1.0) || (fDistanceFromSpawn > fMaxDistance)))
+            {
+                ClearAllActions();
+                MoveToNewLocation(lSpawn, OBJECT_SELF);
+                return;
+            }
         }
     }
 

@@ -636,14 +636,12 @@ void DetermineMaxHitPoints(object oCreature)
 {
     if (GetIsPC(oCreature)) return;
 
-    // these are considered plot or quest NPCs, keep the default
-    if (GetImmortal(oCreature)) return;
     if (GetPlotFlag(oCreature)) return;
 
     // don't do this for pets
     if (GetAssociateType(oCreature) == ASSOCIATE_TYPE_FAMILIAR || GetAssociateType(oCreature) == ASSOCIATE_TYPE_ANIMALCOMPANION) return;
 
-    int bMaximize = GetLocalInt(oCreature, "boss") == 1 || GetLocalInt(oCreature, "semiboss") == 1 || GetLocalInt(oCreature, "rare") == 1;
+    int bMaximize = GetImmortal(oCreature) || GetLocalInt(oCreature, "boss") == 1 || GetLocalInt(oCreature, "semiboss") == 1 || GetLocalInt(oCreature, "rare") == 1;
 
     int nHP = GetHitPointsByClassPosition(oCreature, 1, bMaximize) + GetHitPointsByClassPosition(oCreature, 2, bMaximize) + GetHitPointsByClassPosition(oCreature, 3, bMaximize);
 

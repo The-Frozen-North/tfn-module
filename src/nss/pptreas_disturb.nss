@@ -6,7 +6,6 @@ int ValidThiefChecker(object oTarget, object oThief)
 {
     if (GetIsPC(oTarget)) return FALSE;
     if (GetIsDead(oTarget)) return FALSE;
-    if (GetLocalInt(oTarget, "unconscious") == 1) return FALSE;
     if (GetAssociateType(oTarget) > 0 ) return FALSE;
     //if (GetStandardFactionReputation(STANDARD_FACTION_COMMONER, OBJECT_SELF) <= 50 && GetStandardFactionReputation(STANDARD_FACTION_DEFENDER, OBJECT_SELF) <= 50) return FALSE;
     if (!GetObjectSeen(oThief, oTarget) && !LineOfSightObject(oThief, oTarget)) return FALSE;

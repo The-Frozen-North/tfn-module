@@ -7,6 +7,13 @@
 #include "inc_webhook"
 #include "nwnx_area"
 
+void ReviveSelf()
+{
+    ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectResurrection(), OBJECT_SELF);
+    ForceRest(OBJECT_SELF);
+    DeleteLocalInt(OBJECT_SELF, "combat");
+}
+
 void main()
 {
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_DEATH));
@@ -163,6 +170,13 @@ void main()
 
     string sScript = GetLocalString(OBJECT_SELF, "death_script");
     if (sScript != "") ExecuteScript(sScript);
+
+    if (GetLocalInt(OBJECT_SELF, "immortal") == 1)
+    {
+        DelayCommand(IntToFloat(120+Random(121)), ReviveSelf());
+
+        return; // do not do any gibbing code
+    }
 
     if (GibsNPC(OBJECT_SELF))
     {

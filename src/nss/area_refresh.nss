@@ -274,7 +274,7 @@ void main()
 
                 // Add to quest npc list if required
                 int nFaction = NWNX_Creature_GetFaction(oCreature);
-                if (GetPlotFlag(oCreature) || GetImmortal(oCreature) || nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER || nFaction == STANDARD_FACTION_MERCHANT)
+                if (GetPlotFlag(oCreature) || GetImmortal(oCreature) || GetLocalInt(oCreature, "immortal") == 1 || nFaction == STANDARD_FACTION_COMMONER || nFaction == STANDARD_FACTION_DEFENDER || nFaction == STANDARD_FACTION_MERCHANT)
                 {
                     string sQuest = GetLocalString(oCreature, "quest1");
                     if (sQuest != "")
