@@ -1,56 +1,13 @@
-#include "inc_xp"
 #include "inc_quest"
-#include "inc_loot"
 #include "inc_treasure"
 #include "inc_henchman"
 #include "inc_nwnx"
 #include "inc_key"
-#include "inc_general"
-
-// SetScriptParam: "exclusivelooter" to ObjectToString(oPC) to make oPC get everything.
-
-// The max distance in meters a party member can be from
-// a target killed by oKiller and still get xp. (no lower than 5!)
-const float PARTY_DST_MAX = 40.0;
+#include "inc_party"
 
 // The max distance in meters a player can be from
 // a target killed by a trap, and still get xp.
 const float TRAP_DST_MAX = 100.0;
-
-
-struct Party
-{
-   int PlayerSize;
-   int HenchmanSize;
-   int TotalSize;
-   int LevelGap;
-   int HighestLevel;
-   float AverageLevel;
-};
-
-// * Simulates retrieving an object from an array on an object.
-object GetLocalArrayObject(object oObject, string sArrayName, int nIndex)
-{
-   string sVarName = sArrayName + IntToString(nIndex);
-   return GetLocalObject(oObject, sVarName);
-}
-
-// * Simulates storing a local object in an array on an object.
-void SetLocalArrayObject(object oObject, string sArrayName, int nIndex, object oValue)
-{
-   SetLocalObject(oObject, sArrayName + IntToString(nIndex), oValue);
-}
-
-int GetLocalArrayInt(object oObject, string sArrayName, int nIndex)
-{
-   string sVarName = sArrayName + IntToString(nIndex);
-   return GetLocalInt(oObject, sVarName);
-}
-
-void SetLocalArrayInt(object oObject, string sArrayName, int nIndex, int nValue)
-{
-   SetLocalInt(oObject, sArrayName + IntToString(nIndex), nValue);
-}
 
 void SendLootMessage(object oHench, object oItem)
 {
@@ -242,123 +199,6 @@ json _AddItemToPartyMemberAssignments(json jAssignments, object oItem, int nInde
     jAssignments = JsonArraySet(jAssignments, nIndex, jArray);
     //WriteTimestampedLogEntry("After: " + JsonDump(jAssignments));
     return jAssignments;
-}
-
-
-// This global variable is used to store party data during the first loop
-struct Party Party;
-
-void SetPartyData()
-{
-   int nLow = 80;
-   int nHigh, nLevel = 0;
-   int nPlayerSize = 0;
-   int nHenchmanSize = 0;
-   int nTotalSize = 0;
-   int nTotalLevels = 0;
-   int nHighestLevel = 0;
-   int nAssociateType;
-   float fAverageLevel = 0.0;
-
-   float fDst = PARTY_DST_MAX;
-   location lLocation = GetLocation(OBJECT_SELF);
-
-   object oMbr = GetFirstObjectInShape(SHAPE_SPHERE, fDst, lLocation, FALSE, OBJECT_TYPE_CREATURE);
-
-   object oExclusiveLooter = StringToObject(GetScriptParam("exclusivelooter"));
-   if (GetIsObjectValid(oExclusiveLooter))
-   {
-        nPlayerSize = 1;
-        nTotalSize = 1;
-        nTotalLevels = GetLevelFromXP(GetXP(oExclusiveLooter));
-        nHighestLevel = nTotalLevels;
-        nHigh = nTotalLevels;
-        nLow = nTotalLevels;
-        fAverageLevel = IntToFloat(nTotalLevels);
-        SetLocalArrayObject(OBJECT_SELF, "Players", 1, oExclusiveLooter);
-   }
-   else
-   {
-       while(oMbr != OBJECT_INVALID)
-       {
-          nAssociateType = GetAssociateType(oMbr);
-          if(GetIsPC(oMbr))
-          {
-              nPlayerSize++;
-              nTotalSize++;
-              nLevel = GetLevelFromXP(GetXP(oMbr));
-              nTotalLevels = nTotalLevels + nLevel;
-
-              if (nLevel > nHighestLevel) nHighestLevel = nLevel;
-
-
-              if(nLow > nLevel) nLow = nLevel;
-              if(nHigh < nLevel) nHigh = nLevel;
-              SetLocalArrayObject(OBJECT_SELF, "Players", nPlayerSize, oMbr);
-          }
-
-    // all associates except dominated and pets should count for xp purposes
-          else if (!GetIsDead(oMbr) && !GetIsPC(oMbr) && nAssociateType > 0
-                   && nAssociateType != ASSOCIATE_TYPE_DOMINATED
-                   && nAssociateType != ASSOCIATE_TYPE_FAMILIAR
-                   && nAssociateType != ASSOCIATE_TYPE_ANIMALCOMPANION
-                   && GetLocalInt(oMbr, "no_xp_penalty") != 1)
-          {
-              nTotalSize++;
-              if (GetStringLeft(GetResRef(oMbr), 3) == "hen") // only named henchman count for loot distro
-              {
-                nHenchmanSize++;
-                SetLocalArrayObject(OBJECT_SELF, "Henchmans", nHenchmanSize, oMbr);
-              }
-              nLevel = GetHitDice(oMbr);
-              if (nLevel > nHighestLevel) nHighestLevel = nLevel;
-              nTotalLevels = nTotalLevels + nLevel;
-          }
-
-          oMbr = GetNextObjectInShape(SHAPE_SPHERE, fDst, lLocation, FALSE, OBJECT_TYPE_CREATURE);
-       }
-       // Used for loot debugging: if there were no "real" party members in range, add
-       // the module developer as a party member
-       // This forces the loot code to always be run
-       if (nTotalSize == 0 && ShouldDebugLoot())
-       {
-          object oDev = GetLocalObject(GetModule(), "dev_lootvortex");
-          nPlayerSize++;
-          nTotalSize++;
-          nLevel = GetLevelFromXP(GetXP(oMbr));
-          nTotalLevels = nTotalLevels + nLevel;
-          nHighestLevel = nLevel;
-          nLow = nLevel;
-          nHigh = nLevel;
-          if (GetIsObjectValid(oDev) && GetIsDeveloper(oDev))
-          {
-              SetLocalArrayObject(OBJECT_SELF, "Players", nPlayerSize, oDev);
-          }
-          else
-          {
-              SetLocalArrayObject(OBJECT_SELF, "Players", nPlayerSize, OBJECT_INVALID);
-          }
-       }
-   }
-
-
-   if (nPlayerSize > 0) fAverageLevel = IntToFloat(nTotalLevels) / IntToFloat(max(1, nTotalSize));
-
-   float fHighestLevel = IntToFloat(nHighestLevel);
-   if (fHighestLevel > fAverageLevel) fAverageLevel = fHighestLevel;
-
-   SendDebugMessage("Player size: "+IntToString(nPlayerSize));
-   SendDebugMessage("Henchman size: "+IntToString(nHenchmanSize));
-   SendDebugMessage("Total size: "+IntToString(nTotalSize));
-   SendDebugMessage("Party gap: "+IntToString(nHigh - nLow));
-   SendDebugMessage("Party highest level: "+IntToString(nLevel));
-   SendDebugMessage("Party average: "+FloatToString(fAverageLevel));
-
-   Party.PlayerSize = nPlayerSize;
-   Party.HenchmanSize = nHenchmanSize;
-   Party.TotalSize = nTotalSize;
-   Party.AverageLevel = fAverageLevel;
-   Party.LevelGap = nHigh - nLow;
 }
 
 // Take the loot item (in the treasure area chest) and return the index of the party member that should recieve it.
@@ -903,15 +743,31 @@ void main()
 
           nPCLevel = GetLevelFromXP(GetXP(oPC));
 
-          GiveXPToPC(oPC, fXP);
+          float fTotalXPPercent = 1.0;
+
+          string sStealthIdentifier = "stealth_xp_"+GetName(oPC) + GetPCPublicCDKey(oPC);
+          if (GetLocalInt(OBJECT_SELF, sStealthIdentifier) == 1)
+          {
+                fTotalXPPercent -= STEALTH_XP_PERCENTAGE;
+          }
+
+          string sSkillIdentifier = "skill_xp_"+GetName(oPC) + GetPCPublicCDKey(oPC);
+          if (GetLocalInt(OBJECT_SELF, sSkillIdentifier) == 1)
+          {
+                fTotalXPPercent -= SKILL_XP_PERCENTAGE;
+          }
+
+          float fXPAfterReductions = fXP * fTotalXPPercent;
+
+          GiveXPToPC(oPC, fXPAfterReductions);
           AdvanceQuest(OBJECT_SELF, oPC, GetLocalInt(OBJECT_SELF, "quest_kill"));
           
           if (oKiller == oPC)
           {
               // Number of personal kills is in ai_ondeath already
-              IncrementPlayerStatistic(oPC, "kill_xp_value", FloatToInt(fXP*100.0));
+              IncrementPlayerStatistic(oPC, "kill_xp_value", FloatToInt(fXPAfterReductions*100.0));
           }
-          IncrementPlayerStatistic(oPC, "total_xp_from_partys_kills", FloatToInt(fXP*100.0));
+          IncrementPlayerStatistic(oPC, "total_xp_from_partys_kills", FloatToInt(fXPAfterReductions*100.0));
       }
 
 // only proceed with loot code if container exists

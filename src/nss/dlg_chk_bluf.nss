@@ -1,5 +1,7 @@
 #include "inc_persist"
 #include "inc_general"
+#include "inc_xp"
+
 // Bluff against bluff_dc local variable, offer 1 attempt per 15min
 // set script param "dc" to use that instead
 
@@ -26,6 +28,7 @@ int StartingConditional()
         SetTemporaryInt(GetPCPublicCDKey(oPC, TRUE)+GetName(oPC)+"_"+GetTag(OBJECT_SELF)+"_bluf", 1, 900.0);
         return FALSE;
     }
+    GiveDialogueSkillXP(oPC, nDC, nSkill);
     IncrementPlayerStatistic(oPC, "bluff_succeeded");
     return TRUE;
 }

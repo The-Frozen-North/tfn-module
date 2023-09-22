@@ -1,7 +1,7 @@
 #include "inc_henchman"
 #include "inc_persist"
 #include "inc_general"
-
+#include "inc_xp"
 
 int StartingConditional()
 {
@@ -18,6 +18,7 @@ int StartingConditional()
     }
     else
     {
+        GiveDialogueSkillXP(oPC, nDC, nSkill);
         IncrementPlayerStatistic(oPC, "persuade_succeeded");
         IncrementPlayerStatistic(oPC, "henchman_recruited");
         SetMaster(OBJECT_SELF, oPC);

@@ -57,6 +57,11 @@ void main()
 
     int nCombat = GetIsInCombat(OBJECT_SELF);
 
+    if (!nCombat && !GetHasFeat(FEAT_KEEN_SENSE) && !GetHasFeat(FEAT_BLINDSIGHT_60_FEET))
+    {
+        SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, TRUE);
+    }
+
     object oPC = GetFirstPC();
 
     int bEnemyPCSeen = FALSE;

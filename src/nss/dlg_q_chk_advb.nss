@@ -1,4 +1,5 @@
 #include "inc_quest"
+#include "inc_xp"
 
 int StartingConditional()
 {
@@ -10,6 +11,7 @@ int StartingConditional()
     AdjustAlignment(oPC, ALIGNMENT_CHAOTIC, BLUFF_CHAOS_SHIFT, FALSE);
     if(GetIsSkillSuccessful(oPC, nSkill, nDC))
     {
+        GiveDialogueSkillXP(oPC, nDC, nSkill);
         IncrementPlayerStatistic(oPC, "bluff_succeeded");
         AdvanceQuest(OBJECT_SELF, oPC, nTarget, TRUE);
         return TRUE;

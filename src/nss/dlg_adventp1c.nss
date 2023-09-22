@@ -34,6 +34,7 @@
 #include "inc_adv_assassin"
 #include "inc_ai_combat"
 #include "inc_ctoken"
+#include "inc_xp"
 
 string GenerateInsult(object oPC)
 {
@@ -168,8 +169,10 @@ int StartingConditional()
     
     if (GetScriptParam("pcintimidate") != "")
     {
-        if (GetIsSkillSuccessful(oPC, SKILL_INTIMIDATE, 18 + GetHitDice(OBJECT_SELF)))
+        int nDC = 18 + GetHitDice(OBJECT_SELF);
+        if (GetIsSkillSuccessful(oPC, SKILL_INTIMIDATE, nDC))
         {
+            GiveDialogueSkillXP(oPC, nDC, SKILL_INTIMIDATE);
             sMessage = "You know, I think " + (nAdventurerPartySize > 1 ? "we" : "I") + " might have bitten off a bit more than " + (nAdventurerPartySize > 1 ? "we" : "I") + " can chew this time. Farewell... for now.";
             SetCustomToken(CTOKEN_ADVENTURER_DIALOGUE, sMessage);
             int i;

@@ -1,6 +1,7 @@
 #include "inc_persist"
 #include "inc_ship"
 #include "inc_general"
+#include "inc_xp"
 
 int StartingConditional()
 {
@@ -15,6 +16,7 @@ int StartingConditional()
         IncrementPlayerStatistic(oPC, "persuade_failed");
         return FALSE;
     }
+    GiveDialogueSkillXP(oPC, nDC, nSkill);
     IncrementPlayerStatistic(oPC, "persuade_succeeded");
     PayShipAndTravel(OBJECT_SELF, GetPCSpeaker(), 2, TRUE);
 

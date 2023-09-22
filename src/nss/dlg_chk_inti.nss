@@ -1,4 +1,6 @@
 #include "inc_persist"
+#include "inc_xp"
+
 // Intimidate against intimidate_dc local variable, offer 1 attempt per 15min
 // set script param "dc" to use that instead
 
@@ -21,5 +23,6 @@ int StartingConditional()
         return FALSE;
     }
 
+    GiveDialogueSkillXP(oPC, nDC, nSkill);
     return TRUE;
 }

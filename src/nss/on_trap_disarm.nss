@@ -9,12 +9,14 @@ void main()
 
      if (nXP == 0) nXP = GetLocalInt(OBJECT_SELF, "trap_dc");
 
-// cap
-     if (nXP > 50) nXP = 50;
+     float fXP = IntToFloat(nXP);
 
-     if (nXP > 0)
+// cap
+     if (fXP > 50.0) fXP = 50.0;
+
+     if (fXP > 0.0)
      {
-        nXP = nXP/9;
+        fXP = fXP/9.0;
      }
      else
      {
@@ -23,7 +25,7 @@ void main()
 
      if (GetIsPC(oPC))
      {
-         GiveXPToPC(oPC, IntToFloat(nXP));
+         GiveXPToPC(oPC, fXP, FALSE, "Trap Disarming");
          IncrementPlayerStatistic(oPC, "traps_disarmed");
      }
 }

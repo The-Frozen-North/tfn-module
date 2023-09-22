@@ -1,6 +1,7 @@
 #include "inc_gold"
 #include "inc_persist"
 #include "inc_general"
+#include "inc_xp"
 
 int StartingConditional()
 {
@@ -21,6 +22,7 @@ int StartingConditional()
     }
     else
     {
+        GiveDialogueSkillXP(oPC, nDC, nSkill);
         TakeGoldFromCreature(nCost, oPC, TRUE);
         IncrementPlayerStatistic(oPC, "persuade_succeeded");
         IncrementPlayerStatistic(oPC, "gold_spent_on_ferries", nCost);

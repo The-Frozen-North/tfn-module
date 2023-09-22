@@ -1,4 +1,5 @@
 #include "inc_general"
+#include "inc_xp"
 // DC is 13 + level
 // set script param "dc" to use that instead
 
@@ -20,6 +21,7 @@ int StartingConditional()
         IncrementPlayerStatistic(oPC, "persuade_failed");
         return FALSE;
     }
+    GiveDialogueSkillXP(oPC, nDC, nSkill);
     IncrementPlayerStatistic(oPC, "persuade_succeeded");
     return TRUE;
 }

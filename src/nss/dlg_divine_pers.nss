@@ -1,6 +1,7 @@
 #include "inc_gold"
 #include "inc_persist"
 #include "inc_general"
+#include "inc_xp"
 
 int StartingConditional()
 {
@@ -21,6 +22,7 @@ int StartingConditional()
     }
     else
     {
+        GiveDialogueSkillXP(oPC, nDC, nSkill);
         IncrementPlayerStatistic(oPC, "persuade_succeeded");
         TakeGoldFromCreature(nCost, oPC, TRUE);
         location lLocation = GetLocation(GetObjectByTag(GetLocalString(OBJECT_SELF, "warden_tele_wp")));

@@ -2,7 +2,7 @@
 #include "inc_persist"
 #include "inc_general"
 #include "nw_i0_generic"
-
+#include "inc_xp"
 
 int StartingConditional()
 {
@@ -18,6 +18,7 @@ int StartingConditional()
     }
     else
     {
+        GiveDialogueSkillXP(oPC, nDC, nSkill);
         IncrementPlayerStatistic(oPC, "persuade_succeeded");
         SetFollowerMaster(OBJECT_SELF, oPC);
         SetAssociateState(NW_ASC_USE_RANGED_WEAPON, FALSE);

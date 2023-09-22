@@ -4,7 +4,7 @@
 #include "inc_penalty"
 #include "inc_quest"
 #include "inc_sql"
-#include "inc_general"
+#include "inc_party"
 #include "inc_sqlite_time"
 #include "inc_weather"
 #include "nwnx_player"
@@ -17,6 +17,67 @@ int GetIsDeadOrPetrified(object oCreature)
     if (GetIsDead(oCreature)) return TRUE;
 
     return FALSE;
+}
+
+void RewardStealthXP(object oPC)
+{
+    if (!GetStealthMode(oPC)) return;
+
+    // if the player has any of these effects, don't reward stealth XP as it's a kinda cheaty
+    if (GetHasEffect(EFFECT_TYPE_INVISIBILITY, oPC)) return;
+    if (GetHasEffect(EFFECT_TYPE_SANCTUARY, oPC)) return;
+    if (GetHasEffect(EFFECT_TYPE_ETHEREAL, oPC)) return;
+    if (GetHasEffect(EFFECT_TYPE_DARKNESS, oPC)) return;
+
+    location lLocation = GetLocation(oPC);
+    float fRadius = 10.0;
+
+    object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, fRadius, lLocation, TRUE, OBJECT_TYPE_CREATURE);
+
+    while(GetIsObjectValid(oTarget))
+    {
+        string sIdentifier = "stealth_xp_"+GetName(oPC) + GetPCPublicCDKey(oPC);
+        if (!GetIsPC(oTarget) && 
+            !GetIsDead(oTarget) && 
+            GetIsEnemy(oPC, oTarget) && 
+            !GetObjectSeen(oPC, oTarget) && 
+            !GetObjectHeard(oPC, oTarget) && 
+            GetLocalInt(oTarget, sIdentifier) != 1 && 
+            !GetHasEffect(EFFECT_TYPE_BLINDNESS, oTarget) && //check these as well, kinda cheaty if the NPC has these effects
+            !GetHasEffect(EFFECT_TYPE_DARKNESS, oTarget))
+        {
+            SetLocalInt(oTarget, sIdentifier, 1);
+            DelayCommand(1800.0, DeleteLocalInt(oTarget, sIdentifier)); // reset in 30 minutes
+            SetPartyData(oTarget);
+
+            int bAmbush = FALSE;
+            if (GetLocalInt(oTarget, "ambush") == 1)
+            {
+                bAmbush = TRUE;
+            }
+
+            int bBoss = GetLocalInt(oTarget, "boss");
+            int bSemiBoss = GetLocalInt(oTarget, "semiboss");
+            int bRare = GetLocalInt(oTarget, "rare");
+            float fMultiplier = 1.0;
+            if (bBoss == 1)
+            {
+                fMultiplier = 3.0;
+            }
+            else if (bSemiBoss == 1 || bRare == 1)
+            {
+                fMultiplier = 2.0;
+            }
+
+
+            // stealth XP is worth half of a kill
+            float fXP = GetPartyXPValue(oTarget, bAmbush, Party.AverageLevel, Party.TotalSize, fMultiplier) * STEALTH_XP_PERCENTAGE;
+
+            GiveXPToPC(oPC, fXP, FALSE, "Stealth");
+        }
+        
+        oTarget = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation, TRUE, OBJECT_TYPE_CREATURE);
+    }
 }
 
 void ResetFactionsAttempt(object oPC)
@@ -281,6 +342,7 @@ void main()
         }
         else if (!GetIsDead(oPC))
         {
+            RewardStealthXP(oPC);
             SQLocalsPlayer_DeleteInt(oPC, "DEAD");
 
             if (GetCurrentHitPoints(oPC) >= GetMaxHitPoints(oPC)/2)

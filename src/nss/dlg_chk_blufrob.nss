@@ -1,4 +1,6 @@
 #include "inc_persist"
+#include "inc_xp"
+
 // Bluff against bluff_dc local variable, offer 1 attempt per 15min
 // set script param "dc" to use that instead
 
@@ -19,7 +21,7 @@ int StartingConditional()
     {
         return FALSE;
     }
-
+    GiveDialogueSkillXP(oPC, nDC, nSkill);
     int nGold = StringToInt(GetScriptParam("gold"));
 
     GiveGoldToCreature(oPC, nGold);

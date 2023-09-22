@@ -1,4 +1,5 @@
 #include "inc_persist"
+#include "inc_xp"
 
 int StartingConditional()
 {
@@ -16,6 +17,8 @@ int StartingConditional()
     }
     else
     {
+        GiveDialogueSkillXP(oPC, nDC, nSkill);
+        
         int nGold = StringToInt(GetScriptParam("gold"));
 
         GiveGoldToCreature(oPC, nGold);

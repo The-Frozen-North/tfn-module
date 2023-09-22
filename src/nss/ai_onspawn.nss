@@ -72,6 +72,11 @@ void main()
     //set action matrix
     gsAISetActionMatrix(gsAIGetDefaultActionMatrix());
 
+    if (!GetHasFeat(FEAT_KEEN_SENSE) && !GetHasFeat(FEAT_BLINDSIGHT_60_FEET))
+    {
+        SetActionMode(OBJECT_SELF, ACTION_MODE_DETECT, TRUE);
+    }
+
     //set random facing
     //SetFacing(IntToFloat(Random(360)));
 

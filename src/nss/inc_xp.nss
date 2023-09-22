@@ -64,6 +64,14 @@ const int PARTY_GAP_MAX = 4;
 // with a base mod of 5 and a party of two, the xp percentage is 83%
 const float PARTY_SIZE_BASE_MOD = 5.0; // increase to decrease XP penalty
 
+// how much XP is awarded through stealth
+const float STEALTH_XP_PERCENTAGE = 0.5;
+
+// how much XP is awarded through pickpocketing or animal empathy
+const float SKILL_XP_PERCENTAGE = 0.25;
+
+// note: the sum of both of the numbers must NOT be above 1.0, or it may result in negative XP!!
+
 // **** SYSTEM SETTINGS END - YOU SHOULD NOT MODIFY ANYTHING BELOW THIS! *******************************************
 
 
@@ -77,7 +85,7 @@ void GiveXP(object oKiller);
 
 
 // Gives nXpAmount to oPC, wisdom adjusted
-void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE);
+void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE, string sSource = "");
 
 // Gives nXp amount to oPC, wisdom adjusted
 // with bonuses/penalties related to the target level
@@ -133,7 +141,7 @@ float Truncate(float fFloat)
     return StringToFloat(FloatToString(fFloat, 3, 2));
 }
 
-void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
+void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE, string sSource = "")
 {
 // Dead PCs do not get any XP, unless it came from a quest
    if (!bQuest && GetIsDead(oPC)) return;
@@ -218,8 +226,13 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE)
    //fAdjustedXpAmount = IntToFloat(FloatToInt(fAdjustedXpAmount*10.0))/10.0;
    fAdjustedXpAmount = Truncate(fAdjustedXpAmount);
 
+   string sSourceFeedback = "";
+   if (sSource != "")
+   {
+        sSourceFeedback = " from "+sSource;
+   }
 
-   SendMessageToPC(oPC, "Experience Points Gained:  "+RemoveTrailingZeros(FloatToString(fAdjustedXpAmount, 3, 2)) + sRestedBonus);
+   SendMessageToPC(oPC, "Experience Points Gained"+sSourceFeedback+":  "+RemoveTrailingZeros(FloatToString(fAdjustedXpAmount, 3, 2)) + sRestedBonus);
 
 
    int iStoredRemainderXP = SQLocalsPlayer_GetInt(oPC, "xp_remainder");
@@ -515,6 +528,24 @@ void UpdateXPBarUI(object oPC)
         SetScriptParam("updatebar", "1");
         ExecuteScript("pc_xpbar_evt", OBJECT_SELF);
     }
+}
+
+void GiveDialogueSkillXP(object oPC, int nDC, int nSkill)
+{
+    float fXP = 2.0 + IntToFloat((nDC - 10) / 2);
+
+    if (fXP > 16.0) fXP = 16.0;
+    if (fXP < 3.0) fXP = 3.0;
+
+    string sSkill;
+    switch (nSkill)
+    {
+        case SKILL_PERSUADE: sSkill = "Persuasion"; break;
+        case SKILL_BLUFF: sSkill = "Intimidation"; break;
+        case SKILL_INTIMIDATE: sSkill = "Bluffing"; break;
+    }
+    
+    GiveXPToPC(oPC, fXP, FALSE, sSkill);
 }
 
 
