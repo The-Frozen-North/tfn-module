@@ -59,7 +59,11 @@ void main()
                 IncrementPlayerStatistic(OBJECT_SELF, "pickpockets_succeeded");
 
                 object oTarget = StringToObject(NWNX_Events_GetEventData("TARGET_OBJECT_ID"));
-                GiveSkillXP(oTarget, OBJECT_SELF, "Pick Pocketing");
+                if (GetLocalInt(oTarget, "pickpocket_xp") == 1)
+                {
+                    GiveSkillXP(oTarget, OBJECT_SELF, "Pickpocketing");
+                    DeleteLocalInt(oTarget, "pickpocket_xp");
+                }
             }
             else
             {
