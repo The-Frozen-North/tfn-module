@@ -399,7 +399,7 @@ void main()
                     //if (bInstance == 1)
                     //{
                     // every area is instanced now!
-                        SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_UNLOCK, "unlock");
+                        SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_UNLOCK, "door_unlock");
                         SetEventScript(oObject, EVENT_SCRIPT_DOOR_ON_MELEE_ATTACKED, "bash_lock");
                         nDoors = nDoors + 1;
 

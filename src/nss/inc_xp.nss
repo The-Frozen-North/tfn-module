@@ -532,7 +532,7 @@ void UpdateXPBarUI(object oPC)
 
 void GiveDialogueSkillXP(object oPC, int nDC, int nSkill)
 {
-    float fXP = 2.0 + IntToFloat((nDC - 10) / 2);
+    float fXP = IntToFloat(nDC) / 2.5;
 
     if (fXP > 16.0) fXP = 16.0;
     if (fXP < 3.0) fXP = 3.0;
@@ -548,5 +548,13 @@ void GiveDialogueSkillXP(object oPC, int nDC, int nSkill)
     GiveXPToPC(oPC, fXP, FALSE, sSkill);
 }
 
+void GiveUnlockXP(object oPC, int nDC)
+{
+    float fXP = IntToFloat(nDC) / 3.0;
 
+// cap
+    if (fXP > 14.0) fXP = 14.0;
+
+    GiveXPToPC(oPC, fXP, FALSE, "Unlocking");
+}
 //void main(){}
