@@ -263,7 +263,7 @@ void GiveXPToPC(object oPC, float fXpAmount, int bQuest = FALSE, string sSource 
 
    if (iWhole > 0)
        SetXP(oPC, GetXP(oPC) + iWhole);
-   
+
    UpdateXPBarUI(oPC);
 }
 
@@ -342,7 +342,7 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
    }
    else if (fCR < fAverageLevel)
    {
-        fXP = fmin(100.0, BASE_XP * pow(2.0, (fCR - fAverageLevel)/2.0)); 
+        fXP = fmin(100.0, BASE_XP * pow(2.0, (fCR - fAverageLevel)/2.0));
    }
 
    // apply any boss multipliers, etc
@@ -350,7 +350,7 @@ float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iT
 
 // award more XP if the enemy is a caster or can summon pets
    if (GetLevelByClass(CLASS_TYPE_DRUID, oCreature) >= 1 || GetLevelByClass(CLASS_TYPE_SORCERER, oCreature) > 1 || GetLevelByClass(CLASS_TYPE_WIZARD, oCreature) >= 1 || GetLevelByClass(CLASS_TYPE_CLERIC, oCreature) > 1 || GetLevelByClass(CLASS_TYPE_RANGER, oCreature) >= 6 )
-        fXP = fXP * 1.25;   
+        fXP = fXP * 1.25;
 
    // Cap the xp.
    if (fXP > XP_MAX) fXP = XP_MAX;
@@ -398,7 +398,7 @@ void XPBar(object oPC)
     {
         return;
     }
-    
+
     string sWindow = "pc_xpbar";
     json jLabels = JsonArray();
     jLabels = JsonArrayInsert(jLabels, JsonString("Horizontal"));
@@ -417,7 +417,7 @@ void XPBar(object oPC)
     AddInterfaceConfigOptionColorPick(sWindow, "graduationcolor", "Graduation Color", "The color of the graduation marks along the bar.", NuiColor(20, 20, 20, 255));
     AddInterfaceConfigOptionCheckBox(sWindow, "textvisible", "Progress Text", "Whether to show progress percent on the middle of the bar.", 1);
     AddInterfaceConfigOptionColorPick(sWindow, "textcolor", "Progress Text Color", "Color of the progress text on the bar.", NuiColor(100, 100, 100, 255));
-    
+
     json jBackgroundColor = GetNuiConfigBind(sWindow, "backgroundcolor");
     json jFilledColor = GetNuiConfigBind(sWindow, "progresscolor");
     json jRestedColor = GetNuiConfigBind(sWindow, "restedcolor");
@@ -425,75 +425,75 @@ void XPBar(object oPC)
     json jGraduationColor = GetNuiConfigBind(sWindow, "graduationcolor");
     json jTextVisible = GetNuiConfigBind(sWindow, "textvisible");
     json jTextColor = GetNuiConfigBind(sWindow, "textcolor");
-    
+
     // The bar itself is a few components, drawn on top of each other.
-    
+
     // 1) Background.
     // 2) Filled
     // 3) Rested
     // 4) Graduation
     // 5) Edge
-    
+
     // We do graduation before edge so everything except the "teeth" can be squished by the edge
     // If edge was afterwards it would have to be a long series of drawlists, which binds can't really change
     // Making it one big drawlist and then covering it up later gets around that
-    
+
     json jBackgroundDrawListCoords = NuiBind("background_coords");
     //json jBackgroundDrawList = NuiDrawListPolyLine(JsonBool(1), jBackgroundColor, JsonBool(1), JsonFloat(1.0), jBackgroundDrawListCoords);
     json jBackgroundDrawList = NuiDrawListPolyLine(JsonBool(1), jBackgroundColor, JsonBool(1), JsonFloat(1.0), jBackgroundDrawListCoords);
-    
+
     json jFilledDrawListCoords = NuiBind("filled_coords");
     json jFilledDrawList = NuiDrawListPolyLine(JsonBool(1), jFilledColor, JsonBool(1), JsonFloat(1.0), jFilledDrawListCoords);
-    
+
     json jRestedDrawListCoords = NuiBind("rested_coords");
     json jRestedDrawList = NuiDrawListPolyLine(JsonBool(1), jRestedColor, JsonBool(1), JsonFloat(1.0), jRestedDrawListCoords);
-    
+
     json jGraduationDrawListCoords = NuiBind("graduation_coords");
     json jGraduationDrawList = NuiDrawListPolyLine(JsonBool(1), jGraduationColor, JsonBool(0), JsonFloat(1.0), jGraduationDrawListCoords);
-    
+
     json jEdgeDrawListCoords = NuiBind("edge_coords");
     json jEdgeDrawList = NuiDrawListPolyLine(JsonBool(1), jEdgeColor, JsonBool(0), JsonFloat(1.0), jEdgeDrawListCoords);
-    
+
     json jTextPos = NuiBind("text_pos");
     json jTextContent = NuiBind("text_content");
     json jTextDrawList = NuiDrawListText(jTextVisible, jTextColor, jTextPos, jTextContent);
-    
+
     json jDrawListArray = JsonArray();
     jDrawListArray = JsonArrayInsert(jDrawListArray, jBackgroundDrawList);
     jDrawListArray = JsonArrayInsert(jDrawListArray, jFilledDrawList);
     jDrawListArray = JsonArrayInsert(jDrawListArray, jRestedDrawList);
     jDrawListArray = JsonArrayInsert(jDrawListArray, jGraduationDrawList);
     jDrawListArray = JsonArrayInsert(jDrawListArray, jEdgeDrawList);
-    
-    
-    
+
+
+
     jDrawListArray = JsonArrayInsert(jDrawListArray, jTextDrawList);
-    
+
     float fWinSizeX = 400.0;
     float fWinSizeY = 40.0;
-    
+
     float fMidX = IntToFloat(GetPlayerDeviceProperty(oPC, PLAYER_DEVICE_PROPERTY_GUI_WIDTH)/2) - (fWinSizeX/2);
     float fMidY = IntToFloat(GetPlayerDeviceProperty(oPC, PLAYER_DEVICE_PROPERTY_GUI_HEIGHT))*0.8 - (fWinSizeY/2);
-    
+
     json jGeometry = GetPersistentWindowGeometryBind(oPC, sWindow, NuiRect(fMidX, fMidY, fWinSizeX, fWinSizeY));
-    
+
     json jLabel = NuiLabel(JsonString(""), JsonInt(NUI_HALIGN_CENTER), JsonInt(NUI_VALIGN_MIDDLE));
     jLabel = NuiDrawList(jLabel, JsonBool(0), jDrawListArray);
-    
+
     json jLayout = JsonArray();
     jLayout = JsonArrayInsert(jLayout, jLabel);
-    
+
     json jRoot = NuiRow(jLayout);
-        
-    json jNui = EditableNuiWindow(sWindow, "XP Bar", jRoot, "", jGeometry, 0, 0, 0, JsonBool(1), JsonBool(0)); 
-    //json jNui = NuiWindow(jRoot, JsonBool(FALSE), jGeometry, JsonBool(0), JsonBool(0), JsonBool(0), JsonBool(0), JsonBool(0)); 
-    
+
+    json jNui = EditableNuiWindow(sWindow, "XP Bar", jRoot, "", jGeometry, 0, 0, 0, JsonBool(1), JsonBool(0));
+    //json jNui = NuiWindow(jRoot, JsonBool(FALSE), jGeometry, JsonBool(0), JsonBool(0), JsonBool(0), JsonBool(0), JsonBool(0));
+
     int nToken = NuiCreate(oPC, jNui, sWindow);
     // This thing wants to be much too small for this crude stuff
     SetIsInterfaceConfigurable(oPC, nToken, 0, 0);
     LoadNuiConfigBinds(oPC, nToken);
-    
-    
+
+
     // The event script can calculate all the drawlist coordinates...
     SetScriptParam("init", "init");
     SetScriptParam("pc", ObjectToString(oPC));
@@ -532,6 +532,16 @@ void UpdateXPBarUI(object oPC)
 
 void GiveDialogueSkillXP(object oPC, int nDC, int nSkill)
 {
+// OBJECT_SELF is probably going to be NPC speaker in most circumstances
+    string sIdentifier = "dlg_"+IntToString(nSkill)+"_xp_"+GetName(oPC) + GetPCPublicCDKey(oPC);
+
+    // this cannot be awarded again until reset
+    if (GetLocalInt(OBJECT_SELF, sIdentifier) == 1) return;
+
+
+    SetLocalInt(OBJECT_SELF, sIdentifier, 1);
+    DelayCommand(1800.0, DeleteLocalInt(OBJECT_SELF, sIdentifier)); // reset in 30 minutes
+
     float fXP = IntToFloat(nDC) / 2.5;
 
     if (fXP > 16.0) fXP = 16.0;
@@ -544,7 +554,7 @@ void GiveDialogueSkillXP(object oPC, int nDC, int nSkill)
         case SKILL_BLUFF: sSkill = "Intimidation"; break;
         case SKILL_INTIMIDATE: sSkill = "Bluffing"; break;
     }
-    
+
     GiveXPToPC(oPC, fXP, FALSE, sSkill);
 }
 

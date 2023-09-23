@@ -18,8 +18,8 @@ void GiveSkillXP(object oTarget, object oPC, string sSkill)
     SetLocalInt(oTarget, sIdentifier, 1);
     DelayCommand(1800.0, DeleteLocalInt(oTarget, sIdentifier)); // reset in 30 minutes
 
-    // we use party data to award XP. That means to maximize XP value, you must be solo or far away enough from people. 
-    // Does that seem odd? Yes. But this is the way to make sure that the correct XP is accounted for if they kill the creature with a party 
+    // we use party data to award XP. That means to maximize XP value, you must be solo or far away enough from people.
+    // Does that seem odd? Yes. But this is the way to make sure that the correct XP is accounted for if they kill the creature with a party
     // (players can get more potential XP if they use a skill in a party versus killing them without any successful skill uses)
     // another way to think about it, pickpocketing NPCs or using animal empathy with a party is less risky because you have a party to back you up in case shit hits the fan and they aggro
 
@@ -86,28 +86,4 @@ void main()
             GiveSkillXP(oTarget, OBJECT_SELF, "Animal Empathy");
         }
     }
-    /* this doesnt seem to work :(
-    else if (StringToInt(NWNX_Events_GetEventData("SKILL_ID")) == SKILL_OPEN_LOCK)
-    {
-        object oTarget = StringToObject(NWNX_Events_GetEventData("TARGET_OBJECT_ID"));
-
-        if (GetIsPC(OBJECT_SELF) && StringToInt(NWNX_Events_GetEventData("ACTION_RESULT"))) //&& !GetLocked(oTarget))
-        {
-            float fXP = IntToFloat(GetLockUnlockDC(oTarget));
-
-            if (fXP > 0.0)
-            {
-                fXP = fXP/4.0;
-            }
-            else
-            {
-                return;
-            }
-
-            if (fXP > 12.0) fXP = 12.0;
-            
-            GiveXPToPC(OBJECT_SELF, fXP, FALSE, "Lockpicking");
-        }
-    }
-    */
 }
