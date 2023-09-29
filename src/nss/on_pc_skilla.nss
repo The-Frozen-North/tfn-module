@@ -49,29 +49,7 @@ void GiveSkillXP(object oTarget, object oPC, string sSkill)
 
 void main()
 {
-    if (StringToInt(NWNX_Events_GetEventData("SKILL_ID")) == SKILL_PICK_POCKET)
-    {
-        AssignCommand(OBJECT_SELF, ActionPlayAnimation(ANIMATION_FIREFORGET_STEAL));
-        if (GetIsPC(OBJECT_SELF))
-        {
-            if (StringToInt(NWNX_Events_GetEventData("ACTION_RESULT")))
-            {
-                IncrementPlayerStatistic(OBJECT_SELF, "pickpockets_succeeded");
-
-                object oTarget = StringToObject(NWNX_Events_GetEventData("TARGET_OBJECT_ID"));
-                if (GetLocalInt(oTarget, "pickpocket_xp") == 1)
-                {
-                    GiveSkillXP(oTarget, OBJECT_SELF, "Pickpocketing");
-                    DeleteLocalInt(oTarget, "pickpocket_xp");
-                }
-            }
-            else
-            {
-                IncrementPlayerStatistic(OBJECT_SELF, "pickpockets_failed");
-            }
-        }
-    }
-    else if (StringToInt(NWNX_Events_GetEventData("SKILL_ID")) == SKILL_ANIMAL_EMPATHY)
+    if (StringToInt(NWNX_Events_GetEventData("SKILL_ID")) == SKILL_ANIMAL_EMPATHY)
     {
         object oTarget = StringToObject(NWNX_Events_GetEventData("TARGET_OBJECT_ID"));
 
@@ -80,10 +58,11 @@ void main()
         object oMaster = GetLocalObject(oTarget, "master");
 
         SetIsTemporaryEnemy(OBJECT_SELF, oMaster);
-
+        /*
         if (GetIsPC(OBJECT_SELF) && StringToInt(NWNX_Events_GetEventData("ACTION_RESULT")))
         {
             GiveSkillXP(oTarget, OBJECT_SELF, "Animal Empathy");
         }
+        */
     }
 }

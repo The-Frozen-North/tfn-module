@@ -35,6 +35,7 @@ void GeneratePickpocketItem(string sType = "")
     SetDroppableFlag(oItem, FALSE);
     SetPickpocketableFlag(oItem, TRUE);
     SetLocalInt(OBJECT_SELF, "pickpocket_xp", 1);
+    SetLocalInt(oItem, "pickpocket_xp", 1);
 }
 
 //const int GS_TIMEOUT = 7200; //2 hours

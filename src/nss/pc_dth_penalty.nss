@@ -28,7 +28,7 @@ void main()
             DeleteLocalInt(oHenchman, "times_died");
             DeleteLocalInt(oHenchman, "PETRIFIED");
             RemoveAllEffects(oHenchman); // is this necessary with ForceRest?
-            ForceRest(oHenchman);  
+            ForceRest(oHenchman);
         }
 
         oHenchman = GetNextFactionMember(oPlayer, FALSE);
@@ -39,7 +39,7 @@ void main()
     if (nXP >= 3000)
     {
         SetXP(oPlayer, GetXPOnRespawn(oPlayer));
-        RemoveStolenItems(oPlayer);
+        //RemoveStolenItems(oPlayer);
         TakeGoldFromCreature(GetGoldLossOnRespawn(oPlayer), oPlayer, TRUE);
         UpdateXPBarUI(oPlayer);
     }

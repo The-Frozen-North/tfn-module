@@ -53,6 +53,50 @@ doing so, do this only if running original event has no longer sense.
 #include "inc_treasure"
 #include "inc_quest"
 #include "nwnx_feedback"
+#include "inc_party"
+
+void GiveCreatureSkillXP(object oTarget, object oPC, string sSkill)
+{
+    if (GetIsDead(oTarget)) return;
+    if (GetIsPC(oTarget)) return;
+
+    string sIdentifier = "skill_xp_"+GetName(oPC) + GetPCPublicCDKey(oPC);
+
+    // this cannot be awarded again until reset
+    if (GetLocalInt(oTarget, sIdentifier) == 1) return;
+
+
+    SetLocalInt(oTarget, sIdentifier, 1);
+    DelayCommand(1800.0, DeleteLocalInt(oTarget, sIdentifier)); // reset in 30 minutes
+
+    // we use party data to award XP. That means to maximize XP value, you must be solo or far away enough from people.
+    // Does that seem odd? Yes. But this is the way to make sure that the correct XP is accounted for if they kill the creature with a party
+    // (players can get more potential XP if they use a skill in a party versus killing them without any successful skill uses)
+    // another way to think about it, pickpocketing NPCs or using animal empathy with a party is less risky because you have a party to back you up in case shit hits the fan and they aggro
+
+    int bAmbush = FALSE;
+    if (GetLocalInt(oTarget, "ambush") == 1)
+    {
+        bAmbush = TRUE;
+    }
+
+    int bBoss = GetLocalInt(oTarget, "boss");
+    int bSemiBoss = GetLocalInt(oTarget, "semiboss");
+    int bRare = GetLocalInt(oTarget, "rare");
+    float fMultiplier = 1.0;
+    if (bBoss == 1)
+    {
+        fMultiplier = 3.0;
+    }
+    else if (bSemiBoss == 1 || bRare == 1)
+    {
+        fMultiplier = 2.0;
+    }
+
+    float fXP = GetPartyXPValue(oTarget, bAmbush, Party.AverageLevel, Party.TotalSize, fMultiplier) * SKILL_XP_PERCENTAGE;
+
+    GiveXPToPC(oPC, fXP, FALSE, sSkill);
+}
 
 void main()
 {
@@ -91,6 +135,21 @@ void main()
         AddKeyToPlayer(oPC, oItem);
     }
 
+    // TODO: Count gold for XP
+    if (!GetIsPC(oOwner) && GetIsObjectValid(oOwner) && GetObjectType(oOwner) == OBJECT_TYPE_CREATURE && !GetIsDead(oOwner) && GetLocalInt(oItem, "pickpocket_xp") == 1)
+    {
+        IncrementPlayerStatistic(oPC, "pickpockets_succeeded");
+
+        if (GetLocalInt(oOwner, "pickpocket_xp") == 1)
+        {
+            GiveCreatureSkillXP(oOwner, oPC, "Pickpocketing");
+        }
+
+        // we no longer track pickpockets that fail, not sure if that is possible
+    }
+
+    DeleteLocalInt(oItem, "pickpocket_xp");
+
     // cleaner solution is to do it on nwnx before action events, unfortunately it doesnt fire when taking items from containers, only NWNX_ON_INVENTORY_REMOVE_ITEM_BEFORE does
     // which doesn't have an object for the item remover
     if (GetTag(oItem) == "quest")
@@ -100,7 +159,7 @@ void main()
         NWNX_Feedback_SetFeedbackMessageHidden(NWNX_FEEDBACK_ITEM_LOST, TRUE, oPC);
         return;
     }
-    
+
     // Item containers should retroactively be given unique power self only for renaming
     if (nBaseItemType == BASE_ITEM_LARGEBOX)
     {
