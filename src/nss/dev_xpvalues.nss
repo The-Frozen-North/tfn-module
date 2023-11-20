@@ -7,6 +7,8 @@
 
 void RunOnArea(object oArea)
 {
+    ExecuteScript("area_cleanup", oArea);
+    ExecuteScript("area_refresh", oArea);
     int nOldInstructionLimit = NWNX_Util_GetInstructionLimit();
     NWNX_Util_SetInstructionLimit(52428888);
     
@@ -49,7 +51,7 @@ void RunOnArea(object oArea)
         sLogEntry += "," + FloatToString(fThis, 8, 2);
     }
     
-    WriteTimestampedLogEntry(sLogEntry);
+    DelayCommand(60.0f, WriteTimestampedLogEntry(sLogEntry));
     
     NWNX_Util_SetInstructionLimit(nOldInstructionLimit);
 }
@@ -71,8 +73,8 @@ void main()
     SendMessageToAllDMs(GetName(oDev) + " is running dev_xpvalues");
     SendDiscordLogMessage(GetName(oDev) + " is running dev_xpvalues");
     
-    WriteTimestampedLogEntry("========================================");
-    WriteTimestampedLogEntry("areatag,areacr,2,3,4,5,6,7,8,9,10,11,12");
+    DelayCommand(60.0f, WriteTimestampedLogEntry("========================================"));
+    DelayCommand(60.0f, WriteTimestampedLogEntry("areatag,areacr,2,3,4,5,6,7,8,9,10,11,12"));
 
 	int nAreaIndex = 0;
 	float fDelay = 0.1*nAreaIndex;

@@ -169,13 +169,13 @@ void PrepareAreaTransitionDB()
     int nHash = NWNX_Util_Hash(JsonDump(jDist));
     
     int nSavedHash = 0;
+    // This will throw an error if the db doesn't exist. But the db should in theory always exist
+    // unless we change how we handle seeded dbs
     sqlquery sql = SqlPrepareQueryCampaign("areadistances", "SELECT hash from areadistshash;");
     if (SqlStep(sql))
     {
         nSavedHash = SqlGetInt(sql, 0);
     }
-    
-    if (_ShouldAbortAreaDistOnError(SqlGetError(sql))) return;
     
     //if (0)
     if (nSavedHash == nHash)
