@@ -29,7 +29,7 @@ influxdb:
     - '8089:8089/udp'
     volumes:
     - influxdb:/var/lib/influxdb
-  grafana:
+grafana:
     hostname: grafana
     image: grafana/grafana:6.0.1
     restart: unless-stopped
