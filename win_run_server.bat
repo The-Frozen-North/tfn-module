@@ -66,5 +66,5 @@ copy server\env\env_dm.2da server\override\env_dm.2da
 del /f TFN.mod
 
 cd server
-docker-compose down 
-docker-compose up --no-recreate -d
+docker-compose -f docker-compose.yml down 
+docker-compose -f docker-compose.yml up --no-recreate -d

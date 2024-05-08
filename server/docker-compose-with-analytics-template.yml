@@ -1,0 +1,46 @@
+# Copy this file and rename it to docker-compose.yml or you won't be able to start the server!
+# Note: Don't make changes to this file because it's version controlled
+
+version: "3.3"
+
+services:
+  tfn-server:
+    image: nwnxee/unified:b419e42
+    tty: true
+    stdin_open: true
+    env_file: ${PWD-.}/config/common.env
+    environment:
+    - NWN_PUBLICSERVER=1
+    - NWN_SERVERNAME="The Frozen North 2: Electric Boogaloo"
+    - NWN_PORT=5134
+    - NWNX_SERVERLOGREDIRECTOR_LOG_LEVEL=6
+    ports:
+    - '5134:5134/udp'
+    volumes:
+    - ${PWD-.}/logs:/nwn/run/logs.0
+    - ${PWD-.}/:/nwn/home
+influxdb:
+    hostname: influxdb
+    image: influxdb:1.7
+    restart: unless-stopped
+    env_file: ${PWD-.}/config/influxdb.env
+    ports:
+    - '8086:8086/tcp'
+    - '8089:8089/udp'
+    volumes:
+    - influxdb:/var/lib/influxdb
+grafana:
+    hostname: grafana
+    image: grafana/grafana:6.0.1
+    restart: unless-stopped
+    depends_on:
+    - influxdb
+    env_file: ${PWD-.}/config/grafana.env
+    ports:
+    - '3000:3000/tcp'
+    volumes:
+    - ./grafana-provisioning:/etc/grafana/provisioning
+    - grafana:/var/lib/grafana
+volumes:
+    influxdb:
+    grafana:

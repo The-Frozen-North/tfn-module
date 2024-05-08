@@ -14,33 +14,10 @@ services:
     - NWN_SERVERNAME="The Frozen North 2: Electric Boogaloo"
     - NWN_PORT=5134
     - NWNX_SERVERLOGREDIRECTOR_LOG_LEVEL=6
+    - NWNX_PROFILER_SKIP=y
+    - NWNX_METRICS_INFLUXDB_SKIP=y
     ports:
     - '5134:5134/udp'
     volumes:
     - ${PWD-.}/logs:/nwn/run/logs.0
     - ${PWD-.}/:/nwn/home
-influxdb:
-    hostname: influxdb
-    image: influxdb:1.7
-    restart: unless-stopped
-    env_file: ${PWD-.}/config/influxdb.env
-    ports:
-    - '8086:8086/tcp'
-    - '8089:8089/udp'
-    volumes:
-    - influxdb:/var/lib/influxdb
-grafana:
-    hostname: grafana
-    image: grafana/grafana:6.0.1
-    restart: unless-stopped
-    depends_on:
-    - influxdb
-    env_file: ${PWD-.}/config/grafana.env
-    ports:
-    - '3000:3000/tcp'
-    volumes:
-    - ./grafana-provisioning:/etc/grafana/provisioning
-    - grafana:/var/lib/grafana
-volumes:
-  influxdb:
-  grafana:
