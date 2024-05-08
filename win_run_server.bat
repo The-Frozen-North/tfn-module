@@ -46,6 +46,9 @@ del /f server\database\tmapsolutions.sqlite3
 del /f server\database\areadistances.sqlite3
 del /f server\settings.tml
 rmdir /s /q  server\override
+md server\modules
+md server\database
+md server\config
 copy modules\TFN.mod server\modules\TFN.mod
 copy config\common.env server\config\common.env
 copy settings.tml server\settings.tml
