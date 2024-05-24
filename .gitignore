@@ -1,89 +1,19 @@
-# Ignore everything
-*
+# Ignore build folder
+.build/
+.build/*
 
-!.gitignore
-!.gitattributes
-!database/.keep
-
-# Whitelist devserver files
-!docker-compose-dev.yml
-!docker-compose-dev-seed.yml
-!config/common.env
-!config/nwserver_dev.env
-!config/nwserver_dev_seed.env
-!settings.tml
-!tools/
-!tools/**
-!templates/
-!templates/**
-!grafana-provisioning/
-!grafana-provisioning/**
-!config/common-dev.env
 # Don't add real passwords to git
 config/influxdb.env
 config/grafana.env
 grafana-provisioning/datasources/nwn.yml
-# Only the file templates
-!config/influxdb-template.env
-!config/grafana-template.env
-!grafana-provisioning/datasources/nwn.yml.template
-
-!mod_desc.txt
-
-# Whitelist github and spec folder
-!.github
-!.github/**
-!spec
-!spec/**
-!spec_output/src/nss/.keep
-
-# Gemfiles
-!Gemfile
-!Gemfile.lock
-
-# Whitelist dummy movie file
-!movies/prelude.wbm
 
 # This file should be ignored always
 settings.tml
 server/settings.tml
 
-# Whitelist the override folder but make sure these 2das never get committed
-!override/
-!override/**
-override/env.2da
-override/env_dm.2da
-
-# Whitelist nwn base scripts folder
-!nwn-base-scripts/
-!nwn-base-scripts/**
-
-# Keep this folder so install doesn't break
-!install/.keep
-
-# Whitelist sources and nasher files
-!nasher.cfg
-!src/
-!src/**
-!presets/
-!presets/**
-
-# Only keep server template file
-!server/docker-compose-template.yml
-!server/docker-compose-with-analytics-template.yml
-
-# Whitelist batch and readme files
-!*.bat
-!*.sh
-!*.md
-
 # Never commit these file types
 *.mod
 *.ncs
 *.csv
-
-# Whitelist database files
-!seeded_database
-!seeded_database/**
 
 
