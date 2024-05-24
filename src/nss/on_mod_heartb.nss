@@ -37,12 +37,12 @@ void RewardStealthXP(object oPC)
     while(GetIsObjectValid(oTarget))
     {
         string sIdentifier = "stealth_xp_"+GetName(oPC) + GetPCPublicCDKey(oPC);
-        if (!GetIsPC(oTarget) && 
-            !GetIsDead(oTarget) && 
-            GetIsEnemy(oPC, oTarget) && 
-            !GetObjectSeen(oPC, oTarget) && 
-            !GetObjectHeard(oPC, oTarget) && 
-            GetLocalInt(oTarget, sIdentifier) != 1 && 
+        if (!GetIsPC(oTarget) &&
+            !GetIsDead(oTarget) &&
+            GetIsEnemy(oPC, oTarget) &&
+            !GetObjectSeen(oPC, oTarget) &&
+            !GetObjectHeard(oPC, oTarget) &&
+            GetLocalInt(oTarget, sIdentifier) != 1 &&
             !GetHasEffect(EFFECT_TYPE_BLINDNESS, oTarget) && //check these as well, kinda cheaty if the NPC has these effects
             !GetHasEffect(EFFECT_TYPE_DARKNESS, oTarget))
         {
@@ -75,7 +75,7 @@ void RewardStealthXP(object oPC)
 
             GiveXPToPC(oPC, fXP, FALSE, "Stealth");
         }
-        
+
         oTarget = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation, TRUE, OBJECT_TYPE_CREATURE);
     }
 }
@@ -119,7 +119,7 @@ void DoRevive(object oDead)
 
             if (nTimesRevived >= 3)
             {
-                sReviveMessage = " can no longer be revived without raise dead*";
+                sReviveMessage = " can no longer be revived without a raise dead spell";
             }
             else if (nTimesRevived == 2)
             {
@@ -256,9 +256,16 @@ void DoRevive(object oDead)
                             NWNX_Player_FloatingTextStringOnCreature(oFactionPC, oDead, "*"+GetName(oDead)+" was revived by "+GetName(oLastFriend)+".*");
 
                         if (sReviveMessage != "")
+                        {
                             DelayCommand(3.0, NWNX_Player_FloatingTextStringOnCreature(oFactionPC, oDead, "*"+GetName(oDead)+sReviveMessage));
+                        }
 
                         oFactionPC = GetNextFactionMember(oDead);
+                    }
+
+                    if (GetIsPC(oDead))
+                    {
+                        DelayCommand(6.0, FloatingTextStringOnCreature("*You feel weaker. Healing at a temple will remove this penalty and reset the amount of times you can be revived*", oDead, FALSE));
                     }
                 }
                 WriteTimestampedLogEntry(GetName(oDead)+" was revived by friendly "+GetName(oLastFriend)+".");
@@ -310,7 +317,7 @@ void main()
         IncrementPlayerStatistic(oPC, "time_played", 6);
 
         int nTickCount = GetTickRate();
-        if (nTickCount <= 50) 
+        if (nTickCount <= 50)
         {
             SendMessageToPC(oPC, "Low tick count detected: "+IntToString(nTickCount));
             SendDebugMessage("Low tick count detected: "+IntToString(nTickCount), TRUE);
@@ -403,7 +410,7 @@ void main()
             SetLocalInt(oModule, "yesgar_count", nYesgarCount + 1);
         }
     }
-    
+
     // Writes one PC's updated stats database to disk
     UpdateOldestCachedCdkeyDB();
 }

@@ -63,6 +63,8 @@ void DoRestoreEffect(object oCreature, object oCaster)
     {
         SQLocalsPlayer_DeleteInt(oCreature, "times_died");
         SQLocalsPlayer_DeleteInt(oCreature, "PETRIFIED");
+
+        FloatingTextStringOnCreature("*Death penalties cured and revives reset.*", oCreature, FALSE);
     }
     else
     {
