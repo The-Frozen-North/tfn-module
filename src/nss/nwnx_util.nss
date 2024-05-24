@@ -62,6 +62,10 @@ int NWNX_Util_Hash(string str);
 /// @return The mtime of the module file.
 int NWNX_Util_GetModuleMtime();
 
+/// @brief Gets the module short file name.
+/// @return The module file as a string.
+string NWNX_Util_GetModuleFile();
+
 /// @brief Gets the value of customTokenNumber.
 /// @param customTokenNumber The token number to query.
 /// @return The string representation of the token value.
@@ -244,6 +248,21 @@ void NWNX_Util_SetCurrentlyRunningEvent(int nEventID);
 /// @return The number of characters different between the compared strings.
 int NWNX_Util_GetStringLevenshteinDistance(string sString, string sCompareTo);
 
+/// @brief Sends a full object update of oObjectToUpdate to all clients
+/// @param oObjectToUpdate The object to update
+/// @param oPlayer The player for which the objects needs to update, OBJECT_INVALID for all players
+void NWNX_Util_UpdateClientObject(object oObjectToUpdate, object oPlayer = OBJECT_INVALID);
+
+/// @brief Clean a resource directory, deleting all files of nResType.
+/// @param sAlias A resource directory alias, NWNX or one defined in the custom resource directory file.
+/// @param nResType The type of file to delete or 0xFFFF for all types.
+/// @return TRUE if successful, FALSE on error.
+int NWNX_Util_CleanResourceDirectory(string sAlias, int nResType = 0xFFFF);
+
+/// @brief Return the filename of the tlk file.
+/// @return The name
+string NWNX_Util_GetModuleTlkFile();
+
 /// @}
 
 string NWNX_Util_GetCurrentScriptName(int depth = 0)
@@ -273,6 +292,12 @@ int NWNX_Util_GetModuleMtime()
 {
     NWNX_CallFunction(NWNX_Util, "GetModuleMtime");
     return NWNX_GetReturnValueInt();
+}
+
+string NWNX_Util_GetModuleFile()
+{
+    NWNX_CallFunction(NWNX_Util, "GetModuleFile");
+    return NWNX_GetReturnValueString();
 }
 
 string NWNX_Util_GetCustomToken(int customTokenNumber)
@@ -606,4 +631,29 @@ int NWNX_Util_GetStringLevenshteinDistance(string sString, string sCompareTo)
     NWNX_PushArgumentString(sString);
     NWNX_CallFunction(NWNX_Util, sFunc);
     return NWNX_GetReturnValueInt();
+}
+
+void NWNX_Util_UpdateClientObject(object oObjectToUpdate, object oPlayer = OBJECT_INVALID)
+{
+    string sFunc = "UpdateClientObject";
+
+    NWNX_PushArgumentObject(oPlayer);
+    NWNX_PushArgumentObject(oObjectToUpdate);
+    NWNX_CallFunction(NWNX_Util, sFunc);
+}
+
+int NWNX_Util_CleanResourceDirectory(string sAlias, int nResType = 0xFFFF)
+{
+    string sFunc = "CleanResourceDirectory";
+    NWNX_PushArgumentInt(nResType);
+    NWNX_PushArgumentString(sAlias);
+    NWNX_CallFunction(NWNX_Util, sFunc);
+    return NWNX_GetReturnValueInt();
+}
+
+string NWNX_Util_GetModuleTlkFile()
+{
+    string sFunc = "GetModuleTlkFile";
+    NWNX_CallFunction(NWNX_Util, sFunc);
+    return NWNX_GetReturnValueString();
 }
