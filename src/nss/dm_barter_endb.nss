@@ -1,5 +1,5 @@
 #include "nwnx_events"
-#include "inc_nwnx"
+#include "inc_general"
 
 void main()
 {

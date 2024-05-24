@@ -21,7 +21,6 @@ const string BUG_REPORT_COLOR = "#ffa500";
 
 #include "nwnx_player"
 #include "nwnx_webhook_rch"
-#include "inc_nwnx"
 #include "inc_debug"
 #include "inc_xp"
 #include "inc_follower"

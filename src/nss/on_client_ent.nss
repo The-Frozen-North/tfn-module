@@ -4,7 +4,6 @@
 #include "inc_webhook"
 #include "nwnx_damage"
 #include "nwnx_item"
-#include "inc_nwnx"
 #include "inc_general"
 #include "inc_sqlite_time"
 #include "inc_mappin"
@@ -76,7 +75,6 @@ void main()
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_BLOCKED_BY_DOOR, "on_pc_blocked");
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED, "on_pc_spellcast");
     SetEventScript(oPC, EVENT_SCRIPT_CREATURE_ON_SPELLCASTAT, "on_pc_attacked");
-    GiveHiPSFeatSafely(oPC);
 
 // these items are deprecated
     DestroyObject(GetItemPossessedBy(oPC, "_pc_handbook"));
@@ -160,7 +158,7 @@ void main()
         DestroyObject(GetItemPossessedBy(oPC, "_dev_tool"));
     }
 
-    
+
     DelayCommand(4.0, CreateItemIfBlank(oPC, "_pc_menu_toggler"));
     DelayCommand(5.0, FloatingTextStringOnCreature("Welcome to The Frozen North!", oPC, FALSE));
     DelayCommand(6.0, FloatingTextStringOnCreature("Please read the \"Information\" tab on the player menu for rules and information.", oPC, FALSE));
@@ -171,7 +169,7 @@ void main()
         sRespawn = GetRespawnLocationName(oPC);
         DelayCommand(9.0, FloatingTextStringOnCreature("You have chosen to respawn in " + sRespawn + ".", oPC, FALSE));
     }
-    
+
     ShowOrHideXPBarUI(oPC);
     UpdatePCOwnedItemProperties(oPC);
 }

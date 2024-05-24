@@ -124,7 +124,7 @@ void InitialiseAreas()
 
        oArea = GetNextArea();
    }
-    
+
 }
 
 void SeedMonitor()
@@ -416,7 +416,6 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_USE_SKILL_AFTER", "on_pc_skilla");
 
     NWNX_Events_SubscribeEvent("NWNX_ON_STEALTH_ENTER_BEFORE", "on_pc_stealth");
-    NWNX_Events_SubscribeEvent("NWNX_ON_STEALTH_ENTER_AFTER", "on_pc_stealtha");
 
     NWNX_Events_SubscribeEvent("NWNX_ON_TRAP_RECOVER_BEFORE", "on_pc_trap");
     NWNX_Events_SubscribeEvent("NWNX_ON_TRAP_FLAG_BEFORE", "on_pc_trap");
@@ -491,12 +490,10 @@ void main()
 
     NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_DROP_ITEM_BEFORE", "on_item_dropb");
 
-    NWNX_Events_SubscribeEvent("NWNX_ON_INPUT_WALK_TO_WAYPOINT_BEFORE", "stealth_move_fix");
-    
     NWNX_Events_SubscribeEvent("NWNX_ON_CALENDAR_DUSK", "on_calendar_dusk");
-    
+
     NWNX_Events_SubscribeEvent("NWNX_ON_INVENTORY_ADD_GOLD_AFTER", "on_inv_addgolda");
-    
+
     NWNX_Damage_SetDamageEventScript("on_damage");
     NWNX_Damage_SetAttackEventScript("on_attack");
 
@@ -751,14 +748,14 @@ void main()
    BuildItemNamesToObjectsDB();
    SetLocalInt(GetModule(), "treasure_ready", 1);
    CalculatePlaceableLootValues();
-   
+
 
    LoadAllPrettifyPlaceables();
 
 // Loop through all objects in the module.
    InitialiseAreas();
    EnsureAreaBilateralLinkages();
-   
+
    // Add quests that don't have variables set on any creature here
    // The above only scours the module for quests on creatures, some quests are purely scripted
    // and without being put in the quests list they aren't loaded into PC journals on join
@@ -793,7 +790,7 @@ void main()
         SetLocalInt(oStore, MERCHANT_STORE_LAST_RESTOCKED_AT, nNow);
         ExecuteScript(""+GetTag(oStore), oStore);
     }
-    
+
     SendDebugMessage("Merchants created", TRUE);
 
     SpawnPCBloodstains();
@@ -803,7 +800,7 @@ void main()
     CreateHouseTemplatesInAllCardinalDirections();
 
     // as we do assign commands and other things when creating the templates, we should delay house seeding in case things screw up
-    DelayCommand(5.0, InitializeAllHouses());  
+    DelayCommand(5.0, InitializeAllHouses());
 
 // set Yesgar to spawn 1 minute after module starts
     SetLocalInt(OBJECT_SELF, "yesgar_count", 190);
@@ -821,5 +818,5 @@ void main()
         SetLocalInt(GetModule(), "treasure_ready", 1);
    }
 
-   ExecuteScript("tlk_overrides");   
+   ExecuteScript("tlk_overrides");
 }

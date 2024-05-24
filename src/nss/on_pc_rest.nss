@@ -1,7 +1,6 @@
 #include "inc_persist"
 #include "inc_general"
 #include "inc_horse"
-#include "inc_nwnx"
 #include "inc_henchman"
 #include "inc_follower"
 #include "util_i_csvlists"
@@ -356,7 +355,6 @@ void main()
             //DeleteLocalInt(oPC, "invis");
             DeleteLocalInt(oPC, "gsanc");
             DeleteLocalInt(oPC, "healers_kit_cd");
-            GiveHiPSFeatSafely(oPC);
 
             while ( oItem != OBJECT_INVALID ) {
                 IPRemoveAllItemProperties(oItem,DURATION_TYPE_TEMPORARY);

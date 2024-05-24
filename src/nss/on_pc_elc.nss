@@ -1,5 +1,5 @@
 #include "nwnx_elc"
-#include "inc_nwnx"
+#include "inc_general"
 
 void main()
 {

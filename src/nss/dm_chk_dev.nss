@@ -1,7 +1,6 @@
 #include "inc_debug"
 #include "nwnx_events"
 #include "nwnx_regex"
-#include "inc_nwnx"
 #include "x3_inc_string"
 
 void main()
@@ -40,9 +39,9 @@ void main()
             sChunk = StringReplace(sChunk, "\n", "\\n");
             sChunk = StringReplace(sChunk, "\"", "\\\"");
             sChunk = "```c\\n" + sChunk + "\\n```";
-            
+
             WriteTimestampedLogEntry(sChunk);
-            
+
             SendDiscordLogMessage(GetName(OBJECT_SELF) + " ran script chunk on " + GetName(oTarget) + ":");
             SendDiscordLogMessage(sChunk);
             //SendDiscordLogMessage(sChunk);

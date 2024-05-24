@@ -1,7 +1,6 @@
 #include "inc_quest"
 #include "inc_treasure"
 #include "inc_henchman"
-#include "inc_nwnx"
 #include "inc_key"
 #include "inc_party"
 
@@ -708,7 +707,7 @@ void main()
            jAssignments = _AddItemToPartyMemberAssignments(jAssignments, oMap, nAssignIndex);
        }
    }
-   
+
    int bContainsQuestItem = 0;
 
 // =========================
@@ -761,7 +760,7 @@ void main()
 
           GiveXPToPC(oPC, fXPAfterReductions);
           AdvanceQuest(OBJECT_SELF, oPC, GetLocalInt(OBJECT_SELF, "quest_kill"));
-          
+
           if (oKiller == oPC)
           {
               // Number of personal kills is in ai_ondeath already
@@ -886,7 +885,7 @@ void main()
           }
        }
    }
-   
+
    // Scale the loot bag, but only if it's really a loot bag
    if (GetResRef(oContainer) == "_loot_container")
    {

@@ -1,6 +1,5 @@
 #include "nwnx_events"
 #include "inc_debug"
-#include "inc_nwnx"
 
 void main()
 {
