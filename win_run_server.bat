@@ -32,7 +32,7 @@ set content=
 for /f "delims=" %%x in ('type mod_desc.txt') do set "content=!content!%%x!LF!"
 set "content=!content!Last Updated: %timestamp% (%hash%)"
 
-"%CD%/tools/win/nasher/nasher.exe" install  --clean --verbose --erfUtil:"%CD%/tools/win/neverwinter64/nwn_erf.exe" --gffUtil:"%CD%/tools/win/neverwinter64/nwn_gff.exe" --tlkUtil:"%CD%/tools/win/neverwinter64/nwn_tlk.exe" --nssCompiler:"%CD%/tools/win/nwnsc/nwnsc.exe" --installDir:"%CD%" --nssFlags:"-oe -i %CD%/nwn-base-scripts" --no --modDescription "!content!"
+"%CD%/tools/win/nasher/nasher.exe" install  --clean --verbose --erfUtil:"%CD%/tools/win/neverwinter64/nwn_erf.exe" --gffUtil:"%CD%/tools/win/neverwinter64/nwn_gff.exe" --tlkUtil:"%CD%/tools/win/neverwinter64/nwn_tlk.exe" --nssCompiler:"%CD%/tools/win/nwnsc/nwnsc.exe" --installDir:"%CD%" --nssFlags:"-oe -i ""%CD%/nwn-base-scripts""" --no --modDescription "!content!"
 
 endlocal
 
