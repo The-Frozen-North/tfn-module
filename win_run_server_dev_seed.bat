@@ -5,6 +5,7 @@ del /f database\areadistances.sqlite3
 copy seeded_database\randspellbooks.sqlite3 database\randspellbooks.sqlite3
 copy seeded_database\prettify.sqlite3 database\prettify.sqlite3
 copy seeded_database\areadistances.sqlite3 database\areadistances.sqlite3
+copy seeded_database\tmapsolutions.sqlite3 database\tmapsolutions.sqlite3
 
 
 docker-compose -f docker-compose-dev-seed.yml down
