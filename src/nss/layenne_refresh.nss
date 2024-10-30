@@ -27,6 +27,7 @@ void main()
         oVFX = GetLocalObject(oPed, "VFX2");
         if (GetIsObjectValid(oVFX))
         {
+            SetPlotFlag(oVFX, 0);
             DestroyObject(oVFX);
         }
         DestroyObject(oPed);
