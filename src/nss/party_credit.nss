@@ -604,23 +604,23 @@ void main()
    }
 
 // no items
-   float fLootBagScale = 0.6;
+   float fLootBagScale = 0.9;
 
    if (nItemsRoll <= nChanceThree)
    {
        nNumItems = 3;
-       fLootBagScale = 1.0;
+       fLootBagScale = 1.4;
    }
    // rares always guarantees at least 2 items
    else if (nItemsRoll <= nChanceTwo || (bRare == 1))
    {
        nNumItems = 2;
-       fLootBagScale = 0.9;
+       fLootBagScale = 1.25;
    }
    else if ((nItemsRoll <= nChanceOne) || (bSemiBoss == 1))
    {
        nNumItems = 1;
-       fLootBagScale = 0.8;
+       fLootBagScale = 1.1;
    }
 
     if (ShouldDebugLoot())
