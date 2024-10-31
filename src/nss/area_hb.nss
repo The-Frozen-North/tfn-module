@@ -3,8 +3,8 @@
 
 // Clear the area after this many heartbeats since anyone was in the area
 const int REFRESH_HEARTBEAT_COUNT = 600;
-// Count towards the above is reset to this value if it was higher than and a player was in the area
-const int REFRESH_HEARTBEAT_COUNT_RESET_IF_PLAYERS = 400;
+// If any player is in the area, count backwards instead, but this backwards count cannot go below this value
+const int REFRESH_HEARTBEAT_COUNT_MIN_VALUE_IF_PLAYERS = 400;
 
 void main()
 {
@@ -81,14 +81,20 @@ void main()
 
 // only start counting if the refresh counter is there
     int nRefresh = GetLocalInt(OBJECT_SELF, "refresh");
-    int bCanRefresh = 1;
     
-    // Do not refresh if a linked area isn't ready to refresh yet
-    // Linked areas should all go together!
-    if (nFurthestLinkedAreaOffRefresh > 0 && nFurthestLinkedAreaOffRefresh < REFRESH_HEARTBEAT_COUNT)
+    int nRefreshSpeedMult = GetLocalInt(OBJECT_SELF, "refresh_speed");
+    if (nRefreshSpeedMult < 1)
     {
-        bCanRefresh = 0;
+        if ((FindSubString(GetName(OBJECT_SELF), "Neverwinter") > -1 || FindSubString(GetName(OBJECT_SELF), "Luskan") > -1) && FindSubString(GetName(OBJECT_SELF), "Neverwinter Wood") == -1)
+        {
+            nRefreshSpeedMult = 2;
+        }
+        else
+        {
+            nRefreshSpeedMult = 1;
+        }
     }
+    
     
     if (nRefresh >= REFRESH_HEARTBEAT_COUNT)
     {
@@ -106,6 +112,7 @@ void main()
             SendDebugMessage("cleaning up area "+sResRef, TRUE);
             ExecuteScript("area_cleanup");
             DeleteLocalInt(OBJECT_SELF, "refresh");
+            return;
         }
         else if (bPlayersInInvalidArea)
         {
@@ -114,29 +121,27 @@ void main()
         else if (bPlayersInArea)
         {
             SendDebugMessage("cannot reset area "+sResRef+" because a player is in the area", TRUE);
-            SetLocalInt(OBJECT_SELF, "refresh", REFRESH_HEARTBEAT_COUNT_RESET_IF_PLAYERS);
         }
         else if (bPlayersInLinkedArea)
         {
             SendDebugMessage("cannot reset area "+sResRef+" because a player is in a linked area", TRUE);
-            SetLocalInt(OBJECT_SELF, "refresh", REFRESH_HEARTBEAT_COUNT_RESET_IF_PLAYERS);
         }
     }
     
-    else if (nRefresh > 0)
+    if (nRefresh > 0)
     {
-        int nRefreshSpeedMult = GetLocalInt(OBJECT_SELF, "refresh_speed");
-        if (nRefreshSpeedMult < 1)
+        if (bPlayersInArea)
         {
-            if ((FindSubString(GetName(OBJECT_SELF), "Neverwinter") > -1 || FindSubString(GetName(OBJECT_SELF), "Luskan") > -1) && FindSubString(GetName(OBJECT_SELF), "Neverwinter Wood") == -1)
+            int nReducedRefresh = nRefresh - nRefreshSpeedMult;
+            nReducedRefresh = nReducedRefresh <= 0 ? 1 : nReducedRefresh;
+            if (nReducedRefresh > REFRESH_HEARTBEAT_COUNT_MIN_VALUE_IF_PLAYERS)
             {
-                nRefreshSpeedMult = 2;
-            }
-            else
-            {
-                nRefreshSpeedMult = 1;
+                SetLocalInt(OBJECT_SELF, "refresh", nReducedRefresh);
             }
         }
-        SetLocalInt(OBJECT_SELF, "refresh", nRefresh+nRefreshSpeedMult);
+        else if (nRefresh < REFRESH_HEARTBEAT_COUNT)
+        {
+            SetLocalInt(OBJECT_SELF, "refresh", nRefresh+nRefreshSpeedMult);
+        }
     }
 }
