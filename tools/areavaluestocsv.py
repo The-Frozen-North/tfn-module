@@ -1,6 +1,7 @@
 import re
 
 # Intended for use with: dev_arealootval, dev_allarealoot
+# These scripts at the time of writing ignore consumable items, which is why bosses are dropping "1.6" items per kill (vs 3)
 
 class LootCategoryManager(object):
 	"Splitting the output by object types made this complicated, having something to sort all of these is helpful"
