@@ -98,17 +98,20 @@ int DeprecateItem(object oItem, object oPC)
         return TRUE;
     }    
     
-    if (!IsAmmoInfinite(oItem))
-        return FALSE; // do nothing if it has no properties. even the fabricator has properties
+    if (nBaseItemType == BASE_ITEM_ARROW || nBaseItemType == BASE_ITEM_BOLT || nBaseItemType == BASE_ITEM_BULLET || nBaseItemType == BASE_ITEM_THROWINGAXE || nBaseItemType == BASE_ITEM_SHURIKEN || nBaseItemType == BASE_ITEM_DART)
+    {
+        if (!IsAmmoInfinite(oItem))
+            return FALSE; // do nothing if it has no properties. even the fabricator has properties
 
-    if (GetLocalInt(oItem, "infinite") == 1)
-        return FALSE; // if already deemed infinite, do not do anything to this item
+        if (GetLocalInt(oItem, "infinite") == 1)
+            return FALSE; // if already deemed infinite, do not do anything to this item
+    }
 
     // check if it is a new PC, otherwise this can be exploited by players coming in with custom items and a hacked character
     if (GetXP(oPC) < 1)
         return FALSE;
 
-    if (GetXP(oPC) > 1 && GetTag(oItem) == "ammo_maker")
+    if (GetXP(oPC) > 1 && GetTag(oItem) == "ammo_maker" && nBaseItemType == BASE_ITEM_MISCLARGE)
     {
         SetIdentified(oItem, TRUE);
         // unfortunately we have removed the fabricator chest so this will be very hard to do. we only stored the tag of the item
