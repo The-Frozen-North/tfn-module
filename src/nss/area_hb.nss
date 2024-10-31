@@ -4,7 +4,7 @@
 // Clear the area after this many heartbeats since anyone was in the area
 const int REFRESH_HEARTBEAT_COUNT = 600;
 // If any player is in the area, count backwards instead, but this backwards count cannot go below this value
-const int REFRESH_HEARTBEAT_COUNT_MIN_VALUE_IF_PLAYERS = 400;
+const int REFRESH_HEARTBEAT_COUNT_MIN_VALUE_IF_PLAYERS = 500;
 
 void main()
 {
@@ -137,6 +137,10 @@ void main()
             if (nReducedRefresh > REFRESH_HEARTBEAT_COUNT_MIN_VALUE_IF_PLAYERS)
             {
                 SetLocalInt(OBJECT_SELF, "refresh", nReducedRefresh);
+            }
+            else if (nRefresh < REFRESH_HEARTBEAT_COUNT)
+            {
+                SetLocalInt(OBJECT_SELF, "refresh", nRefresh+nRefreshSpeedMult);
             }
         }
         else if (nRefresh < REFRESH_HEARTBEAT_COUNT)
