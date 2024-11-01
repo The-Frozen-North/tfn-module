@@ -4,12 +4,14 @@
 // which outputs a lot of stuff to the log about how many items you might find and their value
 // Takes a while to run, most likely enough time to go make a warm beverage of your choosing
 
+// NOTE may have issues finding a safe location, may be fixed but untested
+
 // tools/areavaluestocsv.py processes the garbled mess of log output into a csv which is a little more friendly
 
 
 // this script may take a while to run, spot check certain areas only
 // note, the global column won't be that accurate if this is the case
-const int LIMITED_SAMPLE_SIZE = 1;
+const int LIMITED_SAMPLE_SIZE = 0;
 
 void RunOnArea(object oDev, json jAreas, int nState=0)
 {
@@ -38,14 +40,42 @@ void RunOnArea(object oDev, json jAreas, int nState=0)
     // State 4: jump to next area
     if (nState == 0)
     {
-        object oTest = GetFirstObjectInArea(oArea);
-        while (GetIsObjectValid(oTest))
+        int i;
+        object oTest;
+        for (i=0; i<=4; i++)
         {
-            if (!GetIsDead(oTest) && GetIsObjectValid(oTest) && GetObjectType(oTest) == OBJECT_TYPE_CREATURE)
+            object oPreliminary = OBJECT_INVALID;
+            
+            int targetType = OBJECT_TYPE_CREATURE;
+            if (i == 1) targetType = OBJECT_TYPE_DOOR;
+            else if (i == 2) targetType = OBJECT_TYPE_TRIGGER;
+            else if (i == 3) targetType = OBJECT_TYPE_PLACEABLE;
+            else if (i == 4) targetType = OBJECT_TYPE_WAYPOINT;
+            oTest = GetFirstObjectInArea(oArea);
+            while (GetIsObjectValid(oTest))
+            {
+                // Prefer unlocked doors. Lacking this logic fails on goblin village - cave
+                if (GetIsObjectValid(oTest) && GetObjectType(oTest) == targetType)
+                {
+                    if (targetType == OBJECT_TYPE_DOOR && GetLocked(oTest) && !GetIsObjectValid(oPreliminary))
+                    {
+                        oPreliminary = oTest;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                oTest = GetNextObjectInArea(oArea);
+            }
+            if (!GetIsObjectValid(oTest) && GetIsObjectValid(oPreliminary))
+            {
+                oTest = oPreliminary;
+            }
+            if (GetIsObjectValid(oTest))
             {
                 break;
             }
-            oTest = GetNextObjectInArea(oArea);
         }
         if (GetIsObjectValid(oTest))
         {
@@ -56,6 +86,7 @@ void RunOnArea(object oDev, json jAreas, int nState=0)
         }
         else
         {
+            WriteTimestampedLogEntry("WARNING: No valid object to jump to in: " + GetName(oArea));
             nState = 4;
         }
     }
@@ -107,6 +138,7 @@ void main()
     SendMessageToAllDMs(GetName(oDev) + " is running dev_allarealoot");
 
     json jAreas = JsonArray();
+    json jAreaNames = JsonArray();
     object oArea = GetFirstArea();
     while (GetIsObjectValid(oArea))
     {
@@ -158,6 +190,7 @@ void main()
             if (bAddArea)
             {
                 jAreas = JsonArrayInsert(jAreas, JsonString(ObjectToString(oArea)));
+                jAreaNames = JsonArrayInsert(jAreaNames, JsonString(GetName(oArea)));
             }
         }
         oArea = GetNextArea();
@@ -167,6 +200,7 @@ void main()
     {
         jAreas = jSaved;
     }
+    WriteTimestampedLogEntry("Target area list: " + JsonDump(jAreaNames));
     RunOnArea(oDev, jAreas, 0);
 
 }

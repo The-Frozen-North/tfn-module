@@ -81,6 +81,7 @@ void ProcessConfigChange(object oPC, string sElement, int nToken, string sParent
             jGeom = JsonObjectSet(jGeom, sDirection, JsonFloat(IntToFloat(nValue)));
         }
         NuiSetBind(oPC, nParentToken, "_geometry", jGeom);
+        SetCdkeyJson(oPC, "nuiconfig", "nui_geom_" + sParentWindowName, jGeom);
     }
     //WriteTimestampedLogEntry("Saved config " + sConfigName + " -> " + JsonDump(jValue));
 }

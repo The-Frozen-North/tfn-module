@@ -551,8 +551,8 @@ void GiveDialogueSkillXP(object oPC, int nDC, int nSkill)
     switch (nSkill)
     {
         case SKILL_PERSUADE: sSkill = "Persuasion"; break;
-        case SKILL_BLUFF: sSkill = "Intimidation"; break;
-        case SKILL_INTIMIDATE: sSkill = "Bluffing"; break;
+        case SKILL_BLUFF: sSkill = "Bluffing"; break;
+        case SKILL_INTIMIDATE: sSkill = "Intimidation"; break;
     }
 
     GiveXPToPC(oPC, fXP, FALSE, sSkill);

@@ -44,7 +44,7 @@ Usage notes:
     _closeable: window closeable state
     _title: window title
 3) Make your layout like normal.
-4) Use EditableNuiWindow in place of NuiWindow. Geometry parameter should be whatever is returend by GetPersistentWindowGeometryBind
+4) Use EditableNuiWindow in place of NuiWindow. Geometry parameter should be whatever is returned by GetPersistentWindowGeometryBind
 5) Use NuiCreate like normal to get a token.
 6) SetIsInterfaceConfigurable if required
 7) LoadNuiConfigBinds, even if you don't have any configs set
@@ -489,8 +489,11 @@ json GetPersistentWindowGeometryBind(object oPC, string sWindow, json jDefault)
     if (jSaved == JsonNull())
     {
         SetCdkeyJson(oPC, "nuiconfig", "nui_geom_" + sWindow, jDefault);
+        jSaved = jDefault;
     }
-    return NuiBind("_geometry");
+    json jBind = NuiBind("_geometry");
+    NuiSetBind(oPC, NuiFindWindow(oPC, sWindow), "_geometry", jSaved);
+    return jBind;
 }
 
 json GetPersistentWindowGeometry(object oPC, string sWindow, json jDefault)
