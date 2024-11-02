@@ -20,12 +20,21 @@ md .build\database
 md .build\movies
 md .build\modules
 
-copy seeded_database\tmapsolutions.sqlite3 .build\database\tmapsolutions.sqlite3
-copy seeded_database\areadistances.sqlite3 .build\database\areadistances.sqlite3
-copy seeded_database\spawns.sqlite3 .build\database\spawns.sqlite3
-copy seeded_database\treasures.sqlite3 .build\database\treasures.sqlite3
-copy seeded_database\randspellbooks.sqlite3 .build\database\randspellbooks.sqlite3
-copy seeded_database\prettify.sqlite3 .build\database\prettify.sqlite3
+:: Delete existing databases, because sqlite will attempt to load it into an existing database instead of overwriting
+del /f .build\database\spawns.sqlite3
+del /f .build\database\treasures.sqlite3
+del /f .build\database\randspellbooks.sqlite3
+del /f .build\database\prettify.sqlite3
+del /f .build\database\tmapsolutions.sqlite3
+del /f .build\database\areadistances.sqlite3
+
+"%CD%/tools/win/sqlite/sqlite3.exe" .build/database/treasures.sqlite3 < seeded_database/treasures.txt
+"%CD%/tools/win/sqlite/sqlite3.exe" .build/database/tmapsolutions.sqlite3 < seeded_database/tmapsolutions.txt
+"%CD%/tools/win/sqlite/sqlite3.exe" .build/database/randspellbooks.sqlite3 < seeded_database/randspellbooks.txt
+"%CD%/tools/win/sqlite/sqlite3.exe" .build/database/prettify.sqlite3 < seeded_database/prettify.txt
+"%CD%/tools/win/sqlite/sqlite3.exe" .build/database/spawns.sqlite3 < seeded_database/spawns.txt
+"%CD%/tools/win/sqlite/sqlite3.exe" .build/database/areadistances.sqlite3 < seeded_database/areadistances.txt
+
 copy movies\prelude.wbm .build\movies\prelude.wbm
 copy nasher.cfg .build\nasher.cfg
 
