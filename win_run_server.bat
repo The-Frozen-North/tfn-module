@@ -35,11 +35,11 @@ set content=
 for /f "delims=" %%x in ('type mod_desc.txt') do set "content=!content!%%x!LF!"
 set "content=!content!Last Updated: %timestamp% (%hash%)"
 
+endlocal
+
 cd .build
 
 "%CD%/../tools/win/nasher/nasher.exe" install  --verbose --erfUtil:"%CD%/../tools/win/neverwinter64/nwn_erf.exe" --gffUtil:"%CD%/../tools/win/neverwinter64/nwn_gff.exe" --tlkUtil:"%CD%/../tools/win/neverwinter64/nwn_tlk.exe" --nssCompiler:"%CD%/../tools/win/nwnsc/nwnsc.exe" --installDir:"%CD%" --nssFlags:"-oe -i ""%CD%/../nwn-base-scripts""" --no --modDescription "!content!"
-
-endlocal
 
 cd ..
 
@@ -75,3 +75,5 @@ del /f .build\TFN.mod
 cd server
 docker-compose -f docker-compose.yml down 
 docker-compose -f docker-compose.yml up --no-recreate -d
+
+PAUSE
