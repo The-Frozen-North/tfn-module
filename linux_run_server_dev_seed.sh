@@ -48,4 +48,4 @@ $PWD/../tools/linux/sqlite/sqlite3 database/randspellbooks.sqlite3 .dump > ../se
 $PWD/../tools/linux/sqlite/sqlite3 database/prettify.sqlite3 .dump > ../seeded_database/prettify.txt
 $PWD/../tools/linux/sqlite/sqlite3 database/areadistances.sqlite3 .dump > ../seeded_database/areadistances.txt
 
-python3 tools/replace_database_migration_numbers.py
+python3 ../tools/replace_database_migration_numbers.py

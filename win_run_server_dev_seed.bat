@@ -56,7 +56,7 @@ del /f ..\seeded_database\areadistances.txt
 "%CD%/../tools/win/sqlite/sqlite3.exe" database/prettify.sqlite3 .dump > ../seeded_database/prettify.txt
 "%CD%/../tools/win/sqlite/sqlite3.exe" database/areadistances.sqlite3 .dump > ../seeded_database/areadistances.txt
 
-python tools/replace_database_migration_numbers.py
+python ../tools/replace_database_migration_numbers.py
 
 for /F "tokens=1-3 delims=:." %%a in ("%TIME%") do (
     set "END_HOUR=%%a"

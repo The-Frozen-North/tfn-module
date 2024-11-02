@@ -4,12 +4,12 @@ migration_schema_line = "INSERT INTO migrations VALUES('schema',1234567890);"
 migration_other_line = "INSERT INTO migrations VALUES('20191203190521',1234567890);"
 
 files = [
-    'seeded_database/treasures.txt',
-    'seeded_database/tmapsolutions.txt',
-    'seeded_database/spawns.txt',
-    'seeded_database/randspellbooks.txt',
-    'seeded_database/prettify.txt',
-    'seeded_database/areadistances.txt'
+    '../seeded_database/treasures.txt',
+    '../seeded_database/tmapsolutions.txt',
+    '../seeded_database/spawns.txt',
+    '../seeded_database/randspellbooks.txt',
+    '../seeded_database/prettify.txt',
+    '../seeded_database/areadistances.txt'
 ]
 
 for file in files:
