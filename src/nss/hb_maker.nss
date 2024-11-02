@@ -79,11 +79,13 @@ void main()
     int nDR = 0;
     int nHP = GetCurrentHitPoints();
     int nLastHP = GetLocalInt(OBJECT_SELF, "last_hp");
+    if (nLastHP == 0)
+        nLastHP = GetMaxHitPoints();
     int nLastDR = GetLocalInt(OBJECT_SELF, "last_dr");
     effect eTest = GetFirstEffect(OBJECT_SELF);
     while (GetIsEffectValid(eTest))
     {
-        if (GetEffectType(eTest) == EFFECT_TYPE_DAMAGE_REDUCTION)
+        if (GetEffectType(eTest) == EFFECT_TYPE_DAMAGE_RESISTANCE)
         {
             nDR += GetEffectInteger(eTest, 2);
         }
@@ -95,6 +97,8 @@ void main()
     if (nHPDelta <= 0) { nHPDelta = 0; }
     int nDRDelta = nLastDR - nDR;
     if (nDRDelta <= 0) { nDRDelta = 0; }
+    
+    //SpeakString("HP delta " + IntToString(nHPDelta) + " DR delta " + IntToString(nDRDelta) + ", current values " + IntToString(nHP) + " " + IntToString(nDR));
 
     // This is deliberately built to make doing damage
     // to the maker rapidly cause him to be more inclined to make golems
@@ -107,10 +111,13 @@ void main()
     // Actual HP damage counts for more
     // Dispelling premonition/stoneskin will count as a massive damage spike...
     int nEHPDelta = nHPDelta*2 + nDRDelta;
+    
 
     int nGolemPoints = FloatToInt(pow(IntToFloat(nEHPDelta), 1.4));
     int nOldGolemPoints = GetLocalInt(OBJECT_SELF, "golem_points");
     nGolemPoints += nOldGolemPoints;
+    nGolemPoints += 4;
+    //SpeakString("Golem points: " + IntToString(nGolemPoints));
     float fDelay = 0.0;
     while (nGolemPoints > 400)
     {
