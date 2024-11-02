@@ -534,7 +534,7 @@ void UpdateOldestCachedCdkeyDB()
     {
         string sDatabase = SqlGetString(sql, 0);
         // Todo: remove this once sure it works with multiple players online
-        WriteTimestampedLogEntry("Oldest cached cdkeydb = " + sDatabase);
+        //WriteTimestampedLogEntry("Oldest cached cdkeydb = " + sDatabase);
         // If this returns 1, it updated the database
         // If it didn't, it removed the database from cdkeycache__update
         // and doing this lookup again will find something different (or nothing)

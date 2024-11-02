@@ -92,6 +92,8 @@ void main()
 
     //SetEventScript(oPC,EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED,"70_mod_attacked");
     //SetEventScript(oPC,EVENT_SCRIPT_CREATURE_ON_DAMAGED,"70_mod_damaged");
+    
+    int bIsNewCharacter = FALSE;
 
 // If the PC has more than 0 XP, then do this.
 // Safe to assume a non-new character in this way.
@@ -144,6 +146,7 @@ void main()
 // otherwise, assume they're new and do the whole new PC routine
     else
     {
+        bIsNewCharacter = TRUE;
         DelayCommand(0.01, ExecuteScript("new_character", oPC));
     }
 
@@ -171,5 +174,5 @@ void main()
     }
 
     ShowOrHideXPBarUI(oPC);
-    UpdatePCOwnedItemProperties(oPC);
+    UpdatePCOwnedItemProperties(oPC, !bIsNewCharacter);
 }
