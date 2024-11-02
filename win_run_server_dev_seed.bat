@@ -8,6 +8,7 @@ md .build\config
 copy seeded_database\randspellbooks.sqlite3 .build\database\randspellbooks.sqlite3
 copy seeded_database\prettify.sqlite3 .build\database\prettify.sqlite3
 copy seeded_database\areadistances.sqlite3 .build\database\areadistances.sqlite3
+copy seeded_database\tmapsolutions.sqlite3 .build\database\tmapsolutions.sqlite3
 
 del /f .build\docker-compose-dev-seed.yml
 copy docker-compose-dev-seed.yml .build\docker-compose-dev-seed.yml
