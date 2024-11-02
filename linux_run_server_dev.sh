@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p .build/config
+
 rm .build/docker-compose-dev.yml
 cp docker-compose-dev.yml .build/docker-compose-dev.yml
 
