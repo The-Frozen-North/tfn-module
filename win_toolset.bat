@@ -1,5 +1,8 @@
 @echo off
 
+md .build
+cd .build
+
 set DefaultSteamPath=C:\Program Files (x86)\Steam\steamapps\common\Neverwinter Nights\bin\win32\nwtoolset.exe
 if exist "%DefaultSteamPath%" (
 	echo DefaultSteamPath found: "%DefaultSteamPath%"
