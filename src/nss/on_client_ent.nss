@@ -171,5 +171,5 @@ void main()
     }
 
     ShowOrHideXPBarUI(oPC);
-    UpdatePCOwnedItemProperties(oPC);
+    UpdatePCOwnedItemProperties(oPC, GetHitDice(oPC) > 1);
 }
