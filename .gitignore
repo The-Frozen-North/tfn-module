@@ -12,7 +12,11 @@ grafana-provisioning/datasources/nwn.yml
 
 # This file should be ignored always
 settings.tml
-server/settings.tml
+
+# Whitelist only server template files
+server/*
+!docker-compose-template.yml
+!docker-compose-with-analytics-template.yml
 
 # Never commit these file types
 *.mod
