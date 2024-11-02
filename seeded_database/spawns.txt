@@ -1,8 +1,8 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
 CREATE TABLE migrations (migration_label text not null, created_at int not null default (strftime('%s','now')), primary key (migration_label));
-INSERT INTO migrations VALUES('schema',1725967040);
-INSERT INTO migrations VALUES('20191203190521',1725967040);
+INSERT INTO migrations VALUES('schema',1730573994);
+INSERT INTO migrations VALUES('20191203190521',1730573994);
 CREATE TABLE db (
     varname varchar not null,
     playerid varchar not null,

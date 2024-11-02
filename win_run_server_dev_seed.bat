@@ -28,6 +28,7 @@ del /f .build\database\areadistances.sqlite3
 "%CD%/tools/win/sqlite/sqlite3.exe" .build/database/tmapsolutions.sqlite3 < seeded_database/tmapsolutions.txt
 "%CD%/tools/win/sqlite/sqlite3.exe" .build/database/randspellbooks.sqlite3 < seeded_database/randspellbooks.txt
 "%CD%/tools/win/sqlite/sqlite3.exe" .build/database/prettify.sqlite3 < seeded_database/prettify.txt
+"%CD%/tools/win/sqlite/sqlite3.exe" .build/database/areadistances.sqlite3 < seeded_database/areadistances.txt
 
 del /f .build\docker-compose-dev-seed.yml
 copy docker-compose-dev-seed.yml .build\docker-compose-dev-seed.yml

@@ -20,6 +20,7 @@ $PWD/tools/linux/sqlite/sqlite3 .build/database/treasures.sqlite3 < seeded_datab
 $PWD/tools/linux/sqlite/sqlite3 .build/database/tmapsolutions.sqlite3 < seeded_database/tmapsolutions.txt
 $PWD/tools/linux/sqlite/sqlite3 .build/database/randspellbooks.sqlite3 < seeded_database/randspellbooks.txt
 $PWD/tools/linux/sqlite/sqlite3 .build/database/prettify.sqlite3 < seeded_database/prettify.txt
+$PWD/tools/linux/sqlite/sqlite3 .build/database/areadistances.sqlite3 < seeded_database/areadistances.txt
 
 rm .build/docker-compose-dev-seed.yml
 cp docker-compose-dev-seed.yml .build/docker-compose-dev-seed.yml
