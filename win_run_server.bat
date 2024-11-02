@@ -59,12 +59,22 @@ md server\config
 copy .build\modules\TFN.mod server\modules\TFN.mod
 copy config\common.env server\config\common.env
 copy settings.tml server\settings.tml
-copy seeded_database\tmapsolutions.sqlite3 server\database\tmapsolutions.sqlite3
-copy seeded_database\areadistances.sqlite3 server\database\areadistances.sqlite3
-copy seeded_database\spawns.sqlite3 server\database\spawns.sqlite3
-copy seeded_database\treasures.sqlite3 server\database\treasures.sqlite3
-copy seeded_database\randspellbooks.sqlite3 server\database\randspellbooks.sqlite3
-copy seeded_database\prettify.sqlite3 server\database\prettify.sqlite3
+
+:: Delete existing databases, because sqlite will attempt to load it into an existing database instead of overwriting
+del /f server\database\spawns.sqlite3
+del /f server\database\treasures.sqlite3
+del /f server\database\randspellbooks.sqlite3
+del /f server\database\prettify.sqlite3
+del /f server\database\tmapsolutions.sqlite3
+del /f server\database\areadistances.sqlite3
+
+"%CD%/tools/win/sqlite/sqlite3.exe" server/database/treasures.sqlite3 < seeded_database/treasures.txt
+"%CD%/tools/win/sqlite/sqlite3.exe" server/database/tmapsolutions.sqlite3 < seeded_database/tmapsolutions.txt
+"%CD%/tools/win/sqlite/sqlite3.exe" server/database/randspellbooks.sqlite3 < seeded_database/randspellbooks.txt
+"%CD%/tools/win/sqlite/sqlite3.exe" server/database/prettify.sqlite3 < seeded_database/prettify.txt
+"%CD%/tools/win/sqlite/sqlite3.exe" server/database/spawns.sqlite3 < seeded_database/spawns.txt
+"%CD%/tools/win/sqlite/sqlite3.exe" server/database/areadistances.sqlite3 < seeded_database/areadistances.txt
+
 robocopy override server\override
 
 copy server\env\env.2da server\override\env.2da

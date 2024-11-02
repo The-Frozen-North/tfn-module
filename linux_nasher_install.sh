@@ -7,9 +7,40 @@ echo "It will automatically continue if you do not have module built (clean slat
 echo
 echo "WARNING: Continuing will rebuild the module from source, deleting all unsaved changes! Commit or stash your changes, or exit out."
 
-rm -d -RI modules
+rm -rf .build/modules/TFN
+rm -rf .build/modules
+
+mkdir -p .build
+
+rm -rf .build/override
+cp -r override .build/override
+
+mkdir -p .build/database
+mkdir -p .build/movies
+mkdir -p .build/modules
+
+# Delete existing databases
+rm .build/database/spawns.sqlite3
+rm .build/database/treasures.sqlite3
+rm .build/database/randspellbooks.sqlite3
+rm .build/database/prettify.sqlite3
+rm .build/database/tmapsolutions.sqlite3
+rm .build/database/areadistances.sqlite3
+
+$PWD/tools/linux/sqlite/sqlite3 .build/database/treasures.sqlite3 < seeded_database/treasures.txt
+$PWD/tools/linux/sqlite/sqlite3 .build/database/tmapsolutions.sqlite3 < seeded_database/tmapsolutions.txt
+$PWD/tools/linux/sqlite/sqlite3 .build/database/randspellbooks.sqlite3 < seeded_database/randspellbooks.txt
+$PWD/tools/linux/sqlite/sqlite3 .build/database/prettify.sqlite3 < seeded_database/prettify.txt
+$PWD/tools/linux/sqlite/sqlite3 .build/database/spawns.sqlite3 < seeded_database/spawns.txt
+$PWD/tools/linux/sqlite/sqlite3 .build/database/areadistances.sqlite3 < seeded_database/areadistances.txt
+
+cp movies/prelude.wbm .build/movies/prelude.wbm
+cp nasher.cfg .build/nasher.cfg
+
 rm TFN.mod
 
-$PWD/tools/linux/nasher/nasher install  --verbose --erfUtil:"$PWD/tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/tools/linux/nwnsc/nwnsc" --installDir:"$PWD" --nssFlags:"-oe -i $PWD/nwn-base-scripts" --yes
+cd .build
+
+$PWD/../tools/linux/nasher/nasher install  --verbose --erfUtil:"$PWD/tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/../tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/../tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/../tools/linux/nwnsc/nwnsc" --installDir:"$PWD" --nssFlags:"-oe -i $PWD/../nwn-base-scripts" --yes
 
 rm TFN.mod
