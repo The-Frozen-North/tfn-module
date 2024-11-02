@@ -25,7 +25,7 @@ desc="$desc
 Last Updated: $timestamp ($hash)"
 
 cd .build
-$PWD/tools/linux/nasher/nasher install --clean --erfUtil:"$PWD/tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/tools/linux/nwnsc/nwnsc" --installDir:"$PWD" --nssFlags:"-oe -i $PWD/nwn-base-scripts" --no --modDescription="$desc"
+$PWD/tools/linux/nasher/nasher install --clean --erfUtil:"$PWD/../tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/../tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/../tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/../tools/linux/nwnsc/nwnsc" --installDir:"$PWD" --nssFlags:"-oe -i $PWD/../nwn-base-scripts" --no --modDescription="$desc"
 
 if [[ ! -f TFN.mod ]] ; then
     echo 'Module does not exist, aborting.'
