@@ -191,79 +191,12 @@ void main()
     object oMaster = GetMaster(oPlayer);
     if (GetIsObjectValid(oMaster)) oPlayer = oMaster;
 
-    /*
-    int nChange = 0;
-    int nID;
-    string sResRef;
-    // Portrait text name event. You can type in a custom portait!
-    if (sEvent == "watch" && sElem == "port_name")
-    {
-        nID = JsonGetInt (NuiGetUserData (oPlayer, nToken));
-        string sBaseResRef = "po_" + Get2DAString ("portraits", "BaseResRef", nID);
-        sResRef = JsonGetString (NuiGetBind (oPlayer, nToken, "port_name"));
-        if (sBaseResRef != sResRef) NuiSetBind (oPlayer, nToken, "port_id", JsonString ("Custom Portrait"));
-        else NuiSetBind (oPlayer, nToken, "port_id", JsonString (IntToString (nID)));
-
-        NuiSetBind (oPlayer, nToken, "port_resref", JsonString (sResRef + "l"));
-    }
-    */
     // Save button to save the description to the player.
     if (sEvent == "click" && sElem == "btn_desc_save")
     {
         string sDescription = JsonGetString (NuiGetBind (oPlayer, nToken, "desc_value"));
         SetDescription (oPlayer, sDescription);
     }
-    /*
-    // Portrait next button.
-    if (sEvent == "click" && (sElem == "btn_portrait_next"))
-    {
-      nID = JsonGetInt (NuiGetUserData (oPlayer, nToken)) + 1;
-      nChange = 1;
-    }
-    // Portait previous button.
-    if (sEvent == "click" && (sElem == "btn_portrait_prev"))
-    {
-      nID = JsonGetInt (NuiGetUserData (oPlayer, nToken)) - 1;
-      nChange = -1;
-    }
-    if (nChange != 0)
-    {
-        int nPRace, nPGender;
-        if (nID > 1317) nID = 1;
-        if (nID < 1) nID = 1317;
-        int nGender = GetGender (oPlayer);
-        int nRace = GetRacialType (oPlayer);
-        string sPRace = Get2DAString ("portraits", "Race", nID);
-        if (sPRace != "") nPRace = StringToInt (sPRace);
-        else nPRace = -1;
-        string sPGender = Get2DAString ("portraits", "Sex", nID);
-        if (sPGender != "") nPGender = StringToInt (sPGender);
-        else nPGender = -1;
-        while ((nRace != nPRace && (nRace != 4 || (nPRace != 1 && nPRace != 6))) || nGender != nPGender)
-        {
-            nID += nChange;
-            if (nID > 1317) nID = 1;
-            if (nID < 1) nID = 1317;
-            sPRace = Get2DAString ("portraits", "Race", nID);
-            if (sPRace != "") nPRace = StringToInt (sPRace);
-            else nPRace = -1;
-            sPGender = Get2DAString ("portraits", "Sex", nID);
-            if (sPGender != "") nPGender = StringToInt (sPGender);
-            else nPGender = -1;
-        }
-        string sResRef = "po_" + Get2DAString("portraits", "BaseResRef", nID);
-        NuiSetUserData (oPlayer, nToken, JsonInt (nID));
-        NuiSetBind (oPlayer, nToken, "port_name", JsonString (sResRef));
-    }
-    // Save portrait button.
-    if (sEvent == "click" && sElem == "btn_portrait_ok")
-    {
-      sResRef = JsonGetString (NuiGetBind (oPlayer, nToken, "port_name"));
-      string sID = JsonGetString (NuiGetBind (oPlayer, nToken, "port_id"));
-      if (sID != "Custom Portrait") SetPortraitId (oPlayer, StringToInt (sID));
-      else SetPortraitResRef (oPlayer, sResRef);
-    }
-    */
   }
   // This is the dice event.
   else if (sWndId == "pcdicewin")
@@ -341,7 +274,7 @@ void main()
   else if (sWndId == "pcactionswin")
   {
         // Which button was "clicked" in the player menu event.
-        if (sEvent == "click" && sElem == "btn_editdesc") PopUpCharacterDescriptionGUIPanel(oPlayer);
+        if (sEvent == "click" && sElem == "btn_editdesc") PopUpCharacterDescriptionGUIPanel(oPlayer, "pcdescwin");
         if (sEvent == "click" && sElem == "btn_unstuck")
         {
             int nNow = SQLite_GetTimeStamp();
@@ -367,7 +300,6 @@ void main()
   else if (sWndId == "pcrespawnconfirmwin")
   {
         // Which button was "clicked" in the player menu event.
-        if (sEvent == "click" && sElem == "btn_editdesc") PopUpCharacterDescriptionGUIPanel(oPlayer);
         if (sEvent == "click" && sElem == "btn_respawnconfyes")
         {
             ExecuteScript("pc_respawn", oPlayer);

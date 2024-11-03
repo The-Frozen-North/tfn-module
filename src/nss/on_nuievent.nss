@@ -6,6 +6,7 @@ void main()
     object oPC = NuiGetEventPlayer();
 
     string sWindow = NuiGetWindowId(oPC, NuiGetEventWindow());
+
     // Sometimes there are reasons why you might want to throw a window's events
     // through a different event script, nice to have the option
     json jUserData = NuiGetUserData(oPC, NuiGetEventWindow());
@@ -13,6 +14,10 @@ void main()
     if (jScript != JsonNull())
     {
         ExecuteScript(JsonGetString(jScript));
+    }
+    else if (sWindow == "pcdescwin") // Hacky,couldn't get it to work
+    {
+        ExecuteScript("0e_window");
     }
     else
     {

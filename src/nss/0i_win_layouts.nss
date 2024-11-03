@@ -65,7 +65,7 @@ void SetupPlayerGUIPanel (object oPC, json jCol, float fWinWidth, float fWinHeig
     //int nToken = SetWindow (oPC, jLayout, "pcplayerwin", PM_NAME,
     //                        fX, fY, fWinWidth, fWinHeight, PM_RESIZE,
     //                        PM_COLLAPSE, PM_CLOSE, PM_TRANSPARENT, PM_BORDER);
-    
+
     SetInterfaceFixedSize("pcplayerwin", fWinWidth, fWinHeight);
     json jGeometry = GetPersistentWindowGeometryBind(oPC, "pcplayerwin", NuiRect(-1.0, -1.0, fWinWidth, fWinHeight));
     json jNui = EditableNuiWindow("pcplayerwin", PM_NAME, jLayout, PM_NAME, jGeometry, PM_RESIZE, PM_COLLAPSE, PM_CLOSE, JsonBool(PM_TRANSPARENT), JsonBool(PM_BORDER));
@@ -130,43 +130,6 @@ void PopUpPlayerHorGUIPanel (object oPC)
     SetupPlayerGUIPanel (oPC, jCol, PM_WIN_HORIZONTAL_WIDTH, PM_WIN_HORIZONTAL_HEIGHT);
 }
 
-/*
-// Setup the Vertical Layout to the player GUIPanel.
-void PopUpPlayerVerGUIPanel (object oPC)
-{
-    // Set a variable so we don't save the windows position when it is created.
-    // This keeps the players last x,y position of the window from being erased.
-    SetLocalInt (oPC, "0_No_Win_Save", TRUE);
-    DelayCommand (0.5f, DeleteLocalInt (oPC, "0_No_Win_Save"));
-    // ********** Create new Column *******
-    // I am only using one column for these menus.
-    json jCol = JsonArray ();
-    // *************************************************************************
-    // Create row 1 (buttons).
-    json jRow = JsonArray ();
-    jRow = CreateButton (jRow, "Options", "btn_options", 100.0, 35.0);
-    jRow = CreateButton (jRow, "Bug Report", "btn_bug_report", 100.0, 35.0);
-    // Add the row to the column and set column height.
-    jCol = JsonArrayInsert (jCol, NuiRow (jRow));
-    // *************************************************************************
-    // Create row 2 (buttons).
-    jRow = JsonArray ();
-    jRow = CreateButton (jRow, "Dice", "btn_dice", 100.0, 35.0);
-    jRow = CreateButton (jRow, "Description", "btn_desc", 100.0, 35.0);
-    // Add the row to the column and set column height.
-    jCol = JsonArrayInsert (jCol, NuiRow (jRow));
-    // *************************************************************************
-    // Create row 3 (buttons).
-    jRow = JsonArray ();
-    jRow = CreateButton (jRow, "Teleport", "btn_teleport", 100.0, 35.0);
-    jRow = CreateButton (jRow, "", "btn_summons", 100.0, 35.0);
-    // Add the row to the column.
-    jCol = JsonArrayInsert (jCol, NuiRow (jRow));
-    // Adjust the layout variables and load window.
-    SetupPlayerGUIPanel (oPC, jCol, PM_WIN_VERTICAL_WIDTH, PM_WIN_VERTICAL_HEIGHT);
-}
-*/
-
 // Setup the Player Info layout GUIPanel.
 void PopUpPlayerInfoGUIPanel (object oPC)
 {
@@ -214,7 +177,7 @@ void PopUpPlayerInfoGUIPanel (object oPC)
     json jGeometry = GetPersistentWindowGeometryBind(oPC, "pcinfowin", NuiRect(-1.0, -1.0, 630.0, 450.0));
     json jNui = EditableNuiWindow("pcinfowin", "Server Information", jLayout, "Information", jGeometry, 0, 0, 1, JsonBool(0), JsonBool(1));
     int nToken = NuiCreate(oPC, jNui, "pcinfowin");
-    
+
     NuiSetBind (oPC, nToken, "info_line1", JsonString("Welcome to The Frozen North! This is a persistent world capped at level 12, with an aim to keep class and spell changes to a minimal - done with an effort by meticulously balancing items and encounters accordingly while keeping things challenging!"));
     NuiSetBind (oPC, nToken, "info_line2", JsonString("The adventures in this world are based around official content, mainly Neverwinter and the surrounding areas, with stories and locations from the original campaign, Hordes of the Underdark, Neverwinter Nights 2, Icewind Dale, and much more."));
 
@@ -228,7 +191,7 @@ void PopUpPlayerInfoGUIPanel (object oPC)
 
     NuiSetBindWatch (oPC, nToken, "discord_link", TRUE);
     NuiSetBindWatch (oPC, nToken, "github_link", TRUE);
-    
+
     // Event script
     LoadNuiConfigBinds(oPC, nToken);
     json jUserData = NuiGetUserData(oPC, nToken);
@@ -237,7 +200,7 @@ void PopUpPlayerInfoGUIPanel (object oPC)
 }
 
 // Setup the Character description layout GUIPanel.
-void PopUpCharacterDescriptionGUIPanel (object oPC)
+void PopUpCharacterDescriptionGUIPanel (object oPC, string sWinID)
 {
     // are we possessing something?
     object oMaster = GetMaster(oPC);
@@ -246,69 +209,7 @@ void PopUpCharacterDescriptionGUIPanel (object oPC)
     // ********** Create new Column *******
     // I am only using one column for these menus.
     json jCol = JsonArray ();
-    /*
-    // *************************************************************************
-    // Create row 1 (portait name).
-    json jRow = JsonArray ();
-    // Adding a spacer before and after the text edit box so it will be centered.
-    // Spacers are used like Left/Center/Right alignment for widgets.
-    jRow = JsonArrayInsert (jRow, NuiSpacer ());
-    // Creating a text edit box so they can enter a custom portrait.
-    jRow = CreateTextEditBox (jRow, "port_p_holder", "port_name", 15,
-                              FALSE, 140.0, 30.0, "port_tooltip");
-    jRow = JsonArrayInsert(jRow, NuiSpacer());
-    // Add the row to the column.
-    jCol = JsonArrayInsert (jCol, NuiRow (jRow));
-    // *************************************************************************
-    // Create row 2 (portait id number).
-    jRow = JsonArray ();
-    jRow = JsonArrayInsert (jRow, NuiSpacer ());
-    // Adding a spacer before and after the lable so it will be centered.
-    jRow = CreateLabel (jRow, "port_id", 140.0, 10.0f);
-    jRow = JsonArrayInsert(jRow, NuiSpacer());
-    // Add the row to the column.
-    jCol = JsonArrayInsert (jCol, NuiRow (jRow));
-    // *************************************************************************
-    // Create row 3 (portait).
-    jRow = JsonArray();
-    // Adding a spacer before and after the portrait so it will be centered.
-    // Spacers are used like Left/Center/Right alignment for widgets.
-    jRow = JsonArrayInsert(jRow, NuiSpacer());
-    // Create the portait.
-    json jImg = NuiImage (NuiBind ("port_resref"),
-                          JsonInt (NUI_ASPECT_EXACT),
-                          JsonInt (NUI_HALIGN_CENTER),
-                          JsonInt (NUI_VALIGN_TOP));
-    // Group the portait and adjust its width and height.
-    jImg = NuiGroup (jImg);
-    jImg = NuiWidth (jImg, 140.0);
-    jImg = NuiHeight (jImg, 160.0);
-    // Now add it to the row.
-    jRow = JsonArrayInsert (jRow, jImg);
-    jRow = JsonArrayInsert (jRow, NuiSpacer());
-    // Add the row to the column.
-    jCol = JsonArrayInsert (jCol, NuiRow (jRow));
-    // *************************************************************************
-    // Create row 4 (portait buttons).
-    jRow = JsonArray();
-    // Adding a spacer before and after the buttons so it will be centered.
-    // Spacers are used like Left/Center/Right alignment for widgets.
-    jRow = JsonArrayInsert (jRow, NuiSpacer ());
-    jRow = CreateButton (jRow, "<", "btn_portrait_prev", 42.0f, 40.0);
-    jRow = CreateButton (jRow, "Set", "btn_portrait_ok", 44.0f, 40.0);
-    jRow = CreateButton (jRow, ">", "btn_portrait_next", 42.0f, 40.0);
-    jRow = JsonArrayInsert (jRow, NuiSpacer ());
-    // Add row to the column.
-    jCol = JsonArrayInsert (jCol, NuiRow (jRow));
-    // *************************************************************************
-    // Create row 5 (Desctiption label).
-    json jRow = JsonArray();
-    jRow = CreateLabel (jRow, "description_label", 300.0, 10.0f);
-    // Add row to the column.
-    jCol = JsonArrayInsert (jCol, NuiRow (jRow));
-    */
-    // *************************************************************************
-    // Create row 6 (Character Description box).
+
     json jRow = JsonArray();
     // Create the large description box for the player
     // to edit the characters description.
@@ -331,17 +232,17 @@ void PopUpCharacterDescriptionGUIPanel (object oPC)
     json jLayout = NuiCol (jCol);
     //int nToken = SetWindow (oPC, jLayout, "pcdescwin", "Edit " + GetName (oPC) + "'s Description",
     //                        fX, fY, 325.0, 291.0, FALSE, FALSE, TRUE, FALSE, TRUE);
-                            
-    json jGeometry = GetPersistentWindowGeometryBind(oPC, "pcdescwin", NuiRect(-1.0, -1.0, 325.0, 291.0));
-    json jNui = EditableNuiWindow("pcdescwin", "PC Description Editor", jLayout, "Edit " + GetName (oPC) + "'s Description", jGeometry, 0, 0, 1, JsonBool(0), JsonBool(1));
-    int nToken = NuiCreate(oPC, jNui, "pcdescwin");
+
+
+    json jGeometry = GetPersistentWindowGeometryBind(oPC, sWinID, NuiRect(-1.0, -1.0, 325.0, 291.0));
+    json jNui = EditableNuiWindow(sWinID, "PC Description Editor", jLayout, "Edit " + GetName (oPC) + "'s Description", jGeometry, 0, 0, 1, JsonBool(0), JsonBool(1));
+    int nToken = NuiCreate(oPC, jNui, sWinID);
     SetIsInterfaceConfigurable(oPC, nToken, 0, 1);
     LoadNuiConfigBinds(oPC, nToken);
     json jUserData = NuiGetUserData(oPC, nToken);
     jUserData = JsonObjectSet(jUserData, "event_script", JsonString("0e_window"));
     NuiSetUserData(oPC, nToken, jUserData);
-                            
-                            
+
     // Set the binds and watches for the layout.
     // Grab the players portrait Id and save it on to the layout for later use.
     int nID = GetPortraitId (oPC);
@@ -352,15 +253,8 @@ void PopUpCharacterDescriptionGUIPanel (object oPC)
     else sID = IntToString (nID);
     // Get the players portrait resref so we can display the portrait.
     string sResRef = GetPortraitResRef (oPC);
-    // Set the portrait name to be watch in e_window_pc so we can update any
-    // NuiSetBind (oPC, nToken, "port_name", JsonString (sResRef));
-    // NuiSetBind (oPC, nToken, "port_id", JsonString (sID));
-    // NuiSetBind (oPC, nToken, "port_resref", JsonString (sResRef + "l"));
-    // Add a tool tip so the player knows they can enter a custom portrait.
-    // NuiSetBind (oPC, nToken, "port_tooltip", JsonString ("You may also type the portrait file name."));
-    // Set the buttons to show events to 0e_window_pc.
-    // NuiSetBind (oPC, nToken, "btn_portrait_prev_event", JsonBool (TRUE));
-    // NuiSetBind (oPC, nToken, "btn_portrait_next_event", JsonBool (TRUE));
+
+    NuiSetBind (oPC, nToken, "btn_desc_save", JsonBool (TRUE));
     NuiSetBind (oPC, nToken, "btn_desc_save_event", JsonBool (TRUE));
     // NuiSetBind (oPC, nToken, "btn_portrait_ok_event", JsonBool (TRUE));
     NuiSetBind (oPC, nToken, "desc_tooltip", JsonString ("You can edit your character's description when examined."));
@@ -407,7 +301,7 @@ void PopUpBugReportGUIPanel (object oPC, string sWinID)
     json jLayout = NuiCol (jCol);
     //int nToken = SetWindow (oPC, jLayout, sWinID, "Report a Bug",
     //                        fX, fY, 325.0, 350.0, FALSE, FALSE, TRUE, FALSE, TRUE);
-    
+
     json jGeometry = GetPersistentWindowGeometryBind(oPC, sWinID, NuiRect(-1.0, -1.0, 325.0, 350.0));
     json jNui = EditableNuiWindow(sWinID, "Report a Bug", jLayout, "Report a Bug", jGeometry, 0, 0, 1, JsonBool(0), JsonBool(1));
     int nToken = NuiCreate(oPC, jNui, sWinID);
@@ -416,8 +310,8 @@ void PopUpBugReportGUIPanel (object oPC, string sWinID)
     json jUserData = NuiGetUserData(oPC, nToken);
     jUserData = JsonObjectSet(jUserData, "event_script", JsonString("0e_window"));
     NuiSetUserData(oPC, nToken, jUserData);
-    
-    
+
+
     // Set the binds and watches for the layout.
     // Add a tool tip so the player knows to enter informaton in this box.
     NuiSetBind (oPC, nToken, "bug_tooltip", JsonString ("Please enter as much information as you can."));
@@ -471,7 +365,7 @@ void PopUpDiceGUIPanel (object oPC, string sWinID)
     json jLayout = NuiCol (jCol);
     //int nToken = SetWindow (oPC, jLayout, sWinID, "Dice Rolls",
     //                    fX, fY, 690.0, 168.0, FALSE, FALSE, TRUE, FALSE, TRUE);
-                        
+
     json jGeometry = GetPersistentWindowGeometryBind(oPC, sWinID, NuiRect(-1.0, -1.0, 690.0, 168.0));
     json jNui = EditableNuiWindow(sWinID, "Dice Rolls", jLayout, "Dice Rolls", jGeometry, 0, 0, 1, JsonBool(0), JsonBool(1));
     int nToken = NuiCreate(oPC, jNui, sWinID);
@@ -480,7 +374,7 @@ void PopUpDiceGUIPanel (object oPC, string sWinID)
     json jUserData = NuiGetUserData(oPC, nToken);
     jUserData = JsonObjectSet(jUserData, "event_script", JsonString("0e_window"));
     NuiSetUserData(oPC, nToken, jUserData);
-    
+
     // Set the binds and watches for the layout,
     // Set the binds for the labels.
     NuiSetBind (oPC, nToken, "num_label", JsonString ("# of Rolls"));
@@ -520,7 +414,7 @@ void PopUpOptionsGUIPanel (object oPC, string sWinID)
     // I am only using one column for these menus.
     json jCol = JsonArray ();
     // *************************************************************************
-    
+
     json jRow = JsonArray();
     json jButton = NuiButton(JsonString("UI Customisation"));
     jButton = NuiWidth(jButton, 300.0);
@@ -530,7 +424,7 @@ void PopUpOptionsGUIPanel (object oPC, string sWinID)
     jRow = JsonArrayInsert(jRow, jButton);
     // Add row to the column.
     jCol = JsonArrayInsert(jCol, NuiRow(jRow));
-    
+
     // Create row 1 (label).
     jRow = JsonArray();
     jButton = NuiButton(JsonString("Gameplay Statistics"));
@@ -541,7 +435,7 @@ void PopUpOptionsGUIPanel (object oPC, string sWinID)
     jRow = JsonArrayInsert(jRow, jButton);
     // Add row to the column.
     jCol = JsonArrayInsert(jCol, NuiRow(jRow));
-    
+
     // Create row 1 (label).
     jRow = JsonArray ();
     json jCheckBox = NuiWidth(NuiHeight(NuiCheck(NuiBind("hide_discord_label"), NuiBind("hide_discord_value2")), 40.0), 300.0);
@@ -549,7 +443,7 @@ void PopUpOptionsGUIPanel (object oPC, string sWinID)
     jRow = JsonArrayInsert(jRow, jCheckBox);
     // Add row to the column.
     jCol = JsonArrayInsert(jCol, NuiRow(jRow));
-    
+
     json jLabel = NuiWidth(NuiHeight(NuiLabel(JsonString("Rested XP UI"), JsonInt(NUI_HALIGN_CENTER), JsonInt(NUI_VALIGN_MIDDLE)), 40.0), 100.0);
     jLabel = NuiTooltip(jLabel, JsonString("Display Rested XP on an interface instead of as system messages."));
     json jComboEntries = JsonArray();
@@ -559,25 +453,25 @@ void PopUpOptionsGUIPanel (object oPC, string sWinID)
     json jCombo = NuiCombo(jComboEntries, NuiBind("restxp_ui"));
     jCombo = NuiWidth(NuiHeight(jCombo, 40.0), 194.0);
     jCombo = NuiId(jCombo, "restxp_ui");
-    
+
     jRow = JsonArray();
     jRow = JsonArrayInsert(jRow, jLabel);
     jRow = JsonArrayInsert(jRow, jCombo);
     jCol = JsonArrayInsert(jCol, NuiRow(jRow));
-    
+
     jRow = JsonArray();
     jCheckBox = NuiWidth(NuiHeight(NuiCheck(JsonString("Show XP Bar UI"), NuiBind("xp_bar")), 40.0), 300.0);
     jCheckBox = NuiTooltip(jCheckBox, JsonString("Display a configurable XP bar showing progress to next level, if not level 12."));
     jRow = JsonArrayInsert(jRow, jCheckBox);
     // Add row to the column.
     jCol = JsonArrayInsert(jCol, NuiRow(jRow));
-       
+
 
     // Set the Layout of the window.
     json jLayout = NuiCol (jCol);
     //int nToken = SetWindow (oPC, jLayout, sWinID, "Player Options",
     //                        fX, fY, 350.0, 150.0, FALSE, FALSE, TRUE, FALSE, TRUE);
-                            
+
     json jGeometry = GetPersistentWindowGeometryBind(oPC, sWinID, NuiRect(-1.0, -1.0, 350.0, 300.0));
     SetInterfaceFixedSize(sWinID, 350.0, 300.0);
     json jNui = EditableNuiWindow(sWinID, "Player Options", jLayout, "Player Options", jGeometry, 0, 0, 1, JsonBool(0), JsonBool(1));
@@ -587,7 +481,7 @@ void PopUpOptionsGUIPanel (object oPC, string sWinID)
     json jUserData = NuiGetUserData(oPC, nToken);
     jUserData = JsonObjectSet(jUserData, "event_script", JsonString("0e_window"));
     NuiSetUserData(oPC, nToken, jUserData);
-                            
+
     // Set the binds and watches for the layout.
     string sKey = GetPCPublicCDKey(oPC, TRUE);
     int bHideDiscord = GetCampaignInt(sKey, "hide_discord");
@@ -619,7 +513,7 @@ void PopUpPCActionsPanel(object oPC, string sWinID)
 
     // Set the Layout of the window.
     json jLayout = NuiCol (jCol);
-    
+
     json jGeometry = GetPersistentWindowGeometryBind(oPC, sWinID, NuiRect(-1.0, -1.0, 224.0, 155.0));
     json jNui = EditableNuiWindow(sWinID, "PC Actions", jLayout, "PC Actions", jGeometry, 0, 0, 1, JsonBool(0), JsonBool(1));
     int nToken = NuiCreate(oPC, jNui, sWinID);
@@ -631,7 +525,7 @@ void PopUpPCActionsPanel(object oPC, string sWinID)
 
     // This watch is needed to save the location of the window.
     NuiSetBindWatch (oPC, nToken, "window_geometry", TRUE);
-    
+
     // I don't really understand why this framework insists on setting two binds to true to make a SINGLE BUTTON ACTIVE
     // but here we are.
     NuiSetBind(oPC, nToken, "btn_unstuck", JsonBool(1));
@@ -661,7 +555,7 @@ void PopUpRespawnConfirmation(object oPC, string sWinID)
 
     // Set the Layout of the window.
     json jLayout = NuiCol(jCol);
-                            
+
     json jGeometry = GetPersistentWindowGeometryBind(oPC, sWinID, NuiRect(-1.0, -1.0, 690.0, 168.0));
     json jNui = EditableNuiWindow(sWinID, "Respawn Action Confirmation", jLayout, "Respawn Confirmation", jGeometry, 0, 0, 1, JsonBool(0), JsonBool(1));
     int nToken = NuiCreate(oPC, jNui, sWinID);
@@ -673,7 +567,7 @@ void PopUpRespawnConfirmation(object oPC, string sWinID)
 
     // This watch is needed to save the location of the window.
     NuiSetBindWatch(oPC, nToken, "window_geometry", TRUE);
-    
+
     NuiSetBind(oPC, nToken, "respawnconf_label", JsonString("This option will teleport you to " + GetRespawnLocationName(oPC) + " for " + GetRespawnLossText(oPC) + ". "));
     // I don't really understand why this framework insists on setting two binds to true to make a SINGLE BUTTON ACTIVE
     // but here we are.
