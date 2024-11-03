@@ -219,12 +219,12 @@ void _ScaleHenchmanWeaponry(object oHench, int nBonus)
     {
         IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench), ItemPropertyAttackBonus(nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
         IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oHench), ItemPropertyMaxRangeStrengthMod(2+nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
-        
-        
+
+
         IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_ARROWS, oHench), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_PIERCING, nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
         IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_BOLTS, oHench), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_PIERCING, nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
         IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_BULLETS, oHench), ItemPropertyDamageBonus(IP_CONST_DAMAGETYPE_BLUDGEONING, nBonus), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
-        
+
         // Infinite ammo is now handled by _SetHenchmanAmmunitionInfinite
     }
 
@@ -324,7 +324,6 @@ int ScaleHenchman(object oHench)
             break;
             case 5:
                 IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_CHEST, oHench), ItemPropertyACBonus(1), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
-                IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_NECK, oHench), ItemPropertyRegeneration(1), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
                 IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_NECK, oHench), ItemPropertyAbilityBonus(GetLocalInt(oHench, "ability"), 1), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
             break;
             case 6:
@@ -337,22 +336,25 @@ int ScaleHenchman(object oHench)
                 IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_CLOAK, oHench), ItemPropertyBonusSavingThrowVsX(IP_CONST_SAVEVS_UNIVERSAL, 2), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
             break;
             case 8:
-                IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_CHEST, oHench), ItemPropertyACBonus(2), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+                IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_NECK, oHench), ItemPropertyRegeneration(1), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
                 IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_NECK, oHench), ItemPropertyAbilityBonus(GetLocalInt(oHench, "ability"), 2), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
             break;
             case 9:
-                IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_NECK, oHench), ItemPropertyACBonus(3), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+                IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_CHEST, oHench), ItemPropertyACBonus(2), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+
                 _ScaleHenchmanWeaponry(oHench, 2);
             break;
             case 10:
-                IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_CLOAK, oHench), ItemPropertyACBonus(3), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+                IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_NECK, oHench), ItemPropertyACBonus(3), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
                 IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_CLOAK, oHench), ItemPropertyBonusSavingThrowVsX(IP_CONST_SAVEVS_UNIVERSAL, 3), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
             break;
             case 11:
-                IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_CHEST, oHench), ItemPropertyACBonus(3), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
-                IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_NECK, oHench), ItemPropertyAbilityBonus(GetLocalInt(oHench, "ability"), 3), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+                IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_CLOAK, oHench), ItemPropertyACBonus(3), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
             break;
             case 12:
+                IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_CHEST, oHench), ItemPropertyACBonus(3), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+                IPSafeAddItemProperty(GetItemInSlot(INVENTORY_SLOT_NECK, oHench), ItemPropertyAbilityBonus(GetLocalInt(oHench, "ability"), 3), 0.0, X2_IP_ADDPROP_POLICY_REPLACE_EXISTING);
+
                 _ScaleHenchmanWeaponry(oHench, 3);
             break;
         }
