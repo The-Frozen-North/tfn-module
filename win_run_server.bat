@@ -10,7 +10,6 @@ echo WARNING: Continuing will rebuild the module from source, deleting all unsav
 @echo on
 
 del .build\modules /S
-rd .build\modules\TFN
 rd .build\modules
 
 md .build
@@ -37,11 +36,7 @@ set "content=!content!Last Updated: %timestamp% (%hash%)"
 
 endlocal
 
-cd .build
-
-"%CD%/../tools/win/nasher/nasher.exe" install  --verbose --erfUtil:"%CD%/../tools/win/neverwinter64/nwn_erf.exe" --gffUtil:"%CD%/../tools/win/neverwinter64/nwn_gff.exe" --tlkUtil:"%CD%/../tools/win/neverwinter64/nwn_tlk.exe" --nssCompiler:"%CD%/../tools/win/nwnsc/nwnsc.exe" --installDir:"%CD%" --nssFlags:"-oe -i ""%CD%/../nwn-base-scripts""" --no --modDescription "!content!"
-
-cd ..
+"%CD%/tools/win/nasher/nasher.exe" install  --verbose --erfUtil:"%CD%/tools/win/neverwinter64/nwn_erf.exe" --gffUtil:"%CD%/tools/win/neverwinter64/nwn_gff.exe" --tlkUtil:"%CD%/tools/win/neverwinter64/nwn_tlk.exe" --nssCompiler:"%CD%/tools/win/nwnsc/nwnsc.exe" --installDir:"%CD%/.build" --nssFlags:"-oe -i ""%CD%/nwn-base-scripts""" --no --modDescription "!content!"
 
 del /f server\config\common.env
 del /f server\modules\TFN.mod
@@ -79,8 +74,6 @@ robocopy override server\override
 
 copy server\env\env.2da server\override\env.2da
 copy server\env\env_dm.2da server\override\env_dm.2da
-
-del /f .build\TFN.mod
 
 cd server
 docker-compose -f docker-compose.yml down 

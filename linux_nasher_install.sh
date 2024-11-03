@@ -7,7 +7,6 @@ echo "It will automatically continue if you do not have module built (clean slat
 echo
 echo "WARNING: Continuing will rebuild the module from source, deleting all unsaved changes! Commit or stash your changes, or exit out."
 
-rm -rf .build/modules/TFN
 rm -rf .build/modules
 
 mkdir -p .build
@@ -18,6 +17,16 @@ cp -r override .build/override
 mkdir -p .build/database
 mkdir -p .build/movies
 mkdir -p .build/modules
+mkdir -p .build/config
+
+rm .build/docker-compose-dev.yml
+cp docker-compose-dev.yml .build/docker-compose-dev.yml
+
+rm .build/docker-compose-dev-seed.yml
+cp docker-compose-dev-seed.yml .build/docker-compose-dev-seed.yml
+
+rm .build/config/common.env
+cp config/common.env .build/config/common.env
 
 # Delete existing databases
 rm .build/database/spawns.sqlite3
@@ -35,12 +44,5 @@ $PWD/tools/linux/sqlite/sqlite3 .build/database/spawns.sqlite3 < seeded_database
 $PWD/tools/linux/sqlite/sqlite3 .build/database/areadistances.sqlite3 < seeded_database/areadistances.txt
 
 cp movies/prelude.wbm .build/movies/prelude.wbm
-cp nasher.cfg .build/nasher.cfg
 
-rm TFN.mod
-
-cd .build
-
-$PWD/../tools/linux/nasher/nasher install  --verbose --erfUtil:"$PWD/../tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/../tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/../tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/../tools/linux/nwnsc/nwnsc" --installDir:"$PWD" --nssFlags:"-oe -i $PWD/../nwn-base-scripts" --yes
-
-rm TFN.mod
+$PWD/tools/linux/nasher/nasher install  --verbose --erfUtil:"$PWD/tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/tools/linux/nwnsc/nwnsc" --installDir:"$PWD/.build" --nssFlags:"-oe -i $PWD/nwn-base-scripts" --yes

@@ -8,7 +8,6 @@ echo WARNING: Continuing will rebuild the module from source, deleting all unsav
 @echo on
 
 del .build\modules /S
-rd .build\modules\TFN
 rd .build\modules
 
 md .build
@@ -19,6 +18,16 @@ robocopy override .build\override
 md .build\database
 md .build\movies
 md .build\modules
+md .build\config
+
+del /f .build\docker-compose-dev.yml
+copy docker-compose-dev.yml .build\docker-compose-dev.yml
+
+del /f .build\docker-compose-dev-seed.yml
+copy docker-compose-dev-seed.yml .build\docker-compose-dev-seed.yml
+
+del /f .build\config\common.env
+copy config\common.env .build\config\common.env
 
 :: Delete existing databases, because sqlite will attempt to load it into an existing database instead of overwriting
 del /f .build\database\spawns.sqlite3
@@ -36,13 +45,7 @@ del /f .build\database\areadistances.sqlite3
 "%CD%/tools/win/sqlite/sqlite3.exe" .build/database/areadistances.sqlite3 < seeded_database/areadistances.txt
 
 copy movies\prelude.wbm .build\movies\prelude.wbm
-copy nasher.cfg .build\nasher.cfg
 
-del /f TFN.mod
+"%CD%/tools/win/nasher/nasher.exe" install --verbose --erfUtil:"%CD%/tools/win/neverwinter64/nwn_erf.exe" --gffUtil:"%CD%/tools/win/neverwinter64/nwn_gff.exe" --tlkUtil:"%CD%/tools/win/neverwinter64/nwn_tlk.exe" --nssCompiler:"%CD%/tools/win/nwnsc/nwnsc.exe" --installDir:"%CD%/.build" --nssFlags:"-oe -i ""%CD%/nwn-base-scripts""" --no
 
-cd .build
-
-"%CD%/../tools/win/nasher/nasher.exe" install  --verbose --erfUtil:"%CD%/../tools/win/neverwinter64/nwn_erf.exe" --gffUtil:"%CD%/../tools/win/neverwinter64/nwn_gff.exe" --tlkUtil:"%CD%/../tools/win/neverwinter64/nwn_tlk.exe" --nssCompiler:"%CD%/../tools/win/nwnsc/nwnsc.exe" --installDir:"%CD%" --nssFlags:"-oe -i ""%CD%/../nwn-base-scripts""" --no
-
-del /f TFN.mod
 pause

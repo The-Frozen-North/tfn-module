@@ -5,7 +5,6 @@ rm .build/database/areadistances.sqlite3
 rm .build/database/tmapsolutions.sqlite3
 
 mkdir -p .build/database
-mkdir -p .build/config
 
 # Delete existing databases, because sqlite will attempt to load it into an existing database instead of overwriting
 rm .build/database/spawns.sqlite3
@@ -21,12 +20,6 @@ $PWD/tools/linux/sqlite/sqlite3 .build/database/tmapsolutions.sqlite3 < seeded_d
 $PWD/tools/linux/sqlite/sqlite3 .build/database/randspellbooks.sqlite3 < seeded_database/randspellbooks.txt
 $PWD/tools/linux/sqlite/sqlite3 .build/database/prettify.sqlite3 < seeded_database/prettify.txt
 $PWD/tools/linux/sqlite/sqlite3 .build/database/areadistances.sqlite3 < seeded_database/areadistances.txt
-
-rm .build/docker-compose-dev-seed.yml
-cp docker-compose-dev-seed.yml .build/docker-compose-dev-seed.yml
-
-rm .build\config\common.env
-cp config/common.env .build/config/common.env
 
 cd .build
 
