@@ -9,7 +9,7 @@ echo "It will automatically continue if you do not have module built (clean slat
 echo
 echo "WARNING: Continuing will rebuild the module from source, deleting all unsaved changes! Commit or stash your changes, or exit out."
 
-rm -d -RI .build\modules
+rm -d -RI .build/modules
 
 mkdir -p .build
 mkdir -p .build/override
