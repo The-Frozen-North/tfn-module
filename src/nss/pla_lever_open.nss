@@ -1,5 +1,10 @@
 void main()
 {
+    if(!GetIsPC(GetLastUsedBy()))
+    {
+        return;
+    }
+
     ActionPlayAnimation(ANIMATION_PLACEABLE_ACTIVATE);
     if(GetLocalInt(OBJECT_SELF,"NW_L_Pulled") == FALSE)
     {
