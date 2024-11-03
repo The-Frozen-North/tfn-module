@@ -737,7 +737,7 @@ int GetIsMute(object oCreature)
         GetHasEffect(EFFECT_TYPE_TURNED, oCreature) ||
         GetHasEffect(EFFECT_TYPE_PETRIFY, oCreature))
     {
-        return TRUE;    
+        return TRUE;
     }
 
     return FALSE;
@@ -759,7 +759,7 @@ int GetIsControllable(object oCreature)
         GetHasEffect(EFFECT_TYPE_TURNED, oCreature) ||
         GetHasEffect(EFFECT_TYPE_PETRIFY, oCreature))
     {
-        return FALSE;    
+        return FALSE;
     }
 
     return TRUE;
@@ -769,12 +769,12 @@ int IncrementPlayerStatistic(object oPC, string sStat, int nIncrement = 1);
 int IncrementPlayerStatistic(object oPC, string sStat, int nIncrement = 1)
 {
     if (!GetIsPC(oPC)) return 0;
-    
+
     string sVarName = STAT_PREFIX+sStat;
 
     int nNewTotal = SQLocalsPlayer_GetInt(oPC, sVarName) + nIncrement;
     SQLocalsPlayer_SetInt(oPC, sVarName, nNewTotal);
-    
+
     nNewTotal = GetCachedCdkeyInt(oPC, "playerstats", sVarName);
     SetCachedCdkeyInt(oPC, "playerstats", sVarName, nNewTotal + nIncrement);
     UpdatePlayerStatsUIBindIfOpen(oPC, sStat);
@@ -813,7 +813,7 @@ string GetPlayerStatisticString(object oPC, string sStat, int bCDKeyDB=0);
 string GetPlayerStatisticString(object oPC, string sStat, int bCDKeyDB=0)
 {
     if (!GetIsPC(oPC)) return "";
-    
+
     string sVarName = STAT_PREFIX+sStat;
     if (!bCDKeyDB)
     {
@@ -826,7 +826,7 @@ int GetPlayerStatistic(object oPC, string sStat, int bCDKeyDB=0);
 int GetPlayerStatistic(object oPC, string sStat, int bCDKeyDB=0)
 {
     if (!GetIsPC(oPC)) return 0;
-    
+
     string sVarName = STAT_PREFIX+sStat;
     if (!bCDKeyDB)
     {
@@ -857,7 +857,7 @@ int IsAmmo(object oItem);
 int IsAmmo(object oItem)
 {
     int nBaseType = GetBaseItemType(oItem);
-    
+
     if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT)
     {
         return TRUE;
@@ -875,7 +875,7 @@ int IsAmmoInfinite(object oItem)
     {
         return FALSE;
     }
-    
+
     itemproperty ip = GetFirstItemProperty(oItem);
 
     while (GetIsItemPropertyValid(ip))
@@ -889,5 +889,36 @@ int IsAmmoInfinite(object oItem)
     }
 
     return FALSE;
+}
+
+void SetDecorativePetrification(object oCreature);
+void SetDecorativePetrification(object oCreature)
+{
+    AssignCommand(oCreature, SetFacing(IntToFloat(Random(360))));
+    DelayCommand(3.0, ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectPetrify(), oCreature));
+
+
+    // note: spawn scripts will have triggered at this point
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_BLOCKED_BY_DOOR, "");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DAMAGED, "");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DEATH, "");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DIALOGUE, "");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_DISTURBED, "");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_END_COMBATROUND, "");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_HEARTBEAT, "");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED, "");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_NOTICE, "");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_RESTED, "");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_SPELLCASTAT, "");
+    SetEventScript(oCreature, EVENT_SCRIPT_CREATURE_ON_USER_DEFINED_EVENT, "");
+
+    SetAILevel(oCreature, AI_LEVEL_VERY_LOW);
+
+    // supposedly unused
+    SetSoundset(oCreature, 315);
+
+    // possibly not needed when event scripts are cleared
+    SetLocalInt(oCreature, "no_credit", 1);
+    SetUseableFlag(oCreature, FALSE);
 }
 //void main(){}

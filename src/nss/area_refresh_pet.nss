@@ -1,15 +1,17 @@
+#include "inc_general"
+
 void CleanAndSpawnPetrified(string sCreature)
 {
     string sResRef;
     int nNumSpawns = GetLocalInt(OBJECT_SELF, "num_petrified_creatures_per_type");
     if (nNumSpawns == 0) { nNumSpawns = 1; }
-    
+
     if (sCreature == "DireWolf") { sResRef = "wolf_dire"; }
     else if (sCreature == "Bear") { sResRef = "bear_black"; }
     else if (sCreature == "Deer") { sResRef = "deer"; }
     else if (sCreature == "Smuggler") { sResRef = "smuggler_archer"; }
     else if (sCreature == "Badger") { sResRef = "badger"; }
-    
+
     string sVar = "PetrifiedCreature_" + sCreature;
     int nCount = GetLocalInt(OBJECT_SELF, sVar + "_count");
     int i;
@@ -23,7 +25,7 @@ void CleanAndSpawnPetrified(string sCreature)
         DeleteLocalObject(OBJECT_SELF, sVar + IntToString(i));
     }
     DeleteLocalInt(OBJECT_SELF, sVar + "_count");
-    
+
     int nNumSpawnPoints = GetLocalInt(OBJECT_SELF, "petrified_Petrified" + sCreature);
     if (nNumSpawnPoints > 0)
     {
@@ -38,9 +40,7 @@ void CleanAndSpawnPetrified(string sCreature)
                 object oNew = CreateObject(OBJECT_TYPE_CREATURE, sResRef, lLoc);
                 SetLocalObject(OBJECT_SELF, "PetrifiedCreature_" + sCreature + IntToString(nNumberSpawned), oNew);
                 nNumberSpawned++;
-                AssignCommand(oNew, SetFacing(IntToFloat(Random(360))));
-                DelayCommand(3.0, ApplyEffectToObject(DURATION_TYPE_PERMANENT, EffectPetrify(), oNew));
-                SetLocalInt(oNew, "no_credit", 1);
+                SetDecorativePetrification(oNew);
             }
         }
     }
