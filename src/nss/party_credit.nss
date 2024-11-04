@@ -3,6 +3,7 @@
 #include "inc_henchman"
 #include "inc_key"
 #include "inc_party"
+#include "inc_sql"
 
 // The max distance in meters a player can be from
 // a target killed by a trap, and still get xp.
@@ -796,6 +797,20 @@ void main()
 
         if (bNoTreasure == FALSE)
         {
+           // If this is the very first time the player has looted this boss/semiboss,
+           // a single piece of loot will be guaranteed from their equipped item (if present)
+           if ((bBoss || bSemiBoss) && GetObjectType(OBJECT_SELF) == OBJECT_TYPE_CREATURE)
+           {
+               object oEquippedItem = SelectEquippedItemToDropAsLoot(OBJECT_SELF);
+               string sLootKey = "looted_"+GetResRef(OBJECT_SELF);
+
+               if (GetIsObjectValid(oEquippedItem) && SQLocalsPlayer_GetInt(oPC, sLootKey) != 1)
+               {
+                   CopyItem(oEquippedItem, oPersonalLoot, TRUE);
+                   SQLocalsPlayer_SetInt(oPC, sLootKey, 1);
+               }
+           }
+
            SetLocalInt(oPersonalLoot, "cr", GetLocalInt(oContainer, "cr"));
            SetLocalInt(oPersonalLoot, "area_cr", GetLocalInt(oContainer, "area_cr"));
            json jItemArray = JsonArrayGet(jAssignments, nNth);

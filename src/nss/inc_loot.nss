@@ -175,6 +175,8 @@ object GenerateTierItem(int iCR, int iAreaCR, object oContainer, string sType = 
 // Open a personal loot. Called from a containing object.
 void OpenPersonalLoot(object oContainer, object oPC);
 
+// Gets a random equipped item that is lootable
+object SelectEquippedItemToDropAsLoot(object oCreature);
 
 
 // ===========================================================
@@ -661,21 +663,21 @@ object CopyTierItemToObjectOrLocation(object oItem, object oContainer = OBJECT_I
     {
         return OBJECT_INVALID;
     }
-    
+
     // i know we do some checks below, but the local needs to be set before it goes any further
     // adds a new UUID to make sure the item does not stack
     int nBaseType = GetBaseItemType(oItem);
 
-    if (IsAmmoInfinite(oItem) && (nBaseType == BASE_ITEM_THROWINGAXE || 
-        nBaseType == BASE_ITEM_DART || 
-        nBaseType == BASE_ITEM_SHURIKEN || 
-        nBaseType == BASE_ITEM_ARROW || 
-        nBaseType == BASE_ITEM_BULLET || 
+    if (IsAmmoInfinite(oItem) && (nBaseType == BASE_ITEM_THROWINGAXE ||
+        nBaseType == BASE_ITEM_DART ||
+        nBaseType == BASE_ITEM_SHURIKEN ||
+        nBaseType == BASE_ITEM_ARROW ||
+        nBaseType == BASE_ITEM_BULLET ||
         nBaseType == BASE_ITEM_BOLT))
     {
         SetLocalString(oItem, "new_uuid", GetRandomUUID());
     }
-    
+
     object oNewItem;
     if (GetIsObjectValid(oContainer))
     {
@@ -683,7 +685,7 @@ object CopyTierItemToObjectOrLocation(object oItem, object oContainer = OBJECT_I
     }
     else
     {
-        oNewItem = CopyObject(oItem, lLocation, OBJECT_INVALID, "", TRUE);   
+        oNewItem = CopyObject(oItem, lLocation, OBJECT_INVALID, "", TRUE);
     }
 
     if (!GetIsObjectValid(oItem))
@@ -691,7 +693,7 @@ object CopyTierItemToObjectOrLocation(object oItem, object oContainer = OBJECT_I
         return OBJECT_INVALID;
     }
 
-    if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT) 
+    if (nBaseType == BASE_ITEM_THROWINGAXE || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN || nBaseType == BASE_ITEM_ARROW || nBaseType == BASE_ITEM_BULLET || nBaseType == BASE_ITEM_BOLT)
     {
         if (IsAmmoInfinite(oNewItem))
         { // If the ammo has ANY item properties at all, it is considered magical and infinite. Make sure it only has a stack size of 1.
@@ -868,6 +870,22 @@ object SelectItemToDropAsLoot(int iCR, int iAreaCR, string sType, int nTier, obj
     return SelectTierItem(iCR, iAreaCR, sType, nTier, oDestinationContainer, bNonUnique, fQualityExponentModifier);
 }
 
+object SelectEquippedItemToDropAsLoot(object oCreature)
+{
+    // We can get any tier
+    json jItems = _BuildListOfOwnDroppableLoot(oCreature, 0, TRUE);
+    int nNumItems = JsonGetLength(jItems);
+
+
+    if (nNumItems > 0)
+    {
+        int nIndex = Random(JsonGetLength(jItems));
+        object oReturn = StringToObject(JsonGetString(JsonArrayGet(jItems, nIndex)));
+
+        return oReturn;
+    }
+    return OBJECT_INVALID;
+}
 
 
 // ---------------------------------------------------------
@@ -1281,7 +1299,7 @@ int ShouldDebugLoot()
         if (!GetLocalInt(GetModule(), "init_complete"))
         {
             return TRUE;
-        }        
+        }
     }
     return FALSE;
 }
@@ -1554,7 +1572,7 @@ int LootDebugOutput()
     float fRawGold = GetLocalFloat(GetModule(), LOOT_DEBUG_GOLD);
     SendDebugMessage("Expected raw gold: " + FloatToString(fRawGold), TRUE);
     SendDebugMessage("Total item value: " + FloatToString(fGoldTotal), TRUE);
-    
+
     return FloatToInt(fGoldTotal + fRawGold);
 }
 
@@ -1566,7 +1584,7 @@ void CalculatePlaceableLootValues()
     string sPlaceable;
     // This is in _BASE.
     location lSpawn = GetLocation(GetWaypointByTag("_calc_plc_values"));
-    
+
     SetLocalInt(oModule, LOOT_DEBUG_ENABLED, 1);
     for (nPlaceableTier=0; nPlaceableTier<3; nPlaceableTier++)
     {
@@ -1582,7 +1600,7 @@ void CalculatePlaceableLootValues()
             SetLocalInt(oPlaceable, "cr", nACR);
             SetLocalInt(oPlaceable, "area_cr", nACR);
             ExecuteScript("party_credit", oPlaceable);
-			DeleteLocalInt(oPlaceable, "no_credit");
+            DeleteLocalInt(oPlaceable, "no_credit");
             int nGold = LootDebugOutput();
             WriteTimestampedLogEntry("Value of placeable loot " + sTreasureTier + " at ACR " + IntToString(nACR) + " = " + IntToString(nGold));
             SetLocalInt(oModule, "placeable_value_" + sTreasureTier + "_" + IntToString(nACR), nGold);
