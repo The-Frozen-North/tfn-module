@@ -97,6 +97,9 @@ const float PLACEABLE_DESTROY_LOOT_PENALTY = 0.6;
 const float BOSS_CR_MULTIPLIER = 1.0;
 const float SEMIBOSS_CR_MULTIPLIER = 1.0;
 
+const int BOSS_GOLD_MULTIPLIER = 5;
+const int SEMIBOSS_RARE_GOLD_MULTIPLIER = 3;
+
 // Increased area CR means higher quality loot (and higher quality potential loot,
 //eventually this should be re-named as the name is confusing
 // This was replaced with the quality modifiers above which affect the loot weights directly
@@ -1285,6 +1288,38 @@ int DetermineGoldFromCR(int iCR, int nMultiplier=1)
         SetLocalFloat(GetModule(), LOOT_DEBUG_GOLD, GetLocalFloat(GetModule(), LOOT_DEBUG_GOLD) + fAvg);
     }
     return iResult;
+}
+
+object GenerateAnimalLoot(object oCreature, int nAnimalGoldMultiplier, object oContainer)
+{
+    int nCreatureSize = GetCreatureSize(oCreature);
+    if (nCreatureSize < CREATURE_SIZE_MEDIUM) return OBJECT_INVALID;
+
+    string sResRef = "loot_skin";
+
+    int nRace = GetRacialType(oCreature);
+    switch (nRace)
+    {
+        case RACIAL_TYPE_MAGICAL_BEAST: sResRef = "loot_hide"; break;
+        case RACIAL_TYPE_ANIMAL: sResRef = "loot_pelt"; break;
+        case RACIAL_TYPE_BEAST: sResRef = "loot_pelt"; break;
+        case RACIAL_TYPE_VERMIN: sResRef = "loot_carapace"; break;
+    }
+
+    int nBaseGold = GetMaxHitPoints(oCreature) + (GetHitDice(oCreature) * 4) + (GetBaseAttackBonus(oCreature) * 3);
+
+    int nGold = nCreatureSize * (nAnimalGoldMultiplier * nBaseGold);
+
+    object oItem = CreateItemOnObject(sResRef, oContainer);
+
+    NWNX_Item_SetAddGoldPieceValue(oItem, nGold);
+
+    // medium: 5 lbs, large: 10 lbs, huge: 15 lbs
+    AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyWeightIncrease(nCreatureSize - 3), oItem);
+
+    SetName(oItem, GetName(oItem) + " (" + GetName(oCreature) + ")");
+
+    return oItem;
 }
 
 int ShouldDebugLoot()

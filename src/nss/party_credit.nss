@@ -405,6 +405,7 @@ void main()
 // =========================
 
    int bNoTreasure = FALSE;
+   int bAnimalLoot = FALSE;
    object oContainer, oPersonalLoot;
    int nUnlooted;
    vector vPosition;
@@ -450,7 +451,6 @@ void main()
             bNoTreasure = TRUE;
         }
 
-// any of these races will never drop treasure
         int nRace = GetRacialType(OBJECT_SELF);
         switch (nRace)
         {
@@ -459,10 +459,22 @@ void main()
             case RACIAL_TYPE_VERMIN:
             case RACIAL_TYPE_BEAST:
             {
-               bNoTreasure = TRUE;
-               nTreasureChance = 0;
+               // no treasure or loot at all from small animals, including hides skins pelts etc
+               if (GetCreatureSize(OBJECT_SELF) < CREATURE_SIZE_MEDIUM)
+               {
+                   bNoTreasure = TRUE;
+               }
+               else
+               {
+                   bAnimalLoot = TRUE;
+               }
             }
             break;
+        }
+
+        if (GetLocalInt(OBJECT_SELF, "animal_loot") == 1)
+        {
+            bAnimalLoot = TRUE;
         }
     }
 
@@ -571,7 +583,7 @@ void main()
     int nGold = 0;
     int nGoldToDistribute = 0;
     // also avoid dropping empty lootbags for people who have the key already
-    if (!bNoTreasure || GetIsObjectValid(oKey))
+    if (!bAnimalLoot && (!bNoTreasure || GetIsObjectValid(oKey)))
     {
         if (ShouldDebugLoot())
         {
@@ -579,8 +591,8 @@ void main()
             float fTreasureChance = IntToFloat(nTreasureChance)/100.0;
             SetLocalFloat(GetModule(), LOOT_DEBUG_DROP_CHANCE_MULT, fTreasureChance);
         }
-        if (bBoss == 1) nGold = DetermineGoldFromCR(iAreaCR, 5);
-        else if (bSemiBoss == 1 || bRare == 1) nGold = DetermineGoldFromCR(iAreaCR, 3);
+        if (bBoss == 1) nGold = DetermineGoldFromCR(iAreaCR, BOSS_GOLD_MULTIPLIER);
+        else if (bSemiBoss == 1 || bRare == 1) nGold = DetermineGoldFromCR(iAreaCR, SEMIBOSS_RARE_GOLD_MULTIPLIER);
         else
         {
             nGold = DetermineGoldFromCR(iAreaCR);
@@ -706,6 +718,34 @@ void main()
        {
            int nAssignIndex = DeterminePartyMemberThatGetsItem(oMap);
            jAssignments = _AddItemToPartyMemberAssignments(jAssignments, oMap, nAssignIndex);
+       }
+
+       if (bAnimalLoot)
+       {
+           int nAnimalGoldMultiplier = 1;
+
+           if (bBoss == 1) nAnimalGoldMultiplier = BOSS_GOLD_MULTIPLIER;
+           else if (bSemiBoss == 1 || bRare == 1) nAnimalGoldMultiplier = SEMIBOSS_RARE_GOLD_MULTIPLIER;
+
+           object oAnimalLootContainer = GetObjectByTag("_animal_loot_container");
+
+           object oAnimalLoot = GenerateAnimalLoot(OBJECT_SELF, nAnimalGoldMultiplier, oAnimalLootContainer);
+
+           if (GetIsObjectValid(oAnimalLoot))
+           {
+               int nAssignIndex = DeterminePartyMemberThatGetsItem(oAnimalLoot);
+               jAssignments = _AddItemToPartyMemberAssignments(jAssignments, oAnimalLoot, nAssignIndex);
+
+               // 50% chance of another animal loot to distribute
+               if (d2() == 1)
+               {
+                    nAssignIndex = DeterminePartyMemberThatGetsItem(oAnimalLoot);
+                    jAssignments = _AddItemToPartyMemberAssignments(jAssignments, oAnimalLoot, nAssignIndex);
+               }
+
+               // the loot is serialized into JSON, we don't need it anymore
+               DestroyObject(oAnimalLoot);
+           }
        }
    }
 

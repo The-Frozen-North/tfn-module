@@ -28,13 +28,13 @@
     "id": 90544,
     "type": "cexolocstring",
     "value": {
-      "0": "Even an amateur tanner could make a lovely piece of leather from this beautiful hide.\n\nIt is likely worth selling to a merchant."
+      "0": "This is the hide of a freshly killed animal or some other creature.\n\nIt is likely worth selling to a merchant."
     }
   },
   "Description": {
     "type": "cexolocstring",
     "value": {
-      "0": "Even an amateur tanner could make a lovely piece of leather from this beautiful hide.\n\nIt is likely worth selling to a merchant."
+      "0": "This is the hide of a freshly killed animal or some other creature.\n\nIt is likely worth selling to a merchant."
     }
   },
   "Identified": {
@@ -50,7 +50,7 @@
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 6
+    "value": 5
   },
   "PaletteID": {
     "type": "byte",
@@ -62,39 +62,7 @@
   },
   "PropertiesList": {
     "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 0
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 0
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 11
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 81
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 0
-        }
-      }
-    ]
+    "value": []
   },
   "StackSize": {
     "type": "word",
@@ -106,10 +74,14 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "x2_it_cmat_leath"
+    "value": "loot_hide"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "animal_hide"
+    "value": "loot_hide"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 5
   }
 }

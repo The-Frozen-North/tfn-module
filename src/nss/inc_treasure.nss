@@ -111,7 +111,7 @@ int GetItemTier(object oItem)
         }
 
     // special rule to bump up unidentified items to the next tier, too much magic gear encountered at low level
-    // basically, 
+    // basically,
     if (nBaseType != BASE_ITEM_SPELLSCROLL && nTier == 1 && nIdentified == 0)
     {
        nTier = 2;

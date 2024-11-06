@@ -6,7 +6,7 @@
   },
   "BaseItem": {
     "type": "int",
-    "value": 29
+    "value": 112
   },
   "Charges": {
     "type": "byte",
@@ -25,28 +25,32 @@
     "value": 0
   },
   "DescIdentified": {
-    "id": 58559,
+    "id": 90544,
     "type": "cexolocstring",
     "value": {
-      "0": "This is the skin of a freshly killed animal or some other creature.\n\nIt may be of value to a merchant."
+      "0": "This is the carapace of some creature.\n\nIt is likely worth selling to a merchant."
     }
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "This is the carapace of some creature.\n\nIt is likely worth selling to a merchant."
+    }
   },
   "Identified": {
     "type": "byte",
     "value": 1
   },
   "LocalizedName": {
-    "id": 13379,
+    "id": 83543,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Carapace"
+    }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 7
+    "value": 28
   },
   "PaletteID": {
     "type": "byte",
@@ -58,39 +62,7 @@
   },
   "PropertiesList": {
     "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 0
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 0
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 11
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 81
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 0
-        }
-      }
-    ]
+    "value": []
   },
   "StackSize": {
     "type": "word",
@@ -102,10 +74,14 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "NW_IT_MMIDMISC06"
+    "value": "loot_carapace"
   },
   "TemplateResRef": {
     "type": "resref",
-    "value": "skin"
+    "value": "loot_carapace"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 28
   }
 }
