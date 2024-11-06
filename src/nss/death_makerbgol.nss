@@ -23,13 +23,21 @@ void MakeNewGolem(object oOne, object oTwo, location lMid)
     // Remove old ones from array
     if (GetIsObjectValid(oOne))
     {
-        int nIndex = JsonGetInt(JsonFind(jGolems, JsonString(ObjectToString(oOne))));
-        jGolems = JsonArrayDel(jGolems, nIndex);
+        json jResponse = JsonFind(jGolems, JsonString(ObjectToString(oOne)));
+        if (jResponse != JsonNull())
+        {
+            int nIndex = JsonGetInt(jResponse);
+            jGolems = JsonArrayDel(jGolems, nIndex);
+        }
     }
     if (GetIsObjectValid(oTwo))
     {
-        int nIndex = JsonGetInt(JsonFind(jGolems, JsonString(ObjectToString(oTwo))));
-        jGolems = JsonArrayDel(jGolems, nIndex);
+        json jResponse = JsonFind(jGolems, JsonString(ObjectToString(oTwo)));
+        if (jResponse != JsonNull())
+        {
+            int nIndex = JsonGetInt(jResponse);
+            jGolems = JsonArrayDel(jGolems, nIndex);
+        }
     }
     
     SetLocalJson(oArea, "maker_golems", jGolems);
@@ -48,12 +56,12 @@ void main()
         return;
     }
     // Look for another dead one
-    int n=1;
+    int n=0;
     object oOther;
     do
     {
-        object oOther = GetNearestObjectByTag(GetTag(OBJECT_SELF), OBJECT_SELF, n);
-        if (GetIsDead(oOther) && GetIsObjectValid(oOther))
+        oOther = GetNearestObjectByTag(GetTag(OBJECT_SELF), OBJECT_SELF, n);
+        if (GetIsDead(oOther) && GetIsObjectValid(oOther) && oOther != OBJECT_SELF)
         {
             if (!GetLocalInt(oOther, "tethering"))
             {
