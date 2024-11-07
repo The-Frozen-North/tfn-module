@@ -77,11 +77,6 @@ void BashLock(object oAttacker)
 
 
     string sOutcome;
-    if (20+nStrengthBonus < nUnlockDC)
-    {
-        sOutcome = "Success will never be possible";
-        nEffect = VFX_COM_BLOOD_SPARK_SMALL;
-    }
     if (nTotal >= nUnlockDC)
     {
         sOutcome = "success";
@@ -119,6 +114,11 @@ void BashLock(object oAttacker)
 
             oPartyNPC = GetNextFactionMember(oAttacker, FALSE);
         }
+    }
+    else if (20+nStrengthBonus < nUnlockDC)
+    {
+        sOutcome = "Success will never be possible";
+        nEffect = VFX_COM_BLOOD_SPARK_SMALL;
     }
     else
     {
