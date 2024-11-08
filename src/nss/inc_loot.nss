@@ -117,7 +117,7 @@ const int APPAREL_ARMOR_UNCOMMON_CHANCE = 33;
 const int APPAREL_ARMOR_RARE_CHANCE = 25;
 
 // And these don't need to sum to 100
-const int UNIQUE_ITEM_CHANCE = 67;
+const int UNIQUE_ITEM_CHANCE = 50;
 const int MISC_CHANCE_TO_BE_JEWEL = 67;
 const int RANDOM_WEAPON_IS_RANGED = 40;
 
