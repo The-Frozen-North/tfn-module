@@ -841,13 +841,17 @@ void main()
            // a single piece of loot will be guaranteed from their equipped item (if present)
            if ((bBoss || bSemiBoss) && GetObjectType(OBJECT_SELF) == OBJECT_TYPE_CREATURE)
            {
-               object oEquippedItem = SelectEquippedItemToDropAsLoot(OBJECT_SELF);
+              
                string sLootKey = "looted_"+GetResRef(OBJECT_SELF);
 
-               if (GetIsObjectValid(oEquippedItem) && SQLocalsPlayer_GetInt(oPC, sLootKey) != 1)
+               if (SQLocalsPlayer_GetInt(oPC, sLootKey) != 1)
                {
-                   CopyItem(oEquippedItem, oPersonalLoot, TRUE);
-                   SQLocalsPlayer_SetInt(oPC, sLootKey, 1);
+                   object oEquippedItem = SelectEquippedItemToDropAsLoot(OBJECT_SELF);
+                   if (GetIsObjectValid(oEquippedItem))
+                   {
+                        CopyItem(oEquippedItem, oPersonalLoot, TRUE);
+                        SQLocalsPlayer_SetInt(oPC, sLootKey, 1);
+                   }
                }
            }
 
