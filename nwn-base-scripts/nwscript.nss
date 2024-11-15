@@ -556,6 +556,20 @@ int EFFECT_TYPE_PACIFY                      = 87;
 int EFFECT_TYPE_BONUS_FEAT                  = 88;
 int EFFECT_TYPE_TIMESTOP_IMMUNITY           = 89;
 int EFFECT_TYPE_FORCE_WALK                  = 90;
+// The below values are used only if GetEffectType parameter bAllTypes is TRUE
+int EFFECT_TYPE_APPEAR                      = 91;
+int EFFECT_TYPE_CUTSCENE_DOMINATED          = 92;
+int EFFECT_TYPE_DAMAGE                      = 93;
+int EFFECT_TYPE_DEATH                       = 94;
+int EFFECT_TYPE_DISAPPEAR                   = 95;
+int EFFECT_TYPE_HEAL                        = 96;
+int EFFECT_TYPE_HITPOINTCHANGEWHENDYING     = 97;
+int EFFECT_TYPE_KNOCKDOWN                   = 98;
+int EFFECT_TYPE_MODIFY_ATTACKS              = 99;
+int EFFECT_TYPE_SUMMON_CREATURE             = 100;
+int EFFECT_TYPE_TAUNT                       = 101;
+int EFFECT_TYPE_WOUNDING                    = 102;
+// End of valued returned by bAllTypes being TRUE
 
 int ITEM_APPR_TYPE_SIMPLE_MODEL         = 0;
 int ITEM_APPR_TYPE_WEAPON_COLOR         = 1;
@@ -6315,6 +6329,8 @@ int GUIEVENT_EXAMINE_OBJECT                         = 23;
 int GUIEVENT_OPTIONS_OPEN                           = 24;
 int GUIEVENT_OPTIONS_CLOSE                          = 25;
 int GUIEVENT_RADIAL_OPEN                            = 26;
+int GUIEVENT_CHATLOG_PORTRAIT_CLICK                 = 27;
+int GUIEVENT_PLAYERLIST_PLAYER_TELL                 = 28;
 
 int JSON_TYPE_NULL                                  = 0; // Also invalid
 int JSON_TYPE_OBJECT                                = 1;
@@ -6385,6 +6401,9 @@ string PLAYER_DEVICE_PROPERTY_UI_PARTY_INVITE_POPUP                         = "u
 string PLAYER_DEVICE_PROPERTY_UI_SPELLBOOK_SORT_SPELLS                      = "ui.spellbook.sort-spells";
 string PLAYER_DEVICE_PROPERTY_UI_RADIAL_SPELLCASTING_ALWAYS_SUBRADIAL       = "ui.radial.spellcasting.always-show-as-subradial";
 string PLAYER_DEVICE_PROPERTY_UI_RADIAL_CLASS_ABILITIES_ALWAYS_SUBRADIAL    = "ui.radial.class-abilities.always-show-as-subradial";
+string PLAYER_DEVICE_PROPERTY_UI_DISPLAY_LOADSCREEN_HINTS_IN_CHATLOG        = "ui.display-loadscreen-hints-in-chatlog";
+string PLAYER_DEVICE_PROPERTY_UI_MOUSE_SCALE                                = "ui.mouse.scale.enabled";
+string PLAYER_DEVICE_PROPERTY_UI_MOUSE_SCALE_VALUE                          = "ui.mouse.scale.value";
 string PLAYER_DEVICE_PROPERTY_CAMERA_MODE                                   = "camera.mode";
 string PLAYER_DEVICE_PROPERTY_CAMERA_EDGE_TURNING                           = "camera.edge-turning";
 string PLAYER_DEVICE_PROPERTY_CAMERA_DIALOG_ZOOM                            = "camera.dialog-zoom";
@@ -6508,6 +6527,11 @@ int RESTYPE_PNG                                     = 2080;
 int RESTYPE_JPG                                     = 2081;
 int RESTYPE_CAF                                     = 2082;
 int RESTYPE_JUI                                     = 2083;
+int RESTYPE_CDB                                     = 2084;
+
+int RESMAN_FILE_CONTENTS_FORMAT_RAW                 = 0;
+int RESMAN_FILE_CONTENTS_FORMAT_BASE64              = 1;
+int RESMAN_FILE_CONTENTS_FORMAT_HEX                 = 2;
 
 // For JsonArrayTransform():
 int JSON_ARRAY_SORT_ASCENDING                       = 1;
@@ -6635,6 +6659,17 @@ int CAMERA_FLAG_DISABLE_ZOOM                        = 64;
 int SETTILE_FLAG_RELOAD_GRASS                       = 1;
 int SETTILE_FLAG_RELOAD_BORDER                      = 2;
 int SETTILE_FLAG_RECOMPUTE_LIGHTING                 = 4;
+
+int AUDIOSTREAM_IDENTIFIER_0                        = 0;
+int AUDIOSTREAM_IDENTIFIER_1                        = 1;
+int AUDIOSTREAM_IDENTIFIER_2                        = 2;
+int AUDIOSTREAM_IDENTIFIER_3                        = 3;
+int AUDIOSTREAM_IDENTIFIER_4                        = 4;
+int AUDIOSTREAM_IDENTIFIER_5                        = 5;
+int AUDIOSTREAM_IDENTIFIER_6                        = 6;
+int AUDIOSTREAM_IDENTIFIER_7                        = 7;
+int AUDIOSTREAM_IDENTIFIER_8                        = 8;
+int AUDIOSTREAM_IDENTIFIER_9                        = 9;
 
 string sLanguage = "nwscript";
 
@@ -6810,8 +6845,10 @@ vector GetPosition(object oTarget);
 float GetFacing(object oTarget);
 
 // Get the possessor of oItem
+// - bReturnBags: If TRUE will potentially return a bag container item the item is in, instead of
+//                the object holding the bag. Make sure to check the returning item object type with this flag.
 // * Return value on error: OBJECT_INVALID
-object GetItemPossessor(object oItem);
+object GetItemPossessor(object oItem, int bReturnBags = FALSE);
 
 // Get the object possessed by oCreature with the tag sItemTag
 // * Return value on error: OBJECT_INVALID
@@ -6949,15 +6986,22 @@ object GetSpellTargetObject();
 // This action casts a spell at oTarget.
 // - nSpell: SPELL_*
 // - oTarget: Target for the spell
-// - nMetamagic: METAMAGIC_*
+// - nMetaMagic: METAMAGIC_*. If nClass is specified, cannot be METAMAGIC_ANY.
+// - bCheat: If this is TRUE, then the executor of the action doesn't have to be
+//   able to cast the spell. Ignored if nClass is specified.
 // - bCheat: If this is TRUE, then the executor of the action doesn't have to be
 //   able to cast the spell.
-// - nDomainLevel: TBD - SS
+// - nDomainLevel: The level of the spell if cast from a domain slot.
+//   eg SPELL_HEAL can be spell level 5 on a cleric. Use 0 for no domain slot.
 // - nProjectilePathType: PROJECTILE_PATH_TYPE_*
 // - bInstantSpell: If this is TRUE, the spell is cast immediately. This allows
 //   the end-user to simulate a high-level magic-user having lots of advance
 //   warning of impending trouble
-void ActionCastSpellAtObject(int nSpell, object oTarget, int nMetaMagic=METAMAGIC_ANY, int bCheat=FALSE, int nDomainLevel=0, int nProjectilePathType=PROJECTILE_PATH_TYPE_DEFAULT, int bInstantSpell=FALSE);
+// - nClass: If set to a CLASS_TYPE_* it will cast using that class specifically.
+//   CLASS_TYPE_INVALID will use spell abilities.
+// - bSpontaneousCast: If set to TRUE will attempt to cast the given spell spontaneously,
+//   ie a Cleric casting Cure Light Wounds using any level 1 slot. Needs a valid nClass set.
+void ActionCastSpellAtObject(int nSpell, object oTarget, int nMetaMagic=METAMAGIC_ANY, int bCheat=FALSE, int nDomainLevel=0, int nProjectilePathType=PROJECTILE_PATH_TYPE_DEFAULT, int bInstantSpell=FALSE, int nClass=-1, int bSpontaneousCast=FALSE);
 
 // Get the current hitpoints of oObject
 // * Return value on error: 0
@@ -7087,9 +7131,11 @@ effect EffectAbilityIncrease(int nAbilityToIncrease, int nModifyBy);
 // Create a Damage Resistance effect that removes the first nAmount points of
 // damage of type nDamageType, up to nLimit (or infinite if nLimit is 0)
 // - nDamageType: DAMAGE_TYPE_*
-// - nAmount
-// - nLimit
-effect EffectDamageResistance(int nDamageType, int nAmount, int nLimit=0);
+// - nAmount: The amount of damage to soak each time the target is damaged.
+// - nLimit: How much damage the effect can absorb before disappearing.
+//   Set to zero for infinite.
+// - bRangedOnly: Set to TRUE to have this resistance only apply to ranged attacks.
+effect EffectDamageResistance(int nDamageType, int nAmount, int nLimit=0, int bRangedOnly = FALSE);
 
 // Create a Resurrection effect. This should be applied as an instantaneous effect.
 effect EffectResurrection();
@@ -7105,9 +7151,12 @@ effect EffectResurrection();
 //   it will use the appear animation, and if it's 2 it will use appear2 (which doesn't exist for most creatures)
 effect EffectSummonCreature(string sCreatureResref, int nVisualEffectId=VFX_NONE, float fDelaySeconds=0.0f, int nUseAppearAnimation=0);
 
-// Get the level at which this creature cast it's last spell (or spell-like ability)
-// * Return value on error, or if oCreature has not yet cast a spell: 0;
-int GetCasterLevel(object oCreature);
+// Get the caster level of an object. This is consistent with the caster level used when applying effects if OBJECT_SELF is used.
+// - oObject: A creature will return the caster level of their currently cast spell or ability, or the item's caster level if an item was used
+//            A placeable will return an automatic caster level: floor(10, (spell innate level * 2) - 1)
+//            An Area of Effect object will return the caster level that was used to create the Area of Effect.
+// * Return value on error, or if oObject has not yet cast a spell: 0;
+int GetCasterLevel(object oObject);
 
 // Get the first in-game effect on oCreature.
 effect GetFirstEffect(object oCreature);
@@ -7294,7 +7343,8 @@ effect EffectAttackIncrease(int nBonus, int nModifierType=ATTACK_BONUS_MISC);
 // - nDamagePower: DAMAGE_POWER_*
 // - nLimit: How much damage the effect can absorb before disappearing.
 //   Set to zero for infinite
-effect EffectDamageReduction(int nAmount, int nDamagePower, int nLimit=0);
+// - bRangedOnly: Set to TRUE to have this reduction only apply to ranged attacks 
+effect EffectDamageReduction(int nAmount, int nDamagePower, int nLimit=0, int bRangedOnly = FALSE);
 
 // Create a Damage Increase effect
 // - nBonus: DAMAGE_BONUS_*
@@ -7591,8 +7641,10 @@ string GetTag(object oObject);
 int ResistSpell(object oCaster, object oTarget);
 
 // Get the effect type (EFFECT_TYPE_*) of eEffect.
+// - bAllTypes: Set to TRUE to return additional values the game used to return EFFECT_INVALIDEFFECT for, specifically:
+//  EFFECT_TYPE: APPEAR, CUTSCENE_DOMINATED, DAMAGE, DEATH, DISAPPEAR, HEAL, HITPOINTCHANGEWHENDYING, KNOCKDOWN, MODIFYNUMATTACKS, SUMMON_CREATURE, TAUNT, WOUNDING
 // * Return value if eEffect is invalid: EFFECT_INVALIDEFFECT
-int GetEffectType(effect eEffect);
+int GetEffectType(effect eEffect, int bAllTypes = FALSE);
 
 // Create an Area Of Effect effect in the area of the creature it is applied to.
 // If the scripts are not specified, default ones will be used.
@@ -7954,14 +8006,22 @@ float StringToFloat(string sNumber);
 // Cast spell nSpell at lTargetLocation.
 // - nSpell: SPELL_*
 // - lTargetLocation
-// - nMetaMagic: METAMAGIC_*
+// - nMetaMagic: METAMAGIC_*. If nClass is specified, cannot be METAMAGIC_ANY.
+// - bCheat: If this is TRUE, then the executor of the action doesn't have to be
+//   able to cast the spell. Ignored if nClass is specified.
 // - bCheat: If this is TRUE, then the executor of the action doesn't have to be
 //   able to cast the spell.
 // - nProjectilePathType: PROJECTILE_PATH_TYPE_*
 // - bInstantSpell: If this is TRUE, the spell is cast immediately; this allows
 //   the end-user to simulate
 //   a high-level magic user having lots of advance warning of impending trouble.
-void   ActionCastSpellAtLocation(int nSpell, location lTargetLocation, int nMetaMagic=METAMAGIC_ANY, int bCheat=FALSE, int nProjectilePathType=PROJECTILE_PATH_TYPE_DEFAULT, int bInstantSpell=FALSE);
+// - nClass: If set to a CLASS_TYPE_* it will cast using that class specifically.
+//   CLASS_TYPE_INVALID will use spell abilities.
+// - bSpontaneousCast: If set to TRUE will attempt to cast the given spell spontaneously,
+//   ie a Cleric casting Cure Light Wounds using any level 1 slot. Needs a valid nClass set.
+// - nDomainLevel: The level of the spell if cast from a domain slot.
+//   eg SPELL_HEAL can be spell level 5 on a cleric. Use 0 for no domain slot.
+void ActionCastSpellAtLocation(int nSpell, location lTargetLocation, int nMetaMagic=METAMAGIC_ANY, int bCheat=FALSE, int nProjectilePathType=PROJECTILE_PATH_TYPE_DEFAULT, int bInstantSpell=FALSE, int nClass=-1, int bSpontaneousCast=FALSE, int nDomainlevel=0);
 
 // * Returns TRUE if oSource considers oTarget as an enemy.
 int GetIsEnemy(object oTarget, object oSource=OBJECT_SELF);
@@ -8030,8 +8090,9 @@ int GetLastSpell();
 // This is for use in a user-defined script, it gets the event number.
 int GetUserDefinedEventNumber();
 
-// This is for use in a Spell script, it gets the ID of the spell that is being
-// cast (SPELL_*).
+// This is for use in a Spell script, it gets the ID of the spell that is being cast.
+// If used in an Area of Effect script it will return the ID of the spell that generated the AOE effect.
+// * Returns the spell ID (SPELL_*) or -1 if no spell was cast or on error
 int GetSpellId();
 
 // Generate a random name.
@@ -8049,13 +8110,9 @@ effect EffectDisease(int nDiseaseType);
 // Create a Silence effect.
 effect EffectSilence();
 
-// Set the name of oObject.
-//
-// - oObject: the object for which you are changing the name (area, creature, placeable, item, or door).
-// - sNewName: the new name that the object will use.
-// Note: Setting an object's name to "" will make the object
-//       revert to using the name it had originally before any
-//       SetName() calls were made on the object.
+// Get the name of oObject.
+// - bOriginalName:  if set to true any new name specified via a SetName scripting command
+//                   is ignored and the original object's name is returned instead.
 string GetName(object oObject, int bOriginalName=FALSE);
 
 // Use this in a conversation script to get the person with whom you are conversing.
@@ -8184,10 +8241,11 @@ object GetModuleItemAcquiredFrom();
 // Set the value for a custom token.
 void SetCustomToken(int nCustomTokenNumber, string sTokenValue);
 
-// Determine whether oCreature has nFeat, and nFeat is useable.
+// Determine whether oCreature has nFeat, optionally if nFeat is useable.
 // - nFeat: FEAT_*
 // - oCreature
-int GetHasFeat(int nFeat, object oCreature=OBJECT_SELF);
+// - bIgnoreUses: Will check if the creature has the given feat even if it has no uses remaining
+int GetHasFeat(int nFeat, object oCreature=OBJECT_SELF, int bIgnoreUses=FALSE);
 
 // Determine whether oCreature has nSkill, and nSkill is useable.
 // - nSkill: SKILL_*
@@ -9372,7 +9430,8 @@ int GetStandardFactionReputation(int nStandardFaction, object oCreature=OBJECT_S
 // - bBroadcastToFaction: If this is TRUE then only creatures in the same faction
 //   as oCreatureToFloatAbove
 //   will see the floaty text, and only if they are within range (30 metres).
-void FloatingTextStrRefOnCreature(int nStrRefToDisplay, object oCreatureToFloatAbove, int bBroadcastToFaction=TRUE);
+// - bChatWindow:  If TRUE, the string reference will be displayed in oCreatureToFloatAbove's chat window
+void FloatingTextStrRefOnCreature(int nStrRefToDisplay, object oCreatureToFloatAbove, int bBroadcastToFaction=TRUE, int bChatWindow=TRUE);
 
 // Display floaty text above the specified creature.
 // The text will also appear in the chat buffer of each player that receives the
@@ -9382,7 +9441,8 @@ void FloatingTextStrRefOnCreature(int nStrRefToDisplay, object oCreatureToFloatA
 // - bBroadcastToFaction: If this is TRUE then only creatures in the same faction
 //   as oCreatureToFloatAbove
 //   will see the floaty text, and only if they are within range (30 metres).
-void FloatingTextStringOnCreature(string sStringToDisplay, object oCreatureToFloatAbove, int bBroadcastToFaction=TRUE);
+// - bChatWindow:  If TRUE, sStringToDisplay will be displayed in oCreatureToFloatAbove's chat window.
+void FloatingTextStringOnCreature(string sStringToDisplay, object oCreatureToFloatAbove, int bBroadcastToFaction=TRUE, int bChatWindow=TRUE);
 
 // - oTrapObject: a placeable, door or trigger
 // * Returns TRUE if oTrapObject is disarmable.
@@ -9770,7 +9830,7 @@ location GetCampaignLocation(string sCampaignName, string sVarName, object oPlay
 string GetCampaignString(string sCampaignName, string sVarName, object oPlayer=OBJECT_INVALID);
 
 // Duplicates the object specified by oSource.
-// NOTE: this command can be used for copying Creatures, Items, Placeables, Waypoints, Stores, Doors, Triggers.
+// NOTE: this command can be used for copying Creatures, Items, Placeables, Waypoints, Stores, Doors, Triggers, Encounters.
 // If an owner is specified and the object is an item, it will be put into their inventory
 // Otherwise, it will be created at the location.
 // If a new tag is specified, it will be assigned to the new object.
@@ -9781,7 +9841,7 @@ object CopyObject(object oSource, location locLocation, object oOwner = OBJECT_I
 void DeleteCampaignVariable(string sCampaignName, string sVarName, object oPlayer=OBJECT_INVALID);
 
 // Stores an object with the given id.
-// NOTE: this command can be used for storing Creatures, Items, Placeables, Waypoints, Stores, Doors, Triggers.
+// NOTE: this command can be used for storing Creatures, Items, Placeables, Waypoints, Stores, Doors, Triggers, Encounters.
 // Returns 0 if it failled, 1 if it worked.
 // If bSaveObjectState is TRUE, local vars, effects, action queue, and transition info (triggers, doors) are saved out
 // (except for Combined Area Format, which always has object state saved out).
@@ -10978,12 +11038,12 @@ int LineOfSightVector( vector vSource, vector vTarget );
 // spell as.
 // - Returns CLASS_TYPE_INVALID if the caster has
 //   no valid class (placeables, etc...)
+// If used in an Area of Effect script it will return the creators spellcasting class.
 int GetLastSpellCastClass();
 
-// Sets the number of base attacks for the specified
-// creatures. The range of values accepted are from
-// 1 to 6
-// Note: This function does not work on Player Characters
+// Sets the number of base attacks each round for the specified creature (PC or NPC).
+// If set on a PC it will not be shown on their character sheet, but will save to BIC/savegame.
+// - nBaseAttackBonus - Number of base attacks per round, 1 to 6
 void SetBaseAttackBonus( int nBaseAttackBonus, object oCreature = OBJECT_SELF );
 
 // Restores the number of base attacks back to it's
@@ -12213,7 +12273,7 @@ void SqlBindVector(sqlquery sqlQuery, string sParam, vector vVector);
 
 // Bind a object to a named parameter of the given prepared query.
 // Objects are serialized, NOT stored as a reference!
-// Currently supported object types: Creatures, Items, Placeables, Waypoints, Stores, Doors, Triggers, Areas (CAF format)
+// Currently supported object types: Creatures, Items, Placeables, Waypoints, Stores, Doors, Triggers, Encounters, Areas (CAF format)
 // If bSaveObjectState is TRUE, local vars, effects, action queue, and transition info (triggers, doors) are saved out
 // (except for Combined Area Format, which always has object state saved out).
 void SqlBindObject(sqlquery sqlQuery, string sParam, object oObject, int bSaveObjectState = FALSE);
@@ -12435,6 +12495,8 @@ int GetLastGuiEventInteger();
 //                                         For GUI_PANEL_EXAMINE_*, the object being examined.
 // * GUIEVENT_*SELECT_CREATURE: The creature that was (un)selected
 // * GUIEVENT_EXAMINE_OBJECT: The object being examined.
+// * GUIEVENT_CHATLOG_PORTRAIT_CLICK: The owner of the portrait.
+// * GUIEVENT_PLAYERLIST_PLAYER_TELL: The selected player.
 object GetLastGuiEventObject();
 
 // Disable a gui panel for the client that controls oPlayer.
@@ -12704,6 +12766,13 @@ int GetPlayerDevicePlatform(object oPlayer);
 // * RESTYPE_UTW
 // * RESTYPE_UTE
 // * RESTYPE_UTM
+// * RESTYPE_DLG
+// * RESTYPE_UTS
+// * RESTYPE_IFO
+// * RESTYPE_FAC
+// * RESTYPE_ITP
+// * RESTYPE_GUI
+// * RESTYPE_GFF
 // Returns a valid gff-type json structure, or a null value with JsonGetError() set.
 json TemplateToJson(string sResRef, int nResType);
 
@@ -12724,17 +12793,19 @@ string ResManFindPrefix(string sPrefix, int nResType, int nNth = 1, int bSearchB
 // * The token is a integer for ease of handling only. You are not supposed to do anything with it, except store/pass it.
 // * The window ID needs to be alphanumeric and short. Only one window (per client) with the same ID can exist at a time.
 //   Re-creating a window with the same id of one already open will immediately close the old one.
+// * sEventScript is optional and overrides the NUI module event for this window only.
 // * See nw_inc_nui.nss for full documentation.
 // Returns the window token on success (>0), or 0 on error.
-int NuiCreateFromResRef(object oPlayer, string sResRef, string sWindowId = "");
+int NuiCreateFromResRef(object oPlayer, string sResRef, string sWindowId = "", string sEventScript = "");
 
 // Create a NUI window inline for the given player.
 // * The token is a integer for ease of handling only. You are not supposed to do anything with it, except store/pass it.
 // * The window ID needs to be alphanumeric and short. Only one window (per client) with the same ID can exist at a time.
 //   Re-creating a window with the same id of one already open will immediately close the old one.
+// * sEventScript is optional and overrides the NUI module event for this window only.
 // * See nw_inc_nui.nss for full documentation.
 // Returns the window token on success (>0), or 0 on error.
-int NuiCreate(object oPlayer, json jNui, string sWindowId = "");
+int NuiCreate(object oPlayer, json jNui, string sWindowId = "", string sEventScript = "");
 
 // You can look up windows by ID, if you gave them one.
 // * Windows with a ID present are singletons - attempting to open a second one with the same ID
@@ -13117,10 +13188,11 @@ json RegExpIterate(string sRegExp, string sValue, int nSyntaxFlags = REGEXP_ECMA
 string RegExpReplace(string sRegExp, string sValue, string sReplacement, int nSyntaxFlags = REGEXP_ECMASCRIPT, int nMatchFlags = REGEXP_FORMAT_DEFAULT);
 
 // Get the contents of a file as string, as seen by the server's resman.
-// Note: If the file contains binary data it will return data up to the first null byte.
+// Note: If the output contains binary data it will only return data up to the first null byte.
 // - nResType: a RESTYPE_* constant.
+// - nFormat: one of RESMAN_FILE_CONTENTS_FORMAT_*
 // Returns "" if the file does not exist.
-string ResManGetFileContents(string sResRef, int nResType);
+string ResManGetFileContents(string sResRef, int nResType, int nFormat = RESMAN_FILE_CONTENTS_FORMAT_RAW);
 
 // Compile a script and place it in the server's CURRENTGAME: folder.
 // Note: Scripts will persist for as long as the module is running.
@@ -13147,7 +13219,7 @@ int GetObjectUiDiscoveryMask(object oObject);
 
 // Sets the discoverability mask on oObject.
 // This allows toggling areahilite (TAB key by default) and mouseover discovery in the area view.
-// * nMask is a mask of OBJECT_UI_DISCOVERY_MODE_*
+// * nMask is a bitmask of OBJECT_UI_DISCOVERY_*
 // Will currently only work on Creatures, Doors (Hilite only), Items and Useable Placeables.
 // Does not affect inventory items.
 void SetObjectUiDiscoveryMask(object oObject, int nMask = OBJECT_UI_DISCOVERY_DEFAULT);
@@ -13424,3 +13496,180 @@ int GetMicrosecondCounter();
 
 // Forces the creature to always walk
 effect EffectForceWalk();
+
+// Assign one of the available audio streams to play a specific file. This mechanism can be used
+// to replace regular music playback, and synchronize it between clients.
+// * There is currently no way to get playback state from clients.
+// * Audio streams play in the streams channel which has its own volume setting in the client.
+// * nStreamIdentifier is one of AUDIOSTREAM_IDENTIFIER_*.
+// * Currently, only MP3 CBR files are supported and properly seekable.
+// * Unlike regular music, audio streams do not pause on load screens.
+// * If fSeekOffset is at or beyond the end of the stream, the seek offset will wrap around, even if the file is configured not to loop.
+// * fFadeTime is in seconds to gradually fade in the audio instead of starting directly.
+// * Only one type of fading can be active at once, for example:
+//   If you call StartAudioStream() with fFadeTime = 10.0f, any other audio stream functions with a fade time >0.0f will have no effect
+//   until StartAudioStream() is done fading.
+void StartAudioStream(object oPlayer, int nStreamIdentifier, string sResRef, int bLooping = FALSE, float fFadeTime = 0.0f, float fSeekOffset = -1.0f, float fVolume = 1.0f);
+
+// Stops the given audio stream.
+// * fFadeTime is in seconds to gradually fade out the audio instead of stopping directly.
+// * Only one type of fading can be active at once, for example:
+//   If you call StartAudioStream() with fFadeInTime = 10.0f, any other audio stream functions with a fade time >0.0f will have no effect
+//   until StartAudioStream() is done fading.
+// * Will do nothing if the stream is currently not in use.
+void StopAudioStream(object oPlayer, int nStreamIdentifier, float fFadeTime = 0.0);
+
+// Un/pauses the given audio stream.
+// * fFadeTime is in seconds to gradually fade the audio out/in instead of pausing/resuming directly.
+// * Only one type of fading can be active at once, for example:
+//   If you call StartAudioStream() with fFadeInTime = 10.0f, any other audio stream functions with a fade time >0.0f will have no effect
+//   until StartAudioStream() is done fading.
+// * Will do nothing if the stream is currently not in use.
+void SetAudioStreamPaused(object oPlayer, int nStreamIdentifier, int bPaused, float fFadeTime = 0.0f);
+
+// Change volume of audio stream.
+// * Volume is from 0.0 to 1.0.
+// * fFadeTime is in seconds to gradually change the volume.
+// * Only one type of fading can be active at once, for example:
+//   If you call StartAudioStream() with fFadeInTime = 10.0f, any other audio stream functions with a fade time >0.0f will have no effect
+//   until StartAudioStream() is done fading.
+// * Subsequent calls to this function with fFadeTime >0.0f while already fading the volume
+//   will start the new fade with the previous' fade's progress as starting point.
+// * Will do nothing if the stream is currently not in use.
+void SetAudioStreamVolume(object oPlayer, int nStreamIdentifier, float fVolume = 1.0, float fFadeTime = 0.0f);
+
+// Seek the audio stream to the given offset.
+// * When seeking at or beyond the end of a stream, the seek offset will wrap around, even if the file is configured not to loop.
+// * Will do nothing if the stream is currently not in use.
+// * Will do nothing if the stream is in ended state (reached end of file and looping is off). In this
+//   case, you need to restart the stream.
+void SeekAudioStream(object oPlayer, int nStreamIdentifier, float fSeconds);
+
+// Sets the effect creator
+// - oCreator: The creator of the effect. Can be OBJECT_INVALID.
+effect SetEffectCreator(effect eEffect, object oCreator);
+
+// Sets the effect caster level
+// - nCasterLevel: The caster level of the effect for the purposes of dispel magic and GetEffectCasterlevel. Must be >= 0.
+effect SetEffectCasterLevel(effect eEffect, int nCasterLevel);
+
+// Sets the effect spell id
+// - nSpellId: The spell id for the purposes of effect stacking, dispel magic and GetEffectSpellId. Must be >= -1 (-1 being invalid/no spell)
+effect SetEffectSpellId(effect eEffect, int nSpellId);
+
+// Retrieve the column count of a prepared query.  
+// * sqlQuery must be prepared before this function is called, but can be called before or after parameters are bound.
+// * If the prepared query contains no columns (such as with an UPDATE or INSERT query), 0 is returned.
+// * If a non-SELECT query contains a RETURNING clause, the number of columns in the RETURNING clause will be returned.
+// * A returned value greater than 0 does not guarantee the query will return rows.
+int SqlGetColumnCount(sqlquery sqlQuery);
+
+// Retrieve the column name of the Nth column of a prepared query.
+// * sqlQuery must be prepared before this function is called, but can be called before or after parameters are bound.
+// * If the prepared query contains no columns (such as with an UPDATE or INSERT query), an empty string is returned.
+// * If a non-SELECT query contains a RETURNING clause, the name of the nNth column in the RETURNING clause is returned.
+// * If nNth is out of range, an sqlite error is broadcast and an empty string is returned.
+// * The value of the AS clause will be returned, if the clause exists for the nNth column.
+// * A returned non-empty string does not guarantee the query will return rows.
+string SqlGetColumnName(sqlquery sqlQuery, int nNth);
+
+// Gets the total number of spell abilities a creature has.
+int GetSpellAbilityCount(object oCreature);
+
+// Gets the spell Id of the spell ability at the given index.
+// - nIndex: the index of the spell ability. Bounds: 0 <= nIndex < GetSpellAbilityCount()
+// Returns: a SPELL_* constant or -1 if the slot is not set.
+int GetSpellAbilitySpell(object oCreature, int nIndex);
+
+// Gets the caster level of the spell ability in the given slot. Returns 0 by default.
+// - nIndex: the index of the spell ability. Bounds: 0 <= nIndex < GetSpellAbilityCount()
+// Returns: the caster level or -1 if the slot is not set.
+int GetSpellAbilityCasterLevel(object oCreature, int nIndex);
+
+// Gets the ready state of a spell ability.
+// - nIndex: the index of the spell ability. Bounds: 0 <= nIndex < GetSpellAbilityCount()
+// Returns: TRUE/FALSE or -1 if the slot is not set.
+int GetSpellAbilityReady(object oCreature, int nIndex);
+
+// Set the ready state of a spell ability slot.
+// - nIndex: the index of the spell ability. Bounds: 0 <= nIndex < GetSpellAbilityCount()
+// - bReady: TRUE to mark the slot ready.
+void SetSpellAbilityReady(object oCreature, int nIndex, int bReady = TRUE);
+
+// Serializes the given JSON structure (which must be a valid template spec) into a template.
+// * The template will be stored in the TEMP: alias and currently NOT stored in savegames.
+// * The stored template will override anything currently available in the module.
+// * Supported GFF resource types are the same as TemplateToJson().
+//   However, some types will not be read by the game (e.g. module.IFO is only read at module load).
+// * Returns TRUE if the serialization was successful.
+// * Any target file in TEMP: will be overwritten, even if the serialisation is not successful.
+//   JsonToTemplate(JSON_NULL, ..) can be used to delete a previously-generated file.
+int JsonToTemplate(json jTemplateSpec, string sResRef, int nResType);
+
+// Modifies jObject in-place (with no memory copies of the full object).
+// jObject will have the key at sKey set to jValue.
+void JsonObjectSetInplace(json jObject, string sKey, json jValue);
+
+// Modifies jObject in-place (with no memory copies needed).
+// jObject will have the element at the key sKey removed.
+// Will do nothing if jObject is not a object, or sKey does not exist on the object.
+void JsonObjectDelInplace(json jObject, string sKey);
+
+// Modifies jArray in-place (with no memory copies needed).
+// jArray will have jValue inserted at position nIndex.
+// All succeeding elements in the array will move by one.
+// By default (-1), inserts elements at the end of the array ("push").
+// nIndex = 0 inserts at the beginning of the array.
+void JsonArrayInsertInplace(json jArray, json jValue, int nIndex = -1);
+
+// Modifies jArray in-place (with no memory copies needed).
+// jArray will have jValue set at position nIndex.
+// Will do nothing if jArray is not an array or nIndex is out of range.
+void JsonArraySetInplace(json jArray, int nIndex, json jValue);
+
+// Modifies jArray in-place (with no memory copies needed).
+// jArray will have the element at nIndex removed, and the array will be resized accordingly.
+// Will do nothing if jArray is not an array or nIndex is out of range.
+void JsonArrayDelInplace(json jArray, int nIndex);
+
+// Sets a grass override for nMaterialId in oArea.
+// * You can have multiple grass types per area by using different materials.
+// * You can add grass to areas that normally do not have grass, for example by calling this on the
+//   wood surface material(5) for an inn area.
+//
+//   - nMaterialId: a surface material, see surfacemat.2da. 3 is the default grass material.
+//   - sTexture: the grass texture, cannot be empty.
+//   - fDensity: the density of the grass.
+//   - fHeight: the height of the grass.
+//   - vAmbientColor: the ambient color of the grass, xyz as RGB clamped to 0.0-1.0f per value.
+//   - vDiffuseColor: the diffuse color of the grass, xyz as RGB clamped to 0.0-1.0f per value.
+void SetAreaGrassOverride(object oArea, int nMaterialId, string sTexture, float fDensity, float fHeight, vector vAmbientColor, vector vDiffuseColor);
+
+// Remove a grass override from oArea for nMaterialId.
+void RemoveAreaGrassOverride(object oArea, int nMaterialId);
+
+// Set to TRUE to disable the default grass of oArea.
+void SetAreaDefaultGrassDisabled(object oArea, int bDisabled);
+
+// Gets the NoRest area flag.
+// Returns TRUE if resting is not allowed in the area.
+// Passing in OBJECT_INVALID to parameter oArea will result in operating on the area of the caller.
+int GetAreaNoRestFlag(object oArea=OBJECT_INVALID);
+
+// Sets the NoRest flag on an area.
+// Passing in OBJECT_INVALID to parameter oArea will result in operating on the area of the caller.
+void SetAreaNoRestFlag(int bNoRestFlag, object oArea=OBJECT_INVALID);
+
+// Sets the age of oCreature.
+void SetAge(object oCreature, int nAge);
+
+// Gets the base number of attacks oCreature can make every round
+// Excludes additional effects such as haste, slow, spells, circle kick, attack modes, etc.
+// * bCheckOverridenValue - Checks for SetBaseAttackBonus() on the creature, if FALSE will return the non-overriden version
+int GetAttacksPerRound(object oCreature, int bCheckOverridenValue = TRUE);
+
+// Create an Enemy Attack Bonus effect. Creatures attacking the given creature with melee/ranged attacks or touch attacks get a bonus to hit.
+effect EffectEnemyAttackBonus(int nBonus);
+
+// Set to TRUE to disable the inaccessible tile border of oArea. Requires a client area reload to take effect.
+void SetAreaTileBorderDisabled(object oArea, int bDisabled);

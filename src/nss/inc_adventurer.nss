@@ -3750,7 +3750,7 @@ void EquipAdventurer(object oAdventurer)
     
     // Don't give full plate to low levels, it's not realistic at TFN prices
     // Low levels are also unlikely to have all their slots filled
-    if (nHD == 1)
+    if (nHD <= 2)
     { 
         nUniqueChance = 2;
         nChanceToFillApparel = 5;

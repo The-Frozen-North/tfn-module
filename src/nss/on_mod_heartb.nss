@@ -31,12 +31,16 @@ void RewardStealthXP(object oPC)
 
     location lLocation = GetLocation(oPC);
     float fRadius = 10.0;
-
+    
+    json jTargets = JsonArray();
+    // SetPartyData wants to use GetFirst/NextObjectInShape too
+    // Building an array first is therefore needed to allow processing of more than one creature per hb
     object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, fRadius, lLocation, TRUE, OBJECT_TYPE_CREATURE);
+    string sIdentifier = "stealth_xp_"+GetName(oPC) + GetPCPublicCDKey(oPC);
 
     while(GetIsObjectValid(oTarget))
     {
-        string sIdentifier = "stealth_xp_"+GetName(oPC) + GetPCPublicCDKey(oPC);
+        
         if (!GetIsPC(oTarget) &&
             !GetIsDead(oTarget) &&
             GetIsEnemy(oPC, oTarget) &&
@@ -46,37 +50,45 @@ void RewardStealthXP(object oPC)
             !GetHasEffect(EFFECT_TYPE_BLINDNESS, oTarget) && //check these as well, kinda cheaty if the NPC has these effects
             !GetHasEffect(EFFECT_TYPE_DARKNESS, oTarget))
         {
-            SetLocalInt(oTarget, sIdentifier, 1);
-            DelayCommand(1800.0, DeleteLocalInt(oTarget, sIdentifier)); // reset in 30 minutes
-            SetPartyData(oTarget);
-
-            int bAmbush = FALSE;
-            if (GetLocalInt(oTarget, "ambush") == 1)
-            {
-                bAmbush = TRUE;
-            }
-
-            int bBoss = GetLocalInt(oTarget, "boss");
-            int bSemiBoss = GetLocalInt(oTarget, "semiboss");
-            int bRare = GetLocalInt(oTarget, "rare");
-            float fMultiplier = 1.0;
-            if (bBoss == 1)
-            {
-                fMultiplier = 3.0;
-            }
-            else if (bSemiBoss == 1 || bRare == 1)
-            {
-                fMultiplier = 2.0;
-            }
-
-
-            // stealth XP is worth half of a kill
-            float fXP = GetPartyXPValue(oTarget, bAmbush, Party.AverageLevel, Party.TotalSize, fMultiplier) * STEALTH_XP_PERCENTAGE;
-
-            GiveXPToPC(oPC, fXP, FALSE, "Stealth");
+            jTargets = JsonArrayInsert(jTargets, JsonString(ObjectToString(oTarget)));
         }
 
         oTarget = GetNextObjectInShape(SHAPE_SPHERE, fRadius, lLocation, TRUE, OBJECT_TYPE_CREATURE);
+    }
+    
+    int nSize = JsonGetLength(jTargets);
+    int i;
+    for (i=0; i<nSize; i++)
+    {
+        oTarget = StringToObject(JsonGetString(JsonArrayGet(jTargets, i)));
+        SetLocalInt(oTarget, sIdentifier, 1);
+        DelayCommand(1800.0, DeleteLocalInt(oTarget, sIdentifier)); // reset in 30 minutes
+        SetPartyData(oTarget);
+
+        int bAmbush = FALSE;
+        if (GetLocalInt(oTarget, "ambush") == 1)
+        {
+            bAmbush = TRUE;
+        }
+
+        int bBoss = GetLocalInt(oTarget, "boss");
+        int bSemiBoss = GetLocalInt(oTarget, "semiboss");
+        int bRare = GetLocalInt(oTarget, "rare");
+        float fMultiplier = 1.0;
+        if (bBoss == 1)
+        {
+            fMultiplier = 3.0;
+        }
+        else if (bSemiBoss == 1 || bRare == 1)
+        {
+            fMultiplier = 2.0;
+        }
+
+
+        // stealth XP is worth half of a kill
+        float fXP = GetPartyXPValue(oTarget, bAmbush, Party.AverageLevel, Party.TotalSize, fMultiplier) * STEALTH_XP_PERCENTAGE;
+
+        GiveXPToPC(oPC, fXP, FALSE, "Stealth");
     }
 }
 

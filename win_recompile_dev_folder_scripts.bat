@@ -11,14 +11,14 @@ echo Don't forget to remove the .ncs files from the development folder when done
 set /p "ncs=Enter script name (without extension) to copy to development from module (or leave blank to recompile): "
 
 if "%ncs%"=="" goto compile
-if exist "%CD%\modules\TFN\%ncs%.ncs" copy "%CD%\modules\TFN\%ncs%.ncs" "%CD%\development\"
+if exist "%CD%\modules\TFN\%ncs%.ncs" copy "%CD%\modules\TFN\%ncs%.ncs" "%CD%\.build\development\"
 set "ncs="
 goto ask
 
 :compile
 
-for %%f in ("%CD%/development/*.ncs") do (
-	"%CD%/tools/win/nwnsc/nwnsc.exe" -b "%CD%/development" -i "%CD%/src/nss;%CD%/nwn-base-scripts" "%CD%/src/nss/%%~nf.nss"
+for %%f in ("%CD%/.build/development/*.ncs") do (
+	"%CD%/tools/win/nwnsc/nwnsc.exe" -b "%CD%/.build\development" -i "%CD%/src/nss;%CD%/nwn-base-scripts" "%CD%/src/nss/%%~nf.nss"
 )
 @echo on
 

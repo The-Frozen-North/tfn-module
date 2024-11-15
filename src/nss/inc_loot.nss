@@ -754,8 +754,10 @@ string GetIdentifiedItemName(object oItem)
 }
 
 
-json _AddToDroppableLootArray(json jItems, object oItem, int nTier, int bSkipTierCheck)
+json _AddToDroppableLootArray(json jItems, object oLootOrigin, object oItem, int nTier, int bSkipTierCheck)
 {
+    json jBlacklist = GetLocalJson(oLootOrigin, "OwnDroppableLootBlacklist");
+    
     object oTFN = GetTFNEquipmentByName(oItem);
     if (GetLocalInt(oItem, "creature_drop_only"))
     {
@@ -763,9 +765,25 @@ json _AddToDroppableLootArray(json jItems, object oItem, int nTier, int bSkipTie
     }
     if (GetIsObjectValid(oTFN) && (bSkipTierCheck || GetItemTier(oTFN) == nTier))
     {
-        jItems = JsonArrayInsert(jItems, JsonString(ObjectToString(oTFN)));
+        json jNewEntry = JsonString(ObjectToString(oTFN));
+        if (jBlacklist == JsonNull() || JsonFind(jBlacklist, jNewEntry) == JsonNull())
+        {
+            jItems = JsonArrayInsert(jItems, jNewEntry);
+        }
     }
+    
     return jItems;
+}
+
+void _AddToDroppableLootBlacklist(object oLootOrigin, object oItem)
+{
+    json jBlacklist = GetLocalJson(oLootOrigin, "OwnDroppableLootBlacklist");
+    if (jBlacklist == JsonNull())
+    {
+        jBlacklist = JsonArray();
+    }
+    jBlacklist = JsonArrayInsert(jBlacklist, JsonString(ObjectToString(oItem)));
+    SetLocalJson(oLootOrigin, "OwnDroppableLootBlacklist", jBlacklist);
 }
 
 
@@ -787,17 +805,17 @@ json _BuildListOfOwnDroppableLoot(object oLootOrigin, int nTier, int bForceSkipT
         bSkipTierCheck = bForceSkipTierCheck;
     }
 
-    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_CHEST, oLootOrigin), nTier, bSkipTierCheck);
-    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_HEAD, oLootOrigin), nTier, bSkipTierCheck);
-    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oLootOrigin), nTier, bSkipTierCheck);
-    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oLootOrigin), nTier, bSkipTierCheck);
-    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_ARMS, oLootOrigin), nTier, bSkipTierCheck);
-    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_BELT, oLootOrigin), nTier, bSkipTierCheck);
-    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_BOOTS, oLootOrigin), nTier, bSkipTierCheck);
-    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_CLOAK, oLootOrigin), nTier, bSkipTierCheck);
-    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_LEFTRING, oLootOrigin), nTier, bSkipTierCheck);
-    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_RIGHTRING, oLootOrigin), nTier, bSkipTierCheck);
-    jItems = _AddToDroppableLootArray(jItems, GetItemInSlot(INVENTORY_SLOT_NECK, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, oLootOrigin, GetItemInSlot(INVENTORY_SLOT_CHEST, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, oLootOrigin, GetItemInSlot(INVENTORY_SLOT_HEAD, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, oLootOrigin, GetItemInSlot(INVENTORY_SLOT_RIGHTHAND, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, oLootOrigin, GetItemInSlot(INVENTORY_SLOT_LEFTHAND, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, oLootOrigin, GetItemInSlot(INVENTORY_SLOT_ARMS, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, oLootOrigin, GetItemInSlot(INVENTORY_SLOT_BELT, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, oLootOrigin, GetItemInSlot(INVENTORY_SLOT_BOOTS, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, oLootOrigin, GetItemInSlot(INVENTORY_SLOT_CLOAK, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, oLootOrigin, GetItemInSlot(INVENTORY_SLOT_LEFTRING, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, oLootOrigin, GetItemInSlot(INVENTORY_SLOT_RIGHTRING, oLootOrigin), nTier, bSkipTierCheck);
+    jItems = _AddToDroppableLootArray(jItems, oLootOrigin, GetItemInSlot(INVENTORY_SLOT_NECK, oLootOrigin), nTier, bSkipTierCheck);
 
     return jItems;
 }
@@ -865,6 +883,7 @@ object SelectItemToDropAsLoot(int iCR, int iAreaCR, string sType, int nTier, obj
             {
                 int nIndex = Random(JsonGetLength(jItems));
                 object oReturn = StringToObject(JsonGetString(JsonArrayGet(jItems, nIndex)));
+                _AddToDroppableLootBlacklist(oLootOrigin, oReturn);
                 SendDebugMessage(GetName(oLootOrigin) + ": Drop equipped item: " + GetName(oReturn), TRUE);
                 return oReturn;
             }
@@ -884,7 +903,7 @@ object SelectEquippedItemToDropAsLoot(object oCreature)
     {
         int nIndex = Random(JsonGetLength(jItems));
         object oReturn = StringToObject(JsonGetString(JsonArrayGet(jItems, nIndex)));
-
+        _AddToDroppableLootBlacklist(oCreature, oReturn);
         return oReturn;
     }
     return OBJECT_INVALID;

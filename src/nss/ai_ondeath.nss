@@ -38,7 +38,7 @@ void main()
 
     int nNWNXCommonerFaction = 2;
     int nNWNXDefenderFaction = 4;
-    if (nFaction == nNWNXCommonerFaction || nFaction == nNWNXDefenderFaction)
+    if (!GetLocalInt(OBJECT_SELF, "Generic_Surrender") && (nFaction == nNWNXCommonerFaction || nFaction == nNWNXDefenderFaction))
     {
         object oMurderer;
 
@@ -62,33 +62,60 @@ void main()
         }
         // anyone else who kills an innocent won't count, for example if Boddyknock or a mage follower casted a fireball or something at a group of enemies
         // this may introduce a loophole where a PC could kill an innocent with a non-evil henchman and not count as murder in pvp areas
-
-        if (GetIsPC(oMurderer))
-            AdjustAlignment(oMurderer, ALIGNMENT_EVIL, 5, FALSE);
-
-        if (GetIsObjectValid(oMurderer))
+        
+        // If we were in actual combat with things that were enemies of this NPC and that aren't tied to a PC somehow, don't penalise
+        // This should avoid accidental aoe or similar from booting henchmen and making PCs turn evil
+        int bWasFightingEnemiesWhenKilled = 0;
+        
+        object oTest = GetFirstObjectInShape(SHAPE_SPHERE, 30.0f, GetLocation(OBJECT_SELF));
+        while (GetIsObjectValid(oTest))
         {
-            IncrementPlayerStatistic(oMurderer, "innocents_killed");
-
-            ExecuteScript("party_credit", OBJECT_SELF);
-            
-            object oHench = GetFirstFactionMember(oMurderer, FALSE);
-
-            while (GetIsObjectValid(oHench))
+            if (!GetIsDead(oTest) && GetIsEnemy(oTest))
             {
-
-                if (GetMaster(oHench) == oMurderer)
+                object oMaster = GetMaster(oTest);
+                while (GetIsObjectValid(oMaster) && oMaster != oTest && !GetIsPC(oTest))
                 {
-                    // only dismiss henchman and followers that are not evil
-                    if (GetAlignmentGoodEvil(oHench) != ALIGNMENT_EVIL)
-                    {
-                        // dismiss followers and henchman
-                        if (GetLocalInt(oHench, "follower") == 1) { DismissFollower(oHench); }                  
-                        else if (GetStringLeft(GetResRef(oHench), 3) == "hen") { DismissHenchman(oHench); }
-                    }
+                    oTest = oMaster;
+                    oMaster = GetMaster(oTest);
                 }
+                if (GetIsObjectValid(oTest) && !GetIsPC(oTest))
+                {
+                    bWasFightingEnemiesWhenKilled = 1;
+                    break;
+                }
+            }
+            oTest = GetNextObjectInShape(SHAPE_SPHERE, 30.0f, GetLocation(OBJECT_SELF));
+        }
+        
+        if (!bWasFightingEnemiesWhenKilled)
+        {
+            if (GetIsPC(oMurderer))
+                AdjustAlignment(oMurderer, ALIGNMENT_EVIL, 5, FALSE);
 
-                oHench = GetNextFactionMember(oMurderer, FALSE);
+            if (GetIsObjectValid(oMurderer))
+            {
+                IncrementPlayerStatistic(oMurderer, "innocents_killed");
+
+                ExecuteScript("party_credit", OBJECT_SELF);
+                
+                object oHench = GetFirstFactionMember(oMurderer, FALSE);
+
+                while (GetIsObjectValid(oHench))
+                {
+
+                    if (GetMaster(oHench) == oMurderer)
+                    {
+                        // only dismiss henchman and followers that are not evil
+                        if (GetAlignmentGoodEvil(oHench) != ALIGNMENT_EVIL)
+                        {
+                            // dismiss followers and henchman
+                            if (GetLocalInt(oHench, "follower") == 1) { DismissFollower(oHench); }                  
+                            else if (GetStringLeft(GetResRef(oHench), 3) == "hen") { DismissHenchman(oHench); }
+                        }
+                    }
+
+                    oHench = GetNextFactionMember(oMurderer, FALSE);
+                }
             }
         }
     }

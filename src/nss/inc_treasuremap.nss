@@ -184,7 +184,7 @@ struct MapProcessingSettings
     // tested: 0.002
     float MAPDATA_AREA_CULL_THRESHOLD_PROPORTION;
     // But no matter how small the polygon is, the above shouldn't be able to go below this value
-    // tested: 12
+    // tested: 20
     float MAPDATA_MINIMUM_AREA_CULL_THRESHOLD;
     // Polygons with an area less than this proportion of the total image area are discarded
     // tested: 0.02/(real number of scans per side of the map)
@@ -909,40 +909,42 @@ json ProcessTreasureMapData(int nEndX, int nEndY, int nStartX, int nStartY, stru
                         // Don't save the poly at all if its area is too small
                         if (fArea > fMinimumAcceptedPolygonArea)
                         {
-                            int nNumVerts = JsonGetLength(jVertices) / 2;;
+                            int nArrLength = JsonGetLength(jVertices);
                             int nIndexToTry = 0;
                             float fVertexCullAreaDeltaThreshold = mpSettings.MAPDATA_AREA_CULL_THRESHOLD_PROPORTION * fArea;
                             if (fVertexCullAreaDeltaThreshold < mpSettings.MAPDATA_MINIMUM_AREA_CULL_THRESHOLD)
                             {
                                 fVertexCullAreaDeltaThreshold = mpSettings.MAPDATA_MINIMUM_AREA_CULL_THRESHOLD;
                             }
-
+                            //WriteTimestampedLogEntry("Cull verts for this polygon if area changes less than " + FloatToString(fVertexCullAreaDeltaThreshold));
                             while (TRUE)
                             {
                                 // Verts are in pairs. Have to consider and handle them in pairs.
                                 // Do not reduce quads further
-                                if (nNumVerts < 4)
+                                if (nArrLength < 8)
                                 {
                                     break;
                                 }
-                                if (nIndexToTry * 2 >= nNumVerts)
+                                if (nIndexToTry >= nArrLength)
                                 {
                                     break;
                                 }
-                                json jVertCopy = JsonArrayDel(jVertices, nIndexToTry*2);
-                                jVertCopy = JsonArrayDel(jVertCopy, nIndexToTry*2);
+                                json jVertCopy = JsonArrayDel(jVertices, nIndexToTry);
+                                jVertCopy = JsonArrayDel(jVertCopy, nIndexToTry);
                                 float fNewArea = _GetAreaFromVertices(jVertCopy);
                                 float fAreaDelta = fNewArea - fArea;
+                                //WriteTimestampedLogEntry("Coords of this vertex = " + FloatToString(JsonGetFloat(JsonArrayGet(jVertices, nIndexToTry))) + ", " + FloatToString(JsonGetFloat((JsonArrayGet(jVertices, nIndexToTry+1)))));
                                 if (fAreaDelta < 0.0) { fAreaDelta *= -1.0; }
                                 if (fAreaDelta < fVertexCullAreaDeltaThreshold)
                                 {
-                                    //WriteTimestampedLogEntry("Culled vertex " + IntToString(nIndexToTry) + ": area delta = " + FloatToString(fAreaDelta));
+                                    //WriteTimestampedLogEntry("Culled vertex " + IntToString(nIndexToTry/2) + ": area delta = " + FloatToString(fAreaDelta));
                                     jVertices = jVertCopy;
-                                    nNumVerts--;
+                                    nArrLength = JsonGetLength(jVertices);
+                                    //WriteTimestampedLogEntry("Remaining verts: " + JsonDump(JsonArrayGetRange(jVertices, nIndexToTry, -1)));
                                     continue;
                                 }
-                                //WriteTimestampedLogEntry("Do not cull vertex " + IntToString(nIndexToTry) + ": area delta = " + FloatToString(fAreaDelta));
-                                nIndexToTry++;
+                                //WriteTimestampedLogEntry("Do not cull vertex " + IntToString(nIndexToTry/2) + ": area delta = " + FloatToString(fAreaDelta));
+                                nIndexToTry += 2;
                             }
 
                             // Ensure the shape is closed (if the first/last verts are culled it isn't)
@@ -1182,12 +1184,9 @@ void TreasureMapSwatch(object oPC)
     NuiSetBind(oPC, token, "collapse", JsonInt(0));
 }
 
-
-void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nDifficulty, object oMap=OBJECT_INVALID)
+int DisplayTreasureMapUIFromDrawlist(object oPC, json jDrawListElements)
 {
-    SetLocalObject(oPC, "opened_treasuremap", oMap);
     int nScale = GetPlayerDeviceProperty(oPC, PLAYER_DEVICE_PROPERTY_GUI_SCALE);
-    float fScale = IntToFloat(nScale)/100.0;
     float fGeometryRectPos = -1.0;
     // prior to 8193.35 drawlists were not affected by UI scaling
     // putting things in the top left corner of the screen was the only way to see what was going on.
@@ -1200,22 +1199,6 @@ void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nDifficulty, object oMa
         }
     }
     
-    
-    // "-" may not be legal for sqlite, I don't want to find out what happens then or if it's possible to do something
-    // bad to the db in this case
-    if (nDifficulty < TREASUREMAP_DIFFICULTY_EASY || nDifficulty > TREASUREMAP_HIGHEST_DIFFICULTY)
-    {
-        return;
-    }
-    
-    string sJsonData = "difficulty" + IntToString(nDifficulty);
-    sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions",
-            "SELECT " + sJsonData +
-            " FROM treasuremaps WHERE puzzleid = @puzzleid;");
-    SqlBindInt(sql, "@puzzleid", nPuzzleID);
-    SqlStep(sql);
-    json jDrawListElements = SqlGetJson(sql, 0);
-
     json jImage = NuiWidth(NuiImage(JsonString("tm_metal02"), JsonInt(NUI_ASPECT_EXACTSCALED), JsonInt(NUI_HALIGN_CENTER), JsonInt(NUI_VALIGN_MIDDLE)), IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS));
 
     jImage = NuiDrawList(jImage, JsonBool(0), jDrawListElements);
@@ -1246,12 +1229,36 @@ void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nDifficulty, object oMa
         JsonBool(TRUE)); // border
 
 
-
     int token = NuiCreate(oPC, nui, "treasuremap");
+    NuiSetBind(oPC, token, "geometry", NuiRect(fGeometryRectPos, fGeometryRectPos, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 20.0, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 50.0 + 53.0));
+    return token;
+}
+
+
+void DisplayTreasureMapUI(object oPC, int nPuzzleID, int nDifficulty, object oMap=OBJECT_INVALID)
+{
+    SetLocalObject(oPC, "opened_treasuremap", oMap);    
+    
+    // "-" may not be legal for sqlite, I don't want to find out what happens then or if it's possible to do something
+    // bad to the db in this case
+    if (nDifficulty < TREASUREMAP_DIFFICULTY_EASY || nDifficulty > TREASUREMAP_HIGHEST_DIFFICULTY)
+    {
+        return;
+    }
+    
+    string sJsonData = "difficulty" + IntToString(nDifficulty);
+    sqlquery sql = SqlPrepareQueryCampaign("tmapsolutions",
+            "SELECT " + sJsonData +
+            " FROM treasuremaps WHERE puzzleid = @puzzleid;");
+    SqlBindInt(sql, "@puzzleid", nPuzzleID);
+    SqlStep(sql);
+    json jDrawListElements = SqlGetJson(sql, 0);
+
+    int token = DisplayTreasureMapUIFromDrawlist(oPC, jDrawListElements);
+    
     // Testing this suggests the NUI border takes 20px on the X axis and 53px on the Y
     // Plus an extra 50px for the button...
     NuiSetBind(oPC, token, "tmap_notes", JsonString(GetLocalString(oMap, "treasuremap_notes")));
-    NuiSetBind(oPC, token, "geometry", NuiRect(fGeometryRectPos, fGeometryRectPos, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 20.0, IntToFloat(TREASUREMAP_WINDOW_DIMENSIONS) + 50.0 + 53.0));
     NuiSetBind(oPC, token, "collapse", JsonInt(0));
 }
 
@@ -1509,7 +1516,7 @@ void CalculateTreasureMaps(int nPuzzleID)
     struct MapProcessingSettings mpSettings;
     mpSettings.sText = GetLocalString(oArea, TREASUREMAP_AREA_TEXT);
     mpSettings.MAPDATA_AREA_CULL_THRESHOLD_PROPORTION = 0.002;
-    mpSettings.MAPDATA_MINIMUM_AREA_CULL_THRESHOLD = 12.0;
+    mpSettings.MAPDATA_MINIMUM_AREA_CULL_THRESHOLD = 20.0;
 
 
     int nCurrentDifficulty;
@@ -1590,6 +1597,32 @@ void CalculateTreasureMaps(int nPuzzleID)
     SqlBindInt(sql, "@value", nTileHash);
     SqlBindInt(sql, "@puzzleid", nPuzzleID);
     SqlStep(sql);
+}
+
+// Debug function that generates a map around OBJECT_SELF's location without saving it anywhere.
+void _TreasureMapDrawCurrentLocation()
+{
+    if (!GetIsPC(OBJECT_SELF))
+    {
+        AssignCommand(GetFirstPC(), _TreasureMapDrawCurrentLocation());
+        return;
+    }
+    NWNX_Util_SetInstructionLimit(52428888);
+    struct MapProcessingSettings mpSettings;
+    // Defaults
+    mpSettings.MAPDATA_AREA_CULL_THRESHOLD_PROPORTION = 0.002;
+    mpSettings.MAPDATA_MINIMUM_AREA_CULL_THRESHOLD = 20.0;
+    mpSettings.MAPDATA_MINIMUM_POLYGON_AREA = 0.02;
+    
+    location lSaved = GetLocalLocation(GetModule(), "treasure_map_debug_last_scanned");
+    location lCurrent = GetLocation(OBJECT_SELF);
+    float fDist = GetDistanceBetweenLocations(lSaved, lCurrent);
+    if (fDist < 0.0 || fDist > 10.0)
+    {
+        TreasureMapScanLocation(GetLocation(OBJECT_SELF), 100, 100, 1.5);
+    }
+    json jDrawListElements = ProcessTreasureMapData(100, 100, 0, 0, mpSettings);
+    DisplayTreasureMapUIFromDrawlist(OBJECT_SELF, jDrawListElements);
 }
 
 int GetTreasureMapGoldValue(int nACR)
