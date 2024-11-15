@@ -3,6 +3,7 @@
 #include "util_i_csvlists"
 #include "nwnx_object"
 #include "inc_sqlite_time"
+#include "inc_area"
 
 const int CHANCE_OF_RARE_SPAWN = 15;
 
@@ -31,9 +32,7 @@ void SpawnTreasureIndex(int nIndex)
     location lTreasureLocation = Location(OBJECT_SELF, vTreasurePosition, GetLocalFloat(OBJECT_SELF, "treasure_o"+IntToString(nIndex)));
     object oTreasure = CreateObject(OBJECT_TYPE_PLACEABLE, GetLocalString(OBJECT_SELF, "treasure_resref"+IntToString(nIndex)), lTreasureLocation);
     ExecuteScript("treas_init", oTreasure);
-    int nNum = GetLocalInt(OBJECT_SELF, "num_spawned_treasures");
-    SetLocalObject(OBJECT_SELF, "treasure"+IntToString(nNum), oTreasure);
-    SetLocalInt(OBJECT_SELF, "num_spawned_treasures", nNum+1);
+    AddObjectToAreaCleanupList(OBJECT_SELF, oTreasure);
 }
 
 int CanSpendGoldOnPlaceable(int nTargetGold, int nPlaceableCost)
@@ -117,7 +116,7 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints, int bSpawnR
                }
 
     // Store the creature so it can be deleted later.
-               SetLocalObject(oArea, "random"+IntToString(nTarget)+"_creature"+IntToString(nTotalSpawnsOfThisTarget), oCreature);
+               AddObjectToAreaCleanupList(oArea, oCreature);
                nTotalSpawnsOfThisTarget++;
           }
 
@@ -139,7 +138,7 @@ void CreateRandomSpawns(object oArea, int nTarget, int nSpawnPoints, int bSpawnR
            }
 
 // Store the creature so it can be deleted later.
-           SetLocalObject(oArea, "random"+IntToString(nTarget)+"_creature"+IntToString(nTotalSpawnsOfThisTarget), oCreature);
+           AddObjectToAreaCleanupList(oArea, oCreature);
            nTotalSpawnsOfThisTarget++;
       }
 }
@@ -269,8 +268,7 @@ void main()
                 lCreatureLocation = Location(OBJECT_SELF, vCreaturePosition, GetLocalFloat(OBJECT_SELF, "creature_o"+IntToString(i)));
                 oCreature = CreateObject(OBJECT_TYPE_CREATURE, GetLocalString(OBJECT_SELF, "creature_resref"+IntToString(i)), lCreatureLocation);
 
-                // store the creature so it can deleted later on refresh
-                SetLocalObject(OBJECT_SELF, "creature"+IntToString(i), oCreature);
+                AddObjectToAreaCleanupList(OBJECT_SELF, oCreature);
 
                 // Add to quest npc list if required
                 int nFaction = NWNX_Creature_GetFaction(oCreature);
@@ -303,8 +301,7 @@ void main()
                 lPlaceableLocation = Location(OBJECT_SELF, vPlaceablePosition, GetLocalFloat(OBJECT_SELF, "placeable_o"+IntToString(i)));
                 oPlaceable = CreateObject(OBJECT_TYPE_PLACEABLE, GetLocalString(OBJECT_SELF, "placeable_resref"+IntToString(i)), lPlaceableLocation);
 
-                // store the Placeable so it can deleted later on refresh
-                SetLocalObject(OBJECT_SELF, "placeable"+IntToString(i), oPlaceable);
+                AddObjectToAreaCleanupList(OBJECT_SELF, oPlaceable);
             }
          }
      //}
