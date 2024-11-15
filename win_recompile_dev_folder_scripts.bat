@@ -17,7 +17,7 @@ goto ask
 
 :compile
 
-for %%f in ("%CD%/development/*.ncs") do (
+for %%f in ("%CD%/.build/development/*.ncs") do (
 	"%CD%/tools/win/nwnsc/nwnsc.exe" -b "%CD%/.build\development" -i "%CD%/src/nss;%CD%/nwn-base-scripts" "%CD%/src/nss/%%~nf.nss"
 )
 @echo on
