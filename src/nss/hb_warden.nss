@@ -6,24 +6,24 @@ void VoidBeginConversation(string sResRef, object oConversationTarget)
     BeginConversation(sResRef, oConversationTarget);
 }
 
-void ScanTarget(object oTarget, object oScanner)
+void ScanTarget(object oTarget)
 {
     effect eVis = EffectVisualEffect(VFX_IMP_MAGIC_RESISTANCE_USE);
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
 
     if (GetIsDead(oTarget)) return;
 
-    if (GetLocalInt(oTarget, "warden_interrogate") < 2) return;
+    if (GetLocalInt(oTarget, "luskan_interrogate") < 2) return;
 
 // don't interrogate while in conversation
-    if (IsInConversation(oScanner)) return;
+    if (IsInConversation(OBJECT_SELF)) return;
 
 
 // don't interrupt invisibility purge
     if (GetCurrentAction() == ACTION_CASTSPELL) return;
 
 // never saw the guy, do nothing
-    if (!GetObjectSeen(oTarget, oScanner)) return;
+    if (!GetObjectSeen(oTarget, OBJECT_SELF)) return;
 
 // if already bluffed, do nothing
     if (GetLocalInt(OBJECT_SELF, "bluffed_"+GetPCPublicCDKey(oTarget)+GetName(oTarget))) return;
@@ -43,8 +43,8 @@ void ScanTarget(object oTarget, object oScanner)
 
     PlayVoiceChat(VOICE_CHAT_STOP, OBJECT_SELF);
 
-    AssignCommand(oScanner, ClearAllActions());
-    AssignCommand(oScanner, VoidBeginConversation("", oTarget));
+    AssignCommand(OBJECT_SELF, ClearAllActions());
+    AssignCommand(OBJECT_SELF, VoidBeginConversation("", oTarget));
 }
 
 int DispelInvis() {
@@ -120,7 +120,7 @@ void main()
             if(GetIsPC(oTarget))
             {
                 //Apply the VFX impact and effects
-                DelayCommand(fDelay, ScanTarget(oTarget, OBJECT_SELF));
+                DelayCommand(fDelay, ScanTarget(oTarget));
             }
         }
         //Get next target in area
