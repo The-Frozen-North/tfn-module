@@ -45,4 +45,4 @@ $PWD/tools/linux/sqlite/sqlite3 .build/database/areadistances.sqlite3 < seeded_d
 
 cp movies/prelude.wbm .build/movies/prelude.wbm
 
-$PWD/tools/linux/nasher/nasher install  --verbose --erfUtil:"$PWD/tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/tools/linux/nwnsc/nwnsc" --installDir:"$PWD/.build" --nssFlags:"-oe -i $PWD/nwn-base-scripts" --yes
+$PWD/tools/linux/nasher/nasher install  --verbose --erfUtil:"$PWD/tools/linux/neverwinter/nwn_erf" --gffUtil:"$PWD/tools/linux/neverwinter/nwn_gff" --tlkUtil:"$PWD/tools/linux/neverwinter/nwn_tlk" --nssCompiler:"$PWD/tools/linux/nwnsc/nwnsc" --installDir:"$PWD/.build" --nssFlags:"-oe -i $PWD/nwn-base-scripts" --no
