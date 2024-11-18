@@ -54,9 +54,11 @@ void main()
     }
     else
     {
-        int nDiff = nBountyHunterHD - nAreaSetHD;
-        if (nDiff < 0) nDiff = 0;
-        nAdventurerHD = nAreaSetHD + Random(nDiff+1);
+        nAdventurerHD = nAreaSetHD;
+        while (Random(100) < 30 && nAdventurerHD < 14)
+        {
+            nAdventurerHD++;
+        }
     }
     
     // Reference: The Ranger random event spits out a 7HD Ranger and 3x 3HD Krenshars
