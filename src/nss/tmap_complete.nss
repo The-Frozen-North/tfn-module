@@ -13,11 +13,18 @@ void main()
     {
         sTreasureName = "Hidden Treasure";
     }
-    
-    object oReward = CreateObject(OBJECT_TYPE_PLACEABLE, "treasuremap_loot", GetLocation(oOwner));
-    ApplyEffectToObject(DURATION_TYPE_PERMANENT, SupernaturalEffect(EffectCutsceneGhost()), oReward);
+    // Lower the real treasure by 5 units, so it is noncollidable
+    // And then visual transform it back up so it looks normal
+    // EffectCutsceneGhost doesn't work on placeables!
+    location lSpawn = GetLocation(oOwner);
+    vector vPos = GetPositionFromLocation(lSpawn);
+    vPos.z -= 5.0;
+    lSpawn = Location(GetArea(oOwner), vPos, GetFacing(oOwner));
+    object oReward = CreateObject(OBJECT_TYPE_PLACEABLE, "treasuremap_loot", lSpawn);
     SetName(oReward, sTreasureName);
     SetObjectVisualTransform(oReward, OBJECT_VISUAL_TRANSFORM_SCALE, 0.5);
+    SetObjectVisualTransform(oReward, OBJECT_VISUAL_TRANSFORM_TRANSLATE_Z, 5.0);
+    
     SetLocalString(oReward, "owner", GetPCPublicCDKey(oOwner));
     int nLootLevel = GetLocalInt(oMap, "acr");
     SetLocalInt(oReward, "cr", nLootLevel);
