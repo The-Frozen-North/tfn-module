@@ -8,7 +8,7 @@ void main()
 
     SetFollowerMaster(OBJECT_SELF, oPC);
 
-    SetAssociateState(NW_ASC_USE_RANGED_WEAPON, FALSE);
+    SetAssociateState(NW_ASC_USE_RANGED_WEAPON, GetLocalInt(OBJECT_SELF, "range"));
     ClearAllActions();
     AssignCommand(OBJECT_SELF, ActionEquipMostDamagingMelee());
 }
