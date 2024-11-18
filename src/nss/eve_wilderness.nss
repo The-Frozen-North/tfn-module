@@ -14,7 +14,14 @@ void main()
         sScript = "eve_travelmer";
     else if (nRoll == 3)
         sScript = "eve_ranger";
-    else if (nRoll <= 7)
+    else if (nRoll == 4 && GetStringLeft(GetResRef(GetArea(OBJECT_SELF)), 2) == "nw")
+    {
+        if (d2() == 1)
+            sScript = "eve_militia";
+        else
+            sScript = "eve_neverwinter";
+    }
+    else if (nRoll <= 8)
         sScript = "eve_advparty";
     else
         sScript = "eve_adventure";
