@@ -1,4 +1,12 @@
 @echo off
+
+git --version > nul 2>&1
+IF %ERRORLEVEL% NEQ 0 (
+    echo Git is not installed. Please install Git so it can pull the latest build then compile it to run the server.
+    pause
+    exit /b 1
+)
+
 IF NOT EXIST server\docker-compose.yml (
     echo server\docker-compose.yml does not exist. Copy server/docker-compose-template.yml to server/docker-compose.yml and configure it as you like, then run the server again.
     pause
@@ -19,6 +27,9 @@ IF %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
+git pull
+
+@echo off
 echo.
 echo Checking to see if there is a previous module. If prompted, type 'Y' to delete the current module and module folder.
 echo If you are canceling, you can close the window and exit. nasher will not continue if there is a module file and folder.
