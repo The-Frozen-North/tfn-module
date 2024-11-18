@@ -5,27 +5,13 @@
 void main()
 {
     object oArea = GetArea(OBJECT_SELF);
-    int nAdventurerHD = GetLocalInt(oArea, "adventurer_hd");
-    if (nAdventurerHD <= 0)
-    {
-        nAdventurerHD = GetLocalInt(oArea, "cr");
-    }
-    if (nAdventurerHD <= 0)
-    {
-        WriteTimestampedLogEntry("eve_adventure has no HD setting for adventurer in area " + GetResRef(oArea));
-        //return;
-    }
-    if (nAdventurerHD < 3)
-    {
-        nAdventurerHD = 3;
-    }
-    
+    int nAdventurerHD = 1+SelectAdventurerHD(oArea);
     
     int bAltered = 0;
     // Maybe vary a bit
     if (nAdventurerHD >= 4)
     {
-        if (Random(100) < 30)
+        if (Random(100) < 50)
         {
             nAdventurerHD--;
             bAltered = 1;

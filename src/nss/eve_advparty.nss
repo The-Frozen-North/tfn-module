@@ -17,52 +17,46 @@
 // They'll ask for this player and try to kill them
 
 
-void SpawnFollower(object oLeader, int nHD, int nPartyType, object oWP)
+void SpawnFollower(object oLeader, int nHD, int nPartyType, int nTargetHD)
 {
-    if (oWP != OBJECT_SELF)
-    {
-        AssignCommand(oWP, SpawnFollower(oLeader, nHD, nPartyType, oWP));
-        return;
-    }
     if (nHD > 12) { nHD = 12; }
     object oFollower = CreateEventCreature("adventurer");
     AdvanceCreatureAlongAdventurerPath(oFollower, SelectAdventurerPathForPartyType(nPartyType), nHD);
     EquipAdventurer(oFollower);
     AddAdventurerToParty(oFollower, oLeader);
     SetAdventurerPartyType(oFollower, nPartyType);
+    SetLocalInt(oFollower, "advparty_target_hd", nTargetHD);
 }
 
 // Making this many adventurers is slightly TMI prone
-void SpawnFollowerDelayed(object oLeader, int nHD, int nPartyType)
+void SpawnFollowerDelayed(object oLeader, int nHD, int nPartyType, int nTargetHD)
 {
     // Last I checked, DelayCommands on waypoints didn't work
+    // AssignCommand doesn't either.
     object oMe = OBJECT_SELF;
-    AssignCommand(GetModule(), DelayCommand(IntToFloat(Random(3)), SpawnFollower(oLeader, nHD, nPartyType, oMe)));
+    AssignCommand(GetModule(), DelayCommand(IntToFloat(Random(3)), AssignCommand(oLeader, SpawnFollower(oLeader, nHD, nPartyType, nTargetHD))));
 }
 
 void main()
 {
     object oArea = GetArea(OBJECT_SELF);
-    int nAdventurerHD = GetLocalInt(oArea, "adventurer_hd");
-    if (nAdventurerHD <= 0)
-    {
-        nAdventurerHD = GetLocalInt(oArea, "cr");
-    }
-    if (nAdventurerHD <= 0)
-    {
-        WriteTimestampedLogEntry("eve_advparty has no HD setting for adventurer in area " + GetResRef(oArea));
-        //return;
-    }
-    if (nAdventurerHD < 3)
-    {
-        nAdventurerHD = 3;
-    }
+    int nBountyHunterHD = SelectBountyHunterGroupHD(oArea);
+    int nAreaSetHD = SelectAdventurerHD(oArea);
+    
+    int nAdventurerHD;
     
     // Adventurer party type
     int nPartyType = ADVENTURER_PARTY_FRIENDLY_GENERIC;
     if (Random(100) < 30)
     {
         nPartyType = ADVENTURER_PARTY_HOSTILE_ASSASSIN;
+        nAdventurerHD = nBountyHunterHD;
+    }
+    else
+    {
+        int nDiff = nBountyHunterHD - nAreaSetHD;
+        if (nDiff < 0) nDiff = 0;
+        nAdventurerHD = nAreaSetHD + Random(nDiff+1);
     }
     
     // Reference: The Ranger random event spits out a 7HD Ranger and 3x 3HD Krenshars
@@ -113,10 +107,10 @@ void main()
         AdvanceCreatureAlongAdventurerPath(oLeader, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD-1);
         EquipAdventurer(oLeader);
         DesignateAdventurerAsPartyLeader(oLeader);
-        SpawnFollowerDelayed(oLeader, nAdventurerHD-1, nPartyType);
+        SpawnFollowerDelayed(oLeader, nAdventurerHD-1, nPartyType, nAdventurerHD);
         for (i=0; i<3; i++)
         {
-            SpawnFollowerDelayed(oLeader, nAdventurerHD-2, nPartyType);
+            SpawnFollowerDelayed(oLeader, nAdventurerHD-2, nPartyType, nAdventurerHD);
         }
     }
     // Below types require increasing HD over 12, which can't be done
@@ -129,7 +123,7 @@ void main()
         DesignateAdventurerAsPartyLeader(oLeader);
         for (i=0; i<3; i++)
         {
-            SpawnFollowerDelayed(oLeader, nAdventurerHD-1, nPartyType);
+            SpawnFollowerDelayed(oLeader, nAdventurerHD-1, nPartyType, nAdventurerHD);
         }
     }
     else if (nRoll == 3)
@@ -140,7 +134,7 @@ void main()
         DesignateAdventurerAsPartyLeader(oLeader);
         for (i=0; i<2; i++)
         {
-            SpawnFollowerDelayed(oLeader, nAdventurerHD, nPartyType);
+            SpawnFollowerDelayed(oLeader, nAdventurerHD, nPartyType, nAdventurerHD);
         }
     }
     // can't make HD+1 if HD already 12
@@ -150,10 +144,7 @@ void main()
         AdvanceCreatureAlongAdventurerPath(oLeader, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD+2);
         EquipAdventurer(oLeader);
         DesignateAdventurerAsPartyLeader(oLeader);
-        object oFollower = CreateEventCreature("adventurer");
-        AdvanceCreatureAlongAdventurerPath(oFollower, SelectAdventurerPathForPartyType(nPartyType), nAdventurerHD+1);
-        EquipAdventurer(oFollower);
-        AddAdventurerToParty(oFollower, oLeader);
+        SpawnFollowerDelayed(oLeader, nAdventurerHD+1, nPartyType, nAdventurerHD);
     }
     else
     {
@@ -162,6 +153,7 @@ void main()
         EquipAdventurer(oLeader);
         DesignateAdventurerAsPartyLeader(oLeader);
     }
+    SetLocalInt(oLeader, "advparty_target_hd", nAdventurerHD);
     
     // Set party type
     int nPartySize = GetAdventurerPartySize(oLeader);

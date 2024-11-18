@@ -2,13 +2,23 @@
 #include "inc_quest"
 #include "inc_adventurer"
 
+// Pick an ADVENTURER_ASSASSIN_SENDER_* constant for oPC.
+// This is based on their quest states.
 int GetAdventurerAssassinSender(object oPC);
 
+// Get a target PC for oAdventurer when they see or inteact with oInteractingPC.
+// This could be another PC, oInteractingPC themselves, or OBJECT_INVALID if there is no valid target around them or in oInteractingPC's party.
 object GetAdventurerPartyTarget(object oAdventurer, object oInteractingPC);
 
+// Build the assassination note text for oAssassin to carry for a given ADVENTURER_ASSASSIN_SENDER_* constants against oPC.
 string GetAssassinNoteMessage(int nSender, object oPC, object oAssassin);
 
+// Create an assassination note item on the ground.
+// Intended for when oAssassin is killed while trying to attack oPC.
 object MakeAssassinNote(object oAssassin, object oPC);
+
+// Whether or not a ADVENTURER_PARTY_HOSTILE_ASSASSIN member should see oPC as a target due to level difference
+int ShouldAdventurePartyHostileAssassinTargetPC(object oAdventurer, object oPC);
 
 
 const int ADVENTURER_ASSASSIN_SENDER_NONE = 0;
@@ -18,6 +28,8 @@ const int ADVENTURER_ASSASSIN_SENDER_ANDROD = 3;
 const int ADVENTURER_ASSASSIN_SENDER_DESTHER = 4;
 const int ADVENTURER_ASSASSIN_SENDER_MAUGRIM = 5;
 const int ADVENTURER_ASSASSIN_SENDER_UNDERDARK = 6;
+
+/////////////////
 
 string GetAssassinNoteMessage(int nSender, object oPC, object oAssassin)
 {
@@ -249,7 +261,7 @@ object GetAdventurerPartyTarget(object oAdventurer, object oInteractingPC)
     object oTest = GetFirstFactionMember(oInteractingPC);
     while (GetIsObjectValid(oTest))
     {
-        if (GetArea(oTest) == GetArea(oAdventurer) && !GetIsDead(oTest) && GetAdventurerAssassinSender(oTest) > 0)
+        if (GetArea(oTest) == GetArea(oAdventurer) && !GetIsDead(oTest) && GetAdventurerAssassinSender(oTest) > 0 && ShouldAdventurePartyHostileAssassinTargetPC(oAdventurer, oTest))
         {
             nCount++;
         }
@@ -259,7 +271,7 @@ object GetAdventurerPartyTarget(object oAdventurer, object oInteractingPC)
     oTest = GetFirstFactionMember(oInteractingPC);
     while (GetIsObjectValid(oTest))
     {
-        if (GetArea(oTest) == GetArea(oAdventurer) && !GetIsDead(oTest))
+        if (GetArea(oTest) == GetArea(oAdventurer) && !GetIsDead(oTest) && ShouldAdventurePartyHostileAssassinTargetPC(oAdventurer, oTest))
         {
             nSender = GetAdventurerAssassinSender(oTest);
             if (nSelection == 0 && nSender > 0)
@@ -278,7 +290,7 @@ object GetAdventurerPartyTarget(object oAdventurer, object oInteractingPC)
         oTest = GetFirstFactionMember(oInteractingPC);
         while (GetIsObjectValid(oTest))
         {
-            if (GetArea(oTest) == GetArea(oAdventurer) && !GetIsDead(oTest))
+            if (GetArea(oTest) == GetArea(oAdventurer) && !GetIsDead(oTest) && ShouldAdventurePartyHostileAssassinTargetPC(oAdventurer, oTest))
             {
                 nSender = GetAdventurerAssassinSender(oTest);
                 if (nSender > 0)
@@ -301,4 +313,19 @@ object GetAdventurerPartyTarget(object oAdventurer, object oInteractingPC)
         SetLocalInt(oMember, "adventurer_party_sender", nSender);
     }
     return oLast;    
+}
+
+
+int ShouldAdventurePartyHostileAssassinTargetPC(object oAdventurer, object oPC)
+{
+    int nTargetHD = GetLocalInt(oAdventurer, "advparty_target_hd");
+    if (nTargetHD <= 0)
+        return 1;
+    
+    int nDiff = nTargetHD - GetHitDice(oPC);
+    if (nDiff > 1)
+        return 0;
+    if (nDiff < -2)
+        return 0;
+    return 1;
 }
