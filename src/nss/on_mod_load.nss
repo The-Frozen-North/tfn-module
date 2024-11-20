@@ -819,4 +819,7 @@ void main()
    }
 
    ExecuteScript("tlk_overrides");
+   
+   // This sets up dynamic lighting - the script is part of the base game and can be found in installdir/ovr
+   ExecuteScript("nw_dynlight");
 }

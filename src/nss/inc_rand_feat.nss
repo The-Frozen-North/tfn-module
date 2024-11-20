@@ -239,7 +239,7 @@ int _EvaluateRandomFeat_Melee(object oCreature, int nFeat)
         int nModDiff = GetAbilityModifier(ABILITY_DEXTERITY, oCreature) - GetAbilityModifier(ABILITY_STRENGTH, oCreature);
         if (nModDiff > 0)
         {
-            return max(0, 40*nModDiff*nModDiff);
+            return max(0, 80*nModDiff*nModDiff);
         }
         return 0;
     }

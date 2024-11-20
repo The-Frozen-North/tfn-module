@@ -4,6 +4,8 @@
 #include "inc_rand_appear"
 #include "inc_rand_equip"
 #include "inc_rand_spell"
+#include "inc_areadist"
+#include "inc_debug"
 
 const int ADVENTURER_PATH_BARBARIAN12 = 1;
 const int ADVENTURER_PATH_BARD12 = 2;
@@ -120,8 +122,12 @@ int GetAdventurerPartySize(object oAdventurer);
 // oAdventurer itself will occupy one of these positions
 object GetAdventurerPartyMemberByIndex(object oAdventurer, int nIndex);
 
+// Sets variables/dialog etc for oAdventurer to be of a given ADVENTURER_PARTY_* constant type.
 void SetAdventurerPartyType(object oAdventurer, int nPartyType);
 
+// Work out what HD an adventurer party should generate in oArea.
+// This looks at the PCs that are on the server, where they are in relation to oArea, and will copy one of their hit dice.
+int SelectAdventurerGroupHD(object oArea);
 
 
 ////////////////////////////////////////
@@ -255,6 +261,10 @@ int SelectAdventurerPathAssassin()
         if (_IsAdventurerPathSuitableForAssassin(i))
         {   
             nRandom -= GetAdventurerPathWeight(i);
+            if (nRandom < 0)
+            {
+                break;
+            }
         }
         i++;
     }
@@ -896,12 +906,14 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         {
             SetAdventurerMaxArmorAC(oCreature, 2);
             AddAdventurerDesiredSkill(oCreature, SKILL_PERFORM);
+            AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         }
         if (nClass == CLASS_TYPE_ROGUE)
         {
             AddAdventurerDesiredSkill(oCreature, SKILL_OPEN_LOCK);
             AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
             AddAdventurerDesiredSkill(oCreature, SKILL_SEARCH);
+            AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         }
         if (nClass == CLASS_TYPE_ROGUE || nClass == CLASS_TYPE_MONK || nClass == CLASS_TYPE_BARD)
         {
@@ -990,6 +1002,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISCIPLINE);
         AddAdventurerDesiredSkill(oCreature, SKILL_SEARCH);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
     }
     else if (nPath == ADVENTURER_PATH_BARBARIAN9ROGUE3)
     {
@@ -1037,6 +1050,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISCIPLINE);
         AddAdventurerDesiredSkill(oCreature, SKILL_TAUNT);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
     }
     else if (nPath == ADVENTURER_PATH_PALADIN9ROGUE3)
     {
@@ -1084,6 +1098,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISCIPLINE);
         AddAdventurerDesiredSkill(oCreature, SKILL_TAUNT);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
     }
     else if (nPath == ADVENTURER_PATH_RANGER9ROGUE3)
     {
@@ -1131,6 +1146,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
         AddAdventurerDesiredSkill(oCreature, SKILL_HIDE);
         AddAdventurerDesiredSkill(oCreature, SKILL_MOVE_SILENTLY);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
     }
     else if (nPath == ADVENTURER_PATH_MONK8ROGUE3PDK1)
     {
@@ -1192,6 +1208,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
         AddAdventurerDesiredSkill(oCreature, SKILL_HIDE);
         AddAdventurerDesiredSkill(oCreature, SKILL_MOVE_SILENTLY);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         if (nHD >= 7)
         {
             // PDK entry reqs
@@ -1632,6 +1649,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_PERFORM);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISCIPLINE);
         AddAdventurerDesiredSkill(oCreature, SKILL_SPOT);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         
         // Divine might isn't legal on this build - 4th feat has to be at level 9
         // While it would probably be stronger to drop AA levels, shuffle abilities, and slot it in
@@ -1706,6 +1724,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_TUMBLE);
         AddAdventurerDesiredSkill(oCreature, SKILL_OPEN_LOCK);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         
         if (nHD >= 6)
         {
@@ -1818,12 +1837,16 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_MOVE_SILENTLY);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISCIPLINE);
         
+        
         if (nHD >= 6)
         {
             // Assassin entry
             nRemainingSkillpoints -= 16;
             NWNX_Creature_SetSkillRank(oCreature, SKILL_HIDE, 8);
             NWNX_Creature_SetSkillRank(oCreature, SKILL_MOVE_SILENTLY, 8);
+            AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
+            AddAdventurerDesiredSkill(oCreature, SKILL_OPEN_LOCK);
+            AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         }
     }
     else if (nPath == ADVENTURER_PATH_RANGER9ASSASSIN3)
@@ -1879,6 +1902,9 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
             nRemainingSkillpoints -= 16;
             NWNX_Creature_SetSkillRank(oCreature, SKILL_HIDE, 8);
             NWNX_Creature_SetSkillRank(oCreature, SKILL_MOVE_SILENTLY, 8);
+            AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
+            AddAdventurerDesiredSkill(oCreature, SKILL_OPEN_LOCK);
+            AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         }
     }
     else if (nPath == ADVENTURER_PATH_FIGHTER7TORM5)
@@ -2087,6 +2113,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
         AddAdventurerDesiredSkill(oCreature, SKILL_SPOT);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISCIPLINE);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         if (nRemainingFeats)
         {
             NWNX_Creature_AddFeatByLevel(oCreature, FEAT_WEAPON_FOCUS_DAGGER, 1);
@@ -2145,6 +2172,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
         AddAdventurerDesiredSkill(oCreature, SKILL_SPOT);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISCIPLINE);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         if (nRemainingFeats)
         {
             NWNX_Creature_AddFeatByLevel(oCreature, FEAT_WEAPON_FOCUS_DAGGER, 1);
@@ -2318,6 +2346,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_OPEN_LOCK);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
         AddAdventurerDesiredSkill(oCreature, SKILL_SEARCH);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         if (nRemainingFeats)
         {
             NWNX_Creature_AddFeatByLevel(oCreature, FEAT_TOUGHNESS, 1);
@@ -2834,6 +2863,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_DISCIPLINE);
         AddAdventurerDesiredSkill(oCreature, SKILL_OPEN_LOCK);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         
         if (nHD >= 8)
         {
@@ -2899,6 +2929,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_TUMBLE);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISCIPLINE);
         AddAdventurerDesiredSkill(oCreature, SKILL_PERFORM);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         
         if (nHD >= 8)
         {
@@ -2972,6 +3003,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_HIDE);
         AddAdventurerDesiredSkill(oCreature, SKILL_MOVE_SILENTLY);
         AddAdventurerDesiredSkill(oCreature, SKILL_OPEN_LOCK);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         
         if (nHD >= 8)
         {
@@ -3048,6 +3080,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_HIDE);
         AddAdventurerDesiredSkill(oCreature, SKILL_MOVE_SILENTLY);
         AddAdventurerDesiredSkill(oCreature, SKILL_OPEN_LOCK);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         
         if (nHD >= 8)
         {
@@ -3128,6 +3161,7 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
         AddAdventurerDesiredSkill(oCreature, SKILL_MOVE_SILENTLY);
         AddAdventurerDesiredSkill(oCreature, SKILL_OPEN_LOCK);
         AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
+        AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         
         if (nHD >= 6)
         {
@@ -3221,6 +3255,9 @@ void AdvanceCreatureAlongAdventurerPath(object oCreature, int nPath, int nHD)
             nRemainingSkillpoints -= 16;
             NWNX_Creature_SetSkillRank(oCreature, SKILL_HIDE, 8);
             NWNX_Creature_SetSkillRank(oCreature, SKILL_MOVE_SILENTLY, 8);
+            AddAdventurerDesiredSkill(oCreature, SKILL_DISABLE_TRAP);
+            AddAdventurerDesiredSkill(oCreature, SKILL_OPEN_LOCK);
+            AddAdventurerDesiredSkill(oCreature, SKILL_USE_MAGIC_DEVICE);
         }
         
         if (nHD >= 9)
@@ -4081,7 +4118,7 @@ void SetAdventurerPartyType(object oAdventurer, int nPartyType)
     if (nPartyType == ADVENTURER_PARTY_HOSTILE_ASSASSIN)
     {
         SetLocalInt(oAdventurer, "cr", GetHitDice(oAdventurer));
-        SetLocalInt(oAdventurer, "area_cr", GetLocalInt(GetArea(oAdventurer), "cr"));
+        SetLocalInt(oAdventurer, "area_cr", GetHitDice(oAdventurer));
         DeleteLocalInt(oAdventurer, "no_credit");
         object oLeader = GetAdventurerPartyLeader(oAdventurer);
         SetLocalString(oLeader, "perception_script", "percep_advp1");
@@ -4101,5 +4138,75 @@ void SetAdventurerPartyType(object oAdventurer, int nPartyType)
     }
 }
 
+int SelectAdventurerHD(object oArea)
+{
+    int nACR = GetLocalInt(oArea, "cr");
+    if (nACR < 3)
+        nACR = GetLocalInt(oArea, "adventurer_hd");
+    if (nACR < 3)
+    {
+        WriteTimestampedLogEntry("Adventurer HD: HD setting for adventurers in area " + GetResRef(oArea));
+        nACR = 3;
+    }
+    return nACR;    
+}
 
-
+int SelectBountyHunterGroupHD(object oArea)
+{
+    int nACR = GetLocalInt(oArea, "cr");
+    if (nACR < 3)
+        nACR = 3;
+    
+    int nWeightSum = 0;
+    json jWeights = JsonArray();
+    int i;
+    object oTest = GetFirstPC();
+    while (GetIsObjectValid(oTest))
+    {
+        object oPCArea = GetArea(oTest);
+        int nWeight = 1;
+        if (GetIsObjectValid(oPCArea))
+        {
+            int nDist = 1;
+            if (oPCArea != oArea)
+            {
+                nDist = GetDistanceBetweenAreas(oArea, oPCArea);
+            }
+            // max(nDist, 150) should hopefully give a hefty weighting to the PC entering the area
+            if (nDist < 150)
+                nDist = 150;
+            nWeight = (10000/nDist);
+        }
+        nWeightSum += nWeight;
+        int nHD = GetHitDice(oTest);
+        while (nHD >= JsonGetLength(jWeights))
+        {
+            JsonArrayInsertInplace(jWeights, JsonInt(0));
+        }
+        int nNewWeight = JsonGetInt(JsonArrayGet(jWeights, nHD)) + nWeight;
+        JsonArraySetInplace(jWeights, nHD, JsonInt(nNewWeight));
+        
+        oTest = GetNextPC();
+    }
+    int nRolledWeight = Random(nWeightSum);
+    WriteTimestampedLogEntry("SelectAdventurerGroupHD: weight sum = " + IntToString(nWeightSum) + ", rolled " + IntToString(nRolledWeight) + "; " + JsonDump(jWeights));
+    i = 0;
+    while (nRolledWeight > 0 && i < JsonGetLength(jWeights))
+    {
+        int nThisWeight = JsonGetInt(JsonArrayGet(jWeights, i));
+        nRolledWeight -= nThisWeight;
+        if (nRolledWeight > 0)
+            i++;
+    }
+    // Safety: reduce by 20%
+    // This hopefully keeps things a little bit more manageable.
+    int nReduction = i / 5;
+    WriteTimestampedLogEntry("Picked HD (unless lower than ACR " + IntToString(nACR) + "): " + IntToString(i) + ", reduction = " + IntToString(nReduction));
+    i -= nReduction;
+    if (i < nACR)
+    {
+        return nACR;
+    }
+    
+    return i;
+}
