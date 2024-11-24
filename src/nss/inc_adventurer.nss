@@ -4140,9 +4140,9 @@ void SetAdventurerPartyType(object oAdventurer, int nPartyType)
 
 int SelectAdventurerHD(object oArea)
 {
-    int nACR = GetLocalInt(oArea, "cr");
+    int nACR = GetLocalInt(oArea, "adventurer_hd");
     if (nACR < 3)
-        nACR = GetLocalInt(oArea, "adventurer_hd");
+        nACR = GetLocalInt(oArea, "cr");
     if (nACR < 3)
     {
         WriteTimestampedLogEntry("Adventurer HD: HD setting for adventurers in area " + GetResRef(oArea));
@@ -4153,9 +4153,7 @@ int SelectAdventurerHD(object oArea)
 
 int SelectBountyHunterGroupHD(object oArea)
 {
-    int nACR = GetLocalInt(oArea, "cr");
-    if (nACR < 3)
-        nACR = 3;
+    int nACR = SelectAdventurerHD(oArea);
     
     int nWeightSum = 0;
     json jWeights = JsonArray();
