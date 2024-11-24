@@ -194,10 +194,8 @@ void main()
         {
             //Apply (stacked) ability bonuses from all merged items before polymorph to ensure no spell slots are lost
             eAbil = SupernaturalEffect(eAbil);
-            effect eNew = EffectLinkEffects(eNew,eAbil);
-            ApplyEffectToObject(DURATION_TYPE_PERMANENT,eNew,oPC);
+            eAbil = HideEffectIcon(eAbil);
             ApplyEffectToObject(DURATION_TYPE_PERMANENT,eAbil,oPC);
-            RemoveEffect(oPC,eNew);//hack to hide effect icons
         }
     }
     else if(nEvent == POLYMORPH_EVENTTYPE_POLYMORPH_UNPOLYMORPH)

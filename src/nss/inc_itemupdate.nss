@@ -2,7 +2,6 @@
 // to new versions with changed properties etc
 #include "inc_treasure"
 #include "inc_debug"
-#include "util_i_itemprop"
 #include "nw_inc_nui"
 #include "x3_inc_string"
 
@@ -20,8 +19,11 @@ struct ItemPropertyUpdateInfo
     int nUpdateFlags; // ITEM_UPDATE_* flags
 };
 
+// Flags for what was updated.
+// This is only triggered if visible item property text changes. Any invisible changes will go unmentioned.
 const int ITEM_UPDATE_ITEMPROPERTIES = 1;
 const int ITEM_UPDATE_ADDITIONALGOLDCOST = 2;
+const int ITEM_UPDATE_TAG = 4;
 
 // Update oItem to its "newer" form.
 // Returns a Json object saying what was updated.
@@ -248,6 +250,7 @@ int GetItemPropertiesHash(object oItem, int bForce=0)
         json jProperties = JsonPointer(jItem, "/PropertiesList");
         // Manually add keys for everything else that needs to go into the hash
         jProperties = JsonObjectSet(jProperties, "_AdditionalGold", JsonInt(NWNX_Item_GetAddGoldPieceValue(oItem)));
+        jProperties = JsonObjectSet(jProperties, "_ItemTag", JsonString(GetTag(oItem)));
         
         // Remove UsesPerDay from the structure
         // This is actually the remaining number of uses per day
@@ -327,31 +330,47 @@ struct ItemPropertyUpdateInfo UpdateItemProperties(object oItem)
         {
             NWNX_Item_SetAddGoldPieceValue(oItem, nNewGold);
             sRet.nUpdateFlags |= ITEM_UPDATE_ADDITIONALGOLDCOST;
-            // If gold price doesn't match at this point, we can instantly know that
-            // something itemproperty related has been changed
-            // Or we can force it to hash again, so now it should only have the itemprop list to compare.
-            nThisHash = GetItemPropertiesHash(oItem, 1);
-            if (GetIdentifiedGoldCost(oItem) != GetIdentifiedGoldCost(oTreasureStorage) || nThisHash != nTreasureHash)
-            {
-                sRet.nUpdateFlags |= ITEM_UPDATE_ITEMPROPERTIES;
-            }
         }
-        else
+                
+        // This could go in the if block for gold cost difference
+        // but for safety's sake I don't know if I trust it
+        sRet.jOldProps = GetItemPropertiesAsText(oItem);
+        sRet.jNewProps = GetItemPropertiesAsText(oTreasureStorage);
+        
+        if (JsonDump(sRet.jOldProps) != JsonDump(sRet.jNewProps))
         {
-            // Then the hash change must be itemprops!
+            // Be silent about changes that don't display a difference
             sRet.nUpdateFlags |= ITEM_UPDATE_ITEMPROPERTIES;
         }
         
-        // This could go in the if block for gold cost difference
-        // but for safety's sake I don't know if I trust it
-        sRet.jOldProps = JsonArray();
-        sRet.jNewProps = JsonArray();
+        if (GetTag(oTreasureStorage) != GetTag(oItem))
+        {
+            sRet.nUpdateFlags |= ITEM_UPDATE_TAG;
+            int bEquipped = 0;
+            if (GetObjectType(GetItemPossessor(oItem)) == OBJECT_TYPE_CREATURE)
+            {
+                int nSlot;
+                for (nSlot=0; nSlot<=INVENTORY_SLOT_HIGHEST; nSlot++)
+                {
+                    if (GetItemInSlot(nSlot, GetItemPossessor(oItem)) == oItem)
+                    {
+                        bEquipped = 1;
+                        break;
+                    }
+                }
+            }
+            // Fire the unequip/equip scripts for the item?
+            if (bEquipped)
+                ItemEventCallEventOnItem(oItem, ITEM_EVENT_UNEQUIP, GetItemPossessor(oItem), TRUE);
+            SetTag(oItem, GetTag(oTreasureStorage));
+            if (bEquipped)
+                ItemEventCallEventOnItem(oItem, ITEM_EVENT_EQUIP, GetItemPossessor(oItem), TRUE);
+        }
         
         itemproperty ipTest = GetFirstItemProperty(oItem);
         while (GetIsItemPropertyValid(ipTest))
         {
             RemoveItemProperty(oItem, ipTest);
-            sRet.jOldProps = JsonArrayInsert(sRet.jOldProps, JsonString(ItemPropertyToString(ipTest)));
             ipTest = GetNextItemProperty(oItem);
         }
         
@@ -359,7 +378,6 @@ struct ItemPropertyUpdateInfo UpdateItemProperties(object oItem)
         while (GetIsItemPropertyValid(ipTest))
         {
             AddItemProperty(DURATION_TYPE_PERMANENT, ipTest, oItem);
-            sRet.jNewProps = JsonArrayInsert(sRet.jNewProps, JsonString(ItemPropertyToString(ipTest)));
             ipTest = GetNextItemProperty(oTreasureStorage);
         }
         // Force update the saved hash

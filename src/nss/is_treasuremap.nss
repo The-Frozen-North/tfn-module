@@ -1,7 +1,11 @@
 #include "inc_treasuremap"
+#include "inc_itemevent"
 
 void main()
 {
-    object oMap = GetSpellCastItem();   
-    UseTreasureMap(oMap);
+    if (GetCurrentItemEventType() == ITEM_EVENT_ACTIVATED)
+    {
+        object oMap = GetSpellCastItem();   
+        UseTreasureMap(oMap);
+    }
 }

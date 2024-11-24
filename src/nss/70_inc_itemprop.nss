@@ -15,6 +15,7 @@ they are specific for one purpose and not expected to be used outside of that sc
 //:: Created On: ?-11-2010
 //:://////////////////////////////////////////////
 #include "x2_inc_switches"
+#include "inc_itemevent"
 
 int ITEM_PROPERTY_BOOMERANG             = 14;
 int ITEM_PROPERTY_ITEM_COST_PARAMETER   = 42;
@@ -522,10 +523,15 @@ void IPWildShapeMergeItemProperties(object oOld, object oNew, int bWeapon = FALS
         {
             if(GetItemPropertyType(ip) != ITEM_PROPERTY_ABILITY_BONUS && (!bWeapon || GetWeaponRanged(oOld) == GetWeaponRanged(oNew)))
             {
-                AddItemProperty(DURATION_TYPE_PERMANENT,ip,oNew);
+                // Avoid copying on hit cast properties from weapons to hide
+                if (!bWeapon || GetItemPropertyType(ip) != ITEM_PROPERTY_ONHITCASTSPELL || GetBaseItemType(oNew) != BASE_ITEM_CREATUREITEM)
+                {
+                    AddItemProperty(DURATION_TYPE_PERMANENT,ip,oNew);
+                }
             }
             ip = GetNextItemProperty(oOld);
         }
+        ItemEventsPolymorphMerge(oOld, oNew, bWeapon);
     }
 }
 
