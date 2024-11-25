@@ -222,7 +222,7 @@ void AddEWR(object oItem)
    AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyWeightReduction(nWeightReduction), oItem);
 }
 
-// Applies enchanted weight reduction and a value modifier based on AC (for armor)
+// Applies enchanted weight reduction
 void InitializeItem(object oItem);
 void InitializeItem(object oItem)
 {
@@ -272,31 +272,6 @@ void InitializeItem(object oItem)
             SetDescription(oItem, sDescription+MAGIC_THROWING_WEAPON_DESCRIPTION);
         }
     }
-
-
-    if (GetBaseItemType(oItem) == BASE_ITEM_ARMOR)
-    {
-        int nBaseArmorAC = GetBaseArmorAC(oItem);
-    // Adjust the value of the item based on base AC. Every base AC = 10% more in value.
-        if ((nBaseArmorAC > 0 && nBaseArmorAC < 5) || nBaseArmorAC == 8)
-        {
-            NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + FloatToInt( IntToFloat(GetGoldPieceValue(oItem)) * (IntToFloat(nBaseArmorAC) * 0.1) ) );
-        }
-        else if (nBaseArmorAC == 5)
-        {
-            NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + FloatToInt( IntToFloat(GetGoldPieceValue(oItem)) * (IntToFloat(2) * 0.1) ) );
-        }
-        else if (nBaseArmorAC == 6)
-        {
-            NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + FloatToInt( IntToFloat(GetGoldPieceValue(oItem)) * (IntToFloat(4) * 0.1) ) );
-        }
-        else if (nBaseArmorAC == 7)
-        {
-            NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) + FloatToInt( IntToFloat(GetGoldPieceValue(oItem)) * (IntToFloat(6) * 0.1) ) );
-        }
-    }
-
-     NWNX_Item_SetAddGoldPieceValue(oItem, NWNX_Item_GetAddGoldPieceValue(oItem) - GetLocalInt(oItem, "reduce_cost"));
 
     SetIdentified(oItem, nWasIdentified);
     SetLocalInt(oItem, "initialized", 1);
