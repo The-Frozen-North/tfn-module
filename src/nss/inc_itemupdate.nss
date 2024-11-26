@@ -24,6 +24,8 @@ struct ItemPropertyUpdateInfo
 const int ITEM_UPDATE_ITEMPROPERTIES = 1;
 const int ITEM_UPDATE_ADDITIONALGOLDCOST = 2;
 const int ITEM_UPDATE_TAG = 4;
+const int ITEM_UPDATE_DESCRIPTION = 8;
+const int ITEM_UPDATE_NAME = 16;
 
 // Update oItem to its "newer" form.
 // Returns a Json object saying what was updated.
@@ -315,10 +317,27 @@ int GetIdentifiedGoldCost(object oItem)
 struct ItemPropertyUpdateInfo UpdateItemProperties(object oItem)
 {
     struct ItemPropertyUpdateInfo sRet;
-    object oTreasureStorage = GetTFNEquipmentByName(oItem);
+    object oTreasureStorage = GetTFNStagedEquipmentForItem(oItem);
     if (!GetIsObjectValid(oTreasureStorage))
     {
         return sRet;
+    }
+    if (GetDescription(oItem) != GetDescription(oTreasureStorage))
+    {
+        SetDescription(oItem, GetDescription(oTreasureStorage));
+        sRet.nUpdateFlags |= ITEM_UPDATE_DESCRIPTION;
+    }
+    if (GetIdentified(oItem))
+    {
+        int bOldIdentified = GetIdentified(oTreasureStorage);
+        SetIdentified(oTreasureStorage, 1);
+        string sNewName = GetName(oTreasureStorage);
+        SetIdentified(oTreasureStorage, bOldIdentified);
+        if (GetName(oItem) != sNewName)
+        {
+            SetName(oItem, sNewName);
+            sRet.nUpdateFlags |= ITEM_UPDATE_NAME;
+        }
     }
 
     int nThisHash = GetItemPropertiesHash(oItem);

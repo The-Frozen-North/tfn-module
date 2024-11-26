@@ -749,7 +749,7 @@ void main()
       }
    }
 
-   BuildItemNamesToObjectsDB();
+   BuildTreasureStagingToObjectsDB();
    SetLocalInt(GetModule(), "treasure_ready", 1);
    CalculatePlaceableLootValues();
 

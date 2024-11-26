@@ -313,12 +313,17 @@ location GetTreasureStagingLocation() {return Location(GetObjectByTag("_TREASURE
 // Also, some creatures add itemprops to them on spawn, which isn't ideal
 // To get around that we can map the generic names to the TFN object
 // ... which this DB can do for us happily
-void BuildItemNamesToObjectsDB()
+void BuildTreasureStagingToObjectsDB()
 {
     object oMod = GetModule();
     sqlquery sql = SqlPrepareQueryObject(GetModule(),
     "CREATE TABLE IF NOT EXISTS item_name_lookup (" +
     "itemname TEXT PRIMARY KEY ON CONFLICT FAIL, " +
+    "oid TEXT);");
+    SqlStep(sql);
+    sql = SqlPrepareQueryObject(GetModule(),
+    "CREATE TABLE IF NOT EXISTS item_resref_lookup (" +
+    "resref TEXT PRIMARY KEY ON CONFLICT FAIL, " +
     "oid TEXT);");
     SqlStep(sql);
     int nTier;
@@ -327,6 +332,7 @@ void BuildItemNamesToObjectsDB()
     int nRarity;
     string sRarity;
     string sItemType;
+    json jResrefMappingsWithConflicts = JsonArray();
     for (nTier=1; nTier<=5; nTier++)
     {
         // Armor, Melee, Range, Apparel
@@ -358,8 +364,9 @@ void BuildItemNamesToObjectsDB()
                             SetIdentified(oTest, 1);
                             // As of right now there are about four items who conflict
                             // including base item name resolves them all
+                            // If that ever changes, this will throw full blown sqlite errors
                             string sName = GetName(oTest) + IntToString(GetBaseItemType(oTest));
-                            SetIdentified(oTest, bIdentified);
+                            
                             sql = SqlPrepareQueryObject(GetModule(),
                                 "INSERT INTO item_name_lookup " +
                                 "(itemname, oid) VALUES (@itemname, @oid);");// +
@@ -373,6 +380,38 @@ void BuildItemNamesToObjectsDB()
                             {
                                 WriteTimestampedLogEntry("Error while writing item name: " + sName);
                             }
+                            
+                            // Resref mapping: we can expect to have conflicts here
+                            // It is nice not to spam the server log with them.
+                            
+                            sName = GetResRef(oTest) + "_baseitem_" + IntToString(GetBaseItemType(oTest));
+                            sql = SqlPrepareQueryObject(GetModule(),
+                                "SELECT EXISTS(SELECT 1 FROM item_resref_lookup WHERE resref = @resref);");
+                            SqlBindString(sql, "@resref", sName);
+                            SqlStep(sql);
+                            if (SqlGetInt(sql, 0))
+                            {
+                                WriteTimestampedLogEntry("Resref lookup for " + GetName(oTest) + " has conflicts with something that came before it using key " + sName);
+                                if (JsonFind(jResrefMappingsWithConflicts, JsonString(sName)) == JsonNull())
+                                {
+                                    JsonArrayInsertInplace(jResrefMappingsWithConflicts, JsonString(sName));
+                                }
+                            }
+                            else
+                            {
+                                sql = SqlPrepareQueryObject(GetModule(),
+                                    "INSERT INTO item_resref_lookup " +
+                                    "(resref, oid) VALUES (@resref, @oid);");
+                                SqlBindString(sql, "@resref", sName);
+                                SqlBindString(sql, "@oid", ObjectToString(oTest));
+                                SqlStep(sql);
+                                sError = SqlGetError(sql);
+                                if (sError != "")
+                                {
+                                    WriteTimestampedLogEntry("Error while writing item resref mapping: " + sName);
+                                }
+                            }
+                            SetIdentified(oTest, bIdentified);
                             oTest = GetNextItemInInventory(oChest);
                         }
                     }
@@ -380,6 +419,40 @@ void BuildItemNamesToObjectsDB()
             }
         }
     }
+    // Drop the records that had conflicts
+    int i;
+    for (i=0; i<JsonGetLength(jResrefMappingsWithConflicts); i++)
+    {
+        sql = SqlPrepareQueryObject(GetModule(),
+            "DELETE FROM item_resref_lookup " +
+            "where resref = @resref RETURNING oid;");
+        string sKey = JsonGetString(JsonArrayGet(jResrefMappingsWithConflicts, i));
+        SqlBindString(sql, "@resref", sKey);
+        SqlStep(sql);
+        object oConflicter = StringToObject(SqlGetString(sql, 0));
+        int bIdentified = GetIdentified(oConflicter);
+        SetIdentified(oConflicter, 1);
+        WriteTimestampedLogEntry("Conflict for key " + sKey + " was with " + GetName(oConflicter));
+        SetIdentified(oConflicter, bIdentified);
+    }
+}
+
+object GetTFNEquipmentByResref(string sResRef, int nBaseItemType)
+{
+    string sName = sResRef + "_baseitem_" + IntToString(nBaseItemType);
+    sqlquery sql = SqlPrepareQueryObject(GetModule(),
+        "SELECT oid FROM item_resref_lookup " +
+        "WHERE resref = @resref;");
+    SqlBindString(sql, "@resref", sName);
+    if (SqlStep(sql))
+    {
+        object oRet = StringToObject(SqlGetString(sql, 0));
+        //WriteTimestampedLogEntry("GetTFNEquipmentByResref: " + sName + " -> " + GetName(oRet));
+        return oRet;
+    }
+    //WriteTimestampedLogEntry("GetTFNEquipmentByResref: " + sName + " -> invalid");
+
+    return OBJECT_INVALID;
 }
 
 object GetTFNEquipmentFromName(string sItemName, int nBaseItemType)
@@ -392,15 +465,15 @@ object GetTFNEquipmentFromName(string sItemName, int nBaseItemType)
     if (SqlStep(sql))
     {
         object oRet = StringToObject(SqlGetString(sql, 0));
-        //WriteTimestampedLogEntry("GetTFNEquipmentByName: " + GetName(oItem) + " -> " + GetName(oRet));
+        //WriteTimestampedLogEntry("GetTFNEquipmentFromName: " + sName+ " -> " + GetName(oRet));
         return oRet;
     }
-    //WriteTimestampedLogEntry("GetTFNEquipmentByName: " + GetName(oItem) + " -> invalid");
+    //WriteTimestampedLogEntry("GetTFNEquipmentFromName: " + sName + " -> invalid");
 
     return OBJECT_INVALID;
 }
 
-object GetTFNEquipmentByName(object oItem)
+object GetTFNStagedEquipmentForItem(object oItem)
 {
     if (GetIsObjectValid(oItem))
     {
@@ -413,7 +486,13 @@ object GetTFNEquipmentByName(object oItem)
         }
 
         SetIdentified(oItem, bIdentified);
-        return GetTFNEquipmentFromName(sName, GetBaseItemType(oItem));
+        object oRet = GetTFNEquipmentFromName(sName, GetBaseItemType(oItem));
+        if (GetIsObjectValid(oRet))
+        {
+            return oRet;
+        }
+        
+        return GetTFNEquipmentByResref(GetResRef(oItem), GetBaseItemType(oItem));
     }
     return OBJECT_INVALID;
 }

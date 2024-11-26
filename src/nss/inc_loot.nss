@@ -758,7 +758,7 @@ json _AddToDroppableLootArray(json jItems, object oLootOrigin, object oItem, int
 {
     json jBlacklist = GetLocalJson(oLootOrigin, "OwnDroppableLootBlacklist");
     
-    object oTFN = GetTFNEquipmentByName(oItem);
+    object oTFN = GetTFNStagedEquipmentForItem(oItem);
     if (GetLocalInt(oItem, "creature_drop_only"))
     {
         oTFN = oItem;
