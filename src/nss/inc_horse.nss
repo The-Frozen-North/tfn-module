@@ -170,6 +170,17 @@ void RemoveMount(object oPC)
 
     SetFootstepType(FOOTSTEP_TYPE_DEFAULT, oPC);
     DetermineHorseEffects(oPC);
+    
+    // Fix for disappearing cloaks after dismount - thanks, Taro
+    // The local int stuff should avoid cloaks getting set hidden forever if players manage to log out in this window or similar
+    object oCloak = GetItemInSlot(INVENTORY_SLOT_CLOAK, oPC);
+    if (!GetHiddenWhenEquipped(oCloak) || GetLocalInt(oCloak, "dismount_fix"))
+    {
+        DelayCommand(0.5, SetHiddenWhenEquipped(oCloak, TRUE));
+        SetLocalInt(oCloak, "dismount_fix", 1);
+        DelayCommand(1.0, SetHiddenWhenEquipped(oCloak, FALSE));
+        DelayCommand(1.1, DeleteLocalInt(oCloak, "dismount_fix"));
+    }
 }
 
 void ApplyMount(object oPC, int nHorse = 0)
