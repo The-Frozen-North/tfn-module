@@ -102,7 +102,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 2166
+    "value": 4629
   },
   "Cursed": {
     "type": "byte",
@@ -110,7 +110,9 @@
   },
   "DescIdentified": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "\nThe Barbarian's Outfit is a crude ensemble of animal hides and haphazard stitching, exuding an air of raw, untamed power. Its rugged appearance and lingering scent of wilderness suggest it has endured countless battles under harsh conditions.\n\n\n\nThose who don the outfit find their physical might enhanced, their muscles surging with primal strength. However, the same primal force that empowers them seems to dull their charm and civility, making interactions with others tense and awkward. This garb is a true reflection of the savage spirit, favoring brute force over social grace."
+    }
   },
   "Description": {
     "type": "cexolocstring",
@@ -166,7 +168,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 1
+          "value": 2
         },
         "Param1": {
           "type": "byte",
@@ -179,6 +181,37 @@
         "PropertyName": {
           "type": "word",
           "value": 0
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 31
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 0
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 90
         },
         "Subtype": {
           "type": "word",
@@ -197,7 +230,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 1
+          "value": 2
         },
         "Param1": {
           "type": "byte",
@@ -214,68 +247,6 @@
         "Subtype": {
           "type": "word",
           "value": 5
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 25
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 1
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 52
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 3
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 25
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 1
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 255
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 0
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 52
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 24
         }
       }
     ]
@@ -295,5 +266,81 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "armor12"
+  },
+  "xArmorPart_Belt": {
+    "type": "word",
+    "value": 0
+  },
+  "xArmorPart_LBice": {
+    "type": "word",
+    "value": 1
+  },
+  "xArmorPart_LFArm": {
+    "type": "word",
+    "value": 14
+  },
+  "xArmorPart_LFoot": {
+    "type": "word",
+    "value": 6
+  },
+  "xArmorPart_LHand": {
+    "type": "word",
+    "value": 3
+  },
+  "xArmorPart_LShin": {
+    "type": "word",
+    "value": 13
+  },
+  "xArmorPart_LShou": {
+    "type": "word",
+    "value": 6
+  },
+  "xArmorPart_LThig": {
+    "type": "word",
+    "value": 1
+  },
+  "xArmorPart_Neck": {
+    "type": "word",
+    "value": 1
+  },
+  "xArmorPart_Pelvi": {
+    "type": "word",
+    "value": 3
+  },
+  "xArmorPart_RBice": {
+    "type": "word",
+    "value": 1
+  },
+  "xArmorPart_RFArm": {
+    "type": "word",
+    "value": 14
+  },
+  "xArmorPart_RFoot": {
+    "type": "word",
+    "value": 6
+  },
+  "xArmorPart_RHand": {
+    "type": "word",
+    "value": 3
+  },
+  "xArmorPart_Robe": {
+    "type": "word",
+    "value": 0
+  },
+  "xArmorPart_RShin": {
+    "type": "word",
+    "value": 13
+  },
+  "xArmorPart_RShou": {
+    "type": "word",
+    "value": 6
+  },
+  "xArmorPart_RThig": {
+    "type": "word",
+    "value": 1
+  },
+  "xArmorPart_Torso": {
+    "type": "word",
+    "value": 40
   }
 }
