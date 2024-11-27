@@ -1,7 +1,10 @@
 #include "nwnx_events"
 #include "nwnx_effect"
+#include "nwnx_damage"
 #include "inc_debug"
 #include "util_i_itemprop"
+#include "x2_inc_itemprop"
+#include "nwnx_creature"
 
 /*
 General item event framework.
@@ -145,6 +148,11 @@ json GetItemPropertiesAsText(object oItem);
 // For use in ITEM_EVENT_WEARER_ATTACKED or ITEM_EVENT_WEARER_ATTACKS.
 // Return the object that is the weapon used by the attacker in this event.
 object GetItemEventWeaponUsedForAttack();
+
+// For use in ITEM_EVENT_WEARER_ATTACKED or ITEM_EVENT_WEARER_ATTACKS.
+// Return the critical hit multiplier of the current attack.
+// 1 for non crits, or whatever (including WM 5) on a successful crit.
+int GetItemEventCritMultiplier();
 
 
 //////////////////////////////////////
@@ -506,7 +514,7 @@ object GetItemEventWeaponUsedForAttack()
 {
     struct NWNX_Damage_AttackEventData data = NWNX_Damage_GetAttackEventData();
     if (data.iWeaponAttackType == 7) // unarmed
-        return GetItemInSlot(INVENTORY_SLOT_GLOVES);
+        return GetItemInSlot(INVENTORY_SLOT_ARMS);
     
     else if (data.iWeaponAttackType == 8 ||      // unarmed extra
         data.iWeaponAttackType == 6 ||      // extra via haste
@@ -517,7 +525,7 @@ object GetItemEventWeaponUsedForAttack()
         object oMain = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
         if (GetIsObjectValid(oMain))
             return oMain;
-        return GetItemInSlot(INVENTORY_SLOT_GLOVES);
+        return GetItemInSlot(INVENTORY_SLOT_ARMS);
     }
     else if (data.iWeaponAttackType == 2) // offhand
     {
@@ -533,7 +541,28 @@ object GetItemEventWeaponUsedForAttack()
     return OBJECT_INVALID;
 }
 
-
+// Return the critical hit multiplier of the current attack.
+// 1 for non crits, or whatever (including WM 5) on a successful crit.
+int GetItemEventCritMultiplier()
+{
+    struct NWNX_Damage_AttackEventData data = NWNX_Damage_GetAttackEventData();
+    if (data.iAttackResult == 3)
+    {
+        object oWeapon = GetItemEventWeaponUsedForAttack();
+        int nBaseItem = GetBaseItemType(oWeapon);
+        int nBaseMult = StringToInt(Get2DAString("baseitems", "CritHitMult", nBaseItem));
+        if (GetHasFeat(FEAT_INCREASE_MULTIPLIER))
+        {
+            int nWeaponOfChoiceFeat = StringToInt(Get2DAString("baseitems", "WeaponOfChoiceFeat", nBaseItem));
+            if (GetHasFeat(nWeaponOfChoiceFeat))
+            {
+                nBaseMult++;
+            }
+        }
+        return nBaseMult;
+    }
+    return 1;
+}
 
 
 
