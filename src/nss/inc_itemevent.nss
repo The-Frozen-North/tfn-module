@@ -142,6 +142,10 @@ int GetDamageTypeOfLastUsedWeapon(object oCreature);
 // Handles Material property custom text replacement.
 json GetItemPropertiesAsText(object oItem);
 
+// For use in ITEM_EVENT_WEARER_ATTACKED or ITEM_EVENT_WEARER_ATTACKS.
+// Return the object that is the weapon used by the attacker in this event.
+object GetItemEventWeaponUsedForAttack();
+
 
 //////////////////////////////////////
 // Functions that are probably for system usage only
@@ -496,6 +500,43 @@ json GetItemPropertiesAsText(object oItem)
     }
     return jOutput;
 }
+
+
+object GetItemEventWeaponUsedForAttack()
+{
+    struct NWNX_Damage_AttackEventData data = NWNX_Damage_GetAttackEventData();
+    if (data.iWeaponAttackType == 7) // unarmed
+        return GetItemInSlot(INVENTORY_SLOT_GLOVES);
+    
+    else if (data.iWeaponAttackType == 8 ||      // unarmed extra
+        data.iWeaponAttackType == 6 ||      // extra via haste
+        data.iWeaponAttackType == 1)        // main
+    {
+        // These all mean main hand attacks - though which object that is exactly may be difficult to figure out
+        // This logic may fail in the case of bonus attacks made with creature weapons
+        object oMain = GetItemInSlot(INVENTORY_SLOT_RIGHTHAND);
+        if (GetIsObjectValid(oMain))
+            return oMain;
+        return GetItemInSlot(INVENTORY_SLOT_GLOVES);
+    }
+    else if (data.iWeaponAttackType == 2) // offhand
+    {
+        return GetItemInSlot(INVENTORY_SLOT_LEFTHAND);
+    }
+    else if (data.iWeaponAttackType == 3) // 3-5 are creature weapons, according to nwnx discord this is the right assignment
+        return GetItemInSlot(INVENTORY_SLOT_CWEAPON_L);
+    else if (data.iWeaponAttackType == 4)
+        return GetItemInSlot(INVENTORY_SLOT_CWEAPON_R);
+    else if (data.iWeaponAttackType == 5)
+        return GetItemInSlot(INVENTORY_SLOT_CWEAPON_B);
+    
+    return OBJECT_INVALID;
+}
+
+
+
+
+
 
 string ItemEventMapBuildScript(string sEvent, string sCreatureText="OBJECT_SELF", string sExtraInclude="", string sCondition="", string sSpecificItemExclusion="")
 {
