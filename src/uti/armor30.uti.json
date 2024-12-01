@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 10245
+    "value": 13652
   },
   "Cursed": {
     "type": "byte",
@@ -27,7 +27,9 @@
   "DescIdentified": {
     "id": 12863,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Legend holds that this powerful item was created by the god Cyric during the Time of Troubles, giving him one more powerful weapon to use against his foes in battle. For, unlike most shields, the Shield of Chaos truly is a weapon. Whenever its wearer is hit during combat, the shield can retaliate with any number of powerful and disabling effects, ranging from blindness to paralysis to blasts of fire and lightning that will engulf the unfortunate opponent."
+    }
   },
   "Description": {
     "type": "cexolocstring",
@@ -42,11 +44,13 @@
   "LocalizedName": {
     "id": 12888,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Chaos Shield"
+    }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 41
+    "value": 32
   },
   "PaletteID": {
     "type": "byte",
@@ -71,7 +75,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 3
+          "value": 1
         },
         "Param1": {
           "type": "byte",
@@ -89,6 +93,37 @@
           "type": "word",
           "value": 0
         }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 26
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 0
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 82
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 130
+        }
       }
     ]
   },
@@ -102,10 +137,14 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "non_unique"
+    "value": "sse"
   },
   "TemplateResRef": {
     "type": "resref",
     "value": "armor30"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 32
   }
 }

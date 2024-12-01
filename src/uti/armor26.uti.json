@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 11991
+    "value": 17468
   },
   "Cursed": {
     "type": "byte",
@@ -27,11 +27,15 @@
   "DescIdentified": {
     "id": 12863,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Evil dragons are fearful opponents, but luckily for the good races of the world every dragon carries the seeds of its own destruction. When a single dragon falls, its scales are turned into shields and armor sovereign against its own attacks. A gifted artificer can even combine scales from different dragon types to produce items that resist many forms of elemental attack. The famed Dragon Shields are of this sort, and are among the best equipment an ambitious dragonslayer can carry."
+    }
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": ""
+    }
   },
   "Identified": {
     "type": "byte",
@@ -40,11 +44,13 @@
   "LocalizedName": {
     "id": 12875,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Dragon Shield"
+    }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 41
+    "value": 62
   },
   "PaletteID": {
     "type": "byte",
@@ -69,7 +75,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 3
+          "value": 1
         },
         "Param1": {
           "type": "byte",
@@ -87,6 +93,130 @@
           "type": "word",
           "value": 0
         }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 7
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 1
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 23
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 6
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 7
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 1
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 23
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 7
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 7
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 1
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 23
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 9
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 7
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 1
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 23
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 10
+        }
       }
     ]
   },
@@ -100,30 +230,14 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "non_unique"
+    "value": "ls"
   },
   "TemplateResRef": {
     "type": "resref",
     "value": "armor26"
   },
-  "VarTable": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "non_unique"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      }
-    ]
+  "xModelPart1": {
+    "type": "word",
+    "value": 62
   }
 }
