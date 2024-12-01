@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 17763
+    "value": 17357
   },
   "Cursed": {
     "type": "byte",
@@ -27,11 +27,15 @@
   "DescIdentified": {
     "id": 13381,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Under the direction of Druxus Rhym, these medallions are created by the Red Wizards of Thay and are sold in their enclaves across the realms. Cheap and easy to make, this magical protection from certain elements is a huge source of profit for the enclaves. It is additionally fortified with a protective aura against physical attacks."
+    }
   },
   "Description": {
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": ""
+    }
   },
   "Identified": {
     "type": "byte",
@@ -40,11 +44,13 @@
   "LocalizedName": {
     "id": 13399,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Pyroshield Medallion"
+    }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 1
+    "value": 10
   },
   "PaletteID": {
     "type": "byte",
@@ -69,7 +75,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 3
+          "value": 2
         },
         "Param1": {
           "type": "byte",
@@ -86,6 +92,37 @@
         "Subtype": {
           "type": "word",
           "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 2
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 3
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 40
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 9
         }
       }
     ]
@@ -105,5 +142,9 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "apparel130"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 10
   }
 }
