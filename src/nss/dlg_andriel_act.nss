@@ -43,6 +43,6 @@ void main()
     else if (nRoll <= 85) { SetTreasureMapDifficulty(oMap, TREASUREMAP_DIFFICULTY_MEDIUM); }
     else if (nRoll <= 90) { SetTreasureMapDifficulty(oMap, TREASUREMAP_DIFFICULTY_EASY); }
     else { SetTreasureMapDifficulty(oMap, TREASUREMAP_DIFFICULTY_MASTER); }
-    CopyTierItemToObjectOrLocation(oMap, oPC);
+    CopyTierItemFromStaging(oMap, oPC);
     SQLocalsPlayer_SetInt(oPC, "andriel_lastbuy", SQLite_GetTimeStamp());
 }

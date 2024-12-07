@@ -16,17 +16,17 @@ void main()
 
         if (nRandom == 6)
         {
-           InitializeForPickpocket(GenerateLoot(OBJECT_SELF));
-           InitializeForPickpocket(GenerateLoot(OBJECT_SELF));
-           InitializeForPickpocket(GenerateLoot(OBJECT_SELF));
+           InitializeForPickpocket(SelectLootItemForLootSource(OBJECT_SELF, OBJECT_SELF));
+           InitializeForPickpocket(SelectLootItemForLootSource(OBJECT_SELF, OBJECT_SELF));
+           InitializeForPickpocket(SelectLootItemForLootSource(OBJECT_SELF, OBJECT_SELF));
         }
         else if (nRandom > 3)
         {
-            InitializeForPickpocket(GenerateLoot(OBJECT_SELF));
-            InitializeForPickpocket(GenerateLoot(OBJECT_SELF));
+            InitializeForPickpocket(SelectLootItemForLootSource(OBJECT_SELF, OBJECT_SELF));
+            InitializeForPickpocket(SelectLootItemForLootSource(OBJECT_SELF, OBJECT_SELF));
         }
         else
         {
-            InitializeForPickpocket(GenerateLoot(OBJECT_SELF));
+            InitializeForPickpocket(SelectLootItemForLootSource(OBJECT_SELF, OBJECT_SELF));
         }
 }

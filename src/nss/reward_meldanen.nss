@@ -2,8 +2,8 @@
 
 void main()
 {
-    GenerateTierItem(3, 6, OBJECT_SELF, "Potions", 0, TRUE);
-    GenerateTierItem(3, 6, OBJECT_SELF, "Potions", 0, TRUE);
-    GenerateTierItem(3, 6, OBJECT_SELF, "Potions");
-    GenerateTierItem(3, 6, OBJECT_SELF, "Potions");
+    SelectLootItemFromACR(OBJECT_SELF, 6, LOOT_TYPE_POTION, 0);
+    SelectLootItemFromACR(OBJECT_SELF, 6, LOOT_TYPE_POTION, 0);
+    SelectLootItemFromACR(OBJECT_SELF, 6, LOOT_TYPE_POTION);
+    SelectLootItemFromACR(OBJECT_SELF, 6, LOOT_TYPE_POTION);
 }

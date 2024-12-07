@@ -29,9 +29,10 @@ void CopyKey()
     }
 }
 
-void GeneratePickpocketItem(string sType = "")
+void GeneratePickpocketItem(int nAllowedLootTypes=LOOT_TYPE_MISC)
 {
-    object oItem = GenerateTierItem(GetHitDice(OBJECT_SELF), GetLocalInt(GetArea(OBJECT_SELF), "area_cr"), OBJECT_SELF, sType);
+    // Avoids increasing high tier item odds on bosses/semibosses
+    object oItem = SelectLootItemFromACR(OBJECT_SELF, GetLocalInt(OBJECT_SELF, "area_cr"), nAllowedLootTypes);
     SetDroppableFlag(oItem, FALSE);
     SetPickpocketableFlag(oItem, TRUE);
     SetLocalInt(OBJECT_SELF, "pickpocket_xp", 1);
@@ -42,6 +43,12 @@ void GeneratePickpocketItem(string sType = "")
 
 void main()
 {
+    object oArea = GetArea(OBJECT_SELF);
+    float fCR = GetChallengeRating(OBJECT_SELF);
+    int iAreaCR = GetLocalInt(oArea, "cr");
+    SetLocalInt(OBJECT_SELF, "cr", FloatToInt(fCR));
+    SetLocalInt(OBJECT_SELF, "area_cr", iAreaCR);
+
     SignalEvent(OBJECT_SELF, EventUserDefined(GS_EV_ON_SPAWN));
 
     NWNX_Creature_SetNoPermanentDeath(OBJECT_SELF, TRUE);
@@ -85,9 +92,7 @@ void main()
 //    SetLocalLocation(OBJECT_SELF, "GS_LOCATION", GetLocation(OBJECT_SELF));
 //    SetLocalInt(OBJECT_SELF, "GS_TIMEOUT", gsTIGetActualTimestamp() + GS_TIMEOUT);
 
-    object oArea = GetArea(OBJECT_SELF);
-
-    int iAreaCR = GetLocalInt(oArea, "cr");
+    
 
     switch (GetRacialType(OBJECT_SELF))
     {
@@ -105,10 +110,10 @@ void main()
                 SetPickpocketableFlag(oPotion, TRUE);
             }
 
-            if (d8() == 1) GeneratePickpocketItem("Misc");
+            if (d8() == 1) GeneratePickpocketItem();
 
             // 1 in 20 chance of generating something that may not be a misc item
-            if (d20() == 1) GeneratePickpocketItem();
+            if (d20() == 1) GeneratePickpocketItem(LOOT_TYPE_ANY);
 
             int nGold = d3(GetHitDice(OBJECT_SELF));
 
@@ -116,16 +121,16 @@ void main()
             if (GetLocalInt(OBJECT_SELF, "boss") == 1)
             {
                 nGold = nGold * 3;
-                GeneratePickpocketItem("Misc");
-                GeneratePickpocketItem("Misc");
-                if (d3() == 1) GeneratePickpocketItem();
+                GeneratePickpocketItem();
+                GeneratePickpocketItem();
+                if (d3() == 1) GeneratePickpocketItem(LOOT_TYPE_ANY);
             }
             // 2x the gold on semibosses or immortals (quest/unique npcs usually)
             else if (GetLocalInt(OBJECT_SELF, "semiboss") == 1 || GetLocalInt(OBJECT_SELF, "rare") || GetLocalInt(OBJECT_SELF, "immortal") == 1)
             {
                 nGold = nGold * 2;
-                GeneratePickpocketItem("Misc");
-                if (d6() == 1) GeneratePickpocketItem();
+                GeneratePickpocketItem();
+                if (d6() == 1) GeneratePickpocketItem(LOOT_TYPE_ANY);
             }
 
             object oGold = CreateItemOnObject("nw_it_gold001", OBJECT_SELF, nGold);
@@ -137,21 +142,6 @@ void main()
 
     NWNX_Creature_SetCorpseDecayTime(OBJECT_SELF, 1200000);
     NWNX_Creature_SetDisarmable(OBJECT_SELF, TRUE);
-
-// Set cr integer on self. This is used for determining treasure.
-    float fCR = GetChallengeRating(OBJECT_SELF);
-
-    if (GetLocalInt(OBJECT_SELF, "boss"))
-    {
-        fCR = fCR * BOSS_CR_MULTIPLIER;
-        // Increased area CR means higher quality loot allowed
-        iAreaCR = FloatToInt(IntToFloat(iAreaCR) * BOSS_AREA_CR_MULTIPLIER);
-    }
-    else if (GetLocalInt(OBJECT_SELF, "semiboss") || GetLocalInt(OBJECT_SELF, "rare"))
-    {
-        fCR = fCR * SEMIBOSS_CR_MULTIPLIER;
-        iAreaCR = FloatToInt(IntToFloat(iAreaCR) * SEMIBOSS_AREA_CR_MULTIPLIER);
-    }
 
     // Create random weapons before scanning, it's sensible
     string sScript = GetLocalString(OBJECT_SELF, "spawn_script");
@@ -203,8 +193,7 @@ void main()
 
 
 
-    SetLocalInt(OBJECT_SELF, "cr", FloatToInt(fCR));
-    SetLocalInt(OBJECT_SELF, "area_cr", iAreaCR);
+    
 
     DelayCommand(3.0, CopyKey());
 

@@ -6,40 +6,40 @@ void main()
     int iStore;
     for (iStore = 0; iStore < nItems; iStore++)
     {
-        GenerateTierItem(10, 10, OBJECT_SELF);
+        SelectLootItemFromACREqualLootTypeOdds(OBJECT_SELF, 10, LOOT_TYPE_ANY);
     }
 
     nItems = d10(2);
     for (iStore = 0; iStore < nItems; iStore++)
     {
-        GenerateTierItem(8, 8, OBJECT_SELF);
+        SelectLootItemFromACREqualLootTypeOdds(OBJECT_SELF, 8, LOOT_TYPE_ANY);
     }
 
     int i;
     if (Random(100) < 2)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 5, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 5, LOOT_TYPE_ARMOR, 0);
     }
     if (Random(100) < 2)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 5, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 5, LOOT_TYPE_WEAPON_MELEE, 0);
     }
     if (Random(100) < 2)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 5, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 5, LOOT_TYPE_APPAREL, 0);
     }
 
     if (Random(100) < 4)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 4, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 4, LOOT_TYPE_ARMOR, 0);
     }
     if (Random(100) < 4)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 4, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 4, LOOT_TYPE_WEAPON_MELEE, 0);
     }
     if (Random(100) < 4)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 4, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 4, LOOT_TYPE_APPAREL, 0);
     }
 
 
