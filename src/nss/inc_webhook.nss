@@ -423,6 +423,7 @@ void ValuableItemWebhook(object oPC, object oItem, int nIsPurchased=FALSE)
     {
         return;
     }
+    SetLocalObject(oItem, "webhook_valuable_identifier", oPC);
     string sConstructedMsg;
     string sName = GetName(oPC);
     struct NWNX_WebHook_Message stMessage = BuildWebhookMessageTemplate(oPC);

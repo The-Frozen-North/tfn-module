@@ -1,8 +1,10 @@
+#include "inc_itemevent"
+
 void main()
 {
      object oItem = GetItemActivated();
      ExecuteScript(GetResRef(oItem), GetItemActivator());
-     ExecuteScript("is_" + GetTag(oItem), GetItemActivator());
+     ItemEventCallEventOnItem(oItem, ITEM_EVENT_ACTIVATED, GetItemActivator(), TRUE);
      
      // General item containers should run the rename script
      if (GetBaseItemType(oItem) == BASE_ITEM_LARGEBOX)

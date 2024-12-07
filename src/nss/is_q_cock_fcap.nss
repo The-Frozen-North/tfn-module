@@ -1,4 +1,5 @@
 #include "inc_quest"
+#include "inc_itemevent"
 
 // Ferdinand's Orb of Capturing
 
@@ -31,40 +32,43 @@ void UpdateQuestSphere(string sQuest, location lTarget)
 
 void main()
 {
-    object oTarget = GetSpellTargetObject();
-    if (GetResRef(oTarget) == "basilisk")
+    if (GetCurrentItemEventType() == ITEM_EVENT_ACTIVATED)
     {
-        
-        if (GetQuestEntry(OBJECT_SELF, "q_cockatrice_fbasilisk") == 1)
+        object oTarget = GetSpellTargetObject();
+        if (GetResRef(oTarget) == "basilisk")
         {
-            SetQuestEntry(OBJECT_SELF, "q_cockatrice_fbasilisk", 2);
-            CaptureCreature(oTarget);
-            FloatingTextStringOnCreature("The orb captures the basilisk.", OBJECT_SELF);
-            GiveQuestXPToPC(OBJECT_SELF, 2, 8, 0);
-            UpdateQuestSphere("q_cockatrice_fbasilisk", GetLocation(oTarget));
+            
+            if (GetQuestEntry(OBJECT_SELF, "q_cockatrice_fbasilisk") == 1)
+            {
+                SetQuestEntry(OBJECT_SELF, "q_cockatrice_fbasilisk", 2);
+                CaptureCreature(oTarget);
+                FloatingTextStringOnCreature("The orb captures the basilisk.", OBJECT_SELF);
+                GiveQuestXPToPC(OBJECT_SELF, 2, 8, 0);
+                UpdateQuestSphere("q_cockatrice_fbasilisk", GetLocation(oTarget));
+            }
+            else
+            {
+                FloatingTextStringOnCreature("The orb already contains a basilisk.", OBJECT_SELF, FALSE);
+            }
+        }
+        else if (GetResRef(oTarget) == "gorgon")
+        {
+            if (GetQuestEntry(OBJECT_SELF, "q_cockatrice_fgorgon") == 1)
+            {
+                SetQuestEntry(OBJECT_SELF, "q_cockatrice_fgorgon", 2);
+                CaptureCreature(oTarget);
+                FloatingTextStringOnCreature("The orb captures the gorgon.", OBJECT_SELF);
+                GiveQuestXPToPC(OBJECT_SELF, 2, 8, 0);
+                UpdateQuestSphere("q_cockatrice_fgorgon", GetLocation(oTarget));
+            }
+            else
+            {
+                FloatingTextStringOnCreature("The orb already contains a gorgon.", OBJECT_SELF, FALSE);
+            }
         }
         else
         {
-            FloatingTextStringOnCreature("The orb already contains a basilisk.", OBJECT_SELF, FALSE);
+            FloatingTextStringOnCreature("The orb cannot capture this creature.", OBJECT_SELF, FALSE);
         }
-    }
-    else if (GetResRef(oTarget) == "gorgon")
-    {
-        if (GetQuestEntry(OBJECT_SELF, "q_cockatrice_fgorgon") == 1)
-        {
-            SetQuestEntry(OBJECT_SELF, "q_cockatrice_fgorgon", 2);
-            CaptureCreature(oTarget);
-            FloatingTextStringOnCreature("The orb captures the gorgon.", OBJECT_SELF);
-            GiveQuestXPToPC(OBJECT_SELF, 2, 8, 0);
-            UpdateQuestSphere("q_cockatrice_fgorgon", GetLocation(oTarget));
-        }
-        else
-        {
-            FloatingTextStringOnCreature("The orb already contains a gorgon.", OBJECT_SELF, FALSE);
-        }
-    }
-    else
-    {
-        FloatingTextStringOnCreature("The orb cannot capture this creature.", OBJECT_SELF, FALSE);
     }
 }

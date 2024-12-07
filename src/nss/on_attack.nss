@@ -1,6 +1,7 @@
 #include "nwnx_damage"
 #include "util_i_math"
 #include "inc_general"
+#include "inc_itemevent"
 
 void main()
 {
@@ -97,4 +98,6 @@ void main()
             }
         }
     }
+    ItemEventCallSubscribersForCreature(ITEM_EVENT_WEARER_ATTACKS, oAttacker);
+    ItemEventCallSubscribersForCreature(ITEM_EVENT_WEARER_ATTACKED, sAttack.oTarget);
 }

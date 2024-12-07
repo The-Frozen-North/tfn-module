@@ -41,7 +41,7 @@ void main()
         {
             sText = "*" + GetName(OBJECT_SELF) + " has died, and can only be revived by Raise Dead*";
             // Allow selecting henchmen to cast raise dead on them
-            SetIsDestroyable(TRUE, TRUE, TRUE);
+            SetIsDestroyable(FALSE, TRUE, TRUE);
         }
 
         FloatingTextStringOnCreature(sText, GetMaster(OBJECT_SELF), FALSE);

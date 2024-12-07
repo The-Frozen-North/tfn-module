@@ -1,1 +1,3 @@
-docker-compose -f docker-compose-dev-seed.yml down --remove-orphans
+cd .build
+
+docker-compose -f docker-compose-dev.yml down --remove-orphans
