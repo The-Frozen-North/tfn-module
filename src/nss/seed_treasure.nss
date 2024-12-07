@@ -4,6 +4,11 @@
 #include "nwnx_util"
 #include "inc_sqlite_time"
 
+itemproperty ItemPropertyArmorType(int nAC)
+{
+    return ItemPropertyCustom(90, -1, nAC);
+}
+
 void AddPoisonToContainer(string sResRef, string sContainerTag)
 {
     object oContainer = GetObjectByTag(sContainerTag);
@@ -161,7 +166,7 @@ void PopulateChestWeapon(string sSeedChestTag, string sPrependName, string sAppe
 
 // Modify the appearance. If 0, leave unchanged.
        int nBaseType = GetBaseItemType(oNewItemStaging);
-       
+
 // For slings, darts, and shurikens, do something special for them for appearance changing (simple model).
        if (nBaseType == BASE_ITEM_SLING || nBaseType == BASE_ITEM_DART || nBaseType == BASE_ITEM_SHURIKEN)
        {
@@ -334,6 +339,13 @@ void PopulateChestArmor(string sSeedChestTag, string sPrependName, string sAppen
        if (GetItemPropertyType(ipProp2) != GetItemPropertyType(ipInvalidItemProp)) AddItemProperty(DURATION_TYPE_PERMANENT, ipProp2, oNewItemStaging);
        if (GetItemPropertyType(ipProp3) != GetItemPropertyType(ipInvalidItemProp)) AddItemProperty(DURATION_TYPE_PERMANENT, ipProp3, oNewItemStaging);
 
+// the armor type 2da starts at 0
+       int nArmorAC = GetBaseArmorAC(oNewItemStaging);
+       if (nArmorAC > 0)
+       {
+            AddItemProperty(DURATION_TYPE_PERMANENT, ItemPropertyArmorType(nArmorAC -1), oNewItemStaging);
+       }
+
        SetDescription(oNewItemStaging, sDescription);
        SetName(oNewItemStaging, sPrependName+sOldName+sAppendName);
        SetTag(oNewItemStaging, GetTag(oNewItemStaging) + sAppendTag);
@@ -367,7 +379,7 @@ void CopySeedContainerToDistribution(object oContainer)
             oItem = GetNextItemInInventory(oContainer);
             continue;
         }
-        
+
         oNewItem = CopyItemToExistingTarget(oItem, GetObjectByTag(TREASURE_DISTRIBUTION));
         SetLocalInt(oNewItem, "non_unique", 1);
         SetLocalInt(oNewItem, "identified", 1);
@@ -504,7 +516,7 @@ void DistributeTreasureToStores(object oItem)
            DestroyObject(oItem);
            return;
        }
-       
+
        int nTier = GetItemTier(oItem);
 
 // Raise an error if there is an item with a tier that is too high, we multiply costs for some items like scrolls
@@ -646,7 +658,7 @@ void DistributeTreasureToStores(object oItem)
                 break;
              }
           }
-        
+
         if (sType == "Misc" && GetIsItemConsumableMisc(oItem))
         {
             sType = "MiscCons";
@@ -656,7 +668,7 @@ void DistributeTreasureToStores(object oItem)
         {
             SetItemCharges(oItem, nCharges);
         }
-          
+
         SendDebugMessage(GetName(oItem) + "-> _"+sType+sRarity+sTier+sNonUnique);
 
         oNewItem = CopyItemToExistingTarget(oItem, GetObjectByTag("_"+sType+sRarity+sTier+sNonUnique));
@@ -1352,7 +1364,7 @@ void SeedTreasurePart2()
     CreateItemOnObject("nw_wambo001", GetObjectByTag("_RangeUncommonT1NonUnique"), 99); // bolts
     CreateItemOnObject("nw_wambu001", GetObjectByTag("_RangeRareT1NonUnique"), 99); // bullets
 
-    CreateItemOnObject("dart", GetObjectByTag("_RangeCommonT1NonUnique"), 50); 
+    CreateItemOnObject("dart", GetObjectByTag("_RangeCommonT1NonUnique"), 50);
     CreateItemOnObject("throwing_axe", GetObjectByTag("_RangeUncommonT1NonUnique"), 50);
     CreateItemOnObject("shuriken", GetObjectByTag("_RangeRareT1NonUnique"), 50);
 
@@ -1412,7 +1424,7 @@ void SeedTreasurePart2()
 
 
     SetCampaignInt("treasures", "finished", 1);
-    
+
     // Save a timestamp to the db so we can tell when this has been rerun
     // and PC items might need updating
     SetCampaignInt("treasures", "fingerprint_time", SQLite_GetTimeStamp());
