@@ -1,6 +1,7 @@
 #include "nwnx_damage"
 #include "util_i_math"
 #include "inc_general"
+#include "inc_itemevent"
 
 void main()
 {
@@ -48,4 +49,6 @@ void main()
             if (nSonic > 0) { IncrementPlayerStatistic(sDamage.oDamager, "sonic_damage_dealt", nSonic); }
         }
     }
+    ItemEventCallSubscribersForCreature(ITEM_EVENT_WEARER_DAMAGES, sDamage.oDamager);
+    ItemEventCallSubscribersForCreature(ITEM_EVENT_WEARER_DAMAGED, oVictim);
 }

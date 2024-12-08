@@ -11,7 +11,7 @@ echo Don't forget to remove the .ncs files from the development folder when done
 set /p "ncs=Enter script name (without extension) to copy to development from module (or leave blank to recompile): "
 
 if "%ncs%"=="" goto compile
-if exist "%CD%\modules\TFN\%ncs%.ncs" copy "%CD%\modules\TFN\%ncs%.ncs" "%CD%\.build\development\"
+if exist "%CD%\src\nss\%ncs%.nss" copy NUL "%CD%\.build\development\%ncs%.ncs"
 set "ncs="
 goto ask
 
