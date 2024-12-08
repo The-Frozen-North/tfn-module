@@ -26,66 +26,68 @@ void main()
     int nMax = d6(2);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 4, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 4, LOOT_TYPE_WEAPON_MELEE, 0);
     }
 
     nMax = d6(2);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 4, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 4, LOOT_TYPE_ARMOR, 0);
     }
 
     nMax = d6(2);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Range", 4, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 4, LOOT_TYPE_WEAPON_RANGE, 0);
     }
 
     nMax = d6(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 3, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 3, LOOT_TYPE_ARMOR, 0);
     }
 
     nMax = d6(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 3, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 3, LOOT_TYPE_WEAPON_MELEE, 0);
+    }
+
+    // T2 rares are not copied, meaning this adds chance to stock them
+
+    nMax = d6(4);
+    for (i = 0; i < nMax; i++)
+    {
+        SelectLootItemFixedTier(OBJECT_SELF, 2, LOOT_TYPE_ARMOR, 0);
     }
 
     nMax = d6(4);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 2, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 2, LOOT_TYPE_WEAPON_MELEE, 0);
     }
 
     nMax = d6(4);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 2, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 2, LOOT_TYPE_WEAPON_RANGE, 0);
     }
 
     nMax = d6(4);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Range", 2, TRUE);
-    }
-
-    nMax = d6(4);
-    for (i = 0; i < nMax; i++)
-    {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Range", 3, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 3, LOOT_TYPE_WEAPON_RANGE, 0);
     }
 
     for (i = 0; i < 5; i++)
     {
         if (Random(100) < STORE_RANDOM_T5_CHANCE)
         {
-            GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 5, TRUE);
+            SelectLootItemFixedTier(OBJECT_SELF, 5, LOOT_TYPE_ARMOR, 0);
         }
         if (Random(100) < STORE_RANDOM_T5_CHANCE)
         {
-            GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 5, TRUE);
+            SelectLootItemFixedTier(OBJECT_SELF, 5, LOOT_TYPE_WEAPON_MELEE, 0);
         }
     }
 }

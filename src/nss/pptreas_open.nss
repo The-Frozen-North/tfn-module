@@ -3,7 +3,7 @@
 
 void CreateTreasure()
 {
-    object oItem = GenerateLoot(OBJECT_SELF);
+    object oItem = SelectLootItemForLootSource(OBJECT_SELF, OBJECT_SELF);
     SetStolenFlag(oItem, TRUE);
     SetLocalInt(oItem, "stolen", 1);        
 }

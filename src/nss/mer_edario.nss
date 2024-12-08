@@ -38,49 +38,54 @@ void main()
     int nMax = d2(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 4, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 4, LOOT_TYPE_WEAPON_MELEE, 0);
     }
 
     nMax = d2(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 4, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 4, LOOT_TYPE_ARMOR, 0);
     }
     
+    // Does not copy t3 rare armor
     nMax = d4(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 3, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 3, LOOT_TYPE_ARMOR, 0);
     }
+
+    // Copies these chests already
+    /*
 
     nMax = d4(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 3, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 3, LOOT_TYPE_WEAPON_MELEE, 0);
     }
 
     nMax = d6(2);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 2, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 2, LOOT_TYPE_ARMOR, 0);
     }
 
+    
     nMax = d6(2);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 2, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 2, LOOT_TYPE_WEAPON_MELEE, 0);
     }
-
+    */
 
     for (i = 0; i < 5; i++)
     {
         if (Random(100) < STORE_RANDOM_T5_CHANCE)
         {
-            GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 5, TRUE);
+            SelectLootItemFixedTier(OBJECT_SELF, 5, LOOT_TYPE_ARMOR, 0);
         }
         if (Random(100) < STORE_RANDOM_T5_CHANCE)
         {
-            GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 5, TRUE);
+            SelectLootItemFixedTier(OBJECT_SELF, 5, LOOT_TYPE_WEAPON_MELEE, 0);
         }
     }
 }

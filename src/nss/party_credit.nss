@@ -9,7 +9,7 @@
 // a target killed by a trap, and still get xp.
 const float TRAP_DST_MAX = 100.0;
 
-void SendLootMessage(object oHench, object oItem)
+void SendLootMessage(object oHench, object oItem, int bUnidentified)
 {
 
     object oOwner = oHench;
@@ -36,117 +36,9 @@ void SendLootMessage(object oHench, object oItem)
             case BASE_ITEM_CRAFTMATERIALMED:      return; break;
             case BASE_ITEM_CRAFTMATERIALSML:      return; break;
         }
-
-        // this code doesn't actually work, because the item is automatically identified when put into their merchant inventory
-        // there's not a really good way to solve this, even though we can set their item to be unidentified
-        /*
-        if (!GetIdentified(oItem))
-        {
-            switch (nBaseItem)
-            {
-                case BASE_ITEM_SHORTSWORD:            sName = "shortsword"; break;
-                case BASE_ITEM_LONGSWORD:             sName = "longsword"; break;
-                case BASE_ITEM_BATTLEAXE:             sName = "battleaxe"; break;
-                case BASE_ITEM_BASTARDSWORD:          sName = "bastard sword"; break;
-                case BASE_ITEM_LIGHTFLAIL:            sName = "light flail"; break;
-                case BASE_ITEM_WARHAMMER:             sName = "warhammer"; break;
-                case BASE_ITEM_HEAVYCROSSBOW:         sName = "heavy crossbow"; break;
-                case BASE_ITEM_LIGHTCROSSBOW:         sName = "light crossbow"; break;
-                case BASE_ITEM_LONGBOW:               sName = "longbow"; break;
-                case BASE_ITEM_LIGHTMACE:             sName = "mace"; break;
-                case BASE_ITEM_HALBERD:               sName = "halberd"; break;
-                case BASE_ITEM_SHORTBOW:              sName = "shortbow"; break;
-                case BASE_ITEM_TWOBLADEDSWORD:        sName = "two-bladed sword"; break;
-                case BASE_ITEM_GREATSWORD:            sName = "greatsword"; break;
-                case BASE_ITEM_SMALLSHIELD:           sName = "small shield"; break;
-                case BASE_ITEM_TORCH:                 sName = "torch"; break;
-                case BASE_ITEM_ARMOR:                 sName = "armor"; break;
-                case BASE_ITEM_HELMET:                sName = "helmet"; break;
-                case BASE_ITEM_GREATAXE:              sName = "greataxe"; break;
-                case BASE_ITEM_AMULET:                sName = "amulet"; break;
-                case BASE_ITEM_ARROW:                 sName = "arrow"; break;
-                case BASE_ITEM_BELT:                  sName = "belt"; break;
-                case BASE_ITEM_DAGGER:                sName = "dagger"; break;
-                case BASE_ITEM_MISCSMALL:             sName = "misc item"; break;
-                case BASE_ITEM_BOLT:                  sName = "bolt"; break;
-                case BASE_ITEM_BOOTS:                 sName = "boots"; break;
-                case BASE_ITEM_BULLET:                sName = "bullet"; break;
-                case BASE_ITEM_CLUB:                  sName = "club"; break;
-                case BASE_ITEM_MISCMEDIUM:            sName = "misc item"; break;
-                case BASE_ITEM_DART:                  sName = "dart"; break;
-                case BASE_ITEM_DIREMACE:              sName = "dire mace"; break;
-                case BASE_ITEM_DOUBLEAXE:             sName = "doubleaxe"; break;
-                case BASE_ITEM_MISCLARGE:             sName = "misc item"; break;
-                case BASE_ITEM_HEAVYFLAIL:            sName = "heavy flail"; break;
-                case BASE_ITEM_GLOVES:                sName = "gloves"; break;
-                case BASE_ITEM_LIGHTHAMMER:           sName = "light hammer"; break;
-                case BASE_ITEM_HANDAXE:               sName = "handaxe"; break;
-                case BASE_ITEM_HEALERSKIT:            sName = "healer's kit"; break;
-                case BASE_ITEM_KAMA:                  sName = "kama"; break;
-                case BASE_ITEM_KATANA:                sName = "katana"; break;
-                case BASE_ITEM_KUKRI:                 sName = "kukri"; break;
-                case BASE_ITEM_MISCTALL:              sName = "misc item"; break;
-                case BASE_ITEM_MAGICROD:              sName = "rod"; break;
-                case BASE_ITEM_MAGICSTAFF:            sName = "staff"; break;
-                case BASE_ITEM_MAGICWAND:             sName = "wand"; break;
-                case BASE_ITEM_MORNINGSTAR:           sName = "morningstar"; break;
-                case BASE_ITEM_POTIONS:               sName = "potion"; break;
-                case BASE_ITEM_QUARTERSTAFF:          sName = "quarterstaff"; break;
-                case BASE_ITEM_RAPIER:                sName = "rapier"; break;
-                case BASE_ITEM_RING:                  sName = "ring"; break;
-                case BASE_ITEM_SCIMITAR:              sName = "scimitar"; break;
-                case BASE_ITEM_SCROLL:                sName = "scroll"; break;
-                case BASE_ITEM_SCYTHE:                sName = "scythe"; break;
-                case BASE_ITEM_LARGESHIELD:           sName = "large shield"; break;
-                case BASE_ITEM_TOWERSHIELD:           sName = "tower shield"; break;
-                case BASE_ITEM_SHORTSPEAR:            sName = "spear"; break;
-                case BASE_ITEM_SHURIKEN:              sName = "shuriken"; break;
-                case BASE_ITEM_SICKLE:                sName = "sickle"; break;
-                case BASE_ITEM_SLING:                 sName = "sling"; break;
-                case BASE_ITEM_THIEVESTOOLS:          sName = "thieve's tool"; break;
-                case BASE_ITEM_THROWINGAXE:           sName = "throwing axe"; break;
-                case BASE_ITEM_TRAPKIT:               sName = "trap kit"; break;
-                case BASE_ITEM_KEY:                   sName = "key"; break;
-                case BASE_ITEM_LARGEBOX:              sName = "large box"; break;
-                case BASE_ITEM_MISCWIDE:              sName = "misc item"; break;
-                case BASE_ITEM_CSLASHWEAPON:          return; break;
-                case BASE_ITEM_CPIERCWEAPON:          return; break;
-                case BASE_ITEM_CBLUDGWEAPON:          return; break;
-                case BASE_ITEM_CSLSHPRCWEAP:          return; break;
-                case BASE_ITEM_CREATUREITEM:          return; break;
-                case BASE_ITEM_BOOK:                  sName = "book"; break;
-                case BASE_ITEM_SPELLSCROLL:           sName = "scroll"; break;
-                case BASE_ITEM_GOLD:                  return; break;
-                case BASE_ITEM_GEM:                   sName = "gem"; break;
-                case BASE_ITEM_BRACER:                sName = "bracer"; break;
-                case BASE_ITEM_MISCTHIN:              sName = "misc item"; break;
-                case BASE_ITEM_CLOAK:                 sName = "cloak"; break;
-                case BASE_ITEM_GRENADE:               sName = "grenade"; break;
-                case BASE_ITEM_TRIDENT:               sName = "trident"; break;
-                case BASE_ITEM_BLANK_POTION:          sName = "potion"; break;
-                case BASE_ITEM_BLANK_SCROLL:          sName = "scroll"; break;
-                case BASE_ITEM_BLANK_WAND:           sName = "wand"; break;
-                case BASE_ITEM_ENCHANTED_POTION:      sName = "potion"; break;
-                case BASE_ITEM_ENCHANTED_SCROLL:      sName = "scroll"; break;
-                case BASE_ITEM_ENCHANTED_WAND:        sName = "wand"; break;
-                case BASE_ITEM_DWARVENWARAXE:         sName = "dwarvern waraxe"; break;
-                case BASE_ITEM_CRAFTMATERIALMED:      return; break;
-                case BASE_ITEM_CRAFTMATERIALSML:      return; break;
-                case BASE_ITEM_WHIP:                  sName = "whip"; break;
-            }
-
-            switch (d4())
-            {
-                case 1: PlayVoiceChat(VOICE_CHAT_LOOKHERE, oOwner); break;
-                case 2: PlayVoiceChat(VOICE_CHAT_CHEER, oOwner); break;
-            }
-
-            sName = sName+" (unidentified)";
-        }
-        */
     }
 
-    if (GetLocalInt(oItem, "unidentified") == 1)
+    if (bUnidentified)
     {
         switch (d4())
         {
@@ -169,20 +61,20 @@ void SendLootMessage(object oHench, object oItem)
     }
 }
 
-void DetermineItem(object oItem, object oMerchant, object oHench, int nNth)
+void GiveItemToHenchman(object oItem, object oHenchmanStore, object oHench, int nNth)
 {
-   if (GetBaseItemType(oItem) == BASE_ITEM_POTIONS)
-   {
-       object oNewItem = CopyItem(oItem, oHench, TRUE);
-       SetDroppableFlag(oNewItem, FALSE);
-       SetPickpocketableFlag(oNewItem, FALSE);
-       DestroyObject(oItem);
-       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oHench, oNewItem)));
-   }
-   else
-   {
-       AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oHench, oItem)));
-   }
+    object oNewItem;
+    if (GetBaseItemType(oItem) == BASE_ITEM_POTIONS)
+    {
+        oNewItem = CopyTierItemFromStaging(oItem, oHench);
+        SetDroppableFlag(oNewItem, FALSE);
+        SetPickpocketableFlag(oNewItem, FALSE);
+    }
+    else
+    {
+        oNewItem = CopyTierItemFromStaging(oItem, oHenchmanStore);
+    }
+    AssignCommand(GetModule(), DelayCommand(IntToFloat(nNth)+1.0+(IntToFloat(d8())*0.1), SendLootMessage(oHench, oNewItem, GetIdentified(oItem))));
 }
 
 // Convenience function. Add oItem to the list of items assigned to the party member at nIndex.
@@ -201,179 +93,6 @@ json _AddItemToPartyMemberAssignments(json jAssignments, object oItem, int nInde
     return jAssignments;
 }
 
-// Take the loot item (in the treasure area chest) and return the index of the party member that should recieve it.
-int DeterminePartyMemberThatGetsItem(object oItem, int nStartWeights=1000)
-{
-    int nWasIdentified = GetIdentified(oItem);
-    SetIdentified(oItem, 1);
-    int nItemValue = GetGoldPieceValue(oItem);
-    if (LOOT_OWING_DEBUG)
-    {
-        WriteTimestampedLogEntry("Try to assign: " + GetName(oItem) + ", value = " +IntToString(nItemValue));
-    }
-    SetIdentified(oItem, nWasIdentified);
-    if (!GetIsObjectValid(oItem))
-    {
-        return -1;
-    }
-    // Recommended reading: inc_loot -> "owings" section
-    // First, simply go through everyone and work out weightings
-    // combinations need to be done EXACTLY once, PC1 vs Daelan then Daelan vs PC1 will undo itself
-    int nNumLootRecievers = Party.PlayerSize + Party.HenchmanSize;
-    int i, j;
-    // Everyone starts on 1000
-    for (i=1; i<=nNumLootRecievers; i++)
-    {
-        SetLocalArrayInt(OBJECT_SELF, "LootWeights", i, nStartWeights);
-    }
-    object oRecipient;
-    for (i=1; i<=nNumLootRecievers; i++)
-    {
-        if (i <= Party.PlayerSize)
-        {
-            oRecipient = GetLocalArrayObject(OBJECT_SELF, "Players", i);
-        }
-        else
-        {
-            oRecipient = GetLocalArrayObject(OBJECT_SELF, "Henchmans", i - Party.PlayerSize);
-        }
-        // Check all other party members after this index
-        // this should avoid the above mentioned "reverse" cases
-        int nWeight = GetLocalArrayInt(OBJECT_SELF, "LootWeights", i);
-        for (j=i+1; j<=nNumLootRecievers; j++)
-        {
-            object oDebtor;
-            if (j <= Party.PlayerSize)
-            {
-                oDebtor = GetLocalArrayObject(OBJECT_SELF, "Players", j);
-            }
-            else
-            {
-                oDebtor = GetLocalArrayObject(OBJECT_SELF, "Henchmans", j - Party.PlayerSize);
-            }
-            int nTransfer = GetLootWeightingTransferBasedOnOwings(oRecipient, oDebtor, nItemValue);
-            int nDebtorWeight = GetLocalArrayInt(OBJECT_SELF, "LootWeights", j);
-            nDebtorWeight -= nTransfer;
-            nWeight += nTransfer;
-            if (LOOT_OWING_DEBUG)
-            {
-                WriteTimestampedLogEntry(GetName(oDebtor) + " owes " + IntToString(GetOwedGoldValue(oRecipient, oDebtor)) + " to " + GetName(oRecipient) + ": transfer " + IntToString(nTransfer) + " weighting -> " + GetName(oRecipient) + "=" + IntToString(nWeight) + ", " + GetName(oDebtor) + "=" + IntToString(nDebtorWeight));
-            }
-            SetLocalArrayInt(OBJECT_SELF, "LootWeights", j, nDebtorWeight);
-        }
-        SetLocalArrayInt(OBJECT_SELF, "LootWeights", i, nWeight);
-    }
-    // Make sure no weight ended up negative, if it did, repeat with a higher nStartWeights
-    int nLowestWeight = 999999;
-    int nTotalWeight = nStartWeights * nNumLootRecievers;
-    for (i=1; i<=nNumLootRecievers; i++)
-    {
-        int nWeight = GetLocalArrayInt(OBJECT_SELF, "LootWeights", i);
-        if (LOOT_OWING_DEBUG)
-        {
-            object oPerson;
-            if (i <= Party.PlayerSize)
-            {
-                oPerson = GetLocalArrayObject(OBJECT_SELF, "Players", i);
-            }
-            else
-            {
-                oPerson = GetLocalArrayObject(OBJECT_SELF, "Henchmans", i - Party.PlayerSize);
-            }
-            WriteTimestampedLogEntry(GetName(oPerson) + " = " + IntToString(nWeight) + " or " + IntToString(100*nWeight/nTotalWeight) + " percent");
-        }
-        if (nWeight < nLowestWeight)
-        {
-            nLowestWeight = nWeight;
-        }
-    }
-    if (LOOT_OWING_DEBUG)
-    {
-        WriteTimestampedLogEntry("Lowest weight = " + IntToString(nLowestWeight));
-    }
-    if (nLowestWeight < 0)
-    {
-        // I don't think this is perfect, but it is by far the easiest way to get out of this particular hole
-        // and solve the negative weight problem
-        if (LOOT_OWING_DEBUG)
-        {
-            WriteTimestampedLogEntry("Lowest weight is negative, try again with start points +" + IntToString(nLowestWeight*-1));
-        }
-        return DeterminePartyMemberThatGetsItem(oItem, nStartWeights + (nLowestWeight*-1));
-    }
-
-    int nRolledWeight = Random(nTotalWeight)+1;
-    if (LOOT_OWING_DEBUG)
-    {
-        WriteTimestampedLogEntry("Total weight = " + IntToString(nTotalWeight));
-        WriteTimestampedLogEntry("Rolled = " + IntToString(nRolledWeight));
-    }
-    int nAssignedIndex = -1;
-    for (i=1; i<=nNumLootRecievers; i++)
-    {
-        int nWeight = GetLocalArrayInt(OBJECT_SELF, "LootWeights", i);
-        nRolledWeight -= nWeight;
-        if (LOOT_OWING_DEBUG)
-        {
-            WriteTimestampedLogEntry("Index = " + IntToString(i) + " subtracted " + IntToString(nWeight) + "; now rolled = " + IntToString(nRolledWeight));
-        }
-        if (nRolledWeight < 0)
-        {
-            nAssignedIndex = i;
-            break;
-        }
-    }
-    if (LOOT_OWING_DEBUG)
-    {
-        WriteTimestampedLogEntry("Assigned index = " + IntToString(nAssignedIndex));
-    }
-    // Convert back to an object to return
-    if (nAssignedIndex <= Party.PlayerSize)
-    {
-        oRecipient = GetLocalArrayObject(OBJECT_SELF, "Players", nAssignedIndex);
-        IncrementPlayerStatistic(oRecipient, "item_gold_value_assigned", nItemValue);
-    }
-    else
-    {
-        oRecipient = GetLocalArrayObject(OBJECT_SELF, "Henchmans", nAssignedIndex - Party.PlayerSize);
-        for (i=1; i<= Party.PlayerSize; i++)
-        {
-            object oPlayer = GetLocalArrayObject(OBJECT_SELF, "Players", i);
-            IncrementPlayerStatistic(oPlayer, "henchman_item_gold_value_assigned", nItemValue);
-        }
-    }
-    // Update gold owings
-    // I guess the best way to do this is to just subtract (item gold value/(party size-1)) from everyone else's owing
-    // to the person who got it
-
-    // This logic will turn into a divide by zero if solo
-    if (nNumLootRecievers > 1)
-    {
-        int nSubtraction = -1*(nItemValue/(nNumLootRecievers-1));
-        for (i=1; i<=nNumLootRecievers; i++)
-        {
-            object oNonRecipient;
-            if (i <= Party.PlayerSize)
-            {
-                oNonRecipient = GetLocalArrayObject(OBJECT_SELF, "Players", i);
-            }
-            else
-            {
-                oNonRecipient = GetLocalArrayObject(OBJECT_SELF, "Henchmans", i - Party.PlayerSize);
-            }
-            if (i == nAssignedIndex)
-            {
-                continue;
-            }
-            AdjustOwedGoldValue(oRecipient, oNonRecipient, nSubtraction);
-        }
-    }
-    if (LOOT_OWING_DEBUG)
-    {
-        WriteTimestampedLogEntry("Assigned " + GetName(oItem) + " to " + GetName(oRecipient));
-    }
-    return nAssignedIndex;
-}
 
 void main()
 {
@@ -408,8 +127,6 @@ void main()
    int bAnimalLoot = FALSE;
    object oContainer, oPersonalLoot;
    int nUnlooted;
-   vector vPosition;
-   location lLocation;
    string sQuestItemResRef;
 
 // if the hit points of the object is 0 or less than 0,
@@ -434,7 +151,8 @@ void main()
     if (bDestroyed)
     {
         nTreasureChance = FloatToInt(fmin(100.0, TREASURE_CHANCE * pow(2.0, (iCR - iAreaCR)/TREASURE_CHANCE_EXPONENT_DENOMINATOR)));
-        if (ShouldDebugLoot())
+        //if (ShouldDebugLoot())
+        if (1)
         {
             SendDebugMessage("Treasure chance at MCR " + IntToString(iCR) + " and ACR " + IntToString(iAreaCR) + " = " + IntToString(nTreasureChance));
         }
@@ -475,6 +193,10 @@ void main()
         if (GetLocalInt(OBJECT_SELF, "animal_loot") == 1)
         {
             bAnimalLoot = TRUE;
+        }
+        if (GetLocalInt(OBJECT_SELF, "no_animal_loot"))
+        {
+            bAnimalLoot = FALSE;
         }
     }
 
@@ -569,9 +291,6 @@ void main()
 
         sQuestItemResRef = GetLocalString(oContainer, "quest_item");
 
-        vPosition = GetPosition(oContainer);
-        vPosition.z = -100.0; // Make the personal loot go under the map
-        lLocation  = Location(GetArea(oContainer), vPosition, 0.0);
         nUnlooted = Party.PlayerSize;
 
         SetLocalInt(oContainer, "unlooted", nUnlooted);
@@ -652,7 +371,7 @@ void main()
         SetLocalFloat(GetModule(), LOOT_DEBUG_DROP_CHANCE_MULT, fExpected);
 
         // Force it to always roll only one item when debugging
-        // This is so that one call is always done to GenerateLoot which updates the logging variables correctly
+        // This is so that one call is always done to the item selector which updates the logging variables correctly
         // Because we just calculated the correct expected amount of items
         // It will mean that the actual items created will not be correct though, but that's a small price to pay for science
         // plus if you can run this you can just warp to the treasure area and loot whatever you want anyway
@@ -663,18 +382,8 @@ void main()
 // =========================
 // END LOOT CONTAINER CODE
 // =========================
-   float fMultiplier = 1.0;
 
-   if (bBoss == 1)
-   {
-        fMultiplier = 3.0;
-   }
-   else if (bSemiBoss == 1 || bRare == 1)
-   {
-        fMultiplier = 2.0;
-   }
-
-   float fXP = GetPartyXPValue(OBJECT_SELF, bAmbush, Party.AverageLevel, Party.TotalSize, fMultiplier);
+   float fXP = GetPartyXPValue(OBJECT_SELF, bAmbush, Party.AverageLevel, Party.TotalSize);
 
 
 // =============================
@@ -707,7 +416,7 @@ void main()
    {
        for (nNth=1; nNth <= nNumItems; nNth++)
        {
-           object oItem = SelectLoot(OBJECT_SELF);
+           object oItem = SelectLootItemForLootSource(OBJECT_INVALID, OBJECT_SELF);
            int nAssignIndex = DeterminePartyMemberThatGetsItem(oItem);
            jAssignments = _AddItemToPartyMemberAssignments(jAssignments, oItem, nAssignIndex);
        }
@@ -743,7 +452,7 @@ void main()
                     jAssignments = _AddItemToPartyMemberAssignments(jAssignments, oAnimalLoot, nAssignIndex);
                }
 
-               // the loot is serialized into JSON, we don't need it anymore
+               // the loot will get copied to personal loot or henchman stores, the original isn't needed any more
                DestroyObject(oAnimalLoot);
            }
        }
@@ -813,18 +522,7 @@ void main()
 // only proceed with loot code if container exists
       if (GetIsObjectValid(oContainer))
       {
-         // If there is already personal loot, just add to it
-        oPersonalLoot = GetObjectByUUID(GetLocalString(oContainer, "personal_loot_"+GetPCPublicCDKey(oPC, TRUE)));
-        if (!GetIsObjectValid(oPersonalLoot))
-        {
-            oPersonalLoot = CreateObject(OBJECT_TYPE_PLACEABLE, "_loot_personal", lLocation, FALSE);
-
-            string sPlayerCDKey = GetPCPublicCDKey(oPC, TRUE);
-            ForceRefreshObjectUUID(oPersonalLoot);
-
-            SetLocalString(oContainer, "personal_loot_"+sPlayerCDKey, GetObjectUUID(oPersonalLoot));
-            SetLocalString(oPersonalLoot, "loot_parent_uuid", GetObjectUUID(oContainer));
-        }
+        oPersonalLoot = GetPersonalLootForPC(oContainer, oPC, TRUE);
 
 // If there's a quest on the object, add a quest item to their personal if this player is eligible
         if (sQuestItemResRef != "" && GetLocalString(oContainer, "quest1") != "" && GetIsQuestStageEligible(oContainer, oPC, 1))
@@ -846,10 +544,11 @@ void main()
 
                if (SQLocalsPlayer_GetInt(oPC, sLootKey) != 1)
                {
-                   object oEquippedItem = SelectEquippedItemToDropAsLoot(OBJECT_SELF);
-                   if (GetIsObjectValid(oEquippedItem))
+                   int nForcedTier = GetFirstBossKillGuaranteedLootTier(iAreaCR, bSemiBoss);
+                   object oFirstDrop = SelectLootItemFixedTier(oPersonalLoot, nForcedTier, LOOT_TYPE_EQUIPPABLE);
+                   SendDebugMessage("First loot forced tier: " + IntToString(nForcedTier) + " -> " + GetName(oFirstDrop));
+                   if (GetIsObjectValid(oFirstDrop))
                    {
-                        CopyItem(oEquippedItem, oPersonalLoot, TRUE);
                         SQLocalsPlayer_SetInt(oPC, sLootKey, 1);
                    }
                }
@@ -864,7 +563,7 @@ void main()
            for (nAssignedItemIndex=0; nAssignedItemIndex<nAssignedCount; nAssignedItemIndex++)
            {
                object oSourceItem = StringToObject(JsonGetString(JsonArrayGet(jItemArray, nAssignedItemIndex)));
-               CopyTierItemToObjectOrLocation(oSourceItem, oPersonalLoot);
+               CopyTierItemFromStaging(oSourceItem, oPersonalLoot);
            }
         }
 
@@ -915,12 +614,9 @@ void main()
 
           if (GetObjectType(oHenchman) == OBJECT_TYPE_CREATURE && GetStringLeft(GetResRef(oHenchman), 3) == "hen")
           {
-// have to be set for treasure to function properly
-               SetLocalInt(oHenchman, "cr", GetLocalInt(oContainer, "cr"));
-               SetLocalInt(oHenchman, "area_cr", GetLocalInt(oContainer, "area_cr"));
 
                object oMerchant = GetLocalObject(oHenchman, "merchant");
-// assumed to be out of bounds (henchman)
+               // assumed to be out of bounds (henchman)
                int nExternalIndex = nNth + Party.PlayerSize;
                json jItemArray = JsonArrayGet(jAssignments, nExternalIndex);
                int nAssignedItemIndex;
@@ -928,19 +624,9 @@ void main()
                for (nAssignedItemIndex=0; nAssignedItemIndex<nAssignedCount; nAssignedItemIndex++)
                {
                    object oSourceItem = StringToObject(JsonGetString(JsonArrayGet(jItemArray, nAssignedItemIndex)));
-                   object oRealItem = CopyTierItemToObjectOrLocation(oSourceItem, oMerchant);
 
-// items that are copied to a merchant are automatically identified, this is a hack to store that status somehow
-// so that when henchmans pick it up, they can do an appropriate voice emote
-                   if (!GetIdentified(oSourceItem))
-                      SetLocalInt(oRealItem, "unidentified", 1);
-
-                   DetermineItem(oRealItem, oMerchant, oHenchman, nNth);
+                   GiveItemToHenchman(oSourceItem, oMerchant, oHenchman, nNth);
                }
-
-// clear these out afterwards
-               DeleteLocalInt(oHenchman, "cr");
-               DeleteLocalInt(oHenchman, "area_cr");
           }
        }
    }

@@ -32,10 +32,10 @@ void MakeDuergarCorpse(object oTest, string sResRef)
 
 void MakeGroundItem(object oTest)
 {
-    object oChestItem = SelectTierItem(12, 12, "Melee", 0, OBJECT_INVALID, d100() < 5 ? FALSE : TRUE);
+    object oChestItem = SelectLootItemFromACR(OBJECT_INVALID, 12, LOOT_TYPE_WEAPON_MELEE, 5);
     location lLoc = GetLocation(oTest);
     lLoc = Location(GetAreaFromLocation(lLoc), GetPositionFromLocation(lLoc), IntToFloat(Random(360)));
-    object oFloorItem = CopyTierItemToObjectOrLocation(oChestItem, OBJECT_INVALID, GetLocation(oTest));
+    object oFloorItem = CopyTierItemFromStaging(oChestItem, OBJECT_INVALID, GetLocation(oTest));
     SetLocalObject(oTest, "ground_weapon", oFloorItem);
 }
 

@@ -27,16 +27,7 @@ void RunOnArea(object oArea)
         {
             for (nLevel = 2; nLevel <= 12; nLevel++)
             {
-                float fMultiplier = 1.0;
-                if (GetLocalInt(oTest, "boss") == 1)
-                {
-                    fMultiplier = 3.0;
-                }
-                else if (GetLocalInt(oTest, "semiboss") == 1)
-                {
-                    fMultiplier = 2.0;
-                }
-                float fThis = GetPartyXPValue(oTest, 0, IntToFloat(nLevel), 1, fMultiplier);
+                float fThis = GetPartyXPValue(oTest, 0, IntToFloat(nLevel), 1);
                 string sVar = "dev_xpvalues" + IntToString(nLevel);
                 SetLocalFloat(oArea, sVar, GetLocalFloat(oArea, sVar) + fThis);
             }

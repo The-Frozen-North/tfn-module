@@ -1,6 +1,6 @@
 #include "inc_general"
 #include "inc_xp"
-#include "inc_loot"
+#include "inc_lootselect"
 
 // SetScriptParam: "exclusivelooter" to ObjectToString(oPC) to make oPC get everything.
 

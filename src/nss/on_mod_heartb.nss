@@ -71,22 +71,8 @@ void RewardStealthXP(object oPC)
             bAmbush = TRUE;
         }
 
-        int bBoss = GetLocalInt(oTarget, "boss");
-        int bSemiBoss = GetLocalInt(oTarget, "semiboss");
-        int bRare = GetLocalInt(oTarget, "rare");
-        float fMultiplier = 1.0;
-        if (bBoss == 1)
-        {
-            fMultiplier = 3.0;
-        }
-        else if (bSemiBoss == 1 || bRare == 1)
-        {
-            fMultiplier = 2.0;
-        }
-
-
         // stealth XP is worth half of a kill
-        float fXP = GetPartyXPValue(oTarget, bAmbush, Party.AverageLevel, Party.TotalSize, fMultiplier) * STEALTH_XP_PERCENTAGE;
+        float fXP = GetPartyXPValue(oTarget, bAmbush, Party.AverageLevel, Party.TotalSize) * STEALTH_XP_PERCENTAGE;
 
         GiveXPToPC(oPC, fXP, FALSE, "Stealth");
     }

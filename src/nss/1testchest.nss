@@ -18,7 +18,8 @@ void main()
     int i;
     for (i = 0; i < 100; i++)
     {
-        GenerateTierItem(6, 6, OBJECT_SELF, "Weapon");
+        // This generates random weapons for ACR 6
+        SelectLootItemFromACR(OBJECT_SELF, 6, LOOT_TYPE_WEAPON_MELEE);
     }
 
     SendMessageToPC(oPC, "T1: "+IntToString(GetLocalInt(GetModule(), "T1")));

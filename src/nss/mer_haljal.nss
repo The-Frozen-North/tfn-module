@@ -34,36 +34,36 @@ void main()
     int nMax = d2(2);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 4, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 4, LOOT_TYPE_WEAPON_MELEE, 0);
     }
 
     nMax = d2(2);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 4, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 4, LOOT_TYPE_ARMOR, 0);
     }
     
     nMax = d4(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 3, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 4, LOOT_TYPE_ARMOR, 0);
     }
 
     nMax = d4(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 3, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 3, LOOT_TYPE_WEAPON_MELEE, 0);
     }
 
     for (i = 0; i < 4; i++)
     {
         if (Random(100) < STORE_RANDOM_T5_CHANCE)
         {
-            GenerateTierItem(0, 0, OBJECT_SELF, "Armor", 5, TRUE);
+            SelectLootItemFixedTier(OBJECT_SELF, 5, LOOT_TYPE_ARMOR, 0);
         }
         if (Random(100) < STORE_RANDOM_T5_CHANCE)
         {
-            GenerateTierItem(0, 0, OBJECT_SELF, "Melee", 5, TRUE);
+            SelectLootItemFixedTier(OBJECT_SELF, 5, LOOT_TYPE_WEAPON_MELEE, 0);
         }
     }
     
@@ -73,29 +73,26 @@ void main()
     int nItems = d20(10);
     for (i = 0; i < nItems; i++)
     {
-        GenerateTierItem(6, 6, OBJECT_SELF);
+        SelectLootItemFromACREqualLootTypeOdds(OBJECT_SELF, 7, LOOT_TYPE_ANY);
     }
 
     nMax = d4(6);
     for (i = 0; i < nMax; i++)
     {
-        bNonUnique = Random(100) >= PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE;
-        GenerateTierItem(0, 0, OBJECT_SELF, "", 3, bNonUnique);
+        SelectLootItemFixedTierEqualLootTypeOdds(OBJECT_SELF, 3, LOOT_TYPE_ANY, PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE);
     }
 
     nMax = d2(3);
     for (i = 0; i < nMax; i++)
     {
-        bNonUnique = Random(100) >= PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE;
-        GenerateTierItem(0, 0, OBJECT_SELF, "", 4, bNonUnique);
+        SelectLootItemFixedTierEqualLootTypeOdds(OBJECT_SELF, 4, LOOT_TYPE_ANY, PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE);
     }
 
     for (i = 0; i < 5; i++)
     {
         if (Random(100) < STORE_RANDOM_T5_CHANCE)
         {
-            bNonUnique = Random(100) >= PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE;
-            GenerateTierItem(0, 0, OBJECT_SELF, "", 5, bNonUnique);
+            SelectLootItemFixedTierEqualLootTypeOdds(OBJECT_SELF, 5, LOOT_TYPE_ANY, PAWNSHOP_CHANCE_TO_ALLOW_UNIQUE);
         }
     }
 }

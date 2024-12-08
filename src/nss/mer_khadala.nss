@@ -146,20 +146,20 @@ void main()
     int nMax = d12(50);
     for (i = 0; i < nMax; i++)
     {
-        oItemInStorage = GenerateTierItem(0, 0, oStorage, "Melee", GetRandomTier());
+        oItemInStorage = SelectLootItemFixedTier(oStorage, GetRandomTier(), LOOT_TYPE_WEAPON_MELEE);
         CreatePlaceholderItem(oItemInStorage);
     }
 
     nMax = d8(50);
     for (i = 0; i < nMax; i++)
     {
-        oItemInStorage = GenerateTierItem(0, 0, oStorage, "Range", GetRandomTier());
+        oItemInStorage = SelectLootItemFixedTier(oStorage, GetRandomTier(), LOOT_TYPE_WEAPON_RANGE);
         CreatePlaceholderItem(oItemInStorage);
     }
     nMax = d10(50);
     for (i = 0; i < nMax; i++)
     {
-        oItemInStorage = GenerateTierItem(0, 0, oStorage, "Armor", GetRandomTier());
+        oItemInStorage = SelectLootItemFixedTier(oStorage, GetRandomTier(), LOOT_TYPE_ARMOR);
         CreatePlaceholderItem(oItemInStorage);
     }
 
@@ -167,7 +167,7 @@ void main()
     nMax = d6(50);
     for (i = 0; i < nMax; i++)
     {
-        oItemInStorage = GenerateTierItem(0, 0, oStorage, "Scrolls", GetRandomTier(3));
+        oItemInStorage = SelectLootItemFixedTier(oStorage, GetRandomTier(3), LOOT_TYPE_SCROLL);
         CreatePlaceholderItem(oItemInStorage);
     }
     */
@@ -175,7 +175,7 @@ void main()
     nMax = d10(60);
     for (i = 0; i < nMax; i++)
     {
-        oItemInStorage = GenerateTierItem(0, 0, oStorage, "Apparel", GetRandomTier());
+        oItemInStorage = SelectLootItemFixedTier(oStorage, GetRandomTier(), LOOT_TYPE_APPAREL);
         CreatePlaceholderItem(oItemInStorage);
     }
 }

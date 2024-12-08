@@ -2,6 +2,6 @@
 
 void main()
 {
-    object oItem = GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 2);
+    object oItem = SelectLootItemFixedTier(OBJECT_SELF, 2, LOOT_TYPE_APPAREL, 0);
     SetIdentified(oItem, TRUE);
 }
