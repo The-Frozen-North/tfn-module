@@ -29,20 +29,7 @@ void GiveSkillXP(object oTarget, object oPC, string sSkill)
         bAmbush = TRUE;
     }
 
-    int bBoss = GetLocalInt(oTarget, "boss");
-    int bSemiBoss = GetLocalInt(oTarget, "semiboss");
-    int bRare = GetLocalInt(oTarget, "rare");
-    float fMultiplier = 1.0;
-    if (bBoss == 1)
-    {
-        fMultiplier = 3.0;
-    }
-    else if (bSemiBoss == 1 || bRare == 1)
-    {
-        fMultiplier = 2.0;
-    }
-
-    float fXP = GetPartyXPValue(oTarget, bAmbush, Party.AverageLevel, Party.TotalSize, fMultiplier) * SKILL_XP_PERCENTAGE;
+    float fXP = GetPartyXPValue(oTarget, bAmbush, Party.AverageLevel, Party.TotalSize) * SKILL_XP_PERCENTAGE;
 
     GiveXPToPC(oPC, fXP, FALSE, sSkill);
 }

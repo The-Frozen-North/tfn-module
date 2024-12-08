@@ -326,6 +326,18 @@ int GetXPFromLevel(int nLevel)
 
 float GetPartyXPValue(object oCreature, int bAmbush, float fAverageLevel, int iTotalSize, float fMultiplier = 1.0)
 {
+    int bBoss = GetLocalInt(oCreature, "boss");
+    int bSemiBoss = GetLocalInt(oCreature, "semiboss");
+    int bRare = GetLocalInt(oCreature, "rare");
+    float fMultiplier = 1.0;
+    if (bBoss == 1)
+    {
+        fMultiplier *= 3.0;
+    }
+    else if (bSemiBoss == 1 || bRare == 1)
+    {
+        fMultiplier *= 2.0;
+    }
 // If the CR is 0.0, then assume this is not a kill and do not do any XP related thingies.
    float fCR = GetChallengeRating(oCreature);
 
