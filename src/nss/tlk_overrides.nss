@@ -216,4 +216,7 @@ void main()
 
 // invis sphere
     SetTlkOverride(6189, GetStringByStrRef(6189) + "\n" + sDiminishingReturn);
+    
+    // Material itemproperty introduction
+    SetTlkOverride(111773, "Special:");
 }

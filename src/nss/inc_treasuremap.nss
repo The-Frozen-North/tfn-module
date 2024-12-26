@@ -1966,3 +1966,77 @@ int GetIsSurfacematDiggable(int nSurfacemat)
     }
     return 1;
 }
+
+void DigForTreasure(object oPC)
+{
+    location lSelf = GetLocation(oPC);
+    int nSurfacemat = GetSurfaceMaterial(lSelf);
+    string sFailMsg = "You dig a hole, but find nothing.";
+    string sSucceedMsg = "You have found some buried treasure!";
+    int bDig = 1;
+    if (!GetIsSurfacematDiggable(nSurfacemat))
+    {
+        bDig = 0;
+        sFailMsg = "Despite searching carefully, you find no sign of the treasure here.";
+        if (nSurfacemat == 5)
+        {
+            sSucceedMsg = "After a careful search, you find the hidden treasure beneath a loose plank!";
+        }
+        if (nSurfacemat == 9)
+        {
+            sSucceedMsg = "After a careful search, you find the hidden treasure beneath the carpet!";
+        }
+        else
+        {
+            sSucceedMsg = "After a careful search, you find the hidden treasure beneath a loose stone!";
+        }
+    }
+    ClearAllActions();
+    
+    FadeToBlack(oPC, FADE_SPEED_MEDIUM);
+    DelayCommand(4.0, FadeFromBlack(oPC, FADE_SPEED_MEDIUM));
+    ActionPlayAnimation(ANIMATION_LOOPING_GET_LOW);
+    if (bDig)
+    {
+        DelayCommand(2.0, ApplyEffectAtLocation(DURATION_TYPE_INSTANT, EffectVisualEffect(VFX_COM_CHUNK_STONE_SMALL, FALSE, 0.25), lSelf));
+    }
+    
+    // If PC completes the map they have open, it should close on its own
+    int nToken = NuiFindWindow(oPC, "treasuremap");
+    object oOpenedMap = GetLocalObject(oPC, "opened_treasuremap");
+    int bCloseMap = 0;
+    
+	// Treasure maps.
+    int nMaps = 0;
+    object oTest = GetFirstItemInInventory(oPC);
+    while (GetIsObjectValid(oTest))
+    {
+        if (GetTag(oTest) == "treasuremap")
+        {
+            if (DoesLocationCompleteMap(oTest, lSelf))
+            {
+                if (oOpenedMap == oTest)
+                {
+                    bCloseMap = 1;
+                }
+                DelayCommand(2.0, CompleteTreasureMap(oTest));
+                nMaps++;
+            }
+        }
+        oTest = GetNextItemInInventory(oPC);
+    }
+    
+    if (nMaps == 0)
+    {
+        DelayCommand(4.0, FloatingTextStringOnCreature(sFailMsg, oPC, FALSE));
+    }
+    else
+    {
+        DelayCommand(4.0, FloatingTextStringOnCreature(sSucceedMsg, oPC));
+    }
+    
+    if (bCloseMap && nToken != 0)
+    {
+        DelayCommand(4.0, NuiDestroy(oPC, nToken));
+    }
+}

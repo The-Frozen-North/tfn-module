@@ -11,8 +11,6 @@ void main()
 
     object oDamager = GetLastDamager();
 
-    ExecuteScript("remove_invis", OBJECT_SELF);
-
     PlayNonMeleePainSound(oDamager);
 
     if (GetIsPC(oDamager) || GetIsPC(GetMaster(oDamager))) SetLocalInt(OBJECT_SELF, "player_tagged", 1);

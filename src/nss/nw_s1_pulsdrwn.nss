@@ -37,6 +37,10 @@ void main ()
     ApplyEffectToObject(DURATION_TYPE_INSTANT, eImpact, OBJECT_SELF);
 
     object oTarget = GetFirstObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_LARGE, GetLocation(OBJECT_SELF));
+
+    int nTargetDam;
+    effect eDam;
+
     while(GetIsObjectValid(oTarget))
     {
         if(oTarget != OBJECT_SELF && spellsIsTarget(oTarget, SPELL_TARGET_STANDARDHOSTILE, OBJECT_SELF))
@@ -51,12 +55,15 @@ void main ()
                 MyResistSpell(OBJECT_SELF, oTarget);
             }
             //Make a fortitude save                              //workaround for action cancel bug without changing save type
-            else if(!MySavingThrow(SAVING_THROW_FORT, oTarget, 20, GetIsImmune(oTarget, IMMUNITY_TYPE_DEATH, OBJECT_SELF) ? SAVING_THROW_TYPE_DEATH : SAVING_THROW_TYPE_NONE))
+            // DC is decreased here, 16 instead of the original 20
+            else if(!MySavingThrow(SAVING_THROW_FORT, oTarget, 16, GetIsImmune(oTarget, IMMUNITY_TYPE_DEATH, OBJECT_SELF) ? SAVING_THROW_TYPE_DEATH : SAVING_THROW_TYPE_NONE))
             {
                 //Apply the VFX impact and damage effect
                 ApplyEffectToObject(DURATION_TYPE_INSTANT, eVis, oTarget);
-                //Set damage effect to kill the target
-                ApplyEffectToObject(DURATION_TYPE_INSTANT, EffectDeath(), oTarget);
+
+                // no OP insta kill, just 90% hp damage
+                nTargetDam = FloatToInt(nTargetDam * 0.9);
+                ApplyEffectToObject(DURATION_TYPE_INSTANT, eDam, oTarget);
             }
         }
         oTarget = GetNextObjectInShape(SHAPE_SPHERE, RADIUS_SIZE_LARGE, GetLocation(OBJECT_SELF));

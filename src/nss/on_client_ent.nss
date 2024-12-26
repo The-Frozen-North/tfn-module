@@ -11,6 +11,7 @@
 #include "inc_horse"
 #include "inc_restxp"
 #include "inc_itemupdate"
+#include "inc_itemevent"
 
 void CreateItemIfBlank(object oPC, string sItem)
 {
@@ -89,6 +90,9 @@ void main()
     ExecuteScript("70_featfix",oPC);
 
     DetermineHorseEffects(oPC);
+    
+    // Fire equip events for all the PC's equipped items
+    CallEquipEventsForEquippedItems(oPC);
 
     //SetEventScript(oPC,EVENT_SCRIPT_CREATURE_ON_MELEE_ATTACKED,"70_mod_attacked");
     //SetEventScript(oPC,EVENT_SCRIPT_CREATURE_ON_DAMAGED,"70_mod_damaged");

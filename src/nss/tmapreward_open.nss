@@ -109,7 +109,7 @@ void main()
         {
             object oProgenitor = SetupProgenitorTreasureMap(nNewMapACR, GetArea(OBJECT_SELF), (d2() == 2));
             SetTreasureMapDifficulty(oProgenitor, nNewDifficulty);
-            CopyTierItemToObjectOrLocation(oProgenitor, oPersonalLootNew);
+            CopyTierItemFromStaging(oProgenitor, oPersonalLootNew);
         }
         SetLocalInt(oPersonalLootNew, PERSONAL_LOOT_GOLD_AMOUNT, GetLocalInt(oPersonalLoot, PERSONAL_LOOT_GOLD_AMOUNT) + nGoldToAdd);
 		SetLocalInt(OBJECT_SELF, "doneloot", 1);

@@ -8,8 +8,6 @@ if "%ncs%"=="" goto end
 
 mkdir "%CD%/_tmp"
 "%CD%/tools/win/nwnsc/nwnsc.exe" -b "%CD%/_tmp" -i "%CD%/src/nss;%CD%/nwn-base-scripts" "%CD%/src/nss/%ncs%.nss"
-del "%CD%/_tmp/%ncs%.ncs"
-rmdir "%CD%/_tmp"
 
 goto start
 

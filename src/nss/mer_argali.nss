@@ -17,26 +17,29 @@ void main()
     int nMax = d3(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 4, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 4, LOOT_TYPE_APPAREL, 100);
     }
 
     for (i = 0; i < 4; i++)
     {
         if (Random(100) < STORE_RANDOM_T5_CHANCE)
         {
-            GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 5, TRUE);
+            SelectLootItemFixedTier(OBJECT_SELF, 5, LOOT_TYPE_APPAREL, 100);
         }
     }
 
+    // She stocks all these items already?
+    /*
     nMax = d4(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 3, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 3, LOOT_TYPE_APPAREL, 100);
     }
 
     nMax = d6(3);
     for (i = 0; i < nMax; i++)
     {
-        GenerateTierItem(0, 0, OBJECT_SELF, "Apparel", 2, TRUE);
+        SelectLootItemFixedTier(OBJECT_SELF, 2, LOOT_TYPE_APPAREL, 100);
     }
+    */
 }

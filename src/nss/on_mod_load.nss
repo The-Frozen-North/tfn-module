@@ -19,6 +19,7 @@
 #include "inc_loot"
 #include "inc_areadist"
 #include "nwnx_damage"
+#include "inc_itemevent"
 
 const int SEED_SPAWNS = 1;
 const int SEED_TREASURES = 1;
@@ -493,6 +494,9 @@ void main()
     NWNX_Events_SubscribeEvent("NWNX_ON_CALENDAR_DUSK", "on_calendar_dusk");
 
     NWNX_Events_SubscribeEvent("NWNX_ON_INVENTORY_ADD_GOLD_AFTER", "on_inv_addgolda");
+    
+    NWNX_Events_SubscribeEvent("NWNX_ON_UNPOLYMORPH_BEFORE", "on_unpolyb");
+    NWNX_Events_SubscribeEvent("NWNX_ON_UNPOLYMORPH_AFTER", "on_unpolya");
 
     NWNX_Damage_SetDamageEventScript("on_damage");
     NWNX_Damage_SetAttackEventScript("on_attack");
@@ -745,7 +749,7 @@ void main()
       }
    }
 
-   BuildItemNamesToObjectsDB();
+   BuildTreasureStagingToObjectsDB();
    SetLocalInt(GetModule(), "treasure_ready", 1);
    CalculatePlaceableLootValues();
 
@@ -796,6 +800,8 @@ void main()
     SpawnPCBloodstains();
 
     InitPlaceablesTable();
+    
+    ItemEventsInitialise();
 
     CreateHouseTemplatesInAllCardinalDirections();
 
