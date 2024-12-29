@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 1842
+    "value": 1708
   },
   "Cursed": {
     "type": "byte",
@@ -75,7 +75,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 1
+          "value": 2
         },
         "Param1": {
           "type": "byte",
@@ -92,6 +92,37 @@
         "Subtype": {
           "type": "word",
           "value": 2
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 21
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 10
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 88
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 0
         }
       }
     ]
@@ -111,5 +142,9 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "armor160"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 23
   }
 }

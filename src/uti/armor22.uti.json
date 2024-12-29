@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 13824
+    "value": 14778
   },
   "Cursed": {
     "type": "byte",
@@ -27,7 +27,9 @@
   "DescIdentified": {
     "id": 12863,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Darson the master smith constructed this mighty shield out of the bones and scales of an ancient wyrm. While Darson, never afraid of bragging, claims he slew the beast himself, few believe it. Most likely he came upon the corpse of the great beast and salvaged what he could. Whatever the truth may be, the protections on this shield are formidable enough to please the bravest of knights."
+    }
   },
   "Description": {
     "type": "cexolocstring",
@@ -42,11 +44,13 @@
   "LocalizedName": {
     "id": 12901,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Bulwark of the Great Dragon"
+    }
   },
   "ModelPart1": {
     "type": "byte",
-    "value": 31
+    "value": 23
   },
   "PaletteID": {
     "type": "byte",
@@ -71,7 +75,7 @@
         },
         "CostValue": {
           "type": "word",
-          "value": 3
+          "value": 1
         },
         "Param1": {
           "type": "byte",
@@ -89,6 +93,37 @@
           "type": "word",
           "value": 0
         }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
+          "value": 7
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 2
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 23
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 10
+        }
       }
     ]
   },
@@ -102,30 +137,14 @@
   },
   "Tag": {
     "type": "cexostring",
-    "value": "non_unique"
+    "value": "ts"
   },
   "TemplateResRef": {
     "type": "resref",
     "value": "armor22"
   },
-  "VarTable": {
-    "type": "list",
-    "value": [
-      {
-        "__struct_id": 0,
-        "Name": {
-          "type": "cexostring",
-          "value": "non_unique"
-        },
-        "Type": {
-          "type": "dword",
-          "value": 1
-        },
-        "Value": {
-          "type": "int",
-          "value": 1
-        }
-      }
-    ]
+  "xModelPart1": {
+    "type": "word",
+    "value": 23
   }
 }

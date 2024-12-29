@@ -18,7 +18,7 @@
   },
   "Cost": {
     "type": "dword",
-    "value": 1161
+    "value": 5672
   },
   "Cursed": {
     "type": "byte",
@@ -42,7 +42,9 @@
   "LocalizedName": {
     "id": 56580,
     "type": "cexolocstring",
-    "value": {}
+    "value": {
+      "0": "Small Shield of Dawn"
+    }
   },
   "ModelPart1": {
     "type": "byte",
@@ -71,7 +73,38 @@
         },
         "CostValue": {
           "type": "word",
+          "value": 1
+        },
+        "Param1": {
+          "type": "byte",
+          "value": 255
+        },
+        "Param1Value": {
+          "type": "byte",
+          "value": 0
+        },
+        "PropertyName": {
+          "type": "word",
+          "value": 1
+        },
+        "Subtype": {
+          "type": "word",
+          "value": 0
+        }
+      },
+      {
+        "__struct_id": 0,
+        "ChanceAppear": {
+          "type": "byte",
+          "value": 100
+        },
+        "CostTable": {
+          "type": "byte",
           "value": 2
+        },
+        "CostValue": {
+          "type": "word",
+          "value": 3
         },
         "Param1": {
           "type": "byte",
@@ -88,37 +121,6 @@
         "Subtype": {
           "type": "word",
           "value": 24
-        }
-      },
-      {
-        "__struct_id": 0,
-        "ChanceAppear": {
-          "type": "byte",
-          "value": 100
-        },
-        "CostTable": {
-          "type": "byte",
-          "value": 18
-        },
-        "CostValue": {
-          "type": "word",
-          "value": 2
-        },
-        "Param1": {
-          "type": "byte",
-          "value": 9
-        },
-        "Param1Value": {
-          "type": "byte",
-          "value": 6
-        },
-        "PropertyName": {
-          "type": "word",
-          "value": 44
-        },
-        "Subtype": {
-          "type": "word",
-          "value": 0
         }
       }
     ]
@@ -138,5 +140,9 @@
   "TemplateResRef": {
     "type": "resref",
     "value": "armor80"
+  },
+  "xModelPart1": {
+    "type": "word",
+    "value": 31
   }
 }
