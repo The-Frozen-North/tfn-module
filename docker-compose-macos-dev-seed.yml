@@ -1,0 +1,19 @@
+version: "3.3"
+
+services:
+  tfn-server-dev:
+    image: nwnxee/unified:ba4646c
+    platform: linux/x86_64
+    tty: true
+    stdin_open: true
+    env_file: ${PWD-.}/config/common.env
+    environment:
+    - NWN_PUBLICSERVER=0
+    - NWN_SERVERNAME="The Frozen North DEV SEED"
+    - NWN_PORT=5134
+    - NWNX_SERVERLOGREDIRECTOR_LOG_LEVEL=6
+    ports:
+    - '5134:5134/udp'
+    volumes:
+    - ${PWD-.}/logs:/nwn/run/logs.0
+    - ${PWD-.}/:/nwn/home
