@@ -294,6 +294,7 @@ int SAVING_THROW_TYPE_GOOD              = 16;
 int SAVING_THROW_TYPE_EVIL              = 17;
 int SAVING_THROW_TYPE_LAW               = 18;
 int SAVING_THROW_TYPE_CHAOS             = 19;
+int SAVING_THROW_TYPE_PARALYSIS         = 20;
 
 int IMMUNITY_TYPE_NONE              = 0;
 int IMMUNITY_TYPE_MIND_SPELLS       = 1;
@@ -6347,8 +6348,8 @@ string PLAYER_DEVICE_PROPERTY_GUI_HEIGHT            = "gui_height";
 // The player's gui scale, in percent (factor 1.4 = 140)
 string PLAYER_DEVICE_PROPERTY_GUI_SCALE             = "gui_scale";
 // Client config values:
-string PLAYER_DEVICE_PROPERTY_GRAPHICS_ANTIALIASING_MODE                    = "graphics.video.anti-aliasing-mode";
-string PLAYER_DEVICE_PROPERTY_GRAPHICS_ANISOTROPIC_FILTERING                = "graphics.video.anisotropic-filtering.enabled";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_ANTIALIASING_MODE                    = "graphics.video.anti-aliasing.mode";
+string PLAYER_DEVICE_PROPERTY_GRAPHICS_ANISOTROPIC_FILTERING                = "graphics.video.anisotropic-filtering.mode";
 string PLAYER_DEVICE_PROPERTY_GRAPHICS_GAMMA                                = "graphics.gamma";
 string PLAYER_DEVICE_PROPERTY_GRAPHICS_TEXTURE_ANIMATIONS                   = "graphics.texture-animations.enabled";
 string PLAYER_DEVICE_PROPERTY_GRAPHICS_SKYBOXES                             = "graphics.skyboxes.enabled";
@@ -6388,12 +6389,14 @@ string PLAYER_DEVICE_PROPERTY_UI_TOOLTIP_DELAY                              = "u
 string PLAYER_DEVICE_PROPERTY_UI_MOUSEOVER_FEEDBACK                         = "ui.mouseover-feedback";
 string PLAYER_DEVICE_PROPERTY_UI_TEXT_BUBBLE                                = "ui.text-bubble-mode";
 string PLAYER_DEVICE_PROPERTY_UI_TARGETING_FEEDBACK                         = "ui.targeting-feedback-mode";
+string PLAYER_DEVICE_PROPERTY_UI_CAN_CLICK_SELF_WHILE_WALKING               = "ui.can-click-self-while-walking";
 string PLAYER_DEVICE_PROPERTY_UI_FLOATING_TEXT_FEEDBACK                     = "ui.floating-text-feedback";
 string PLAYER_DEVICE_PROPERTY_UI_FLOATING_TEXT_FEEDBACK_DAMAGE_TOTALS_ONLY  = "ui.floating-text-feedback-damage-totals-only";
 string PLAYER_DEVICE_PROPERTY_UI_HIDE_QUICKCHAT_TEXT_IN_CHAT_WINDOW         = "ui.hide-quick-chat-text-in-chat-window";
 string PLAYER_DEVICE_PROPERTY_UI_CONFIRM_SELFCAST_SPELLS                    = "ui.confirm-self-cast-spells";
 string PLAYER_DEVICE_PROPERTY_UI_CONFIRM_SELFCAST_FEATS                     = "ui.confirm-self-cast-feats";
 string PLAYER_DEVICE_PROPERTY_UI_CONFIRM_SELFCAST_ITEMS                     = "ui.confirm-self-cast-items";
+string PLAYER_DEVICE_PROPERTY_UI_CHARGEN_SORT_CLASSES                       = "ui.chargen.sort-classes";
 string PLAYER_DEVICE_PROPERTY_UI_CHAT_PANE_PRIMARY_HEIGHT                   = "ui.chat.pane.primary.height";
 string PLAYER_DEVICE_PROPERTY_UI_CHAT_PANE_SECONDARY_HEIGHT                 = "ui.chat.pane.secondary.height";
 string PLAYER_DEVICE_PROPERTY_UI_CHAT_SWEAR_FILTER                          = "ui.chat.swear-filter.enabled";
@@ -6426,6 +6429,7 @@ int PLAYER_DEVICE_PLATFORM_LINUX_ARM32              = 12;
 int PLAYER_DEVICE_PLATFORM_LINUX_ARM64              = 13;
 int PLAYER_DEVICE_PLATFORM_MAC_X86                  = 20;
 int PLAYER_DEVICE_PLATFORM_MAC_X64                  = 21;
+int PLAYER_DEVICE_PLATFORM_MAC_ARM64                = 22;
 int PLAYER_DEVICE_PLATFORM_IOS                      = 30;
 int PLAYER_DEVICE_PLATFORM_ANDROID_ARM32            = 40;
 int PLAYER_DEVICE_PLATFORM_ANDROID_ARM64            = 41;
@@ -6671,6 +6675,9 @@ int AUDIOSTREAM_IDENTIFIER_7                        = 7;
 int AUDIOSTREAM_IDENTIFIER_8                        = 8;
 int AUDIOSTREAM_IDENTIFIER_9                        = 9;
 
+int SPELL_FAILURE_TYPE_ALL                          = 0;
+int SPELL_FAILURE_TYPE_ARCANE                       = 1;
+
 string sLanguage = "nwscript";
 
 // Get an integer between 0 and nMaxInteger-1.
@@ -6716,19 +6723,19 @@ void DelayCommand(float fSeconds, action aActionToDelay);
 // If sScript does not specify a compiled script, nothing happens.
 void ExecuteScript(string sScript, object oTarget = OBJECT_SELF);
 
-// Clear all the actions of the caller.
+// Clear all the actions of oObject.
 // * No return value, but if an error occurs, the log file will contain
 //   "ClearAllActions failed.".
 // - nClearCombatState: if true, this will immediately clear the combat state
 //   on a creature, which will stop the combat music and allow them to rest,
 //   engage in dialog, or other actions that they would normally have to wait for.
-void ClearAllActions(int nClearCombatState=FALSE);
+void ClearAllActions(int nClearCombatState=FALSE, object oObject = OBJECT_SELF);
 
-// Cause the caller to face fDirection.
+// Cause oObject to face fDirection.
 // - fDirection is expressed as anticlockwise degrees from Due East.
 //   DIRECTION_EAST, DIRECTION_NORTH, DIRECTION_WEST and DIRECTION_SOUTH are
 //   predefined. (0.0f=East, 90.0f=North, 180.0f=West, 270.0f=South)
-void SetFacing(float fDirection);
+void SetFacing(float fDirection, object oObject = OBJECT_SELF);
 
 // Set the calendar to the specified date.
 // - nYear should be from 0 to 32000 inclusive
@@ -6943,18 +6950,20 @@ void ActionSpeakString(string sStringToSpeak, int nTalkVolume=TALKVOLUME_TALK);
 //   Forget animations)
 void ActionPlayAnimation(int nAnimation, float fSpeed=1.0, float fDurationSeconds=0.0);
 
-// Get the distance from the caller to oObject in metres.
+// Get the distance from oFrom to oObject in metres.
 // * Return value on error: -1.0f
-float GetDistanceToObject(object oObject);
+float GetDistanceToObject(object oObject, object oFrom = OBJECT_SELF);
 
 // * Returns TRUE if oObject is a valid object.
 int GetIsObjectValid(object oObject);
 
 // Cause the action subject to open oDoor
-void ActionOpenDoor(object oDoor);
+// - bRun: If TRUE, subject will run to the door instead of walking
+void ActionOpenDoor(object oDoor, int bRun = FALSE);
 
 // Cause the action subject to close oDoor
-void ActionCloseDoor(object oDoor);
+// - bRun: If TRUE, subject will run to the door instead of walking
+void ActionCloseDoor(object oDoor, int bRun = FALSE);
 
 // Change the direction in which the camera is facing
 // - fDirection is expressed as anticlockwise degrees from Due East.
@@ -7149,7 +7158,12 @@ effect EffectResurrection();
 // - nUseAppearAnimation: should this creature play it's "appear" animation when it is
 //   summoned. If zero, it will just fade in somewhere near the target.  If the value is 1
 //   it will use the appear animation, and if it's 2 it will use appear2 (which doesn't exist for most creatures)
-effect EffectSummonCreature(string sCreatureResref, int nVisualEffectId=VFX_NONE, float fDelaySeconds=0.0f, int nUseAppearAnimation=0);
+// - nUnsummonVisualEffectId: VFX_* to apply when the creature is unsummoned
+// - oSummonToAdd: If sCreatureResref is blank, this object (if they have no master) is instead added as the summon, applying nVisualEffectId at their location
+//                 fDelaySeconds and nUseAppearAnimation are unused, and no "Summoned a creature" feedback is sent, allowing you to do your own.
+//                 The creature otherwise acts like a summon from then on, including not giving out XP for being killed, and able to be 
+//                 unsummoned by the master or when the effect expires.
+effect EffectSummonCreature(string sCreatureResref, int nVisualEffectId=VFX_NONE, float fDelaySeconds=0.0f, int nUseAppearAnimation=0, int nUnsummonVisualEffectId=VFX_IMP_UNSUMMON, object oSummonToAdd = OBJECT_INVALID);
 
 // Get the caster level of an object. This is consistent with the caster level used when applying effects if OBJECT_SELF is used.
 // - oObject: A creature will return the caster level of their currently cast spell or ability, or the item's caster level if an item was used
@@ -7526,8 +7540,8 @@ void PrintVector(vector vVector, int bPrepend);
 // Create a vector with the specified values for x, y and z
 vector Vector(float x=0.0f, float y=0.0f, float z=0.0f);
 
-// Cause the caller to face vTarget
-void SetFacingPoint(vector vTarget);
+// Cause oObject to face vTarget.
+void SetFacingPoint(vector vTarget, object oObject = OBJECT_SELF);
 
 // Convert fAngle to a vector
 vector AngleToVector(float fAngle);
@@ -7535,15 +7549,15 @@ vector AngleToVector(float fAngle);
 // Convert vVector to an angle
 float VectorToAngle(vector vVector);
 
-// The caller will perform a Melee Touch Attack on oTarget
+// The oAttacker will perform a Melee Touch Attack on oTarget.
 // This is not an action, and it assumes the caller is already within range of
 // oTarget
 // * Returns 0 on a miss, 1 on a hit and 2 on a critical hit
-int TouchAttackMelee(object oTarget, int bDisplayFeedback=TRUE);
+int TouchAttackMelee(object oTarget, int bDisplayFeedback=TRUE, object oAttacker = OBJECT_SELF);
 
-// The caller will perform a Ranged Touch Attack on oTarget
+// The oAttacker will perform a Ranged Touch Attack on oTarget.
 // * Returns 0 on a miss, 1 on a hit and 2 on a critical hit
-int TouchAttackRanged(object oTarget, int bDisplayFeedback=TRUE);
+int TouchAttackRanged(object oTarget, int bDisplayFeedback=TRUE, object oAttacker = OBJECT_SELF);
 
 // Create a Paralyze effect
 effect EffectParalyze();
@@ -8141,9 +8155,9 @@ int GetLastPerceptionInaudible();
 // perceived was seen.
 int GetLastPerceptionSeen();
 
-// Use this in an OnClosed script to get the object that closed the door or placeable.
-// * Returns OBJECT_INVALID if the caller is not a valid door or placeable.
-object GetLastClosedBy();
+// Use this in an OnClosed script to get the object that closed oObject.
+// * Returns OBJECT_INVALID if oObject is not a valid door, placeable or store.
+object GetLastClosedBy(object oObject=OBJECT_SELF);
 
 // Use this in an OnPerception script to determine whether the object that was
 // perceived has vanished.
@@ -8424,12 +8438,13 @@ int GetLastAssociateCommand(object oAssociate=OBJECT_SELF);
 // Give nGP gold to oCreature.
 void GiveGoldToCreature(object oCreature, int nGP);
 
-// Set the destroyable status of the caller.
+// Set the destroyable status of oObject
 // - bDestroyable: If this is FALSE, the caller does not fade out on death, but
 //   sticks around as a corpse.
 // - bRaiseable: If this is TRUE, the caller can be raised via resurrection.
 // - bSelectableWhenDead: If this is TRUE, the caller is selectable after death.
-void SetIsDestroyable(int bDestroyable, int bRaiseable=TRUE, int bSelectableWhenDead=FALSE);
+// - oObject: Object to affect.
+void SetIsDestroyable(int bDestroyable, int bRaiseable=TRUE, int bSelectableWhenDead=FALSE, object oObject = OBJECT_SELF);
 
 // Set the locked state of oTarget, which can be a door or a placeable object.
 void SetLocked(object oTarget, int bLocked);
@@ -8491,13 +8506,13 @@ void DoDoorAction(object oTargetDoor, int nDoorAction);
 
 // Get the first item in oTarget's inventory (start to cycle through oTarget's
 // inventory).
-// * Returns OBJECT_INVALID if the caller is not a creature, item, placeable or store,
+// * Returns OBJECT_INVALID if oTarget is not a creature, item, placeable or store,
 //   or if no item is found.
 object GetFirstItemInInventory(object oTarget=OBJECT_SELF);
 
 // Get the next item in oTarget's inventory (continue to cycle through oTarget's
 // inventory).
-// * Returns OBJECT_INVALID if the caller is not a creature, item, placeable or store,
+// * Returns OBJECT_INVALID if oTarget is not a creature, item, placeable or store,
 //   or if no item is found.
 object GetNextItemInInventory(object oTarget=OBJECT_SELF);
 
@@ -8532,7 +8547,7 @@ int GetDamageDealtByType(int nDamageType);
 int GetTotalDamageDealt();
 
 // Get the last object that damaged oObject
-// * Returns OBJECT_INVALID if the passed in object is not a valid object.
+// * Returns OBJECT_INVALID if oObject is not a valid object.
 object GetLastDamager(object oObject=OBJECT_SELF);
 
 // Get the last object that disarmed the trap on the caller.
@@ -8540,17 +8555,17 @@ object GetLastDamager(object oObject=OBJECT_SELF);
 //   door.
 object GetLastDisarmed();
 
-// Get the last object that disturbed the inventory of the caller.
-// * Returns OBJECT_INVALID if the caller is not a valid creature or placeable.
-object GetLastDisturbed();
+// Get the last object that disturbed the inventory of oObject.
+// * Returns OBJECT_INVALID if oObject is not a valid creature or placeable.
+object GetLastDisturbed(object oObject=OBJECT_SELF);
 
-// Get the last object that locked the caller.
-// * Returns OBJECT_INVALID if the caller is not a valid door or placeable.
-object GetLastLocked();
+// Get the last object that locked oObject.
+// * Returns OBJECT_INVALID if oObject is not a valid door or placeable.
+object GetLastLocked(object oObject=OBJECT_SELF);
 
-// Get the last object that unlocked the caller.
-// * Returns OBJECT_INVALID if the caller is not a valid door or placeable.
-object GetLastUnlocked();
+// Get the last object that unlocked oObject.
+// * Returns OBJECT_INVALID if oObject is not a valid door or placeable.
+object GetLastUnlocked(object oObject=OBJECT_SELF);
 
 // Create a Skill Increase effect.
 // - nSkill: SKILL_*
@@ -8558,14 +8573,14 @@ object GetLastUnlocked();
 // * Returns an effect of type EFFECT_TYPE_INVALIDEFFECT if nSkill is invalid.
 effect EffectSkillIncrease(int nSkill, int nValue);
 
-// Get the type of disturbance (INVENTORY_DISTURB_*) that caused the caller's
+// Get the type of disturbance (INVENTORY_DISTURB_*) that caused the oObject's
 // OnInventoryDisturbed script to fire.  This will only work for creatures and
 // placeables.
-int GetInventoryDisturbType();
+int GetInventoryDisturbType(object oObject=OBJECT_SELF);
 
-// get the item that caused the caller's OnInventoryDisturbed script to fire.
-// * Returns OBJECT_INVALID if the caller is not a valid object.
-object GetInventoryDisturbItem();
+// get the item that caused oObject's OnInventoryDisturbed script to fire.
+// * Returns OBJECT_INVALID if the oObject is not a valid object.
+object GetInventoryDisturbItem(object oObject=OBJECT_SELF);
 
 // Get the henchman belonging to oMaster.
 // * Return OBJECT_INVALID if oMaster does not have a henchman.
@@ -8669,9 +8684,9 @@ void SendMessageToPC(object oPlayer, string szMessage);
 // * Returns OBJECT_INVALID if the caller is not a valid creature.
 object GetAttemptedSpellTarget();
 
-// Get the last creature that opened the caller.
-// * Returns OBJECT_INVALID if the caller is not a valid door, placeable or store.
-object GetLastOpenedBy();
+// Get the last creature that opened oObject.
+// * Returns OBJECT_INVALID if oObject is not a valid door, placeable or store.
+object GetLastOpenedBy(object oObject=OBJECT_SELF);
 
 // Determines the number of times that oCreature has nSpell memorised.
 // - nSpell: SPELL_*
@@ -9077,7 +9092,14 @@ effect EffectUltravision();
 effect EffectNegativeLevel(int nNumLevels, int bHPBonus=FALSE);
 
 // Create a Polymorph effect.
-effect EffectPolymorph(int nPolymorphSelection, int nLocked=FALSE);
+// - nLocked: If TRUE the creature cannot cancel the polymorph. 
+// - nUnpolymorphVFX: If -1 no VFX will play when this polymorph is removed. Else will play the relevant VFX.
+// - nSpellAbilityModifier: Set a custom spell ability modifier for the 3 polymorph spells. 
+//                          Save DC is 10 + Innate spell level + this ability modifier.
+//                          -1 uses the creators spellcasting/feat using class spellcasting ability modifier.
+// - nSpellAbilityCasterLevel: Set a custom caster level for the 3 polymorph spells.
+//                             Default (0) is to use the first class slot class level as previously.
+effect EffectPolymorph(int nPolymorphSelection, int nLocked=FALSE, int nUnpolymorphVFX=VFX_IMP_POLYMORPH, int nSpellAbilityModifier = -1, int nSpellAbilityCasterLevel = 0);
 
 // Create a Sanctuary effect.
 // - nDifficultyClass: must be a non-zero, positive number
@@ -10713,8 +10735,9 @@ int GetIsSkillSuccessful(object oTarget, int nSkill, int nDifficulty);
 
 // Creates an effect that inhibits spells
 // - nPercent - percentage of failure
-// - nSpellSchool - the school of spells affected.
-effect EffectSpellFailure(int nPercent=100, int nSpellSchool=SPELL_SCHOOL_GENERAL);
+// - nSpellSchool - the school of spells affected. Only applies to SPELL_FAILURE_TYPE_ALL.
+// - nSpellFailureType - Use SPELL_FAILURE_TYPE_* constants for different spell failure types
+effect EffectSpellFailure(int nPercent=100, int nSpellSchool=SPELL_SCHOOL_GENERAL, int nSpellFailureType=SPELL_FAILURE_TYPE_ALL);
 
 // Causes the object to instantly speak a translated string.
 // (not an action, not blocked when uncommandable)
@@ -12167,6 +12190,7 @@ void ActionUseItemAtLocation(object oItem, itemproperty ip, location lTarget, in
 
 // Makes oPC enter a targeting mode, letting them select an object as a target
 // If a PC selects a target or cancels out, it will trigger the module OnPlayerTarget event.
+// * nValidObjectTypes - If you use 0 will cancel any current targeting mode the client is in.
 void EnterTargetingMode(object oPC, int nValidObjectTypes = OBJECT_TYPE_ALL, int nMouseCursorId = MOUSECURSOR_MAGIC, int nBadTargetCursor = MOUSECURSOR_NOMAGIC);
 
 // Gets the target object in the module OnPlayerTarget event.
@@ -12568,7 +12592,7 @@ json JsonInt(int nValue);
 // Create a json floating point value.
 json JsonFloat(float fValue);
 
-// Create a json bool valye.
+// Create a json bool value.
 // You can say JSON_TRUE or JSON_FALSE for default parameters on functions to initialise with a bool.
 json JsonBool(int bValue);
 
@@ -12634,16 +12658,32 @@ json JsonArrayDel(json jArray, int nIndex);
 // Transforms the given object into a json structure.
 // The json format is compatible with what https://github.com/niv/neverwinter.nim@1.4.3+ emits.
 // Returns the null json type on errors, or if oObject is not serializable, with JsonGetError() filled in.
-// Supported object types: creature, item, trigger, placeable, door, waypoint, encounter, store, area (combined format)
+// Supported object types: creature, item, trigger, placeable, door, waypoint, encounter, store, area (combined format), soundobject
 // If bSaveObjectState is TRUE, local vars, effects, action queue, and transition info (triggers, doors) are saved out
 // (except for Combined Area Format, which always has object state saved out).
+//
+// N.B.:
+//   This function is for advanced usecases that require understanding of the game's internals
+//   and how the engine loads and migrates data as the game is changed to support new features.
+//   The only guarantee given is that older data files can be loaded on newer game versions.
+//   As such, fields can become deprecated or change meaning. You need to handle this by
+//   either constructing a clean-room GFF file, or by writing migration code using the
+//   game/build version getters.
 json ObjectToJson(object oObject, int bSaveObjectState = FALSE);
 
 // Deserializes the game object described in jObject.
 // Returns OBJECT_INVALID on errors.
-// Supported object types: creature, item, trigger, placeable, door, waypoint, encounter, store, area (combined format)
+// Supported object types: creature, item, trigger, placeable, door, waypoint, encounter, store, area (combined format), soundobject
 // For areas, locLocation is ignored.
 // If bLoadObjectState is TRUE, local vars, effects, action queue, and transition info (triggers, doors) are read in.
+//
+// N.B.:
+//   This function is for advanced usecases that require understanding of the game's internals
+//   and how the engine loads and migrates data as the game is changed to support new features.
+//   The only guarantee given is that older data files can be loaded on newer game versions.
+//   As such, fields can become deprecated or change meaning. You need to handle this by
+//   either constructing a clean-room GFF file, or by writing migration code using the
+//   game/build version getters.
 object JsonToObject(json jObject, location locLocation, object oOwner = OBJECT_INVALID, int bLoadObjectState = FALSE);
 
 // Returns the element at the given JSON pointer value.
@@ -13135,7 +13175,9 @@ void SetSoundset(object oCreature, int nSoundset);
 // Ready a spell level for oCreature.
 // - nSpellLevel: 0-9
 // - nClassType: a CLASS_TYPE_* constant or CLASS_TYPE_INVALID to ready the spell level for all classes.
-void ReadySpellLevel(object oCreature, int nSpellLevel, int nClassType = CLASS_TYPE_INVALID);
+// - nSlotsToReady: The amount of spells to set to ready at the given spell level. 0 will clear all uses, negative numbers will
+//                  reduce the amount, positive increase the amount.
+void ReadySpellLevel(object oCreature, int nSpellLevel, int nClassType = CLASS_TYPE_INVALID, int nSlotsToReady = 255);
 
 // Makes oCreature controllable by oPlayer, if player party control is enabled
 // Setting oPlayer=OBJECT_INVALID removes the override and reverts to regular party control behavior
@@ -13359,6 +13401,7 @@ int GetPlayerBuildVersionPostfix(object oPlayer);
 string GetPlayerBuildVersionCommitSha1(object oPlayer);
 
 // In the spell script returns the feat used, or -1 if no feat was used
+// In an Area of Effect script returns the feat used to generate it (or -1 otherwise)
 int GetSpellFeatId();
 
 // Returns the given effects Link ID. There is no guarantees about this identifier other than
@@ -13459,6 +13502,7 @@ int GetPCItemLastUnequippedSlot();
 
 // Returns TRUE if the last spell was cast spontaneously
 // eg; a Cleric casting SPELL_CURE_LIGHT_WOUNDS when it is not prepared, using another level 1 slot
+// Area of Effect objects can also retrieve if the spell used to generate it was casted spontaneously.
 int GetSpellCastSpontaneously();
 
 // Reset the given sqlquery, readying it for re-execution after it has been stepped.
@@ -13673,3 +13717,152 @@ effect EffectEnemyAttackBonus(int nBonus);
 
 // Set to TRUE to disable the inaccessible tile border of oArea. Requires a client area reload to take effect.
 void SetAreaTileBorderDisabled(object oArea, int bDisabled);
+
+// Checks if a object is destroyable (toggle this state with SetIsDestroyable)
+// Returns TRUE if they can be destroyed, FALSE otherwise or in error
+int GetIsDestroyable(object oObject);
+
+// Checks if a creature is able to be raised with EffectResurrection (toggle this state with SetIsDestroyable)
+// Returns TRUE if they can be raised, FALSE otherwise or in error
+int GetIsRaiseable(object oCreature);
+
+// Checks if a creature is able to be selected when dead (toggle this state with SetIsDestroyable)
+// Returns TRUE if they can be selected, FALSE otherwise or in error
+int GetIsSelectableWhenDead(object oCreature);
+
+// Check if NWNX is currently running.
+// Returns TRUE if NWNX is available, FALSE if not.
+int NWNXGetIsAvailable();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXCall(string sArg1, string sArg2);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushInt(int nValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushFloat(float fValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushObject(object oValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushString(string sValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushVector(vector vValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushLocation(location locValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushEffect(effect eValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushItemProperty(itemproperty ipValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushJson(json jValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushAction(action aValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushEvent(event eValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushTalent(talent tValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushSqlquery(sqlquery sqlValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+void NWNXPushCassowary(cassowary cValue);
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+int NWNXPopInt();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+float NWNXPopFloat();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+object NWNXPopObject();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+string NWNXPopString();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+vector NWNXPopVector();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+location NWNXPopLocation();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+effect NWNXPopEffect();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+itemproperty NWNXPopItemProperty();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+json NWNXPopJson();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+event NWNXPopEvent();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+talent NWNXPopTalent();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+sqlquery NWNXPopSqlquery();
+
+// This is an internal function for NWNX, it will abort the script if called without NWNX running.
+cassowary NWNXPopCassowary();
+
+// Does a spell resistance check. The roll is 1d20 + nCasterLevel + nCasterBonus vs. nSpellResistance
+// - nSpellId         - The spell ID to use if other variables are not set. If -1 it will attempt to be auto-detected.
+// - nCasterLevel     - The caster level. If -1 it attempts to find it automatically from oCaster.
+// - nSpellResistance - The spell resistance to penetrate. If -1 it will use the spell resistance of oTarget.
+// - bFeedback        - If TRUE displays feedback automatically, FALSE it suppresses it.
+// Returns: TRUE if the target resists oCasters spell resistance roll, FALSE if failed or an error occured
+int SpellResistanceCheck(object oTarget, object oCaster, int nSpellId = -1, int nCasterLevel=-1, int nSpellResistance=-1, int bFeedback=TRUE);
+
+// Does a spell immunity check. This checks for EFfectSpellImmunity and related item properties.
+// - nSpellId  - The spell ID to check immunity of. If -1 it will attempt to be auto-detected.
+// - bFeedback - If TRUE displays feedback automatically, FALSE it suppresses it.
+// Returns: TRUE if the target is immune to nSpellId, FALSE if failed or an error occured
+int SpellImmunityCheck(object oTarget, object oCaster, int nSpellId=-1, int bFeedback=TRUE);
+
+// Does a spell absorption check that checks limited (eg Spell Mantle)
+// - nSpellId      - The Spell Id. If -1 it will attempt to be auto-detected.
+// - nSpellSchool  - The spell school to check for. If -1 uses nSpellId's spell school.
+// - nSpellLevel   - The spell level. If -1 uses nSpellId's spell level (given the casters last spell cast class)
+// - bRemoveLevels - If TRUE this removes spell levels from the effect that would stop it (and remove it if 0 or less remain), but if FALSE they will not be removed.
+// - bFeedback     - If TRUE displays feedback automatically, FALSE it suppresses it.
+// Returns: TRUE if the target absorbs oCasters spell, FALSE if failed or an error occured
+int SpellAbsorptionLimitedCheck(object oTarget, object oCaster, int nSpellId=-1, int nSpellSchool=-1, int nSpellLevel=-1, int bRemoveLevels=TRUE, int bFeedback=TRUE);
+
+// Does a spell absorption check that checks unlimited spell absorption effects (eg; Globes)
+// - nSpellId     - The Spell Id. If -1 it will attempt to be auto-detected.
+// - nSpellSchool - The spell school to check for. If -1 uses nSpellId's spell school.
+// - nSpellLevel  - The spell level. If -1 uses nSpellId's spell level (given the casters last spell cast class)
+// - bFeedback    - If TRUE displays feedback automatically, FALSE it suppresses it. As per existing ResistSpell convention it defaults to FALSE.
+// Returns: TRUE if the target absorbs oCasters spell, FALSE if failed or an error occured
+int SpellAbsorptionUnlimitedCheck(object oTarget, object oCaster, int nSpellId=-1, int nSpellSchool=-1, int nSpellLevel=-1, int bFeedback=FALSE);
+
+// Returns the network latency of this player device.
+// The value is a round trip time (server->player->server) in milliseconds.
+// * Players are pinged every 6000 milliseconds.
+// * When bSmoothed is TRUE, returns a moving average over a longer timeframe.
+//   This average calculation is not strictly specified and subject to change,
+//   but intended to provide a reasonable average to rely on.
+// * When bSmoothed is FALSE, returns the current/last received value.
+// * Returns 0 if the client failed to respond to latency requests or no data is available.
+//   This is currently the case for clients that do not support this functionality (build <37).
+int GetPlayerNetworkLatency(object oPlayer, int bSmoothed = TRUE);
+
+// Gets the creature or placeable body bag type (bodybag.2da entry)
+// Returns -1 on error.
+int GetBodyBag(object oObject);
+
+// Sets the creature or placeable body bag type (bodybag.2da entry)
+void SetBodyBag(object oObject, int nBodyBag);
