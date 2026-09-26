@@ -130,6 +130,8 @@ void DetermineHorseEffects(object oPC)
 void RemoveMount(object oPC);
 void RemoveMount(object oPC)
 {
+    if (!GetIsMounted(oPC)) return;
+
 // only play sound and visuals if already mounted
 // don't play it for non-PCs as they will do it all at the same time. its very loud :)
     if (GetIsMounted(oPC) && GetIsPC(oPC))
