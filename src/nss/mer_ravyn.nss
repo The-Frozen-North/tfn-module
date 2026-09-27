@@ -9,8 +9,6 @@ void main()
         SelectLootItemFromACREqualLootTypeOdds(OBJECT_SELF, 10, LOOT_TYPE_ANY);
     }
     
-    int bNonUnique;
-
     int nMax = d4(5);
     for (i = 0; i < nMax; i++)
     {
