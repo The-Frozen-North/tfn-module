@@ -9,7 +9,6 @@ void main()
     if (GetCurrentItemEventType() == ITEM_EVENT_ACTIVATED)
     {
         object oTarget = GetSpellTargetObject();
-        int nSpellID = GetSpellId();
 
         if (!MySavingThrow(SAVING_THROW_FORT, oTarget, 14, SAVING_THROW_TYPE_NEGATIVE))
         {
