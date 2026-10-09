@@ -2,7 +2,6 @@
 /// @brief Define racial and subrace characteristics.
 /// @{
 /// @file nwnx_race.nss
-#include "nwnx"
 
 const string NWNX_Race = "NWNX_Race"; ///< @private
 
@@ -54,37 +53,50 @@ int NWNX_Race_GetParentRace(int iRace);
 /// or Favored Enemy: Wild Elf
 void NWNX_Race_SetFavoredEnemyFeat(int iRace, int iFeat);
 
+/// @brief Removes any nwnx_race 'Effects' on the targeted creature. Suppression lasts until levelup, next login, or Reactivated by function.
+/// @param oCreature The creature to suppress
+/// @note Not all nwnx_race modifiers are achieved via effect. Those that are not directly consider the creatures current race.
+void NWNX_Race_SuppressCreatureRaceEffects(object oCreature);
+
+/// @brief Reactivates the nwnx_race 'Effects' on the targeted creature after they were Suppressed.
+/// @param oCreature The creature to reactive
+/// @note Safe to use on non-suppressed creatures - Triggers a refresh of effects but won't stack.
+void NWNX_Race_ReactivateCreatureRaceEffects(object oCreature);
+
 /// @}
 
 void NWNX_Race_SetRacialModifier(int iRace, int iMod, int iParam1, int iParam2 = 0xDEADBEEF, int iParam3 = 0xDEADBEEF)
 {
-    string sFunc = "SetRacialModifier";
-
-    NWNX_PushArgumentInt(iParam3);
-    NWNX_PushArgumentInt(iParam2);
-    NWNX_PushArgumentInt(iParam1);
-    NWNX_PushArgumentInt(iMod);
-    NWNX_PushArgumentInt(iRace);
-
-    NWNX_CallFunction(NWNX_Race, sFunc);
+    NWNXPushInt(iParam3);
+    NWNXPushInt(iParam2);
+    NWNXPushInt(iParam1);
+    NWNXPushInt(iMod);
+    NWNXPushInt(iRace);
+    NWNXCall(NWNX_Race, "SetRacialModifier");
 }
 
 int NWNX_Race_GetParentRace(int iRace)
 {
-    string sFunc = "GetParentRace";
-
-    NWNX_PushArgumentInt(iRace);
-
-    NWNX_CallFunction(NWNX_Race, sFunc);
-    return NWNX_GetReturnValueInt();
+    NWNXPushInt(iRace);
+    NWNXCall(NWNX_Race, "GetParentRace");
+    return NWNXPopInt();
 }
 
 void NWNX_Race_SetFavoredEnemyFeat(int iRace, int iFeat)
 {
-    string sFunc = "SetFavoredEnemyFeat";
+    NWNXPushInt(iFeat);
+    NWNXPushInt(iRace);
+    NWNXCall(NWNX_Race, "SetFavoredEnemyFeat");
+}
 
-    NWNX_PushArgumentInt(iFeat);
-    NWNX_PushArgumentInt(iRace);
+void NWNX_Race_SuppressCreatureRaceEffects(object creature)
+{
+    NWNXPushObject(creature);
+    NWNXCall(NWNX_Race, "SuppressCreatureRaceEffects");
+}
 
-    NWNX_CallFunction(NWNX_Race, sFunc);
+void NWNX_Race_ReactivateCreatureRaceEffects(object oCreature)
+{
+    NWNXPushObject(oCreature);
+    NWNXCall(NWNX_Race, "ReactivateCreatureRaceEffects");
 }

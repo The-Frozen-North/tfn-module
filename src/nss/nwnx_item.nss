@@ -2,7 +2,6 @@
 /// @brief Functions exposing additional item properties.
 /// @{
 /// @file nwnx_item.nss
-#include "nwnx"
 
 const string NWNX_Item = "NWNX_Item"; ///< @private
 
@@ -69,7 +68,12 @@ void NWNX_Item_SetBaseItemType(object oItem, int nBaseItem);
 ///
 /// [1] When specifying per-part coloring, the value 255 corresponds with the logical
 /// function 'clear colour override', which clears the per-part override for that part.
-void NWNX_Item_SetItemAppearance(object oItem, int nType, int nIndex, int nValue);
+/// @param oItem The item
+/// @param nType The type
+/// @param nIndex The index
+/// @param nValue The value
+/// @param bUpdateCreatureAppearance If TRUE, also update the appearance of oItem's possessor. Only works for armor/helmets/cloaks. Will remove the item from the quickbar as side effect.
+void NWNX_Item_SetItemAppearance(object oItem, int nType, int nIndex, int nValue, int bUpdateCreatureAppearance = FALSE);
 
 /// @brief Return a string containing the entire appearance for an item.
 /// @sa NWNX_Item_RestoreItemAppearance
@@ -104,8 +108,8 @@ int NWNX_Item_MoveTo(object oItem, object oTarget, int bHideAllFeedback = FALSE)
 /// @param oItem The item object.
 /// @param nModifier the modifier to apply (After any Override)
 /// @param bPersist Whether the modifier should persist to gff field. Strongly Recommended to be TRUE (See warning)
-/// @note This function (or override partner) must be used each server reset to reenable persistence. Recommended use on OBJECT_INVALID OnModuleLoad.
-/// @warning if Persistence is FALSE, or not renabled, beware characters may trigger ELC logging in with now-invalid ItemLevelRestrictions equipped.
+/// @note This function (or override partner) must be used each server reset to re-enable persistence. Recommended use on OBJECT_INVALID OnModuleLoad.
+/// @warning if Persistence is FALSE, or not re-enabled, beware characters may trigger ELC logging in with now-invalid ItemLevelRestrictions equipped.
 void NWNX_Item_SetMinEquipLevelModifier(object oItem, int nModifier, int bPersist = TRUE);
 
 /// @brief Gets the applied modifier to the Minimum Level to Equip (Item Level Restriction).
@@ -116,8 +120,8 @@ int NWNX_Item_GetMinEquipLevelModifier(object oItem);
 /// @param oItem The item object.
 /// @param nOverride the nOverride to apply (Before any Modifier)
 /// @param bPersist Whether the modifier should persist to gff field. Strongly Recommended to be TRUE (See warning)
-/// @note This function (or modifier partner) must be used each server reset to reenable persistence. Recommended use on OBJECT_INVALID OnModuleLoad.
-/// @warning if Persistence is FALSE, or not renabled, beware characters may trigger ELC logging in with now-invalid ItemLevelRestrictions equipped.
+/// @note This function (or modifier partner) must be used each server reset to re-enable persistence. Recommended use on OBJECT_INVALID OnModuleLoad.
+/// @warning if Persistence is FALSE, or not re-enabled, beware characters may trigger ELC logging in with now-invalid ItemLevelRestrictions equipped.
 void NWNX_Item_SetMinEquipLevelOverride(object oItem, int nOverride, int bPersist = TRUE);
 
 /// @brief Gets the applied override to the Minimum Level to Equip (Item Level Restriction).
@@ -129,168 +133,120 @@ int NWNX_Item_GetMinEquipLevelOverride(object oItem);
 
 void NWNX_Item_SetWeight(object oItem, int w)
 {
-    string sFunc = "SetWeight";
-
-    NWNX_PushArgumentInt(w);
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
+    NWNXPushInt(w);
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "SetWeight");
 }
 
 void NWNX_Item_SetBaseGoldPieceValue(object oItem, int g)
 {
-    string sFunc = "SetBaseGoldPieceValue";
-
-    NWNX_PushArgumentInt(g);
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
+    NWNXPushInt(g);
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "SetBaseGoldPieceValue");
 }
 
 void NWNX_Item_SetAddGoldPieceValue(object oItem, int g)
 {
-    string sFunc = "SetAddGoldPieceValue";
-
-    NWNX_PushArgumentInt(g);
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
+    NWNXPushInt(g);
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "SetAddGoldPieceValue");
 }
 
 int NWNX_Item_GetBaseGoldPieceValue(object oItem)
 {
-    string sFunc = "GetBaseGoldPieceValue";
-
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
-    return NWNX_GetReturnValueInt();
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "GetBaseGoldPieceValue");
+    return NWNXPopInt();
 }
 
 int NWNX_Item_GetAddGoldPieceValue(object oItem)
 {
-    string sFunc = "GetAddGoldPieceValue";
-
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
-    return NWNX_GetReturnValueInt();
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "GetAddGoldPieceValue");
+    return NWNXPopInt();
 }
 
 void NWNX_Item_SetBaseItemType(object oItem, int nBaseItem)
 {
-    string sFunc = "SetBaseItemType";
-
-    NWNX_PushArgumentInt(nBaseItem);
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
+    NWNXPushInt(nBaseItem);
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "SetBaseItemType");
 }
 
-void NWNX_Item_SetItemAppearance(object oItem, int nType, int nIndex, int nValue)
+void NWNX_Item_SetItemAppearance(object oItem, int nType, int nIndex, int nValue, int bUpdateCreatureAppearance = FALSE)
 {
-    string sFunc = "SetItemAppearance";
-
-    NWNX_PushArgumentInt(nValue);
-    NWNX_PushArgumentInt(nIndex);
-    NWNX_PushArgumentInt(nType);
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
-
+    NWNXPushInt(bUpdateCreatureAppearance);
+    NWNXPushInt(nValue);
+    NWNXPushInt(nIndex);
+    NWNXPushInt(nType);
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "SetItemAppearance");
 }
 
 string NWNX_Item_GetEntireItemAppearance(object oItem)
 {
-    string sFunc = "GetEntireItemAppearance";
-
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
-    return NWNX_GetReturnValueString();
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "GetEntireItemAppearance");
+    return NWNXPopString();
 }
 
 void NWNX_Item_RestoreItemAppearance(object oItem, string sApp)
 {
-    string sFunc = "RestoreItemAppearance";
-
-    NWNX_PushArgumentString(sApp);
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
+    NWNXPushString(sApp);
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "RestoreItemAppearance");
 }
 
 int NWNX_Item_GetBaseArmorClass(object oItem)
 {
-    string sFunc = "GetBaseArmorClass";
-
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
-    return NWNX_GetReturnValueInt();
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "GetBaseArmorClass");
+    return NWNXPopInt();
 }
 
 int NWNX_Item_GetMinEquipLevel(object oItem)
 {
-    string sFunc = "GetMinEquipLevel";
-
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
-    return NWNX_GetReturnValueInt();
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "GetMinEquipLevel");
+    return NWNXPopInt();
 }
 
 int NWNX_Item_MoveTo(object oItem, object oTarget, int bHideAllFeedback = FALSE)
 {
-    string sFunc = "MoveTo";
-
-    NWNX_PushArgumentInt(bHideAllFeedback);
-    NWNX_PushArgumentObject(oTarget);
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
-
-    return NWNX_GetReturnValueInt();
+    NWNXPushInt(bHideAllFeedback);
+    NWNXPushObject(oTarget);
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "MoveTo");
+    return NWNXPopInt();
 }
 
 void NWNX_Item_SetMinEquipLevelModifier(object oItem, int nModifier, int bPersist = TRUE)
 {
-    string sFunc = "SetMinEquipLevelModifier";
-
-    NWNX_PushArgumentInt(bPersist);
-    NWNX_PushArgumentInt(nModifier);
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
+    NWNXPushInt(bPersist);
+    NWNXPushInt(nModifier);
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "SetMinEquipLevelModifier");
 }
 
 int NWNX_Item_GetMinEquipLevelModifier(object oItem)
 {
-    string sFunc = "GetMinEquipLevelModifier";
-
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
-    return NWNX_GetReturnValueInt();
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "GetMinEquipLevelModifier");
+    return NWNXPopInt();
 }
 
 void NWNX_Item_SetMinEquipLevelOverride(object oItem, int nOverride, int bPersist = TRUE)
 {
-    string sFunc = "SetMinEquipLevelOverride";
 
-    NWNX_PushArgumentInt(bPersist);
-    NWNX_PushArgumentInt(nOverride);
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
+    NWNXPushInt(bPersist);
+    NWNXPushInt(nOverride);
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "SetMinEquipLevelOverride");
 }
 
 int NWNX_Item_GetMinEquipLevelOverride(object oItem)
 {
-    string sFunc = "GetMinEquipLevelOverride";
-
-    NWNX_PushArgumentObject(oItem);
-
-    NWNX_CallFunction(NWNX_Item, sFunc);
-    return NWNX_GetReturnValueInt();
+    NWNXPushObject(oItem);
+    NWNXCall(NWNX_Item, "GetMinEquipLevelOverride");
+    return NWNXPopInt();
 }

@@ -1,8 +1,6 @@
-version: "3.3"
-
 services:
   tfn-server-dev:
-    image: nwnxee/unified:2f732e7
+    image: nwnxee/unified:86747b7
     tty: true
     stdin_open: true
     env_file: ${PWD-.}/config/common.env
