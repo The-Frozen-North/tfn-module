@@ -69,8 +69,7 @@ int PopUpPlaceableGUIPanel(object oPC, object oTarget)
     }
 
     // Fine rotation slider: offset in degrees from the current facing, 0 at start.
-    DeleteLocalInt (oPC, "placeable_edit_off");
-    NuiSetBind (oPC, nToken, "btn_edit_label", JsonString ("Edit On"));
+    NuiSetBind (oPC, nToken, "btn_edit_label", JsonString (GetLocalInt (GetArea (oPC), "edit") ? "Edit On" : "Edit Off"));
     SetLocalFloat (oPC, "placeable_base_facing", GetFacing (oTarget));
     NuiSetBind (oPC, nToken, "rot_slider_min", JsonInt (-90));
     NuiSetBind (oPC, nToken, "rot_slider_max", JsonInt (90));

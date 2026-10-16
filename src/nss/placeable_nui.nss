@@ -23,8 +23,8 @@ const string SLIDER_BIND = "rot_slider_value";
 const string BASE_FACING_VAR = "placeable_base_facing";
 const float SLIDER_APPLY_DELAY = 0.3;
 
-// Edit mode: while off, the move/rotate/reset controls and slider are disabled.
-const string EDIT_OFF_VAR = "placeable_edit_off";
+// Edit mode is the house Settings toggle (area "edit" flag). While off, the
+// move/rotate/reset controls and slider are disabled.
 const string EDIT_CONTROLS = "[\"btn_rotate_right\",\"btn_north\",\"btn_rotate_left\",\"btn_west\",\"btn_reset\",\"btn_east\",\"btn_up\",\"btn_south\",\"btn_down\",\"rot_slider\"]";
 
 object MovePlaceableByCopying(object oTarget, object oPC, vector vPosition, float fFacing)
@@ -70,8 +70,8 @@ void SetBaseFacing(object oPC, int nToken, float fFacing)
 // Enables or disables the editing controls and updates the toggle button text.
 void SetEditMode(object oPC, int nToken, int bOn)
 {
-    if (bOn) DeleteLocalInt(oPC, EDIT_OFF_VAR);
-    else SetLocalInt(oPC, EDIT_OFF_VAR, 1);
+    SetHomeEditMode(GetArea(oPC), bOn);
+    FloatingTextStringOnCreature(bOn ? "Placeable editing enabled." : "Placeable editing disabled.", oPC, FALSE);
 
     json jControls = JsonParse(EDIT_CONTROLS);
     int i;
@@ -89,7 +89,7 @@ void ApplySliderRotation(object oPC, int nToken)
     if (NuiGetWindowId(oPC, nToken) != WINDOW_ID) return;
 
     object oTarget = GetLocalObject(oPC, "0_Placeable_Target");
-    if (!GetIsObjectValid(oTarget) || GetLocalInt(oPC, EDIT_OFF_VAR)) return;
+    if (!GetIsObjectValid(oTarget) || !GetLocalInt(GetArea(oPC), "edit")) return;
 
     int nValue = JsonGetInt(NuiGetBind(oPC, nToken, SLIDER_BIND));
     float fFacing = GetNormalizedDirection(GetLocalFloat(oPC, BASE_FACING_VAR) + IntToFloat(nValue));
@@ -138,9 +138,9 @@ void main ()
 
     if (sElem == "btn_edit")
     {
-        SetEditMode(oPC, nToken, GetLocalInt(oPC, EDIT_OFF_VAR));
+        SetEditMode(oPC, nToken, !GetLocalInt(GetArea(oPC), "edit"));
     }
-    else if ((IsMoveButton(sElem) || sElem == "btn_reset") && GetLocalInt(oPC, EDIT_OFF_VAR))
+    else if ((IsMoveButton(sElem) || sElem == "btn_reset") && !GetLocalInt(GetArea(oPC), "edit"))
     {
         return;
     }
