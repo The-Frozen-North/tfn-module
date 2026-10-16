@@ -29,8 +29,10 @@ int PopUpPlaceableGUIPanel(object oPC, object oTarget)
     jRow = CreateButton (jRow, "Down", "btn_down", 110.0, 25.0);
     // Add the row to the column.
     jCol = JsonArrayInsert (jCol, NuiRow (jRow));
-    // Row 5 (Placeable label)************************************************** 144
-    jRow = JsonArrayInsert (JsonArray (), NuiSpacer());
+    // Row 4 (Fine rotation slider, -90..+90 degrees)
+    jRow = CreateLabelText (JsonArray (), "Fine rotation (-90 to +90)", "rot_label", 338.0, 20.0, -1.0, NUI_HALIGN_CENTER, NUI_VALIGN_MIDDLE);
+    jCol = JsonArrayInsert (jCol, NuiRow (jRow));
+    jRow = CreateSlider (JsonArray (), "rot_slider", 338.0, 25.0);
     jCol = JsonArrayInsert (jCol, NuiRow (jRow));
 
     jRow = JsonArrayInsert (JsonArray (), NuiSpacer());
@@ -45,33 +47,36 @@ int PopUpPlaceableGUIPanel(object oPC, object oTarget)
     jRow = JsonArrayInsert (JsonArray (), NuiSpacer());
     jRow = CreateButton (jRow, "Retrieve", "btn_destroy", 100.0, 25.0);
     jRow = JsonArrayInsert (jRow, NuiSpacer());
-    jRow = JsonArrayInsert (jRow, NuiSpacer());
-    jRow = JsonArrayInsert (jRow, NuiSpacer());
+    jRow = CreateButton (jRow, "", "btn_edit", 100.0, 25.0);
     jRow = JsonArrayInsert (jRow, NuiSpacer());
     jRow = CreateButton (jRow, "Save", "btn_save", 100.0, 25.0);
     // Add the row to the column.
     jCol = JsonArrayInsert (jCol, NuiRow (jRow));
     // Set the layout of the window.
     json jLayout = NuiCol (jCol);
-    float fY = GetGUIHeightMiddle (oPC, 214.0);
+    float fY = GetGUIHeightMiddle (oPC, 270.0);
     string sName = GetName(oTarget);// StripColorCodes (GetName (oTarget));
+    // Events for this window go straight to placeable_nui instead of on_nuievent.
     int nToken = SetWindow (oPC, jLayout, "moveplaceablewin", "Edit "+sName,
-                            0.0, fY, 362.0, 214.0, FALSE, FALSE, TRUE, FALSE, TRUE);
-    // Set the buttons to show events to 0e_window.
+                            0.0, fY, 362.0, 270.0, FALSE, FALSE, TRUE, FALSE, TRUE, "placeable_nui");
+    // Enable the buttons.
     SetLocalLocation (oTarget, "0_Reset_Location", GetLocation (oTarget));
-    NuiSetBind (oPC, nToken, "btn_rotate_right_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_north_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_rotate_left_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_west_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_reset_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_east_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_up_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_south_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_down_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_destroy_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_save_event", JsonBool (TRUE));
-    // NuiSetBind (oPC, nToken, "btn_get_placeable_event", JsonBool (TRUE));
-    // NuiSetBind (oPC, nToken, "name_label", JsonString (sName));
+    json jButtons = JsonParse("[\"btn_rotate_right\",\"btn_north\",\"btn_rotate_left\",\"btn_west\",\"btn_reset\",\"btn_east\",\"btn_up\",\"btn_south\",\"btn_down\",\"btn_destroy\",\"btn_save\",\"btn_edit\"]");
+    int i;
+    for (i = 0; i < JsonGetLength(jButtons); i++)
+    {
+        NuiSetBind(oPC, nToken, JsonGetString(JsonArrayGet(jButtons, i)) + "_event", JsonBool(TRUE));
+    }
+
+    // Fine rotation slider: offset in degrees from the current facing, 0 at start.
+    NuiSetBind (oPC, nToken, "btn_edit_label", JsonString (GetLocalInt (GetArea (oPC), "edit") ? "Edit On" : "Edit Off"));
+    SetLocalFloat (oPC, "placeable_base_facing", GetFacing (oTarget));
+    NuiSetBind (oPC, nToken, "rot_slider_min", JsonInt (-90));
+    NuiSetBind (oPC, nToken, "rot_slider_max", JsonInt (90));
+    NuiSetBind (oPC, nToken, "rot_slider_stepsize", JsonInt (1));
+    NuiSetBind (oPC, nToken, "rot_slider_value", JsonInt (0));
+    NuiSetBind (oPC, nToken, "rot_slider_event", JsonBool (TRUE));
+    NuiSetBindWatch (oPC, nToken, "rot_slider_value", TRUE);
 
     return nToken;
 }

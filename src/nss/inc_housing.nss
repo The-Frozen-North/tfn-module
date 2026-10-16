@@ -918,6 +918,28 @@ void LoadAllHousePlaceables()
 }
 
 
+// Turns placeable editing on or off for the house oArea (the Settings object toggle).
+// Sets the area's "edit" flag and makes every _HomePlaceable usable and
+// left-click-editable (on) or non-interactive (off).
+void SetHomeEditMode(object oArea, int bEnable);
+void SetHomeEditMode(object oArea, int bEnable)
+{
+    if (bEnable) SetLocalInt(oArea, "edit", 1);
+    else DeleteLocalInt(oArea, "edit");
+
+    string sScript = bEnable ? "placeable_edit" : "";
+    object oObject = GetFirstObjectInArea(oArea);
+    while (GetIsObjectValid(oObject))
+    {
+        if (GetTag(oObject) == "_HomePlaceable")
+        {
+            SetUseableFlag(oObject, bEnable);
+            SetEventScript(oObject, EVENT_SCRIPT_PLACEABLE_ON_LEFT_CLICK, sScript);
+        }
+        oObject = GetNextObjectInArea(oArea);
+    }
+}
+
 int IsInOwnHome(object oPC);
 int IsInOwnHome(object oPC)
 {
