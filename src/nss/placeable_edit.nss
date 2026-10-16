@@ -55,23 +55,17 @@ int PopUpPlaceableGUIPanel(object oPC, object oTarget)
     json jLayout = NuiCol (jCol);
     float fY = GetGUIHeightMiddle (oPC, 214.0);
     string sName = GetName(oTarget);// StripColorCodes (GetName (oTarget));
+    // Events for this window go straight to placeable_nui instead of on_nuievent.
     int nToken = SetWindow (oPC, jLayout, "moveplaceablewin", "Edit "+sName,
-                            0.0, fY, 362.0, 214.0, FALSE, FALSE, TRUE, FALSE, TRUE);
-    // Set the buttons to show events to 0e_window.
+                            0.0, fY, 362.0, 214.0, FALSE, FALSE, TRUE, FALSE, TRUE, "placeable_nui");
+    // Enable the buttons.
     SetLocalLocation (oTarget, "0_Reset_Location", GetLocation (oTarget));
-    NuiSetBind (oPC, nToken, "btn_rotate_right_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_north_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_rotate_left_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_west_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_reset_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_east_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_up_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_south_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_down_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_destroy_event", JsonBool (TRUE));
-    NuiSetBind (oPC, nToken, "btn_save_event", JsonBool (TRUE));
-    // NuiSetBind (oPC, nToken, "btn_get_placeable_event", JsonBool (TRUE));
-    // NuiSetBind (oPC, nToken, "name_label", JsonString (sName));
+    json jButtons = JsonParse("[\"btn_rotate_right\",\"btn_north\",\"btn_rotate_left\",\"btn_west\",\"btn_reset\",\"btn_east\",\"btn_up\",\"btn_south\",\"btn_down\",\"btn_destroy\",\"btn_save\"]");
+    int i;
+    for (i = 0; i < JsonGetLength(jButtons); i++)
+    {
+        NuiSetBind(oPC, nToken, JsonGetString(JsonArrayGet(jButtons, i)) + "_event", JsonBool(TRUE));
+    }
 
     return nToken;
 }
