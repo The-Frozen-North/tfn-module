@@ -17,6 +17,12 @@ const int YELLOW = 0xFFFF00;
 // Window id and event script, shared with placeable_edit.
 const string WINDOW_ID = "moveplaceablewin";
 
+// Fine rotation slider: -SLIDER_RANGE..+SLIDER_RANGE degrees (180 total) around the
+// facing the placeable had when the window opened or was last saved/reset/rotated.
+const string SLIDER_BIND = "rot_slider_value";
+const string BASE_FACING_VAR = "placeable_base_facing";
+const float SLIDER_APPLY_DELAY = 0.3;
+
 object MovePlaceableByCopying(object oTarget, object oPC, vector vPosition, float fFacing)
 {
     location lLocation = Location(GetArea(oTarget), vPosition, fFacing);
@@ -50,6 +56,29 @@ float GetRotatedFacing(string sElem, float fFacing)
     return fFacing;
 }
 
+// Make the slider the zero point for the placeable's current facing.
+void SetBaseFacing(object oPC, int nToken, float fFacing)
+{
+    SetLocalFloat(oPC, BASE_FACING_VAR, fFacing);
+    NuiSetBind(oPC, nToken, SLIDER_BIND, JsonInt(0));
+}
+
+// Applies the slider's current value. Runs delayed so dragging collapses into one update.
+void ApplySliderRotation(object oPC, int nToken)
+{
+    DeleteLocalInt(oPC, "placeable_slider_pending");
+    if (NuiGetWindowId(oPC, nToken) != WINDOW_ID) return;
+
+    object oTarget = GetLocalObject(oPC, "0_Placeable_Target");
+    if (!GetIsObjectValid(oTarget)) return;
+
+    int nValue = JsonGetInt(NuiGetBind(oPC, nToken, SLIDER_BIND));
+    float fFacing = GetNormalizedDirection(GetLocalFloat(oPC, BASE_FACING_VAR) + IntToFloat(nValue));
+    if (fabs(fFacing - GetFacing(oTarget)) < 0.5) return;
+
+    MovePlaceableByCopying(oTarget, oPC, GetPosition(oTarget), fFacing);
+}
+
 int IsMoveButton(string sElem)
 {
     return sElem == "btn_north" || sElem == "btn_south" || sElem == "btn_east" ||
@@ -64,9 +93,20 @@ void main ()
     string sEvent  = NuiGetEventType();
     string sElem   = NuiGetEventElement();
 
-    if (sEvent != "click") return;
     if (NuiGetWindowId(oPC, nToken) != WINDOW_ID) return;
     if (!IsInOwnHome(oPC)) return;
+
+    if (sEvent == "watch" && sElem == SLIDER_BIND)
+    {
+        if (!GetLocalInt(oPC, "placeable_slider_pending"))
+        {
+            SetLocalInt(oPC, "placeable_slider_pending", 1);
+            DelayCommand(SLIDER_APPLY_DELAY, ApplySliderRotation(oPC, nToken));
+        }
+        return;
+    }
+
+    if (sEvent != "click") return;
 
     if (GetLocalInt(oPC, "placeable_cd") == 1) return;
 
@@ -82,11 +122,13 @@ void main ()
         vector vPosition = GetMovedPosition(sElem, GetPosition(oTarget));
         float fFacing = GetRotatedFacing(sElem, GetFacing(oTarget));
         MovePlaceableByCopying(oTarget, oPC, vPosition, fFacing);
+        if (sElem == "btn_rotate_left" || sElem == "btn_rotate_right") SetBaseFacing(oPC, nToken, fFacing);
     }
     else if (sElem == "btn_reset")
     {
         location lReset = GetLocalLocation(oTarget, "0_Reset_Location");
         object oCopy = MovePlaceableByCopying(oTarget, oPC, GetPositionFromLocation(lReset), GetFacingFromLocation(lReset));
+        SetBaseFacing(oPC, nToken, GetFacingFromLocation(lReset));
 
         // reset highlight color
         SetObjectHiliteColor(oCopy, -1);
@@ -101,6 +143,7 @@ void main ()
         SetObjectHiliteColor(oTarget, -1);
 
         UpdatePlaceable(oTarget, oPC, GetPosition(oTarget), GetFacing(oTarget), GetLocalString(oTarget, "uuid"));
+        SetBaseFacing(oPC, nToken, GetFacing(oTarget));
 
         FloatingTextStringOnCreature("Placeable location saved.", oPC, FALSE);
     }
