@@ -47,8 +47,7 @@ int PopUpPlaceableGUIPanel(object oPC, object oTarget)
     jRow = JsonArrayInsert (JsonArray (), NuiSpacer());
     jRow = CreateButton (jRow, "Retrieve", "btn_destroy", 100.0, 25.0);
     jRow = JsonArrayInsert (jRow, NuiSpacer());
-    jRow = JsonArrayInsert (jRow, NuiSpacer());
-    jRow = JsonArrayInsert (jRow, NuiSpacer());
+    jRow = CreateButton (jRow, "", "btn_edit", 100.0, 25.0);
     jRow = JsonArrayInsert (jRow, NuiSpacer());
     jRow = CreateButton (jRow, "Save", "btn_save", 100.0, 25.0);
     // Add the row to the column.
@@ -62,7 +61,7 @@ int PopUpPlaceableGUIPanel(object oPC, object oTarget)
                             0.0, fY, 362.0, 270.0, FALSE, FALSE, TRUE, FALSE, TRUE, "placeable_nui");
     // Enable the buttons.
     SetLocalLocation (oTarget, "0_Reset_Location", GetLocation (oTarget));
-    json jButtons = JsonParse("[\"btn_rotate_right\",\"btn_north\",\"btn_rotate_left\",\"btn_west\",\"btn_reset\",\"btn_east\",\"btn_up\",\"btn_south\",\"btn_down\",\"btn_destroy\",\"btn_save\"]");
+    json jButtons = JsonParse("[\"btn_rotate_right\",\"btn_north\",\"btn_rotate_left\",\"btn_west\",\"btn_reset\",\"btn_east\",\"btn_up\",\"btn_south\",\"btn_down\",\"btn_destroy\",\"btn_save\",\"btn_edit\"]");
     int i;
     for (i = 0; i < JsonGetLength(jButtons); i++)
     {
@@ -70,6 +69,8 @@ int PopUpPlaceableGUIPanel(object oPC, object oTarget)
     }
 
     // Fine rotation slider: offset in degrees from the current facing, 0 at start.
+    DeleteLocalInt (oPC, "placeable_edit_off");
+    NuiSetBind (oPC, nToken, "btn_edit_label", JsonString ("Edit On"));
     SetLocalFloat (oPC, "placeable_base_facing", GetFacing (oTarget));
     NuiSetBind (oPC, nToken, "rot_slider_min", JsonInt (-90));
     NuiSetBind (oPC, nToken, "rot_slider_max", JsonInt (90));
